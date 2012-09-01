@@ -1,0 +1,99 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+# vim: ft=jam
+
+exe TextStream :
+	TextStream.cc /latbuilder//latbuilder.lib ;
+
+exe LatDef :
+	LatDef.cc /latbuilder//latbuilder.lib ;
+
+exe GenSeqCoprimeIntegers :
+	GenSeqCoprimeIntegers.cc /latbuilder//latbuilder.lib ;
+
+exe GenSeqCyclicGroup :
+	GenSeqCyclicGroup.cc /latbuilder//latbuilder.lib ;
+
+exe GenSeqRandom :
+	GenSeqRandom.cc /latbuilder//latbuilder.lib ;
+
+exe GenSeqVector :
+	GenSeqVector.cc /latbuilder//latbuilder.lib ;
+
+exe GenSeqExtend :
+	GenSeqExtend.cc /latbuilder//latbuilder.lib ;
+
+exe LatSeqExhaustive :
+	LatSeqExhaustive.cc /latbuilder//latbuilder.lib ;
+
+exe LatSeqRandom :
+	LatSeqRandom.cc /latbuilder//latbuilder.lib ;
+
+exe LatSeqKorobov :
+	LatSeqKorobov.cc /latbuilder//latbuilder.lib ;
+
+exe LatSeqCBC1 :
+	LatSeqCBC1.cc /latbuilder//latbuilder.lib ;
+
+exe LatSeqCBC :
+	LatSeqCBC.cc /latbuilder//latbuilder.lib ;
+
+exe Storage :
+	Storage.cc /latbuilder//latbuilder.lib ;
+
+exe WeightedFigureOfMerit :
+	WeightedFigureOfMerit.cc /latbuilder//latbuilder.lib ;
+
+exe WeightedFigureOfMeritSignals :
+	WeightedFigureOfMeritSignals.cc /latbuilder//latbuilder.lib ;
+
+exe WeightedFigureOfMeritCBC :
+	WeightedFigureOfMeritCBC.cc /latbuilder//latbuilder.lib ;
+
+exe MeritSeqCBC :
+	MeritSeqCBC.cc /latbuilder//latbuilder.lib ;
+
+exe MeritSeqCBCSignals :
+	MeritSeqCBCSignals.cc /latbuilder//latbuilder.lib ;
+
+exe MeritSeqCoordSym :
+	MeritSeqCoordSym.cc /latbuilder//latbuilder.lib ;
+
+exe MeritSeqFastCBC :
+	MeritSeqFastCBC.cc /latbuilder//latbuilder.lib ;
+
+exe MeritSeqNonCBC :
+	MeritSeqNonCBC.cc /latbuilder//latbuilder.lib ;
+
+exe FilteredCBC :
+	FilteredCBC.cc /latbuilder//latbuilder.lib ;
+
+exe FilteredRCBC :
+	FilteredRCBC.cc /latbuilder//latbuilder.lib ;
+
+exe TaskCBC :
+	TaskCBC.cc /latbuilder//latbuilder.lib ;
+
+exe TaskLatSeq :
+	TaskLatSeq.cc /latbuilder//latbuilder.lib ;
+
+exe ParserFastCBC :
+	ParserFastCBC.cc /latbuilder//latbuilder.lib ;
+
+exe ParserFastCBCEmbedded :
+	ParserFastCBCEmbedded.cc /latbuilder//latbuilder.lib ;

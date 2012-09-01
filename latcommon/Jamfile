@@ -1,0 +1,90 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+import tcode ;
+import option ;
+
+project : requirements <include>include ;
+
+latex = [ glob latex/[A-Z]*.tex ] ;
+hsrc = [ glob include/latcommon/*.h ] ;
+src = [ glob src/[A-Z]*.cc ] ;
+
+for name in $(latex) {
+	h $(name:D=latcommon:S=.h)
+	#h $(name:B).h
+		: $(name)
+		#: <dependency>/tools//tcode.exe <tcode>/tools//tcode.exe
+		: <tcode>/tools//tcode.exe
+		;
+}
+
+# to use #include "header.h"
+#alias headers : $(latex:B).h ;
+
+alias texheaders : $(latex:D=latcommon:S=.h) ;
+
+for s in $(src) {
+
+	# standard version
+	obj $(s:B)
+		: $(s) texheaders /latsoft//boost
+		: <implicit-dependency>texheaders <target-os>windows:<define>HAVE_WINDOWS_H ;
+
+	# version with XML support
+	obj $(s:B)-xml
+		: $(s) texheaders /pugixml//pugixml /latsoft//boost
+		: <implicit-dependency>texheaders <define>WITH_XML <target-os>windows:<define>HAVE_WINDOWS_H ;
+}
+
+alias o-std : $(src:B) ;
+alias o-xml : $(src:B)-xml ;
+
+lib latcommon.lib :
+	o-std
+	/latsoft//boost
+	: : :
+	<include>include
+	<implicit-dependency>texheaders ;
+
+lib latcommon-xml.lib :
+	o-xml
+	/latsoft//boost
+	/pugixml//pugixml
+	: : :
+	<use>/pugixml//pugixml
+	<include>include
+	<implicit-dependency>texheaders
+	<define>WITH_XML ;
+
+local prefix = [ option.get prefix : $(PREFIX) ] ;
+
+install install-headers
+	: $(latex:D=latcommon:S=.h) $(hsrc)
+	: <location>$(prefix)/include/latcommon
+	;
+
+install install-lib
+	: latcommon.lib
+	: <location>$(prefix)/lib
+	;
+
+alias install : install-lib install-headers ;
+
+
+# vim: ft=jam
+

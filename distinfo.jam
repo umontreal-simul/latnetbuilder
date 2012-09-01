@@ -1,0 +1,67 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+import project ;
+import path ;
+import os ;
+
+rule extract-version
+{
+	# try with git
+	local version = [ SHELL "git describe --tags --match 'v[0-9].*'" ] ;
+	if $(version)
+	{
+		local match = [ MATCH "^v(.*)[\n]$" : $(version) ] ;
+		version = $(match[1]) ;
+	}
+	# resort to version file
+	if ! $(version)
+	{
+		if [ os.name ] = NT
+		{
+			.cat = type ;
+		}
+		else
+		{
+			.cat = cat ;
+		}
+		local project = [ project.current ] ;
+		local verfile = [ path.join [ $(project).get project-root ] VERSION ] ;
+		verfile = [ path.native $(verfile) ] ;
+		version = [ SHELL "$(.cat) $(verfile)" ] ;
+		local match = [ MATCH "^\s*(.*)\s*[\n]$" : $(version) ] ;
+		version = $(match[1]) ;
+	}
+	# default to unknown
+	if ! $(version)
+	{
+		version = "(unknown version)" ;
+	}
+	return $(version) ;
+}
+
+rule prefix
+{
+	local x = [ os.environ PREFIX ] ;
+	if ! $(x)
+	{
+		x = [ path.join [ path.pwd ] dist ] ;
+	}
+	return $(x) ;
+}
+
+# vim: ft=jam

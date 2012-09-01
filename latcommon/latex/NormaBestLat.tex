@@ -1,0 +1,84 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {NormaBestLat}
+
+ This class implements the {\em best} theoretical bounds on the length of the
+ shortest nonzero vector in a lattice, based on the densest sphere packing in 
+ lattices.  The length of a vector is computed using the
+ ${\cal L}_2$ norm. The bounding lengths for a lattice of rank $k$, 
+  containing $m$ points per unit volume in dimension $t$, are given by
+ $\ell_t^* = \gamma_t m^{k/t}$ for $t \ge k$, where the $\gamma_t$ are
+ the lattice constants for the {\em best} known lattices \cite{mCON99a}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip\hrule
+\code \hide
+/* NormaBestLat.h for ISO C++ */
+#ifndef NORMABESTLAT_H
+#define NORMABESTLAT_H
+\endhide 
+#include "latcommon/Normalizer.h"
+#include <stdexcept>
+
+
+namespace LatCommon {
+
+class NormaBestLat : public Normalizer {
+public:
+
+   NormaBestLat (const MScal & m, int k, int t, double beta = 1);
+\endcode
+ \tabb Constructor for the best bounds obtained for lattices. The 
+   lattices are those of rank $k$,
+   with $m$ points per unit volume, for all dimensions  $\le t$.
+   The bias factor \texttt{beta} $= \beta$ gives more weight to some of the
+   dimensions. %: taking $\beta < 1$ inflates the figure of merit by
+  % $(1/\beta)^t$, thus weakening the requirements for large $t$ in a 
+  % worst-case figure of merit.
+  Restriction: $t \le 48$.
+  \endtabb
+\code
+
+   double getGamma (int j) const throw (std::out_of_range);
+\endcode
+ \tabb 
+   Returns the value of the lattice constant $\gamma_j$ in dimension  $j$.
+ \endtabb
+\ifdetailed
+\code
+
+
+private:
+
+   static const double m_gamma[1 + Normalizer::MAX_DIM];
+\endcode
+ \tabb 
+  Lattice constants $\gamma_j$ for the most general lattices in each
+  dimension $j$.
+  \endtabb
+\fi
+\code
+
+};
+
+}
+
+\hide
+#endif
+\endhide
+\endcode

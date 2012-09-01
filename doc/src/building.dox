@@ -1,0 +1,261 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+/** \page building Building
+
+Building Lattice Builder consists of the following steps:
+- Installing a \ref builddeps_compiler
+- Installing the \ref builddeps_boost
+- Installing the \ref builddeps_fftw
+- Installing the \ref builddeps_b2 system
+- \ref buildconfig
+- \ref buildcompile
+- \ref buildlink
+
+
+\section builddeps Requirements
+
+\subsection builddeps_compiler C++11-Compliant Compiler
+
+Compiling Lattice Builder requires a C++ compiler that partially supports the
+<a href="http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=50372">C++11 standard</a>,
+such as g++ from the
+<a href="http://gcc.gnu.org/">GNU Compiler Collection</a>
+version 4.7 or later.
+
+The C++11 features that Lattice Builder uses are:
+- auto-typed variables
+- range-based for-loop
+- std::function and std::bind
+- rvalue references
+- move constructors and assignment operators
+- static assertions
+- extern templates
+- null pointer constant
+- strongly typed enums
+- initializer lists
+- non-static data member initializers
+- template aliases
+
+<!--
+If a recent enough version of GCC is not available on your Linux system, you can
+install GCC manually by customizing and running the script \c install-gcc.sh
+that can found under the \c scripts directory with the source code.
+-->
+
+
+\subsection builddeps_boost Boost C++ Libraries
+
+The Lattice Builder library depends on the following
+<a href="http://www.boost.org/">Boost libraries</a>:
+<ul>
+	<li><a href="http://www.boost.org/doc/libs/1_48_0/libs/math/doc/html/index.html">Math</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/numeric/ublas/doc/index.htm">uBLAS</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/index.html">Iterator</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/accumulators/">Accumulators</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/signals2/">Signals2</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/tokenizer/index.html">Tokenizer</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/conversion/lexical_cast.htm">Lexical Cast</a></li>
+</ul>
+
+In addition to these, the Lattice Builder command-line tool also depends on the
+following
+<a href="http://www.boost.org/">Boost libraries</a>:
+<ul>
+	<li><a href="http://www.boost.org/doc/libs/release/doc/html/program_options.html">Program Options</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/chrono/index.html">Chrono</a></li>
+</ul>
+
+Only the Program Options and Chrono libraries require building and linking; the
+others are header-only libraries.
+
+Installation instructions for the
+<a href="http://www.boost.org/">Boost libraries</a>
+can be found on the
+<a href="http://www.boost.org/doc/libs/release/more/getting_started/">Getting Started</a>
+page for
+<a href="http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html">Unix variants</a>
+or for
+<a href="http://www.boost.org/doc/libs/release/more/getting_started/windows.html">Microsoft Windows</a>.
+
+Alternatively, you can customize and run the script \c install-boost.sh that can
+found under the \c scripts directory with the source code.
+
+
+\subsection builddeps_fftw FFTW Library
+
+The fast CBC implementation of Lattice Builder depends on the
+<a href="http://www.fftw.org/">FFTW library</a>.
+
+
+\subsection builddeps_b2 Boost.Build
+
+In order to facilitate cross-platform compatibility, Lattice Builder uses
+<a href="http://www.boost.org/boost-build2/">Boost.Build</a>
+as its build system
+(<a href="http://www.boost.org/boost-build2/doc/html/bbv2/installation.html">installation instructions</a>).
+The nightly-build version is recommended.
+
+If you installed Boost.Build as indicated to some prefix \c B2_PREFIX, the
+installation system should have created the file
+<tt>B2_PREFIX/share/boost-build/site-config.jam</tt>.  Make sure that it contains
+at least a line that indicates which default toolset should be used.  On Linux
+systems, this line should look like:
+\code
+using gcc ;
+\endcode
+The space before the semicolon is important.
+
+To check if Boost.Build is installed and available in the path, try either:
+\code
+b2 --version
+\endcode
+or
+\code
+/path/to/b2 --version
+\endcode
+replacing \c /path/to with the actual path to which Boost.Build was installed.
+
+
+\section buildconfig Configuring Boost.Build
+
+\subsection buildconfig_b2site Site-Specific Configuration
+
+To compile Lattice Builder, Boost.Build needs to know where to find the Boost
+header files and how to link to the Boost and FFTW libraries.  These settings
+are specific to the platform on which Lattice Builder is to be built and should
+be customized in the file \c B2_PREFIX/share/boost-build/site-config.jam, where
+\c B2_PREFIX is the directory under which Boost.Build was installed.
+If the file cannot be found at that location, it can be created if the user has
+proper access permissions (otherwise see \ref buildconfig_b2user).
+If all libraries are installed under standard paths, the \c site-config.jam file
+can only contain:
+\include b2/standard-site-config.jam
+Otherwise, the following \c site-config.jam file could be customized with the
+following content:
+\include b2/site-config.jam
+To use this this configuration file, the environment variables BOOST_PREFIX and
+FFTW_PREFIX should be set to point to the directories under which the Boost and
+FFTW libraries are installed, respectively.
+The specification for <tt>lib rt</tt> indicates that the \c rt library should
+always be linked to as a shared library.
+The specification for <tt>lib boost_chrono</tt> indicates that it depends on 
+<tt>lib boost_system</tt> and on <tt>lib rt</tt>.
+The spaces around the colons and before the semicolons are important.
+
+The compilation process generates object files before linking them together into
+an executable program.  Boost.Build can be told to put these temporary object
+files in any desired directory by changing the \c project line, for instance,
+to:
+\code{.jam}
+project site-config : build-dir /tmp/b2 ;
+\endcode
+which would put them in \c /tmp/b2.
+As a more sophisticated example, we could put them into
+<code>/tmp/$USER/b2</code>, where <code>$USER</code> is the current user name,
+with:
+\code{.jam}
+import os ;
+import path ;
+local build-dir = [ path.join /tmp [ os.environ USER ] b2 ] ;
+project site-config : build-dir $(build-dir) ;
+\endcode
+
+
+\subsection buildconfig_b2user User-Specific Configuration (optional)
+
+As an alternative to editing \c site-config.jam, the customizations explained in
+\ref buildconfig_b2site can be applied to the \c user-config.jam file, which
+Boost.Build attempts to find at the root of the user's home directory.
+In that case, the library aliases in the \c project-config.jam file, which can
+be found at the Lattice Builder project's root directory, must be updated by
+replacing every occurrence of \c site-config with \c user-config.
+For example,
+\code{.jam}
+alias fftw3 : /site-config//fftw3 ;
+\endcode
+should be replaced with
+\code{.jam}
+alias fftw3 : /user-config//fftw3 ;
+\endcode
+
+
+\subsection buildconfig_b2proj Project-Specific Configuration
+
+Finally, the appropriate compiler flags should set in \c project-config.jam to
+support the C++11 standard:
+\code{.jam}
+project latsoft : requirements <cxxflags>FLAGS ;
+\endcode
+where \c FLAGS is the placeholder for those flags.  For
+example, with GCC 4.7, this line would be:
+\code{.jam}
+project latsoft : requirements <cxxflags>"-std=c++11" ;
+\endcode
+
+
+
+\section buildcompile Compiling Lattice Builder
+
+Change the current directory to the root directory of the package, which
+contains the \c tools and \c latbuilder subdirectories.
+First, the \c tcode utility, which produces C++ header files out of TeX code,
+must be built with:
+\code{.sh}
+b2 /tools
+\endcode
+Then, if everything is configured correctly, the following command will build the
+Lattice Builder library and command-line tool:
+\code{.sh}
+b2 /latbuilder//install --prefix=/installation/path
+\endcode
+with \c /installation/path replaced with the directory into which Lattice
+Builder should be installed.
+To check that the program installed correctly, try:
+\code{.sh}
+/installation/path/latbuilder --version
+\endcode
+Help on usage can be obtained by replacing the \c --version switch with the \c
+--help switch.
+
+To build using multiple processes in parallel, the \c -j switch with the number
+of processes as its argument can be added to the \c b2 command.
+For example:
+\code{.sh}
+b2 -j4 /latbuilder//install --prefix=/installation/path
+\endcode
+would build Lattice Builder using 4 different threads in parallel.
+
+
+\section buildlink Linking Software with Lattice Builder
+
+An example Jamfile and Makefile to build a project that uses the Lattice Builder
+application programming interface (API) can be found under
+\c /installation/path/share/doc/examples/myproject.
+
+A lot of example code using the Lattice Builder API can be found under the \c
+latbuilder/examples directory of the source package and in its subdirectories.
+
+\remark Tip for interpreting compiler errors.  Compiler error messages can be
+very verbose when the pertain to the usage of C++ templates.
+Compiler messages can be made easier to read by adding an empty line after each
+message, e.g., by piping the original messages through <code>sed 'a\ '</code>,
+then by using a text search function to locate the "error:" string.
+
+
+*/
+vim: ft=doxygen spelllang=en spell

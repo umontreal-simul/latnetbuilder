@@ -1,0 +1,34 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+project site-config ;
+
+using gcc ;
+
+# nothing special to do to use the boost header-only libraries
+alias boost ; 								
+
+# declare libboost_program_options, libboost_system and libfftw3 with standard
+# linking options
+lib boost_program_options boost_system fftw3 ;
+
+# declare the boost_chrono library as dependent upon libboost_system and librt,
+# and as requiring linkage with libboost_chrono (whence the <name> feature)
+lib boost_chrono : boost_system rt : <name>boost_chrono ;
+
+# always link the shared version of librt
+lib rt : : <link>shared ;

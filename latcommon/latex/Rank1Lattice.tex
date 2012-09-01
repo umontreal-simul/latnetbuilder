@@ -1,0 +1,118 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {Rank1Lattice}
+\hpierre{Il faut pouvoir choisir chaque $a_i$ ind\'ependamment}
+
+This class implements a general rank 1 lattice basis. For the values
+ $a_1, a_2, \ldots, a_{d}$ given, the $d$-dimensional lattice basis is formed
+ as:
+\[
+\mathbf{b_1} = (a_1, a_2, \ldots, a_{d}),\quad \mathbf{b_2} = (0, n, 0, \ldots, 0),\quad  \ldots, \quad \mathbf{b_d} = (0, \ldots, 0, n)
+\]
+Without loss of generality, one may choose $a_1 = 1$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip\hrule
+\code\hide
+#ifndef RANK1LATTICE_H
+#define RANK1LATTICE_H
+\endhide
+#include "latcommon/Types.h"
+#include "latcommon/Const.h"
+#include "latcommon/IntLattice.h"
+
+
+namespace LatCommon {
+
+class Rank1Lattice: public IntLattice {
+public:
+
+   Rank1Lattice (const MScal & n, const MVect & a, int d,
+                 NormType norm = L2NORM);
+\endcode
+\tabb
+Constructor. $d$ represents the number of multipliers in the array \texttt{a}.
+\endtabb
+\code
+
+   Rank1Lattice (const Rank1Lattice & Lat);
+\endcode
+\tabb
+  Copy constructor.
+\endtabb
+\code
+
+   Rank1Lattice & operator= (const Rank1Lattice & Lat);
+\endcode
+\tabb
+ Assigns \texttt{Lat} to this object.
+\endtabb
+\code
+
+   ~Rank1Lattice();
+\endcode
+\tabb
+Destructor.
+\endtabb
+\code
+
+   std::string toStringCoef() const;
+\endcode
+\tabb
+Returns the vector of multipliers $a$ as a string.
+\endtabb
+\code
+
+   void buildBasis (int d);
+\endcode
+\tabb
+Builds the basis in dimension $d$.
+\endtabb
+\code
+
+   void incDim ();
+\endcode
+\tabb
+Increases the dimension by 1.
+\endtabb
+\code
+
+
+protected:
+
+   void init();
+\endcode
+\tabb
+Initializes the rank 1 lattice.
+\endtabb
+\code
+
+   MVect m_a;
+\endcode
+\tabb
+The multipliers of the rank 1 lattice rule.
+\endtabb
+\code
+};
+
+}
+\hide
+#endif
+\endhide
+\endcode

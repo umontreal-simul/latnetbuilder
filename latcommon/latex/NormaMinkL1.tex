@@ -1,0 +1,87 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {NormaMinkL1}
+
+ This class implements theoretical bounds on the length of the shortest
+ nonzero vector in a lattice, based on the densest sphere packing in 
+ space.  The length of vectors is computed using the
+ ${\cal L}_1$ norm. Here,  the length of the shortest nonzero vector
+gives the minimal number of hyperplanes that cover all the points of
+the lattice. The following upper bound in this case was established by 
+Marsaglia \cite{rMAR68a} by  applying the general convex body theorem of
+ Minkowski:
+\[ 
+  \ell_t^* = (t! m^k)^{1/t} = \gamma_t m^{k/t},
+\]
+ for  lattices of rank $k$, containing $m$ points per unit volume,
+ in dimension $t$.
+ The lattice constants are thus $\gamma_t = (t!)^{1/t}$.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip\hrule
+\code \hide
+/* NormaMinkL1.h for ISO C++ */
+#ifndef NORMAMINKL1_H
+#define NORMAMINKL1_H
+\endhide
+#include "latcommon/Normalizer.h"
+#include <stdexcept>
+
+
+namespace LatCommon {
+
+class NormaMinkL1 : public Normalizer {
+public:
+
+   NormaMinkL1 (const MScal & m, int k, int t, double beta = 1);
+\endcode
+ \tabb Constructor for the Marsaglia's bounds with the ${\cal L}_1$ norm. The 
+   lattices are those of rank $k$, with $m$ points per unit volume, in all
+   dimensions  $\le t$. The bias factor \texttt{beta} $= \beta$ gives more weight
+   to some of the dimensions. Restriction: $t \le 48$.
+  \endtabb
+\code
+
+   double getGamma (int j) const throw (std::out_of_range);
+\endcode
+ \tabb 
+   Returns the value of the lattice constant $\gamma_j$ in dimension  $j$.
+ \endtabb
+\ifdetailed
+\code
+
+
+private:
+
+   static const double m_gamma[1 + Normalizer::MAX_DIM];
+\endcode
+ \tabb 
+  Lattice constants $\gamma_j$ for Marsaglia's bounds in each
+  dimension $j$.
+  \endtabb
+\fi
+\code
+
+};
+
+}
+\hide
+#endif
+\endhide
+\endcode

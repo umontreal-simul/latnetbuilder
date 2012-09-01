@@ -1,0 +1,355 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {IntLattice}
+
+This class offers tools to manipulate lattice bases.
+Each lattice is represented by a basis $V$ and its dual $W$.
+It is sometimes possible, as in the case of lattices associated with
+LCGs (linear congruential generators) or MRGs (multiple recursive generators),
+ to multiply a lattice (and its dual) by a constant factor $m$
+in such a way that they are included in $\mathbb{Z}^t$, allowing
+exact representation of basis vector coordinates.
+The duality relation will then read $V_i\cdot W_j = m\delta_{ij}$
+for some integer constant {$m$}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip
+\hrule
+\code\hide
+#ifndef INTLATTICE_H
+#define INTLATTICE_H
+\endhide
+#include "latcommon/Types.h"
+#include "latcommon/Const.h"
+#include "latcommon/Base.h"
+#include "latcommon/Normalizer.h"
+#include "latcommon/CoordinateSets.h"
+#include <string>
+
+
+namespace LatCommon {
+
+class IntLattice {
+public:
+
+   IntLattice (const MScal & m, int k, int maxDim, NormType norm = L2NORM);
+\endcode
+\tabb
+  Constructor. The modulus is initialized to $m$, the maximal dimension of the
+  bases is set to \texttt{maxDim}, and the order is set to $k$.
+\endtabb
+\code
+
+   IntLattice (const IntLattice & Lat);
+\endcode
+\tabb
+  Copy constructor. The maximal dimension of the
+  created basis is set equal to \texttt{Lat}'s current dimension.
+\endtabb
+\code
+
+   IntLattice & operator= (const IntLattice & Lat);
+\endcode
+\tabb
+ Assigns \texttt{Lat} to this object. The maximal dimension of this
+  basis is set equal to \texttt{Lat}'s current dimension.
+\endtabb
+\code
+
+   virtual ~IntLattice();
+\endcode
+\tabb
+Destructor.
+\endtabb
+\code
+
+   void copy (const IntLattice & lattice);
+\endcode
+\tabb
+Same as assignment operator above.
+\endtabb
+\code
+
+   int getDim() const \hide { return m_v.getDim(); } \endhide
+\endcode
+\tabb
+Returns actual dimension \texttt{Dim}.
+\endtabb
+\code
+
+   void setDim (int d);
+\endcode
+\tabb
+Sets actual dimension to $d$.
+\endtabb
+\code
+
+   int getMaxDim() const \hide { return m_v.getMaxDim(); } \endhide
+\endcode
+\tabb
+Returns the maximal dimension of the lattice.
+\endtabb
+\code
+
+   virtual void incDim();
+\endcode
+\tabb
+Increases dimension \texttt{Dim} by 1.
+\endtabb
+\code
+
+   virtual void buildBasis (int d);
+\endcode
+\tabb
+Builds the basis for the lattice in dimension \texttt{d}.
+\endtabb
+\code
+
+   NormType getNorm() const \hide { return m_v.getNorm(); } \endhide
+\endcode
+\tabb
+Returns the norm used by the lattice.
+\endtabb
+\code
+
+   MScal getM() const \hide { return m_m; } \endhide
+\endcode
+\tabb
+  Returns the value of the modulus $m$ of the recurrence (the number of points
+  of the lattice).
+\endtabb
+\code
+
+   NScal getM2() const \hide { return m_m2; } \endhide
+\endcode
+\tabb
+Returns the square number of points in the lattice.
+\endtabb
+\code
+
+   int getOrder() const \hide { return m_order; } \endhide
+\endcode
+\tabb
+Returns the order.
+\endtabb
+\code
+
+   Normalizer * getNormalizer (NormaType norma, int alpha);
+\endcode
+\tabb
+Creates and returns the normalizer corresponding to criterion \texttt{norma}.
+In the case of the $P_\alpha$ test, the argument \texttt{alpha} = $\alpha$.
+In all other cases, it is unused.
+\endtabb
+\code
+
+   virtual std::string toStringCoef() const;
+\endcode
+\tabb
+Returns the vector of multipliers (or coefficients) $A$ as a string.
+\endtabb
+\code
+
+   Base & getPrimalBasis() \hide { return m_v; } \endhide
+\endcode
+\tabb
+Returns the primal basis \texttt{V}.
+\endtabb
+\code
+
+   Base & getDualBasis() \hide { return m_w; } \endhide
+\endcode
+\tabb
+Returns the dual basis \texttt{W}.
+\endtabb
+\code
+
+   void calcLgVolDual2 (bool dualF);
+\endcode
+\tabb Computes the logarithm of the normalization factor
+ \texttt{m\_lgVolDual2} for the merit  in all dimensions %$\le $ \texttt{maxDim}
+ for the dual lattice if \texttt{dualF} is \texttt{true}, and for the primal
+ lattice if \texttt{dualF} is \texttt{false}.
+\endtabb
+\code
+
+   double getLgVolDual2 (int i) const \hide { return m_lgVolDual2[i]; } \endhide
+\endcode
+\tabb
+\endtabb
+\code
+
+   bool getXX (int i) const \hide { return m_xx[i]; } \endhide
+\endcode
+\tabb
+\endtabb
+\code
+
+   void setXX (bool val, int i) \hide { m_xx[i] = val; } \endhide
+\endcode
+\tabb
+\endtabb
+\code
+
+   void sort (int d);
+\endcode
+\tabb
+Sorts the basis vectors with indices from $d+1$ to the dimension of the basis
+   by increasing length. The dual vectors are permuted accordingly.
+   Assumes that the lengths of the corresponding basis vectors
+% \texttt{VV} and \texttt{WW}
+   are up to date.
+\endtabb
+\code
+
+   void permute (int i, int j);
+\endcode
+\tabb
+Exchanges vectors $i$ and $j$ in the basis and in the dual basis.
+\endtabb
+\code
+
+   void write (const char *filename) const;
+\endcode
+\tabb
+Writes this basis in file named \texttt{filename}.
+\endtabb
+\code
+
+   void trace (char* msg);
+\endcode
+\tabb
+For debugging purposes.
+\endtabb
+\code
+
+   void write (int flag);
+\endcode
+\tabb
+Writes this basis on standard output. If \texttt{flag} $ > 0$, the norm of
+the basis vectors will be recomputed; otherwise not.
+\endtabb
+\code
+
+   void dualize();
+\endcode
+\tabb
+Exchanges basis $V$ and its dual $W$.
+\endtabb
+\code
+
+   bool checkDuality();
+\endcode
+\tabb
+   Checks that the bases satisfy the duality relation
+   $V[i]\cdot W[j] = m\,\delta_{ij}$. If so, returns \texttt{true}, otherwise
+   returns \texttt{false}.
+\endtabb
+\code
+
+   bool baseEquivalence (IntLattice & Lat);
+\endcode
+\tabb
+   Checks that \texttt{Lat}'s basis and this basis are equivalent.
+   If so, returns \texttt{true}, otherwise returns \texttt{false}.
+\endtabb
+\code
+
+   void buildProjection (IntLattice* lattice, const Coordinates & proj);
+\endcode
+\tabb
+Builds the basis (and dual basis) of the projection \texttt{proj} for this
+lattice.  The result is placed in the \texttt{lattice} lattice. The basis is
+triangularized to form a proper basis.
+\endtabb
+\code
+
+
+protected:
+
+   void init();
+\endcode
+\tabb
+\endtabb
+\code
+
+   void kill();
+\endcode
+\tabb
+Cleans and releases all the memory allocated for this lattice.
+\endtabb
+\code
+
+   int m_order;
+\endcode
+\tabb
+The order of the basis.
+\endtabb
+\code
+
+   MScal m_m;
+   NScal m_m2;
+\endcode
+\tabb
+Number of points per unit volume (\texttt{m\_m}) and its square (\texttt{m\_m2}).
+\endtabb
+\code
+
+   double m_lgm2;
+\endcode
+\tabb
+  The logarithm $\log_2 (m^2)$.
+\endtabb
+\code
+
+   Base m_v;
+\endcode
+\tabb
+Primal basis of the lattice.
+\endtabb
+\code
+
+   Base m_w;
+\endcode
+\tabb
+Dual basis of the lattice.
+\endtabb
+\code
+
+   double *m_lgVolDual2;
+\endcode
+\tabb
+\endtabb
+\code
+
+   bool *m_xx;
+   MScal m_t1, m_t2, m_t3;
+   BMat m_vSI;
+   Base m_vTemp;
+\endcode
+\tabb
+Work variables.
+\endtabb
+\code
+};
+
+}
+\hide
+#endif
+\endhide
+\endcode

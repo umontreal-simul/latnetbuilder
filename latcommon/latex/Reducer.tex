@@ -1,0 +1,422 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {Reducer}
+
+For a given lattice, this class implements methods to reduce its basis in the
+sense of Minkowski and to find the shortest non-zero vector of the lattice
+using pre-reductions and a branch-and-bound (BB) algorithm \cite{rLEC97c}.
+It also implements the method of  Lenstra, Lenstra and Lovasz (LLL) \cite{mLEN82a}
+as well as  the method of Dieter \cite{rDIE75a} to reduce a lattice basis.
+The reduction algorithms in this class use both the primal and the dual lattices,
+so both lattices must be defined.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip\hrule
+\code\hide
+#ifndef REDUCER_H
+#define REDUCER_H
+\endhide 
+#include "latcommon/Types.h"
+#include "latcommon/Const.h"
+#include "latcommon/UtilLC.h"
+#include "latcommon/Base.h"
+#include "latcommon/IntLattice.h"
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+
+namespace LatCommon {
+
+class Reducer {
+public:
+
+   static const long SHORT_DIET = 1000;
+\endcode
+\tabb
+   Whenever the number of nodes in the branch-and-bound tree exceeds
+  \texttt{SHORT\_DIET} in the method \texttt{ShortestVector},
+   \texttt{PreRedDieterSV}
+   is automatically set to \texttt{true} for the next call;
+   otherwise it is set to \texttt{false}.
+%   The default value is 1000.
+\endtabb
+\code
+
+   static const long SHORT_LLL = 1000;
+\endcode
+\tabb
+   Whenever the number of nodes in the branch-and-bound tree exceeds
+   \texttt{SHORT\_LLL} in the  method \texttt{ShortestVector},
+   \texttt{PreRedLLLSV} is automatically set to \texttt{true} for the next call;
+   otherwise it is set to \texttt{false}.
+%   The default value is 1000.
+\endtabb
+\code
+
+   static const long MINK_LLL = 500000;
+\endcode
+\tabb
+   Whenever the number of nodes in the branch-and-bound tree exceeds
+  \texttt{MINK\_LLL} in the  method \texttt{reduct\-Minkowski},
+   \texttt{PreRedLLLRM} is automatically set to \texttt{true} for the
+   next call; otherwise it is set to \texttt{false}.
+\endtabb
+\code
+
+   static const long MAX_PRE_RED = 1000000;
+\endcode
+\tabb
+   Maximum number of transformations in the method \texttt{PreRedDieter}.
+   After \texttt{MAX\_PRE\_RED} successful transformations have been performed,
+   the prereduction is stopped.
+\endtabb
+\code
+
+   static long maxNodesBB;
+\endcode
+\tabb
+   The maximum number of nodes % that we are ready to accept
+   in the branch-and-bound tree when calling \texttt{ShortestVector}
+   or \texttt{reductMinkowski}.  When this number is exceeded, the method
+   aborts and returns \texttt{false}.
+\endtabb
+\code
+
+   static bool PreRedDieterSV;
+   static bool PreRedLLLSV;
+   static bool PreRedLLLRM;
+\endcode
+\tabb
+These boolean variables indicate which type of pre-reduction
+   is to be performed for \texttt{ShortestVector} (SV) and for
+   \texttt{reductMinkowski} (RM).
+   \texttt{Dieter} means the pairwise pre-reduction as in the method
+   \texttt{PreRedDieter}.
+   \texttt{LLL} means the LLL reduction of Lenstra, Lenstra, and Lov\'asz.
+   The variable \texttt{PreRedDieterSV} is originally set to \texttt{true}
+   and the two others are originally set to \texttt{false}.
+   These variables are reset automatically depending on the thresholds
+   \texttt{MinkLLL, ShortDiet, ShortLLL} as explained above.
+\endtabb
+\code
+
+   Reducer (IntLattice & lat);
+\endcode
+\tabb
+Constructor. Initializes the reducer to work on lattice \texttt{lat}.
+\endtabb
+\code
+
+   Reducer (const Reducer & red);
+\endcode
+\tabb
+Copy constructor.
+\endtabb
+\code
+
+   ~Reducer ();
+\endcode
+\tabb
+Destructor.
+\endtabb
+\code
+
+   Reducer & operator= (const Reducer & red);
+\endcode
+\tabb
+Assignment operator.
+\endtabb
+\code
+
+   void copy (const Reducer & red);
+\endcode
+\tabb
+Copies the reducer \texttt{red} into this object. \richard{Encore utile?}
+\endtabb
+\code
+
+   void transformStage3 (std::vector<long> & z, int & k);
+\endcode
+\tabb
+  Method used in \texttt{reductMinkowski} to perform a transformation
+  of stage 3 described in \cite{rAFF85a}. Also used in \texttt{ShortestVector}.
+  Assumes that $\sum_{i=1}^t z_i V_i$ is a short vector that will enter
+  the basis.  Tries to reduce some vectors by looking for indices $i < j$
+  such that $|z_j| > 1$ and $q=\lfloor z_i/z_j\rfloor \not=0$,
+  and adding $q V_i$ to $V_j$ when this happens.
+  Returns in $k$ the last index $j$ such that $|z_j|=1$.
+\endtabb
+\code
+
+   bool calculCholeski (RVect & DC2, RMat & C0);
+\endcode
+\tabb Finds a Choleski decomposition of the basis. Returns in \texttt{C0}
+   the elements of the upper triangular matrix of the Choleski decomposition
+   that are above the diagonal. Returns in \texttt{DC2} the
+  squared elements of the diagonal. 
+\endtabb
+\code
+
+   bool tryZ  (int j, int i, int Stage, bool & smaller, Base & WTemp);
+\endcode
+\tabb Tries to find shorter vectors in \texttt{reductMinkowski}.
+\endtabb
+\code
+
+   bool tryZ0 (int j, bool & smaller);
+\endcode
+\tabb Tries to find a shorter vector in \texttt{shortestVector}.
+\endtabb
+\code
+
+   bool shortestVector (NormType norm);
+\endcode
+\tabb
+  Computes the shortest non-zero vector of this lattice with respect to norm
+  \texttt{norm} using branch-and-bound and the algorithm described in
+   \cite{rLEC97c}.
+  The \texttt{Norm} member of this object  will be changed to \texttt{norm}.
+   If \texttt{MaxNodesBB} is exceeded during {one} of the branch-and-bounds,
+   the method aborts and returns \texttt{false}.
+   Otherwise, it returns \texttt{true}. Uses the pre-reduction algorithms
+   of Dieter and of Lenstra-Lenstra-Lovasz.
+\endtabb
+\code
+
+   bool shortestVectorDieter (NormType norm);
+\endcode
+\tabb
+Similar to \texttt{ShortestVector} but uses the algorithm of
+  Dieter \cite{rDIE75a,rKNU98a}.
+\endtabb
+\code
+
+   bool redBB (int i, int d, int Stage, bool & smaller);
+\endcode
+\tabb
+  Tries to shorten the vectors of the primal basis using branch-and-bound,
+  in \texttt{reductMinkowski}.
+\endtabb
+\code
+
+   bool redBB0 (NormType norm);
+\endcode
+\tabb  Tries to shorten the smallest vector of the primal basis 
+  using branch-and-bound, in \texttt{ShortestVector}.
+\endtabb
+\code
+
+   void preRedDieter (int d);
+\endcode
+\tabb
+Performs the reductions of the preceding two methods
+  using cyclically all values of $i$ (only for $i > d$ in the latter case)
+  and stops after either \texttt{MaxPreRed} successful transformations have been
+  achieved or no further reduction is possible.
+  Always use the Euclidean norm.
+\endtabb
+\code
+
+   bool redDieter (NormType norm);
+\endcode
+\tabb
+Finds the shortest non-zero vector using norm \texttt{norm}.
+%%  Does not modify the basis.
+%% Stops and returns \texttt{false} if not finished after examining possib.
+ Returns \texttt{true} upon success. %%, and returns length in Lmin.
+ Uses the algorithm of Dieter \cite{rDIE75a} given in Knuth \cite{rKNU98a}.
+\endtabb
+\code
+
+   void redLLL (double fact, long maxcpt, int dim);
+\endcode
+\tabb
+Performs a LLL (Lenstra-Lenstra-Lovasz) basis reduction up to dimension
+   \texttt{dim} with coefficient \texttt{fact}, which must be smaller than 1.
+   If \texttt{fact} is closer to 1, the basis will be
+   (typically) ``more reduced'', but that will require more work.
+   The reduction algorithm is applied until \texttt{maxcpt} successful
+   transformations have been done. Always uses the Euclidean norm.
+\endtabb
+\code
+
+   bool reductMinkowski (int d);
+\endcode
+\tabb
+Reduces the current basis to a Minkowski reduced basis
+    with respect to the Euclidean norm, assuming
+   that the first $d$ vectors are already reduced and sorted.
+   If \texttt{MaxNodesBB} is exceeded during {one} of the branch-and-bound step,
+   the method aborts and returns \texttt{false}.
+   Otherwise it returns \texttt{true}, the basis is reduced and
+    sorted by vector lengths (the shortest vector is \texttt{V[1]} and
+   the longest is \texttt{V[Dim]}).
+%   This method does not care about numerical imprecision due to the
+%    (64-bit) floating-point representation.
+%    In this sense, the results are not 100\% reliable.
+\endtabb
+\code
+
+   void pairwiseRedPrimal (int i, int d);
+\endcode
+\tabb
+Performs pairwise reductions.
+  This method tries to reduce each basis vector with
+  index larger than $d$ and distinct from $i$ by adding to it a
+  multiple of the $i$-th vector.
+  Always uses the Euclidean norm.
+\endtabb
+\code
+
+   void pairwiseRedDual (int i);
+\endcode
+\tabb
+Performs pairwise reductions, trying to reduce every other vector of
+  the {\em dual\/} basis by adding multiples of the $i$-th vector.
+  That may change the $i$-th vector in the primal basis.
+  Each such dual reduction is actually performed only if that does not
+  increase the length of vector $i$ in the primal basis.
+  Always uses the Euclidean norm.
+\endtabb
+\code
+
+   NScal getMinLength () \hide {
+      if (m_lat->getNorm() == L2NORM)
+         return sqrt(m_lMin2);
+      else return m_lMin; } \endhide
+\endcode
+\tabb
+Returns the length of the shortest basis vector in the lattice.
+\endtabb
+\code
+
+   void setBoundL2 (const NVect & V, int dim1, int dim2);
+\endcode
+\tabb
+  Sets the lower bound on the square length of the shortest vector in
+  dimension $i$ to $V[i]$,  for $i$ going from \texttt{dim1} to \texttt{dim2}.
+\endtabb
+\code
+
+   void trace (char *mess);
+\endcode
+\tabb
+Debug function that print the primal and dual bases.
+\endtabb
+\ifdetailed
+\code
+
+
+private:
+
+   IntLattice* m_lat;
+\endcode
+\tabb
+Lattice on which the reduction will be performed.
+\endtabb
+\code
+
+   void permuteGramVD (int i, int j, int n);
+\endcode
+\tabb
+Permutes the $i^{th}$ and the $j^{th}$ line, and the $i^{th}$ and the $j^{th}$ column
+of the scalar product's matrix.
+\endtabb
+\code
+
+   void calculCholeski2LLL (int n, int j);
+\endcode
+\tabb
+Recalculates the first $n$ entries of the $j^{th}$ column of the Choleski's matrix
+of order 2.
+\endtabb
+\code
+
+   void calculCholeski2Ele (int i, int j);
+\endcode
+\tabb
+Recalculates the entry ($i$, $j$) of the Choleski's matrix of order 2.
+\endtabb
+\code
+
+   void miseAJourGramVD (int j);
+\endcode
+\tabb
+\endtabb
+\code
+
+   void calculGramVD ();
+\endcode
+\tabb
+\endtabb
+\code
+
+   void reductionFaible (int i, int j);
+\endcode
+\tabb
+\endtabb
+\code
+
+   NVect m_BoundL2;
+\endcode
+\tabb  
+ Lower bound on the length squared of the shortest vector in each dimension.
+ If any vector of the lattice is shorter than this bound, we stop the reduction
+immediately and reject this lattice since its shortest vector will be
+even smaller.
+\endtabb
+\code
+
+   BScal m_bs;
+   BVect m_bv;            // Saves shorter vector in primal basis
+   BVect m_bw;            // Saves shorter vector in dual basis
+
+   NScal m_lMin, m_lMin2;
+   NScal m_ns;
+   NVect m_nv; 
+
+   RScal m_rs;
+   RVect m_zLR, m_n2, m_dc2;
+   RMat m_c0, m_c2, m_cho2, m_gramVD;
+   int *m_IC;             // Indices in Cholesky 
+   
+   std::vector<long> m_zLI;
+   std::vector<long> m_zShort;
+   long m_countNodes;     // Counts number of nodes in the branch-and-bound tree
+   long m_countDieter;    // Counts number of attempts since last successful
+                          // Dieter transformation
+   long m_cpt;            // Counts number of successes in pre-reduction
+                          // transformations
+   bool m_foundZero;      // = true -> the zero vector has been found
+// long m_BoundL2Count;   // Number of cases for which the reduction stops
+                          // because any vector is shorter than L2 Bound.
+\endcode
+\tabb
+  Work variables.
+\endtabb
+\fi
+\code
+};
+
+}
+
+\hide
+#endif // REDUCER_H
+\endhide
+\endcode

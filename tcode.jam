@@ -1,0 +1,62 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+import feature ;
+import toolset ;
+import type ;
+import generators ;
+import errors ;
+import path ;
+import regex ;
+
+feature.feature tcode : : free dependency ;
+
+toolset.flags tcode TCODE <tcode> ;
+
+type.register TEX : tex ;
+generators.register-standard tcode.tex2code : TEX : H ;
+
+local tcode-binary ;
+
+rule tex2code ( targets * : sources * : properties * )
+{
+    local tcode-target = [ feature.get-values <tcode> : $(properties) ] ;
+    tcode-target = $(tcode-target[0]) ; # use only the first value
+    if ! $(tcode-target)
+    {
+        errors.user-error "specify the location of the tcode binary with `tcode=...'" ;
+    }
+    DEPENDS $(tcode-target) ;
+    local tcode-path = [ $(tcode-target).path ] ;
+    local tcode-name = [ $(tcode-target).name ] ;
+    if [ regex.match "^/(.*)$" : $(tcode-name) ]
+    {
+        tcode-binary = $(tcode-name) ;
+    }
+    else
+    {
+        tcode-binary = [ path.join [ $(tcode-target).path ] [ $(tcode-target).name ] ] ;
+    }
+    tcode-binary = [ path.native $(tcode-binary) ] ;
+}
+
+actions tex2code bind tcode-binary
+{
+    $(tcode-binary) $(>) $(<)
+}
+
+# vim: ft=jam

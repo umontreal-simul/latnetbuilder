@@ -1,0 +1,560 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {UtilLM}
+
+This module describes various useful functions as well as
+functions interfacing with NTL.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip\hrule
+\code\hide
+#ifndef UTILLM_H
+#define UTILLM_H
+\endhide
+#include <cstdlib>
+#include <cmath>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+#include "NTL/tools.h"
+#include "NTL/ZZ.h"
+#include "latcommon/vec_lzz.h"
+#include "latcommon/Types.h"
+#include "latcommon/Const.h"
+
+
+
+namespace LatMRG {
+
+const double MAX_LONG_DOUBLE = 9007199254740992.0;
+\endcode
+\tab
+Maximum integer that can be represented exactly as a
+  \texttt{double}: $2^{53}$.
+\endtab
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\guisec{NTL compatibility utilities}
+\code
+
+inline long IsOdd (const long & x) \hide {
+    return x & 1;
+}\endhide
+\endcode
+\tab
+Returns 1 if $x$ is odd, and 0 otherwise.
+\endtab
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\guisec{Mathematical functions}
+\code
+
+inline long power (long p, long i) \hide
+{
+   return NTL::power_long (p, i);
+}
+\endhide
+\endcode
+\tab
+Returns $p^i$.
+\endtab
+\code
+
+
+inline void power2 (long & z, long i) \hide
+{
+   z = NTL::power_long (2, i);
+}
+\endhide
+\endcode
+\tab
+Sets $z = 2^i$.
+\endtab
+\code
+
+
+inline double mysqrt (double x) \hide
+{
+    if (x < 0.0)
+       return -1.0;
+    return sqrt (x);
+}
+\endhide
+\endcode
+\tab
+Returns $\sqrt{x}$ for $x\ge 0$, and $-1$ for $x < 0$.
+\endtab
+\code
+
+
+inline double SqrRoot (double x) \hide
+{
+    return sqrt (x);
+}
+\endhide
+\endcode
+\tab
+Returns $\sqrt{x}$. \richard{Cette fonction est-elle encore utilis\'ee?}
+\endtab
+\code
+
+
+template <typename T>
+inline double Log2 (const T & x)\hide
+{
+   return log (x) / 0.6931471805599453094;
+}
+\endhide
+\endcode
+\tab
+Logarithm of $x$ in base 2.
+\endtab
+\code
+
+
+inline double Log2 (long x)\hide
+{
+   return log ((double)x) / 0.6931471805599453094;
+}
+\endhide
+\endcode
+\tab
+Logarithm of $x$ in base 2.
+\endtab
+\code
+
+
+template <typename T>
+inline long sign (const T & x)\hide
+{
+    if (x > 0) return 1; else if (x < 0) return -1; else return 0;
+}
+\endhide
+\endcode
+\tab
+Returns 1, 0 or $-1$ depending on whether $x> 0$, $x= 0$ or $x< 0$
+  respectively.
+\endtab
+
+
+% \newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\guisec{Division and remainder}
+
+For negative operands, the \texttt{/} and \texttt{\%} operators do not give the
+same results for NTL large integers \texttt{ZZ} and for primitive types
+\texttt{int} and \texttt{long}. The negative quotient differs by 1 and the
+remainder also differs.
+Thus the following small \texttt{inline} functions for division and remainder.
+\richard{Pour certaines fonctions, les r\'esultats sont mis dans les premiers
+arguments de la fonction pour \^etre compatible avec NTL; pour d'autres, 
+ils sont mis dans les derniers arguments pour \^etre compatible avec notre
+ancienne
+version de \latmrg{} en Modula-2.
+Plut\^ot d\'etestable. Je crois qu'il faudra un jour r\'earranger les arguments
+des fonctions pour qu'elles suivent toutes la m\^eme convention que NTL.}
+\code
+
+
+inline void div (long & a, const long & b, const long & d)\hide
+{
+    a = b/d;
+}
+\endhide
+\endcode
+\tab
+Integer division: $a = b/d$.
+\endtab
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\guisec{Vectors}
+
+\code
+
+template <typename Real>
+inline void CreateVect (Real* & A, int d)\hide
+{
+    A = new Real[1 + d];
+    for (int i = 0; i <= d; i++)
+        A[i] = 0;
+}
+\endhide
+\endcode
+\tab
+Allocates memory for the vector $A$ of dimensions
+   $d+1$ and initializes its elements to 0.
+\endtab
+\code
+
+
+template <typename Real>
+inline void DeleteVect (Real* & A)\hide
+{
+    delete[] A;
+//    A = 0;
+}
+\endhide
+\endcode
+\tab
+Frees the memory used by the vector $A$.
+\endtab
+\code
+
+
+template <typename Vect>
+inline void CreateVect (Vect & A, int d)\hide
+{
+    A.SetLength (1 + d);
+    // aaa clear (A);
+}
+\endhide
+\endcode
+\tab
+Creates the vector $A$ of dimensions $d+1$
+   and initializes its elements to 0.
+\endtab
+\code
+
+
+template <typename Vect>
+inline void DeleteVect (Vect & A)\hide
+{
+    A.kill ();
+}
+\endhide
+\endcode
+\tab
+Frees the memory used by the vector $A$.
+\endtab
+\code
+
+
+template <typename Real>
+inline void SetZero (Real* A, int d)\hide
+{
+    for (int i = 0; i <= d; i++)
+        A[i] = 0;
+}
+\endhide
+\endcode
+\tab
+Sets components $[0..d]$ of $A$ to 0.
+\endtab
+\code
+
+
+template <typename Real>
+inline void SetValue (Real* A, int d, const Real & x)\hide
+{
+    for (int i = 0; i <= d; i++)
+        A[i] = x;
+}
+\endhide
+\endcode
+\tab
+Sets all components $[0..d]$ of $A$ to the value $x$.
+\endtab
+\code
+
+
+inline void Invert (const MVect & A, MVect & B, int n)\hide
+{
+    conv(B[n], 1);
+    for(int i = 0; i < n; i++){
+       B[i] = -A[n - i];
+    }
+}
+\endhide
+\endcode
+\tab
+Transforms the polynomial $A_0 + A_1x^1 + \cdots + A_nx^n$ into
+ $x^n - A_1x^{n-1} - \cdots - A_n$. The result is put in $B$.
+\endtab
+\code
+
+
+template <typename Vect>
+inline void CopyVect (const Vect & A, Vect & B, int n)\hide
+{
+    for (int k = 0; k <= n; k++)  B[k] = A[k];
+}
+\endhide
+\endcode
+\tab
+Copies vector $A$ into vector $B$ using components $[0..n]$.
+\endtab
+\code
+
+
+template <typename Xcal, typename Scal>
+inline void ModifVect (Xcal *A, const Xcal *B, Scal x, int n)\hide
+{
+    Xcal a;
+    conv (a, x);
+    for (int i = 1; i <= n; i++)
+        A[i] += B[i]*a;
+}
+\endhide
+\endcode
+\tab
+Adds vector $B$ multiplied by $x$ to vector $A$ using components
+$[1..n]$, and puts the result in $A$.
+\endtab
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\guisec{Matrices}
+
+\code
+
+template <typename Real>
+inline void CreateMatr (Real** & A, int d)\hide
+{
+    A = new Real *[1 + d];
+    for (int i = 0; i <= d; i++) {
+        A[i] = new Real[1 + d];
+        for (int j = 0; j <= d; j++)
+            A[i][j] = 0; }
+}
+\endhide
+\endcode
+\tab
+Allocates memory for the square matrix $A$ of dimensions
+   $(d+1)\times(d+1)$. Initializes its elements to 0.
+\endtab
+\code
+
+
+template <typename Real>
+inline void DeleteMatr (Real** & A, int d)\hide
+{
+    for (int i = d; i >= 0; --i)
+        delete[] A[i];
+    delete[] A;
+ //   A = 0;
+}
+\endhide
+\endcode
+\tab
+Frees the memory used by the  $(d+1)\times(d+1)$ matrix $A$.
+\endtab
+\code
+
+
+template <typename Real>
+inline void CreateMatr (Real** & A, int line, int col)\hide
+{
+    A = new Real *[1+line];
+    for (int i = 0; i <= line; i++) {
+        A[i] = new Real[1+col];
+        for (int j = 0; j <= col; j++)
+            A[i][j] = 0;
+    }
+}
+\endhide
+\endcode
+\tab
+Allocates memory for the matrix $A$ of dimensions
+   (\texttt{line} + 1) $\times$ (\texttt{col} + 1). Initializes its elements to 0.
+\endtab
+\code
+
+
+template<typename Real>
+inline void DeleteMatr (Real** & A, int line, int col)\hide
+{
+    for (int i = line; i >= 0; --i)
+        delete [] A[i];
+    delete [] A;
+//    A = 0;
+}
+\endhide
+\endcode
+\tab
+Frees the memory used by the matrix $A$.
+\endtab
+\code
+
+
+inline void CreateMatr (MMat& A, int d)\hide
+{
+    A.SetDims (1 + d, 1 + d);
+    //clear (A);
+}
+\endhide
+\endcode
+\tab
+Creates the square matrix $A$ of dimensions $(d+1)\times(d+1)$
+   and initializes its elements to 0.
+\endtab
+\code
+
+
+inline void CreateMatr (MMatP & A, int d)\hide
+{
+    A.SetDims (1 + d, 1 + d);   clear (A);
+}
+\endhide
+\endcode
+\tab
+As above.
+\endtab
+\code
+
+
+inline void CreateMatr (MMat& A, int line, int col)\hide
+{
+    A.SetDims(1 + line, 1 + col);
+    //clear (A);
+}
+\endhide
+\endcode
+\tab
+Creates the matrix $A$ of dimensions
+   (\texttt{line} + 1) $\times$ (\texttt{col} + 1). Initializes its elements to 0.
+\endtab
+\code
+
+
+inline void CreateMatr (MMatP & A, int line, int col)\hide
+{
+    A.SetDims (1 + line, 1 + col);   clear (A);
+}
+\endhide
+\endcode
+\tab
+As above.
+\endtab
+\code
+
+
+inline void DeleteMatr (MMat& A)\hide
+{
+    A.kill ();
+}
+\endhide
+\endcode
+\tab
+Deletes the matrix $A$.
+\endtab
+\code
+
+
+inline void DeleteMatr (MMatP & A)\hide
+{
+    A.kill ();
+}
+\endhide
+\endcode
+\tab
+As above.
+\endtab
+\code
+
+
+template <typename Matr>
+inline void CopyMatr (const Matr & A, Matr & B, int n)\hide
+{
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            B[i][j] = A[i][j];
+}
+\endhide
+\endcode
+\tab
+Copies matrix $A$ into matrix $B$.
+\endtab
+\code
+
+
+template <typename Matr>
+inline void CopyMatr (const Matr & A, Matr & B, int line, int col)\hide
+{
+    for (int i = 1; i <= line; i++)
+        for (int j = 1; j <= col; j++)
+            B[i][j] = A[i][j];
+}
+\endhide
+\endcode
+\tab
+As above.
+\endtab
+\code
+
+
+template <typename MatT>
+std::string toStr (const MatT & mat, int d1, int d2) \hide
+{
+   std::ostringstream ostr;
+   for (int i = 1; i <= d1; i++) {
+      ostr << "[";
+      for (int j = 1; j <= d2; j++) {
+         ostr << std::setprecision (2) << std::setw (6) << mat[i][j] <<
+            std::setw (2) << " ";
+      }
+      ostr << "]\n";
+   }
+   return ostr.str ();
+}\endhide
+\endcode
+\tab
+Transforms \texttt{mat} into a string. Prints the first $d1$ rows and
+ $d2$ columns. Indices start at 1. Elements with index 0 are not printed.
+\endtab
+\code
+
+}     // namespace LatMRG
+\endcode
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\guisec{Some other compatibility utilities}
+
+\code
+namespace NTL {
+
+inline void conv (long & l, const char* c) \hide {
+    l = strtol(c, (char **) NULL, 10);
+}\endhide
+\endcode
+\tab
+Converts the array of characters (string) \texttt{c} into \texttt{l}.
+\endtab
+\code
+
+
+inline void conv (double & r, const char* c) \hide {
+    r = strtod(c, (char **) NULL);
+}\endhide
+\endcode
+\tab
+Converts the array of characters (string) \texttt{c} into \texttt{r}.
+\endtab
+\code
+
+}     // namespace
+\hide
+#endif
+\endhide
+\endcode

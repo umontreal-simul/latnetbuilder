@@ -1,0 +1,1074 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace LatBuilder {
+
+/** \page libtut Low-Level API Tutorial
+
+This tutorial aims at explaining through a series of examples how to use the
+different facilities provided by the Lattice Builder application programming
+interface.
+The complete code of the examples in this tutorial can be found under the \c
+latbuilder/examples/tutorial/ directory.
+
+The tutorial is divided into the following sections:
+<ol>
+    <li> \subpage libtut_textstream     </li>
+    <li> \subpage libtut_latdef         </li>
+    <li> \subpage libtut_genseq         </li>
+    <li> \subpage libtut_latseq         </li>
+    <li> \subpage libtut_figures        </li>
+    <li> \subpage libtut_meritseq       </li>
+    <li> \subpage libtut_filters      </li>
+    <li> \subpage libtut_misc           </li>
+    <li> \subpage libtut_extending      </li>
+</ol>
+
+*/
+
+/** \page libtut_textstream Text Output
+
+Lattice Builder provides overloads of the stream operator \c << that recognize
+iterable data types.  For example, the following code from \ref
+tutorial/TextStream.cc :
+\snippet tutorial/TextStream.cc cout
+outputs:
+\verbatim
+[1, 2, 3, 4, 5]
+\endverbatim
+
+\sa TextStream
+*/
+
+/** \example tutorial/TextStream.cc
+    This example shows how to use TextStream output stream operators.
+*/
+
+
+/** \page libtut_latdef Lattice Types and Definitions
+
+Lattice Builder supports two types of lattices: ordinary and embedded.
+Their representation in Lattice Builder differs only by the type of their size
+parameter.
+The size of an ordinary lattice (of type SizeParam<LatType::ORDINARY>) is specified by
+a single integer: the number of points in the lattice \f$n\f$.
+The size of an embedded lattice (of type SizeParam<LatType::EMBEDDED>) is
+specified by two integers: a prime base \f$b\f$ and a maximum level \f$m\f$,
+such that, for the embedded lattice at the maximum level, \f$n = b^m\f$.
+
+A lattice of either type can be defined by its size parameter(s) together with
+its dimension \f$s\f$ and the components of its generating vector \f$\boldsymbol
+a = (a_1, \dots, a_s)\f$.  The class LatDef can be used for
+that purpose, as in \ref tutorial/LatDef.cc.
+The following function calls some members of LatDef:
+\snippet tutorial/LatDef.cc printLatDef
+An ordinary lattice can be instantiated by passing the LatDef constructor a
+size parameter, here with \f$n=31\f$, and a generating vector, here
+\f$\boldsymbol a = (1,12,3)\f$:
+\snippet tutorial/LatDef.cc ordinary
+This outputs:
+\verbatim
+ordinary lattice:
+    dimension:         3
+    size parameter:    31
+    generating vector: [1, 12, 3]
+    definition:        lattice(31, [1, 12, 3])
+\endverbatim
+Embedded lattices with \f$n=b^\ell\f$ for \f$\ell=0,\dots,m\f$ can be
+instantiated by passing the LatDef constructor a size parameter \f$(b,m)\f$,
+here \f$(b,m)=(2,5)\f$, and a generating vector, here \f$\boldsymbol a =
+(1,7,9)\f$:
+\snippet tutorial/LatDef.cc embedded
+This outputs:
+\verbatim
+embedded lattice:
+    dimension:         3
+    size parameter:    2^5
+    generating vector: [1, 7, 9]
+    definition:        lattice(2^5, [1, 7, 9])
+\endverbatim
+Note that the size parameter for the embedded lattice:
+\code
+SizeParam<LatType::EMBEDDED>(2, 5)
+\endcode
+could also have been instantiated directly with the number of points
+(\f$2^5=32\f$):
+\code
+SizeParam<LatType::EMBEDDED>(32)
+\endcode
+
+\sa LatType LatDef
+*/
+
+/** \example tutorial/LatDef.cc
+    This example shows how to instantiate lattice definitions.
+*/
+
+
+/** \page libtut_genseq Sequences of Generator Values
+
+Search for a good generating vector involves enumerating the values its
+components can take.
+The representation of search spaces in Lattice Builder is based on sequences of
+possible values for the components of the generating vector.
+
+\sa GenSeq
+
+
+\section libtut_genseq_coprime Coprime Integers
+
+In the general case, one normally needs to enumerate all integers that are
+relatively prime with the number of points \f$n\f$ in the lattice point set.
+This is implemented by the class template GenSeq::CoprimeIntegers.
+Some figures of merit are invariant under the transformation \f$a \mapsto n -
+a\f$ where \f$a\f$ is any component of the generating vector.
+When using such a <em>symmetric</em> figure of merit, redundancy can be avoided
+by enumerating only the first half of the sequence of integers coprime with
+\f$n\f$, i.e.\ by compressing the search space.  
+In that case, we pass Compress::Symmetric as the first template argument to
+GenSeq::CoprimeIntegers:
+\snippet tutorial/GenSeqCoprimeIntegers.cc symmetric
+Otherwise, we pass Compress::None:
+\snippet tutorial/GenSeqCoprimeIntegers.cc all
+
+These concepts are illustrated in \ref tutorial/GenSeqCoprimeIntegers.cc :
+\snippet tutorial/GenSeqCoprimeIntegers.cc main
+The ouput of the above code is:
+\verbatim
+lattice size: 7
+    whole sequence: [1, 2, 3, 4, 5, 6]
+     half sequence: [1, 2, 3]
+lattice size: 8
+    whole sequence: [1, 3, 5, 7]
+     half sequence: [1, 3]
+lattice size: 12
+    whole sequence: [1, 7, 5, 11]
+     half sequence: [1, 5]
+\endverbatim
+
+
+\section libtut_genseq_random Random Traversal
+
+Sometimes, as with random Korobov or random CBC construction, it is necessary to
+randomly select a certain number of elements from a GenSeq::CoprimeIntegers
+instance.
+GenSeq::CoprimeIntegers optionally takes a second template arguments that
+specifies a method of traversal of its values; it defaults to Traversal::Forward
+which enumerates the values in their original order in the sequence.
+It can be replaced with Traversal::Random for the above purpose:
+\snippet tutorial/GenSeqRandom.cc types
+The traversal type Traversal::Random also takes a template argument that
+specifies the type of random generator to use.
+We use LFSR258 in our example, but any C++11-compliant random engine could be
+used.
+Next, a random traversal object must be instantiated with the desired number
+\c r of random samples:
+\snippet tutorial/GenSeqRandom.cc trav
+Then, the sequence object can be instantiated with the lattice size \c n, and the
+traversal object:
+\snippet tutorial/GenSeqRandom.cc seq
+A complete example can be found in \ref tutorial/GenSeqRandom.cc :
+\snippet tutorial/GenSeqRandom.cc main
+The output of the above code is:
+\verbatim
+lattice size: 31 (4 random samples)
+          sequence: [3, 8, 6, 1]
+     same sequence: [3, 8, 6, 1]
+    other sequence: [15, 7, 13, 15]
+lattice size: 256 (4 random samples)
+          sequence: [19, 63, 49, 5]
+     same sequence: [19, 63, 49, 5]
+    other sequence: [123, 59, 111, 119]
+\endverbatim
+
+Note that GenSeq::Random stores its own copy of the random engine,
+so that successive iteration over the same random sequence objects yields the
+same sequence of values.
+To obtain a different random selection of values, the initial state of the
+random generator must be changed.  The LFSR258 generator exposes a jump()
+function for this purpose:
+\snippet tutorial/GenSeqRandom.cc jump
+
+In some situations, the number \c r of random samples is not known in advance.
+In that case, the preferred method is to instantiate the traversal object
+without passing the argument \c r, which defaults to infinity, then to add a
+stopping condition in loops that iterate over the elements of the sequence.
+
+
+\section libtut_genseq_cyclicgroup Cylic Groups
+
+In the case where the lattice size \f$n\f$ is an integer power of a prime base,
+the class template GenSeq::CyclicGroup can be used to enumerate the elements of
+the cyclic group of integers modulo \f$n\f$ can be enumerated, in the natural
+group order where the \f$i\f$-th element is \f$g^i \bmod n\f$, where \f$g\f$ is
+the group generator.
+This is useful in particular to perform fast CBC construction.
+Like GenSeq::CoprimeIntegers, GenSeq::CyclicGroup takes a compression type as
+the first template argument.
+This is illustrated in \ref tutorial/GenSeqCyclicGroup.cc :
+\snippet tutorial/GenSeqCyclicGroup.cc main
+The output of the above code is:
+\verbatim
+lattice size: 7^1
+    whole sequence: [1, 3, 2, 6, 4, 5]
+     half sequence: [1, 3, 2]
+lattice size: 2^3
+    whole sequence: [1, 5, 7, 3]
+     half sequence: [1, 3]
+lattice size: 3^2
+    whole sequence: [1, 2, 4, 8, 7, 5]
+     half sequence: [1, 2, 4]
+\endverbatim
+In the symmetric case, each value \f$a\f$ is mapped to \f$\min\{a, n-a\}\f$.
+
+
+\section libtut_genseq_vector Vectors of Integer Sequences
+
+Construction algorithms often consider a distinct sequence of possible values  
+for each component of the generating vector.
+When distinct random selection of sequence elements are
+required for each coordinate, as with random CBC or plain random constructions;
+in this case, the initial state of the random generator must be different for
+each coordinate, as explained in \ref libtut_genseq_random.
+This functionality is provided by the convenience template class
+GenSeq::VectorCreator, which automatically calls jump() on the random generator
+between different coordinates if the traversal method is Traversal::Random.
+
+A vector of \c dim sequences of type \c Seq with size parameter \c n can be
+created with:
+\snippet tutorial/GenSeqVector.cc VectorCreator
+In most situations when constructing rank-1 lattices, we consider only the value
+1 for the first component.
+For that purpose, we can replace the first integer sequence with a singleton
+that contains only the value 1 with:
+\snippet tutorial/GenSeqVector.cc 1st
+A full example can be found in \ref tutorial/GenSeqVector.cc :
+\snippet tutorial/GenSeqVector.cc main
+The output of the above code is:
+\verbatim
+lattice size: 7
+    integer sequences: [[1], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]]
+\endverbatim
+
+For random sequence types, the number of random samples can be passed as an
+additional optional argument to GenSeq::VectorCreator::create():
+\snippet tutorial/GenSeqVector.cc random
+The output of the above code is:
+\verbatim
+lattice size: 31
+    random integer sequences: [[1], [29, 14, 26, 29, 9], [28, 18, 29, 28, 12]]
+\endverbatim
+Distinct random sequences are automatically created.
+
+
+\section libtut_genseq_extend Extension of the Number of Points
+
+A lattice with \f$b^m\f$ points in dimension \f$s\f$ and generating vector
+\f$\boldsymbol a = (a_1,\dots,a_s)\f$ can be extended to \f$b^{m+1}\f$ points by
+appending a \f$m+1\f$-st digit in base \f$b\f$ to the left of each \f$a_j\f$.
+It is easy to verify that the original lattice is indeed embedded in the
+extended lattice.
+The following instruction shows how to instantiate a sequence of generator values
+\c seq that adds a \f$m+1\f$-st digit in base \c b, where <code>numPoints =
+b</code>\f$^m\f$ to the left of the \f$m\f$ digits in base \c b of the integer
+\c gen (which stands for any of the \f$a_j\f$'s):
+\snippet tutorial/GenSeqExtend.cc Extend
+In practice, \c low would be one of the \f$a_j\f$'s.
+To add two digits instead of one, the first constructor argument <code>b *
+numPoints</code> must be replaced with <code>b * b * numPoints</code>.
+A complete example can be found in \ref tutorial/GenSeqExtend.cc.
+
+*/
+
+/** \example tutorial/GenSeqCoprimeIntegers.cc
+    This example shows how to enumerate integers that are relatively prime with
+    the number of points \f$n\f$ in the lattice point set.
+*/
+
+/** \example tutorial/GenSeqRandom.cc
+    This example shows how to randomly select a given number of elements from a
+    GenSeq::CoprimeIntegers sequence.
+*/
+
+/** \example tutorial/GenSeqCyclicGroup.cc
+    This example shows how to enumerate integers in the cyclic group of integers
+    modulo \f$n\f$, in the natural group order, that is, using the group
+    generator.
+*/
+
+/** \example tutorial/GenSeqVector.cc
+    This example shows how to create vectors of distinct sequences of integers.
+*/
+
+/** \example tutorial/GenSeqExtend.cc
+    This example shows how to append digits to the left of a component of a
+    generating vector in order to extend the number of points of a lattice.
+*/
+
+
+
+/** \page libtut_latseq Sequences of Lattice Definitions
+
+Search spaces consist of sequences of lattice definitions, which can be
+constructed based on a size parameter and on sequences of generator values (as
+in \ref libtut_genseq_vector).
+
+\sa LatSeq
+
+\section libtut_latseq_exhaustive Exhaustive Sequences
+
+An exhaustive sequence of lattice definitions considers all the generating
+vectors in a Cartesian product of integer sequences.  First, a vector of integer
+sequences must be initialized (see \ref libtut_genseq_vector for details):
+\snippet tutorial/LatSeqExhaustive.cc genSeqs
+Next, the sequence of lattice is initialized using the size parameter and the
+vector of integer sequences:
+\snippet tutorial/LatSeqExhaustive.cc latSeq
+The class template LatSeq::Combiner produces a sequence of lattice definitions
+by associating a distinct integer sequence to each coordinate of the generating
+vector.
+It takes two template arguments: the first one is the type of individual integer
+sequence; the second one is a policy for combining the individual sequences,
+which corresponds to the Cartesian product of all integer sequences in this
+example.
+Then, the output is generated with:
+\snippet tutorial/LatSeqExhaustive.cc output
+which produces:
+\verbatim
+[lattice(8, [1, 1, 1]), lattice(8, [1, 1, 3]), lattice(8, [1, 1, 5]), lattice(8, [1, 1, 7]), lattice(8, [1, 3, 1]), lattice(8, [1, 3, 3]), lattice(8, [1, 3, 5]), lattice(8, [1, 3, 7]), lattice(8, [1, 5, 1]), lattice(8, [1, 5, 3]), lattice(8, [1, 5, 5]), lattice(8, [1, 5, 7]), lattice(8, [1, 7, 1]), lattice(8, [1, 7, 3]), lattice(8, [1, 7, 5]), lattice(8, [1, 7, 7])]
+\endverbatim
+The complete example can be found in \ref tutorial/LatSeqExhaustive.cc.
+
+
+
+\section libtut_latseq_random Random Sequences
+
+To produce a sequence of lattice definitions with random generating vectors, we
+adapt the example from \ref libtut_latseq_exhaustive by assigning a random
+traversal type to the integer sequences:
+\snippet tutorial/LatSeqRandom.cc genSeqs
+In \ref libtut_latseq_exhaustive, we used the CartesianProduct policy for
+combining the input sequences.
+Here, we use Zip, which generates a sequence such that the \f$i\f$-th output
+value is a vector whose \f$j\f$-th component consist of the \f$i\f$-th value of
+the \f$j\f$-th input sequence:
+\snippet tutorial/LatSeqRandom.cc latSeq
+Thus, we can have independent values for each coordinate.
+The complete example can be found in \ref tutorial/LatSeqRandom.cc
+and outputs:
+\verbatim
+[lattice(31, [1, 29, 28]), lattice(31, [1, 14, 18]), lattice(31, [1, 26, 29]), lattice(31, [1, 29, 28])]
+\endverbatim
+
+
+
+\section libtut_latseq_korobov Korobov Sequences
+
+For sequences of Korobov lattices, a single sequence of generator values is
+required, as all components of the generating vector depend on the second one.
+A sequence of Korobov lattice definitions can be created with:
+\snippet tutorial/LatSeqKorobov.cc latSeq
+A complete example can be found in \ref tutorial/LatSeqKorobov.cc :
+\snippet tutorial/LatSeqKorobov.cc main
+The output of the above code is:
+\verbatim
+[lattice(7, [1, 1, 1]), lattice(7, [1, 2, 4]), lattice(7, [1, 3, 2]), lattice(7, [1, 4, 2]), lattice(7, [1, 5, 4]), lattice(7, [1, 6, 1])]
+\endverbatim
+
+
+
+\section libtut_latseq_cbc Component-by-Component Sequences
+
+The component-by-component construction method consists in selecting the
+generating vector one coordinate at a time.
+To select the \f$j\f$-th, we consider a sequence of lattice definitions when the
+same first \f$j-1\f$ coordinates.
+In the following example, we set \f$j=3\f$ with the first two coordinates equal
+to 1 and 5, respectively.
+First, we instantiate what we call a <em>base lattice</em>:
+\snippet tutorial/LatSeqCBC1.cc baseLat
+Next, we create the sequence of lattice definitions resulting from appending to
+the base lattice each value from an integer sequence of type \c Coprime:
+\snippet tutorial/LatSeqCBC1.cc latSeq
+The full example can be found in \ref tutorial/LatSeqCBC1.cc :
+\snippet tutorial/LatSeqCBC1.cc main
+The output of the above code is:
+\verbatim
+[lattice(8, [1, 5, 1]), lattice(8, [1, 5, 3]), lattice(8, [1, 5, 5]), lattice(8, [1, 5, 7])]
+\endverbatim
+
+In a practical situation, we would probably loop over \f$j\f$ to construct the
+generating vector.
+Building over the above example, the following loop illustrates this idea:
+\snippet tutorial/LatSeqCBC.cc loop
+The \c findBest() function is assumed to take a sequence of candidate lattice
+definitions for input and returns and iterator on the ``best'' lattice
+definition.
+Then, \c bestLat is updated with the value pointed to by the iterator.
+For example, the definition of \c findBest() could be one that selects the first
+lattice definition of the sequence:
+\snippet tutorial/LatSeqCBC.cc findBest
+This would output:
+\verbatim
+searching for the best lattice in dimension: 1
+    possible choices: [lattice(8, [1, 1]), lattice(8, [1, 3]), lattice(8, [1, 5]), lattice(8, [1, 7])]
+    selected lattice: lattice(8, [1, 1])
+searching for the best lattice in dimension: 2
+    possible choices: [lattice(8, [1, 1, 1]), lattice(8, [1, 1, 3]), lattice(8, [1, 1, 5]), lattice(8, [1, 1, 7])]
+    selected lattice: lattice(8, [1, 1, 1])
+searching for the best lattice in dimension: 3
+    possible choices: [lattice(8, [1, 1, 1, 1]), lattice(8, [1, 1, 1, 3]), lattice(8, [1, 1, 1, 5]), lattice(8, [1, 1, 1, 7])]
+    selected lattice: lattice(8, [1, 1, 1, 1])
+\endverbatim
+A more useful definition of \c findBest() would rather compute the merit values
+of each candidate lattice and select the optimal one.
+The current example, however, illustrates the basic ideas and can be found in
+\ref tutorial/LatSeqCBC.cc.
+
+*/
+
+/** \example tutorial/LatSeqExhaustive.cc
+    This example shows how to instantiate an exhaustive sequence of lattice
+    definitions.
+*/
+
+/** \example tutorial/LatSeqRandom.cc
+    This example shows how to instantiate a random sequence of lattice
+    definitions.
+*/
+
+/** \example tutorial/LatSeqKorobov.cc
+    This example shows how to instantiate a sequence of Korobov lattice
+    definitions.
+*/
+
+/** \example tutorial/LatSeqCBC1.cc
+    This examples shows how to instantiate a component-by-component sequence of
+    lattice definitions.
+*/
+
+/** \example tutorial/LatSeqCBC.cc
+    This examples shows how to use a component-by-component sequence of
+    lattice definitions in a loop.
+*/
+
+
+/** \page libtut_figures Weighted Figures of Merit
+
+
+\section libtut_figures_storage Storage
+
+In Lattice Builder, the algorithms that evaluate figures of merit all store and
+operate on some data internally, whose representation may vary depending on the
+type of lattice and of figure of merit under consideration.
+
+First, evaluating a figure of merit for ordinary or for embedded lattices
+imposes different requirement on internal data.
+For example, to evaluate a coordinate-symmetric figure of merit, the values
+\f$\omega(i/n)\f$ of the kernel \f$\omega\f$ for \f$i=0,\dots,n-1\f$ are
+precomputed and stored in a vector for subsequent use.
+For ordinary lattices, the elements of the vector are stored in a natural order
+(see Storage<LatType::ORDINARY>), by increasing value of \f$i\f$.
+For embedded lattices in bas \f$b\f$, the internal representation of the vector
+is different (see Storage<LatType::EMBEDDED>): it uses a permutation such that, for
+\f$k=0,\dots,m\f$ where the highest-level lattice has \f$n=b^m\f$, the
+values necessary to describe the level with \f$b^k\f$ points can be found in the
+first \f$b^k\f$ elements stored in the permuted vector.
+This allows for adding the next higher level simply by extending this vector.
+It also simplifies performing vector operations on all different levels without
+having to process each level individually.
+
+Second, the type of compression used also affects the internal representation of
+vectors.
+In the case of symmetric figures of merit, i.e.\ figures of merit that
+are invariant under the transformation \f$a_j \mapsto n - a_j\f$ where \f$a_j\f$
+is any component of the generating vector, it is a waste of space and effort to
+represent every value internally.
+Considering the same example as above, only half of the values of
+\f$\omega(i/n)\f$ need to be stored.
+
+Finally, the size parameter of the lattice directly affects the length of the
+internal data vector.
+
+To account for these three different aspects, the internal representation of
+vectors in Lattice Builder is specified by a Storage instance.
+These classes perform time-critical operations (such as permutation) and for
+that reason are not polymorphic.
+
+Consider the following example from \ref tutorial/Storage.cc :
+\snippet tutorial/Storage.cc all
+The \c StorageType traits class maps a LatType value to a type of storage
+through template specialization.
+
+\sa Storage
+
+
+\section libtut_figures_simple A Simple Example
+
+The example from 
+\ref tutorial/WeightedFigureOfMerit.cc
+illustrates how to instantiate a weighted figure of merit
+and perform a search for the best Korobov lattice.
+First we instantiate the sequence \c latSeq of lattice definitions roughly
+as in the example from \ref libtut_latseq_korobov .
+Next, we instantiate a weighted spectral figure of merit, using a sum as its
+accumulator, and product weights:
+\snippet tutorial/WeightedFigureOfMerit.cc figure
+Then, we instantiate a sequence of projections to which the figure of merit
+applies with:
+\snippet tutorial/WeightedFigureOfMerit.cc allProjections
+We also allocate a storage instance for ordinary lattices with appropriate
+compression:
+\snippet tutorial/WeightedFigureOfMerit.cc storage
+We define an observer which will keep track of the best candidate lattice:
+\snippet tutorial/WeightedFigureOfMerit.cc Observer
+Finally, we can iterate through all lattices and display the best observed
+candidate lattice:
+\snippet tutorial/WeightedFigureOfMerit.cc loop
+The purpose of the \c initialMerit object is to store the value of the figure of
+merit for projections other than that for which it is currently being evaluated
+(all projections, here).
+Thus, it is possible to split the evaluation of the figure of merit over
+different sets of coordinates.
+It is particularly useful in the case of component-by-component construction,
+where it can be used to store the merit value of the base lattice (before a
+component is appended to the generating vector).
+Here, it simply contains the value \c 0.0:
+\snippet tutorial/WeightedFigureOfMerit.cc initialMerit
+The output of this example is:
+\verbatim
+figure of merit: WeightedFigureOfMerit(accumulator=max, projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
+projections: [{1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}]
+lattice(19, [1, 1, 1])	:	1.6229 <-- best
+lattice(19, [1, 2, 4])	:	1.02641 <-- best
+lattice(19, [1, 3, 9])	:	1.02641
+lattice(19, [1, 4, 16])	:	0.725784 <-- best
+lattice(19, [1, 5, 6])	:	0.725784
+lattice(19, [1, 6, 17])	:	1.02641
+lattice(19, [1, 7, 11])	:	0.7 <-- best
+lattice(19, [1, 8, 7])	:	0.7
+lattice(19, [1, 9, 5])	:	1.02641
+BEST LATTICE: lattice(19, [1, 7, 11]) with merit value 0.7
+\endverbatim
+
+\remark A weighted \f$\mathcal P_\alpha\f$ discrepancy could be obtained by
+replacing:
+\snippet tutorial/WeightedFigureOfMerit.cc ProjDepMerit
+with:
+\code
+   typedef ProjDepMerit::CoordSym<Kernel::PAlpha> ProjDep;
+   WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(std::move(weights), ProjDep(2));
+\endcode
+
+\sa WeightedFigureOfMerit ProjDepMerit
+
+
+\section libtut_figures_signals A Improved Example Using Signals
+
+The evaluation of the figure of merit by WeightedFigureOfMerit is performed by
+evaluating term-by-term a sum over a set of projections of a lattice.
+If, during the progress of evaluating the sum, the value partial sum becomes
+larger than the smallest merit value of other candidate lattices already
+evaluated, then there is no need to finish evaluating the sum.
+The same reasoning holds for a maximum instead of a sum too.
+The example in \ref tutorial/WeightedFigureOfMeritSignals.cc shows how the
+evaluation process can be aborted using <em>signals</em>.
+
+After contributing every new term into the sum (or maximum),
+WeightedFigureOfMerit emits the WeightedFigureOfMerit::onProgress() signal,
+passing the current cumulated value as its argument.
+This signal can be connected to any function (a signal listener) which takes for
+argument a constant reference to a MeritValue instance.
+If the signal listener returns \c true, WeightedFigureOfMerit continues the
+evaluation of the figure of merit; otherwise, it is aborted and the figure of
+merit evaluates to infinity.
+For example, we define:
+\snippet tutorial/WeightedFigureOfMeritSignals.cc onProgress
+in the \c Observer class.
+We also define a listener for WeightedFigureOfMerit::onAbort() which is emitted
+by WeightedFigureOfMerit upon abortion and which passes the rejected candidate
+lattice as its argument:
+\snippet tutorial/WeightedFigureOfMeritSignals.cc onAbort
+Then, we connect the listener to the signals with:
+\snippet tutorial/WeightedFigureOfMeritSignals.cc connect
+
+With these changes, the output becomes:
+\verbatim
+figure of merit: WeightedFigureOfMerit(accumulator=max, projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
+projections: [{1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}]
+lattice(19, [1, 1, 1])	:	1.6229 <-- best
+lattice(19, [1, 2, 4])	:	1.02641 <-- best
+lattice(19, [1, 3, 9])	:	1.02641
+lattice(19, [1, 4, 16])	:	0.725784 <-- best
+lattice(19, [1, 5, 6])	:	0.725784
+rejected lattice(19, [1, 6, 17])
+lattice(19, [1, 6, 17])	:	inf
+lattice(19, [1, 7, 11])	:	0.7 <-- best
+lattice(19, [1, 8, 7])	:	0.7
+rejected lattice(19, [1, 9, 5])
+lattice(19, [1, 9, 5])	:	inf
+BEST LATTICE: lattice(19, [1, 7, 11]) with merit value 0.7
+\endverbatim
+
+
+\section libtut_figures_cbc_simple A Simple Example Using CBC Construction
+
+We can modify the example from \ref libtut_figures_simple to implement CBC
+construction as illustrated in \ref libtut_latseq_cbc.
+The complete example can be found in \ref tutorial/WeightedFigureOfMeritCBC.cc.
+The first step is to declare a base lattice:
+\snippet tutorial/WeightedFigureOfMeritCBC.cc baseLat
+and to create a loop over its dimension:
+\snippet tutorial/WeightedFigureOfMeritCBC.cc CBC loop cond
+where we instantiate a new lattice sequence every time the dimension of the base
+lattice is increased.
+When the dimension of the base lattice is zero, we need only consider 1 as a
+candidate value for the first component of the generating vector, whence the
+condition on \c baseDim above.
+Instead of covering all projections, we need only consider the projections that
+include the new coordinate in the generating vector:
+\snippet tutorial/WeightedFigureOfMeritCBC.cc newProjections
+The minimization loop is unchanged, except that \c allProjections is replace
+with \c newProjections.
+Finally, \c baseLat and \c initialMerit must be updated based on the best
+observed candidate lattice:
+\snippet tutorial/WeightedFigureOfMeritCBC.cc baseLat update
+After these changes, the output becomes:
+\verbatim
+figure of merit: WeightedFigureOfMerit(accumulator=max, projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
+CBC search for dimension: 1
+  base lattice: lattice(19, [])
+  base merit value: 0
+  new projections: [{1}]
+lattice(19, [1])	:	0.7 <-- best
+BEST LATTICE: lattice(19, [1]) with merit value 0.7
+CBC search for dimension: 2
+  base lattice: lattice(19, [1])
+  base merit value: 0.7
+  new projections: [{2}, {1,2}]
+lattice(19, [1, 1])	:	1.6229 <-- best
+lattice(19, [1, 2])	:	1.02641 <-- best
+lattice(19, [1, 3])	:	0.725784 <-- best
+lattice(19, [1, 4])	:	0.7 <-- best
+lattice(19, [1, 5])	:	0.7
+lattice(19, [1, 6])	:	0.725784
+lattice(19, [1, 7])	:	0.7
+lattice(19, [1, 8])	:	0.7
+lattice(19, [1, 9])	:	1.02641
+BEST LATTICE: lattice(19, [1, 4]) with merit value 0.7
+CBC search for dimension: 3
+  base lattice: lattice(19, [1, 4])
+  base merit value: 0.7
+  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
+lattice(19, [1, 4, 1])	:	1.6229 <-- best
+lattice(19, [1, 4, 2])	:	1.02641 <-- best
+lattice(19, [1, 4, 3])	:	0.725784 <-- best
+lattice(19, [1, 4, 4])	:	1.6229
+lattice(19, [1, 4, 5])	:	0.725784
+lattice(19, [1, 4, 6])	:	0.725784
+lattice(19, [1, 4, 7])	:	0.725784
+lattice(19, [1, 4, 8])	:	1.02641
+lattice(19, [1, 4, 9])	:	1.02641
+BEST LATTICE: lattice(19, [1, 4, 3]) with merit value 0.725784
+\endverbatim
+
+
+
+*/
+
+/** \example tutorial/Storage.cc
+    This examples shows how to dispatch functor instances based on a polymorphic
+    storage instance.
+*/
+
+
+/** \example tutorial/WeightedFigureOfMerit.cc
+    This example shows how to instantiate a weighted figure of merit and perform
+    a search for the best Korobov lattice.
+*/
+
+/** \example tutorial/WeightedFigureOfMeritSignals.cc
+    This example shows how to use signals in order to interrupt the computation
+    of a weighted figure of merit when its value has become too large.
+*/
+
+/** \example tutorial/WeightedFigureOfMeritCBC.cc
+    This example shows how to instantiate a weighted figure of merit and perform
+    a CBC search for the best lattice.
+*/
+
+
+
+
+
+/** \page libtut_meritseq Sequences of Merit Values
+
+Iterating through a sequence of lattice definitions and evaluating a figure of
+merit for each element, as in \ref libtut_figures, is a common task when
+searching for good lattice parameters.  Lattice Builder abstracts out this
+process by providing sequences of (computed) merit values.
+
+\sa MeritSeq
+
+
+\section libtut_meritseq_cbc_simple CBC Construction
+
+The example in \ref tutorial/MeritSeqCBC.cc
+improves on the example from \ref libtut_figures_cbc_simple.
+
+The base lattice and its merit value are managed by MeritSeq::CBC, so we can
+remove the declarations of \c baseLat and \c initialMerit, and introduce:
+\snippet tutorial/MeritSeqCBC.cc cbc
+In the CBC loop, we instantiate the sequence of merit values with:
+\snippet tutorial/MeritSeqCBC.cc meritSeq
+Because the elements of \c meritSeq are of the abstract type MeritValue,
+we need to convert them to the Real type using an empty list of merit value
+filters declared as:
+\snippet tutorial/MeritSeqCBC.cc filters
+and applied with:
+\snippet tutorial/MeritSeqCBC.cc filteredSeq
+Such a filter list can also be used to combine the merit values of individual
+levels in the case of embedded lattices (see \ref libtut_filters).
+Then, we replace the minimization loop with a call to std::min_element:
+\snippet tutorial/MeritSeqCBC.cc min_element
+and notify the CBC instance that we have found our best lattice for the current
+dimension:
+\snippet tutorial/MeritSeqCBC.cc select
+Here, \c best is an iterator on the \c filteredSeq sequence, and \c best.base()
+is an iterator on corresponding element of the underlying \c meritSeq sequence.
+The output of this example is:
+\verbatim
+CBC search for dimension: 1
+  base lattice: lattice(19, [])
+  base merit value: 0
+  new projections: [{1}]
+CBC search for dimension: 2
+  base lattice: lattice(19, [1])
+  base merit value: 0.7
+  new projections: [{2}, {1,2}]
+CBC search for dimension: 3
+  base lattice: lattice(19, [1, 4])
+  base merit value: 0.7
+  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
+\endverbatim
+
+
+\section libtut_meritseq_cbc_signals CBC Construction Using Signals
+
+To improve on the above example by using signals, we can reintroduce the \c
+Observer class from \ref libtut_figures_signals.
+We also need to notify the \c Observer class when a new minimum value is
+updated, with a few changes:
+\snippet tutorial/MeritSeqCBCSignals.cc Observer
+So, instead of using \c std::min_element, we use Functor::MinElement and connect
+its Functor::MinElement::onMinUpdated() signal to \c Observer::onMinUpdated():
+\snippet tutorial/MeritSeqCBCSignals.cc minElement
+Then replace the call to \c std::min_element() with:
+\snippet tutorial/MeritSeqCBCSignals.cc minElement call
+Also note the call to \c Observer::reset() to initialize the best observed merit
+value before using \c minElement.
+The resulting code can be found in \ref tutorial/MeritSeqCBCSignals.cc .
+
+
+
+\section libtut_meritseq_coordsym CBC Construction for Coordinate-Symmetric Figures of Merit
+
+Figures of merit in a coordinate-symmetric form can be evaluated more
+efficiently than the general weighted figures of merit.
+Here, we consider the case of the weighted \f$\mathcal P_\alpha\f$ discrepancy,
+by adapting the code from \ref libtut_meritseq_cbc_simple .
+First, we replace the WeightedFigureOfMerit instance with an instance of
+CoordSymFigureOfMerit:
+\snippet tutorial/MeritSeqCoordSym.cc figure
+The type of weights must be specified as a template argument because a different
+evaluation algorithm is used for different types of weights.
+Then, we replace the MeritSeq::CBC instance with a MeritSeq::CoordSymCBC
+instance:
+\snippet tutorial/MeritSeqCoordSym.cc cbc
+The MeritSeq::CoordSymInnerProd template argument specifies that we want to use
+a standard inner product during the CBC algorithm.
+The complete example can be found in \ref tutorial/MeritSeqCoordSym.cc.
+
+
+
+\section libtut_meritseq_fastcbc Fast CBC Construction
+
+Here, we modify the example from \ref libtut_meritseq_coordsym in order to use
+the fast CBC method, which is implemented only with coordinate-symmetric figures
+of merit.
+First, we need to replace MeritSeq::CoordSymInnerProd with
+MeritSeq::CoordSymInnerProdFast:
+\snippet tutorial/MeritSeqFastCBC.cc cbc
+The fast CBC algorithm requires a special ordering of the generator values, so
+we also need to replace:
+\snippet tutorial/MeritSeqCoordSym.cc Coprime
+with:
+\snippet tutorial/MeritSeqFastCBC.cc Coprime
+Note that instantiating GenSeq::CyclicGroup requires the number of points to be
+an integer power of a prime base.
+Then, we modify the instantiation of \c meritSeq accordingly:
+\snippet tutorial/MeritSeqFastCBC.cc meritSeq
+The complete example can be found in \ref tutorial/MeritSeqFastCBC.cc.
+
+
+
+\section libtut_meritseq_noncbc Non-CBC Construction Methods
+
+In Lattice Builder, sequences of merit values for non-CBC construction methods
+are available only as a wrapper of the CBC construction applied independently to
+each lattice definition, by replacing the sequences of candidate lattice
+definitions by singletons that contain only the candidate lattice being
+currently examined.
+CBC construction can thus output only this one lattice, together with its merit
+value.
+This enables the efficient computation algorithms used in the
+coordinate-symmetric case with standard CBC.
+
+The example in \ref tutorial/MeritSeqNonCBC.cc illustrates how to transform the
+CBC search from \ref libtut_meritseq_coordsym into a Korobov search.
+First, we create an instance of MeritSeq::LatSeqOverCBC and a sequence of
+Korobov lattice definitions:
+\snippet tutorial/MeritSeqNonCBC.cc latSeqOverCBC
+Then, the whole CBC loop is replaced with the execution of the Korobov search:
+\snippet tutorial/MeritSeqNonCBC.cc search
+
+*/
+
+/** \example tutorial/MeritSeqCBC.cc
+    This example shows how to instantiate a sequence of merit values
+    based on a component-by-component sequence of lattice definitions.
+*/
+
+/** \example tutorial/MeritSeqCBCSignals.cc
+    This example shows how to instantiate a sequence of merit values
+    based on a component-by-component sequence of lattice definitions, and how
+    to use signals in order to interrupt the computation of a weighted figure of
+    merit when its value has become too large.
+*/
+
+/** \example tutorial/MeritSeqCoordSym.cc
+    This example shows how to instantiate a sequence of merit values computed
+    using a specialized coordinate-symmetric algorithm.
+*/
+
+/** \example tutorial/MeritSeqFastCBC.cc
+    This example shows how to instantiate a sequence of merit values computed
+    using the fast CBC method.
+*/
+
+/** \example tutorial/MeritSeqNonCBC.cc
+    This example shows how to instantiate a sequence of merit values not based
+    on a component-by-component (CBC) sequence of lattice definitions, but using
+    the same algorithms as in the CBC case.
+*/
+
+
+
+/** \page libtut_filters Filters and Combiners
+
+This tutorial explains how to transform a sequence of merit values using
+filters, and how to combine the merit values of individual
+levels in the case of embedded lattices.
+
+\section libtut_filters_cbc_simple Normalization and Low-Pass
+
+Here we build on the example from \ref libtut_meritseq_coordsym by
+normalizing the merit values and by applying a low-pass filter.
+
+We add a normalizer to our MeritFilterList instance with:
+\snippet tutorial/FilteredCBC.cc normalizer
+This Norm::Normalizer instance uses the bound on the \f$\mathcal P_\alpha\f$
+discrepancy derived in \cite rSIN10a implemented by Norm::PAlphaSL10.
+Then, we add a low-pass filter to reject candidate lattice with a normalized
+merit value larger than unity:
+\snippet tutorial/FilteredCBC.cc low-pass
+Also note how we've changed the output instruction to:
+\snippet tutorial/FilteredCBC.cc output
+Here, \c best is an iterator on the sequence of filtered merit values \c
+filteredSeq, \c best.base() is an iterator on the unfiltered merit values \c
+meritSeq, and \c best.base().base() is an iterator on the underlying sequence of
+lattice definitions.
+Finally, we must create a Storage instance:
+\snippet tutorial/FilteredCBC.cc Storage
+The complete code for this example can be found in \ref tutorial/FilteredCBC.cc.
+
+
+
+\section libtut_filters_rcbc_signals Filtered Random CBC
+
+The example in \ref tutorial/FilteredRCBC.cc shows how to implement random CBC
+construction with filtered merit values.
+We use the same normalization and low-pass filters as in \ref
+libtut_filters_cbc_simple.
+We want to try \c samples independent random values for each component of the
+generating vector, excluding those that are rejected by the low-pass filter.
+This means that we don't know in advance the total number of values per
+coordinate to be tried.
+So, we first configure an infinite sequence of random integers:
+\snippet tutorial/FilteredRCBC.cc Coprime
+We also replace \c std::min_element with the Functor::MinElement functor:
+\snippet tutorial/FilteredRCBC.cc minElement
+Next, we use signals to stop the search after \c samples random integers have
+passed through the low-pass filter:
+\snippet tutorial/FilteredRCBC.cc signals
+The Functor::MinElement functor visits every element between the two iterators
+\c filteredSeq.begin() and \c filteredSeq.end() sequentially.
+The Functor::MinElement::onStart() signal is emitted, before it starts iterating
+through the elements.
+Every time a new element is visited, the Functor::MinElement::onElementVisited()
+signal is emitted; if a function connected to this signal returns \c false, the
+functor aborts its iteration and returns the minimum value observed so far.
+We use this feature to stop iterating through our infinite sequence of random
+integers.
+The MeritFilterList::onReject() signal is emitted whenever one of the filters
+rejects a candidate lattice (by returning \c false).
+The new \c Observer class is designed to keep track of the number of accepted
+candidate lattices and of the total number of candidate lattices tried, as:
+\snippet tutorial/FilteredRCBC.cc Observer
+Note that \c Observer::onElementVisited() increases both the accepted count \c
+m_count and the total count \c m_totalCount, whereas \c Observer::onReject()
+decreases only \c m_count.
+Finally, we output the number of accepted and the total number candidate lattices:
+\snippet tutorial/FilteredRCBC.cc output
+The output of this example is:
+\verbatim
+BEST LATTICE: lattice(257, [1]) with merit value 0.0105903
+  15 accepted / 15 tried
+BEST LATTICE: lattice(257, [1, 116]) with merit value 0.0401108
+  15 accepted / 17 tried
+BEST LATTICE: lattice(257, [1, 116, 19]) with merit value 0.205199
+  15 accepted / 19 tried
+\endverbatim
+
+
+
+\section libtut_filters_cbc_embedded Embedded Lattices and Combiners
+
+Constructing embedded lattices requires combining the merit values associated to
+each nested level into a single compound merit value.
+The example in \ref tutorial/FilteredCBC.cc shows how to do this by
+building on the example from \ref libtut_filters_cbc_simple.
+
+
+We need to change the scalar filters to filters that apply to the merit value
+of each individual level by replacing Real with RealVector:
+\snippet tutorial/FilteredCBC.cc filters
+Note that the normalizer needs per-level weights for multilevel figures of
+merit, which we all set to the inverse of the number of levels (<code>power +
+1</code>) here:
+\snippet tutorial/FilteredCBC.cc per-level weights
+Next, we configure the combiner as a sum of the normalized values across all
+levels:
+\snippet tutorial/FilteredCBC.cc combiner
+We also need change the storage type to Storage<LatType::EMBEDDED>:
+\snippet tutorial/FilteredCBC.cc Storage
+This example outputs:
+\verbatim
+figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+filters: multilevel filters=(normalizer, low-pass), combiner=sum, scalar filters=()
+CBC search for dimension: 1
+  base lattice: lattice(2^8, [])
+  base merit value: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+BEST LATTICE: lattice(2^8, [1]) with merit value 0.0622623
+CBC search for dimension: 2
+  base lattice: lattice(2^8, [1])
+  base merit value: [2.30291, 0.575727, 0.143932, 0.0359829, 0.00899573, 0.00224893, 0.000562233, 0.000140558, 3.51396e-05]
+BEST LATTICE: lattice(2^8, [1, 45]) with merit value 0.187022
+CBC search for dimension: 3
+  base lattice: lattice(2^8, [1, 45])
+  base merit value: [9.9092, 4.46607, 1.9866, 0.551031, 0.23438, 0.0762869, 0.0158076, 0.00575074, 0.00166391]
+BEST LATTICE: lattice(2^8, [1, 45, 69]) with merit value 0.302157
+\endverbatim
+Notice that the base merit value is now a vector of per-level merit values.
+
+*/
+
+/** \example tutorial/FilteredCBC.cc
+    This example shows how to transform, using filters, a sequence of
+    merit values based on a component-by-component sequence of lattice
+    definitions.
+*/
+
+/** \example tutorial/FilteredRCBC.cc
+    This example shows how to use signals to control the number of elements from
+    a random lattice sequence to be examined by a minimization algorithm, and
+    thus ignore candidate lattices rejected by filters.
+*/
+
+
+/** \page libtut_misc Other Examples
+
+\section libtut_quantiles Examining the Distribution of Merit Values
+
+In this example, we examine the quantiles of the distribution of 
+normalized weighted \f$\mathcal P_{2\alpha}\f$ merit values.  The pipeline is
+setup as in the previous examples, but without using the low-pass filter.  Next,
+we use the Boost Accumulators library to configure a quantile accumulator:
+\snippet quantiles.cc accumulator setup
+Then, we output the results with:
+\snippet quantiles.cc output
+The complete code can be found in \ref quantiles.cc and, when
+launched with the following arguments:
+\code
+quantiles 256 3 0.7
+\endcode
+it outputs:
+\verbatim
+# mean:	3.46885028e-01
+prob	quantile
+0.000	1.60698706e-02
+0.050	1.64301703e-02
+0.100	1.85088223e-02
+0.150	1.91739909e-02
+0.200	2.17884732e-02
+0.250	2.26753647e-02
+0.300	2.30818567e-02
+0.350	2.70081994e-02
+0.400	3.03617579e-02
+0.450	3.53505227e-02
+0.500	3.89350427e-02
+0.550	4.54389138e-02
+0.600	4.82196883e-02
+0.650	6.27055832e-02
+0.700	7.08631375e-02
+0.750	9.24164492e-02
+0.800	1.12953531e-01
+0.850	1.79950795e-01
+0.900	2.89334083e-01
+0.950	8.67254772e-01
+1.000	1.37803954e+01
+\endverbatim
+
+*/
+
+/** \example quantiles.cc
+    This example shows how to examine the distribution of normalized
+    weighted \f$\mathcal P_{2\alpha}\f$ merit values.
+*/
+
+/** \page libtut_extending Extending Lattice Builder
+
+\todo Custom Projection Dependent Figure of Merit
+
+\todo Custom Type of Weights (including custom coordinate-symmetric
+implementations)
+
+*/
+
+}
+
+vim: ft=doxygen spelllang=en spell

@@ -1,0 +1,689 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+/** \page cmdtut Command-Line Tutorial
+
+This tutorial teaches how to use the Lattice Builder command-line tool to
+search for good rank-1 lattices.
+It is divided into the following sections:
+<ol>
+    <li> \subpage cmdtut_recipes    </li>
+    <li> \subpage cmdtut_summary    </li>
+</ol>
+
+
+The following typesetting semantics is adopted:
+- <code>verbatim</code> for text to be typed as is;
+- <code><var>arg</var></code> for text to be substituted;
+- when a command is broken into multiple lines, a trailing backslash (\\)
+  indicates that the command is continued on the next line.
+
+
+
+\section cmdtut_recipes Recipes
+
+In this section, we start with a basic example to perform a standard
+component-by-component (CBC) construction, which we use to introduce the
+different command-line options.
+After, we extend that example in various ways to show how to achieve
+different specific tasks.
+
+Consider the following basic example:
+\verbatim
+latbuilder \
+  --lattice-type ordinary \
+  --size 2053 \
+  --dimension 5 \
+  --construction CBC \
+  --figure-of-merit CS:sum:P2 \
+  --weights product:0.7
+\endverbatim
+
+\remark It is assumed in the examples that the <code>latbuilder</code>
+executable program can be found by the user's shell.  If it is not the case, the
+full path to the executable program, for example
+<code>/path/to/latbuilder</code>, should be used in the place of just
+<code>latbuilder</code>.
+
+The order in which the arguments are specified is not important.
+Some arguments consists of several tokens, separated by a colon.
+
+- The argument <code>--lattice-type ordinary</code> indicates that we seek an
+  ordinary (in contrast to embedded) rank-1 lattice rule.
+  The construction of embedded lattices is illustrated in
+  \ref cmdtut_recipes_embedded.
+
+- The argument <code>--size 2053</code> indicates that we seek a lattice rule
+  with 2053 points.
+
+- The argument <code>--dimension 5</code> specifies that we seek a lattice point
+  set of dimension 5. 
+
+- The argument <code>--construction CBC</code> specifies that a CBC construction
+  should be used.  Specifying other construction methods is explained in
+  \ref cmdtut_recipes_construction.
+
+- The argument <code>--figure-of-merit CS:sum:P2</code> consists of three colon-separated
+  tokens.
+  It tells Lattice Builder to use the specialized coordinate-symmetric
+  evaluation algorithm, whence the first \c CS token,  for the \f$\mathcal P_2\f$
+  discrepancy.
+  The meaning of the second colon-separated, <code>sum</code>, is explained
+  below in \ref cmdtut_recipes_merit.
+
+- The argument <code>--weights product:0.7</code> assigns product weights to the
+  figure of merit,  with the same weight (0.7) for every coordinate.  More
+  general examples on how to specify the weights are given below in \ref
+  cmdtut_recipes_weights.
+
+To summarize, this command executes a CBC construction for an ordinary lattice
+with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
+of merit, in coordinate-symmetric with product weights such that \f$\gamma_j =
+0.7\f$ for all \f$j\f$.
+
+Options come in long and short forms.  For example, the following has the same
+effect as the previous example:
+\verbatim
+latbuilder -l ordinary -n 2053 -d 5 -c CBC -m CS:sum:P2 -w product:0.7
+\endverbatim
+The long forms are favored in this tutorial to make the examples
+self-explanatory.
+For the sake of conciseness, in the derived examples, we only show the
+command-line parameters that need to be changed, or added; other parameters
+should be left as in the basic example.
+
+
+
+
+This section covers the following topics:
+<ol>
+    <li> \subpage cmdtut_recipes_weights       </li>
+    <li> \subpage cmdtut_recipes_merit         </li>
+    <li> \subpage cmdtut_recipes_filters       </li>
+    <li> \subpage cmdtut_recipes_construction  </li>
+    <li> \subpage cmdtut_recipes_embedded      </li>
+    <li> \subpage cmdtut_recipes_extensible    </li>
+</ol>
+
+\subsection cmdtut_recipes_weights Specifying the Weights
+
+\subsubsection cmdtut_recipes_weights_projdep Projection-Dependent Weights
+
+With projection-dependent weights, the weight associated to the projection onto
+the coordinates in \f$\mathfrak u\f$ can be set to any non-negative constant
+\f$\gamma_{\mathfrak u}\f$.
+
+The projection-dependent weights cannot be specified directly on the command
+line.  They have to be written to a text file, say <tt>weights.txt</tt>, with a
+content similar to the following:
+\verbatim
+# this is a comment
+1,2,3:      0.7
+1,2,4:      0.5
+2,3,4:      0.3
+order 2:    1.0
+order 3:    0.1
+default:    1.0e-3
+\endverbatim
+This assigns the weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
+\f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a weight of 1.0 to every
+projection of order 2, a weight of 0.1 to every projection of order 3 other
+than the above three for which weights were explicitly assigned, then a weight
+of \f$10^{-3}\f$ to every other projection.
+The order of the lines in the file is not important.
+Lattice Builder must be told where to look for the weights by changing the 
+weights argument to
+\verbatim
+  --weights projection-dependent:weights.txt
+\endverbatim
+The first colon-separated token indicates the type (projection-dependent) of
+weights, and the second one, the name of the file from which the weights must be
+read.
+
+
+\subsubsection cmdtut_recipes_weights_orderdep Order-Dependent Weights
+
+With order-dependent weights, the weight associated to the projection onto the
+coordinates in \f$\mathfrak u\f$ is
+\f[
+  \gamma_{\mathfrak u} = \Gamma_{|\mathfrak u|}.
+\f]
+
+In that case, the argument of the <tt>--weights</tt> option consists of three 
+colon-separated tokens: the first is the type of weights (order-dependent
+weights); the second is the default weight assigned to projection orders for
+which no weight is explicitly given; the last token is optional and is a
+comma-separated list of order-dependent weights \f$\Gamma_1,\dots,\Gamma_j\f$ for
+some \f$j\f$.
+
+- Order-dependent weights with \f$\Gamma_\ell = 0.3\f$ for all \f$\ell\f$:
+  \verbatim
+  --weights order-dependent:0.3
+  \endverbatim
+
+- Order-dependent weights with \f$\Gamma_1 = 1.0\f$, \f$\Gamma_2 = 0.7\f$,
+  \f$\Gamma_3 = 0.3\f$ and \f$\Gamma_\ell = 0.1\f$ for all \f$\ell \geq 4\f$:
+  \verbatim
+  --weights order-dependent:0.1:1.0,0.7,0.3
+  \endverbatim
+
+
+\subsubsection cmdtut_recipes_weights_product Product Weights
+
+With product weights, the weight associated to the projection onto the
+coordinates in \f$\mathfrak u\f$ is
+\f[
+  \gamma_{\mathfrak u} = \prod_{j \in \mathfrak u} \gamma_j.
+\f]
+
+In that case, the argument of the <tt>--weights</tt> option consists of three 
+colon-separated tokens: the first is the type of weights (product
+weights); the second is the default weight assigned to coordinates for
+which no weight is explicitly given; the last token is optional and is a
+comma-separated list of coordinate weights \f$\gamma_1,\dots,\gamma_j\f$ for
+some \f$j\f$.
+
+- Product weights with \f$\gamma_j = 0.3\f$ for all \f$j\f$:
+  \verbatim
+  --weights product:0.3
+  \endverbatim
+
+- Product weights with \f$\gamma_1 = 1.0\f$, \f$\gamma_2 = 0.7\f$, \f$\gamma_3 =
+  0.3\f$ and \f$\gamma_j = 0.1\f$ for all \f$j \geq 4\f$:
+  \verbatim
+  --weights product:0.1:1.0,0.7,0.3
+  \endverbatim
+
+
+\subsubsection cmdtut_recipes_weights_pod POD Weights
+
+With product and order-dependent (POD) weights, the weight associated to the
+projection onto the coordinates in \f$\mathfrak u\f$ is
+\f[
+  \gamma_{\mathfrak u} =
+  \Gamma_{|\mathfrak u|}
+  \prod_{j \in \mathfrak u} \gamma_j.
+\f]
+
+In that case, the argument of the <tt>--weights</tt> option consists of five 
+colon-separated tokens: the first is the type of weights (POD), the next two
+specify the \f$\Gamma_j\f$'s as in \ref
+cmdtut_recipes_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
+as in \ref cmdtut_recipes_weights_product.
+
+- POD weights with \f$\Gamma_1 = 1.0\f$, \f$\Gamma_2 = 0.7\f$,
+  \f$\Gamma_3 = 0.3\f$ and \f$\Gamma_\ell = 0.1\f$ for all \f$\ell \geq 4\f$,
+  and with \f$\gamma_1 = 1.0\f$, \f$\gamma_2 = 0.9\f$, \f$\gamma_3 =
+  0.7\f$ and \f$\gamma_j = 0.5\f$ for all \f$j \geq 4\f$:
+  \verbatim
+  --weights POD:0.1:1.0,0.7,0.3:0.5:1.0,0.9,0.7
+  \endverbatim
+
+
+\subsection cmdtut_recipes_merit Figures of Merit
+
+- The spectral figure of merit (weighted worst projection):
+  \f[
+    \max_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
+        \gamma_{\mathfrak u}
+        \left[
+            \bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)
+        \right]
+  \f]
+  where \f$s\f$ is the dimension (5 in the basic example),
+  \f$n\f$ is the number of points (2053 in the basic example),
+  \f$\boldsymbol a\f$ is the generating vector (to be found),
+  the constants \f$\gamma_{\mathfrak u}\f$ are projection-dependent weights
+  (specified as product weights in the basic example),
+  and \f$\bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)\f$ is normalized
+  maximum distance between two successive parallel hyperplanes:
+  \verbatim
+    --figure-of-merit max:spectral
+  \endverbatim
+
+- The spectral figure of merit (weighted average):
+  \f[
+    \sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
+        \gamma_{\mathfrak u}
+        \left[
+            \bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)
+        \right]^2
+  \f]
+  \verbatim
+    --figure-of-merit sum:spectral:2
+  \endverbatim
+  The optional third colon-separated token specifies the exponent applied to the
+  square brackets.  It defaults to 1, as in the previous example.
+
+- The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using
+  term-by-term evaluation of the sum:
+  \verbatim
+    --figure-of-merit sum:P4
+  \endverbatim
+
+- The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using a
+  coordinate-symmetric evaluation algorithm:
+  \verbatim
+    --figure-of-merit CS:sum:P4
+  \endverbatim
+
+- The \f$\mathcal R_\alpha\f$ criterion with \f$\alpha=1\f$, using a
+  coordinate-symmetric evaluation algorithm:
+  \verbatim
+    --figure-of-merit CS:sum:R1
+  \endverbatim
+
+- The normalized \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using
+  the bound from \cite rSIN10a :
+  \verbatim
+    --figure-of-merit CS:sum:P2 --filters norm:P2-SL10
+  \endverbatim
+  Usage of the <code>--filters</code> option is illustrated in \ref
+  cmdtut_recipes_filters.
+
+
+
+\subsection cmdtut_recipes_filters Filtering Merit Values
+
+Filters are optional and can be used to transform the computed values of a
+figure of merit, or to reject bad values.
+Multiple filters can be chained together by specifying multiple filter
+arguments separated by whitespace.
+
+- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite rSIN10a with
+  \f$\alpha=2\f$:
+  \verbatim
+    --filters norm:P2-SL10
+  \endverbatim
+  The first colon-separated token (\c norm) indicates that we want to apply a
+  normalization.  The second one is the type of normalization (here, a
+  particular bound on \f$\mathcal P_2\f$.
+
+- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite vDIC08c
+  (available only when using product weights) with \f$\alpha=2\f$:
+  \verbatim
+    --filters norm:P2-DPW08
+  \endverbatim
+
+- Rejecting candidate lattices that have a normalized merit value larger than
+  unity:
+  \verbatim
+    --filters norm:P2-SL10 low-pass:1.0
+  \endverbatim
+  The first filter is explained above.
+  The second filter consists of two colon-separated tokens: the first one (\c
+  low-pass) indicates that we want to apply a low-pass filter on merit values;
+  the second one specifies the threshold value of this low-pass filter.
+
+
+For usage with embedded lattices, see \ref cmdtut_recipes_embedded.
+
+
+\subsection cmdtut_recipes_construction Construction Type
+
+- Simply evaluate the figure of merit for a lattice rule with generating vector
+  \f$(1, 468, 896, 603, 367)\f$:
+  \verbatim
+  --construction explicit:1,468,896,603,367
+  \endverbatim
+- Search among all possible generating vectors:
+  \verbatim
+  --construction exhaustive
+  \endverbatim
+- Search among 1000 randomly picked generating vectors:
+  \verbatim
+  --construction random:1000
+  \endverbatim
+- Search among 1000 randomly picked generating vectors that have a normalized
+  \f$\mathcal P_2\f$ value smaller than unity:
+  \verbatim
+  --construction random:1000 --filters norm:P2-SL10 low-pass:1.0
+  \endverbatim
+- Search among all possible generating vectors for Korobov lattices:
+  \verbatim
+  --construction Korobov
+  \endverbatim
+- Search among 30 randomly picked generating vectors for Korobov lattices:
+  \verbatim
+  --construction random-Korobov:30
+  \endverbatim
+- Perform a standard CBC construction:
+  \verbatim
+  --construction CBC
+  \endverbatim
+- Perform a CBC construction by considering only 10 randomly chosen values for
+  each component of the generating vector:
+  \verbatim
+  --construction random-CBC:10
+  \endverbatim
+- Perform a CBC construction by considering only 10 randomly chosen values for
+  each component of the generating vector with a corresponding normalized 
+  \f$\mathcal P_2\f$ value smaller than unity:
+  \verbatim
+  --construction random-CBC:10 --filter norm:P2-SL10 low-pass:1.0
+  \endverbatim
+- Perform a fast CBC construction:
+  \verbatim
+  --construction fast-CBC
+  \endverbatim
+
+
+
+\subsection cmdtut_recipes_embedded Embedded Lattices
+
+Constructing embedded lattices involves producing a compound merit value that
+accounts for the merit of each nested level.  This compound merit value is
+computed as follows:
+- the figure of merit is evaluated for each nested level;
+- optionally, multilevel filters are applied to the individual merit values of
+  each nested level;
+- these filtered individual merit values are combined into a single value;
+- optionally filters are applied to this combined value to produce a final
+  compound merit value.
+This mechanism can be selected in Lattice Builder by changing the lattice type
+to embedded with:
+\verbatim
+--lattice-type embedded
+\endverbatim
+
+- To build embedded lattices with CBC construction in dimension 5 with
+  \f$n=2^m\f$ points with \f$m=1,\dots,16\f$ using the maximum value of the
+  spectral merit across all levels, with the same weight for all projections:
+  \verbatim
+  latbuilder \
+    --lattice-type embedded \
+    --size 2^16 \
+    --dimension 5 \
+    --construction CBC \
+    --figure-of-merit spectral \
+    --weights product:1.0 \
+    --combiner max
+  \endverbatim
+  The size of the lattice with the largest number of points can be specified
+  with the <code>--size b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
+  simply with <code>--size 65536</code>, where \f$65,536 = 2^{16}\f$.
+  The spectral merit is evaluated for each nested level, and the maximum value
+  across all level is selected as the compound merit value, as specified with the
+  argument <code>--combiner max</code>.
+  
+- To build embedded lattices with fast CBC construction in dimension 10 with
+  \f$n=2^m\f$ points with \f$m=8,\dots,16\f$, using a weighted sum of the
+  normalized values of the \f$\mathcal P_2\f$ figure of merit with product
+  weights, and rejecting any candidate lattice that has such an individual
+  normalized merit value larger than unity, as proposed in \cite vDIC08c , with
+  the even weights across all levels:
+  \verbatim
+  latbuilder \
+    --lattice-type embedded \
+    --size 2^16 \
+    --dimension 10 \
+    --construction fast-CBC \
+    --figure-of-merit CS:sum:P2 \
+    --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0
+    --weights product:0.1 \
+    --combiner sum
+  \endverbatim
+  The <code>--multilevel-filters</code> argument specifies filters that must be
+  applied individually to each embedded level.
+  The first filter is a normalization using the weighted bound on the
+  \f$\mathcal P_2\f$ figure of merit as derived in \cite vDIC08c , with even
+  weights across all levels from \f$m=8,\dots,16\f$, and no weight for other
+  levels.
+  If regular filters were also specified with the <code>--filters</code>
+  argument, they would apply to the combined merit value.
+  Here the argument <code>--combiner sum</code> indicates that the normalized
+  merit values should be added to produce the combined merit value.
+
+
+If no combiner is explicitly specified, Lattice Builder defaults to selecting
+the merit value of the maximum level (highest value of \f$m\f$), which is
+equivalent to constructing ordinary lattices.
+This combiner can also be explicitly selected with:
+\verbatim
+--combiner level:max
+\endverbatim
+It is also possible to select any given level, say \f$m=8\f$, with
+\verbatim
+--combiner level:8
+\endverbatim
+
+
+\subsection cmdtut_recipes_extensible Extensible Lattices
+
+Suppose you have constructed embedded lattice rules up to $2^8$ points in
+dimension 5 with:
+\verbatim
+latbuilder \
+  --lattice-type embedded \
+  --size 2^8 \
+  --dimension 5 \
+  --construction fast-CBC \
+  --figure-of-merit CS:sum:P2 \
+  --multilevel-filters norm:P2-DPW08 low-pass:1.0
+  --weights product:0.1 \
+  --combiner sum
+\endverbatim
+and have obtained the generating vector \f$\boldsymbol a=(1,45,101,41,25)\f$.
+Then, you find out that you need to extend the number of points to \f$2^9\f$.
+This can be done with:
+\verbatim
+latbuilder \
+  --lattice-type ordinary \
+  --size 2^9 \
+  --dimension 5 \
+  --construction extend:2^8:1,45,101,41,25 \
+  --figure-of-merit CS:sum:P2 \
+  --weights product:0.1
+\endverbatim
+Note that only the merit value of the lattice with \f$2^9\f$ points, and not
+that of the embedded lattices, is considered in this type of construction.
+The argument <code>--size 2^9</code> specifies the extended number of points
+and the argument <code>--construction extend:2^8:1,45,101,41,25</code> indicates
+that we want to extend on a lattice with \f$2^8\f$ points and generating vector 
+\f$\boldsymbol a=(1,45,101,41,25)\f$.
+
+
+
+\section cmdtut_summary Summary of Command-Line Options
+
+The <code>latbuilder</code> executable supports the following command-line
+options:
+<dl>
+	<dt><code>--lattice-type</code> / <code>-l</code></dt>
+	<dd><em>Required.</em>
+		Specifies the lattice size.
+		Takes one of the following values:
+		- <code>ordinary</code>
+			to search for ordinary lattices; or
+		- <code>embedded</code>
+			to search for embedded lattices.
+	</dd>
+	<dt><code>--size</code> / <code>-n</code></dt>
+	<dd><em>Required.</em>
+		Specifies the lattice size.
+		Takes an argument of either form:
+		- <code><var>numberOfPoints</var></code>; or
+		- <code><var>primeBase</var>^<var>power</var></code>.
+	</dd>
+	<dt><code>--figure-of-merit</code> / <code>-m</code></dt>
+	<dd><em>Required.</em>
+		Specifies the accumulator type and figure of merit to be used.
+		Takes an argument of either of the following forms:
+		- <code><var>accumulator</var>:<var>figure</var></code>
+		- <code>CS:<var>accumulator</var>:<var>figure</var></code>
+
+                where the optional prefix <code>CS:</code> indicates that a
+                coordinate-symmetric implementation of the evaluation algorithm
+                should be used;
+
+		where <code><var>accumulator</var></code> is one of:
+		- <code>sum</code> for a weighted sum; or
+		- <code>max</code> for the selection of the weighted maximum;
+
+		and where <code><var>figure</var></code> is one of:
+                - <code>spectral:<var>power</var></code> for the spectral figure
+                  of merit;
+                - <code>P<var>alpha</var></code> for the weighted \f$\mathcal
+                  P_\alpha\f$ figure of merit with
+                  \f$\alpha=\f$<code><var>alpha</var></code>; or
+                - <code>R<var>alpha</var></code> for the weighted \f$\mathcal
+                  R_\alpha\f$ figure of merit with
+                  \f$\alpha=\f$<code><var>alpha</var></code>.
+	</dd>
+	<dt><code>--construction</code> / <code>-c</code></dt>
+	<dd><em>Required.</em>
+		Specifies the search space or construction method.
+		Takes an argument of the form:
+		- <code>explicit:<var>genVec</var></code> to just compute the
+		  merit value of the lattice with generating vector
+                  <code><var>genVec</var></code> specified as a list
+                  comma-separated integers;
+		- <code>exhaustive</code> for exhaustive search;
+		- <code>random:<var>samples</var></code> for a random search with
+		  <code><var>samples</var></code> random samples;
+		- <code>Korobov</code> for a Korobov search;
+		- <code>random-Korobov:<var>samples</var></code> for a random Korobov
+		  search with <code><var>samples</var></code> random samples;
+		- <code>CBC</code> for a component-by-component search;
+		- <code>random-CBC:<var>samples</var></code> for a random
+		  component-by-component search with <code><var>samples</var></code>
+		  random samples per coordinate;
+		- <code>fast-CBC</code> for a fast CBC search (requires a
+                  coordinate-symmetric implementation of the selected figure of
+                  merit);
+                - <code>extend:<var>numberOfPoints</var>:<var>genVec</var></code>
+                  to extend the number of points on a lattice with number of
+                  points <code><var>numberOfPoints</var></code> and generating
+                  vector <code><var>genVec</var></code> specified as a list
+                  comma-separated integers.
+
+	    Because the implementation of the fast CBC algorithm in lattice
+	    builder supports only numbers of points that are an integer power of
+	    a prime base, it can only be applied to embedded lattices.
+
+	    When the random variant of a search is used with a filters
+	    (see the <code>--filters</code> option below), the
+	    candidate samples that are rejected by the filter pipeline are
+	    not considered as valid samples, meaning that the user-specified
+	    number of random samples corresponds to only the number
+	    of accepted candidates.
+	</dd>
+	<dt><code>--weights</code> / <code>-w</code></dt>
+	<dd><em>Required.</em>
+		Specifies the type(s) of weights and their values.
+                Takes a whitespace-separated list of arguments, each of which
+                specifying a type of weights with its values. 
+                (The actual weights are the sum of these.)
+		Takes argument of the form:
+		- <code>product:<var>default</var>:<var>list</var></code>
+		  for product weights with the weights for the first coordinates
+		  specified by the comma-separated list of weights
+		  <code><var>list</var></code>, and with weight
+		  <code><var>default</var></code> for the other coordinates;
+		- <code>order-dependent:<var>default</var>:<var>list</var></code>
+		  for order-dependent weights with the weights for the first orders
+		  specified by the comma-separated list of weights
+		  <code><var>list</var></code> (starting at order 1), and with weight
+		  <code><var>default</var></code> for the other orders;
+		- <code>projection-dependent:<var>filename</var></code> for
+		  projection-dependent weights specified in the file named
+		  <code><var>filename</var></code>.
+                - <code>POD:<var>default1</var>:<var>list1</var>:<var>default2</var>:<var>list2</var></code>
+                  for POD weights, where <code><var>default1</var></code> and
+                  <code><var>list1</var></code> specify the default and
+                  individual order-dependent weights, and where
+                  <code><var>default2</var></code> and
+                  <code><var>list2</var></code> specify the default and
+                  individual product weights.
+
+		For projection-dependent weights, the file containing the weights must
+		consist of lines of the form:
+		- <code><var>coordinates</var>: <var>weight</var></code>
+		  to assign the weight <code><var>weight</var></code> to the projection
+		  defined by the comma-separated list of coordinates
+		  <code><var>coordinates</var></code>;
+		- <code>order <var>order</var>: <var>weight</var></code>
+		  to assign the weight <code><var>weight</var></code> to all other
+		  projections of order <code><var>order</var></code>;
+		- <code>default: <var>weight</var></code>
+		  to assign the weight <code><var>weight</var></code> to all other
+		  projections;
+		- <code>#<var>comment</var></code> to ignore
+		  <code><var>comment</var></code>.
+ 
+	</dd>
+	<dt><code>--dimension</code> / <code>-d</code></dt>
+	<dd><em>Required.</em>
+		Specifies the dimension.
+		Takes an integer argument.
+	</dd>
+	<dt><code>--filters</code> / <code>-f</code></dt>
+	<dd><em>Optional.</em>
+		Configures filters for merit values.
+		Takes a whitespace-separated list of arguments of the form:
+		- <code>norm:<var>type</var></code> for a normalizer
+		  for the weighted \f$\mathcal P_\alpha\f$ discrepancy based
+                  on the
+		  norm of type specified by <code><var>type</var></code>;
+		- <code>low-pass:<var>threshold</var></code> for a low-pass
+		  filter with thresold value <code><var>threshold</var></code>;
+
+		where <code><var>type</var></code> is one of:
+		- <code>P<var>alpha</var>-SL10</code> for the bound from \cite rSIN10a ; or
+		- <code>P<var>alpha</var>-DPW08</code> for the bound from \cite vDIC08c (available only with product weights);
+
+	</dd>
+	<dt><code>--multilevel-filters</code> / <code>-F</code></dt>
+	<dd><em>Optional.</em>
+		Configures filters for the individual merit values of each
+                nested level.
+                Takes the same values as the <code>--filters</code> argument,
+                except that, in the case of a normalization filter, weights can
+                be optionally specified by appending
+                <code>:even:<var>minLevel</var>,<var>maxLevel</var></code> to
+                the filter specification, which sets even weights across all
+                levels ranging from <code><var>minLevel</var></code> through
+                <code><var>maxLevel</var></code>, and a zero weight for other
+                levels.
+
+        </dd>
+	<dt><code>--combiner</code> / <code>-b</code></dt>
+	<dd><em>Optional.</em>
+                Selects a combiner for multilevel figures of merit.
+                Takes one of the following values:
+                - <code>sum</code>
+                  to sum the individual merit values of all nested levels;
+                - <code>max</code>
+                  to select the maximum individual merit value across all nested
+                  levels;
+		- <code>level:max</code>
+                  to select the individual merit value of the nested level with
+                  the largest number of points (the highest level);
+		- <code>level:<var>m</var></code>
+                  to select the individual merit value of the \f$m\f$th nested
+                  level.
+
+        </dd>
+</dl>
+
+
+\todo JavaScript wizard to build command line.
+
+
+
+*/
+vim: ft=doxygen spelllang=en spell

@@ -1,0 +1,192 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule{Chrono}
+
+This class acts as an interface to the system clock to compute the
+CPU time used by parts of a program.
+  Even though the ANSI/ISO macro \texttt{CLOCKS\_PER\_SEC = 1000000} 
+  is the number of clock ticks per second for the value
+  returned by the ANSI-C standard \texttt{clock} function 
+  (so this function returns the
+  number of microseconds), on some systems where the 32-bit type \texttt{long} 
+  is used to measure time, the value returned by \texttt{clock}
+  wraps around to negative values after about 36 minutes.
+  On some other systems where time is measured using the 32-bit type
+  \texttt{unsigned long}, the clock may wrap around to 0 after about
+   72 minutes.
+  When the macro \texttt{USE\_ANSI\_CLOCK} is undefined, 
+  a non-ANSI-C clock is used. 
+  On Linux-Unix systems, it calls the POSIX
+  function \texttt{times} to get the CPU time used by a program.
+\hpierre{Is this true for both Linux and Windows?}
+\hrichard{Je ne crois pas que MicroMou respecte le standard POSIX, qui est
+ sp\'ecifique aux syst\`emes Unix ou Linux.}
+  On a Windows platform (when the macro \texttt{HAVE\_WINDOWS\_H} is defined),
+  the Windows function \texttt{GetProcessTimes} will be used to measure
+  the CPU time used by programs.
+
+
+Every object \texttt{Chrono} acts as an independent 
+\emph{stopwatch}.  Several such stopwatchs can run at any given time.
+An object of type \texttt{Chrono} must be declared 
+for each of them.
+The method \texttt{init} resets the stopwatch to zero,
+\texttt{val} returns its current reading,
+and \texttt{write} writes this reading to the current output.
+The returned value includes part of the execution time of the functions
+from class \texttt{Chrono}.
+The \texttt{TimeFormat} allows one to choose the kind of 
+time units that are used.  
+
+Below is an example of how the functions may be used.
+A stopwatch named \texttt{timer} is declared and created.
+After 2.1 seconds of CPU time have been consumed, the stopwatch is read and
+reset. Then, after an additional 330 seconds (or 5.5 minutes) of CPU time
+the stopwatch is read again, printed to the output and deleted.
+%
+ \begin{verse}{\tt
+  Chrono timer; \\
+\hskip 1.0cm   \vdots 
+\hskip 1.0cm  (\emph{suppose 2.1 CPU seconds are used here}.)\\[6pt]
+  double t = timer.val (Chrono::SEC); \qquad   // Here, t = 2.1 \\
+  timer.init(); \\
+\hskip 1.0cm  \vdots
+\hskip 1.0cm (\emph{suppose 330 CPU seconds are used here}.) \\[10pt]
+  t = timer.val (Chrono::MIN); \qquad    // Here, t = 5.5 \\
+  timer.write (Chrono::HMS);  \qquad     // Prints: 00:05:30.00 \\
+ }\end{verse}
+
+% \newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bigskip\hrule
+\code\hide
+#ifndef CHRONO_H
+#define CHRONO_H 
+\endhide
+#include <string>
+
+#undef USE_ANSI_CLOCK
+\endcode
+  \tab
+  On a MS-Windows platform,
+  %(when the macro \texttt{HAVE\_WINDOWS\_H} is defined),
+  the MS-Windows function \texttt{GetProcessTimes} will be used to measure
+  the CPU time used by programs.
+  On Linux$|$Unix platforms, if the macro
+  \texttt{USE\_ANSI\_CLOCK} is defined, the timers % in module \texttt{chrono}
+  will call the ANSI C  \texttt{clock} function.
+  When \texttt{USE\_ANSI\_CLOCK} is left undefined, class
+  \texttt{Chrono} gets the CPU time used by a program via an 
+  alternate non-ANSI C timer 
+  based on the POSIX (The Portable Operating System Interface)
+  function \texttt{times}, assuming this function is available. The POSIX
+  standard is described in the IEEE Std 1003.1-2001 document (see 
+  The Open Group web site at
+  \url{http://www.opengroup.org/onlinepubs/007904975/toc.htm}).
+ \endtab
+\code
+
+
+namespace LatCommon {
+
+class Chrono {
+public:
+
+   enum TimeFormat { SEC, MIN, HOURS, DAYS, HMS };
+\endcode
+ \tabb
+  Types of units in which the time on a \texttt{Chrono} can be 
+  read or printed: in seconds (\texttt{SEC}), minutes (\texttt{MIN}),
+  hours (\texttt{HOUR}), days
+  (\texttt{DAYS}), or in the \texttt{HH:MM:SS.xx} format, with hours, 
+  minutes, seconds and hundreths of a second (\texttt{HMS}).
+ \endtabb
+\code
+
+   Chrono();
+\endcode
+  \tabb Constructor for a stopwatch; initializes it to zero.
+   One may reinitialize it later by calling \texttt{init}.
+  \endtabb
+\code
+
+   ~Chrono() \hide {} \endhide
+\endcode
+\tabb
+Destructor.
+\endtabb
+\code
+
+   void init ();
+\endcode
+  \tabb
+  Initializes this stopwatch to zero.
+  \endtabb
+\code
+
+   double val (TimeFormat unit);
+\endcode
+  \tabb
+  Returns the CPU time measured by this \texttt{Chrono} since the last call to
+  \texttt{init()}. The parameter \texttt{unit} specifies the time unit.
+  Restriction: \texttt{unit = HMS} is not allowed here; 
+  it will cause an error.
+  \endtabb
+\code
+
+   void write (TimeFormat unit);
+\endcode
+ \tabb
+  Prints, on standard output, the CPU time measured by this 
+  \texttt{Chrono} since its last  call to \texttt{init()}.
+  The parameter \texttt{unit} specifies the time unit.
+ \endtabb
+\code
+
+   std::string toString();
+\endcode
+ \tabb
+  Returns as a string the CPU time measured by this \texttt{Chrono}
+  since its last call to \texttt{init()}. The time format used is \texttt{HMS}.
+ \endtabb
+\code
+
+   bool timeOver (double limit);
+\endcode
+ \tabb
+ Returns \texttt{true} if this \texttt{Chrono} has reached the 
+ time \texttt{limit} (in seconds), otherwise returns \texttt{false}.
+ \endtabb
+\code
+
+
+private:
+
+   unsigned long microsec;         // microseconds
+   unsigned long second;           // seconds
+
+   void heure();
+};
+
+}
+\hide
+#endif
+\endhide
+\endcode

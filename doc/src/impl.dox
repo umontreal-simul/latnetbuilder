@@ -1,0 +1,152 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+/*! \page impl Implementation Notes
+
+\section impl_func_args Function Arguments
+
+In Lattice Builder, there are three different types of declarations of function
+arguments:
+\code
+void f(const T& x) // if f only reads x
+void f(T& x)       // if f writes to x
+void f(T x)        // if f needs a copy of x
+\endcode
+Although the first prototype allows \c f to make a copy of \c x internally, it
+is best to leave it to the compiler to do it.  For example, the following code
+will cause two instantiations of objects of type \c T:
+\code
+void f(const T& x) { T y = x; y.modify(); }
+...
+f(T());
+\endcode
+whereas the following allows the compiler to instantiate only one object of type
+\c T:
+\code
+void f(T y) { y.modify(); }
+...
+f(T());
+\endcode
+
+\section impl_seq Sequence
+
+In multiple situations, Lattice Builder needs to access arrays of values that
+can interchangeably be computed on-the-fly or pre-computed.  The concept of
+<em>sequence</em>, in the sense of ordered list rather than infinite
+mathematical sequence, provides in Lattice Builder a unified interface for both.
+The elements of a sequence are accessed via immutable iterators (\c
+const_iterator) with the standard syntax as used for the standard C++
+containers, as in the following example:
+\code
+MySeq seq; // must implement begin() and end()
+for (MySeq::const_iterator it = seq.begin(); it != seq.end(); ++it)
+   std::cout << *it << std::endl;
+\endcode
+Or, using the new C++11 \c auto keyword and \c for syntax:
+\code
+MySeq seq; // must implement begin() and end()
+for (const auto& elem : seq)
+   std::cout << elem << std::endl;
+\endcode
+Concrete examples are given in the tutorial in sections \ref libtut_genseq,
+\ref libtut_latseq and \ref libtut_meritseq .
+
+\sa
+   LatBuilder::GenSeq
+   LatBuilder::GenSeqSeq
+   LatBuilder::LatSeq
+   LatBuilder::MeritSeq
+
+\remark
+   The LatBuilder::TextStream namespace provides streaming operators to
+   iterate over sequences with a more compact syntax:
+   \code
+   using TextStream::operator<<;
+   MySeq seq; // must implement begin() and end()
+   std::cout << seq << std::endl;
+   \endcode
+   Concrete examples are given in the tutorial in section \ref libtut_textstream .
+
+
+\section impl_bridgeseq Bridge Sequence
+
+The values in a sequence often need to be mapped to other values, possibly of a
+different type.  For that purpose, Lattice Builder introduces the concept of a
+<em>bridge sequence</em>, which contains the mapped elements in the same order
+as the sequence it is based on.
+
+\sa LatBuilder::BridgeSeq
+
+
+\section impl_polymorphism Static Polymorphism
+
+Traditional object-oriented programming makes use of dynamic polymorphism, where
+the exact class of an object is resolved at execution time, dynamically.  It
+follows that polymorphic member function calls cannot be inlined, so it is often
+not advisable to place such a call in the core of a loop with many iterations,
+at the risk of cumulating inderections due to both polymorphism and function
+calls.
+
+Some algorithms implemented by Lattice Builder come in several variants which
+require either polymorphic function calls inside such loops or a large amount
+of duplicated code with tiny differences.  C++ allows to circumvent that
+problem through the use of <em>static polymorphism</em>, which enables
+compile-time resolution of the types together with member function inlining.
+
+In some places, static polymorphism is used regardless that dynamic
+polymorphism could have been used without any notable performance loss, in
+order to maintain a consistent design.  We prefer making common usage
+patterns of Lattice Builder's classes easier to recognize, even if that means
+a little bit more verbose code in places.
+
+The most obvious example is the case of sequence classes.  Their member
+functions \c begin()  and \c end() return iterators; the type of an iterator
+is often specific to the type of the sequence it is pointing to.
+
+Another example is the size parameter is represented by a different class
+depending on
+whether ordinary or embedded lattices are considered.  In both cases, the class
+implements a \c numPoints() member function, that returns the number of points
+in the lattice, and that is accessed frequently in some parts of the code.  In a
+traditional object-oriented approach, the two classes would derive from the same
+abstract base class, and would have required runtime object-type resolution at
+the call points of \c numPoints().  With the static polymorphism approach, the
+\c numPoints() function can be efficiently inlined by the compiler, thus
+avoiding both the overhead due to the function call and to runtime object-type
+resolution.
+
+
+
+\section impl_concepts Concept
+
+Concepts in C++ can be thought of as the static-polymorphism counterpart of
+dynamic-polymorphism interfaces.  Like interfaces, concepts can specify
+requirements on the members of a class; unlike interfaces, the data types of the
+arguments and of the return value of a member function can differ across classes
+implementing the same concept.  Furthermore, a concept can require type
+definitions (typedefs or nested classes) inside of a class.
+
+Although requirements on the types are not explicited with concepts
+definitions are absent from Lattice Builder, but the code is built around the
+idiom of concepts.
+
+By convention in Lattice Builder, classes representing the same concept are
+regrouped in the same namespace.
+
+
+*/
+vim: ft=doxygen spelllang=en spell

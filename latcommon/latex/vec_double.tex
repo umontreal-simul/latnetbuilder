@@ -1,0 +1,46 @@
+% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
+% 
+% This file is part of Lattice Builder.
+% 
+% Lattice Builder is free software: you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation, either version 3 of the License, or
+% (at your option) any later version.
+% 
+% Lattice Builder is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+% 
+% You should have received a copy of the GNU General Public License
+% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+\defmodule {vec\_double}
+
+This class builds vectors of \texttt{double}'s and is very similar to some NTL
+classes for vectors of integers. It has been added for compatibility with NTL in 
+declaration of types and method calls. The macros used provide template-like
+classes for dynamic-sized arrays of \texttt{double}'s.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bigskip\hrule
+\code \hide
+#ifndef VEC_DOUBLE_H
+#define VEC_DOUBLE_H
+\endhide
+#include "NTL/vector.h"
+
+typedef double Double; 
+
+NTL_vector_decl(Double,vec_double)
+
+NTL_io_vector_decl(Double,vec_double)
+
+NTL_eq_vector_decl(Double,vec_double)
+
+\hide
+#endif
+\endhide
+\endcode

@@ -1,0 +1,120 @@
+# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# 
+# This file is part of Lattice Builder.
+# 
+# Lattice Builder is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# Lattice Builder is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace LatBuilder {
+
+/** \page hightut High-Level API Tutorial
+
+If you need to use Lattice Builder from within your simulation software, this is
+the tutorial to read.
+This tutorial describes the high-level features of the Lattice Builder
+application programming interface (API).
+The complete code of the examples in this tutorial can be found under the \c
+latbuilder/examples/tutorial/ directory.
+
+The tutorial is divided into the following sections:
+<ol>
+    <li> \subpage hightut_parser         </li>
+</ol>
+
+*/
+
+/** \page hightut_parser Parsing Text Arguments
+
+The Parser namespace contains the tools to make calls to Lattice Builder using
+text arguments similar to those of the command-line tool (see \ref cmdtut).
+The Parser::Search class provides a \c parse() method that returns a
+pointer to a Task::Search instance.  The arguments to \c parse() are all
+text of the same format as the command-line arguments (in the following order) to:
+- \c --construction
+- \c --lattice-type
+- \c --size
+- \c --dimension
+- \c --figure-of-merit
+- \c --weights
+- \c --filters
+- \c --multilevel-filters
+- \c --combiner
+
+
+\section hightut_ordinary Constructing and Using Ordinary Lattice Rules
+
+The following piece of code calls Lattice Builder to perform a fast
+CBC construction of an ordinary lattice rule with \f$n=2^8\f$ points in
+dimension 10 using the coordinate-symmetric implementation (required by fast
+CBC) of the \f$\mathcal P_2\f$ criterion, with product weights with
+\f$\gamma_j=0.1\f$ for all \f$j\f$, using no filters:
+\snippet tutorial/ParserFastCBC.cc search
+The \c combiner argument is set to a valid value, but it is not used.
+The resulting lattice definition can be retrieved with \c search->bestLattice().
+Our function returns an instance of the virtual container \c LatticePoints,
+defined in \ref tutorial/LatticePoints.h as:
+\include tutorial/LatticePoints.h
+which can be used to enumerate the lattice points.
+The following piece of code shows how it could be used by simulation software.
+\snippet tutorial/ParserFastCBC.cc simulate
+In this example, we just print the points to standard output; in practice we
+would use them to integrate multidimensional functions.
+The complete example can be found in \ref tutorial/ParserFastCBC.cc.
+
+
+\section hightut_embedded Constructing and Using Embedded Lattice Rules
+
+To construct embedded lattices, we change the lattice type to <em>embedded</em>
+and the combiner to <em>sum</em>:
+\snippet tutorial/ParserFastCBCEmbedded.cc search inst
+We also add normalization and low-pass filters:
+\snippet tutorial/ParserFastCBCEmbedded.cc filters
+And, our \c search() functions now returns an instance of \c
+EmbeddedLatticePoints instead of \c LatticePoints:
+\snippet tutorial/ParserFastCBCEmbedded.cc return lattice
+The virtual container \c EmbeddedLatticePoints is defined in \ref
+tutorial/EmbeddedLatticePoints.h as:
+\include tutorial/EmbeddedLatticePoints.h
+Finally, we modify our \c simulate() function to use the points level by level:
+\snippet tutorial/ParserFastCBCEmbedded.cc simulate
+The complete example can be found in \ref tutorial/ParserFastCBCEmbedded.cc.
+
+
+\sa Parser Task
+
+*/
+
+/** \example tutorial/LatticePoints.h
+    This example shows how to implement a virtual container for ordinary lattice
+    points that can be used by simulation software.
+*/
+
+/** \example tutorial/EmbeddedLatticePoints.h
+    This example shows how to implement a virtual container for embedded lattice
+    points that can be used by simulation software.
+*/
+
+/** \example tutorial/ParserFastCBC.cc
+    This example shows how to use the high-level API to perform a fast CBC
+    construction for ordinary lattices.
+*/
+
+/** \example tutorial/ParserFastCBCEmbedded.cc
+    This example shows how to use the high-level API to perform a fast CBC
+    construction for embedded lattices.
+*/
+
+
+}
+
+vim: ft=doxygen spelllang=en spell
