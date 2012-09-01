@@ -1,22 +1,60 @@
-# Lattice Builder
+# Lattice Builder Quick Start Guide
 
 _A general software tool for constructing rank-1 lattice rules_
 
-# Quick Start Guide
+You can either download a (pre-compiled) [binary  distribution of Lattice
+Builder](#downloading-binaries) and start using it
+right away, or [compile it from source](#compiling-from-source).
 
-## Requirements
+
+## Downloading Binaries
+
+The easiest way to start using Lattice Builder is to [download a binary
+distribution](https://github.com/mungerd/latbuilder/downloads) of Lattice
+Builder, that includes the executable `latbuilder` program, together with
+the Lattice Builder library and documentation.
+
+The binary distribution packages have the following directory structure:
+
+* **bin**: contains the executable `labuilder` program;
+* **include**: contains the C++ header files necessary to use the Lattice
+  Builder library;
+* **lib**: contains the binary Lattice Builder library;
+* **share/doc/latbuilder/html**: contains the HTML documentation;
+* **share/doc/latbuilder/examples**: contains examples on using the Lattice
+  Builder library;
+
+The binary packages do not include an installation program.  To use the Lattice
+Builder program, simply unpack the binary distribution package and move to its
+root directory, then, e.g., to construct, component-by-component, a rank-1
+lattice rule with 8191 points in 5 dimensions using the P-alpha criterion with
+alpha=2 and with uniform product weights with value 0.1, issue the following
+command on Linux:
+
+	bin/latbuilder -l ordinary -n 8191 -d 5 -m CS:sum:P2 -w product:0.1 -c CBC
+
+or, on Window systems:
+
+	bin\latbuilder -l ordinary -n 8191 -d 5 -m CS:sum:P2 -w product:0.1 -c CBC
+
+Try `bin/latbuilder --help` or read **share/doc/latbuilder/html/cmdtut.html**
+for more information on using the Lattice Builder program.
+
+
+## Compiling From Source
+
+### Requirements
 
 The following software must be installed in order to compile Lattice Builder:
 
-* C++11-Compliant Compiler (e.g., [GCC](http://gcc.gnu.org) 4.7)
+* [Git](http://git-scm.com/)
+* [C++11](http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=50372)-Compliant Compiler (e.g., [GCC](http://gcc.gnu.org) 4.7)
 * [Boost C++ Libraries](http://www.boost.org/)
 * [FFTW Library](http://www.fftw.org/)
 * [Boost.Build](http://www.boost.org/boost-build2/) (nightly build recommended)
 
 
-## Configuring Boost.Build
-
-### Site-Specific Configuration
+### Configuring Boost.Build
 
 Boost.Build needs to be told where to find the Boost and FFTW headers and how to
 link to these libraries, via the `site-config.jam` configuration that can be
@@ -64,7 +102,18 @@ at the root of your home directory and by modifying this file instead of the
 `site-config.jam` file.
 
 
-### Project-Specific Configuration
+### Downloading from GitHub
+
+Clone the Lattice Builder repository with:
+
+	git clone git://github.com/mungerd/latbuilder.git
+
+Then, move to the root directory of the repository with:
+
+	cd latbuilder
+
+
+### Configuring the Compiler to Use the C++11 Standard
 
 The appropriate compiler flags should set in the `project-config.jam` file,
 which can be found at the root of the source distribution, in order to support
@@ -73,7 +122,7 @@ the C++11 standard.  For example, with GCC 4.7, one can set:
 	project latsoft : requirements <cxxflags>"-std=c++11" ;
 
 
-## Compiling Lattice Builder
+### Compiling Lattice Builder
 
 Change the current directory to the root or the source distribution.
 First, compile the auxiliary tools that are needed to generate part of the
