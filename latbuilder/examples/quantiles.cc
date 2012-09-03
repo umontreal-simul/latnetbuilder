@@ -25,6 +25,8 @@
 #include "latbuilder/LatSeq/Combiner.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/Traversal.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -52,30 +54,23 @@ void printTableRow(const T1& x1, const T2& x2)
 }
 
 struct Execute {
-   template <class FIGURE>
-   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension) const
+   template <class FIGURE, class LATSEQ>
+   void execute(
+         FIGURE figure,
+         LatBuilder::SizeParam<LatType::ORDINARY> size,
+         LATSEQ latSeq,
+         unsigned int numSamples
+         ) const
    {
       Storage<LatType::ORDINARY, FIGURE::suggestedCompression()> storage(std::move(size));
 
       auto latSeqOverCBC = MeritSeq::latSeqOverCBC(MeritSeq::cbc(storage, figure));
 
-      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression()> Coprime;
-      auto genSeqs = GenSeq::VectorCreator<Coprime>::create(storage.sizeParam(), dimension);
-      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2));
-
-      // pre-compute the number of elements in the sequence
-      // (required by the Boost Accumulators library)
-      size_t samples = 1;
-      for (const auto& g : genSeqs)
-         samples *= g.size();
-
-      auto latSeq = LatSeq::combine<CartesianProduct>(storage.sizeParam(), genSeqs);
-
       //! [accumulator setup]
       using namespace boost::accumulators;
 
       accumulator_set<Real, features<tag::count, tag::min, tag::max, tag::mean, tag::tail_quantile<left>>>
-          acc(tag::tail<left>::cache_size = samples);
+          acc(tag::tail<left>::cache_size = numSamples);
 
       auto meritSeq = latSeqOverCBC.meritSeq(latSeq);
       for (const auto& val : meritSeq)
@@ -95,13 +90,57 @@ struct Execute {
       printTableRow(1.0, max(acc));
       //! [output]
    }
+
+   // random sampling
+   template <class FIGURE>
+   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension, unsigned int nrand) const
+   {
+      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
+      auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension, nrand);
+      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2), nrand);
+
+      auto latSeq = LatSeq::combine<Zip>(size, std::move(genSeqs));
+
+      std::cout << "# random samples: " << nrand << std::endl;
+
+      execute(
+            std::move(figure),
+            std::move(size),
+            std::move(latSeq),
+            nrand
+            );
+   }
+
+   // exhaustive sampling
+   template <class FIGURE>
+   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension) const
+   {
+      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression()> Coprime;
+      auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension);
+      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2));
+
+      unsigned int numSamples = 1;
+      for (const auto& g : genSeqs)
+         numSamples *= g.size();
+
+      auto latSeq = LatSeq::combine<CartesianProduct>(size, std::move(genSeqs));
+
+      std::cout << "# deterministic samples: " << numSamples << std::endl;
+
+      execute(
+            std::move(figure),
+            std::move(size),
+            std::move(latSeq),
+            numSamples
+            );
+   }
 };
 
 int main(int argc, const char *argv[])
 {
    try {
-      if (argc != 4 + 1) {
-         std::cout << "usage: quantiles <size> <dimension> <figure-or-merit> <weights>" << std::endl;
+      if (argc < 4 + 1 || argc > 5 + 1) {
+         std::cout << "usage: quantiles <size> <dimension> <figure-or-merit> <weights> [<random samples>]" << std::endl;
          return -1;
       }
 
@@ -111,15 +150,29 @@ int main(int argc, const char *argv[])
       std::string figureSpec = argv[++iarg];
       std::string weightsSpec = argv[++iarg];
       auto weights = Parser::Weights::parse(weightsSpec);
+      unsigned int nrand = 0;
+      if (++iarg < argc)
+        nrand =  (unsigned int)atoi(argv[iarg]);
 
       auto size = Parser::SizeParam::parse<LatType::ORDINARY>(sizeSpec);
 
-      Parser::CoordSymFigureOfMerit::parse(
-            figureSpec,
-            std::move(weights),
-            Execute(),
-            size,
-            dimension);
+      if (nrand) {
+         Parser::CoordSymFigureOfMerit::parse(
+               figureSpec,
+               std::move(weights),
+               Execute(),
+               size,
+               dimension,
+               nrand);
+      }
+      else {
+         Parser::CoordSymFigureOfMerit::parse(
+               figureSpec,
+               std::move(weights),
+               Execute(),
+               size,
+               dimension);
+      }
    }
    catch (Parser::ParserError& e) {
       std::cerr << "COMMAND LINE ERROR: " << e.what() << std::endl;
