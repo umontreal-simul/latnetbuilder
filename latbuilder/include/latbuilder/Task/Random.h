@@ -63,7 +63,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
    typedef LFSR258 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
    typedef GenSeq::CoprimeIntegers<COMPRESS, Traversal> GenSeqType;
-   typedef LatSeq::Combiner<LAT, GenSeqType, CartesianProduct> LatSeqType;
+   typedef LatSeq::Combiner<LAT, GenSeqType, Zip> LatSeqType;
 
    LatSeqBasedSearchTraits(unsigned int numRand_):
       numRand(numRand_)
@@ -75,7 +75,6 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
       std::vector<GenSeqType> vec;
       vec.reserve(dimension);
       vec.push_back(GenSeq::Creator<GenSeqType>::create(SizeParam(2)));
-      vec[0].resize(1);
       for (Dimension j = 1; j < dimension; j++) {
          vec.push_back(
                GenSeq::Creator<GenSeqType>::create(
