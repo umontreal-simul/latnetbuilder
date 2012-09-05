@@ -62,9 +62,9 @@ install install-bin
 	;
 
 install install-doc
-	: [ glob doc/html/*.* doc/html/search/*.* ]
+	: [ glob ../doc/html/*.* ../doc/html/search/*.* ]
 	: <location>$(prefix)/share/doc/latbuilder
-	  <install-source-root>doc
+	  <install-source-root>../doc
 	;
 
 install install-examples
