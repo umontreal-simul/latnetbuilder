@@ -168,7 +168,7 @@ Fast CBC with a coordinate-symmetric figure of merit.
 
 For example, the following command line performs a fast CBC construction using
 the weighted P-alpha criterion with alpha=2 and with product weights giving
-equal the same weight of 0.01 to every coordinate (this means a weight of 1e-2
+the same weight of 0.01 to every coordinate (this means a weight of 1e-2
 for projections of order 1, of 1e-4 for projections of order 2, of 1e-6 for
 projections of order 3, etc.):
 
