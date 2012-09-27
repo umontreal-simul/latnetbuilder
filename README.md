@@ -158,3 +158,22 @@ together with a very simple piece of code.
 
 For more information and a tutorial, refer to the HTML documentation in the
 `<dist-prefix>/share/doc/html` directory.
+
+
+## Frequently Asked Questions
+
+### What construction type should I use to find good high-dimensional lattices in reasonable time?
+
+Fast CBC with a coordinate-symmetric figure of merit.
+
+For example, the following command line performs a fast CBC construction using
+the weighted P-alpha criterion with alpha=2 and with product weights giving
+equal the same weight of 0.01 to every coordinate (this means a weight of 1e-2
+for projections of order 1, of 1e-4 for projections of order 2, of 1e-6 for
+projections of order 3, etc.):
+
+	latbuilder -l ordinary -n 2^16 -d 100 -m CS:sum:P2 -c fast-CBC -w product:0.01
+
+The above search is for n=2^16=65,536 points in dimension 100.  Lattice Builder
+does that very quickly.
+
