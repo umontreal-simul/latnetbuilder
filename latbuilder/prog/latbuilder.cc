@@ -51,7 +51,7 @@ makeOptionsDescription()
 
    desc.add_options ()
    ("help,h", "produce help message")
-   ("version,h", "show version")
+   ("version,V", "show version")
    ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
    ("lattice-type,l", po::value<std::string>()->default_value("ordinary"),
     "type of lattice; possible values:\n"
