@@ -251,7 +251,7 @@ public:
 
 #ifdef DEBUG
          std::cout << "    merit:     " << merit << std::endl;
-         std::cout << "    weighted:  " << (weight * merit) << std::endl;
+         std::cout << "    weighted:  " << (weight2 * merit) << std::endl;
 #endif
 
          // divide q by two because the merit is assumed to be a squared value
