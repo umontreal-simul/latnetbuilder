@@ -69,7 +69,7 @@ struct CoordSymFigureOfMerit {
          FUNC&& func, ARGS&&... args)
    {
       auto strAcc = splitPair<>(str, ':');
-      if (strAcc.first == "sum") {
+      if (strAcc.first == "2") {
          Kernel::parse(strAcc.second, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }

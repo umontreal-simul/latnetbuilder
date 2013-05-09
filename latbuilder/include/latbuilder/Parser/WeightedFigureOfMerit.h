@@ -23,15 +23,17 @@
 #include "latbuilder/WeightedFigureOfMerit.h"
 #include "latbuilder/Functor/binary.h"
 
+#include <boost/lexical_cast.hpp>
+
 namespace LatBuilder { namespace Parser {
 
 /**
  * Exception thrown when trying to parse an invalid accumulator.
  */
-class BadAccumulator : public ParserError {
+class BadNorm : public ParserError {
 public:
-   BadAccumulator(const std::string& message):
-      ParserError("cannot parse accumulator string: " + message)
+   BadNorm(const std::string& message):
+      ParserError("cannot parse norm string (should be a number or `inf'): " + message)
    {}
 };
 
@@ -46,12 +48,14 @@ struct WeightedFigureOfMerit {
       template <class PROJDEP, typename FUNC, typename... ARGS>
       void operator()(
             PROJDEP projDepMerit,
+            Real qnorm,
             std::unique_ptr<LatCommon::Weights> weights,
              FUNC&& func, ARGS&&... args
             ) const
       {
          func(
                LatBuilder::WeightedFigureOfMerit<PROJDEP, ACC>(
+                  qnorm,
                   std::move(weights),
                   std::move(projDepMerit)
                   ),
@@ -65,7 +69,7 @@ struct WeightedFigureOfMerit {
     *
     * Example strings: <code>sum:P2</code>, <code>sum:spectral</code>, <code>max:spectral:2</code>
     *
-    * \throws BadAccumulator On failure.
+    * \throws BadNorm On failure.
     */
    template <typename FUNC, typename... ARGS>
    static void parse(
@@ -76,15 +80,17 @@ struct WeightedFigureOfMerit {
       const auto splitStr = splitPair(str, ':');
       const auto& accStr = splitStr.first;
       const auto& meritStr = splitStr.second;
-      if (accStr == "sum") {
-         ProjDepMerit::parse(meritStr, ParseProjDepMerit<Functor::Sum>(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+      if (accStr == "inf") {
+         ProjDepMerit::parse(meritStr, ParseProjDepMerit<Functor::Max>(), 1.0, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
-      else if (accStr == "max") {
-         ProjDepMerit::parse(meritStr, ParseProjDepMerit<Functor::Max>(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+      try {
+         const auto qnorm = boost::lexical_cast<Real>(accStr);
+         ProjDepMerit::parse(meritStr, ParseProjDepMerit<Functor::Sum>(), qnorm, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
-      throw BadAccumulator(accStr);
+      catch (boost::bad_lexical_cast&) {}
+      throw BadNorm(accStr);
    }
 };
 

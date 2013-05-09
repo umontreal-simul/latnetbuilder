@@ -80,13 +80,16 @@ public:
    /**
     * Constructor.
     *
+    * \param qnorm        Value of q as in the q-norm taken over all projections.
     * \param weights      Weights.
     * \param projdep      Projection-dependent figure of merit.
     */
    WeightedFigureOfMerit(
+         Real qnorm,
          std::unique_ptr<LatCommon::Weights> weights,
          PROJDEP projdep = PROJDEP()
          ):
+      m_qnorm(qnorm),
       m_weights(std::move(weights)),
       m_projDepMerit(std::move(projdep))
    {}
@@ -97,6 +100,9 @@ public:
 
    static constexpr Compress suggestedCompression()
    { return PROJDEP::suggestedCompression(); }
+
+   Real qnorm() const
+   { return m_qnorm; }
 
    /// \copydoc FigureOfMerit::weights()
    const LatCommon::Weights& weights() const
@@ -129,6 +135,7 @@ public:
    { return Accumulator<ACC, Real>::name() + ":" + projDepMerit().name(); }
 
 private:
+   Real m_qnorm;
    std::unique_ptr<LatCommon::Weights> m_weights;
    PROJDEP m_projDepMerit;
 
@@ -226,6 +233,7 @@ public:
             throw std::invalid_argument("WeightedFigureOfMerit: no such projection");
 
          Real weight = m_figure.weights().getWeight(proj);
+         Real weight2 = weight * weight;
 
          if (weight == 0.0) {
 #ifdef DEBUG
@@ -245,10 +253,11 @@ public:
          std::cout << "    weighted:  " << (weight * merit) << std::endl;
 #endif
 
-         acc.accumulate(weight, merit);
+         // divide q by two because the merit is assumed to be a squared value
+         acc.accumulate(weight2, merit, m_figure.qnorm() / 2);
 
          if (!onProgress()(acc.value())) {
-            acc.accumulate(std::numeric_limits<Real>::infinity(), merit);
+            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.qnorm() / 2);
             onAbort()(lat);
 #ifdef DEBUG
             std::cout << "    aborting" << std::endl;

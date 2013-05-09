@@ -86,11 +86,11 @@ makeOptionsDescription()
     "      default: <weight>\n"
     "    if <file> is `-' data is read from standard input\n")
    ("figure-of-merit,m", po::value<std::string>(),
-    "(required) type of figure of merit; format: [CS:]<accumulator>:<merit>\n"
+    "(required) type of figure of merit; format: [CS:]<norm-type>:<merit>\n"
     "  where the optional \"CS:\" prefix switches on the coordinate-symmetric evaluation algorithm,\n"
-    "  where <accumulator> is either:\n"
-    "    sum\n"
-    "    max\n"
+    "  where <norm-type> is either:\n"
+    "    <q>: a real number corresponding the l_<q> norm\n"
+    "    inf\n"
     "  and where <merit> is one of:\n"
     "    spectral:<power>\n"
     "    P<alpha>\n"
