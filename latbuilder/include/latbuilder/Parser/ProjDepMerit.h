@@ -61,7 +61,7 @@ struct ProjDepMerit {
    /**
     * Parses a string specifying a projection-dependent figure of merit.
     *
-    * Example strings: <code>spectral</code>, <code>spectral:2</code>, <code>spectral:1.5</code>, <code>P2</code>, <code>P4</code>, <code>R1</code>, <code>R1.5</code>
+    * Example strings: <code>spectral</code>, <code>P2</code>, <code>P4</code>, <code>R1</code>, <code>R1.5</code>
     *
     * \throws BadProjDepMerit On failure.
     */
@@ -76,10 +76,9 @@ struct ProjDepMerit {
       catch (BadKernel& e) {}
 
       // try spectral
-      auto spectralSplit = splitPair<std::string, double>(str, ':', 1.0);
-      if (spectralSplit.first == "spectral") {
+      if (str == "spectral") {
          func(
-               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(spectralSplit.second),
+               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(1.0),
                std::forward<ARGS>(args)...
              );
          return;

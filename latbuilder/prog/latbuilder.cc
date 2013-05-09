@@ -92,7 +92,7 @@ makeOptionsDescription()
     "    <q>: a real number corresponding the l_<q> norm\n"
     "    inf\n"
     "  and where <merit> is one of:\n"
-    "    spectral:<power>\n"
+    "    spectral\n"
     "    P<alpha>\n"
     "    R<alpha>\n")
    ("dimension,d", po::value<std::string>(),
