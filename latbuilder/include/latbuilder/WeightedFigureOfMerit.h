@@ -143,6 +143,7 @@ private:
    {
       return os << "WeightedFigureOfMerit("
          << "accumulator=" << Accumulator<ACC, Real>::name() << ", "
+         << "qnorm=" << qnorm() << ", "
          << "projDepMerit=" << projDepMerit() << ", "
          << "weights=" << weights()
          << ")";
