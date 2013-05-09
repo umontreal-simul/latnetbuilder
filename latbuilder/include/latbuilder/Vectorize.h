@@ -99,6 +99,27 @@ struct BinaryOperator<OP, true, true> {
 
 
 /**
+ * Vector-scalar specialization of BinaryOperator.
+ */
+template <typename OP>
+struct BinaryOperator<OP, true, false> {
+   typedef boost::numeric::ublas::vector<typename OP::result_type> result_type;
+
+   template <typename E1, typename T2>
+   static result_type apply(
+         const boost::numeric::ublas::vector_expression<E1>& e1,
+         const T2& x2)
+   {
+      const auto& x1 = e1();
+      result_type z(x1.size());
+      for (typename result_type::size_type i = 0; i < z.size(); i++)
+         z[i] = OP::apply(x1[i], x2);
+      return z;
+   }
+};
+
+
+/**
  * Applies the scalar binary operator \c OP to \c x and \c y.
  *
  * Example definition of \c OP:
