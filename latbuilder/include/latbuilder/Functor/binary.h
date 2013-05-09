@@ -20,6 +20,7 @@
 
 #include <string>
 #include <algorithm>
+#include <cmath>
 
 namespace LatBuilder { namespace Functor {
 
@@ -51,6 +52,20 @@ struct Max {
 
    static std::string name()
    { return "max"; }
+};
+
+/**
+ * Raise to power.
+ */
+struct Pow {
+   typedef Real result_type;
+   typedef Real arg_type;
+
+   static result_type apply(const arg_type& x, const arg_type& y)
+   { return std::pow(x, y); }
+
+   static std::string name()
+   { return "pow"; }
 };
 
 }}
