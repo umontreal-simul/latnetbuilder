@@ -20,6 +20,7 @@
 
 #include "latbuilder/Types.h"
 #include "latbuilder/Vectorize.h"
+#include "latbuilder/Functor/binary.h"
 
 namespace LatBuilder {
 
@@ -46,8 +47,8 @@ public:
    /**
     * Feeds \c value multiplied by \c weight to the accumulator.
     */
-   void accumulate(Real weight, const VAL& value)
-   { m_value = Vectorize::apply<OP<Real>>(m_value, weight * value); }
+   void accumulate(Real weight, const VAL& value, Real power = 1.0)
+   { m_value = Vectorize::apply<OP<Real>>(m_value, Vectorize::apply<Functor::Pow>(weight * value, power)); }
 
    /**
     * Returns the current value of the accumulator.
