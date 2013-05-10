@@ -80,16 +80,16 @@ public:
    /**
     * Constructor.
     *
-    * \param qnorm        Value of q as in the q-norm taken over all projections.
+    * \param normType     Value of q as in the q-norm taken over all projections.
     * \param weights      Weights.
     * \param projdep      Projection-dependent figure of merit.
     */
    WeightedFigureOfMerit(
-         Real qnorm,
+         Real normType,
          std::unique_ptr<LatCommon::Weights> weights,
          PROJDEP projdep = PROJDEP()
          ):
-      m_qnorm(qnorm),
+      m_normType(normType),
       m_weights(std::move(weights)),
       m_projDepMerit(std::move(projdep))
    {}
@@ -101,8 +101,8 @@ public:
    static constexpr Compress suggestedCompression()
    { return PROJDEP::suggestedCompression(); }
 
-   Real qnorm() const
-   { return m_qnorm; }
+   Real normType() const
+   { return m_normType; }
 
    /// \copydoc FigureOfMerit::weights()
    const LatCommon::Weights& weights() const
@@ -135,7 +135,7 @@ public:
    { return Accumulator<ACC, Real>::name() + ":" + projDepMerit().name(); }
 
 private:
-   Real m_qnorm;
+   Real m_normType;
    std::unique_ptr<LatCommon::Weights> m_weights;
    PROJDEP m_projDepMerit;
 
@@ -143,7 +143,7 @@ private:
    {
       return os << "WeightedFigureOfMerit("
          << "accumulator=" << Accumulator<ACC, Real>::name() << ", "
-         << "qnorm=" << qnorm() << ", "
+         << "norm-type=" << normType() << ", "
          << "projDepMerit=" << projDepMerit() << ", "
          << "weights=" << weights()
          << ")";
@@ -255,10 +255,10 @@ public:
 #endif
 
          // divide q by two because the merit is assumed to be a squared value
-         acc.accumulate(weight2, merit, m_figure.qnorm() / 2);
+         acc.accumulate(weight2, merit, m_figure.normType() / 2);
 
          if (!onProgress()(acc.value())) {
-            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.qnorm() / 2);
+            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / 2);
             onAbort()(lat);
 #ifdef DEBUG
             std::cout << "    aborting" << std::endl;
