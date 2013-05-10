@@ -46,9 +46,10 @@ public:
 
    /**
     * Feeds \c value multiplied by \c weight to the accumulator.
+    * \c weight is assumed to already be raised at the power \c power.
     */
    void accumulate(Real weight, const VAL& value, Real power = 1.0)
-   { m_value = Vectorize::apply<OP<Real>>(m_value, Vectorize::apply<Functor::Pow>(weight * value, power)); }
+   { m_value = Vectorize::apply<OP<Real>>(m_value, weight * Vectorize::apply<Functor::Pow>(value, power)); }
 
    /**
     * Returns the current value of the accumulator.

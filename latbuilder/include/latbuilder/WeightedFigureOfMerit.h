@@ -234,7 +234,6 @@ public:
             throw std::invalid_argument("WeightedFigureOfMerit: no such projection");
 
          Real weight = m_figure.weights().getWeight(proj);
-         Real weight2 = weight * weight;
 
          if (weight == 0.0) {
 #ifdef DEBUG
@@ -251,14 +250,14 @@ public:
 
 #ifdef DEBUG
          std::cout << "    merit:     " << merit << std::endl;
-         std::cout << "    weighted:  " << (weight2 * merit) << std::endl;
+         std::cout << "    weighted:  " << (weight * merit) << std::endl;
 #endif
 
          // divide q by two because the merit is assumed to be a squared value
-         acc.accumulate(weight2, merit, m_figure.normType() / 2);
+         acc.accumulate(weight, merit, m_figure.normType());
 
          if (!onProgress()(acc.value())) {
-            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / 2);
+            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType());
             onAbort()(lat);
 #ifdef DEBUG
             std::cout << "    aborting" << std::endl;
