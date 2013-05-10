@@ -47,14 +47,14 @@ struct WeightedFigureOfMerit {
       template <class PROJDEP, typename FUNC, typename... ARGS>
       void operator()(
             PROJDEP projDepMerit,
-            Real qnorm,
+            Real normType,
             std::unique_ptr<LatCommon::Weights> weights,
              FUNC&& func, ARGS&&... args
             ) const
       {
          func(
                LatBuilder::WeightedFigureOfMerit<PROJDEP, ACC>(
-                  qnorm,
+                  normType,
                   std::move(weights),
                   std::move(projDepMerit)
                   ),
