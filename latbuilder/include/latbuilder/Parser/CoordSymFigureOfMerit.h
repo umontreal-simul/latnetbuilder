@@ -74,8 +74,9 @@ struct CoordSymFigureOfMerit {
          if (norm == 2)
             Kernel::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
       }
-      catch (boost::bad_lexical_cast&) {}
-      throw BadCoordSymFigureOfMerit("norm must be `2' for the coordinate-symmetric implementation");
+      catch (boost::bad_lexical_cast&) {
+         throw BadCoordSymFigureOfMerit("norm must be `2' for the coordinate-symmetric implementation");
+      }
    }
 };
 
