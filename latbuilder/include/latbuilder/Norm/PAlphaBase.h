@@ -46,9 +46,11 @@ public:
     * Constructor.
     * 
     * \param alpha         Smoothness level \f$\alpha\f$ of the class of functions.
+    * \parm normType       Type of cross-projection norm used by the figure of
+    *                      merit.
     */
-   PAlphaBase(unsigned int alpha):
-      m_alpha(alpha)
+   PAlphaBase(unsigned int alpha, Real normType):
+      m_alpha(alpha), m_normType(normType)
    {
       // bounds for minimization domain
       m_minExp = 1.0 / m_alpha * (1.0 + std::numeric_limits<Real>::epsilon());
@@ -57,6 +59,9 @@ public:
 
    unsigned alpha() const
    { return m_alpha; }
+
+   Real normType() const
+   { return m_normType; }
 
    Real minExp() const
    { return m_minExp; }
@@ -123,6 +128,7 @@ public:
 
 private:
    const unsigned m_alpha;
+   Real m_normType;
 
    Real m_minExp;
    Real m_maxExp;

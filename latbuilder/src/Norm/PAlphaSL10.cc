@@ -30,6 +30,7 @@ namespace {
    struct SumHelper {
       Real operator()(
             const WEIGHTS& weights,
+            Real normType,
             Real z,
             Real lambda,
             Dimension dimension
@@ -41,7 +42,9 @@ namespace {
          for (const auto& proj : csets) {
             Real weight = weights.getWeight(proj);
             if (weight)
-               val += intPow(z, proj.size()) * pow(weight, lambda);
+               // weights are assumed to already be to the power normType; map
+               // them to power 2
+               val += intPow(z, proj.size()) * pow(weight, lambda * 2 / normType);
          }
          return val;
       }
@@ -54,6 +57,7 @@ namespace {
       public: \
          Real operator()( \
                const weight_type& weights, \
+               Real normType, \
                Real z, \
                Real lambda, \
                Dimension dimension \
@@ -74,6 +78,7 @@ namespace {
 
    Real SumHelper<CombinedWeights>::operator()(
          const CombinedWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -81,7 +86,7 @@ namespace {
    {
       Real val = 0.0;
       for (const auto& w : weights.list())
-         val += WeightsDispatcher::dispatch<SumHelper>(*w, z, lambda, dimension);
+         val += WeightsDispatcher::dispatch<SumHelper>(*w, normType, z, lambda * 2 / normType, dimension);
       return val;
    }
 
@@ -92,6 +97,7 @@ namespace {
 
    Real SumHelper<LatCommon::ProjectionDependentWeights>::operator()(
          const LatCommon::ProjectionDependentWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -104,7 +110,9 @@ namespace {
             const auto& proj = pw.first;
             const auto& weight = pw.second;
             if (weight)
-               val += intPow(z, proj.size()) * pow(weight, lambda);
+               // weights are assumed to already be to the power normType; map
+               // them to power 2
+               val += intPow(z, proj.size()) * pow(weight, lambda * 2 / normType);
          }
       }
       return val;
@@ -117,6 +125,7 @@ namespace {
 
    Real SumHelper<LatCommon::OrderDependentWeights>::operator()(
          const LatCommon::OrderDependentWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -128,7 +137,9 @@ namespace {
          Real weight = weights.getWeightForOrder(order);
          cumul *= (dimension - order + 1) * z / order;
          if (weight)
-            val += cumul * pow(weight, lambda);
+               // weights are assumed to already be to the power normType; map
+               // them to power 2
+            val += cumul * pow(weight, lambda * 2 / normType);
       }
       return val;
    }
@@ -140,6 +151,7 @@ namespace {
 
    Real SumHelper<LatCommon::ProductWeights>::operator()(
          const LatCommon::ProductWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -149,7 +161,9 @@ namespace {
       for (Dimension coord = 0; coord < dimension; coord++) {
          Real weight = weights.getWeightForCoordinate(coord);
          if (weight)
-            val *= 1.0 + z * pow(weight, lambda);
+               // weights are assumed to already be to the power normType; map
+               // them to power 2
+            val *= 1.0 + z * pow(weight, lambda * 2 / normType);
       }
       val -= 1.0;
       return val;
@@ -162,6 +176,7 @@ namespace {
 
    Real SumHelper<LatCommon::PODWeights>::operator()(
          const LatCommon::PODWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -171,21 +186,25 @@ namespace {
       std::vector<Real> states;
       states.push_back(1.0);
       for (Dimension s = 1; s <= dimension; s++) {
-         Real pweight = pow(weights.getProductWeights().getWeightForCoordinate(s), lambda);
+         // weights are assumed to already be to the power normType; map
+         // them to power 2
+         Real pweight = pow(weights.getProductWeights().getWeightForCoordinate(s), lambda * 2 / normType);
          states.push_back(0.0);
          for (Dimension order = states.size() - 1; order > 0; order--)
             states[order] += z * pweight * states[order - 1];
       }
       Real val = 0.0;
       for (Dimension order = 1; order <= dimension; order++)
-         val += pow(weights.getOrderDependentWeights().getWeightForOrder(order), lambda) * states[order];
+         // weights are assumed to already be to the power normType; map
+         // them to power 2
+         val += pow(weights.getOrderDependentWeights().getWeightForOrder(order), lambda * 2 / normType) * states[order];
       return val;
    }
 
 }
 
-PAlphaSL10::PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights):
-   PAlphaBase<PAlphaSL10>(alpha),
+PAlphaSL10::PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType):
+   PAlphaBase<PAlphaSL10>(alpha, normType),
    m_weights(weights)
 {}
 
@@ -201,6 +220,7 @@ Real PAlphaSL10::value(
    Real z = static_cast<Real>(2 * boost::math::zeta<Real>(this->alpha() * lambda));
    Real val = WeightsDispatcher::dispatch<SumHelper>(
          m_weights,
+         this->normType(),
          z,
          lambda,
          dimension

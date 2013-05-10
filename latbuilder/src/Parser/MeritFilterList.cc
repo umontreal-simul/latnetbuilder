@@ -29,11 +29,12 @@ void MeritFilterList::parse(
       LatBuilder::MeritFilterList<LatType::ORDINARY>& list,
       const std::vector<std::string>& filters,
       const LatBuilder::SizeParam<LatType::ORDINARY>& sizeParam,
-      const LatCommon::Weights& weights
+      const LatCommon::Weights& weights,
+      Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter::parse(arg, sizeParam, weights));
+      list.add(MeritFilter::parse(arg, sizeParam, weights, normType));
 }
 
 void MeritFilterList::parse(
@@ -42,14 +43,15 @@ void MeritFilterList::parse(
       const std::vector<std::string>& multilevelFilters,
       const std::string& combiner,
       const LatBuilder::SizeParam<LatType::EMBEDDED>& sizeParam,
-      const LatCommon::Weights& weights
+      const LatCommon::Weights& weights,
+      Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter::parse(arg, sizeParam, weights));
+      list.add(MeritFilter::parse(arg, sizeParam, weights, normType));
 
    for (const auto& arg : multilevelFilters)
-      list.add(MeritFilter::parse(arg, sizeParam, weights));
+      list.add(MeritFilter::parse(arg, sizeParam, weights, normType));
 
    list.add(MeritCombiner::parse(combiner, sizeParam));
 }

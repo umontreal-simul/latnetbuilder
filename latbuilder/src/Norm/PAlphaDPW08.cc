@@ -29,6 +29,7 @@ namespace {
    public:
       Real operator()(
             const WEIGHTS& weights,
+            Real normType,
             Real z,
             Real lambda,
             Dimension dimension
@@ -42,6 +43,7 @@ namespace {
       public: \
          Real operator()( \
                const weight_type& weights, \
+               Real normType, \
                Real z, \
                Real lambda, \
                Dimension dimension \
@@ -59,6 +61,7 @@ namespace {
 
    Real SumHelper<CombinedWeights>::operator()(
          const CombinedWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -66,7 +69,7 @@ namespace {
    {
       Real val = 0.0;
       for (const auto& w : weights.list())
-         val += WeightsDispatcher::dispatch<SumHelper>(*w, z, lambda, dimension);
+         val += WeightsDispatcher::dispatch<SumHelper>(*w, normType, z, lambda, dimension);
       return val;
    }
 
@@ -77,6 +80,7 @@ namespace {
 
    Real SumHelper<LatCommon::ProductWeights>::operator()(
          const LatCommon::ProductWeights& weights,
+         Real normType,
          Real z,
          Real lambda,
          Dimension dimension
@@ -86,15 +90,17 @@ namespace {
       for (Dimension coord = 0; coord < dimension; coord++) {
          Real weight = weights.getWeightForCoordinate(coord);
          if (weight)
-            val *= 1.0 + z * pow(weight, lambda);
+            // weights are assumed to already be to the power normType; map
+            // them to power 2
+            val *= 1.0 + z * pow(weight, lambda * 2 / normType);
       }
       val -= 1.0;
       return val;
    }
 }
 
-PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights):
-   PAlphaBase<PAlphaDPW08>(alpha),
+PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights, Real normType):
+   PAlphaBase<PAlphaDPW08>(alpha, normType),
    m_weights(weights)
 {}
 
@@ -113,6 +119,7 @@ Real PAlphaDPW08::value(
    Real z = static_cast<Real>(k * boost::math::zeta<Real>(this->alpha() * lambda));
    Real val = WeightsDispatcher::dispatch<SumHelper>(
          m_weights,
+         this->normType(),
          z,
          lambda,
          dimension

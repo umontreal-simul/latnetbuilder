@@ -33,14 +33,16 @@ namespace {
          LatBuilder::MeritFilterList<LatBuilder::LatType::ORDINARY>& filters,
          const CommandLine<LatBuilder::LatType::ORDINARY>& args,
          const LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>& size,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          )
    {
       Parser::MeritFilterList::parse(
             filters,
             args.filters,
             size,
-            weights
+            weights,
+            normType
             );
    }
 
@@ -48,7 +50,8 @@ namespace {
          LatBuilder::MeritFilterList<LatBuilder::LatType::EMBEDDED>& filters,
          const CommandLine<LatBuilder::LatType::EMBEDDED>& args,
          const LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>& size,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          )
    {
       Parser::MeritFilterList::parse(
@@ -57,7 +60,8 @@ namespace {
             args.multilevelFilters,
             args.combiner,
             size,
-            weights
+            weights,
+            normType
             );
    }
 
@@ -98,7 +102,8 @@ namespace {
                m_search->filters(),
                m_args,
                size,
-               m_search->figureOfMerit().weights());
+               m_search->figureOfMerit().weights(),
+               m_search->figureOfMerit().normType());
       }
    };
 

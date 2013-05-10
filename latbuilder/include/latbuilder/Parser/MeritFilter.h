@@ -42,7 +42,8 @@ struct MeritFilter {
    static std::unique_ptr<BasicMeritFilter<LAT>> parse(
          const std::string& str,
          const LatBuilder::SizeParam<LAT>& sizeParam,
-         const LatCommon::Weights& weights);
+         const LatCommon::Weights& weights,
+         Real normType);
 };
 
 extern template
@@ -50,14 +51,16 @@ std::unique_ptr<BasicMeritFilter<LatType::ORDINARY>>
 MeritFilter::parse(
       const std::string&,
       const LatBuilder::SizeParam<LatType::ORDINARY>&,
-      const LatCommon::Weights&);
+      const LatCommon::Weights&,
+      Real);
 
 extern template
 std::unique_ptr<BasicMeritFilter<LatType::EMBEDDED>>
 MeritFilter::parse(
       const std::string&,
       const LatBuilder::SizeParam<LatType::EMBEDDED>&,
-      const LatCommon::Weights&);
+      const LatCommon::Weights&,
+      Real);
 
 }}
 

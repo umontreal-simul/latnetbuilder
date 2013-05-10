@@ -50,10 +50,11 @@ namespace {
          unsigned int alpha,
          const LatBuilder::SizeParam<LAT>& sizeParam,
          const LatCommon::Weights& weights,
+         Real normType,
          const std::string& levelWeights
          )
    {
-      auto normalizer = new LatBuilder::Norm::Normalizer<LAT, NORM>(NORM(alpha, weights));
+      auto normalizer = new LatBuilder::Norm::Normalizer<LAT, NORM>(NORM(alpha, weights, normType));
       setLevelWeights(*normalizer, levelWeights, sizeParam);
       return std::unique_ptr<BasicMeritFilter<LAT>>(normalizer);
    }
@@ -67,7 +68,8 @@ namespace {
    std::unique_ptr<BasicMeritFilter<LAT>> parseNormalizer(
          const std::string& str,
          const LatBuilder::SizeParam<LAT>& sizeParam,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          )
    {
       const auto args = splitPair(str, ':');
@@ -76,9 +78,9 @@ namespace {
          if (strSplit.first[0] == 'P') {
             const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(1));
             if (strSplit.second == "SL10")
-               return createNormalizer<LatBuilder::Norm::PAlphaSL10>(alpha, sizeParam, weights, args.second);
+               return createNormalizer<LatBuilder::Norm::PAlphaSL10>(alpha, sizeParam, weights, normType, args.second);
             else if (strSplit.second == "DPW08")
-               return createNormalizer<LatBuilder::Norm::PAlphaDPW08>(alpha, sizeParam, weights, args.second);
+               return createNormalizer<LatBuilder::Norm::PAlphaDPW08>(alpha, sizeParam, weights, normType, args.second);
          }
       }
       catch (boost::bad_lexical_cast&) {}
@@ -91,12 +93,13 @@ std::unique_ptr<BasicMeritFilter<LAT>>
 MeritFilter::parse(
       const std::string& str,
       const LatBuilder::SizeParam<LAT>& sizeParam,
-      const LatCommon::Weights& weights
+      const LatCommon::Weights& weights,
+      Real normType
       )
 {
    const auto x = splitPair(str, ':');
    if (x.first == "norm")
-      return parseNormalizer(x.second, sizeParam, weights);
+      return parseNormalizer(x.second, sizeParam, weights, normType);
    else if (x.first == "low-pass") {
       auto threshold = boost::lexical_cast<Real>(x.second);
       return std::unique_ptr<BasicMeritFilter<LAT>>(new LatBuilder::MeritFilter<LAT>(Functor::LowPass<Real>(threshold), str));
@@ -109,13 +112,15 @@ std::unique_ptr<BasicMeritFilter<LatType::ORDINARY>>
 MeritFilter::parse(
       const std::string&,
       const LatBuilder::SizeParam<LatType::ORDINARY>&,
-      const LatCommon::Weights&);
+      const LatCommon::Weights&,
+      Real);
 
 template
 std::unique_ptr<BasicMeritFilter<LatType::EMBEDDED>>
 MeritFilter::parse(
       const std::string&,
       const LatBuilder::SizeParam<LatType::EMBEDDED>&,
-      const LatCommon::Weights&);
+      const LatCommon::Weights&,
+      Real);
 
 }}

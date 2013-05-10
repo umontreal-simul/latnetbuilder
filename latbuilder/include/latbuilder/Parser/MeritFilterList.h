@@ -37,11 +37,12 @@ struct MeritFilterList {
    static LatBuilder::MeritFilterList<LatBuilder::LatType::ORDINARY> parse(
          const std::vector<std::string>& filters,
          const LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>& sizeParam,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          )
    {
       LatBuilder::MeritFilterList<LatType::ORDINARY> f;
-      parse(f, filters, sizeParam, weights);
+      parse(f, filters, sizeParam, weights, normType);
       return f;
    }
 
@@ -49,7 +50,8 @@ struct MeritFilterList {
          LatBuilder::MeritFilterList<LatBuilder::LatType::ORDINARY>& list,
          const std::vector<std::string>& filters,
          const LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>& sizeParam,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          );
 
    static LatBuilder::MeritFilterList<LatBuilder::LatType::EMBEDDED> parse(
@@ -57,11 +59,12 @@ struct MeritFilterList {
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>& sizeParam,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          )
    {
       LatBuilder::MeritFilterList<LatType::EMBEDDED> f;
-      parse(f, filters, multilevelFilters, combiner, sizeParam, weights);
+      parse(f, filters, multilevelFilters, combiner, sizeParam, weights, normType);
       return f;
    }
 
@@ -71,7 +74,8 @@ struct MeritFilterList {
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>& sizeParam,
-         const LatCommon::Weights& weights
+         const LatCommon::Weights& weights,
+         Real normType
          );
 };
 
