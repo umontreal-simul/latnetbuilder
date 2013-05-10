@@ -65,6 +65,9 @@ public:
    std::string name() const
    { return "CS:sum:" + kernel().name(); }
 
+   Real normType() const
+   { return 2.0; }
+
 protected:
    std::ostream& format(std::ostream& os) const
    {

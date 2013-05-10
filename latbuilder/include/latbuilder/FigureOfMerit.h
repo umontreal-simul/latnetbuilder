@@ -49,6 +49,8 @@ public:
 
    virtual std::string name() const = 0;
 
+   virtual Real normType() const = 0;
+
 protected:
    virtual std::ostream& format(std::ostream& os) const = 0;
 
