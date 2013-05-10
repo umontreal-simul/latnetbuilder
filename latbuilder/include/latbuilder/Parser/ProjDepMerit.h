@@ -78,7 +78,7 @@ struct ProjDepMerit {
       // try spectral
       if (str == "spectral") {
          func(
-               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(1.0),
+               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
                std::forward<ARGS>(args)...
              );
          return;
