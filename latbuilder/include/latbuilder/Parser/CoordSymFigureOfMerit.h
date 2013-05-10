@@ -64,16 +64,18 @@ struct CoordSymFigureOfMerit {
     */
    template <typename FUNC, typename... ARGS>
    static void parse(
+         const std::string& strNorm,
          const std::string& str,
          std::unique_ptr<LatCommon::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
-      auto strAcc = splitPair<>(str, ':');
-      if (strAcc.first == "2") {
-         Kernel::parse(strAcc.second, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
-         return;
+      try {
+         const auto norm = boost::lexical_cast<Real>(strNorm);
+         if (norm == 2)
+            Kernel::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
       }
-      throw BadCoordSymFigureOfMerit(str);
+      catch (boost::bad_lexical_cast&) {}
+      throw BadCoordSymFigureOfMerit("norm must be `2' for the coordinate-symmetric implementation");
    }
 };
 

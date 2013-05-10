@@ -28,6 +28,8 @@ using namespace std;
 namespace LatBuilder { namespace Parser {
 
 namespace {
+   Real inputPowerScale = 1.0;
+
    /**
     * Helper function to check the next characters from an input stream.
     *
@@ -123,6 +125,7 @@ namespace {
          // read weight
          LatCommon::Weight weight;
          is >> weight;
+         weight = std::pow(weight, inputPowerScale);
 
          if (is_default)
             ow->setDefaultWeight(weight);
@@ -143,8 +146,12 @@ namespace {
 bool
 CombinedWeights::parseFile(
       const std::string& arg,
-      LatBuilder::CombinedWeights& weights)
+      LatBuilder::CombinedWeights& weights,
+      Real powerScale)
 {
+   Real oldScale = inputPowerScale;
+   // set parameter from anonymous namespace
+   inputPowerScale = powerScale;
    auto ka = splitPair<>(arg, ':');
    if (ka.first != "file") return false;
    if (ka.second == "-")
@@ -155,17 +162,18 @@ CombinedWeights::parseFile(
       is >> weights;
       is.close();
    }
+   inputPowerScale = oldScale;
    return true;
 }
 
 std::unique_ptr<LatBuilder::CombinedWeights>
-CombinedWeights::parse(const std::vector<std::string>& args)
+CombinedWeights::parse(const std::vector<std::string>& args, Real powerScale)
 {
    auto w = new LatBuilder::CombinedWeights;
    for (const auto& s : args) {
-      if (parseFile(s, *w))
+      if (parseFile(s, *w, powerScale))
          continue;
-      w->add(Parser::Weights::parse(s));
+      w->add(Parser::Weights::parse(s, powerScale));
    }
    return std::unique_ptr<LatBuilder::CombinedWeights>(w);
 }

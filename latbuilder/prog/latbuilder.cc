@@ -85,12 +85,15 @@ makeOptionsDescription()
     "      order <x>: <weight>\n"
     "      default: <weight>\n"
     "    if <file> is `-' data is read from standard input\n")
+   ("weights-power,o", po::value<Real>(),
+    "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
+   ("norm-type,p", po::value<std::string>()->default_value("2"),
+    "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
+    "    <p>: a real number corresponding the l_<p> norm\n"
+    "    inf: corresponding to the `max' norm\n")
    ("figure-of-merit,m", po::value<std::string>(),
-    "(required) type of figure of merit; format: [CS:]<norm-type>:<merit>\n"
+    "(required) type of figure of merit; format: [CS:]<merit>\n"
     "  where the optional \"CS:\" prefix switches on the coordinate-symmetric evaluation algorithm,\n"
-    "  where <norm-type> is either:\n"
-    "    <q>: a real number corresponding the l_<q> norm\n"
-    "    inf\n"
     "  and where <merit> is one of:\n"
     "    spectral\n"
     "    P<alpha>\n"
@@ -209,9 +212,25 @@ int main(int argc, const char *argv[])
       cmd.construction  = opt["construction"].as<std::string>();
       cmd.size          = opt["size"].as<std::string>();
       cmd.dimension     = opt["dimension"].as<std::string>();
+      cmd.normType      = opt["norm-type"].as<std::string>();
       cmd.figure        = opt["figure-of-merit"].as<std::string>();
       cmd.weights       = opt["weights"].as<std::vector<std::string>>();
       cmd.combiner      = opt["combiner"].as<std::string>();
+
+      if (opt.count("weights-power") >= 1) {
+         // assume 1.0 if norm-type is `inf' or anything else
+         cmd.weightsPowerScale = 1.0;
+         try {
+            // start the value of norm-type as a default
+            if (cmd.normType != "inf")
+               cmd.weightsPowerScale = boost::lexical_cast<Real>(cmd.normType);
+         }
+         catch (boost::bad_lexical_cast&) {}
+         // then scale down according to interpretation of input
+         cmd.weightsPowerScale /= opt["weights-power"].as<Real>();
+      }
+      else
+         cmd.weightsPowerScale = 1.0;
 
       if (opt.count("filters") >= 1)
          cmd.filters = opt["filters"].as<std::vector<std::string>>();

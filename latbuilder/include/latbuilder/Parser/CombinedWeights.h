@@ -19,6 +19,7 @@
 #define LATBUILDER__PARSER__COMBINED_WEIGHTS_H
 
 #include "latbuilder/Parser/Common.h"
+#include "latbuilder/Types.h"
 
 #include "latbuilder/CombinedWeights.h"
 
@@ -42,7 +43,7 @@ struct CombinedWeights {
     * \return \c true on success; \c false on failure
     */
    static bool
-   parseFile(const std::string& arg, LatBuilder::CombinedWeights& weights);
+   parseFile(const std::string& arg, LatBuilder::CombinedWeights& weights, Real powerScale);
 
    /**
     * Parses a vector of strings specifying weights.
@@ -55,7 +56,7 @@ struct CombinedWeights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatBuilder::CombinedWeights>
-   parse(const std::vector<std::string>& args);
+   parse(const std::vector<std::string>& args, Real powerScale);
 };
 
 }}

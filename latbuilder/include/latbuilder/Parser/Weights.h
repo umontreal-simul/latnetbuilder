@@ -19,6 +19,7 @@
 #define LATBUILDER__PARSER__WEIGHTS_H
 
 #include "latbuilder/Parser/Common.h"
+#include "latbuilder/Types.h"
 
 #include "latcommon/ProjectionDependentWeights.h"
 
@@ -49,7 +50,7 @@ struct Weights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatCommon::Weights>
-   parseProjectionDependent(const std::string& arg);
+   parseProjectionDependent(const std::string& arg, Real powerScale);
 
    /**
     * Parses a string specifying order-dependent weights.
@@ -59,7 +60,7 @@ struct Weights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatCommon::Weights>
-   parseOrderDependent(const std::string& arg);
+   parseOrderDependent(const std::string& arg, Real powerScale);
 
    /**
     * Parses a string specifying product weights.
@@ -69,7 +70,7 @@ struct Weights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatCommon::Weights>
-   parseProduct(const std::string& arg);
+   parseProduct(const std::string& arg, Real powerScale);
 
    /**
     * Parses a string specifying product and order-dependent (POD) weights.
@@ -82,7 +83,7 @@ struct Weights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatCommon::Weights>
-   parsePOD(const std::string& arg);
+   parsePOD(const std::string& arg, Real powerScale);
 
    /**
     * Parses a string specifying weights.
@@ -93,7 +94,7 @@ struct Weights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatCommon::Weights>
-   parse(const std::string& arg);
+   parse(const std::string& arg, Real powerScale);
 };
 
 }}

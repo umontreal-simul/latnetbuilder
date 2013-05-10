@@ -37,15 +37,16 @@ struct FigureOfMerit {
     */
    template <typename FUNC, typename... ARGS>
    static void parse(
+         const std::string& strNorm,
          const std::string& str,
          std::unique_ptr<LatCommon::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
       auto strCS = splitPair<>(str, ':');
       if (strCS.first == "CS")
-         CoordSymFigureOfMerit::parse(strCS.second, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         CoordSymFigureOfMerit::parse(strNorm, strCS.second, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
       else
-         WeightedFigureOfMerit::parse(str, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         WeightedFigureOfMerit::parse(strNorm, str, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
    }
 };
 

@@ -76,8 +76,9 @@ namespace {
       std::unique_ptr<LatBuilder::Task::Search<LAT>> search()
       {
          Parser::FigureOfMerit::parse(
+               m_args.normType,
                m_args.figure,
-               Parser::CombinedWeights::parse(m_args.weights),
+               Parser::CombinedWeights::parse(m_args.weights, m_args.weightsPowerScale),
                *this,
                Parser::SizeParam::parse<LAT>(m_args.size),
                boost::lexical_cast<Dimension>(m_args.dimension)

@@ -21,7 +21,6 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Parser/ProjDepMerit.h"
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latbuilder/Functor/binary.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -73,24 +72,22 @@ struct WeightedFigureOfMerit {
     */
    template <typename FUNC, typename... ARGS>
    static void parse(
+         const std::string& strNorm,
          const std::string& str,
          std::unique_ptr<LatCommon::Weights> weights,
           FUNC&& func, ARGS&&... args)
    {
-      const auto splitStr = splitPair(str, ':');
-      const auto& accStr = splitStr.first;
-      const auto& meritStr = splitStr.second;
-      if (accStr == "inf") {
-         ProjDepMerit::parse(meritStr, ParseProjDepMerit<Functor::Max>(), 1.0, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+      if (strNorm == "inf") {
+         ProjDepMerit::parse(str, ParseProjDepMerit<Functor::Max>(), 1.0, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       try {
-         const auto qnorm = boost::lexical_cast<Real>(accStr);
-         ProjDepMerit::parse(meritStr, ParseProjDepMerit<Functor::Sum>(), qnorm, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         const auto norm = boost::lexical_cast<Real>(strNorm);
+         ProjDepMerit::parse(str, ParseProjDepMerit<Functor::Sum>(), norm, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (boost::bad_lexical_cast&) {}
-      throw BadNorm(accStr);
+      throw BadNorm(strNorm);
    }
 };
 

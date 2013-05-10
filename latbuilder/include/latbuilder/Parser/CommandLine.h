@@ -37,8 +37,10 @@ struct CommandLine<LatBuilder::LatType::ORDINARY> {
    std::string construction;
    std::string size;
    std::string dimension;
+   std::string normType;
    std::string figure;
    std::vector<std::string> weights;
+   Real weightsPowerScale;
    std::vector<std::string> filters;
 
    std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::ORDINARY>> parse() const;

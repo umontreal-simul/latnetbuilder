@@ -254,10 +254,10 @@ public:
 #endif
 
          // divide q by two because the merit is assumed to be a squared value
-         acc.accumulate(weight, merit, m_figure.normType());
+         acc.accumulate(weight, merit, m_figure.normType() / 2);
 
          if (!onProgress()(acc.value())) {
-            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType());
+            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / 2);
             onAbort()(lat);
 #ifdef DEBUG
             std::cout << "    aborting" << std::endl;
