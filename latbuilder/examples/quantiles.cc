@@ -26,7 +26,7 @@
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -95,7 +95,7 @@ struct Execute {
    template <class FIGURE>
    void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension, unsigned int nrand) const
    {
-      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
+      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension, nrand);
       genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2), nrand);
 

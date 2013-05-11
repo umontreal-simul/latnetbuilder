@@ -33,7 +33,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 #include "latbuilder/Functor/MinElement.h"
 
 #include "latbuilder/TextStream.h"
@@ -80,7 +80,7 @@ void test(const Storage<L, C>& storage, Dimension dimension, int samples)
    //! [figure]
 
    //! [Coprime]
-   typedef GenSeq::CoprimeIntegers<figure.suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
+   typedef GenSeq::CoprimeIntegers<figure.suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
    //! [Coprime]
    auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));

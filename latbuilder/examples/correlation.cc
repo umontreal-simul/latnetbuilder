@@ -21,7 +21,7 @@
 #include "latbuilder/Parser/MeritFilterList.h"
 #include "latbuilder/Types.h"
 #include "latbuilder/TextStream.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
@@ -89,7 +89,7 @@ struct Execute {
       Storage<LatType::ORDINARY, fig1.suggestedCompression()> storage1(size);
       Storage<LatType::ORDINARY, fig2.suggestedCompression()> storage2(size);
 
-      typedef GenSeq::CoprimeIntegers<fig1.suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
+      typedef GenSeq::CoprimeIntegers<fig1.suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension, nrand);
       genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2));
 

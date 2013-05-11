@@ -27,7 +27,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -59,7 +59,7 @@ struct LatSeqBasedSearchTraits<RandomKorobovTag<LAT, COMPRESS, FIGURE>> {
    typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
    typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
    typedef typename FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef LFSR258 RandomGenerator;
+   typedef LFSR113 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
    typedef GenSeq::CoprimeIntegers<COMPRESS, Traversal> GenSeqType;
    typedef LatSeq::Korobov<LAT, GenSeqType> LatSeqType;

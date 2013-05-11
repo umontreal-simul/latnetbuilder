@@ -20,7 +20,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -49,7 +49,7 @@ int main()
 
    //! [random]
    n = 31;
-   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR258>> RandomSeq;
+   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR113>> RandomSeq;
    auto randVec = GenSeq::VectorCreator<RandomSeq>::create(n, dim, 5);
    randVec[0] = GenSeq::Creator<RandomSeq>::create(n0, 1); // replace 1st with singleton
    std::cout << "lattice size: " << n << std::endl;

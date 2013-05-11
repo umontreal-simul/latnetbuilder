@@ -17,7 +17,7 @@
 
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -29,7 +29,7 @@ int main()
 {
    //! [main]
    //! [types]
-   typedef Traversal::Random<LFSR258> Trav;
+   typedef Traversal::Random<LFSR113> Trav;
    typedef GenSeq::CoprimeIntegers<Compress::SYMMETRIC, Trav> RandomSeq;
    //! [types]
 

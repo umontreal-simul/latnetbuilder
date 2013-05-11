@@ -20,7 +20,7 @@
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR258.h"
+#include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -36,7 +36,7 @@ int main()
    Dimension dim = 3;
    size_t r = 4; // 4 random samples
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR258>> Coprime;
+   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR113>> Coprime;
    auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dim, r);
    // consider only 1 for 1st coordinate
    genSeqs[0] = GenSeq::Creator<Coprime>::create(size0);
