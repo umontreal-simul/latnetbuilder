@@ -20,6 +20,9 @@
 exe TextStream :
 	TextStream.cc		/latbuilder//latbuilder.lib ;
 
+exe LFSR113 :
+	LFSR113.cc		/latbuilder//latbuilder.lib ;
+
 exe SizeParam :
 	SizeParam.cc		/latbuilder//latbuilder.lib ;
 
