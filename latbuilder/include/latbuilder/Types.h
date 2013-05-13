@@ -33,7 +33,7 @@ namespace LatBuilder
 //@{
 
 /// Scalar integer type for modulus (number of points) values.
-typedef uint64_t Modulus;
+typedef unsigned long Modulus;
 
 /// Scalar floating-point type.
 typedef double Real;
