@@ -1,20 +1,41 @@
 #!/usr/bin/env python3
 
 import logging
+import subprocess
 import argparse
 import urllib.request, urllib.error, urllib.parse
 import time
-import os, shutil
+import sys, os, shutil
 import math
 import shelve
 import mimetypes
 import tarfile, zipfile
 from multiprocessing import cpu_count
+from contextlib import contextmanager
+
 
 ##############################################################################
-
+# Working Directory Context Manager
 ##############################################################################
 
+@contextmanager
+def working_directory(path):
+    old = os.getcwd()
+    os.chdir(path)
+    yield
+    os.chdir(old)
+
+##############################################################################
+# Environment Context Manager
+##############################################################################
+
+@contextmanager
+def environment(**kwargs):
+    old = dict(os.environ)
+    os.environ.update(kwargs)
+    yield
+    os.environ.clear()
+    os.environ.update(old)
 
 ##############################################################################
 # Source Code Packages
@@ -175,10 +196,18 @@ class SourceCode:
 ##############################################################################
 
 class BuildRules:
+    class Error(RuntimeError):
+        def __init__(self, msg):
+            super().__init__(msg)
+
     # base directory that will contain everything
     ROOT = '.'
+    # destination directory
+    PREFIX = 'dist'
     # can be replaced with a persistent state
     STATE = dict()
+    # number of CPU's to use for parallel build
+    NUM_PROCESSES = 1
 
     def __init__(self, source):
         self._source = source
@@ -194,46 +223,124 @@ class BuildRules:
         return BuildRules.ROOT
 
     @property
+    def source_dir(self):
+        return self._source.source_dir
+
+    @property
     def build_dir(self):
         return os.path.join(self.root, self.name)
 
     @property
-    def configured(self):
-        return self._getstate('configured', False)
+    def prefix(self):
+        return BuildRules.PREFIX
 
+    @property
+    def configured(self):
+        return self._check_configured()
     @property
     def built(self):
-        return self._getstate('built', False)
-
+        return self._check_built()
     @property
     def installed(self):
-        return self._getstate('installed', False)
+        return self._check_installed()
 
+    @property
+    def configure_log(self):
+        return os.path.join(self.root, '{}-configure.log'.format(self.name))
+    @property
+    def build_log(self):
+        return os.path.join(self.root, '{}-build.log'.format(self.name))
+    @property
+    def install_log(self):
+        return os.path.join(self.root, '{}-install.log'.format(self.name))
+
+    # private methods
     def _getstate(self, key, default=None):
         return BuildRules.STATE.get(self.name + '|build|' + key, default)
-
     def _setstate(self, key, value):
         BuildRules.STATE[self.name + '|build|' + key] = value
 
+    # interface methods
     def configure(self):
         self._source.unpack()
         logging.info('configuring {}'.format(self.name))
-
+        with open(self.configure_log, 'w') as log:
+            self._do_configure(log)
+        if not self.configured:
+            raise BuildRules.Error('  failed configuring {}'.format(self.name))
+        logging.info('  successfully configured {}'.format(self.name))
     def build(self):
+        if not self.configured:
+            self.configure()
         logging.info('building {}'.format(self.name))
-
+        with open(self.build_log, 'w') as log:
+            self._do_build(log)
+        if not self.configured:
+            raise BuildRules.Error('  failed building {}'.format(self.name))
+        logging.info('  successfully built {}'.format(self.name))
     def install(self):
+        if not self.built:
+            self.build()
         logging.info('installing {}'.format(self.name))
+        with open(self.install_log, 'w') as log:
+            self._do_install(log)
+        if not self.installed:
+            raise BuildRules.Error('  failed installing {}'.format(self.name))
+        logging.info('  successfully installed {} into {}'.format(self.name, self.prefix))
+
+    # abstract methods
+    def _do_configure(self):
+        pass
+    def _do_build(self):
+        pass
+    def _do_install(self):
+        pass
+    def _check_configured(self):
+        return False
+        #return self._getstate('configured', False)
+    def _check_built(self):
+        return False
+        #return self._getstate('built', False)
+    def _check_installed(self):
+        return False
+        #return self._getstate('installed', False)
 
 class BoostBuildRules(BuildRules):
     def __init__(self, source):
         super().__init__(source)
-    def configure(self):
-        super().configure()
-    def build(self):
-        super().build()
-    def install(self):
-        super().install()
+    @property
+    def siteconfig(self):
+        return os.path.join(self.prefix, 'share', 'boost-build', 'site-config.jam')
+    def _do_configure(self, log):
+        shutil.rmtree(self.build_dir)
+        shutil.copytree(self.source_dir, self.build_dir, symlinks=True,
+                ignore=shutil.ignore_patterns('*.log'))
+        with working_directory(self.build_dir):
+            subprocess.check_call(
+                    [os.path.join('.', 'bootstrap.sh')],
+                    stdout=log,
+                    stderr=subprocess.STDOUT)
+    def _do_build(self, log):
+        pass
+    def _do_install(self, log):
+        with working_directory(self.build_dir):
+            subprocess.check_call([
+                os.path.join('.', 'b2'),
+                'install',
+                '--prefix={}'.format(self.prefix)],
+                stdout=log,
+                stderr=subprocess.STDOUT)
+        if not os.path.exists(self.siteconfig):
+            f = open(self.siteconfig, 'w')
+            f.write("project site-config ;\nusing gcc ;\n")
+            f.close()
+
+    def _check_configured(self):
+        return os.path.exists(os.path.join(self.build_dir, 'bootstrap.log'))
+    def _check_built(self):
+        return self.configured
+    def _check_installed(self):
+        return os.path.exists(self.siteconfig)
 
 class BoostRules(BuildRules):
     def __init__(self, source):
@@ -304,7 +411,7 @@ def parse_command_line():
             help="root working directory where to store sources and build files",
             default='.')
     parser.add_argument(
-            "-n", "--num-cpus",
+            "-j", "--processes",
             help="number of CPU's to use",
             default=cpu_count())
     #parser.add_argument(
@@ -330,7 +437,6 @@ if __name__ == '__main__':
             level=logging.DEBUG,
             format='%(levelname)-8s %(message)s')
     args = parse_command_line()
-    print('installing stuff to {}'.format(args.prefix))
 
     # persistent state
     statefile = os.path.join(args.root, '{}-state.db'.format(args.envtype))
@@ -340,18 +446,25 @@ if __name__ == '__main__':
     import atexit
     atexit.register(lambda: persistent_state.close())
 
-    if persistent_state:
-        print('Last state:')
-        dump_state(persistent_state)
+    # show current state
+    #if persistent_state:
+    #    print('Last state:')
+    #    dump_state(persistent_state)
+
+    # ensure prefix is an absolute path
+    if not os.path.isabs(args.prefix):
+        args.prefix = os.path.join(os.getcwd(), args.prefix)
 
     # set static variables
     SourceCode.ROOT = os.path.join(args.root, 'src')
     BuildRules.ROOT = os.path.join(args.root, '{}-build'.format(args.envtype))
     SourceCode.STATE = persistent_state
     BuildRules.STATE = persistent_state
+    BuildRules.NUM_PROCESSES = args.processes
+    BuildRules.PREFIX = args.prefix
 
     bb_src = SourceCode(
-            'Boost.Build.v2',
+            'Boost.Build',
             'http://www.boost.org/boost-build2/boost-build.tar.bz2')
 
     boost_src = SourceCode(
@@ -363,6 +476,4 @@ if __name__ == '__main__':
             'http://www.fftw.org/fftw-3.3.3.tar.gz')
 
     bb_rules = BoostBuildRules(bb_src)
-    bb_rules.configure()
-    bb_rules.build()
-    bb_rules.install()
+    if not bb_rules.installed: bb_rules.install()
