@@ -28,6 +28,25 @@ SOURCES = {
         }
 
 ##############################################################################
+# Run a command, check output, and report
+##############################################################################
+
+def run_command(command, log):
+    try:
+        out = subprocess.check_output(command, stderr=subprocess.STDOUT)
+        log.write(out.decode())
+    except subprocess.CalledProcessError as err:
+        out = err.output.decode()
+        log.write(out)
+        logging.error('  command failed with status {}: {}'.format(
+            err.returncode,
+            ' '.join(command)))
+        logging.error('  command output:')
+        for line in out.split('\n'):
+            logging.error('  | ' + line)
+        raise
+
+##############################################################################
 # Working Directory Context Manager
 ##############################################################################
 
@@ -241,6 +260,10 @@ class BuildRules:
         return self._source.package
 
     @property
+    def target(self):
+        return BuildRules.TARGET
+
+    @property
     def root(self):
         return BuildRules.ROOT
 
@@ -376,21 +399,16 @@ class B2Rules(BuildRules):
         shutil.copytree(self.source_dir, self.build_dir, symlinks=True,
                 ignore=shutil.ignore_patterns('*.log'))
         with working_directory(self.build_dir):
-            subprocess.check_call(
-                    [os.path.join('.', 'bootstrap.sh')],
-                    stdout=log,
-                    stderr=subprocess.STDOUT)
+            run_command([os.path.join('.', 'bootstrap.sh')], log)
     def _do_build(self, log):
         pass
     def _do_install(self, log):
         with working_directory(self.build_dir):
-            subprocess.check_call([
+            run_command([
                 os.path.join('.', 'b2'),
                 'install',
                 '--prefix={}'.format(self.prefix),
-                ],
-                stdout=log,
-                stderr=subprocess.STDOUT)
+                ], log)
         siteconfig = """
                 import os ;
                 import path ;
@@ -425,7 +443,7 @@ class B2Rules(BuildRules):
                 """.format(
                         prefix=self.prefix,
                         tmpdir=self.tmpdir,
-                        **B2Rules.PROPERTIES[BuildRules.TARGET])
+                        **B2Rules.PROPERTIES[self.target])
         with open(self.siteconfig, 'w') as f:
             f.write(textwrap.dedent(siteconfig))
             logging.info("  created {}".format(self.siteconfig))
@@ -445,6 +463,16 @@ class BoostRules(BuildRules):
     @property
     def b2_path(self):
         return os.path.join(self.prefix, 'bin', 'b2')
+    @property
+    def b2_command(self):
+        return [self.b2_path,
+                '-j{}'.format(self.num_processes),
+                '--stagedir={}'.format(self.build_dir),
+                '--prefix={}'.format(self.prefix),
+                '--layout=tagged'.format(self.prefix),
+                'link=static,shared',
+                'threading=single,multi',
+                ]
     def _do_configure(self, log):
         with working_directory(self.source_dir):
             command = [
@@ -458,27 +486,13 @@ class BoostRules(BuildRules):
             if os.path.exists('boost-build.jam'):
                 os.remove('boost-build.jam')
             #logging.info('launching: {}'.format(' '.join(command)))
-            subprocess.check_call(command, stdout=log, stderr=subprocess.STDOUT)
-
-    @property
-    def b2_command(self):
-        return [self.b2_path,
-                '-j{}'.format(self.num_processes),
-                '--stagedir={}'.format(self.build_dir),
-                '--prefix={}'.format(self.prefix),
-                ]
+            run_command(command, log)
     def _do_build(self, log):
         with working_directory(self.source_dir):
-            subprocess.check_call(
-                    self.b2_command,
-                    stdout=log,
-                    stderr=subprocess.STDOUT)
+            run_command(self.b2_command, log)
     def _do_install(self, log):
         with working_directory(self.source_dir):
-            subprocess.check_call(
-                    self.b2_command + ['install'],
-                    stdout=log,
-                    stderr=subprocess.STDOUT)
+            run_command(self.b2_command + ['install'], log)
     def _check_configured(self):
         return os.path.exists(self.configure_log) and \
                 any(re.search('Bootstrapping is done', line)
@@ -491,8 +505,54 @@ class BoostRules(BuildRules):
                 and os.path.exists(os.path.join(self.prefix, 'lib', 'libboost_program_options.a'))
 
 class FftwRules(BuildRules):
+    CONFIGURE = {
+            'x86_64': [],
+            'i686': [],
+            'mingw32': [
+                '--host=i686-mingw32',
+                '--disable-alloca',
+                '--with-our-malloc16',
+                '--with-windows-f77-mangling',
+                '--disable-static',
+                '--enable-sse2',
+                ],
+            'mingw64': [
+                '--host=x86_64-w64-mingw32',
+                '--disable-alloca',
+                '--with-our-malloc16',
+                '--with-windows-f77-mangling',
+                '--disable-static',
+                '--enable-sse2',
+                ],
+            }
     def __init__(self):
         super().__init__('fftw')
+    def _do_configure(self, log):
+        with working_directory(self.build_dir):
+            command = [
+                os.path.join(self.source_dir, 'configure'),
+                '--prefix={}'.format(self.prefix),
+                '--enable-shared',
+                '--enable-threads',
+                '--with-combined-threads',
+                ] + FftwRules.CONFIGURE[self.target]
+            run_command(command, log)
+    def _do_build(self, log):
+        with working_directory(self.build_dir):
+            run_command(['make', '-j{}'.format(self.num_processes)], log)
+    def _do_install(self, log):
+        with working_directory(self.build_dir):
+            run_command(['make', '-j{}'.format(self.num_processes), 'install'], log)
+    def _check_configured(self):
+        log = os.path.join(self.build_dir, 'config.log')
+        return os.path.exists(log) and \
+                any(re.search('configure: exit 0', line)
+                    for line in open(log))
+    def _check_built(self):
+        return os.path.exists(os.path.join(self.build_dir, 'lib', 'libfftw3.a'))
+    def _check_installed(self):
+        return os.path.exists(os.path.join(self.prefix, 'include', 'fftw3.h')) \
+                and os.path.exists(os.path.join(self.prefix, 'lib', 'libfftw3.a'))
 
 ##############################################################################
 # Global Functions
