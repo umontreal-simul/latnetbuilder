@@ -10,9 +10,22 @@ import math
 import shelve
 import mimetypes
 import tarfile, zipfile
+import platform, tempfile
+import textwrap
+import re
 from multiprocessing import cpu_count
 from contextlib import contextmanager
 
+
+##############################################################################
+# Source URL's
+##############################################################################
+
+SOURCES = {
+        'b2':       'http://www.boost.org/boost-build2/boost-build.tar.bz2',
+        'boost':    'http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.bz2/download',
+        'fftw':     'http://www.fftw.org/fftw-3.3.3.tar.gz',
+        }
 
 ##############################################################################
 # Working Directory Context Manager
@@ -65,9 +78,9 @@ class SourceCode:
         rank = int(math.log(size, 1024))
         return '{:.1f} {}'.format(size / (1024**rank), units[rank])
 
-    def __init__(self, name, url):
-        self._name = name
-        self._url = url
+    def __init__(self, package, url=None):
+        self._package = package
+        self._url = url or SOURCES[package]
         os.makedirs(self.root, exist_ok=True)
 
     @property
@@ -75,8 +88,8 @@ class SourceCode:
         return SourceCode.ROOT
 
     @property
-    def name(self):
-        return self._name
+    def package(self):
+        return self._package
 
     @property
     def url(self):
@@ -90,11 +103,15 @@ class SourceCode:
     def source_dir(self):
         return self._getstate('source_dir')
 
+    @property
+    def unpacked(self):
+        return self.source_dir and os.path.exists(self.source_dir) and os.listdir(self.source_dir)
+
     def _getstate(self, key, default=None):
-        return SourceCode.STATE.get(self.name + '|src|' + key, default)
+        return SourceCode.STATE.get(self.package + '|src|' + key, default)
 
     def _setstate(self, key, value):
-        SourceCode.STATE[self.name + '|src|' + key] = value
+        SourceCode.STATE[self.package + '|src|' + key] = value
 
     def download(self):
         logging.info('downloading {}'.format(self.url))
@@ -115,10 +132,11 @@ class SourceCode:
                     'If-Modified-Since',
                     time.strftime(
                         SourceCode.TIMEFMT,
-                        time.gmtime(saved_mtime + 1)))
+                        time.gmtime(saved_mtime + 300)))
             if stream:
                 stream.close()
-            logging.info('  {} already exists; checking if a newer version in available'.format(self.archive))
+            logging.info('  {} already exists'.format(self.archive))
+            logging.info('  checking if a newer version in available')
         except FileNotFoundError:
             pass
 
@@ -163,7 +181,7 @@ class SourceCode:
             self.download()
 
         logging.info('unpacking {}'.format(self.archive))
-        if self.source_dir and os.listdir(self.source_dir):
+        if self.unpacked:
             logging.info('  already unpacked; skipping')
             return
 
@@ -181,8 +199,8 @@ class SourceCode:
 
         # if no prefix, create one
         if len(prefix) == 0:
-            prefix = self.name
-            target = os.path.join(target, self.name)
+            prefix = self.package
+            target = os.path.join(target, self.package)
 
         # extract files
         self._setstate('source_dir', os.path.join(target, prefix))
@@ -200,23 +218,27 @@ class BuildRules:
         def __init__(self, msg):
             super().__init__(msg)
 
+    # target platform
+    TARGET = platform.machine()
     # base directory that will contain everything
-    ROOT = '.'
+    ROOT = os.getcwd()
     # destination directory
-    PREFIX = 'dist'
+    PREFIX = os.path.join(ROOT, 'dist')
     # can be replaced with a persistent state
     STATE = dict()
     # number of CPU's to use for parallel build
     NUM_PROCESSES = 1
+    # temporary directory
+    TMPDIR = tempfile.gettempdir()
 
-    def __init__(self, source):
-        self._source = source
+    def __init__(self, package):
+        self._source = SourceCode(package)
         os.makedirs(self.root, exist_ok=True)
         os.makedirs(self.build_dir, exist_ok=True)
 
     @property
-    def name(self):
-        return self._source.name
+    def package(self):
+        return self._source.package
 
     @property
     def root(self):
@@ -228,65 +250,76 @@ class BuildRules:
 
     @property
     def build_dir(self):
-        return os.path.join(self.root, self.name)
+        return os.path.join(self.root, self.package)
 
     @property
     def prefix(self):
         return BuildRules.PREFIX
 
     @property
+    def tmpdir(self):
+        return BuildRules.TMPDIR
+
+    @property
+    def num_processes(self):
+        return BuildRules.NUM_PROCESSES
+
+    @property
     def configured(self):
-        return self._check_configured()
+        return self._source.unpacked and self._check_configured()
     @property
     def built(self):
-        return self._check_built()
+        return self.configured and self._check_built()
     @property
     def installed(self):
-        return self._check_installed()
+        return self.built and self._check_installed()
 
     @property
     def configure_log(self):
-        return os.path.join(self.root, '{}-configure.log'.format(self.name))
+        return os.path.join(self.root, '{}-configure.log'.format(self.package))
     @property
     def build_log(self):
-        return os.path.join(self.root, '{}-build.log'.format(self.name))
+        return os.path.join(self.root, '{}-build.log'.format(self.package))
     @property
     def install_log(self):
-        return os.path.join(self.root, '{}-install.log'.format(self.name))
+        return os.path.join(self.root, '{}-install.log'.format(self.package))
 
     # private methods
     def _getstate(self, key, default=None):
-        return BuildRules.STATE.get(self.name + '|build|' + key, default)
+        return BuildRules.STATE.get(self.package + '|build|' + key, default)
     def _setstate(self, key, value):
-        BuildRules.STATE[self.name + '|build|' + key] = value
+        BuildRules.STATE[self.package + '|build|' + key] = value
 
     # interface methods
+    def clear(self):
+        logging.info('clearing {}'.format(self.package))
+        shutil.rmtree(self.build_dir)
     def configure(self):
         self._source.unpack()
-        logging.info('configuring {}'.format(self.name))
+        logging.info('configuring {}'.format(self.package))
         with open(self.configure_log, 'w') as log:
             self._do_configure(log)
         if not self.configured:
-            raise BuildRules.Error('  failed configuring {}'.format(self.name))
-        logging.info('  successfully configured {}'.format(self.name))
+            raise BuildRules.Error('  failed configuring {}'.format(self.package))
+        logging.info('  successfully configured {}'.format(self.package))
     def build(self):
         if not self.configured:
             self.configure()
-        logging.info('building {}'.format(self.name))
+        logging.info('building {}'.format(self.package))
         with open(self.build_log, 'w') as log:
             self._do_build(log)
         if not self.configured:
-            raise BuildRules.Error('  failed building {}'.format(self.name))
-        logging.info('  successfully built {}'.format(self.name))
+            raise BuildRules.Error('  failed building {}'.format(self.package))
+        logging.info('  successfully built {}'.format(self.package))
     def install(self):
         if not self.built:
             self.build()
-        logging.info('installing {}'.format(self.name))
+        logging.info('installing {}'.format(self.package))
         with open(self.install_log, 'w') as log:
             self._do_install(log)
         if not self.installed:
-            raise BuildRules.Error('  failed installing {}'.format(self.name))
-        logging.info('  successfully installed {} into {}'.format(self.name, self.prefix))
+            raise BuildRules.Error('  failed installing {}'.format(self.package))
+        logging.info('  successfully installed {} into {}'.format(self.package, self.prefix))
 
     # abstract methods
     def _do_configure(self):
@@ -297,17 +330,44 @@ class BuildRules:
         pass
     def _check_configured(self):
         return False
-        #return self._getstate('configured', False)
     def _check_built(self):
         return False
-        #return self._getstate('built', False)
     def _check_installed(self):
         return False
-        #return self._getstate('installed', False)
 
-class BoostBuildRules(BuildRules):
-    def __init__(self, source):
-        super().__init__(source)
+class B2Rules(BuildRules):
+    PROPERTIES = {
+            'x86_64': {
+                'requirements':     '',
+                'compiler':         'gcc',
+                'compiler-version': '',
+                'compiler-command': '',
+                'compiler-options': '',
+                },
+            'i686': {
+                'requirements':     '<address-model>32',
+                'compiler':         'gcc',
+                'compiler-version': 'mingw32',
+                'compiler-command': 'i486-mingw32-g++',
+                'compiler-options': '',
+                },
+            'mingw32': {
+                'requirements':     '<target-os>windows <address-model>32',
+                'compiler':         'gcc',
+                'compiler-version': 'mingw32',
+                'compiler-command': 'i486-mingw32-g++',
+                'compiler-options': '',
+                },
+            'mingw64': {
+                'requirements':     '<target-os>windows',
+                'compiler':         'gcc',
+                'compiler-version': 'mingw64',
+                'compiler-command': 'x86_64-w64-mingw32-g++',
+                'compiler-options': '',
+                },
+            }
+    def __init__(self):
+        super().__init__('b2')
     @property
     def siteconfig(self):
         return os.path.join(self.prefix, 'share', 'boost-build', 'site-config.jam')
@@ -327,70 +387,112 @@ class BoostBuildRules(BuildRules):
             subprocess.check_call([
                 os.path.join('.', 'b2'),
                 'install',
-                '--prefix={}'.format(self.prefix)],
+                '--prefix={}'.format(self.prefix),
+                ],
                 stdout=log,
                 stderr=subprocess.STDOUT)
-        if not os.path.exists(self.siteconfig):
-            f = open(self.siteconfig, 'w')
-            f.write("project site-config ;\nusing gcc ;\n")
-            f.close()
+        siteconfig = """
+                import os ;
+                import path ;
+
+                local build-dir = [ path.join {tmpdir} [ os.environ USER ] b2 ] ;
+
+                project site-config :
+                    build-dir $(build-dir) :
+                    requirements {requirements} ;
+
+                using {compiler} :
+                    {compiler-version} :
+                    {compiler-command} :
+                    {compiler-options} ;
+
+                local prefix = {prefix} ;
+
+                alias boost : : : :
+                    <include>$(prefix)/include/ ;
+
+                lib boost_program_options boost_system : : :
+                    <search>$(prefix)/lib/ :
+                    <include>$(prefix)/include/ ;
+
+                lib boost_chrono : boost_system : <name>boost_chrono :
+                    <search>$(prefix)/lib/ :
+                    <include>$(prefix)/include/ ;
+
+                lib fftw3 : : :
+                    <search>$(prefix)/lib/ :
+                    <include>$(prefix)/include/ ;
+                """.format(
+                        prefix=self.prefix,
+                        tmpdir=self.tmpdir,
+                        **B2Rules.PROPERTIES[BuildRules.TARGET])
+        with open(self.siteconfig, 'w') as f:
+            f.write(textwrap.dedent(siteconfig))
+            logging.info("  created {}".format(self.siteconfig))
 
     def _check_configured(self):
-        return os.path.exists(os.path.join(self.build_dir, 'bootstrap.log'))
+        return os.path.exists(self.configure_log) and \
+                any(re.search('Bootstrapping is done', line)
+                        for line in open(self.configure_log))
     def _check_built(self):
         return self.configured
     def _check_installed(self):
         return os.path.exists(self.siteconfig)
 
 class BoostRules(BuildRules):
-    def __init__(self, source):
-        super().__init__(source)
-    def configure(self):
-        super().configure()
-    def build(self):
-        super().build()
-    def install(self):
-        super().install()
+    def __init__(self):
+        super().__init__('boost')
+    @property
+    def b2_path(self):
+        return os.path.join(self.prefix, 'bin', 'b2')
+    def _do_configure(self, log):
+        with working_directory(self.source_dir):
+            command = [
+                os.path.join(self.source_dir, 'bootstrap.sh'),
+                '--prefix={}'.format(self.prefix),
+                '--with-bjam={}'.format(self.b2_path),
+                '--with-toolset=gcc',
+                '--without-icu',
+                '--with-libraries=program_options,chrono,system',
+                ]
+            if os.path.exists('boost-build.jam'):
+                os.remove('boost-build.jam')
+            #logging.info('launching: {}'.format(' '.join(command)))
+            subprocess.check_call(command, stdout=log, stderr=subprocess.STDOUT)
+
+    @property
+    def b2_command(self):
+        return [self.b2_path,
+                '-j{}'.format(self.num_processes),
+                '--stagedir={}'.format(self.build_dir),
+                '--prefix={}'.format(self.prefix),
+                ]
+    def _do_build(self, log):
+        with working_directory(self.source_dir):
+            subprocess.check_call(
+                    self.b2_command,
+                    stdout=log,
+                    stderr=subprocess.STDOUT)
+    def _do_install(self, log):
+        with working_directory(self.source_dir):
+            subprocess.check_call(
+                    self.b2_command + ['install'],
+                    stdout=log,
+                    stderr=subprocess.STDOUT)
+    def _check_configured(self):
+        return os.path.exists(self.configure_log) and \
+                any(re.search('Bootstrapping is done', line)
+                    for line in open(self.configure_log)) \
+                and not os.path.exists(os.path.join(self.source_dir, 'boost-build.jam'))
+    def _check_built(self):
+        return os.path.exists(os.path.join(self.build_dir, 'lib', 'libboost_program_options.a'))
+    def _check_installed(self):
+        return os.path.exists(os.path.join(self.prefix, 'include', 'boost', 'config.hpp')) \
+                and os.path.exists(os.path.join(self.prefix, 'lib', 'libboost_program_options.a'))
 
 class FftwRules(BuildRules):
-    def __init__(self, source):
-        super().__init__(source)
-    def configure(self):
-        super().configure()
-    def build(self):
-        super().build()
-    def install(self):
-        super().install()
-
-class GccRules(BuildRules):
-    def __init__(self, source):
-        super().__init__(source)
-    def configure(self):
-        super().configure()
-    def build(self):
-        super().build()
-    def install(self):
-        super().install()
-
-class Mingw64Rules(BuildRules):
-    def __init__(self, source):
-        super().__init__(source)
-    def configure(self):
-        super().configure()
-    def build(self):
-        super().build()
-    def install(self):
-        super().install()
-
-class Mingw32Rules(BuildRules):
-    def __init__(self, source):
-        super().__init__(source)
-    def configure(self):
-        super().configure()
-    def build(self):
-        super().build()
-    def install(self):
-        super().install()
+    def __init__(self):
+        super().__init__('fftw')
 
 ##############################################################################
 # Global Functions
@@ -400,12 +502,19 @@ def parse_command_line():
     parser = argparse.ArgumentParser(
             description='Setup a build environment.')
     parser.add_argument(
-            "envtype",
-            choices=['native', 'mingw64', 'mingw32'],
-            help="environment type")
-    parser.add_argument(
-            "prefix",
+            "-p", "--prefix",
+            required=True,
             help="directory in which to install the build environment")
+    parser.add_argument(
+            "packages",
+            choices=['gcc', 'fftw', 'b2', 'boost'],
+            nargs='+',
+            help="directory in which to install the build environment")
+    parser.add_argument(
+            "-t", "--target",
+            choices=['i686', 'x86_64', 'mingw32', 'mingw64'],
+            help="environment type",
+            default=platform.machine())
     parser.add_argument(
             "-r", "--root",
             help="root working directory where to store sources and build files",
@@ -418,10 +527,10 @@ def parse_command_line():
     #        "-i", "--interactive",
     #        help="ask questions along the way",
     #        action='store_true')
-    parser.add_argument(
-            "-v", "--verbose",
-            help="increase output verbosity",
-            action='store_true')
+    #parser.add_argument(
+    #        "-v", "--verbose",
+    #        help="increase output verbosity",
+    #        action='store_true')
     return parser.parse_args()
 
 def dump_state(state):
@@ -439,7 +548,7 @@ if __name__ == '__main__':
     args = parse_command_line()
 
     # persistent state
-    statefile = os.path.join(args.root, '{}-state.db'.format(args.envtype))
+    statefile = os.path.join(args.root, '{}-state.db'.format(args.target))
     persistent_state = shelve.open(statefile)
 
     # clean up state at exit
@@ -456,24 +565,21 @@ if __name__ == '__main__':
         args.prefix = os.path.join(os.getcwd(), args.prefix)
 
     # set static variables
-    SourceCode.ROOT = os.path.join(args.root, 'src')
-    BuildRules.ROOT = os.path.join(args.root, '{}-build'.format(args.envtype))
     SourceCode.STATE = persistent_state
     BuildRules.STATE = persistent_state
+    SourceCode.ROOT = os.path.join(args.root, 'src')
+    BuildRules.ROOT = os.path.join(args.root, '{}-build'.format(args.target))
     BuildRules.NUM_PROCESSES = args.processes
     BuildRules.PREFIX = args.prefix
+    BuildRules.TARGET = args.target
 
-    bb_src = SourceCode(
-            'Boost.Build',
-            'http://www.boost.org/boost-build2/boost-build.tar.bz2')
+    def create_rules(target, package):
+        RulesClass = eval(package.capitalize() + 'Rules')
+        if package == 'gcc':
+            raise NotImplementedError('gcc installation not implemented')
+        return RulesClass()
 
-    boost_src = SourceCode(
-            'Boost',
-            'http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.bz2/download')
-
-    fftw_src = SourceCode(
-            'FFTW',
-            'http://www.fftw.org/fftw-3.3.3.tar.gz')
-
-    bb_rules = BoostBuildRules(bb_src)
-    if not bb_rules.installed: bb_rules.install()
+    for package in args.packages:
+        rules = create_rules(args.target, package)
+        if not rules.installed:
+            rules.install()
