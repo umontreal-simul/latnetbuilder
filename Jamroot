@@ -18,6 +18,9 @@
 import tcode ;
 import distinfo ;
 
+import property-set ;
+import project ;
+
 constant VERSION  : [ distinfo.extract-version ] ;
 constant PREFIX   : [ distinfo.prefix ] ;
 
@@ -25,6 +28,13 @@ use-project /tools : tools ;
 use-project /pugixml : pugixml ;
 use-project /latcommon : latcommon ;
 use-project /latbuilder : latbuilder ;
+
+# show gcc version
+local project = [ project.current ] ;
+local property-set = [ $(project).get requirements ] ;
+local property-set = [ $(property-set).add-defaults ] ;
+local gcc-version = [ $(property-set).get <toolset-gcc:version> ] ;
+# ECHO "GCC version: $(gcc-version)" ;
 
 #build-project /latbuilder ;
 
