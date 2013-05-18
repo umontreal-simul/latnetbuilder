@@ -61,7 +61,7 @@ class B2Rules(BuildRules):
         return os.path.join(self.prefix, 'share', 'boost-build', 'site-config.jam')
 
     def _do_configure(self, log):
-        shutil.rmtree(self.build_dir)
+        shutil.rmtree(self.build_dir, ignore_errors=True)
         shutil.copytree(self.source_dir, self.build_dir, symlinks=True,
                 ignore=shutil.ignore_patterns('*.log'))
         with working_directory(self.build_dir):

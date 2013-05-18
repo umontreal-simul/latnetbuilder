@@ -151,7 +151,7 @@ class SourceCode:
         logging.info('cloning git repository: {}'.format(url))
         self._setstate('source_dir',
                 os.path.join(self.root, os.path.basename(url)))
-        shutil.rmtree(self.source_dir)
+        shutil.rmtree(self.source_dir, ignore_errors=True)
         run_command(['git', 'clone', url, self.source_dir])
 
     def _http_download(self, url):
@@ -338,7 +338,7 @@ class BuildRules:
 
     def clear(self):
         logging.info('clearing {}'.format(self.package))
-        shutil.rmtree(self.build_dir)
+        shutil.rmtree(self.build_dir, ignore_errors=True)
 
     def configure(self):
         if not self._source.unpacked:
