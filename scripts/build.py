@@ -321,7 +321,7 @@ class LatbuilderRules(PackageRules):
                 tag='')
         logging.info('  current version: {}'.format(self.version))
         logging.info('  tcode path: {}'.format(self.tcode))
-        logging.info('  archive name: {}'.format(self.archive))
+        logging.info('  archive name: {}'.format(self.archive_name))
 
     def _do_build(self, log):
         with working_directory(self.source_dir):
