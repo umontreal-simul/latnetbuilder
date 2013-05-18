@@ -26,14 +26,14 @@ class B2Rules(BuildRules):
             'x86_64': {
                 'requirements':     '<address-model>64',
                 'compiler':         'gcc',
-                'compiler-version': '64bit',
+                'compiler-version': 'x86_64',
                 'compiler-command': 'g++',
                 'compiler-options': '<cxxflags>-m64',
                 },
             'i686': {
                 'requirements':     '<address-model>32',
                 'compiler':         'gcc',
-                'compiler-version': '32bit',
+                'compiler-version': 'i686',
                 'compiler-command': 'g++',
                 'compiler-options': '<cxxflags>-m32',
                 },
@@ -264,17 +264,16 @@ class LatbuilderRules(PackageRules):
     LINK = 'static'
 
     ARCHIVE = {
-            'i686':     '{package}-{version}-bin-linux-i686{tag}.tar.bz2',
-            'x86_64':   '{package}-{version}-bin-linux-x86_64{tag}.tar.bz2',
-            'mingw32':  '{package}-{version}-bin-mingw32{tag}.zip',
-            'mingw64':  '{package}-{version}-bin-mingw64{tag}.zip',
+            'i686':     ('{package}-{version}-bin-linux-i686{tag}', 'bztar'),
+            'x86_64':   ('{package}-{version}-bin-linux-x86_64{tag}', 'bztar'),
+            'mingw32':  ('{package}-{version}-bin-mingw32{tag}', 'zip'),
+            'mingw64':  ('{package}-{version}-bin-mingw64{tag}', 'zip'),
             }
 
     def __init__(self):
         src = make_source_code('latbuilder')
-        super().__init__(
-                make_source_code('latbuilder'),
-                LatbuilderRules.ARCHIVE[BuildRules.TARGET])
+        aname, afmt = LatbuilderRules.ARCHIVE[BuildRules.TARGET]
+        super().__init__(make_source_code('latbuilder'), aname, afmt)
         self.version = None
         self.tcode = None
         self._installed = False
@@ -316,13 +315,13 @@ class LatbuilderRules(PackageRules):
                 m = re.match(r'^common\.copy\s+(.*)', line)
                 if m:
                     self.tcode = m.group(1)
-        self.archive = LatbuilderRules.ARCHIVE[BuildRules.TARGET].format(
+        self.archive_name = self.archive_name.format(
                 package=self.package,
                 version=self.version,
                 tag='')
         logging.info('  current version: {}'.format(self.version))
         logging.info('  tcode path: {}'.format(self.tcode))
-        logging.info('  archive path: {}'.format(self.archive))
+        logging.info('  archive name: {}'.format(self.archive))
 
     def _do_build(self, log):
         with working_directory(self.source_dir):

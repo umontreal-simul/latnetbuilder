@@ -397,15 +397,11 @@ class BuildRules:
 
 class PackageRules(BuildRules):
 
-    def __init__(self, source, archive):
+    def __init__(self, source, archive_name, archive_format):
         super().__init__(source)
-        self.archive = archive
-
-    def _archive_format(self):
-        for f, exts, desc in shutil.get_unpack_formats():
-            for ext in exts:
-                if self.archive.endswith(ext):
-                    return (self.archive[:-len(ext)], f)
+        self.archive = None
+        self.archive_name = archive_name
+        self.archive_format = archive_format
 
     @property
     def packed(self):
@@ -429,10 +425,9 @@ class PackageRules(BuildRules):
     # abstract methods
 
     def _do_pack(self, log):
-        name, fmt = self._archive_format()
-        shutil.make_archive(
-                name,
-                fmt,
+        self.archive = shutil.make_archive(
+                self.archive_name,
+                self.archive_format,
                 os.path.dirname(self.build_dir),
                 os.path.basename(self.build_dir))
 
