@@ -24,17 +24,17 @@ class B2Rules(BuildRules):
 
     PROPERTIES = {
             'x86_64': {
-                'requirements':     '',
+                'requirements':     '<address-model>64',
                 'compiler':         'gcc',
-                'compiler-version': '',
-                'compiler-command': '',
-                'compiler-options': '',
+                'compiler-version': '64bit',
+                'compiler-command': 'g++',
+                'compiler-options': '<cxxflags>-m64',
                 },
             'i686': {
                 'requirements':     '<address-model>32',
                 'compiler':         'gcc',
                 'compiler-version': '32bit',
-                'compiler-command': '',
+                'compiler-command': 'g++',
                 'compiler-options': '<cxxflags>-m32',
                 },
             'mingw32': {
