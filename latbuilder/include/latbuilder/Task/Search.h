@@ -291,7 +291,7 @@ private:
    void connectSignals(MeritFilterList<LatType::ORDINARY>& filters)
    {
       // notify minObserver when the filters rejects an element
-      filters.onReject<LatType::ORDINARY>().connect(boost::bind(
+      filters.template onReject<LatType::ORDINARY>().connect(boost::bind(
                &MinObserver::reject<LatType::ORDINARY>,
                &minObserver(),
                _1
@@ -301,12 +301,12 @@ private:
    void connectSignals(MeritFilterList<LatType::EMBEDDED>& filters)
    {
       // notify minObserver when the filters rejects an element
-      filters.onReject<LatType::ORDINARY>().connect(boost::bind(
+      filters.template onReject<LatType::ORDINARY>().connect(boost::bind(
                &MinObserver::reject<LatType::ORDINARY>,
                &minObserver(),
                _1
                ));
-      filters.onReject<LatType::EMBEDDED>().connect(boost::bind(
+      filters.template onReject<LatType::EMBEDDED>().connect(boost::bind(
                &MinObserver::reject<LatType::EMBEDDED>,
                &minObserver(),
                _1

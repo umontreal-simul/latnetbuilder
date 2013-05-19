@@ -51,6 +51,9 @@ namespace MeritCombiner {
 template <template <typename> class ACC>
 class Accumulator : public MeritFilterList<LatType::EMBEDDED>::Combiner {
 public:
+   typedef typename MeritFilterList<LatType::EMBEDDED>::Combiner Combiner;
+   typedef typename Combiner::LatDef LatDef;
+
    /**
     * Returns the accumulated merit value for \c merit.
     */

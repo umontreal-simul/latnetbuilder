@@ -62,9 +62,9 @@ struct Creator<CyclicGroup<COMPRESS, TRAV, ORDER>> {
          )
    { return result_type(sizeParam.base(), sizeParam.maxLevel(), std::forward<ARGS>(t)...); }
 
-   template <LatType L, typename... ARGS>
+   template <typename... ARGS>
    static result_type create(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LatType::ORDINARY>& sizeParam,
          ARGS&&... t
          )
    {
