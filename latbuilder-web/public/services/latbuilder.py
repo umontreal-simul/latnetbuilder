@@ -23,16 +23,17 @@ class LatMerit:
 
 class SizeParam:
     def __init__(self, s):
-        if type(s) == str:
+        try:
             p = s.split('^')
             if len(p) == 2:
                 self._set_embedded(int(p[0]), int(p[1]))
             else:
                 self._set_ordinary(int(s))
-        elif type(s) == tuple and len(s) == 2:
-            self._set_embedded(int(s[0]), int(s[1]))
-        else:
-            self._set_ordinary(int(s))
+        except:
+            if type(s) == tuple and len(s) == 2:
+                self._set_embedded(int(s[0]), int(s[1]))
+            else:
+                self._set_ordinary(int(s))
 
     def _set_embedded(self, base, power):
         self.base = base
@@ -91,7 +92,7 @@ def execute(
     if repeat is not None:
         command += ['--repeat', str(repeat)]
     
-    output = subprocess.check_output(command)
+    output = subprocess.check_output(command, stderr=subprocess.STDOUT)
 
     ret = parse_output(output)
     return repeat is None and ret[0] or ret
@@ -106,7 +107,7 @@ def parse_output(s):
 
     ret = []
 
-    for line in s.split(b'\n'):
+    for line in s.decode().split('\n'):
         line = line.decode()
         m = pat_latdef.match(line)
         if m:

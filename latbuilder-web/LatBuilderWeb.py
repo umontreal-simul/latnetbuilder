@@ -13,7 +13,8 @@ from pyjamas.ui.CheckBox import CheckBox
 from pyjamas.ui.TextBox import TextBox
 from pyjamas.JSONService import JSONProxy
 
-# TODO: expression for weights
+# TODO: validation
+# TODO: expression (j^-2) for weights
 # TODO: explicit construction
 # TODO: extend existing lattice
 # TODO: guess if latbuilder can be found
@@ -202,7 +203,7 @@ class LatBuilderWeb:
         self.construction_samples_panel = HorizontalPanel(Spacing=8)
         self.construction_samples = TextBox(Text="30")
         self.construction_samples_panel.add(HTML("Random samples: ", **captionstyle))
-        self.construction_samples_panel.add(self.merit_alpha)
+        self.construction_samples_panel.add(self.construction_samples)
         cons_panel.add(self.construction_samples_panel)
 
         # execute button
@@ -297,7 +298,7 @@ class LatBuilderWeb:
 
             construction, construction_name, desc = \
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
-            random = '{samples}' in construction and self.construction_samples or None
+            samples = self.construction_samples.getText()
 
 
             id = self.remote.execute(
@@ -319,7 +320,7 @@ class LatBuilderWeb:
             self.results_panel.setVisible(True)
             self.status.setText("")
         except:
-            self.status.setText(response)
+            self.status.setText(response.replace('\n', '    '))
 
     def onRemoteError(self, code, errobj, request_info):
         message = errobj['message']
@@ -329,7 +330,7 @@ class LatBuilderWeb:
         else:
             code = errobj['code']
             self.status.setText("JSONRPC Error %s: %s" %
-                                (code, message['name']))
+                                (code, message))
 
 
 class LatBuilderService(JSONProxy):
