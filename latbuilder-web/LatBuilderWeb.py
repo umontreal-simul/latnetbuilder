@@ -71,7 +71,7 @@ class LatBuilderWeb:
                 ('product',               'product'),
                 ('order-dependent',       'order-dependent'),
                 ('POD',                   'product and order-dependent'),
-                ('projection-dependent',  'projection-dependent'),
+                #('projection-dependent',  'projection-dependent'),
                 ]
 
         captionstyle = {
@@ -116,7 +116,7 @@ class LatBuilderWeb:
         panel.add(self.embedded)
         lat_panel.add(panel)
 
-        self.dimension = TextBox(Text="10")
+        self.dimension = TextBox(Text="5")
         self.dimension.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
@@ -177,11 +177,19 @@ class LatBuilderWeb:
         panel.add(self.weight_type)
         weight_panel.add(panel)
 
-        self.default_weight = TextBox(Text="0.1")
-        self.default_weight_panel = HorizontalPanel(Spacing=8)
-        self.default_weight_panel.add(HTML("Default weight: ", **captionstyle))
-        self.default_weight_panel.add(self.default_weight)
-        weight_panel.add(self.default_weight_panel)
+        self.product_weights = []
+        self.product_weights_panel = HorizontalPanel(Visible=False, Spacing=8)
+        self.product_weights_array = HorizontalPanel()
+        self.product_weights_panel.add(HTML("Product weights: ", **captionstyle))
+        self.product_weights_panel.add(self.product_weights_array)
+        weight_panel.add(self.product_weights_panel)
+
+        self.order_weights = []
+        self.order_weights_panel = HorizontalPanel(Visible=False, Spacing=8)
+        self.order_weights_array = HorizontalPanel()
+        self.order_weights_panel.add(HTML("Order-dependent weights: ", **captionstyle))
+        self.order_weights_panel.add(self.order_weights_array)
+        weight_panel.add(self.order_weights_panel)
 
         # construction method
 
@@ -248,8 +256,30 @@ class LatBuilderWeb:
         self.onChange(self.construction)
         self.onChange(self.merit)
         self.onChange(self.weight_type)
+        self.onChange(self.dimension)
 
         RootPanel().add(main_panel)
+
+    def fill_weights(self, array, uiarray, dimension):
+        # fill weights panel
+        add_count = dimension - len(array)
+        if add_count < 0:
+            for w in array[add_count:]:
+                uiarray.remove(w.getParent())
+                array.remove(w)
+        elif add_count > 0:
+            if len(array) > 0:
+                value = array[-1].getText()
+            else:
+                value = '0.1'
+            for i in range(add_count):
+                w = TextBox(Width='3em', Text=value)
+                array.append(w)
+                panel = VerticalPanel()
+                panel.add(w)
+                panel.add(HTML("{}".format(i + dimension - add_count + 1),
+                    HorizontalAlignment='center'))
+                uiarray.add(panel)
 
     def onChange(self, sender):
 
@@ -269,12 +299,17 @@ class LatBuilderWeb:
             pass
 
         elif sender == self.dimension:
-            pass
+            # fill weights panels
+            dimension = int(self.dimension.getText())
+            self.fill_weights(self.product_weights, self.product_weights_array, dimension)
+            self.fill_weights(self.order_weights, self.order_weights_array, dimension)
 
         elif sender == self.weight_type:
             key, name = \
                     self.WEIGHT_TYPES[self.weight_type.getSelectedIndex()]
-            self.default_weight_panel.setVisible(key != 'projection-dependent')
+            self.product_weights_panel.setVisible(key in ['product', 'POD'])
+            self.order_weights_panel.setVisible(key in ['order-dependent', 'POD'])
+
 
     def onClick(self, sender):
         if sender == self.button_search:
@@ -293,8 +328,11 @@ class LatBuilderWeb:
             
             weight_type, weight_name = \
                     self.WEIGHT_TYPES[self.weight_type.getSelectedIndex()]
-            default_weight = self.default_weight.getText()
-            weights = '{}:{}'.format(weight_type, default_weight)
+            weights = weight_type
+            if weight_type in ['order-dependent', 'POD']:
+                weights += ':0:' + ','.join(w.getText() for w in self.order_weights)
+            if weight_type in ['product', 'POD']:
+                weights += ':0:' + ','.join(w.getText() for w in self.product_weights)
 
             construction, construction_name, desc = \
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
