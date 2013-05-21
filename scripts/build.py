@@ -447,7 +447,7 @@ if __name__ == '__main__':
     args = parse_command_line()
 
     # persistent state
-    statefile = os.path.join(args.root, '{}-state.db'.format(args.target))
+    statefile = os.path.join(args.root, 'sources.db'.format(args.target))
     persistent_state = shelve.open(statefile)
 
     # clean up state at exit
