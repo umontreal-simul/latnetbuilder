@@ -10,7 +10,9 @@ def execute(*args):
         r = latbuilder.execute(*args)
         return (r.lattice.size.points, r.lattice.gen, r.lattice.merit)
     except subprocess.CalledProcessError, e:
-        return 'ERROR:\ncommand: ' + ' '.join(e.cmd) + '\nouput: ' + e.output
+        return "ERROR:\ncommand: " + ' '.join(e.cmd) + "\nouput: " + e.output
+    except OSError, e:
+        return "ERROR:\ncannot execute the `latbuilder' program: " + e.strerror
 
 if __name__ == "__main__":
     handleCGI()
