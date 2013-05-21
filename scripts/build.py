@@ -324,6 +324,28 @@ class LatbuilderRules(PackageRules):
         logging.info('  archive name: {}'.format(self.archive_name))
 
     def _do_build(self, log):
+        # latbuilder web interface
+        if shutil.which('pyjsbuild'):
+            logging.info("  building Lattice Builder Web Interface")
+            bindir = os.path.join(self.build_dir, 'bin')
+            websrc = os.path.join(self.source_dir, 'latbuilder-web')
+            sharedir = os.path.join(self.build_dir, 'share')
+            shutil.rmtree(bindir, ignore_errors=True)
+            shutil.rmtree(sharedir, ignore_errors=True)
+            shutil.copytree(os.path.join(websrc, 'bin'), bindir)
+            os.makedirs(sharedir, exist_ok=True)
+            with working_directory(self.build_dir):
+                run_command(['pyjsbuild',
+                    '--no-compile-inplace',
+                    '--output=share/latbuilder-web',
+                    '-I', websrc,
+                    'LatBuilderWeb'], log)
+        else:
+            logging.warning("  pyjsbuild executable cannot be found; skipping "
+            "installation of the Lattice Builder web interface")
+            return
+        # latbuilder executable
+        logging.info("  building Lattice Builder executable program")
         with working_directory(self.source_dir):
             run_command(self.b2_command + ['/latbuilder//install'], log)
 
