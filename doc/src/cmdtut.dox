@@ -1,4 +1,4 @@
-# Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# Copyright (c) 2012, 2013 David Munger, Pierre L'Ecuyer, Université de Montréal.
 # 
 # This file is part of Lattice Builder.
 # 
@@ -49,7 +49,7 @@ latbuilder \
   --size 2053 \
   --dimension 5 \
   --construction CBC \
-  --figure-of-merit CS:sum:P2 \
+  --figure-of-merit CS:P2 \
   --weights product:0.7
 \endverbatim
 
@@ -77,7 +77,7 @@ Some arguments consists of several tokens, separated by a colon.
   should be used.  Specifying other construction methods is explained in
   \ref cmdtut_recipes_construction.
 
-- The argument <code>--figure-of-merit CS:sum:P2</code> consists of three colon-separated
+- The argument <code>--figure-of-merit CS:P2</code> consists of three colon-separated
   tokens.
   It tells Lattice Builder to use the specialized coordinate-symmetric
   evaluation algorithm, whence the first \c CS token,  for the \f$\mathcal P_2\f$
@@ -98,7 +98,7 @@ of merit, in coordinate-symmetric with product weights such that \f$\gamma_j =
 Options come in long and short forms.  For example, the following has the same
 effect as the previous example:
 \verbatim
-latbuilder -l ordinary -n 2053 -d 5 -c CBC -m CS:sum:P2 -w product:0.7
+latbuilder -l ordinary -n 2053 -d 5 -c CBC -m CS:P2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
@@ -252,7 +252,7 @@ as in \ref cmdtut_recipes_weights_product.
   and \f$\bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)\f$ is normalized
   maximum distance between two successive parallel hyperplanes:
   \verbatim
-    --figure-of-merit max:spectral
+    --norm-type inf --figure-of-merit spectral
   \endverbatim
 
 - The spectral figure of merit (weighted average):
@@ -264,7 +264,7 @@ as in \ref cmdtut_recipes_weights_product.
         \right]^2
   \f]
   \verbatim
-    --figure-of-merit sum:spectral:2
+    --figure-of-merit spectral
   \endverbatim
   The optional third colon-separated token specifies the exponent applied to the
   square brackets.  It defaults to 1, as in the previous example.
@@ -272,25 +272,25 @@ as in \ref cmdtut_recipes_weights_product.
 - The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using
   term-by-term evaluation of the sum:
   \verbatim
-    --figure-of-merit sum:P4
+    --figure-of-merit P4
   \endverbatim
 
 - The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using a
   coordinate-symmetric evaluation algorithm:
   \verbatim
-    --figure-of-merit CS:sum:P4
+    --figure-of-merit CS:P4
   \endverbatim
 
 - The \f$\mathcal R_\alpha\f$ criterion with \f$\alpha=1\f$, using a
   coordinate-symmetric evaluation algorithm:
   \verbatim
-    --figure-of-merit CS:sum:R1
+    --figure-of-merit CS:R1
   \endverbatim
 
 - The normalized \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using
   the bound from \cite rSIN10a :
   \verbatim
-    --figure-of-merit CS:sum:P2 --filters norm:P2-SL10
+    --figure-of-merit CS:P2 --filters norm:P2-SL10
   \endverbatim
   Usage of the <code>--filters</code> option is illustrated in \ref
   cmdtut_recipes_filters.
@@ -432,7 +432,7 @@ to embedded with:
     --size 2^16 \
     --dimension 10 \
     --construction fast-CBC \
-    --figure-of-merit CS:sum:P2 \
+    --figure-of-merit CS:P2 \
     --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0
     --weights product:0.1 \
     --combiner sum
@@ -472,7 +472,7 @@ latbuilder \
   --size 2^8 \
   --dimension 5 \
   --construction fast-CBC \
-  --figure-of-merit CS:sum:P2 \
+  --figure-of-merit CS:P2 \
   --multilevel-filters norm:P2-DPW08 low-pass:1.0
   --weights product:0.1 \
   --combiner sum
@@ -486,7 +486,7 @@ latbuilder \
   --size 2^9 \
   --dimension 5 \
   --construction extend:2^8:1,45,101,41,25 \
-  --figure-of-merit CS:sum:P2 \
+  --figure-of-merit CS:P2 \
   --weights product:0.1
 \endverbatim
 Note that only the merit value of the lattice with \f$2^9\f$ points, and not
@@ -535,7 +535,7 @@ options:
 		- <code>max</code> for the selection of the weighted maximum;
 
 		and where <code><var>figure</var></code> is one of:
-                - <code>spectral:<var>power</var></code> for the spectral figure
+                - <code>spectral</code> for the spectral figure
                   of merit;
                 - <code>P<var>alpha</var></code> for the weighted \f$\mathcal
                   P_\alpha\f$ figure of merit with
