@@ -1,4 +1,4 @@
-// Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Université de Montréal.
+// Copyright (c) 2012 David Munger, Pierre L'Ecuyer, Richard Simard, Université de Montréal.
 // 
 // This file is part of Lattice Builder.
 // 
