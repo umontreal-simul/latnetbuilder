@@ -11,6 +11,9 @@ from pyjamas.ui.HorizontalPanel import HorizontalPanel
 from pyjamas.ui.ListBox import ListBox
 from pyjamas.ui.CheckBox import CheckBox
 from pyjamas.ui.TextBox import TextBox
+from pyjamas.ui.Hyperlink import Hyperlink
+from pyjamas.ui.DialogBox import DialogBox
+from pyjamas import Window
 from pyjamas.JSONService import JSONProxy
 
 # TODO: validation
@@ -177,18 +180,26 @@ class LatBuilderWeb:
         panel.add(self.weight_type)
         weight_panel.add(panel)
 
+        self.product_weights_expr_link = Hyperlink("expression")
+        self.product_weights_expr_link.addClickListener(self)
+
         self.product_weights = []
         self.product_weights_panel = HorizontalPanel(Visible=False, Spacing=8)
         self.product_weights_array = HorizontalPanel()
         self.product_weights_panel.add(HTML("Product weights: ", **captionstyle))
         self.product_weights_panel.add(self.product_weights_array)
+        self.product_weights_panel.add(self.product_weights_expr_link)
         weight_panel.add(self.product_weights_panel)
+
+        self.order_weights_expr_link = Hyperlink("expression")
+        self.order_weights_expr_link.addClickListener(self)
 
         self.order_weights = []
         self.order_weights_panel = HorizontalPanel(Visible=False, Spacing=8)
         self.order_weights_array = HorizontalPanel()
         self.order_weights_panel.add(HTML("Order-dependent weights: ", **captionstyle))
         self.order_weights_panel.add(self.order_weights_array)
+        self.order_weights_panel.add(self.order_weights_expr_link)
         weight_panel.add(self.order_weights_panel)
 
         # construction method
@@ -281,6 +292,29 @@ class LatBuilderWeb:
                     HorizontalAlignment='center'))
                 uiarray.add(panel)
 
+    def showProductWeightsDialog(self):
+        contents = VerticalPanel(StyleName="content", Spacing=4)
+        contents.add(HTML('Enter an expression for the weights, using <em>j</em> as the coordinate index, e.g., j^-2 or 1/(1+j^2).'))
+        self.product_weights_expr = TextBox('0.1')
+        contents.add(self.product_weights_expr)
+        contents.add(Button("OK", getattr(self, "onClose")))
+        self._product_weights_expr_dialog = DialogBox(glass=True)
+        self._product_weights_expr_dialog.setHTML('<b>Set the weights from an expression</b>')
+        self._product_weights_expr_dialog.setWidget(contents)
+
+        left = (Window.getClientWidth() - 200) / 2 + Window.getScrollLeft()
+        top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
+        self._product_weights_expr_dialog.setPopupPosition(left, top)
+        self._product_weights_expr_dialog.show()
+
+    def onClose(self, event):
+        self._product_weights_expr_dialog.hide()
+        self.status.setText("computing weights...")
+        id = self.remote.make_product_weights(
+                self.product_weights_expr.getText(),
+                len(self.product_weights),
+                self)
+
     def onChange(self, sender):
 
         if sender == self.construction:
@@ -349,14 +383,26 @@ class LatBuilderWeb:
                     construction.format(samples=samples),
                     self)
 
+        elif sender == self.product_weights_expr_link:
+            self.showProductWeightsDialog()
+
+        elif sender == self.order_weights_expr_link:
+            pass
+
     def onRemoteResponse(self, response, request_info):
         try:
-            points, gen, merit = eval(response)
-            self.results_size.setText(points)
-            self.results_gen.setText(', '.join(gen))
-            self.results_merit.setText(merit)
-            self.results_panel.setVisible(True)
-            self.status.setText("")
+            if request_info.method == 'execute':
+                points, gen, merit = eval(response)
+                self.results_size.setText(points)
+                self.results_gen.setText(', '.join(gen))
+                self.results_merit.setText(merit)
+                self.results_panel.setVisible(True)
+                self.status.setText("")
+            elif request_info.method == 'make_product_weights':
+                weights = [float(x) for x in response]
+                for w, val in zip(self.product_weights, weights):
+                    w.setText(str(val))
+                self.status.setText("")
         except:
             self.status.setText(response.replace('\n', '    '))
 
@@ -373,7 +419,8 @@ class LatBuilderWeb:
 
 class LatBuilderService(JSONProxy):
     def __init__(self):
-        JSONProxy.__init__(self, "services/LatBuilderService.py", ["execute"])
+        JSONProxy.__init__(self, "services/LatBuilderService.py",
+                ['execute', 'make_product_weights', 'make_order_weights'])
 
 if __name__ == '__main__':
     app = LatBuilderWeb()
