@@ -82,8 +82,6 @@ Some arguments consists of several tokens, separated by a colon.
   It tells Lattice Builder to use the specialized coordinate-symmetric
   evaluation algorithm, whence the first \c CS token,  for the \f$\mathcal P_2\f$
   discrepancy.
-  The meaning of the second colon-separated, <code>sum</code>, is explained
-  below in \ref cmdtut_recipes_merit.
 
 - The argument <code>--weights product:0.7</code> assigns product weights to the
   figure of merit,  with the same weight (0.7) for every coordinate.  More
@@ -530,10 +528,6 @@ options:
                 coordinate-symmetric implementation of the evaluation algorithm
                 should be used;
 
-		where <code><var>accumulator</var></code> is one of:
-		- <code>sum</code> for a weighted sum; or
-		- <code>max</code> for the selection of the weighted maximum;
-
 		and where <code><var>figure</var></code> is one of:
                 - <code>spectral</code> for the spectral figure
                   of merit;
@@ -543,6 +537,14 @@ options:
                 - <code>R<var>alpha</var></code> for the weighted \f$\mathcal
                   R_\alpha\f$ figure of merit with
                   \f$\alpha=\f$<code><var>alpha</var></code>.
+	</dd>
+	<dt><code>--norm-type</code> / <code>-p</code></dt>
+	<dd><em>Optional (default: 2).</em>
+		Specifies the type of <em>L_p</em> norm to combine the merit
+		values across projections.
+		Takes an argument of the form:
+		- <code><var>realNumber</var></code> for a finite number;
+		- <code>inf</code> for infinity.
 	</dd>
 	<dt><code>--construction</code> / <code>-c</code></dt>
 	<dd><em>Required.</em>
