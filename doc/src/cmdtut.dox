@@ -146,7 +146,7 @@ The order of the lines in the file is not important.
 Lattice Builder must be told where to look for the weights by changing the 
 weights argument to
 \verbatim
-  --weights projection-dependent:weights.txt
+  --weights file:weights.txt
 \endverbatim
 The first colon-separated token indicates the type (projection-dependent) of
 weights, and the second one, the name of the file from which the weights must be
