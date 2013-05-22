@@ -91,7 +91,7 @@ Some arguments consists of several tokens, separated by a colon.
 
 To summarize, this command executes a CBC construction for an ordinary lattice
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
-of merit, in coordinate-symmetric with product weights such that \f$\gamma_j =
+of merit, in coordinate-symmetric with product weights such that \f$\gamma_j^2 =
 0.7\f$ for all \f$j\f$.
 
 Options come in long and short forms.  For example, the following has the same
@@ -138,11 +138,11 @@ order 2:    1.0
 order 3:    0.1
 default:    1.0e-3
 \endverbatim
-This assigns the weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
-\f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a weight of 1.0 to every
-projection of order 2, a weight of 0.1 to every projection of order 3 other
-than the above three for which weights were explicitly assigned, then a weight
-of \f$10^{-3}\f$ to every other projection.
+This assigns the square weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
+\f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a square weight of 1.0 to
+every projection of order 2, a square weight of 0.1 to every projection of order
+3 other than the above three for which weights were explicitly assigned, then a
+square weight of \f$10^{-3}\f$ to every other projection.
 The order of the lines in the file is not important.
 Lattice Builder must be told where to look for the weights by changing the 
 weights argument to
@@ -169,13 +169,13 @@ which no weight is explicitly given; the last token is optional and is a
 comma-separated list of order-dependent weights \f$\Gamma_1,\dots,\Gamma_j\f$ for
 some \f$j\f$.
 
-- Order-dependent weights with \f$\Gamma_\ell = 0.3\f$ for all \f$\ell\f$:
+- Order-dependent weights with \f$\Gamma_\ell^2 = 0.3\f$ for all \f$\ell\f$:
   \verbatim
   --weights order-dependent:0.3
   \endverbatim
 
-- Order-dependent weights with \f$\Gamma_1 = 1.0\f$, \f$\Gamma_2 = 0.7\f$,
-  \f$\Gamma_3 = 0.3\f$ and \f$\Gamma_\ell = 0.1\f$ for all \f$\ell \geq 4\f$:
+- Order-dependent weights with \f$\Gamma_1^2 = 1.0\f$, \f$\Gamma_2^2 = 0.7\f$,
+  \f$\Gamma_3^2 = 0.3\f$ and \f$\Gamma_\ell^2 = 0.1\f$ for all \f$\ell \geq 4\f$:
   \verbatim
   --weights order-dependent:0.1:1.0,0.7,0.3
   \endverbatim
@@ -196,13 +196,13 @@ which no weight is explicitly given; the last token is optional and is a
 comma-separated list of coordinate weights \f$\gamma_1,\dots,\gamma_j\f$ for
 some \f$j\f$.
 
-- Product weights with \f$\gamma_j = 0.3\f$ for all \f$j\f$:
+- Product weights with \f$\gamma_j^2 = 0.3\f$ for all \f$j\f$:
   \verbatim
   --weights product:0.3
   \endverbatim
 
-- Product weights with \f$\gamma_1 = 1.0\f$, \f$\gamma_2 = 0.7\f$, \f$\gamma_3 =
-  0.3\f$ and \f$\gamma_j = 0.1\f$ for all \f$j \geq 4\f$:
+- Product weights with \f$\gamma_1^2 = 1.0\f$, \f$\gamma_2^2 = 0.7\f$, \f$\gamma_3^2 =
+  0.3\f$ and \f$\gamma_j^2 = 0.1\f$ for all \f$j \geq 4\f$:
   \verbatim
   --weights product:0.1:1.0,0.7,0.3
   \endverbatim
@@ -224,10 +224,10 @@ specify the \f$\Gamma_j\f$'s as in \ref
 cmdtut_recipes_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
 as in \ref cmdtut_recipes_weights_product.
 
-- POD weights with \f$\Gamma_1 = 1.0\f$, \f$\Gamma_2 = 0.7\f$,
-  \f$\Gamma_3 = 0.3\f$ and \f$\Gamma_\ell = 0.1\f$ for all \f$\ell \geq 4\f$,
-  and with \f$\gamma_1 = 1.0\f$, \f$\gamma_2 = 0.9\f$, \f$\gamma_3 =
-  0.7\f$ and \f$\gamma_j = 0.5\f$ for all \f$j \geq 4\f$:
+- POD weights with \f$\Gamma_1^2 = 1.0\f$, \f$\Gamma_2^2 = 0.7\f$,
+  \f$\Gamma_3^2 = 0.3\f$ and \f$\Gamma_\ell^2 = 0.1\f$ for all \f$\ell \geq 4\f$,
+  and with \f$\gamma_1^2 = 1.0\f$, \f$\gamma_2^2 = 0.9\f$, \f$\gamma_3^2 =
+  0.7\f$ and \f$\gamma_j^2 = 0.5\f$ for all \f$j \geq 4\f$:
   \verbatim
   --weights POD:0.1:1.0,0.7,0.3:0.5:1.0,0.9,0.7
   \endverbatim
@@ -257,8 +257,8 @@ as in \ref cmdtut_recipes_weights_product.
 - The spectral figure of merit (weighted average):
   \f[
     \sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \gamma_{\mathfrak u}
         \left[
+            \gamma_{\mathfrak u}
             \bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)
         \right]^2
   \f]
