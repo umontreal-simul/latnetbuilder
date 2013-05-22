@@ -89,6 +89,8 @@ def execute(
         weights,
         construction,
         filters=None,
+        mlfilters=None,
+        combiner=None,
         repeat=None):
     command = [LATBUILDER,
             '--lattice-type', lattype,
@@ -103,10 +105,16 @@ def execute(
     for w in weights.split(' '):
         command.append(w)
 
-    if filters is not None:
+    if filters:
         command += ['--filters', filters]
 
-    if repeat is not None:
+    if mlfilters:
+        command += ['--multilevel-filters', mlfilters]
+
+    if combiner:
+        command += ['--combiner', combiner]
+
+    if repeat:
         command += ['--repeat', str(repeat)]
     
     output = subprocess.check_output(command, stderr=subprocess.STDOUT)
