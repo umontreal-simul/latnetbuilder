@@ -153,6 +153,19 @@ The first colon-separated token indicates the type (projection-dependent) of
 weights, and the second one, the name of the file from which the weights must be
 read.
 
+Note that the weights in the above examples are interpreted as square weights
+because, by default, the numerical values read by Lattice Builder are
+interpreted as the constants \f$\gamma_{\mathfrak u}^p\f$, i.e. the weights
+elevated the power \f$p\f$ matching the choice of \f$\mathcal L_p\f$-norm.
+An exception to this occurs when using the infinity-norm, where they are
+interpreted as if \f$p = 1\f$.
+To interpret the numerical values as another power of the weights, say 1, the
+option
+\verbatim
+  --weights-power 1
+\endverbatim
+must be added to the command line.
+
 
 \subsubsection cmdtut_recipes_weights_orderdep Order-Dependent Weights
 
