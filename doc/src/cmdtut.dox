@@ -25,6 +25,7 @@ It is divided into the following sections:
     <li> \subpage cmdtut_summary    </li>
 </ol>
 
+Alternatively, the \ref webif can be used.
 
 The following typesetting semantics is adopted:
 - <code>verbatim</code> for text to be typed as is;
@@ -681,10 +682,6 @@ options:
 
         </dd>
 </dl>
-
-
-\todo JavaScript wizard to build command line.
-
 
 
 */

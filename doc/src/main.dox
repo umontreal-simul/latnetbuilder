@@ -20,6 +20,7 @@
 
 \section outline Outline
 - \subpage building
+- \subpage webif
 - \subpage cmdtut
 - \subpage hightut
 - \subpage libtut
