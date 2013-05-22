@@ -5,7 +5,9 @@
 }
 
 .gwt-DialogBox .Caption {
-  background-color: #bbbbbb;
+  display: block;
+  width: 100%;
+  background-color: #bbb;
   padding: 3px;
   margin: 2px;
   font-weight: bold;

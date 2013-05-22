@@ -283,6 +283,17 @@ class LatBuilderWeb:
 
         RootPanel().add(main_panel)
 
+        self._product_weights_expr_dialog, self.product_weights_expr = \
+                self.create_weights_dialog(
+                        getattr(self, 'set_product_weights_expr'),
+                        "Enter an expression for the weights, using <em>j</em> as the "
+                        "coordinate index, e.g., j^-2 or 1/(1+j^2).")
+        self._order_weights_expr_dialog, self.order_weights_expr = \
+                self.create_weights_dialog(
+                        getattr(self, 'set_order_weights_expr'),
+                        "Enter an expression for the weights, using <em>k</em> as the "
+                        "projection order, e.g., k^-2 or 1/(1+k^2).")
+
     def fill_weights(self, array, uiarray, dimension):
         # fill weights panel
         add_count = dimension - len(array)
@@ -304,28 +315,38 @@ class LatBuilderWeb:
                     HorizontalAlignment='center'))
                 uiarray.add(panel)
 
-    def showProductWeightsDialog(self):
+    def create_weights_dialog(self, callback, msg):
         contents = VerticalPanel(StyleName="Contents", Spacing=4)
-        contents.add(HTML('Enter an expression for the weights, using <em>j</em> as the coordinate index, e.g., j^-2 or 1/(1+j^2).'))
-        self.product_weights_expr = TextBox('0.1')
-        contents.add(self.product_weights_expr)
-        contents.add(Button("OK", getattr(self, "onClose")))
-        self._product_weights_expr_dialog = DialogBox(glass=True)
-        self._product_weights_expr_dialog.setHTML('<b>Set the weights from an expression</b>')
-        self._product_weights_expr_dialog.setWidget(contents)
+        contents.add(HTML(msg))
+        expr = TextBox(Text='0.1')
+        contents.add(expr)
+        contents.add(Button("OK", callback))
+        dialog = DialogBox(glass=True)
+        dialog.setHTML('<b>Set the weights from an expression</b>')
+        dialog.setWidget(contents)
+        return dialog, expr
 
-        left = (Window.getClientWidth() - 200) / 2 + Window.getScrollLeft()
-        top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
-        self._product_weights_expr_dialog.setPopupPosition(left, top)
-        self._product_weights_expr_dialog.show()
-
-    def onClose(self, event):
+    def set_product_weights_expr(self, event):
         self._product_weights_expr_dialog.hide()
         self.status.setText("computing weights...")
         id = self.remote.make_product_weights(
                 self.product_weights_expr.getText(),
                 len(self.product_weights),
                 self)
+
+    def set_order_weights_expr(self, event):
+        self._order_weights_expr_dialog.hide()
+        self.status.setText("computing weights...")
+        id = self.remote.make_order_weights(
+                self.order_weights_expr.getText(),
+                len(self.order_weights),
+                self)
+
+    def showDialog(self, dialog):
+        left = (Window.getClientWidth() - 200) / 2 + Window.getScrollLeft()
+        top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
+        dialog.setPopupPosition(left, top)
+        dialog.show()
 
     def onChange(self, sender):
 
@@ -396,10 +417,10 @@ class LatBuilderWeb:
                     self)
 
         elif sender == self.product_weights_expr_link:
-            self.showProductWeightsDialog()
+            self.showDialog(self._product_weights_expr_dialog)
 
         elif sender == self.order_weights_expr_link:
-            pass
+            self.showDialog(self._order_weights_expr_dialog)
 
     def onRemoteResponse(self, response, request_info):
         try:
@@ -413,6 +434,11 @@ class LatBuilderWeb:
             elif request_info.method == 'make_product_weights':
                 weights = [float(x) for x in response]
                 for w, val in zip(self.product_weights, weights):
+                    w.setText(str(val))
+                self.status.setText("")
+            elif request_info.method == 'make_order_weights':
+                weights = [float(x) for x in response]
+                for w, val in zip(self.order_weights, weights):
                     w.setText(str(val))
                 self.status.setText("")
         except:
