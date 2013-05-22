@@ -106,10 +106,10 @@ def execute(
         command.append(w)
 
     if filters:
-        command += ['--filters', filters]
+        command += ['--filters'] + filters
 
     if mlfilters:
-        command += ['--multilevel-filters', mlfilters]
+        command += ['--multilevel-filters'] + mlfilters
 
     if combiner:
         command += ['--combiner', combiner]
