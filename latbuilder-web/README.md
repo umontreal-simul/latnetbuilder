@@ -23,4 +23,4 @@ Then the application can be used by running:
 
 	bin/LatBuilderWeb.py
 
-and by connecting a browser to the [application port](http://localhost:8000/).
+and by connecting a browser to the [application port](http://localhost:8080/).
