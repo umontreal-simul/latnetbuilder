@@ -1,6 +1,6 @@
 #!/usr/bin/env python2
 
-# Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Université de Montréal.
+# Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Universite de Montreal.
 # 
 # This file is part of Lattice Builder.
 # 
