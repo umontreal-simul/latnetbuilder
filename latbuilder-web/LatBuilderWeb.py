@@ -36,12 +36,10 @@ from pyjamas import DOM
 from pyjamas.JSONService import JSONProxy
 
 # TODO: validation
-# TODO: expression (j^-2) for weights
 # TODO: explicit construction
 # TODO: extend existing lattice
 # TODO: guess if latbuilder can be found
 # TODO: combinations of weights
-# TODO: filters, combiners, normalizations
 
 class LatBuilderWeb:
     def setStyleSheet(self, sheet):
@@ -106,6 +104,15 @@ class LatBuilderWeb:
                 ('POD',                   'product and order-dependent'),
                 #('projection-dependent',  'projection-dependent'),
                 ]
+        self.COMBINER_TYPES = [
+                ('level:max',   'highest level'),
+                ('sum',         'weighted sum'),
+                ('max',         'maximum weighted value'),
+                ]
+        self.NORMALIZATION_TYPES = [
+                ('norm:P{alpha}-SL10',      'SL10 P-alpha'),
+                ('norm:P{alpha}-DPW08',     'DPW08 P-alpha'),
+                ]
 
         captionstyle = {
                 'Width': '10em',
@@ -138,7 +145,7 @@ class LatBuilderWeb:
         lat_panel = VerticalPanel()
         params_panel.add(CaptionPanel("Lattice Properties", lat_panel))
 
-        self.size = TextBox(Text="2^13")
+        self.size = TextBox(Text="2^10")
 
         self.embedded = CheckBox("embedded")
         self.embedded.addClickListener(self)
@@ -189,12 +196,39 @@ class LatBuilderWeb:
         self.merit_alpha_panel.add(self.merit_alpha)
         merit_panel.add(self.merit_alpha_panel)
 
+
         # filters and combiner
 
-        # TODO
+        multilevel_panel = VerticalPanel()
+        self.multilevel_panel = CaptionPanel("Multilevel Filters and Combiner", multilevel_panel, Visible=False)
+        params_panel.add(self.multilevel_panel)
 
-        # --multilevel-filters norm:P2-SL10:even:8,13
-        # --combiner max
+        self.ml_normalization_enable = CheckBox("Normalization type: ")
+        self.ml_normalization_enable.addClickListener(self)
+        self.ml_normalization_type = ListBox()
+        for key, name in self.NORMALIZATION_TYPES:
+            self.ml_normalization_type.addItem(name, value=key)
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(self.ml_normalization_enable)
+        panel.add(self.ml_normalization_type)
+        multilevel_panel.add(panel)
+
+        self.ml_lowpass_enable = CheckBox("Low-pass filter value: ")
+        self.ml_lowpass_enable.addClickListener(self)
+        self.ml_lowpass = TextBox(Text="1.0")
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(self.ml_lowpass_enable)
+        panel.add(self.ml_lowpass)
+        multilevel_panel.add(panel)
+
+        self.combiner_type = ListBox()
+        for key, name in self.COMBINER_TYPES:
+            self.combiner_type.addItem(name, value=key)
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("Combiner: ", **captionstyle))
+        panel.add(self.combiner_type)
+        multilevel_panel.add(panel)
+
 
         # weights
 
@@ -268,26 +302,27 @@ class LatBuilderWeb:
 
         # results
 
-        self.results_panel = VerticalPanel(Visible=False)
-        main_panel.add(CaptionPanel("Results", self.results_panel))
+        results_panel = VerticalPanel()
+        self.results_panel = CaptionPanel("Results", results_panel, Visible=False)
+        main_panel.add(self.results_panel)
 
         self.results_size = Label()
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Lattice size: ", **captionstyle))
         panel.add(self.results_size)
-        self.results_panel.add(panel)
+        results_panel.add(panel)
 
         self.results_gen = Label()
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Generating vector: ", **captionstyle))
         panel.add(self.results_gen)
-        self.results_panel.add(panel)
+        results_panel.add(panel)
 
         self.results_merit = Label()
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Merit value: ", **captionstyle))
         panel.add(self.results_merit)
-        self.results_panel.add(panel)
+        results_panel.add(panel)
 
 
         # update selections
@@ -298,6 +333,9 @@ class LatBuilderWeb:
         self.onChange(self.merit)
         self.onChange(self.weight_type)
         self.onChange(self.dimension)
+        self.onClick(self.embedded)
+        self.onChange(self.ml_normalization_enable)
+        self.onChange(self.ml_lowpass_enable)
 
         RootPanel().add(main_panel)
 
@@ -380,9 +418,6 @@ class LatBuilderWeb:
             self.merit_alpha_panel.setVisible('{alpha}' in key)
             self.merit_cs.setVisible('{cs}' in key)
 
-        elif sender == self.embedded:
-            pass
-
         elif sender == self.dimension:
             # fill weights panels
             dimension = int(self.dimension.getText())
@@ -397,7 +432,16 @@ class LatBuilderWeb:
 
 
     def onClick(self, sender):
-        if sender == self.button_search:
+        if sender == self.embedded:
+            self.multilevel_panel.setVisible(self.embedded.getChecked())
+
+        elif sender == self.ml_normalization_enable:
+            self.ml_normalization_type.setVisible(self.ml_normalization_enable.getChecked())
+
+        elif sender == self.ml_lowpass_enable:
+            self.ml_lowpass.setVisible(self.ml_lowpass_enable.getChecked())
+
+        elif sender == self.button_search:
             self.status.setText(self.TEXT_WAITING)
 
             lattype = self.embedded.getChecked() and 'embedded' or 'ordinary'
@@ -423,6 +467,19 @@ class LatBuilderWeb:
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
             samples = self.construction_samples.getText()
 
+            mlfilters = []
+            combiner_type = None
+
+            if self.embedded.getChecked():
+                if self.ml_normalization_enable.getChecked():
+                    ml_normalization_type, ml_normalization_name = \
+                            self.NORMALIZATION_TYPES[self.ml_normalization_type.getSelectedIndex()]
+                    mlfilters.append(ml_normalization_type.format(alpha=alpha))
+                if self.ml_lowpass_enable.getChecked():
+                    mlfilters.append('low-pass:{}'.format(self.ml_lowpass.getText()))
+                
+                combiner_type, combiner_name = \
+                        self.COMBINER_TYPES[self.combiner_type.getSelectedIndex()]
 
             id = self.remote.execute(
                     lattype,
@@ -432,6 +489,9 @@ class LatBuilderWeb:
                     merit.format(alpha=alpha, cs=cs),
                     weights,
                     construction.format(samples=samples),
+                    None,
+                    mlfilters,
+                    combiner_type,
                     self)
 
         elif sender == self.product_weights_expr_link:
