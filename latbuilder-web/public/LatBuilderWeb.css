@@ -1,0 +1,23 @@
+.gwt-DialogBox {
+  border: 2px outset;
+  background-color: white;
+  width: 30%;
+}
+
+.gwt-DialogBox .Caption {
+  background-color: #bbbbbb;
+  padding: 3px;
+  margin: 2px;
+  font-weight: bold;
+  cursor: default;
+}
+
+.gwt-DialogBox .Contents {
+    padding: 10px;
+}
+
+.gwt-PopupPanelGlass {
+    background-color: #003;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+}

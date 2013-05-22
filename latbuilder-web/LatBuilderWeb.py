@@ -14,6 +14,7 @@ from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.Hyperlink import Hyperlink
 from pyjamas.ui.DialogBox import DialogBox
 from pyjamas import Window
+from pyjamas import DOM
 from pyjamas.JSONService import JSONProxy
 
 # TODO: validation
@@ -25,7 +26,18 @@ from pyjamas.JSONService import JSONProxy
 # TODO: filters, combiners, normalizations
 
 class LatBuilderWeb:
+    def setStyleSheet(self, sheet):
+        e = DOM.createElement('link')
+        e.setAttribute('rel', 'stylesheet')
+        e.setAttribute('type', 'text/css')
+        e.setAttribute('href', sheet)
+        html = Window.getDocumentRoot().parentElement
+        head = html.getElementsByTagName('head').item(0)
+        head.appendChild(e)
+
     def onModuleLoad(self):
+        self.setStyleSheet("./LatBuilderWeb.css")
+
         self.TEXT_WAITING = "Lattice Builder is working..."
         self.TEXT_ERROR = "Server Error"
         self.FIGURES_OF_MERIT = [
@@ -293,7 +305,7 @@ class LatBuilderWeb:
                 uiarray.add(panel)
 
     def showProductWeightsDialog(self):
-        contents = VerticalPanel(StyleName="content", Spacing=4)
+        contents = VerticalPanel(StyleName="Contents", Spacing=4)
         contents.add(HTML('Enter an expression for the weights, using <em>j</em> as the coordinate index, e.g., j^-2 or 1/(1+j^2).'))
         self.product_weights_expr = TextBox('0.1')
         contents.add(self.product_weights_expr)
