@@ -406,7 +406,7 @@ to embedded with:
   \verbatim
   latbuilder \
     --lattice-type embedded \
-    --size 2^16 \
+    --size "2^16" \
     --dimension 5 \
     --construction CBC \
     --figure-of-merit spectral \
@@ -429,7 +429,7 @@ to embedded with:
   \verbatim
   latbuilder \
     --lattice-type embedded \
-    --size 2^16 \
+    --size "2^16" \
     --dimension 10 \
     --construction fast-CBC \
     --figure-of-merit CS:P2 \
@@ -469,7 +469,7 @@ dimension 5 with:
 \verbatim
 latbuilder \
   --lattice-type embedded \
-  --size 2^8 \
+  --size "2^8" \
   --dimension 5 \
   --construction fast-CBC \
   --figure-of-merit CS:P2 \
@@ -483,16 +483,16 @@ This can be done with:
 \verbatim
 latbuilder \
   --lattice-type ordinary \
-  --size 2^9 \
+  --size "2^9" \
   --dimension 5 \
-  --construction extend:2^8:1,45,101,41,25 \
+  --construction "extend:2^8:1,45,101,41,25" \
   --figure-of-merit CS:P2 \
   --weights product:0.1
 \endverbatim
 Note that only the merit value of the lattice with \f$2^9\f$ points, and not
 that of the embedded lattices, is considered in this type of construction.
-The argument <code>--size 2^9</code> specifies the extended number of points
-and the argument <code>--construction extend:2^8:1,45,101,41,25</code> indicates
+The argument <code>--size "2^9"</code> specifies the extended number of points
+and the argument <code>--construction "extend:2^8:1,45,101,41,25"</code> indicates
 that we want to extend on a lattice with \f$2^8\f$ points and generating vector 
 \f$\boldsymbol a=(1,45,101,41,25)\f$.
 
