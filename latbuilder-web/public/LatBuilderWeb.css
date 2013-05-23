@@ -23,3 +23,12 @@
     opacity: 0.3;
     filter: alpha(opacity=30);
 }
+
+.Caption {
+    width: 10em;
+    text-align: right;
+}
+
+.Command {
+    font-family: monospace ;
+}

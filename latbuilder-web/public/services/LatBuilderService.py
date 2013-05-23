@@ -24,22 +24,23 @@ import latbuilder
 import subprocess
 
 @ServiceMethod
-def execute(*args):
+def backend_version():
+    return latbuilder.get_version()
+
+@ServiceMethod
+def latbuilder_exec(*args):
     try:
-        r = latbuilder.execute(*args)
-        return (r.lattice.size.points, r.lattice.gen, r.lattice.merit)
+        cmd, r = latbuilder.execute(*args)
+        cmd = ' '.join(arg.startswith('--') and arg or '"{}"'.format(arg) for arg in cmd)
+        return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit)
     except subprocess.CalledProcessError, e:
         return "ERROR:\ncommand: " + ' '.join(e.cmd) + "\nouput: " + e.output
     except OSError, e:
         return "ERROR:\ncannot execute the `latbuilder' program: " + e.strerror
 
 @ServiceMethod
-def make_product_weights(expr, dimension):
-    return [parsemath.eval(expr, {'j': j + 1}) for j in range(dimension)]
-
-@ServiceMethod
-def make_order_weights(expr, dimension):
-    return [parsemath.eval(expr, {'k': k + 1}) for k in range(dimension)]
+def array_from_expr(expr, index, dimension):
+    return [parsemath.eval(expr, {index: i + 1}) for i in range(dimension)]
 
 if __name__ == "__main__":
     handleCGI()

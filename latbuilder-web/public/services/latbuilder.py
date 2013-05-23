@@ -102,8 +102,11 @@ def execute(
             ]
 
     command.append('--weights')
-    for w in weights.split(' '):
-        command.append(w)
+    if isinstance(weights, str):
+        command.append(weights)
+    else:
+        for w in weights:
+            command.append(w)
 
     if filters:
         command += ['--filters'] + filters
@@ -120,7 +123,7 @@ def execute(
     output = subprocess.check_output(command, stderr=subprocess.STDOUT)
 
     ret = parse_output(output)
-    return repeat is None and ret[0] or ret
+    return repeat is None and (command, ret[0]) or (command, ret)
 
 
 def parse_output(s):
@@ -148,10 +151,13 @@ def parse_output(s):
     
     return ret
 
+def get_version():
+    command = [LATBUILDER, '--version']
+    return subprocess.check_output(command, stderr=subprocess.STDOUT)
 
 if __name__ == '__main__':
     print('testing latbuilder module')
-    result = execute(
+    line, result = execute(
             lattype='ordinary',
             size=100,
             normtype='2',

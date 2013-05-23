@@ -33,6 +33,7 @@ from pyjamas.ui.Hyperlink import Hyperlink
 from pyjamas.ui.DialogBox import DialogBox
 from pyjamas import Window
 from pyjamas import DOM
+from pyjamas import log
 from pyjamas.JSONService import JSONProxy
 
 # TODO: validation
@@ -40,6 +41,243 @@ from pyjamas.JSONService import JSONProxy
 # TODO: extend existing lattice
 # TODO: guess if latbuilder can be found
 # TODO: combinations of weights
+
+def window_center():
+    left = (Window.getClientWidth() - 200) / 2 + Window.getScrollLeft()
+    top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
+    return left, top
+
+
+class ValueArray:
+    REMOTE = None
+    def __init__(self, label, expr_var, default_value='0.0'):
+        self._default_value = default_value
+        self._expr_var = expr_var
+        self._expr_dialog, self._expr = self._create_expr_dialog()
+        self.panel = HorizontalPanel(Spacing=8)
+        self._array_panel = HorizontalPanel()
+
+        link = Hyperlink("expression...")
+        link.addClickListener(getattr(self, 'show_expr_dialog'))
+
+        panel = VerticalPanel(Spacing=4)
+        panel.add(HTML("{}: ".format(label), StyleName='Caption'))
+        panel.add(HTML("{}: ".format(self._expr_var), StyleName='Caption'))
+        self.panel.add(panel)
+        self.panel.add(self._array_panel)
+        self.panel.add(link)
+
+        self._values = []
+
+    # public interface
+
+    @property
+    def values(self):
+        return [x.getText() for x in self._values]
+
+    @property
+    def size(self):
+        return len(self._values)
+
+    @size.setter
+    def size(self, value):
+        add_count = value - len(self._values)
+        if add_count < 0:
+            for w in self._values[add_count:]:
+                self._array_panel.remove(w.getParent())
+                self._values.remove(w)
+        elif add_count > 0:
+            if self._values:
+                newval = self._values[-1].getText()
+            else:
+                newval = self._default_value
+            for i in range(add_count):
+                w = TextBox(Width='3em', Text=newval)
+                self._values.append(w)
+                panel = VerticalPanel()
+                panel.add(w)
+                panel.add(HTML("{}".format(i + value - add_count + 1),
+                    HorizontalAlignment='center'))
+                self._array_panel.add(panel)
+
+    def show_expr_dialog(self, dialog):
+        self._expr_dialog.setPopupPosition(*window_center())
+        self._expr_dialog.show()
+
+    # private methods
+
+    def _create_expr_dialog(self):
+        contents = VerticalPanel(StyleName="Contents", Spacing=4)
+        msg = ("Enter an expression for the weights, using <em>{0}</em> as the "
+                "projection order, e.g., {0}^-2 or 1/(1+{0}^2).").format(self._expr_var)
+        contents.add(HTML(msg))
+        expr = TextBox(Text='0.1')
+        contents.add(expr)
+        contents.add(Button("OK", getattr(self, '_close_expr_dialog')))
+        dialog = DialogBox(glass=True)
+        dialog.setHTML('<b>Set the weights from an expression</b>')
+        dialog.setWidget(contents)
+        return dialog, expr
+
+    def _close_expr_dialog(self):
+        self._expr_dialog.hide()
+        expr = self._expr.getText()
+        id = ValueArray.REMOTE.array_from_expr(expr, self._expr_var, self.size, self)
+
+    def onRemoteResponse(self, response, request_info):
+        try:
+            if request_info.method == 'array_from_expr':
+                values = [float(x) for x in response]
+                for w, v in zip(self._values, values):
+                    w.setText(str(v))
+        except:
+            Window.alert(response)
+
+    def onRemoteError(self, code, errobj, request_info):
+        message = errobj['message']
+        if code != 0:
+            Window.alert("HTTP error %d: %s" % (code, message['name']))
+        else:
+            code = errobj['code']
+            Window.alert("JSONRPC Error %s: %s" % (code, message))
+
+
+class SimpleWeights(object):
+    def __init__(self, remove_callback):
+        self._remove_callback = remove_callback
+        self.panel = VerticalPanel()
+        self.value_arrays = []
+        for va in self._gen_arrays():
+            self.value_arrays.append(va)
+            self.panel.add(va.panel)
+        link = Hyperlink("remove")
+        link.addClickListener(getattr(self, '_remove'))
+        self.panel.add(link)
+
+    # public interface
+
+    @property
+    def dimension(self):
+        return self.value_arrays and max(va.size for va in self.value_arrays) or 0
+
+    @dimension.setter
+    def dimension(self, value):
+        for va in self.value_arrays:
+            va.size = value
+
+    # abstract methods
+
+    def as_arg(self):
+        pass
+
+    def _create_arrays(self):
+        pass
+
+    # private methods
+    
+    def _remove(self):
+        self._remove_callback(self)
+
+
+class ProductWeights(SimpleWeights):
+    NAME = 'Product Weights'
+    def __init__(self, *args):
+        super(ProductWeights, self).__init__(*args)
+    def as_arg(self):
+        pw, = self.value_arrays
+        return 'product:0:' + ','.join(pw.values)
+    def _gen_arrays(self):
+        yield ValueArray('coordinate weights', 'j', '0.1')
+
+class OrderDependentWeights(SimpleWeights):
+    NAME = 'Order-Dependent Weights'
+    def __init__(self, *args):
+        super(OrderDependentWeights, self).__init__(*args)
+    def as_arg(self):
+        ow, = self.value_arrays
+        return 'order-dependent:0:' + ','.join(ow.values)
+    def _gen_arrays(self):
+        yield ValueArray('order weights', 'k', '0.1')
+
+class PODWeights(SimpleWeights):
+    NAME = 'Product and Order-Dependent (POD) Weights'
+    def __init__(self, *args):
+        super(PODWeights, self).__init__(*args)
+    def as_arg(self):
+        pw, ow = self.value_arrays
+        arg = 'POD:0:' + ','.join(pw.values)
+        arg += ':0:' + ','.join(ow.values)
+        return arg
+    def _gen_arrays(self):
+        yield ValueArray('coordinate weights', 'j', '0.1')
+        yield ValueArray('order weights', 'k', '0.1')
+
+
+class CompoundWeights:
+    def __init__(self):
+        self.WEIGHT_TYPES = [ProductWeights, OrderDependentWeights, PODWeights]
+        self._add_dialog, self._wtype = self._create_add_dialog()
+        self.panel = VerticalPanel()
+        self._list_panel = VerticalPanel(Spacing=8)
+        self.panel.add(self._list_panel)
+        link = Hyperlink("add...")
+        link.addClickListener(getattr(self, 'show_add_dialog'))
+        self.panel.add(link)
+        self._weights = []
+        self._dimension = 0
+
+    # public interface
+
+    @property
+    def dimension(self):
+        return self._dimension
+
+    @dimension.setter
+    def dimension(self, value):
+        self._dimension = value
+        for w in self._weights:
+            w.dimension = value
+
+    @property
+    def weights(self):
+        for w in self._weights: yield w
+
+    def add_weights(self, wclass):
+        self._weights.append(wclass(getattr(self, 'remove_weights')))
+        self._list_panel.add(CaptionPanel(wclass.NAME, self._weights[-1].panel))
+        self._weights[-1].dimension = self.dimension
+
+    def remove_weights(self, obj):
+        self._list_panel.remove(obj.panel.getParent())
+        self._weights.remove(obj)
+
+    def show_add_dialog(self):
+        self._add_dialog.setPopupPosition(*window_center())
+        self._add_dialog.show()
+
+    # private methods
+
+    def _create_add_dialog(self):
+        contents = VerticalPanel(StyleName="Contents", Spacing=4)
+        wtype = ListBox()
+        wtype.addChangeListener(self)
+        for wclass in self.WEIGHT_TYPES:
+            wtype.addItem(wclass.NAME, value=wclass)
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("Weight type: ", **captionstyle))
+        panel.add(wtype)
+        contents.add(panel)
+        contents.add(Button("OK", getattr(self, '_close_add_dialog')))
+        dialog = DialogBox(glass=True)
+        dialog.setHTML('<b>Add a new type of weights</b>')
+        dialog.setWidget(contents)
+        return dialog, wtype
+
+    def _close_add_dialog(self):
+        self._add_dialog.hide()
+        wclass = self.WEIGHT_TYPES[self._wtype.getSelectedIndex()]
+        self.add_weights(wclass)
+
 
 class LatBuilderWeb:
     def setStyleSheet(self, sheet):
@@ -98,12 +336,6 @@ class LatBuilderWeb:
                 "at a time.  Computation is accelerated by using fast "
                 "Fourier transforms."),
             ]
-        self.WEIGHT_TYPES = [
-                ('product',               'product'),
-                ('order-dependent',       'order-dependent'),
-                ('POD',                   'product and order-dependent'),
-                #('projection-dependent',  'projection-dependent'),
-                ]
         self.COMBINER_TYPES = [
                 ('level:max',   'highest level'),
                 ('sum',         'weighted sum'),
@@ -120,6 +352,7 @@ class LatBuilderWeb:
                 }
 
         self.remote = LatBuilderService()
+        ValueArray.REMOTE = self.remote
 
         main_panel = VerticalPanel(Spacing=30)
 
@@ -136,6 +369,10 @@ class LatBuilderWeb:
         </p>"""
         
         main_panel.add(HTML(info))
+
+        self.version_label = HTML()
+        main_panel.add(self.version_label)
+        self.remote.backend_version(self)
 
         params_panel = VerticalPanel(Spacing=15)
         main_panel.add(params_panel)
@@ -156,7 +393,7 @@ class LatBuilderWeb:
         panel.add(self.embedded)
         lat_panel.add(panel)
 
-        self.dimension = TextBox(Text="5")
+        self.dimension = TextBox(Text="3")
         self.dimension.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
@@ -229,42 +466,11 @@ class LatBuilderWeb:
         panel.add(self.combiner_type)
         multilevel_panel.add(panel)
 
-
         # weights
 
-        weight_panel = VerticalPanel()
-        params_panel.add(CaptionPanel("Weights", weight_panel))
-
-        self.weight_type = ListBox()
-        self.weight_type.addChangeListener(self)
-        for key, name in self.WEIGHT_TYPES:
-            self.weight_type.addItem(name, value=key)
-        panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Weight type: ", **captionstyle))
-        panel.add(self.weight_type)
-        weight_panel.add(panel)
-
-        self.product_weights_expr_link = Hyperlink("expression")
-        self.product_weights_expr_link.addClickListener(self)
-
-        self.product_weights = []
-        self.product_weights_panel = HorizontalPanel(Visible=False, Spacing=8)
-        self.product_weights_array = HorizontalPanel()
-        self.product_weights_panel.add(HTML("Product weights: ", **captionstyle))
-        self.product_weights_panel.add(self.product_weights_array)
-        self.product_weights_panel.add(self.product_weights_expr_link)
-        weight_panel.add(self.product_weights_panel)
-
-        self.order_weights_expr_link = Hyperlink("expression")
-        self.order_weights_expr_link.addClickListener(self)
-
-        self.order_weights = []
-        self.order_weights_panel = HorizontalPanel(Visible=False, Spacing=8)
-        self.order_weights_array = HorizontalPanel()
-        self.order_weights_panel.add(HTML("Order-dependent weights: ", **captionstyle))
-        self.order_weights_panel.add(self.order_weights_array)
-        self.order_weights_panel.add(self.order_weights_expr_link)
-        weight_panel.add(self.order_weights_panel)
+        self.weights = CompoundWeights()
+        params_panel.add(CaptionPanel("Weights", self.weights.panel))
+        self.weights.add_weights(ProductWeights)
 
         # construction method
 
@@ -308,20 +514,26 @@ class LatBuilderWeb:
 
         self.results_size = Label()
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Lattice size: ", **captionstyle))
+        panel.add(HTML("<b>Lattice size:</b> ", **captionstyle))
         panel.add(self.results_size)
         results_panel.add(panel)
 
         self.results_gen = Label()
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Generating vector: ", **captionstyle))
+        panel.add(HTML("<b>Generating vector:</b> ", **captionstyle))
         panel.add(self.results_gen)
         results_panel.add(panel)
 
         self.results_merit = Label()
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Merit value: ", **captionstyle))
+        panel.add(HTML("<b>Merit value:</b> ", **captionstyle))
         panel.add(self.results_merit)
+        results_panel.add(panel)
+
+        self.results_cmd = Label(StyleName='Command')
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("<b>Command line:</b> ", **captionstyle))
+        panel.add(self.results_cmd)
         results_panel.add(panel)
 
 
@@ -331,78 +543,12 @@ class LatBuilderWeb:
         
         self.onChange(self.construction)
         self.onChange(self.merit)
-        self.onChange(self.weight_type)
         self.onChange(self.dimension)
         self.onClick(self.embedded)
         self.onChange(self.ml_normalization_enable)
         self.onChange(self.ml_lowpass_enable)
 
         RootPanel().add(main_panel)
-
-        self._product_weights_expr_dialog, self.product_weights_expr = \
-                self.create_weights_dialog(
-                        getattr(self, 'set_product_weights_expr'),
-                        "Enter an expression for the weights, using <em>j</em> as the "
-                        "coordinate index, e.g., j^-2 or 1/(1+j^2).")
-        self._order_weights_expr_dialog, self.order_weights_expr = \
-                self.create_weights_dialog(
-                        getattr(self, 'set_order_weights_expr'),
-                        "Enter an expression for the weights, using <em>k</em> as the "
-                        "projection order, e.g., k^-2 or 1/(1+k^2).")
-
-    def fill_weights(self, array, uiarray, dimension):
-        # fill weights panel
-        add_count = dimension - len(array)
-        if add_count < 0:
-            for w in array[add_count:]:
-                uiarray.remove(w.getParent())
-                array.remove(w)
-        elif add_count > 0:
-            if len(array) > 0:
-                value = array[-1].getText()
-            else:
-                value = '0.1'
-            for i in range(add_count):
-                w = TextBox(Width='3em', Text=value)
-                array.append(w)
-                panel = VerticalPanel()
-                panel.add(w)
-                panel.add(HTML("{}".format(i + dimension - add_count + 1),
-                    HorizontalAlignment='center'))
-                uiarray.add(panel)
-
-    def create_weights_dialog(self, callback, msg):
-        contents = VerticalPanel(StyleName="Contents", Spacing=4)
-        contents.add(HTML(msg))
-        expr = TextBox(Text='0.1')
-        contents.add(expr)
-        contents.add(Button("OK", callback))
-        dialog = DialogBox(glass=True)
-        dialog.setHTML('<b>Set the weights from an expression</b>')
-        dialog.setWidget(contents)
-        return dialog, expr
-
-    def set_product_weights_expr(self, event):
-        self._product_weights_expr_dialog.hide()
-        self.status.setText("computing weights...")
-        id = self.remote.make_product_weights(
-                self.product_weights_expr.getText(),
-                len(self.product_weights),
-                self)
-
-    def set_order_weights_expr(self, event):
-        self._order_weights_expr_dialog.hide()
-        self.status.setText("computing weights...")
-        id = self.remote.make_order_weights(
-                self.order_weights_expr.getText(),
-                len(self.order_weights),
-                self)
-
-    def showDialog(self, dialog):
-        left = (Window.getClientWidth() - 200) / 2 + Window.getScrollLeft()
-        top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
-        dialog.setPopupPosition(left, top)
-        dialog.show()
 
     def onChange(self, sender):
 
@@ -419,17 +565,9 @@ class LatBuilderWeb:
             self.merit_cs.setVisible('{cs}' in key)
 
         elif sender == self.dimension:
-            # fill weights panels
+            # resize weights
             dimension = int(self.dimension.getText())
-            self.fill_weights(self.product_weights, self.product_weights_array, dimension)
-            self.fill_weights(self.order_weights, self.order_weights_array, dimension)
-
-        elif sender == self.weight_type:
-            key, name = \
-                    self.WEIGHT_TYPES[self.weight_type.getSelectedIndex()]
-            self.product_weights_panel.setVisible(key in ['product', 'POD'])
-            self.order_weights_panel.setVisible(key in ['order-dependent', 'POD'])
-
+            self.weights.dimension = dimension
 
     def onClick(self, sender):
         if sender == self.embedded:
@@ -454,14 +592,7 @@ class LatBuilderWeb:
             alpha = self.merit_alpha.getText()
             cs = self.merit_cs.getChecked() and 'CS:' or ''
 
-            
-            weight_type, weight_name = \
-                    self.WEIGHT_TYPES[self.weight_type.getSelectedIndex()]
-            weights = weight_type
-            if weight_type in ['order-dependent', 'POD']:
-                weights += ':0:' + ','.join(w.getText() for w in self.order_weights)
-            if weight_type in ['product', 'POD']:
-                weights += ':0:' + ','.join(w.getText() for w in self.product_weights)
+            weights = [w.as_arg() for w in self.weights.weights]
 
             construction, construction_name, desc = \
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
@@ -481,7 +612,7 @@ class LatBuilderWeb:
                 combiner_type, combiner_name = \
                         self.COMBINER_TYPES[self.combiner_type.getSelectedIndex()]
 
-            id = self.remote.execute(
+            id = self.remote.latbuilder_exec(
                     lattype,
                     size,
                     dimension,
@@ -502,23 +633,17 @@ class LatBuilderWeb:
 
     def onRemoteResponse(self, response, request_info):
         try:
-            if request_info.method == 'execute':
-                points, gen, merit = eval(response)
+            if request_info.method == 'latbuilder_exec':
+                cmd, points, gen, merit = eval(response)
                 self.results_size.setText(points)
                 self.results_gen.setText(', '.join(gen))
                 self.results_merit.setText(merit)
+                self.results_cmd.setText(cmd)
                 self.results_panel.setVisible(True)
                 self.status.setText("")
-            elif request_info.method == 'make_product_weights':
-                weights = [float(x) for x in response]
-                for w, val in zip(self.product_weights, weights):
-                    w.setText(str(val))
-                self.status.setText("")
-            elif request_info.method == 'make_order_weights':
-                weights = [float(x) for x in response]
-                for w, val in zip(self.order_weights, weights):
-                    w.setText(str(val))
-                self.status.setText("")
+            elif request_info.method == 'backend_version':
+                version = response
+                self.version_label.setHTML("<b>Backend:</b> {}".format(version))
         except:
             self.status.setText(response.replace('\n', '    '))
 
@@ -536,7 +661,7 @@ class LatBuilderWeb:
 class LatBuilderService(JSONProxy):
     def __init__(self):
         JSONProxy.__init__(self, "services/LatBuilderService.py",
-                ['execute', 'make_product_weights', 'make_order_weights'])
+                ['latbuilder_exec', 'backend_version', 'array_from_expr'])
 
 if __name__ == '__main__':
     app = LatBuilderWeb()
