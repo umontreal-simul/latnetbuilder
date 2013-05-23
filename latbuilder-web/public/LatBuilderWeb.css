@@ -1,17 +1,18 @@
 .gwt-DialogBox {
-  border: 2px outset;
-  background-color: white;
-  width: 30%;
+    border: 2px solid;
+    border-color: #115;
+    background-color: white;
+    width: 20em;
 }
 
 .gwt-DialogBox .Caption {
-  display: block;
-  width: 100%;
-  background-color: #bbb;
-  padding: 3px;
-  margin: 2px;
-  font-weight: bold;
-  cursor: default;
+    background-color: #eee;
+    padding: 1ex;
+    margin: 2px;
+    font-weight: bold;
+    cursor: default;
+    font-family: sans-serif;
+    font-size: larger;
 }
 
 .gwt-DialogBox .Contents {
@@ -24,11 +25,19 @@
     filter: alpha(opacity=30);
 }
 
-.Caption {
+.CaptionLabel {
     width: 10em;
     text-align: right;
+    vertical-align: middle;
+}
+
+.ResultsCaptionLabel {
+    width: 10em;
+    text-align: right;
+    vertical-align: top;
+    font-weight: bold;
 }
 
 .Command {
-    font-family: monospace ;
+    font-family: monospace;
 }

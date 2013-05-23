@@ -39,11 +39,9 @@ from pyjamas.JSONService import JSONProxy
 # TODO: validation
 # TODO: explicit construction
 # TODO: extend existing lattice
-# TODO: guess if latbuilder can be found
-# TODO: combinations of weights
 
 def window_center():
-    left = (Window.getClientWidth() - 200) / 2 + Window.getScrollLeft()
+    left = (Window.getClientWidth() - 300) / 2 + Window.getScrollLeft()
     top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
     return left, top
 
@@ -61,8 +59,8 @@ class ValueArray:
         link.addClickListener(getattr(self, 'show_expr_dialog'))
 
         panel = VerticalPanel(Spacing=4)
-        panel.add(HTML("{}: ".format(label), StyleName='Caption'))
-        panel.add(HTML("{}: ".format(self._expr_var), StyleName='Caption'))
+        panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
+        panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
         self.panel.add(panel)
         self.panel.add(self._array_panel)
         self.panel.add(link)
@@ -212,10 +210,38 @@ class PODWeights(SimpleWeights):
         yield ValueArray('coordinate weights', 'j', '0.1')
         yield ValueArray('order weights', 'k', '0.1')
 
+class ProjectionDependentWeights(object):
+    NAME = 'Projection-Dependent Weights'
+    def __init__(self, remove_callback):
+        self._remove_callback = remove_callback
+        self.dimension = None
+        self.panel = VerticalPanel()
+        self.panel.add(HTML("Enter the mapping between coordinates and weights.  "
+            "Each line must be <b>comma-separated list of coordinates</b> "
+            "followed by a <b>colon</b> and a <b>weight value</b>."
+            "Spaces are ignored.<br/>"
+            "Example line: <code>1,2,5: 0.7</code>."))
+        self._text = TextArea(CharacterWidth=20, VisibleLines=8)
+        self.panel.add(self._text)
+        link = Hyperlink("remove")
+        link.addClickListener(getattr(self, '_remove'))
+        self.panel.add(link)
+
+    def as_arg(self):
+        arg = 'projection-dependent'
+        for line in self._text.getText().replace(' ', '').split('\n'):
+            arg += ':' + line.strip()
+        return arg
+
+    # private methods
+    
+    def _remove(self):
+        self._remove_callback(self)
 
 class CompoundWeights:
     def __init__(self):
-        self.WEIGHT_TYPES = [ProductWeights, OrderDependentWeights, PODWeights]
+        self.WEIGHT_TYPES = [ProductWeights, OrderDependentWeights, PODWeights,
+                ProjectionDependentWeights]
         self._add_dialog, self._wtype = self._create_add_dialog()
         self.panel = VerticalPanel()
         self._list_panel = VerticalPanel(Spacing=8)
@@ -259,7 +285,7 @@ class CompoundWeights:
 
     def _create_add_dialog(self):
         contents = VerticalPanel(StyleName="Contents", Spacing=4)
-        wtype = ListBox()
+        wtype = ListBox(Width="14em")
         wtype.addChangeListener(self)
         for wclass in self.WEIGHT_TYPES:
             wtype.addItem(wclass.NAME, value=wclass)
@@ -388,7 +414,7 @@ class LatBuilderWeb:
         self.embedded.addClickListener(self)
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Size: ", **captionstyle))
+        panel.add(HTML("Size: ", StyleName="CaptionLabel"))
         panel.add(self.size)
         panel.add(self.embedded)
         lat_panel.add(panel)
@@ -397,7 +423,7 @@ class LatBuilderWeb:
         self.dimension.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Dimension: ", **captionstyle))
+        panel.add(HTML("Dimension: ", StyleName="CaptionLabel"))
         panel.add(self.dimension)
         lat_panel.add(panel)
 
@@ -409,7 +435,7 @@ class LatBuilderWeb:
         self.norm_type = TextBox(Text="2")
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Norm type: ", **captionstyle))
+        panel.add(HTML("Norm type: ", StyleName="CaptionLabel"))
         panel.add(self.norm_type)
         merit_panel.add(panel)
 
@@ -422,14 +448,14 @@ class LatBuilderWeb:
                 Checked=True)
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Figure of merit: ", **captionstyle))
+        panel.add(HTML("Figure of merit: ", StyleName="CaptionLabel"))
         panel.add(self.merit)
         panel.add(self.merit_cs)
         merit_panel.add(panel)
 
         self.merit_alpha_panel = HorizontalPanel(Spacing=8)
         self.merit_alpha = TextBox(Text="2")
-        self.merit_alpha_panel.add(HTML("Value of alpha: ", **captionstyle))
+        self.merit_alpha_panel.add(HTML("Value of alpha: ", StyleName="CaptionLabel"))
         self.merit_alpha_panel.add(self.merit_alpha)
         merit_panel.add(self.merit_alpha_panel)
 
@@ -462,7 +488,7 @@ class LatBuilderWeb:
         for key, name in self.COMBINER_TYPES:
             self.combiner_type.addItem(name, value=key)
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Combiner: ", **captionstyle))
+        panel.add(HTML("Combiner: ", StyleName="CaptionLabel"))
         panel.add(self.combiner_type)
         multilevel_panel.add(panel)
 
@@ -484,14 +510,14 @@ class LatBuilderWeb:
         self.construction_desc = Label()
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Construction method: ", **captionstyle))
+        panel.add(HTML("Construction method: ", StyleName="CaptionLabel"))
         panel.add(self.construction)
         panel.add(self.construction_desc)
         cons_panel.add(panel)
 
         self.construction_samples_panel = HorizontalPanel(Spacing=8)
         self.construction_samples = TextBox(Text="30")
-        self.construction_samples_panel.add(HTML("Random samples: ", **captionstyle))
+        self.construction_samples_panel.add(HTML("Random samples: ", StyleName="CaptionLabel"))
         self.construction_samples_panel.add(self.construction_samples)
         cons_panel.add(self.construction_samples_panel)
 
@@ -514,25 +540,25 @@ class LatBuilderWeb:
 
         self.results_size = Label()
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("<b>Lattice size:</b> ", **captionstyle))
+        panel.add(HTML("Lattice size: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_size)
         results_panel.add(panel)
 
         self.results_gen = Label()
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("<b>Generating vector:</b> ", **captionstyle))
+        panel.add(HTML("Generating vector: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_gen)
         results_panel.add(panel)
 
         self.results_merit = Label()
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("<b>Merit value:</b> ", **captionstyle))
+        panel.add(HTML("Merit value: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_merit)
         results_panel.add(panel)
 
         self.results_cmd = Label(StyleName='Command')
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("<b>Command line:</b> ", **captionstyle))
+        panel.add(HTML("Command line: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_cmd)
         results_panel.add(panel)
 
@@ -580,8 +606,6 @@ class LatBuilderWeb:
             self.ml_lowpass.setVisible(self.ml_lowpass_enable.getChecked())
 
         elif sender == self.button_search:
-            self.status.setText(self.TEXT_WAITING)
-
             lattype = self.embedded.getChecked() and 'embedded' or 'ordinary'
             size = self.size.getText()
             dimension = self.dimension.getText()
@@ -611,6 +635,8 @@ class LatBuilderWeb:
                 
                 combiner_type, combiner_name = \
                         self.COMBINER_TYPES[self.combiner_type.getSelectedIndex()]
+
+            self.status.setText(self.TEXT_WAITING)
 
             id = self.remote.latbuilder_exec(
                     lattype,
