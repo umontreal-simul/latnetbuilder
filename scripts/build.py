@@ -361,9 +361,16 @@ class LatbuilderRules(PackageRules):
         else:
             logging.warning("  pyjsbuild executable cannot be found; skipping "
             "installation of the Lattice Builder web interface")
-            return
-        # latbuilder executable
+        # latbuilder documentation
+        if shutil.which('doxygen'):
+            logging.info("  building Lattice Builder documentation")
+            with working_directory(os.path.join(self.source_dir, 'doc')):
+                run_command('doxygen', log)
+        else:
+            logging.warning("  doxygen executable cannot be found; skipping "
+            "installation of the Lattice Builder documentation")
         logging.info("  building Lattice Builder executable program")
+        # latbuilder executable
         with working_directory(self.source_dir):
             run_command(self.b2_command + ['/latbuilder//install'], log)
 
