@@ -149,6 +149,18 @@ version of Lattice Builder:
 Help on usage can also be obtained by using the `--help` switch.
 
 
+## Using the Lattice Builder Web Interface
+
+The Lattice Builder Web Interface is included in the binary packages.
+[Python 2.7](http://python.org/download/) must be installed on the host machine.
+The local web server can be started by launching the following Python script:
+
+	<dist-prefix>/bin/LatBuilderWeb.py
+
+The web interface can then be used by connecting a browser to the
+[http://localhost:8080](http://localhost:8080/LatBuilderWeb.html).
+
+
 ## Using the Lattice Builder Library
 
 An example Jamfile and an example Makefile that can be modified to build a
