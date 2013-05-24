@@ -282,10 +282,10 @@ class LatbuilderRules(PackageRules):
     LINK = 'static'
 
     ARCHIVE = {
-            'i686':     ('{package}-{version}-bin-linux-i686{tag}', 'bztar'),
-            'x86_64':   ('{package}-{version}-bin-linux-x86_64{tag}', 'bztar'),
-            'mingw32':  ('{package}-{version}-bin-mingw32{tag}', 'zip'),
-            'mingw64':  ('{package}-{version}-bin-mingw64{tag}', 'zip'),
+            'i686':     ('{package}-{version}-linux32{tag}', 'bztar'),
+            'x86_64':   ('{package}-{version}-linux64{tag}', 'bztar'),
+            'mingw32':  ('{package}-{version}-windows32{tag}', 'zip'),
+            'mingw64':  ('{package}-{version}-windows64{tag}', 'zip'),
             }
 
     def __init__(self):
