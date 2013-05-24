@@ -10,7 +10,7 @@ right away, or [compile it from source](#compiling-from-source).
 ## Downloading Binaries
 
 The easiest way to start using Lattice Builder is to [download a binary
-distribution](https://github.com/mungerd/latbuilder/downloads) of Lattice
+distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) of Lattice
 Builder, that includes the executable `latbuilder` program, together with
 the Lattice Builder library and documentation.
 
