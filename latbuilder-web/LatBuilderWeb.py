@@ -45,6 +45,12 @@ def window_center():
     top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
     return left, top
 
+def parse_latsize(size_str):
+    s = size_str.split('^')
+    if len(s) == 1:
+        return int(s[0])
+    else:
+        return int(s[0])**int(s[1])
 
 class TextBoxArray:
     def __init__(self, default_value='0', show_indices=True):
