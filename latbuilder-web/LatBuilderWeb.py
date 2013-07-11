@@ -97,13 +97,13 @@ class WeightValuesArray:
         self._expr_var = expr_var
         self._expr_var_desc = expr_var_desc
         self._expr_dialog, self._expr = self._create_expr_dialog()
-        link = Hyperlink("expression...")
+        link = Hyperlink("expression...", StyleName="action")
         link.addClickListener(getattr(self, 'show_expr_dialog'))
 
         self.panel = HorizontalPanel(Spacing=8)
         self._array = TextBoxArray(default_value, show_indices=True)
 
-        panel = VerticalPanel(Spacing=4)
+        panel = VerticalPanel(Spacing)
         panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
         panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
         self.panel.add(panel)
@@ -174,7 +174,7 @@ class SimpleWeights(object):
         for va in self._gen_arrays():
             self.value_arrays.append(va)
             self.panel.add(va.panel)
-        link = Hyperlink("remove")
+        link = Hyperlink("remove", StyleName="action")
         link.addClickListener(getattr(self, '_remove'))
         self.panel.add(link)
 
@@ -244,12 +244,12 @@ class ProjectionDependentWeights(object):
         self.panel = VerticalPanel()
         self.panel.add(HTML("Enter the mapping between coordinates and weights.  "
             "Each line must be <b>comma-separated list of coordinates</b> "
-            "followed by a <b>colon</b> and a <b>weight value</b>."
+            "followed by a <b>colon</b> and a <b>weight value</b>.  "
             "Spaces are ignored.<br/>"
             "Example line: <code>1,2,5: 0.7</code>."))
         self._text = TextArea(CharacterWidth=20, VisibleLines=8)
         self.panel.add(self._text)
-        link = Hyperlink("remove")
+        link = Hyperlink("remove", StyleName="action")
         link.addClickListener(getattr(self, '_remove'))
         self.panel.add(link)
 
@@ -272,7 +272,7 @@ class CompoundWeights:
         self.panel = VerticalPanel()
         self._list_panel = VerticalPanel(Spacing=8)
         self.panel.add(self._list_panel)
-        link = Hyperlink("add...")
+        link = Hyperlink("add...", StyleName="action")
         link.addClickListener(getattr(self, 'show_add_dialog'))
         self.panel.add(link)
         self._weights = []
@@ -340,7 +340,7 @@ class GeneratingVector(object):
         self._array = TextBoxArray('1', show_indices=False)
         self.panel.add(self._array.panel)
 
-        link = Hyperlink("Korobov...")
+        link = Hyperlink("Korobov...", StyleName="action")
         link.addClickListener(getattr(self, 'show_korobov_dialog'))
         self.panel.add(link)
 

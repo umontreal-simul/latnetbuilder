@@ -1,3 +1,39 @@
+body {
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    font-size: 15px;
+    color: #333;
+}
+
+table {
+    font-size: inherit;
+}
+
+.gwt-TextBox, .gwt-TextArea, .gwt-ListBox, .gwt-Button {
+    font-family: inherit;
+    background-color: white;
+    border: 1px inset #cccccc;
+    border-radius: 3px;
+    padding: 3px;
+    color: #333;
+}
+
+.gwt-ListBox, .gwt-Button {
+    border: 1px solid #cccccc;
+}
+
+.gwt-Button {
+    background-color: #f0f0f0;
+    padding: 8px;
+}
+
+.gwt-Button:hover {
+    background-color: #ddd;
+}
+
+.gwt-Button:active {
+    background-color: #ccc;
+}
+
 .gwt-DialogBox {
     border: 2px solid;
     border-color: #115;
@@ -25,10 +61,26 @@
     filter: alpha(opacity=30);
 }
 
+.gwt-Captionpanel {
+    background-color: #f8f8f8;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+}
+
+.gwt-Captionpanel legend {
+    text-shadow: 1px 1px 1px #bbb;
+    padding: 5px;
+}
+
+.gwt-Captionpanel .gwt-Captionpanel {
+    background-color: #f0f0f0;
+}
+
 .CaptionLabel {
     width: 10em;
     text-align: right;
-    vertical-align: middle;
+    vertical-align: baseline;
+    padding: 3px;
 }
 
 .ResultsCaptionLabel {
@@ -40,4 +92,17 @@
 
 .Command {
     font-family: monospace;
+}
+
+a {
+    text-decoration: none;
+    color: #4183C4;
+}
+
+a:hover, a:active {
+    color: #3D6184;
+}
+
+.action {
+    font-size: 90%;
 }
