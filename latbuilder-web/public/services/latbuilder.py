@@ -136,7 +136,6 @@ def parse_output(s):
     ret = []
 
     for line in s.decode().split('\n'):
-        line = line.decode()
         m = pat_latdef.match(line)
         if m:
             size = SizeParam(m.group('size'))
