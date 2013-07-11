@@ -48,19 +48,21 @@ def window_center():
 
 class ValueArray:
     REMOTE = None
-    def __init__(self, label, expr_var, default_value='0.0'):
+    def __init__(self, label, expr_var, expr_var_desc, default_value='0.0'):
         self._default_value = default_value
         self._expr_var = expr_var
+        self._expr_var_desc = expr_var_desc
         self._expr_dialog, self._expr = self._create_expr_dialog()
-        self.panel = HorizontalPanel(Spacing=8)
-        self._array_panel = HorizontalPanel()
-
         link = Hyperlink("expression...")
         link.addClickListener(getattr(self, 'show_expr_dialog'))
 
+        self.panel = HorizontalPanel(Spacing=8)
+        self._array_panel = HorizontalPanel()
+
         panel = VerticalPanel(Spacing=4)
         panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
-        panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
+        if self._expr_var:
+            panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
         self.panel.add(panel)
         self.panel.add(self._array_panel)
         self.panel.add(link)
@@ -107,7 +109,7 @@ class ValueArray:
     def _create_expr_dialog(self):
         contents = VerticalPanel(StyleName="Contents", Spacing=4)
         msg = ("Enter an expression for the weights, using <em>{0}</em> as the "
-                "projection order, e.g., {0}^-2 or 1/(1+{0}^2).").format(self._expr_var)
+                "{1}, e.g., {0}^-2 or 1/(1+{0}^2).").format(self._expr_var, self._expr_var_desc)
         contents.add(HTML(msg))
         expr = TextBox(Text='0.1')
         contents.add(expr)
@@ -185,7 +187,7 @@ class ProductWeights(SimpleWeights):
         pw, = self.value_arrays
         return 'product:0:' + ','.join(pw.values)
     def _gen_arrays(self):
-        yield ValueArray('coordinate weights', 'j', '0.1')
+        yield ValueArray('coordinate weights', 'j', 'coordinate index', '0.1')
 
 class OrderDependentWeights(SimpleWeights):
     NAME = 'Order-Dependent Weights'
@@ -195,7 +197,7 @@ class OrderDependentWeights(SimpleWeights):
         ow, = self.value_arrays
         return 'order-dependent:0:' + ','.join(ow.values)
     def _gen_arrays(self):
-        yield ValueArray('order weights', 'k', '0.1')
+        yield ValueArray('order weights', 'k', 'projection order', '0.1')
 
 class PODWeights(SimpleWeights):
     NAME = 'Product and Order-Dependent (POD) Weights'
@@ -207,8 +209,8 @@ class PODWeights(SimpleWeights):
         arg += ':0:' + ','.join(ow.values)
         return arg
     def _gen_arrays(self):
-        yield ValueArray('coordinate weights', 'j', '0.1')
-        yield ValueArray('order weights', 'k', '0.1')
+        yield ValueArray('coordinate weights', 'j', 'coordinate index', '0.1')
+        yield ValueArray('order weights', 'k', 'projection order', '0.1')
 
 class ProjectionDependentWeights(object):
     NAME = 'Projection-Dependent Weights'
