@@ -46,34 +46,18 @@ def window_center():
     return left, top
 
 
-class ValueArray:
-    REMOTE = None
-    def __init__(self, label, expr_var, expr_var_desc, default_value='0.0'):
+class TextBoxArray:
+    def __init__(self, default_value='0', show_indices=True):
         self._default_value = default_value
-        self._expr_var = expr_var
-        self._expr_var_desc = expr_var_desc
-        self._expr_dialog, self._expr = self._create_expr_dialog()
-        link = Hyperlink("expression...")
-        link.addClickListener(getattr(self, 'show_expr_dialog'))
-
-        self.panel = HorizontalPanel(Spacing=8)
-        self._array_panel = HorizontalPanel()
-
-        panel = VerticalPanel(Spacing=4)
-        panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
-        if self._expr_var:
-            panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
-        self.panel.add(panel)
-        self.panel.add(self._array_panel)
-        self.panel.add(link)
-
+        self._show_indices = show_indices
         self._values = []
+        self.panel = HorizontalPanel()
 
     # public interface
 
     @property
     def values(self):
-        return [x.getText() for x in self._values]
+        return self._values
 
     @property
     def size(self):
@@ -84,7 +68,7 @@ class ValueArray:
         add_count = value - len(self._values)
         if add_count < 0:
             for w in self._values[add_count:]:
-                self._array_panel.remove(w.getParent())
+                self.panel.remove(w.getParent())
                 self._values.remove(w)
         elif add_count > 0:
             if self._values:
@@ -97,8 +81,43 @@ class ValueArray:
                 panel = VerticalPanel()
                 panel.add(w)
                 panel.add(HTML("{}".format(i + value - add_count + 1),
-                    HorizontalAlignment='center'))
-                self._array_panel.add(panel)
+                    HorizontalAlignment='center', Visible=self._show_indices))
+                self.panel.add(panel)
+
+
+
+class WeightValuesArray:
+    REMOTE = None
+    def __init__(self, label, expr_var, expr_var_desc, default_value='0.0'):
+        self._expr_var = expr_var
+        self._expr_var_desc = expr_var_desc
+        self._expr_dialog, self._expr = self._create_expr_dialog()
+        link = Hyperlink("expression...")
+        link.addClickListener(getattr(self, 'show_expr_dialog'))
+
+        self.panel = HorizontalPanel(Spacing=8)
+        self._array = TextBoxArray(default_value, show_indices=True)
+
+        panel = VerticalPanel(Spacing=4)
+        panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
+        panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
+        self.panel.add(panel)
+        self.panel.add(self._array.panel)
+        self.panel.add(link)
+
+    # public interface
+
+    @property
+    def values(self):
+        return [x.getText() for x in self._array.values]
+
+    @property
+    def size(self):
+        return self._array.size
+
+    @size.setter
+    def size(self, value):
+        self._array.size = value
 
     def show_expr_dialog(self, dialog):
         self._expr_dialog.setPopupPosition(*window_center())
@@ -122,13 +141,13 @@ class ValueArray:
     def _close_expr_dialog(self):
         self._expr_dialog.hide()
         expr = self._expr.getText()
-        id = ValueArray.REMOTE.array_from_expr(expr, self._expr_var, self.size, self)
+        id = WeightValuesArray.REMOTE.array_from_expr(expr, self._expr_var, self.size, self)
 
     def onRemoteResponse(self, response, request_info):
         try:
             if request_info.method == 'array_from_expr':
                 values = [float(x) for x in response]
-                for w, v in zip(self._values, values):
+                for w, v in zip(self._array.values, values):
                     w.setText(str(v))
         except:
             Window.alert(response)
@@ -187,7 +206,7 @@ class ProductWeights(SimpleWeights):
         pw, = self.value_arrays
         return 'product:0:' + ','.join(pw.values)
     def _gen_arrays(self):
-        yield ValueArray('coordinate weights', 'j', 'coordinate index', '0.1')
+        yield WeightValuesArray('coordinate weights', 'j', 'coordinate index', '0.1')
 
 class OrderDependentWeights(SimpleWeights):
     NAME = 'Order-Dependent Weights'
@@ -197,7 +216,7 @@ class OrderDependentWeights(SimpleWeights):
         ow, = self.value_arrays
         return 'order-dependent:0:' + ','.join(ow.values)
     def _gen_arrays(self):
-        yield ValueArray('order weights', 'k', 'projection order', '0.1')
+        yield WeightValuesArray('order weights', 'k', 'projection order', '0.1')
 
 class PODWeights(SimpleWeights):
     NAME = 'Product and Order-Dependent (POD) Weights'
@@ -209,8 +228,8 @@ class PODWeights(SimpleWeights):
         arg += ':0:' + ','.join(ow.values)
         return arg
     def _gen_arrays(self):
-        yield ValueArray('coordinate weights', 'j', 'coordinate index', '0.1')
-        yield ValueArray('order weights', 'k', 'projection order', '0.1')
+        yield WeightValuesArray('coordinate weights', 'j', 'coordinate index', '0.1')
+        yield WeightValuesArray('order weights', 'k', 'projection order', '0.1')
 
 class ProjectionDependentWeights(object):
     NAME = 'Projection-Dependent Weights'
@@ -380,7 +399,7 @@ class LatBuilderWeb:
                 }
 
         self.remote = LatBuilderService()
-        ValueArray.REMOTE = self.remote
+        WeightValuesArray.REMOTE = self.remote
 
         main_panel = VerticalPanel(Spacing=30)
 
