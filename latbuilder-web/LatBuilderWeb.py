@@ -332,6 +332,65 @@ class CompoundWeights:
         self.add_weights(wclass)
 
 
+class GeneratingVector(object):
+    def __init__(self, latsize):
+        self._latsize = latsize
+        self.panel = HorizontalPanel(Spacing=8)
+
+        self.panel.add(HTML("<strong>Generating vector</strong>: ", StyleName="CaptionLabel"))
+        self._array = TextBoxArray('1', show_indices=False)
+        self.panel.add(self._array.panel)
+
+        link = Hyperlink("Korobov...")
+        link.addClickListener(getattr(self, 'show_korobov_dialog'))
+        self.panel.add(link)
+
+        self._korobov_dialog, self._korobov_param = self._create_korobov_dialog()
+
+    # public interface
+
+    @property
+    def dimension(self):
+        return self._array.size
+
+    @dimension.setter
+    def dimension(self, value):
+        self._array.size = value
+
+    @property
+    def values(self):
+        return [x.getText() for x in self._array.values]
+
+    # private methods
+
+    def show_korobov_dialog(self, dialog):
+        self._korobov_dialog.setPopupPosition(*window_center())
+        self._korobov_dialog.show()
+
+    # private methods
+
+    def _create_korobov_dialog(self):
+        contents = VerticalPanel(StyleName="Contents", Spacing=4)
+        contents.add(HTML( "Enter the Korobov parameter."))
+        kparam = TextBox(Text='2')
+        contents.add(kparam)
+        contents.add(Button("OK", getattr(self, '_close_korobov_dialog')))
+        dialog = DialogBox(glass=True)
+        dialog.setHTML('<b>Compute a Korobov generating vector</b>')
+        dialog.setWidget(contents)
+        return dialog, kparam
+
+    def _close_korobov_dialog(self):
+        self._korobov_dialog.hide()
+        a = int(self._korobov_param.getText())
+        n = parse_latsize(self._latsize.getText())
+        values = [1]
+        for j in range(1, self.dimension):
+            values.append((values[-1] * a) % n)
+        for w, v in zip(self._array.values, values):
+            w.setText(str(v))
+
+
 class LatBuilderWeb:
     def setStyleSheet(self, sheet):
         e = DOM.createElement('link')
