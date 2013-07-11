@@ -608,6 +608,9 @@ class LatBuilderWeb:
             self.ml_lowpass.setVisible(self.ml_lowpass_enable.getChecked())
 
         elif sender == self.button_search:
+
+            self.results_panel.setVisible(False)
+
             lattype = self.embedded.getChecked() and 'embedded' or 'ordinary'
             size = self.size.getText()
             dimension = self.dimension.getText()
