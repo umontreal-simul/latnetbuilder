@@ -37,7 +37,6 @@ from pyjamas import log
 from pyjamas.JSONService import JSONProxy
 
 # TODO: validation
-# TODO: explicit construction
 # TODO: extend existing lattice
 
 def window_center():
@@ -415,6 +414,11 @@ class LatBuilderWeb:
                 ('spectral',        'spectral'),
                 ]
         self.CONSTRUCTION_METHODS = [
+            ('explicit:{genvec}',
+                "Explicit (Evaluation)",
+                "Evaluates the figure of merit for a given generating vector.<br/>"
+                "<strong>Please specify the generating vector in the Lattice "
+                "Properties panel above.</strong>"),
             ('exhaustive',
                 "Exhaustive",
                 "Examines all generating vectors and retains the best one."),
@@ -513,6 +517,10 @@ class LatBuilderWeb:
         panel.add(self.dimension)
         lat_panel.add(panel)
 
+        self.generating_vector = GeneratingVector(self.size)
+        self.generating_vector.panel.setVisible(False)
+        lat_panel.add(self.generating_vector.panel)
+
         # figure of merit
 
         merit_panel = VerticalPanel()
@@ -593,7 +601,7 @@ class LatBuilderWeb:
         self.construction.addChangeListener(self)
         for key, name, desc in self.CONSTRUCTION_METHODS:
             self.construction.addItem(name, value=key)
-        self.construction_desc = Label()
+        self.construction_desc = HTML()
 
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Construction method: ", StyleName="CaptionLabel"))
@@ -667,8 +675,9 @@ class LatBuilderWeb:
         if sender == self.construction:
             key, name, desc = \
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
-            self.construction_desc.setText(desc)
+            self.construction_desc.setHTML(desc)
             self.construction_samples_panel.setVisible('{samples}' in key)
+            self.generating_vector.panel.setVisible(key == 'explicit:{genvec}')
 
         elif sender == self.merit:
             key, name = \
@@ -679,6 +688,7 @@ class LatBuilderWeb:
         elif sender == self.dimension:
             # resize weights
             dimension = int(self.dimension.getText())
+            self.generating_vector.dimension = dimension
             self.weights.dimension = dimension
 
     def onClick(self, sender):
@@ -710,6 +720,7 @@ class LatBuilderWeb:
             construction, construction_name, desc = \
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
             samples = self.construction_samples.getText()
+            genvec = ','.join(self.generating_vector.values)
 
             mlfilters = []
             combiner_type = None
@@ -734,7 +745,7 @@ class LatBuilderWeb:
                     norm_type,
                     merit.format(alpha=alpha, cs=cs),
                     weights,
-                    construction.format(samples=samples),
+                    construction.format(samples=samples,genvec=genvec),
                     None,
                     mlfilters,
                     combiner_type,
