@@ -32,7 +32,7 @@ def latbuilder_exec(*args):
     try:
         cmd, r = latbuilder.execute(*args)
         cmd = ' '.join(arg.startswith('--') and arg or '"{}"'.format(arg) for arg in cmd)
-        return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit)
+        return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
     except subprocess.CalledProcessError, e:
         return "ERROR:\ncommand: " + ' '.join(e.cmd) + "\nouput: " + e.output
     except OSError, e:

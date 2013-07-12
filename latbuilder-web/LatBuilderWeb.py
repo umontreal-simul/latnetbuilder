@@ -660,6 +660,12 @@ class LatBuilderWeb:
         panel.add(self.results_merit)
         results_panel.add(panel)
 
+        self.results_cpu_time = Label()
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("CPU time: ", StyleName="ResultsCaptionLabel"))
+        panel.add(self.results_cpu_time)
+        results_panel.add(panel)
+
         self.results_cmd = Label(StyleName='Command')
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Command line: ", StyleName="ResultsCaptionLabel"))
@@ -774,10 +780,11 @@ class LatBuilderWeb:
     def onRemoteResponse(self, response, request_info):
         try:
             if request_info.method == 'latbuilder_exec':
-                cmd, points, gen, merit = eval(response)
+                cmd, points, gen, merit, seconds = eval(response)
                 self.results_size.setText(points)
                 self.results_gen.setText(', '.join(gen))
                 self.results_merit.setText(merit)
+                self.results_cpu_time.setText(format_time(seconds=seconds))
                 self.results_cmd.setText(cmd)
                 self.results_panel.setVisible(True)
                 self.status.setText("")
