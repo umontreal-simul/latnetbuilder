@@ -143,7 +143,7 @@ class WeightValuesArray:
     def _create_expr_dialog(self):
         contents = VerticalPanel(StyleName="Contents", Spacing=4)
         msg = ("Enter an expression for the weights, using <em>{0}</em> as the "
-                "{1}, e.g., {0}^-2 or 1/(1+{0}^2).").format(self._expr_var, self._expr_var_desc)
+                "{1}, for example: <ul><li>{0}^-2</li><li>1/(1+{0}^2)</li><li>0.1^{0}</li></ul>.").format(self._expr_var, self._expr_var_desc)
         contents.add(HTML(msg))
         expr = TextBox(Text='0.1')
         contents.add(expr)
