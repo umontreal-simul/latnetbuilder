@@ -527,6 +527,7 @@ class LatBuilderWeb:
         params_panel.add(CaptionPanel("Figure of Merit", merit_panel))
 
         self.norm_type = TextBox(Text="2")
+        self.norm_type.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Norm type: ", StyleName="CaptionLabel"))
@@ -691,6 +692,10 @@ class LatBuilderWeb:
             self.generating_vector.dimension = dimension
             self.weights.dimension = dimension
 
+        elif sender == self.norm_type:
+            self.merit_cs.setVisible(self.norm_type.getText() == "2")
+
+
     def onClick(self, sender):
         if sender == self.embedded:
             self.multilevel_panel.setVisible(self.embedded.getChecked())
@@ -713,7 +718,7 @@ class LatBuilderWeb:
             merit, merit_name = \
                     self.FIGURES_OF_MERIT[self.merit.getSelectedIndex()]
             alpha = self.merit_alpha.getText()
-            cs = self.merit_cs.getChecked() and 'CS:' or ''
+            cs = norm_type == 2 and self.merit_cs.getChecked() and 'CS:' or ''
 
             weights = [w.as_arg() for w in self.weights.weights]
 
