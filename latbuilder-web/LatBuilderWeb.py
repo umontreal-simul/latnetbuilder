@@ -255,7 +255,7 @@ class ProjectionDependentWeights(object):
 
     def as_arg(self):
         arg = 'projection-dependent'
-        for line in self._text.getText().replace(' ', '').split('\n'):
+        for line in self._text.getText().strip().replace(' ', '').split('\n'):
             arg += ':' + line.strip()
         return arg
 
