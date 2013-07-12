@@ -26,6 +26,7 @@ from pyjamas.ui.HTML import HTML
 from pyjamas.ui.CaptionPanel import CaptionPanel
 from pyjamas.ui.VerticalPanel import VerticalPanel
 from pyjamas.ui.HorizontalPanel import HorizontalPanel
+from pyjamas.ui.FlowPanel import FlowPanel
 from pyjamas.ui.ListBox import ListBox
 from pyjamas.ui.CheckBox import CheckBox
 from pyjamas.ui.TextBox import TextBox
@@ -65,7 +66,7 @@ class TextBoxArray:
         self._default_value = default_value
         self._show_indices = show_indices
         self._values = []
-        self.panel = HorizontalPanel()
+        self.panel = FlowPanel()
 
     # public interface
 
@@ -92,7 +93,7 @@ class TextBoxArray:
             for i in range(add_count):
                 w = TextBox(Width='3em', Text=newval)
                 self._values.append(w)
-                panel = VerticalPanel()
+                panel = VerticalPanel(StyleName='TextBoxArrayCell')
                 panel.add(w)
                 panel.add(HTML("{}".format(i + value - add_count + 1),
                     HorizontalAlignment='center', Visible=self._show_indices))
