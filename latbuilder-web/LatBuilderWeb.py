@@ -615,7 +615,6 @@ class LatBuilderWeb:
         self.construction_desc = HTML()
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Construction method: ", StyleName="CaptionLabel"))
         panel.add(self.construction)
         panel.add(self.construction_desc)
         cons_panel.add(panel)
