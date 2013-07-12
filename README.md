@@ -1,10 +1,31 @@
-# Lattice Builder Quick Start Guide
-
+# Lattice Builder Quick Start Guide 
 _A general software tool for constructing rank-1 lattice rules_
 
-You can either download a (pre-compiled) [binary  distribution of Lattice
-Builder](#downloading-binaries) and start using it
-right away, or [compile it from source](#compiling-from-source).
+The quickest way to get started Lattice Builder is to [download a binary distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) pre-compiled for your platform (32/64-bit Linux/Windows).
+
+You can then use the [Lattice Builder Web
+Interface](https://googledrive.com/host/0B_lX__trikOgaGpYTXhEaHFMSmM/webif.html)
+by installing [Python 2.7](http://python.org/download/) and executing the script
+
+	latbuilder/bin/LatBuilderWeb.py
+
+extracted from the binary package.
+
+Or, you can read the [Lattice Builder Command Line Tutorial](https://googledrive.com/host/0B_lX__trikOgaGpYTXhEaHFMSmM/cmdtut.html) to teach yourself how to use the executable program extracted from the binary package at
+
+	latbuilder/bin/latbuilder
+
+for Linux distributions, or at
+
+	latbuilder/bin/latbuilder.exe
+
+for Windows distributions.
+
+
+The structure of the binary packages is described in more detail in the
+[Downloading Binaries](#downloading-binaries) section.
+
+You can also choose to [compile it from source](#compiling-from-source).
 
 
 ## Downloading Binaries
