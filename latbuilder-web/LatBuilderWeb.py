@@ -51,6 +51,15 @@ def parse_latsize(size_str):
     else:
         return int(s[0])**int(s[1])
 
+def format_time(seconds):
+    s = seconds % 60
+    m = (seconds - s) / 60
+    if m == 0:
+        return "{0:.3g} s".format(s)
+    else:
+        return "{0} min {1:.3g} s".format(m, s)
+
+
 class TextBoxArray:
     def __init__(self, default_value='0', show_indices=True):
         self._default_value = default_value
