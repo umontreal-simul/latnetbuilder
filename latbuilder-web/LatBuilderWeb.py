@@ -630,7 +630,7 @@ class LatBuilderWeb:
         panel = VerticalPanel(Spacing=8, Width="100%", HorizontalAlignment='center')
         main_panel.add(panel)
 
-        self.button_search = Button("Search for Good Lattices", self)
+        self.button_search = Button("search", self)
         panel.add(self.button_search)
 
         self.status = Label()
@@ -693,7 +693,12 @@ class LatBuilderWeb:
                     self.CONSTRUCTION_METHODS[self.construction.getSelectedIndex()]
             self.construction_desc.setHTML(desc)
             self.construction_samples_panel.setVisible('{samples}' in key)
-            self.generating_vector.panel.setVisible(key == 'explicit:{genvec}')
+            if key.startswith('explicit'):
+                self.generating_vector.panel.setVisible(True)
+                self.button_search.setText("Evaluate Figure of Merit")
+            else:
+                self.generating_vector.panel.setVisible(False)
+                self.button_search.setText("Search for Good Lattices")
 
         elif sender == self.merit:
             key, name = \
