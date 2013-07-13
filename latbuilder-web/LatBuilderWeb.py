@@ -632,8 +632,12 @@ class LatBuilderWeb:
         panel = VerticalPanel(Spacing=8, Width="100%", HorizontalAlignment='center')
         main_panel.add(panel)
 
-        self.button_search = Button("search", self)
-        panel.add(self.button_search)
+        button_panel = HorizontalPanel()
+        panel.add(button_panel)
+        self.button_search = Button("Search", self)
+        button_panel.add(self.button_search)
+        self.button_abort = Button("Abort", self, Visible=False)
+        button_panel.add(self.button_abort)
 
         self.status = Label()
         panel.add(self.status)
@@ -731,6 +735,8 @@ class LatBuilderWeb:
         elif sender == self.button_search:
 
             self.results_panel.setVisible(False)
+            self.button_search.setVisible(False)
+            self.button_abort.setVisible(True)
 
             lattype = self.embedded.getChecked() and 'embedded' or 'ordinary'
             size = self.size.getText()
@@ -787,6 +793,8 @@ class LatBuilderWeb:
     def onRemoteResponse(self, response, request_info):
         try:
             if request_info.method == 'latbuilder_exec':
+                self.button_search.setVisible(True)
+                self.button_abort.setVisible(False)
                 cmd, points, gen, merit, seconds = eval(response)
                 self.results_size.setText(points)
                 self.results_gen.setText(', '.join(gen))
@@ -802,6 +810,9 @@ class LatBuilderWeb:
             self.status.setText(response.replace('\n', '    '))
 
     def onRemoteError(self, code, errobj, request_info):
+        if request_info.method == 'latbuilder_exec':
+            self.button_search.setVisible(True)
+            self.button_abort.setVisible(False)
         message = errobj['message']
         if code != 0:
             self.status.setText("HTTP error %d: %s" % 
