@@ -65,7 +65,10 @@ def latbuilder_exec(*args):
     try:
         r = process.result()
         sentry.terminate()
-        return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
+        if not r:
+            return "ERROR: Aborted"
+        else:
+            return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
     except subprocess.CalledProcessError, e:
         return "ERROR:\ncommand: " + ' '.join(e.cmd) + "\nouput: " + e.output
     except OSError, e:

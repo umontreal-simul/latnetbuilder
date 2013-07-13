@@ -141,6 +141,8 @@ class LatBuilderProcess:
         self.wait()
         output, err = self.process.communicate()
         res = parse_output(output.decode())
+        if not res:
+            return None
         if self.repeat is None:
             return res[0]
         else:
