@@ -22,11 +22,31 @@ from jsonrpc import handleCGI, ServiceMethod
 import parsemath
 import latbuilder
 import subprocess
+from multiprocessing import Process
+import sys, os, signal, platform
 
 
 @ServiceMethod
 def backend_version():
     return latbuilder.get_version()
+
+
+def sentry_run(pid, fd):
+
+    if platform.system() == 'Linux':
+        try:
+            fin = os.fdopen(fd)
+            fin.read()
+        finally:
+            os.kill(pid, signal.SIGTERM)
+
+    elif platform.system() == 'Windows':
+        import ctypes
+        ctypes.windll.user32.MessageBoxA(None,
+                "Click OK to abort Lattice Builder",
+                "Lattice Builder Web Interface",
+                0)
+        os.kill(pid, signal.SIGTERM)
 
 
 @ServiceMethod
@@ -37,8 +57,14 @@ def latbuilder_exec(*args):
             for arg in process.command)
     process.start()
 
+    # we start a bogus process that waits for data on stdin
+    # to detect if the connection is lost
+    sentry = Process(target=sentry_run, args=(process.process.pid, sys.stdin.fileno()))
+    sentry.start()
+
     try:
         r = process.result()
+        sentry.terminate()
         return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
     except subprocess.CalledProcessError, e:
         return "ERROR:\ncommand: " + ' '.join(e.cmd) + "\nouput: " + e.output
