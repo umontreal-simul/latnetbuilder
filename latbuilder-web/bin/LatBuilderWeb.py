@@ -26,4 +26,7 @@ if __name__ == '__main__':
     serve = os.path.join(os.path.dirname(here), 'share', 'latbuilder-web', 'serve.py')
     path = here + os.pathsep + os.environ.get('PATH', os.defpath)
     os.environ['PATH'] = path
-    subprocess.call(serve, shell=True)
+    try:
+        subprocess.call(serve, shell=True)
+    except KeyboardInterrupt:
+        print("exiting")
