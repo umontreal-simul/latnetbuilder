@@ -412,6 +412,8 @@ class LatBuilderWeb:
 
     def onModuleLoad(self):
 
+        self.current_request = None
+
         Window.setTitle("Lattice Builder Web Interface")
         self.setStyleSheet("./LatBuilderWeb.css")
 
@@ -771,7 +773,7 @@ class LatBuilderWeb:
 
             self.status.setText(self.TEXT_WAITING)
 
-            id = self.remote.latbuilder_exec(
+            self.current_request = self.remote.latbuilder_exec(
                     lattype,
                     size,
                     dimension,
@@ -783,6 +785,19 @@ class LatBuilderWeb:
                     mlfilters,
                     combiner_type,
                     self)
+
+        elif sender == self.button_abort:
+            # Need to patch JSONService.sendRequest():
+            #
+            # return HTTPRequest().asyncPost(self.url, msg_data,
+            #                                JSONResponseTextHandler(request_info)
+            #                                False, self.content_type,
+            #                                self.headers)
+            if self.current_request:
+                self.current_request.abort()
+                self.current_request = None
+            self.button_abort.setVisible(False)
+            self.button_search.setVisible(True)
 
         elif sender == self.product_weights_expr_link:
             self.showDialog(self._product_weights_expr_dialog)
@@ -819,8 +834,10 @@ class LatBuilderWeb:
                                 (code, message['name']))
         else:
             code = errobj['code']
-            self.status.setText("JSONRPC Error %s: %s" %
-                                (code, message))
+            if code == -32603:
+                self.status.setText("Aborted.")
+            else:
+                self.status.setText("JSONRPC Error %s: %s" % (code, message))
 
 
 class LatBuilderService(JSONProxy):
