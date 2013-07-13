@@ -72,6 +72,7 @@ table {
     background-color: #f8f8f8;
     border: 1px solid #cccccc;
     border-radius: 3px;
+    width: 100%;
 }
 
 .gwt-Captionpanel legend {
