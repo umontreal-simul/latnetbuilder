@@ -81,49 +81,80 @@ class Result:
     def __repr__(self):
         return str(self)
 
-def execute(
-        lattype,
-        size, dimension,
-        normtype,
-        merit,
-        weights,
-        construction,
-        filters=None,
-        mlfilters=None,
-        combiner=None,
-        repeat=None):
-    command = [LATBUILDER,
-            '--lattice-type', lattype,
-            '--size', str(size),
-            '--dimension', str(dimension),
-            '--norm-type', str(normtype),
-            '--figure-of-merit', merit,
-            '--construction', construction,
-            ]
+class LatBuilderProcess:
+    def __init__(self,
+            lattype,
+            size, dimension,
+            normtype,
+            merit,
+            weights,
+            construction,
+            filters=None,
+            mlfilters=None,
+            combiner=None,
+            repeat=None):
 
-    command.append('--weights')
-    if isinstance(weights, str):
-        command.append(weights)
-    else:
-        for w in weights:
-            command.append(w)
+        command = [LATBUILDER,
+                '--lattice-type', lattype,
+                '--size', str(size),
+                '--dimension', str(dimension),
+                '--norm-type', str(normtype),
+                '--figure-of-merit', merit,
+                '--construction', construction,
+                ]
 
-    if filters:
-        command += ['--filters'] + filters
+        command.append('--weights')
+        if isinstance(weights, str):
+            command.append(weights)
+        else:
+            for w in weights:
+                command.append(w)
 
-    if mlfilters:
-        command += ['--multilevel-filters'] + mlfilters
+        if filters:
+            command += ['--filters'] + filters
 
-    if combiner:
-        command += ['--combiner', combiner]
+        if mlfilters:
+            command += ['--multilevel-filters'] + mlfilters
 
-    if repeat:
-        command += ['--repeat', str(repeat)]
-    
-    output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+        if combiner:
+            command += ['--combiner', combiner]
 
-    ret = parse_output(output)
-    return repeat is None and (command, ret[0]) or (command, ret)
+        if repeat:
+            command += ['--repeat', str(repeat)]
+
+        self.command = command
+        self.process = None
+        self.repeat = repeat
+
+    def start(self):
+        self.process = subprocess.Popen(
+                self.command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+
+    def wait(self):
+        if self.process is None:
+            self.start()
+        self.process.wait()
+
+    def result(self):
+        self.wait()
+        output, err = self.process.communicate()
+        res = parse_output(output.decode())
+        if self.repeat is None:
+            return res[0]
+        else:
+            return res
+
+    def abort(self):
+        if self.process:
+            self.process.terminate()
+
+
+def execute(*args):
+    p = LatBuilderProcess(*args)
+    r = p.result()
+    return p.command, r
 
 
 def parse_output(s):
@@ -135,7 +166,7 @@ def parse_output(s):
 
     ret = []
 
-    for line in s.decode().split('\n'):
+    for line in s.split('\n'):
         m = pat_latdef.match(line)
         if m:
             size = SizeParam(m.group('size'))
