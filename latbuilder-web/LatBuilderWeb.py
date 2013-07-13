@@ -411,6 +411,8 @@ class LatBuilderWeb:
         head.appendChild(e)
 
     def onModuleLoad(self):
+
+        Window.setTitle("Lattice Builder Web Interface")
         self.setStyleSheet("./LatBuilderWeb.css")
 
         self.TEXT_WAITING = "Lattice Builder is working..."
