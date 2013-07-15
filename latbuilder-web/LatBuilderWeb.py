@@ -45,12 +45,17 @@ def window_center():
     top = (Window.getClientHeight() - 100) / 2 + Window.getScrollTop()
     return left, top
 
-def parse_latsize(size_str):
-    s = size_str.split('^')
-    if len(s) == 1:
-        return int(s[0])
-    else:
-        return int(s[0])**int(s[1])
+class LatSize:
+    def __init__(self, size_str):
+        s = size_str.split('^')
+        self.base = int(s[0])
+        if len(s) == 1:
+            self.max_level = 1
+        else:
+            self.max_level = int(s[1])
+    @property
+    def points(self):
+        return self.base**self.max_level
 
 def format_time(seconds):
     s = seconds % 60
@@ -392,7 +397,7 @@ class GeneratingVector(object):
     def _close_korobov_dialog(self):
         self._korobov_dialog.hide()
         a = int(self._korobov_param.getText())
-        n = parse_latsize(self._latsize.getText())
+        n = LatSize(self._latsize.getText()).points
         values = [1]
         for j in range(1, self.dimension):
             values.append((values[-1] * a) % n)
