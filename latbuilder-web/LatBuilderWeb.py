@@ -860,7 +860,7 @@ class LatBuilderWeb:
                 version = response
                 self.version_label.setHTML("<b>Backend:</b> {}".format(version))
         except:
-            self.status.setText(response.replace('\n', '    '))
+            self.status.setText(response.replace('\n', '  |  '))
 
     def onRemoteError(self, code, errobj, request_info):
         if request_info.method == 'latbuilder_exec':
