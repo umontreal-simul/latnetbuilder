@@ -518,6 +518,7 @@ class LatBuilderWeb:
         params_panel.add(CaptionPanel("Lattice Properties", lat_panel))
 
         self.size = TextBox(Text="2^10")
+        self.size.addChangeListener(self)
 
         self.embedded = CheckBox("embedded")
         self.embedded.addClickListener(self)
@@ -576,27 +577,49 @@ class LatBuilderWeb:
 
         # filters and combiner
 
-        multilevel_panel = VerticalPanel()
+        multilevel_panel = VerticalPanel(Spacing=8)
         self.multilevel_panel = CaptionPanel("Multilevel Filters and Combiner", multilevel_panel, Visible=False)
         params_panel.add(self.multilevel_panel)
 
-        self.ml_normalization_enable = CheckBox("Normalization type: ")
+        self.ml_normalization_enable = CheckBox("Normalization")
         self.ml_normalization_enable.addClickListener(self)
+        multilevel_panel.add(self.ml_normalization_enable)
+
+        self.ml_normalization_panel = VerticalPanel(Spacing=4, Visible=False, StyleName='SubPanel')
+        multilevel_panel.add(self.ml_normalization_panel)
+
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("Normalization type: ", StyleName="CaptionLabel"))
         self.ml_normalization_type = ListBox()
         for key, name in self.NORMALIZATION_TYPES:
             self.ml_normalization_type.addItem(name, value=key)
-        panel = HorizontalPanel(Spacing=8)
-        panel.add(self.ml_normalization_enable)
         panel.add(self.ml_normalization_type)
-        multilevel_panel.add(panel)
+        self.ml_normalization_panel.add(panel)
 
-        self.ml_lowpass_enable = CheckBox("Low-pass filter value: ")
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("Minimum level: ", StyleName="CaptionLabel"))
+        self.ml_min_level = TextBox(Text="1")
+        panel.add(self.ml_min_level)
+        self.ml_normalization_panel.add(panel)
+
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML("Maximum level: ", StyleName="CaptionLabel"))
+        self.ml_max_level = TextBox(Text="1")
+        panel.add(self.ml_max_level)
+        self.ml_normalization_panel.add(panel)
+
+        self.ml_lowpass_enable = CheckBox("Low-pass filter")
         self.ml_lowpass_enable.addClickListener(self)
+        multilevel_panel.add(self.ml_lowpass_enable)
+
+        self.ml_lowpass_panel = VerticalPanel(Spacing=4, Visible=False, StyleName='SubPanel')
+        multilevel_panel.add(self.ml_lowpass_panel)
+
         self.ml_lowpass = TextBox(Text="1.0")
         panel = HorizontalPanel(Spacing=8)
-        panel.add(self.ml_lowpass_enable)
+        panel.add(HTML("Low-pass threshold: ", StyleName="CaptionLabel"))
         panel.add(self.ml_lowpass)
-        multilevel_panel.add(panel)
+        self.ml_lowpass_panel.add(panel)
 
         self.combiner_type = ListBox()
         for key, name in self.COMBINER_TYPES:
@@ -690,6 +713,7 @@ class LatBuilderWeb:
 
         self.construction.selectValue('CBC')
         
+        self.onChange(self.size)
         self.onChange(self.construction)
         self.onChange(self.merit)
         self.onChange(self.dimension)
@@ -719,6 +743,12 @@ class LatBuilderWeb:
             self.merit_alpha_panel.setVisible('{alpha}' in key)
             self.merit_cs.setVisible('{cs}' in key)
 
+        elif sender == self.size:
+            max_level = LatSize(self.size.getText()).max_level
+            if int(self.ml_min_level.getText()) > max_level:
+                self.ml_min_level.setText(max_level)
+            self.ml_max_level.setText(max_level)
+
         elif sender == self.dimension:
             # resize weights
             dimension = int(self.dimension.getText())
@@ -734,10 +764,10 @@ class LatBuilderWeb:
             self.multilevel_panel.setVisible(self.embedded.getChecked())
 
         elif sender == self.ml_normalization_enable:
-            self.ml_normalization_type.setVisible(self.ml_normalization_enable.getChecked())
+            self.ml_normalization_panel.setVisible(self.ml_normalization_enable.getChecked())
 
         elif sender == self.ml_lowpass_enable:
-            self.ml_lowpass.setVisible(self.ml_lowpass_enable.getChecked())
+            self.ml_lowpass_panel.setVisible(self.ml_lowpass_enable.getChecked())
 
         elif sender == self.button_search:
 
@@ -769,6 +799,9 @@ class LatBuilderWeb:
                 if self.ml_normalization_enable.getChecked():
                     ml_normalization_type, ml_normalization_name = \
                             self.NORMALIZATION_TYPES[self.ml_normalization_type.getSelectedIndex()]
+                    ml_normalization_type += ':even:{},{}'.format(
+                            self.ml_min_level.getText(),
+                            self.ml_max_level.getText())
                     mlfilters.append(ml_normalization_type.format(alpha=alpha))
                 if self.ml_lowpass_enable.getChecked():
                     mlfilters.append('low-pass:{}'.format(self.ml_lowpass.getText()))
