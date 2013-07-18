@@ -1,5 +1,30 @@
-# Lattice Builder Quick Start Guide 
+# Lattice Builder
 _A general software tool for constructing rank-1 lattice rules_
+
+*Lattice rules* are often used as a replacement for [Monte
+Carlo](http://en.wikipedia.org/wiki/Monte_Carlo_integration) to integrate
+multidimensional functions.
+For certain problems, well-constructed lattice rules can dramatically reduce the integration error with respect to Monte Carlo.
+
+Lattice Builder is a software tool and library that implements a variety of
+construction algorithms for good rank-1 lattice rules.
+It supports exhaustive and random searches, as well as component-by-component
+(CBC) and random CBC constructions, for any number of points, and for various
+measures of (non)uniformity of the points.
+The implemented measures include the weighted P<sub>α</sub> square discrepancy,
+the R<sub>α</sub> criterion, and figures of merit based on the spectral test,
+with projection-dependent weights.
+For numbers of points that are integer powers of a prime base, the construction
+of embedded rank-1 lattice rules is supported through any of the above
+algorithms, and also through a fast CBC algorithm, with a variety of
+possibilities for the normalization of the merit values of individual embedded
+levels and for their combination into a single merit value.
+
+Details about lattice rules and Lattice Builder can be found in
+[*Lattice Builder*: A General Software Tool for Constructing Rank-1 Latice Rules](http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf).
+
+
+## Quick Start Guide
 
 The quickest way to get started Lattice Builder is to [download a binary distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) pre-compiled for your platform (32/64-bit Linux/Windows).
 
