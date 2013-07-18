@@ -11,6 +11,8 @@ by installing [Python 2.7](http://python.org/download/) and executing the script
 
 extracted from the binary package.
 
+![Screenshot](doc/screenshots/latbuilder-web-1.png "Screenshot")
+
 Or, you can read the [Lattice Builder Command Line Tutorial](https://googledrive.com/host/0B_lX__trikOgaGpYTXhEaHFMSmM/cmdtut.html) to teach yourself how to use the executable program extracted from the binary package at
 
 	latbuilder/bin/latbuilder
