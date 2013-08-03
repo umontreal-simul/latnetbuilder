@@ -75,6 +75,10 @@ table {
     width: 100%;
 }
 
+.gwt-Captionpanel > table {
+    width: 100%;
+}
+
 .gwt-Captionpanel legend {
     text-shadow: 1px 1px 1px #bbb;
     padding: 5px;
@@ -85,7 +89,7 @@ table {
 }
 
 .CaptionLabel {
-    width: 10em;
+    width: 14em;
     text-align: right;
     vertical-align: baseline;
     padding: 3px;
