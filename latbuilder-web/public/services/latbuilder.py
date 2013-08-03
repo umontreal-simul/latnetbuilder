@@ -87,8 +87,9 @@ class LatBuilderProcess:
             size, dimension,
             normtype,
             merit,
-            weights,
             construction,
+            weights,
+            weights_power=None,
             filters=None,
             mlfilters=None,
             combiner=None,
@@ -109,6 +110,9 @@ class LatBuilderProcess:
         else:
             for w in weights:
                 command.append(w)
+
+        if weights_power:
+            command += ['--weights-power', str(weights_power)]
 
         if filters:
             command += ['--filters'] + filters

@@ -667,6 +667,11 @@ class LatBuilderWeb:
         params_panel.add(CaptionPanel("Weights", weights_panel))
         weights_panel.add(HTML(r"\[ \gamma_u^p \qquad (u \subseteq \{1, \dots, s\}) \]", StyleName='DisplayMath'))
 
+        self.weights_power = TextBox(Text="2")
+        panel = HorizontalPanel(Spacing=8)
+        panel.add(HTML(r"Weights power (\(p\)): ", StyleName="CaptionLabel"))
+        panel.add(self.weights_power)
+
         weights_panel.add(panel)
         weights_panel.add(self.weights.panel)
         self.weights.add_weights(ProductWeights)
@@ -797,6 +802,10 @@ class LatBuilderWeb:
         elif sender == self.norm_type:
             q = self.norm_type.getText().strip()
             self.merit_cs.setVisible(q == '2')
+            if q == 'inf':
+                self.weights_power.setText('1')
+            else:
+                self.weights_power.setText(q)
 
 
     def onClick(self, sender):
@@ -828,6 +837,7 @@ class LatBuilderWeb:
             alpha = self.merit_alpha.getText()
             cs = norm_type == 2 and self.merit_cs.getChecked() and 'CS:' or ''
 
+            weights_power = self.weights_power.getText()
             weights = [w.as_arg() for w in self.weights.weights]
 
             construction, construction_name, desc = \
@@ -860,8 +870,9 @@ class LatBuilderWeb:
                     dimension,
                     norm_type,
                     merit.format(alpha=alpha, cs=cs),
-                    weights,
                     construction.format(samples=samples,genvec=genvec),
+                    weights,
+                    weights_power,
                     None,
                     mlfilters,
                     combiner_type,
