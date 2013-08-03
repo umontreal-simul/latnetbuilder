@@ -36,6 +36,7 @@ from pyjamas import Window
 from pyjamas import DOM
 from pyjamas import log
 from pyjamas.JSONService import JSONProxy
+from __pyjamas__ import JS
 
 # TODO: validation
 # TODO: extend existing lattice
@@ -185,6 +186,7 @@ class SimpleWeights(object):
     def __init__(self, remove_callback):
         self._remove_callback = remove_callback
         self.panel = VerticalPanel()
+        self.panel.add(HTML(self.desc(), StyleName='DisplayMath'))
         self.value_arrays = []
         for va in self._gen_arrays():
             self.value_arrays.append(va)
@@ -222,34 +224,40 @@ class ProductWeights(SimpleWeights):
     NAME = 'Product Weights'
     def __init__(self, *args):
         super(ProductWeights, self).__init__(*args)
+    def desc(self):
+        return r"\[ \gamma_u = \prod_{j \in u} \gamma_j \]"
     def as_arg(self):
         pw, = self.value_arrays
         return 'product:0:' + ','.join(pw.values)
     def _gen_arrays(self):
-        yield WeightValuesArray('coordinate weights', 'j', 'coordinate index', '0.1')
+        yield WeightValuesArray(r'coordinate weights (\(\gamma_j\))', 'j', 'coordinate index', '0.1')
 
 class OrderDependentWeights(SimpleWeights):
     NAME = 'Order-Dependent Weights'
     def __init__(self, *args):
         super(OrderDependentWeights, self).__init__(*args)
+    def desc(self):
+        return r"\[ \gamma_u = \Gamma_{|u|} \]"
     def as_arg(self):
         ow, = self.value_arrays
         return 'order-dependent:0:' + ','.join(ow.values)
     def _gen_arrays(self):
-        yield WeightValuesArray('order weights', 'k', 'projection order', '0.1')
+        yield WeightValuesArray('order weights (\(\Gamma_k\))', 'k', 'projection order', '0.1')
 
 class PODWeights(SimpleWeights):
     NAME = 'Product and Order-Dependent (POD) Weights'
     def __init__(self, *args):
         super(PODWeights, self).__init__(*args)
+    def desc(self):
+        return r"\[ \gamma_u = \Gamma_{|u|} \prod_{j \in u} \gamma_j \]"
     def as_arg(self):
         pw, ow = self.value_arrays
         arg = 'POD:0:' + ','.join(pw.values)
         arg += ':0:' + ','.join(ow.values)
         return arg
     def _gen_arrays(self):
-        yield WeightValuesArray('coordinate weights', 'j', 'coordinate index', '0.1')
-        yield WeightValuesArray('order weights', 'k', 'projection order', '0.1')
+        yield WeightValuesArray('coordinate weights (\(\gamma_j\))', 'j', 'coordinate index', '0.1')
+        yield WeightValuesArray('order weights (\(\Gamma_k\))', 'k', 'projection order', '0.1')
 
 class ProjectionDependentWeights(object):
     NAME = 'Projection-Dependent Weights'
@@ -344,6 +352,7 @@ class CompoundWeights:
         self._add_dialog.hide()
         wclass = self.WEIGHT_TYPES[self._wtype.getSelectedIndex()]
         self.add_weights(wclass)
+        JS('top.Typeset();')
 
 
 class GeneratingVector(object):
@@ -351,7 +360,7 @@ class GeneratingVector(object):
         self._latsize = latsize
         self.panel = HorizontalPanel(Spacing=8)
 
-        self.panel.add(HTML("<strong>Generating vector</strong>: ", StyleName="CaptionLabel"))
+        self.panel.add(HTML(r"<strong>Generating vector</strong> (\(\boldsymbol a\)): ", StyleName="CaptionLabel"))
         self._array = TextBoxArray('1', show_indices=False)
         self.panel.add(self._array.panel)
 
@@ -415,12 +424,27 @@ class LatBuilderWeb:
         head = html.getElementsByTagName('head').item(0)
         head.appendChild(e)
 
+    def includeMathJax(self, config):
+        html = Window.getDocumentRoot().parentElement
+        head = html.getElementsByTagName('head').item(0)
+
+        e = DOM.createElement('script')
+        e.setAttribute('type', 'text/javascript')
+        e.setAttribute('src', 'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=' + config)
+        head.appendChild(e)
+
+        e = DOM.createElement('script')
+        e.setAttribute('type', 'text/javascript')
+        e.textContent = 'function Typeset() { MathJax.Hub.Queue(["Typeset",MathJax.Hub]); }'
+        head.appendChild(e)
+
     def onModuleLoad(self):
 
         self.current_request = None
 
         Window.setTitle("Lattice Builder Web Interface")
         self.setStyleSheet("./LatBuilderWeb.css")
+        self.includeMathJax('TeX-AMS-MML_HTMLorMML')
 
         self.TEXT_WAITING = "Lattice Builder is working..."
         self.TEXT_ERROR = "Server Error"
@@ -516,6 +540,7 @@ class LatBuilderWeb:
 
         lat_panel = VerticalPanel()
         params_panel.add(CaptionPanel("Lattice Properties", lat_panel))
+        lat_panel.add(HTML(r'\[ P_n = \left\{ (i \boldsymbol a \bmod n) / n \::\: i = 0, \dots, n \right\} \qquad (\boldsymbol a \in \mathbb Z^s) \]', StyleName='DisplayMath'))
 
         self.size = TextBox(Text="2^10")
         self.size.addChangeListener(self)
@@ -524,7 +549,7 @@ class LatBuilderWeb:
         self.embedded.addClickListener(self)
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Size: ", StyleName="CaptionLabel"))
+        panel.add(HTML(r"Size (\(n\)): ", StyleName="CaptionLabel"))
         panel.add(self.size)
         panel.add(self.embedded)
         lat_panel.add(panel)
@@ -533,7 +558,7 @@ class LatBuilderWeb:
         self.dimension.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Dimension: ", StyleName="CaptionLabel"))
+        panel.add(HTML(r"Dimension (\(s\)): ", StyleName="CaptionLabel"))
         panel.add(self.dimension)
         lat_panel.add(panel)
 
@@ -545,12 +570,18 @@ class LatBuilderWeb:
 
         merit_panel = VerticalPanel()
         params_panel.add(CaptionPanel("Figure of Merit", merit_panel))
+        merit_panel.add(HTML(
+            r"\[ \left[ \mathcal D_q(P_n) \right]^q = "
+            r"\sum_{\emptyset \neq u \subseteq \{1,\dots,s\}}"
+            r"\gamma_u^q \, \left[\mathcal D_u(P_n)\right]^q"
+            r"\qquad (q > 0) \]",
+            StyleName='DisplayMath'))
 
         self.norm_type = TextBox(Text="2")
         self.norm_type.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Norm type: ", StyleName="CaptionLabel"))
+        panel.add(HTML(r"Norm type (\(q\) or <b>inf</b>): ", StyleName="CaptionLabel"))
         panel.add(self.norm_type)
         merit_panel.add(panel)
 
@@ -632,7 +663,12 @@ class LatBuilderWeb:
         # weights
 
         self.weights = CompoundWeights()
-        params_panel.add(CaptionPanel("Weights", self.weights.panel))
+        weights_panel = VerticalPanel()
+        params_panel.add(CaptionPanel("Weights", weights_panel))
+        weights_panel.add(HTML(r"\[ \gamma_u^p \qquad (u \subseteq \{1, \dots, s\}) \]", StyleName='DisplayMath'))
+
+        weights_panel.add(panel)
+        weights_panel.add(self.weights.panel)
         self.weights.add_weights(ProductWeights)
 
         # construction method
@@ -702,9 +738,12 @@ class LatBuilderWeb:
         panel.add(self.results_cpu_time)
         results_panel.add(panel)
 
-        self.results_cmd = Label(StyleName='Command')
+        self.results_cmd = Label(StyleName='Command', Visible=False)
         panel = HorizontalPanel(Spacing=8)
-        panel.add(HTML("Command line: ", StyleName="ResultsCaptionLabel"))
+
+        self.results_cmd_link = Hyperlink("Command line: ", StyleName="ResultsCaptionLabel")
+        self.results_cmd_link.addClickListener(self)
+        panel.add(self.results_cmd_link)
         panel.add(self.results_cmd)
         results_panel.add(panel)
 
@@ -756,7 +795,8 @@ class LatBuilderWeb:
             self.weights.dimension = dimension
 
         elif sender == self.norm_type:
-            self.merit_cs.setVisible(self.norm_type.getText() == "2")
+            q = self.norm_type.getText().strip()
+            self.merit_cs.setVisible(q == '2')
 
 
     def onClick(self, sender):
@@ -768,6 +808,9 @@ class LatBuilderWeb:
 
         elif sender == self.ml_lowpass_enable:
             self.ml_lowpass_panel.setVisible(self.ml_lowpass_enable.getChecked())
+
+        elif sender == self.results_cmd_link:
+            self.results_cmd.setVisible(not self.results_cmd.getVisible())
 
         elif sender == self.button_search:
 

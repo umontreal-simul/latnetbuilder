@@ -102,6 +102,18 @@ table {
     font-family: monospace;
 }
 
+.DisplayMath {
+    display: block;
+    text-align: center;
+    margin: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.MathJax {
+   color: #006622;
+}
+
 a {
     text-decoration: none;
     color: #4183C4;
