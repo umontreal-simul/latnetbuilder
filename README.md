@@ -26,7 +26,16 @@ Details about lattice rules and Lattice Builder can be found in
 
 ## Quick Start Guide
 
-The quickest way to get started Lattice Builder is to [download a binary distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) pre-compiled for your platform (32/64-bit Linux/Windows).
+The quickest way to get started Lattice Builder is to [download a binary distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) pre-compiled for your platform (32/64-bit Linux/Windows):
+
+* If you use 64-bit Windows, click on `latbuilder-X.Y.Z-windows64.zip`, then click on the *download* arrow in the bottom right corner of the screen
+* If you use 32-bit Windows, click on `latbuilder-X.Y.Z-windows32.zip`, then click on the *download* arrow in the bottom right corner of the screen
+* If you use 64-bit Linux, click on `latbuilder-X.Y.Z-linux64.tar.bz2`
+* If you use 32-bit Linux, click on `latbuilder-X.Y.Z-linux32.tar.bz2`
+
+where `X.Y.Z` is the latest Lattice Builder version.
+Then, **simply unpack the archive; no further installation is required**.
+The executable programs — the Lattice Builder command-line and web interfaces — can be found in the `latbuilder/bin` subdirectory.
 
 You can then use the [Lattice Builder Web
 Interface](https://googledrive.com/host/0B_lX__trikOgaGpYTXhEaHFMSmM/webif.html)
