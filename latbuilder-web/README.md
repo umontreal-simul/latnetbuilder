@@ -8,7 +8,8 @@
 
 ## Usage
 
-This application must be built with [pyjs](http://pyjs.org/) with the following
+This application must be built with [pyjs](http://pyjs.org/) ([from 
+GitHub](https://github.com/pyjs/pyjs)) with the following
 command line:
 
 	pyjsbuild --no-compile-inplace \
