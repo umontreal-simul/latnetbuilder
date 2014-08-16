@@ -155,12 +155,8 @@ class BoostRules(BuildRules):
         super().__init__(make_source_code('boost'))
 
     @property
-    def b2_path(self):
-        return os.path.join(self.prefix, 'bin', 'b2')
-
-    @property
     def b2_command(self):
-        return [self.b2_path,
+        return [os.path.join(self.source_dir, 'b2'),
                 '-j{}'.format(self.num_processes),
                 '--stagedir={}'.format(self.build_dir),
                 '--prefix={}'.format(self.prefix),
@@ -174,13 +170,10 @@ class BoostRules(BuildRules):
             command = [
                 os.path.join(self.source_dir, 'bootstrap.sh'),
                 '--prefix={}'.format(self.prefix),
-                '--with-bjam={}'.format(self.b2_path),
                 '--with-toolset=gcc',
                 '--without-icu',
                 '--with-libraries=program_options,chrono,system',
                 ]
-            if os.path.exists('boost-build.jam'):
-                os.remove('boost-build.jam')
             #logging.info('launching: {}'.format(' '.join(command)))
             run_command(command, log)
 
@@ -195,8 +188,7 @@ class BoostRules(BuildRules):
     def _check_configured(self):
         return os.path.exists(self.configure_log) and \
                 any(re.search('Bootstrapping is done', line)
-                    for line in open(self.configure_log)) \
-                and not os.path.exists(os.path.join(self.source_dir, 'boost-build.jam'))
+                    for line in open(self.configure_log))
 
     def _check_built(self):
         return os.path.exists(os.path.join(self.build_dir, 'lib', 'libboost_program_options.a'))
