@@ -43,7 +43,7 @@ __all__ = [
 def run_command(command, log=None):
     try:
         if log:
-            log.write('  running command: {}'.format(' '.join(command)))
+            log.write('  running command: {}\n'.format(' '.join(command)))
         out = subprocess.check_output(command, stderr=subprocess.STDOUT)
         if log:
             log.write(out.decode())
