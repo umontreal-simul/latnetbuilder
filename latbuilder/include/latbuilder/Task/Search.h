@@ -292,7 +292,7 @@ private:
    {
       // notify minObserver when the filters rejects an element
       filters.template onReject<LatType::ORDINARY>().connect(boost::bind(
-               &MinObserver::reject<LatType::ORDINARY>,
+               &MinObserver::template reject<LatType::ORDINARY>,
                &minObserver(),
                _1
                ));
@@ -302,12 +302,12 @@ private:
    {
       // notify minObserver when the filters rejects an element
       filters.template onReject<LatType::ORDINARY>().connect(boost::bind(
-               &MinObserver::reject<LatType::ORDINARY>,
+               &MinObserver::template reject<LatType::ORDINARY>,
                &minObserver(),
                _1
                ));
       filters.template onReject<LatType::EMBEDDED>().connect(boost::bind(
-               &MinObserver::reject<LatType::EMBEDDED>,
+               &MinObserver::template reject<LatType::EMBEDDED>,
                &minObserver(),
                _1
                ));
