@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from waflib import Utils, Task
+
+class doxygen(Task.Task):
+
+    def run(self):
+        src = self.inputs[0].abspath()
+        cmd = '%s %s' % (self.env.DOXYGEN, src)
+        return self.exec_command(cmd)
+
+    def post_run(self):
+        html = self.generator.bld.path.find_dir('doc').get_bld().find_dir('html')
+        if html:
+            outputs = html.ant_glob('**/*')
+            for x in outputs:
+                x.sig = Utils.h_file(x.abspath())
+            self.outputs += outputs
+        self.generator.bld.install_files('${DOCDIR}/html', outputs, cwd=html, relative_trick=True)
+
+
+def build(ctx):
+    if not ctx.env.DOXYGEN:
+        print('Doxygen not found; skipping documentation')
+        return
+
+    # Doxyfile
+    doc_dir = ctx.root.find_node(ctx.variant_dir).make_node('doc')
+    ctx(features='subst',
+            source='Doxyfile.in',
+            target='Doxyfile',
+            DOCDIR=ctx.path.abspath(),
+            TOPDIR=ctx.top_dir,
+            OUTDIR=doc_dir.abspath())
+
+    # Doxygen
+    dox = doxygen(env=ctx.env)
+    dox.set_inputs(ctx.path.find_resource('Doxyfile'))
+    ctx.add_to_group(dox)
+
+    # install files
+    ctx.add_group()
+    ctx.install_files('${DOCDIR}', ctx.path.find_node('index.html'))
