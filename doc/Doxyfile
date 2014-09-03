@@ -1717,6 +1717,6 @@ DOT_CLEANUP            = YES
 
 
 #CITE_STYLE             = byauthor
-CITE_BIB_FILES         = random.bib vrt.bib
+CITE_BIB_FILES         = random.bib vrt.bib math.bib
 #fin ift stat simul math optim
 

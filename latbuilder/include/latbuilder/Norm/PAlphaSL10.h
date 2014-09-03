@@ -32,7 +32,7 @@ namespace LatBuilder { namespace Norm {
 /**
  * Bound on the weighted \f$\mathcal P_\alpha\f$ discrepancy.
  *
- * This is the general bound derived in Theorem 3 of \cite rSIN10a for
+ * This is the general bound derived in Theorem 3 of \cite rSIN11a for
  * projection-dependent weights.
  * The theorem states that, for \f$\mathcal D^2(\boldsymbol a_s, n)
  * = \mathcal P_\alpha(\boldsymbol a_s, n)\f$, there exists a generating vector

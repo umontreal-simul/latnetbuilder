@@ -300,7 +300,7 @@ as in \ref cmdtut_recipes_weights_product.
   \endverbatim
 
 - The normalized \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using
-  the bound from \cite rSIN10a :
+  the bound from \cite rSIN11a :
   \verbatim
     --figure-of-merit CS:P2 --filters norm:P2-SL10
   \endverbatim
@@ -316,7 +316,7 @@ figure of merit, or to reject bad values.
 Multiple filters can be chained together by specifying multiple filter
 arguments separated by whitespace.
 
-- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite rSIN10a with
+- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite rSIN11a with
   \f$\alpha=2\f$:
   \verbatim
     --filters norm:P2-SL10
@@ -659,7 +659,7 @@ options:
 		  filter with thresold value <code><var>threshold</var></code>;
 
 		where <code><var>type</var></code> is one of:
-		- <code>P<var>alpha</var>-SL10</code> for the bound from \cite rSIN10a ; or
+		- <code>P<var>alpha</var>-SL10</code> for the bound from \cite rSIN11a ; or
 		- <code>P<var>alpha</var>-DPW08</code> for the bound from \cite vDIC08c (available only with product weights);
 
 	</dd>
