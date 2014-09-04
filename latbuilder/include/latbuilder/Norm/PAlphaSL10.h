@@ -118,7 +118,7 @@ public:
     * 
     * \param alpha         Smoothness level \f$\alpha\f$ of the class of functions.
     * \param weights       Projection-dependent weights \f$ \gamma_{\mathfrak u} \f$.
-    * \parm normType       Type of cross-projection norm used by the figure of
+    * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
    PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType=2);

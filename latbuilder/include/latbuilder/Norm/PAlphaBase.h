@@ -46,7 +46,7 @@ public:
     * Constructor.
     * 
     * \param alpha         Smoothness level \f$\alpha\f$ of the class of functions.
-    * \parm normType       Type of cross-projection norm used by the figure of
+    * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
    PAlphaBase(unsigned int alpha, Real normType):
