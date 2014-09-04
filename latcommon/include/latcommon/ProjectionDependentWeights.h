@@ -50,8 +50,6 @@ public:
 
    /**
     * Constructs projection-dependent weights.
-    *
-    * \param defaultWeight    Default weights.
     */
    ProjectionDependentWeights();
 
