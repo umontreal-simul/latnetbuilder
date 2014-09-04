@@ -1,44 +1,50 @@
-% Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal.
-% 
-% This file is part of Lattice Builder.
-% 
-% Lattice Builder is free software: you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation, either version 3 of the License, or
-% (at your option) any later version.
-% 
-% Lattice Builder is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-% GNU General Public License for more details.
-% 
-% You should have received a copy of the GNU General Public License
-% along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
+// Copyright (c) 2014 David Munger, Pierre L'Ecuyer, Université de Montréal.  
+// Copyright (c) 2012 Richard Simard, Pierre L'Ecuyer, Université de Montréal. 
+// 
+// This file is part of Lattice Builder. 
+// 
+// Lattice Builder is free software: you can redistribute it and/or modify 
+// it under the terms of the GNU General Public License as published by 
+// the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version. 
+// 
+// Lattice Builder is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+// GNU General Public License for more details. 
+// 
+// You should have received a copy of the GNU General Public License 
+// along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>. 
+// 
+// 
+// Converted from tcode to Doxygen in 2014.
 
-\defmodule {TypesNTL}
+/**
+ * 
+ * 
+ * Defines \c typedef's for the basic types used in LatMRG.%
+ * 
+ * Uses vectors and matrices implemented in the library NTL
+ * (see the NTL web page at \\url{http://shoup.net/ntl/}).
+ * Depending on how \c TYPAGE is defined, all types used will be either
+ * primitives like \c long, \c double, etc., or the large number
+ * types defined in NTL.
+ * The preprocessor variable \c TYPAGE is defined in the Makefile.
+ * 
+ * 
+ * \todo Richard: David aimerait remplacer <tt>NScal, NVect</tt>, \c NMat,
+ * <tt>RScal, RVect</tt>, \c RMat,
+ * <tt>MScal, MVect</tt>, \c MMat,
+ * <tt>BScal, BVect</tt>, \c BMat par des noms plus significatifs
+ * (il sera plus facile de savoir \`a quoi ils servent).
+ * 
+ */
 
-Defines \texttt{typedef}'s for the basic types used in \latmrg.%
-\richard{David aimerait remplacer \texttt{NScal, NVect}, \texttt{NMat},
- \texttt{RScal, RVect}, \texttt{RMat},
- \texttt{MScal, MVect}, \texttt{MMat},
- \texttt{BScal, BVect}, \texttt{BMat} par des noms plus significatifs
-(il sera plus facile de savoir \`a quoi ils servent).
-}
-Uses vectors and matrices implemented in the library NTL
-(see the NTL web page at \url{http://shoup.net/ntl/}).
-Depending on how \texttt{TYPAGE} is defined, all types used will be either
-primitives like \texttt{long}, \texttt{double}, etc., or the large number 
-types defined in NTL. 
-The preprocessor variable \texttt{TYPAGE} is defined in the Makefile.
- \label{mod:TypesNTL} 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\bigskip\hrule
-\code\hide
 #ifndef TYPESNTL_H
 #define TYPESNTL_H
-\endhide
+
+/**
+ */
 #include <NTL/vector.h>
 #include <NTL/matrix.h>
 
@@ -79,11 +85,10 @@ typedef NTL::vector<double> RVect;
 typedef NTL::matrix<double> RMat;
    typedef zz_pX    PolX;
    typedef zz_pE    PolE;
-\endcode
-\newpage
-\code
 
 
+/**
+ */
 #elif TYPAGE == 2
 // the case  "ZZDD"
 
@@ -121,11 +126,10 @@ typedef NTL::vector<double> RVect;
 typedef NTL::matrix<double> RMat;
    typedef ZZ_pX    PolX;
    typedef ZZ_pE    PolE; 
-\endcode
-\newpage
-\code
 
 
+/**
+ */
 #elif TYPAGE == 3
 // the case  "ZZRR"
 
@@ -164,9 +168,6 @@ typedef NTL::vector<RR> RVect;
 typedef NTL::matrix<RR> RMat;
    typedef ZZ_pX    PolX;
    typedef ZZ_pE    PolE;
-\endcode
-\newpage
-\code
 
 
 #else
@@ -180,7 +181,6 @@ namespace LatMRG {
 
    typedef void ProcII (int, int);
 }
-\hide
+
 #endif
-\endhide
-\endcode
+
