@@ -33,7 +33,7 @@ template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordSymS
 /**
  * Implementation of CoordSymState for product weights.
  *
- * This formulation is as proposed in \cite rCOO06a.
+ * This formulation is as proposed in \cite rCOO06a .
  * Define
  * \f[
  *   \boldsymbol p_s = \left(

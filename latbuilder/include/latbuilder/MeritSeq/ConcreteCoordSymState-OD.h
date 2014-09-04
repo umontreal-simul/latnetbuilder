@@ -34,7 +34,7 @@ template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordSymS
 /**
  * Implementation of CoordSymState for order-dependent weights.
  *
- * This formulation is as proposed in \cite rCOO06a.
+ * This formulation is as proposed in \cite rCOO06a .
  * Define
  * \f[
  *   \boldsymbol p_{s,\ell} = \left(
