@@ -32,6 +32,13 @@
 This is a software package for constructing rank-1 lattices using 
 state-of-the-art techniques.
 
+Reference paper:<br/>
+<a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">
+P. L'Ecuyer and D. Munger.
+<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Latice Rules.</b>
+<i>Submitted, 2012, revised in 2013.</i>
+</a>
+
 \todo Add a reference to the published paper on Lattice Builder.
 
 */
