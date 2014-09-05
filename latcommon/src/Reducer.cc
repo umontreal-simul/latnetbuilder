@@ -1322,7 +1322,6 @@ bool Reducer::redDieter (NormType norm)
 
    // Algorithm given in Knuth (1981).  Memoire de F. Blouin, p. 25.
    m_countNodes = 0;
-   bool smaller = false;
    for (k = 1; k <= dim; k++)
       m_bv[k] = 0;
 
@@ -1342,7 +1341,6 @@ bool Reducer::redDieter (NormType norm)
          CalcNorm <BVect, RScal> (m_bv, dim, x, norm);
          if (x < m_lMin) {
             conv (m_lMin, x);
-            smaller = true;
          }
       } else
          --k;
