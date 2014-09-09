@@ -39,6 +39,7 @@ def version(ctx):
 def options(ctx):
     ctx.load('compiler_cxx')
     ctx.load('gnu_dirs')
+    ctx.add_option('--no-docs', action='store', help='do not build documentation')
     ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
 
@@ -77,7 +78,8 @@ def configure(ctx):
     ctx.check(features='cxx cxxprogram', lib='fftw3')
 
     # Doxygen
-    ctx.find_program('doxygen', var='DOXYGEN', mandatory=False)
+    if not ctx.options.no_docs:
+        ctx.find_program('doxygen', var='DOXYGEN', mandatory=False)
 
     # version
     ctx.define('LATBUILDER_VERSION', ctx.version())
