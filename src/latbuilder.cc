@@ -21,8 +21,8 @@
 
 #include <boost/chrono/chrono_io.hpp>
 
-#ifndef VERSION
-#define VERSION "(unkown version)"
+#ifndef LATBUILDER_VERSION
+#define LATBUILDER_VERSION "(unkown version)"
 #endif
 
 using namespace LatBuilder;
@@ -142,7 +142,7 @@ parse(int argc, const char* argv[])
    }
 
    if (opt.count("version")) {
-      std::cout << "Lattice Builder " << VERSION << std::endl;
+      std::cout << "Lattice Builder " << LATBUILDER_VERSION << std::endl;
       std::exit (0);
    }
 

@@ -80,7 +80,7 @@ def configure(ctx):
     ctx.find_program('doxygen', var='DOXYGEN', mandatory=False)
 
     # version
-    ctx.define('VERSION', ctx.version()) # FIXME: only for latbuilder program
+    ctx.define('LATBUILDER_VERSION', ctx.version())
     ctx.msg("Setting Lattice Builder version to", VERSION)
 
     # build variants
