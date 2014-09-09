@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from waflib import Utils, Task
+from waflib import Utils, Task, Build
 
 class doxygen(Task.Task):
 
@@ -16,14 +16,15 @@ class doxygen(Task.Task):
             outputs = html.ant_glob('**/*')
             for x in outputs:
                 x.sig = Utils.h_file(x.abspath())
-            self.outputs += outputs
+            self.outputs = outputs
         self.generator.bld.install_files('${DOCDIR}/html', outputs, cwd=html, relative_trick=True)
-
 
 def build(ctx):
     if not ctx.env.DOXYGEN:
         print('Doxygen not found; skipping documentation')
         return
+
+    ctx.post_mode = Build.POST_LAZY
 
     # Doxyfile
     doc_dir = ctx.root.find_node(ctx.variant_dir).make_node('doc')
@@ -36,7 +37,8 @@ def build(ctx):
 
     # Doxygen
     dox = doxygen(env=ctx.env)
-    dox.set_inputs(ctx.path.find_resource('Doxyfile'))
+    dox.set_inputs(ctx.path.find_or_declare('Doxyfile'))
+    dox.set_outputs(ctx.path.find_or_declare('html/index.html'))
     ctx.add_to_group(dox)
 
     # install files
