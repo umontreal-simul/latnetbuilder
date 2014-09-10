@@ -140,7 +140,8 @@ int main(int argc, const char *argv[])
 {
    try {
       if (argc < 4 + 1 || argc > 5 + 1) {
-         std::cout << "usage: quantiles <size> <dimension> <figure-or-merit> <weights> [<random samples>]" << std::endl; // **XX Pls specify that the user should not type in the CS: but that this is assumed...
+         std::cout << "usage: quantiles <size> <dimension> <figure-of-merit> <weights> [<random samples>]" << std::endl;
+         std::cout << "Note that the prefix `CS:' is assumed on <figure-of-merit>" << std::endl;
          return -1;
       }
 

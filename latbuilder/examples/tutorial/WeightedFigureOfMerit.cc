@@ -86,7 +86,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
 
    //! [ProjDepMerit]
    typedef ProjDepMerit::Spectral<LatCommon::NormaBestLat> ProjDep;
-   WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights)); // **XX
+   WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    //! [ProjDepMerit]
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]

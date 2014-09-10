@@ -39,10 +39,10 @@ class BasicMeritFilterList;
  * Policy class template for MeritFilterList.
  */
 template <LatType>
-class MeritFilterListPolicy; // **XX
+class MeritFilterListPolicy;
 
 template <LatType>
-class MeritFilterList; // **XX
+class MeritFilterList;
 
 /**
  * Formats and outputs \c filters to \c os.

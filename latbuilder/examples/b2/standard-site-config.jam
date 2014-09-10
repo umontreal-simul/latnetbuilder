@@ -28,7 +28,7 @@ lib boost_program_options boost_system fftw3 ;
 
 # declare the boost_chrono library as dependent upon libboost_system and librt,
 # and as requiring linkage with libboost_chrono (whence the <name> feature)
-lib boost_chrono : boost_system : <name>boost_chrono ; # watch out removed rt only for OSX!
+lib boost_chrono : boost_system rt : <name>boost_chrono ; # remove `rt' for OSX
 
 # always link the shared version of librt
-#lib rt : : <link>shared ; # watch out, did this only for OSX!
+lib rt : : <link>shared ; # delete this line for OSX

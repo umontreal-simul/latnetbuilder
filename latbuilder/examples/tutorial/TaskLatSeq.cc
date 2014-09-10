@@ -64,7 +64,7 @@ WeightedFigureOfMerit<ProjDepMerit::CoordSym<Kernel::PAlpha>, Functor::Sum> figu
    typedef ProjDepMerit::CoordSym<Kernel::PAlpha> ProjDep;
    auto weights = unique<LatCommon::ProductWeights>();
    weights->setDefaultWeight(0.7);
-   return WeightedFigureOfMerit<ProjDep, Functor::Sum>(2, std::move(weights), ProjDep(2)); // **XX
+   return WeightedFigureOfMerit<ProjDep, Functor::Sum>(2, std::move(weights), ProjDep(2));
 }
 
 int main()

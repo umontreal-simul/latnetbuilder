@@ -117,7 +117,7 @@ public:
 
 #ifdef DEBUG
       using TextStream::operator<<;
-      std::cout << "computing " << this << " for projection " << projection // **XX don't know how to print an Evaluator, so changed *this to this
+      std::cout << "computing figure of merit for projection " << projection
          << " for lattice " << lat << std::endl;
 #endif
 

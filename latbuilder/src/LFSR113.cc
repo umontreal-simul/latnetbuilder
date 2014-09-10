@@ -91,7 +91,8 @@ void LFSR113::jump()
 
 void LFSR113::check_seed(const seed_type& s)
 {
-   if ((/*s[0] >= 0 &&*/ s[0] < 2)  or       // **XX seed_type == uint32
+   // seed_type is unsigned
+   if ((/*s[0] >= 0 &&*/ s[0] < 2)  or
          (/*s[1] >= 0 &&*/ s[1] < 8)  or
          (/*s[2] >= 0 &&*/ s[2] < 16) or
          (/*s[3] >= 0 &&*/ s[3] < 128))
