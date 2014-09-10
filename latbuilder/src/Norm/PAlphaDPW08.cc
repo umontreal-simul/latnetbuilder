@@ -24,6 +24,7 @@
 namespace LatBuilder { namespace Norm {
 
 namespace {
+
    template <typename WEIGHTS>
    class SumHelper {
    public:
@@ -51,7 +52,7 @@ namespace {
       }
 
    DECLARE_PALPHA_DPW08_SUM(LatCommon::ProductWeights);
-   DECLARE_PALPHA_DPW08_SUM(CombinedWeights);
+//   DECLARE_PALPHA_DPW08_SUM(LatBuilder::CombinedWeights); // *XX
 
 #undef DECLARE_PALPHA_DPW08_SUM
 
@@ -59,19 +60,19 @@ namespace {
    // combined weights
    //===========================================================================
 
-   Real SumHelper<CombinedWeights>::operator()(
-         const CombinedWeights& weights,
-         Real normType,
-         Real z,
-         Real lambda,
-         Dimension dimension
-         ) const
-   {
-      Real val = 0.0;
-      for (const auto& w : weights.list())
-         val += WeightsDispatcher::dispatch<SumHelper>(*w, normType, z, lambda, dimension);
-      return val;
-   }
+//   Real SumHelper<LatBuilder::CombinedWeights>::operator()( // **XX
+//         const CombinedWeights& weights,
+//         Real normType,
+//         Real z,
+//         Real lambda,
+//         Dimension dimension
+//         ) const
+//   {
+//      Real val = 0.0;
+//      for (const auto& w : weights.list())
+//         val += WeightsDispatcher::dispatch<SumHelper>(*w, normType, z, lambda, dimension);
+//      return val;
+//   }
 
 
    //===========================================================================

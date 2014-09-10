@@ -49,11 +49,11 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    weights->setDefaultWeight(0.7);
 
    typedef ProjDepMerit::Spectral<LatCommon::NormaBestLat> ProjDep;
-   WeightedFigureOfMerit<ProjDep, Functor::Max> figure(std::move(weights));
+   WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
-   typedef GenSeq::CoprimeIntegers<figure.suggestedCompression()> Coprime;
+   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
 
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
    auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));

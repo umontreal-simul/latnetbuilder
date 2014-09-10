@@ -67,13 +67,13 @@ public:
     * Returns the smallest value in the output range.
     */
 
-   result_type min() const
+   static constexpr result_type min() // **XX
    { return 0; }
 
    /**
     * Returns the largest value in the output range.
     */
-   result_type max() const
+   static constexpr result_type max() // **XX
    { return std::numeric_limits<result_type>::max(); }
 
    /**

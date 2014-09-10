@@ -129,6 +129,7 @@ namespace detail {
       }
 
 #ifdef DEBUG
+      using TextStream::operator<<;
       std::cout << "      projected generator: " << gen << std::endl;
 #endif
 
@@ -230,7 +231,7 @@ public:
 
 #ifdef DEBUG
       using TextStream::operator<<;
-      std::cout << "computing " << *this << " for projection " << projection
+      std::cout << "computing " << this << " for projection " << projection // **XX don't know how to print *this, so replace by this as a quick fix
          << " for lattice " << lat << std::endl;
 #endif
 

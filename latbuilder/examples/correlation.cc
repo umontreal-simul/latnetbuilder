@@ -141,11 +141,10 @@ int main(int argc, const char *argv[])
    auto weights1 = Parser::Weights::parse(weightsSpec1, 2);
    auto weights2 = Parser::Weights::parse(weightsSpec2, 2);
 
-   MeritFilterList<LatType::ORDINARY> filters;
-   Parser::MeritFilterList::parse(filters, filtersSpec, size, *weights1, 2);
+   auto filters = Parser::MeritFilterList::parse(filtersSpec, size, *weights1, 2);
 
    Parser::FigureOfMerit::parse(
-	 "2",
+         "2",
          figSpec2,
          std::move(weights2),
          Execute(),

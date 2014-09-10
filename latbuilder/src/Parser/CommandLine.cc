@@ -117,7 +117,7 @@ std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::EMBEDDED>>
 CommandLine<LatBuilder::LatType::EMBEDDED>::parse() const
 { return Parse<LatBuilder::LatType::EMBEDDED>(*this).search(); }
 
-template class CommandLine<LatBuilder::LatType::ORDINARY>;
-template class CommandLine<LatBuilder::LatType::EMBEDDED>;
+template struct CommandLine<LatBuilder::LatType::ORDINARY>; // **XX
+template struct CommandLine<LatBuilder::LatType::EMBEDDED>; // **XX
 
 }}

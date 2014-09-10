@@ -91,11 +91,11 @@ void LFSR113::jump()
 
 void LFSR113::check_seed(const seed_type& s)
 {
-   if ((s[0] >= 0 && s[0] < 2)  or
-         (s[1] >= 0 && s[1] < 8)  or
-         (s[2] >= 0 && s[2] < 16) or
-         (s[3] >= 0 && s[3] < 128))
-      throw std::invalid_argument("The seed elements must be either negative "
+   if ((/*s[0] >= 0 &&*/ s[0] < 2)  or       // **XX seed_type == uint32
+         (/*s[1] >= 0 &&*/ s[1] < 8)  or
+         (/*s[2] >= 0 &&*/ s[2] < 16) or
+         (/*s[3] >= 0 &&*/ s[3] < 128))
+      throw std::invalid_argument("The seed elements must be either negative " // **XX seed_type == uint32
             "or greater than 1, 7, 15 and 127, respectively");
 }
 

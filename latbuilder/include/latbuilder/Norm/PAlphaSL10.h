@@ -121,7 +121,7 @@ public:
     * \parm normType       Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType);
+   PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType=2); // **XX
 
    template <LatType L>
    Real value(

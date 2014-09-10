@@ -79,7 +79,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
-   typedef GenSeq::CoprimeIntegers<figure.suggestedCompression()> Coprime;
+   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
    auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));
 

@@ -86,13 +86,13 @@ void test(const Storage<L, C>& storage, Dimension dimension)
 
    //! [ProjDepMerit]
    typedef ProjDepMerit::Spectral<LatCommon::NormaBestLat> ProjDep;
-   WeightedFigureOfMerit<ProjDep, Functor::Max> figure(std::move(weights));
+   WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights)); // **XX
    //! [ProjDepMerit]
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
    // sequence of lattice definitions
-   typedef GenSeq::CoprimeIntegers<figure.suggestedCompression()> Coprime;
+   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
    auto latSeq = LatSeq::korobov(
          storage.sizeParam(),
          Coprime(storage.sizeParam().numPoints()),

@@ -140,7 +140,7 @@ int main(int argc, const char *argv[])
 {
    try {
       if (argc < 4 + 1 || argc > 5 + 1) {
-         std::cout << "usage: quantiles <size> <dimension> <figure-or-merit> <weights> [<random samples>]" << std::endl;
+         std::cout << "usage: quantiles <size> <dimension> <figure-or-merit> <weights> [<random samples>]" << std::endl; // **XX Pls specify that the user should not type in the CS: but that this is assumed...
          return -1;
       }
 
@@ -158,6 +158,7 @@ int main(int argc, const char *argv[])
 
       if (nrand) {
          Parser::CoordSymFigureOfMerit::parse(
+               "2",
                figureSpec,
                std::move(weights),
                Execute(),
@@ -167,6 +168,7 @@ int main(int argc, const char *argv[])
       }
       else {
          Parser::CoordSymFigureOfMerit::parse(
+               "2",
                figureSpec,
                std::move(weights),
                Execute(),

@@ -49,8 +49,9 @@ LatticePoints search()
    cmd.construction  = "fast-CBC";
    cmd.size          = "2^8";
    cmd.dimension     = "10";
-   cmd.figure        = "CS:sum:P2";
+   cmd.figure        = "CS:P2"; // **XX
    cmd.weights       = std::vector<std::string>{"product:0.1"};
+   cmd.normType      = "2"; // **XX
    auto search = cmd.parse();
 
    std::cout << *search << std::endl;

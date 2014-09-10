@@ -177,7 +177,7 @@ RealVector Normalizer<LatType::EMBEDDED, NORM>::operator()(
             "merit has more levels than the per-level weights");
 
    RealVector out(merit.size());
-   RealVector::size_type level = 0;
+   //RealVector::size_type level = 0; // **XX
    for (RealVector::size_type j = 0; j < out.size(); j++)
       out[j] = m_cachedNorm[j] * merit[j];
    return out;

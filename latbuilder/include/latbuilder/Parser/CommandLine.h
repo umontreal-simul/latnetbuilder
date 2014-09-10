@@ -50,15 +50,15 @@ struct CommandLine<LatBuilder::LatType::ORDINARY> {
  * Specialization of CommandLine for embedded lattices.
  */
 template <>
-struct CommandLine<LatBuilder::LatType::EMBEDDED> : CommandLine<LatBuilder::LatType::ORDINARY> {
+struct CommandLine<LatBuilder::LatType::EMBEDDED> : CommandLine<LatBuilder::LatType::ORDINARY> { // **XX
    std::vector<std::string> multilevelFilters;
    std::string combiner;
 
    std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::EMBEDDED>> parse() const;
 };
 
-extern template class CommandLine<LatBuilder::LatType::ORDINARY>;
-extern template class CommandLine<LatBuilder::LatType::EMBEDDED>;
+extern template struct CommandLine<LatBuilder::LatType::ORDINARY>; // **XX
+extern template struct CommandLine<LatBuilder::LatType::EMBEDDED>; // **XX
 
 }}
 

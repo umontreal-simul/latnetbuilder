@@ -58,7 +58,7 @@ alias boost : : : :
 #
 # rt library
 #
-lib rt : : <link>shared ;
+#lib rt : : <link>shared ; # watch out only did this for OSX!
 
 #
 # Boost libraries that require linkage
@@ -67,7 +67,7 @@ lib boost_program_options boost_system : : :
 	<search>$(BOOST_PREFIX)/lib/ :
 	<include>$(BOOST_PREFIX)/include/ ;
 
-lib boost_chrono : boost_system rt : <name>boost_chrono :
+lib boost_chrono : boost_system : <name>boost_chrono : # removed rt only for OSX!
 	<search>$(BOOST_PREFIX)/lib/ :
 	<include>$(BOOST_PREFIX)/include/ ;
 
