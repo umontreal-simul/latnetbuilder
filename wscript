@@ -89,22 +89,16 @@ def configure(ctx):
     ctx.msg("Setting Lattice Builder version to", VERSION)
 
     # build variants
-    env = ctx.env
+    env = ctx.env.derive()
+    env.detach()
 
-    ctx.setenv('release')
+    # release (default)
     ctx.env.append_unique('CXXFLAGS', ['-O2'])
     ctx.define('NDEBUG', 1)
 
-    ctx.setenv('debug', env.derive())
+    ctx.setenv('debug', env)
     ctx.env.append_unique('CXXFLAGS', ['-g'])
     ctx.define('DEBUG', 1)
-
-    #ctx.msg("debug", ctx.all_envs['debug'])
-    #ctx.msg("release", ctx.all_envs['release'])
-
-
-#def dist(ctx):
-#    ctx.algo = 'zip' # for Windows
 
 def distclean(ctx):
     verfile = ctx.path.find_node('VERSION')
@@ -133,9 +127,17 @@ def build(ctx):
     ctx(features='cxx cxxprogram',
             source=src_dir.ant_glob('*.cc'),
             includes=[lb_inc_dir, lc_inc_dir],
-            lib=['boost_program_options', 'boost_chrono', 'boost_system', 'fftw3'],
+            stlib=['boost_program_options', 'boost_chrono', 'boost_system', 'fftw3'],
             target=prog,
             use=['latbuilder', 'latcommon'],
             install_path=None)
 
     ctx.install_as('${BINDIR}/latbuilder', prog, chmod=755)
+
+
+# build variants
+
+from waflib.Build import BuildContext
+class debug(BuildContext):
+    cmd = 'debug'
+    variant = 'debug'
