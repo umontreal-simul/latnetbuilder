@@ -49,9 +49,13 @@ def configure(ctx):
     ctx.check(features='cxx', cxxflags='-std=c++11')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
 
-    # suppress Boost ublas warnings
-    if ctx.check(features='cxx', cxxflags='-Wno-unused-local-typedefs', mandatory=False):
-        ctx.env.append_value('CXXFLAGS', ['-Wno-unused-local-typedefs'])
+    def add_cxx_option(option):
+        # suppress Boost ublas warnings
+        if ctx.check(features='cxx', cxxflags=option, mandatory=False):
+            ctx.env.append_value('CXXFLAGS', option)
+
+    add_cxx_option('-Wno-unused-local-typedefs')
+    add_cxx_option('-Wno-unused-function')
 
     ctx.version_file()
 

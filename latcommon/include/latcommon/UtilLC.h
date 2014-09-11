@@ -289,8 +289,8 @@ inline void DivideRound (const long & a, const long & b, long & q)
        neg = true;
     else
        neg = false;
-    long x = abs(a);
-    long y = abs(b);
+    long x = std::abs(a);
+    long y = std::abs(b);
     ldiv_t z = ldiv (x, y);
     q = z.quot;
     long r = z.rem;
@@ -308,8 +308,8 @@ inline void DivideRound (const NTL::ZZ & a, const NTL::ZZ & b, NTL::ZZ & q)
     if ((a > 0 && b < 0) || (a < 0 && b > 0))
        s = true;
     NTL::ZZ r, x, y;
-    x = abs (a);
-    y = abs (b);
+    x = std::abs (a);
+    y = std::abs (b);
     //* * ATTENTION: bug de NTL: DivRem change le signe de a quand a < 0.
     DivRem (q, r, x, y);
     LeftShift (r, r, 1);
@@ -347,16 +347,6 @@ void Euclide (const MScal & a, const MScal & b, MScal & C, MScal & D,
  * et les \c ZZ (voir fichier ZZ.h)
  */
 long gcd (long a, long b);
-
-
-/**
- * Returns the absolute value.
- */
-template <typename Scal>
-inline Scal abs (Scal x) {
-   if (x < 0) return -x;  else return x;
-}
-
 
 
 /**
@@ -494,7 +484,7 @@ inline void CalcNorm (const Vect & V, int n, Scal & S, NormType norm)
         case L1NORM:
             for (int i = 1; i <= n; i++) {
                 conv (y, V[i]);
-                S += abs(y);
+                S += std::abs(y);
             }
             break;
 
@@ -508,7 +498,7 @@ inline void CalcNorm (const Vect & V, int n, Scal & S, NormType norm)
 
         case SUPNORM:
             for (int i = 1; i <= n; i++) {
-                conv (y, abs(V[i]));
+                conv (y, std::abs(V[i]));
                 if (y > S)
                     S = y;
             }
@@ -517,7 +507,7 @@ inline void CalcNorm (const Vect & V, int n, Scal & S, NormType norm)
         case ZAREMBANORM:
             S = 1.0;
             for (int i = 1; i <= n; i++) {
-                conv (y, abs(V[i]));
+                conv (y, std::abs(V[i]));
                 if (y > 1.0)
                    S *= y;
             }
