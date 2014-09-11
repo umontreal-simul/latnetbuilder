@@ -46,8 +46,8 @@ template <typename T> struct TypeInfo {
 // specializations
 
 namespace boost { namespace accumulators { namespace tag {
-   class max;
-   class sum;
+   struct max;
+   struct sum;
 }}}
 
 namespace LatBuilder {

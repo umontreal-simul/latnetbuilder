@@ -80,7 +80,7 @@ void test(const Storage<L, C>& storage, Dimension dimension, int samples)
    //! [figure]
 
    //! [Coprime]
-   typedef GenSeq::CoprimeIntegers<figure.suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
+   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
    //! [Coprime]
    auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));

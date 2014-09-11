@@ -37,15 +37,14 @@ def version(ctx):
     return version
 
 def options(ctx):
-    ctx.load('compiler_cxx')
-    ctx.load('gnu_dirs')
-    ctx.add_option('--no-docs', action='store', help='do not build documentation')
+    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
+    ctx.add_option('--no-docs', action='store_true', default=False, help='do not build documentation')
+    ctx.add_option('--no-examples', action='store_true', default=False, help='do not build examples')
     ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
 
 def configure(ctx):
-    ctx.load('compiler_cxx')
-    ctx.load('gnu_dirs')
+    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
     ctx.check(features='cxx', cxxflags='-std=c++11')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
 
@@ -114,11 +113,16 @@ def distclean(ctx):
     from waflib import Scripting
     Scripting.distclean(ctx)
 
+
 def build(ctx):
+
+    print("Building variant `%s'" % (ctx.variant,))
+
     ctx.recurse('latcommon')
     ctx.recurse('latbuilder')
     ctx.recurse('doc')
-    ctx.recurse('examples')
+    if not ctx.options.no_examples:
+        ctx.recurse('examples')
 
     lc_inc_dir = ctx.path.find_dir('latcommon/include')
     lb_inc_dir = ctx.path.find_dir('latbuilder/include')

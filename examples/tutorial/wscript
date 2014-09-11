@@ -8,7 +8,7 @@ def build(ctx):
 
     for src in ctx.path.ant_glob('*.cc'):
 
-        ctx(features='cxx cxxprogram',
+        ctx(features='cxx cxxprogram test',
                 source=src,
                 includes=[lb_inc_dir, lc_inc_dir],
                 lib=['boost_program_options', 'boost_chrono', 'boost_system', 'fftw3'],
@@ -16,7 +16,7 @@ def build(ctx):
                 use=['latbuilder', 'latcommon'],
                 install_path=None)
 
-    ctx.install_files('${DOCDIR}/examples', ctx.path.ant_glob('*.cc'))
-    ctx.install_files('${DOCDIR}/examples/myproject', ctx.path.ant_glob('myproject/*'))
+    ctx.install_files('${DOCDIR}/examples/tutorial', ctx.path.ant_glob('*.cc'))
 
-    ctx.recurse('tutorial')
+    from waflib.Tools import waf_unit_test
+    ctx.add_post_fun(waf_unit_test.summary)
