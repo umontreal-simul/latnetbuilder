@@ -13,7 +13,7 @@ class doxygen(Task.Task):
     def post_run(self):
         html = self.generator.bld.path.find_dir('doc').get_bld().find_dir('html')
         if html:
-            outputs = html.ant_glob('**/*')
+            outputs = html.ant_glob('**/*', quiet=True)
             for x in outputs:
                 x.sig = Utils.h_file(x.abspath())
             self.outputs = outputs
@@ -21,7 +21,7 @@ class doxygen(Task.Task):
 
 def build(ctx):
     if not ctx.env.DOXYGEN:
-        print('Doxygen not found; skipping documentation')
+        print('Skipping documentation')
         return
 
     ctx.post_mode = Build.POST_LAZY
