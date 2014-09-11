@@ -33,7 +33,7 @@ struct FigureOfMerit {
     * Parses a string specifying a weighted figure of merit and a string
     * specifying weights.
     *
-    * Example strings: <code>sum:P2</code>, <code>CS:sum:P2</code>, <code>sum:spectral</code>, <code>max:spectral:2</code>
+    * Example strings: <code>P2</code>, <code>CS:P2</code>, <code>spectral</code>, <code>spectral:2</code>
     */
    template <typename FUNC, typename... ARGS>
    static void parse(

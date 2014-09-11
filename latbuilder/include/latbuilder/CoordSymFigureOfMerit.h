@@ -63,7 +63,7 @@ public:
    { return KERNEL::suggestedCompression(); }
 
    std::string name() const
-   { return "CS:sum:" + kernel().name(); }
+   { return "CS:" + kernel().name(); }
 
    Real normType() const
    { return 2.0; }

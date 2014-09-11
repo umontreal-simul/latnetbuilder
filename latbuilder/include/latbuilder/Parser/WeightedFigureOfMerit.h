@@ -66,7 +66,7 @@ struct WeightedFigureOfMerit {
    /**
     * Parses a string specifying a weighted figure of merit.
     *
-    * Example strings: <code>sum:P2</code>, <code>sum:spectral</code>, <code>max:spectral:2</code>
+    * Example strings: <code>P2</code>, <code>spectral</code>, <code>spectral:2</code>
     *
     * \throws BadNorm On failure.
     */

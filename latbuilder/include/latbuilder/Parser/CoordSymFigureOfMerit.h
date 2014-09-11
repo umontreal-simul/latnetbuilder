@@ -60,7 +60,7 @@ struct CoordSymFigureOfMerit {
    /**
     * Parses a string specifying a coordinate-symmetric figure of merit.
     *
-    * Example strings: <code>sum:P2</code>, <code>sum:P4</code>, <code>sum:P6</code>
+    * Example strings: <code>P2</code>, <code>P4</code>, <code>P6</code>
     */
    template <typename FUNC, typename... ARGS>
    static void parse(
