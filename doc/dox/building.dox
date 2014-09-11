@@ -93,9 +93,6 @@ page for
 or for
 <a href="http://www.boost.org/doc/libs/release/more/getting_started/windows.html">Microsoft Windows</a>.
 
-Alternatively, you can customize and run the script \c install-boost.sh that can
-found under the \c scripts directory with the source code.
-
 
 \subsection builddeps_fftw FFTW Library
 
@@ -109,9 +106,11 @@ Get the latest source tree from GitHub, either by typing:
 \code{.sh}
 git clone https://github.com/mungerd/latbuilder.git
 \endcode
-if you have <a href="http://git-scm.com/">Git</a> installed, of by clicking
-<b>Download ZIP</b> from the
-<a href="https://github.com/mungerd/latbuilder">Lattice Builder GitHub page</a>,
+If you do not have <a href="http://git-scm.com/">Git</a> installed, you can
+click on the <a
+href="https://github.com/mungerd/latbuilder/archive/master.zip">Download
+ZIP</a> link from the <a href="https://github.com/mungerd/latbuilder">Lattice
+Builder GitHub page</a>,
 then by unzipping the downloaded archive.
 
 \section buildcompile Compiling Lattice Builder
@@ -123,31 +122,35 @@ with <code>python waf</code>, assuming that the Python executable
 environment variable.  Otherwise, the full path to the <code>python.exe</code>
 executable should be used.
 
-Change the current directory to the root directory of the package (called \c
-latbuilder if obtained with the \c git command, or \c latbuilder-master if
-unzipped from the dowloaded archive).
-It contains the \c waf script, along with the \c latcommon and \c latbuilder
-subdirectories.
-The \c waf script manages the build process.  Try:
+Change the current directory to the root directory of the package, for example:
+\code{.sh}
+cd latbuilder
+\endcode
+if you obtained the source code with the \c git command.
+If you obtained the source code from the ZIP archive, the directory should be
+named \c latbuilder-master instead of \c latbuilder.
+At the root of the source tree lies the \c waf script, manages the build
+process.
+Try:
 \code{.sh}
 ./waf --help
 \endcode
 to see the various commands and options.
-The most relevant options include \c --out to specify the directory in which the
-files created during the build process will be place, \c --prefix to specify
-the directory under which Lattice Builder will be installed, and \c --boost and
-\c --fftw to specify the directories under which Boost and FFTW were installed.
+The most relevant options include \c \-\-out to specify the directory in which the
+files created during the build process will be place, \c \-\-prefix to specify
+the directory under which Lattice Builder will be installed, and \c \-\-boost and
+\c \-\-fftw to specify the directories under which Boost and FFTW were installed.
 First, the project must be configured with:
 \code{.sh}
-./waf --prefix /installation/path configure
+./waf --prefix $HOME/latsoft configure
 \endcode
-with \c /installation/path replaced with the directory into which Lattice
+with \c $HOME/latsoft replaced with the directory into which Lattice
 Builder should be installed.
 If Boost and FFTW are not part of the standard system installation and were
 manually installed under \c /boost/prefix and \c /fftw/prefix, for example, the
 following command indicates \c waf where to find these two libraries:
 \code{.sh}
-./waf --prefix /installation/path --boost /boost/prefix --fftw /fftw/prefix configure
+./waf --prefix $HOME/latsoft --boost /boost/prefix --fftw /fftw/prefix configure
 \endcode
 It is possible to set the \c CXX environment variable to the path to a specific
 C++ compiler to be used to build Lattice Builder, before running the <code>waf
@@ -162,22 +165,22 @@ If <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> is available,
 the documentation will also be generated.
 
 If the build process completed without errors, Lattice Builder can be installed
-to \c /installation/path, as specified in the configuration step, with:
+to \c $HOME/latsoft, as specified in the configuration step, with:
 \code{.sh}
 ./waf install
 \endcode
 The Lattice Builder executable can be found at \c
-/installation/path/bin/latbuilder (with a \c .exe extension under Windows
+$HOME/latsoft/bin/latbuilder (with a \c .exe extension under Windows
 systems).
 If it was generated, the documentation can be accessed by pointing a web
-browser to the file \c /installation/path/share/doc/latbuilder/index.html.
+browser to the file \c $HOME/latsoft/share/doc/latbuilder/index.html.
 
 To check that the program installed correctly, try:
 \code{.sh}
-/installation/path/latbuilder --version
+$HOME/latsoft/latbuilder --version
 \endcode
-Help on usage can be obtained by replacing the \c --version switch with the \c
---help switch.
+Help on usage can be obtained by replacing the \c \-\-version switch with the \c
+\-\-help switch.
 It may be necessary to copy the Boost and FFTW libraries into the same
 directory as the \c latbuilder executable program, or to indicate where to find
 them in the \c LD_LIBRARY_PATH environment variable for Linux and OS X systems.
@@ -187,15 +190,15 @@ them in the \c LD_LIBRARY_PATH environment variable for Linux and OS X systems.
 \section buildlink Linking Software with Lattice Builder
 
 Software can use the Lattice Builder libraries by setting the compiler to use
-the C++11 standard, by adding \c /installation/path/include to the include
-path, by adding \c /installation/path/lib to the library path, and by linking
+the C++11 standard, by adding \c $HOME/latsoft/include to the include
+path, by adding \c $HOME/latsoft/lib to the library path, and by linking
 with the \c latcommon and \c latbuilder libraries in the latter directory,
 together with the \c boost_program_options, \c boost_chrono, \c boost_system
 and \c fftw3 libraries.
 
 An example \c Makefile to build a project that uses the Lattice Builder
 application programming interface (API) can be found under
-\c /installation/path/share/doc/latbuilder/examples/myproject.
+\c $HOME/latsoft/share/doc/latbuilder/examples/myproject.
 
 A lot of example code using the Lattice Builder API can be found under the \c
 latbuilder/examples directory of the source package and in its subdirectories.
