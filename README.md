@@ -105,58 +105,11 @@ for more information on using the Lattice Builder program.
 The following software must be installed in order to compile Lattice Builder:
 
 * [Git](http://git-scm.com/)
-* [C++11](http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=50372)-Compliant Compiler (e.g., [GCC](http://gcc.gnu.org) 4.7)
+* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
+* [C++11](http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=50372)-Compliant Compiler (e.g., [GCC](http://gcc.gnu.org) ≥ 4.7)
 * [Boost C++ Libraries](http://www.boost.org/)
 * [FFTW Library](http://www.fftw.org/)
-* [Boost.Build](http://www.boost.org/boost-build2/) (nightly build recommended)
-
-
-### Configuring Boost.Build
-
-Boost.Build needs to be told where to find the Boost and FFTW headers and how to
-link to these libraries, via the `site-config.jam` configuration that can be
-found under the directory `<b2-prefix>/share/boost-build`, where `<b2-prefix>`
-is the prefix under which Boost.Build is installed.  If all libraries are
-installed under standard paths, you can put the following contents into the
-`site-config.jam` file:
-
-	project site-config ;
-
-	using gcc ;
-
-	alias boost ; # header-only
-
-	lib boost_program_options boost_system fftw3 ;
-	lib boost_chrono : boost_system rt : <name>boost_chrono ;
-	lib rt : : <link>shared ; # forced shared linkage
-
-Otherwise, customize the following contents to suit your system configuration,
-by replacing the `/opt/fftw3` and `/opt/boost` prefixes with the proper paths:
-
-	project site-config ;
-	
-	lib fftw3 : : : <search>/opt/fftw3/lib/ : <include>/opt/fftw3/include/ ;
-
-	alias boost : : : : <include>/opt/boost/include/ ;
-	
-	lib boost_program_options boost_system : :
-		: <search>/opt/boost/lib/ : <include>/opt/boost/include/ ;
-
-	lib boost_chrono : boost_system rt : <name>boost_chrono
-		: <search>/opt/boost/lib/ : <include>/opt/boost/include/ ;
-
-	lib rt : : <link>shared ;
-
-The compilation process generates intermediate files; Boost.Build can be told to
-put them in the temporary directory `/tmp/b2` b changing the project line of the
-`site-config.jam` file to:
-
-	project site-config : build-dir /tmp/b2 ;
-
-**Remark:** If you do not have sufficient permissions to modify
-the ̀`site-config.jam` file, you can resort to creating a `user-config.jam` file
-at the root of your home directory and by modifying this file instead of the
-`site-config.jam` file.
+* [Python 2.7](http://python.org/download/)
 
 
 ### Downloading from GitHub
@@ -170,35 +123,42 @@ Then, move to the root directory of the repository with:
 	cd latbuilder
 
 
-### Configuring the Compiler to Use the C++11 Standard
-
-The appropriate compiler flags should set in the `project-config.jam` file,
-which can be found at the root of the source distribution, in order to support
-the C++11 standard.  For example, with GCC 4.7, one can set:
-
-	project latsoft : requirements <cxxflags>"-std=c++11" ;
-
-
 ### Compiling Lattice Builder
 
-Change the current directory to the root or the source distribution.
-First, compile the auxiliary tools that are needed to generate part of the
-source code in Lattice Builder, with:
+**Note:**
+The commands below should work verbatim under Linux and OS X systems.
+For Windows systems, every instance of `./waf` should be replaced with `python
+waf`, assuming that the Python executable (`python.exe`) is accessible from the
+system `%PATH%` environment variable.  Otherwise, the full path to the
+`python.exe` executable should be used.
 
-	b2 /tools
+Lattice Builder can be built using the [waf](https://code.google.com/p/waf/)
+build system.  It is included with the source code, so there is no need to
+download it separately.
 
-Then, prepare a binary distribution of Lattice Builder with:
+From the root of the source tree, configure the project with:
 
-	b2 /latbuilder//install --prefix=<dist-prefix>
+    ./waf configure
 
-where `<dist-prefix>` must be replaced with the directory into which Lattice
-Builder should be installed.  The above command installs the `latbuilder`
-executable under the `<dist-prefix>/bin` directory.
+In order to specify where to install Lattice Builder and where to find the
+Boost and FFTW libraries, consider using the options `--prefix`, `--boost` and
+`--fftw` described by running
+
+    ./waf --help
+
+Next, compile the library and program with:
+
+    ./waf build
+
+If the build process completed successfully, the software can be installed
+with:
+
+    ./waf install
 
 
 ## Using the Lattice Builder Program
 
-If the compilation suceeded, the following command should output the installed 
+If the installation suceeded, the following command should output the installed 
 version of Lattice Builder:
 
 	<dist-prefix>/bin/latbuilder --version
@@ -241,7 +201,7 @@ the same weight of 0.01 to every coordinate (this means a weight of 1e-2
 for projections of order 1, of 1e-4 for projections of order 2, of 1e-6 for
 projections of order 3, etc.):
 
-	latbuilder -l ordinary -n 2^16 -d 100 -m CS:sum:P2 -c fast-CBC -w product:0.01
+	latbuilder -l ordinary -n 2^16 -d 100 -m CS:P2 -c fast-CBC -w product:0.01
 
 The above search is for n=2^16=65,536 points in dimension 100.  Lattice Builder
 does that very quickly.

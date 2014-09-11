@@ -21,7 +21,7 @@
 LATBUILDER = /usr
 
 INCLUDES = -I$(LATBUILDER)/include
-LIBS = -L$(LATBUILDER)/lib -llatbuilder -llatcommon -lfftw3
+LIBS = -L$(LATBUILDER)/lib -llatbuilder -llatcommon -lboost_program_options -lboost_chrono -lboost_system -lfftw3
 
 # production
 CXXFLAGS = -Wall -O2 -DNDEBUG

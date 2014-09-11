@@ -21,8 +21,9 @@ Building Lattice Builder consists of the following steps:
 - Installing a \ref builddeps_compiler
 - Installing the \ref builddeps_boost
 - Installing the \ref builddeps_fftw
-- Installing the \ref builddeps_b2 system
-- \ref buildconfig
+- Optionally installing <a href="http://git-scm.com/">Git</a>
+- Optionally installing <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a>
+- \ref sourcecode
 - \ref buildcompile
 - \ref buildlink
 
@@ -102,150 +103,99 @@ The fast CBC implementation of Lattice Builder depends on the
 <a href="http://www.fftw.org/">FFTW library</a>.
 
 
-\subsection builddeps_b2 Boost.Build
+\section sourcecode Obtaining the source code
 
-In order to facilitate cross-platform compatibility, Lattice Builder uses
-<a href="http://www.boost.org/boost-build2/">Boost.Build</a>
-as its build system
-(<a href="http://www.boost.org/boost-build2/doc/html/bbv2/installation.html">installation instructions</a>).
-The nightly-build version is recommended.
-
-If you installed Boost.Build as indicated to some prefix \c B2_PREFIX, the
-installation system should have created the file
-<tt>B2_PREFIX/share/boost-build/site-config.jam</tt>.  Make sure that it contains
-at least a line that indicates which default toolset should be used.  On Linux
-systems, this line should look like:
-\code
-using gcc ;
+Get the latest source tree from GitHub, either by typing:
+\code{.sh}
+git clone https://github.com/mungerd/latbuilder.git
 \endcode
-The space before the semicolon is important.
-
-To check if Boost.Build is installed and available in the path, try either:
-\code
-b2 --version
-\endcode
-or
-\code
-/path/to/b2 --version
-\endcode
-replacing \c /path/to with the actual path to which Boost.Build was installed.
-
-
-\section buildconfig Configuring Boost.Build
-
-\subsection buildconfig_b2site Site-Specific Configuration
-
-To compile Lattice Builder, Boost.Build needs to know where to find the Boost
-header files and how to link to the Boost and FFTW libraries.  These settings
-are specific to the platform on which Lattice Builder is to be built and should
-be customized in the file \c B2_PREFIX/share/boost-build/site-config.jam, where
-\c B2_PREFIX is the directory under which Boost.Build was installed.
-If the file cannot be found at that location, it can be created if the user has
-proper access permissions (otherwise see \ref buildconfig_b2user).
-If all libraries are installed under standard paths, the \c site-config.jam file
-can only contain:
-\include b2/standard-site-config.jam
-Otherwise, the following \c site-config.jam file could be customized with the
-following content:
-\include b2/site-config.jam
-To use this this configuration file, the environment variables BOOST_PREFIX and
-FFTW_PREFIX should be set to point to the directories under which the Boost and
-FFTW libraries are installed, respectively.
-The specification for <tt>lib rt</tt> indicates that the \c rt library should
-always be linked to as a shared library.
-The specification for <tt>lib boost_chrono</tt> indicates that it depends on 
-<tt>lib boost_system</tt> and on <tt>lib rt</tt>.
-The spaces around the colons and before the semicolons are important.
-
-The compilation process generates object files before linking them together into
-an executable program.  Boost.Build can be told to put these temporary object
-files in any desired directory by changing the \c project line, for instance,
-to:
-\code{.jam}
-project site-config : build-dir /tmp/b2 ;
-\endcode
-which would put them in \c /tmp/b2.
-As a more sophisticated example, we could put them into
-<code>/tmp/$USER/b2</code>, where <code>$USER</code> is the current user name,
-with:
-\code{.jam}
-import os ;
-import path ;
-local build-dir = [ path.join /tmp [ os.environ USER ] b2 ] ;
-project site-config : build-dir $(build-dir) ;
-\endcode
-
-
-\subsection buildconfig_b2user User-Specific Configuration (optional)
-
-As an alternative to editing \c site-config.jam, the customizations explained in
-\ref buildconfig_b2site can be applied to the \c user-config.jam file, which
-Boost.Build attempts to find at the root of the user's home directory.
-In that case, the library aliases in the \c project-config.jam file, which can
-be found at the Lattice Builder project's root directory, must be updated by
-replacing every occurrence of \c site-config with \c user-config.
-For example,
-\code{.jam}
-alias fftw3 : /site-config//fftw3 ;
-\endcode
-should be replaced with
-\code{.jam}
-alias fftw3 : /user-config//fftw3 ;
-\endcode
-
-
-\subsection buildconfig_b2proj Project-Specific Configuration
-
-Finally, the appropriate compiler flags should set in \c project-config.jam to
-support the C++11 standard:
-\code{.jam}
-project latsoft : requirements <cxxflags>FLAGS ;
-\endcode
-where \c FLAGS is the placeholder for those flags.  For
-example, with GCC 4.7, this line would be:
-\code{.jam}
-project latsoft : requirements <cxxflags>"-std=c++11" ;
-\endcode
-
-
+if you have <a href="http://git-scm.com/">Git</a> installed, of by clicking
+<b>Download ZIP</b> from the
+<a href="https://github.com/mungerd/latbuilder">Lattice Builder GitHub page</a>,
+then by unzipping the downloaded archive.
 
 \section buildcompile Compiling Lattice Builder
 
-Change the current directory to the root directory of the package, which
-contains the \c tools and \c latbuilder subdirectories.
-First, the \c tcode utility, which produces C++ header files out of TeX code,
-must be built with:
+\note The commands below should work verbatim under Linux and OS X systems.
+For Windows systems, every instance of <code>./waf</code> should be replaced
+with <code>python waf</code>, assuming that the Python executable
+(<code>python.exe</code>) is accessible from the system <code>%PATH%</code>
+environment variable.  Otherwise, the full path to the <code>python.exe</code>
+executable should be used.
+
+Change the current directory to the root directory of the package (called \c
+latbuilder if obtained with the \c git command, or \c latbuilder-master if
+unzipped from the dowloaded archive).
+It contains the \c waf script, along with the \c latcommon and \c latbuilder
+subdirectories.
+The \c waf script manages the build process.  Try:
 \code{.sh}
-b2 /tools
+./waf --help
 \endcode
-Then, if everything is configured correctly, the following command will build the
-Lattice Builder library and command-line tool:
+to see the various commands and options.
+The most relevant options include \c --out to specify the directory in which the
+files created during the build process will be place, \c --prefix to specify
+the directory under which Lattice Builder will be installed, and \c --boost and
+\c --fftw to specify the directories under which Boost and FFTW were installed.
+First, the project must be configured with:
 \code{.sh}
-b2 /latbuilder//install --prefix=/installation/path
+./waf --prefix /installation/path configure
 \endcode
 with \c /installation/path replaced with the directory into which Lattice
 Builder should be installed.
+If Boost and FFTW are not part of the standard system installation and were
+manually installed under \c /boost/prefix and \c /fftw/prefix, for example, the
+following command indicates \c waf where to find these two libraries:
+\code{.sh}
+./waf --prefix /installation/path --boost /boost/prefix --fftw /fftw/prefix configure
+\endcode
+It is possible to set the \c CXX environment variable to the path to a specific
+C++ compiler to be used to build Lattice Builder, before running the <code>waf
+configure</code> command.
+
+Then, if everything is configured correctly, the following command will build the
+Lattice Builder library and command-line tool:
+\code{.sh}
+./waf build
+\endcode
+If <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> is available,
+the documentation will also be generated.
+
+If the build process completed without errors, Lattice Builder can be installed
+to \c /installation/path, as specified in the configuration step, with:
+\code{.sh}
+./waf install
+\endcode
+The Lattice Builder executable can be found at \c
+/installation/path/bin/latbuilder (with a \c .exe extension under Windows
+systems).
+If it was generated, the documentation can be accessed by pointing a web
+browser to the file \c /installation/path/share/doc/latbuilder/index.html.
+
 To check that the program installed correctly, try:
 \code{.sh}
 /installation/path/latbuilder --version
 \endcode
 Help on usage can be obtained by replacing the \c --version switch with the \c
 --help switch.
+It may be necessary to copy the Boost and FFTW libraries into the same
+directory as the \c latbuilder executable program, or to indicate where to find
+them in the \c LD_LIBRARY_PATH environment variable for Linux and OS X systems.
 
-To build using multiple processes in parallel, the \c -j switch with the number
-of processes as its argument can be added to the \c b2 command.
-For example:
-\code{.sh}
-b2 -j4 /latbuilder//install --prefix=/installation/path
-\endcode
-would build Lattice Builder using 4 different threads in parallel.
 
 
 \section buildlink Linking Software with Lattice Builder
 
-An example Jamfile and Makefile to build a project that uses the Lattice Builder
+Software can use the Lattice Builder libraries by setting the compiler to use
+the C++11 standard, by adding \c /installation/path/include to the include
+path, by adding \c /installation/path/lib to the library path, and by linking
+with the \c latcommon and \c latbuilder libraries in the latter directory,
+together with the \c boost_program_options, \c boost_chrono, \c boost_system
+and \c fftw3 libraries.
+
+An example \c Makefile to build a project that uses the Lattice Builder
 application programming interface (API) can be found under
-\c /installation/path/share/doc/examples/myproject.
+\c /installation/path/share/doc/latbuilder/examples/myproject.
 
 A lot of example code using the Lattice Builder API can be found under the \c
 latbuilder/examples directory of the source package and in its subdirectories.

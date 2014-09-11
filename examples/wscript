@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+def build(ctx):
+
+    # install files
+    ctx.install_files('${DOCDIR}/examples/myproject', ctx.path.ant_glob('myproject/*'))

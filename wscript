@@ -114,6 +114,7 @@ def build(ctx):
     ctx.recurse('latcommon')
     ctx.recurse('latbuilder')
     ctx.recurse('doc')
+    ctx.recurse('examples')
 
     lc_inc_dir = ctx.path.find_dir('latcommon/include')
     lb_inc_dir = ctx.path.find_dir('latbuilder/include')
