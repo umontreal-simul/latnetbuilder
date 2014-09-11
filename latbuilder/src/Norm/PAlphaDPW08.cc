@@ -40,7 +40,7 @@ namespace {
 
 #define DECLARE_PALPHA_DPW08_SUM(weight_type) \
       template <> \
-      struct SumHelper<weight_type> { \
+      class SumHelper<weight_type> { \
       public: \
          Real operator()( \
                const weight_type& weights, \
@@ -60,6 +60,23 @@ namespace {
    // combined weights
    //===========================================================================
 
+   // Separating sumCombined() from
+   // SumHelper<LatBuilder::CombinedWeights>::operator() is a workaround for
+   // LLVM/clang++.
+   Real sumCombined(
+         const CombinedWeights& weights,
+         Real normType,
+         Real z,
+         Real lambda,
+         Dimension dimension
+         )
+   {
+      Real val = 0.0;
+      for (const auto& w : weights.list())
+         val += WeightsDispatcher::dispatch<SumHelper>(*w, normType, z, lambda, dimension);
+      return val;
+   }
+
    Real SumHelper<LatBuilder::CombinedWeights>::operator()(
          const CombinedWeights& weights,
          Real normType,
@@ -68,10 +85,7 @@ namespace {
          Dimension dimension
          ) const
    {
-      Real val = 0.0;
-      for (const auto& w : weights.list())
-         val += WeightsDispatcher::dispatch<SumHelper>(*w, normType, z, lambda, dimension);
-      return val;
+      return sumCombined(weights, normType, z, lambda, dimension);
    }
 
 
