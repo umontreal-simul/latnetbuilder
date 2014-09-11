@@ -26,19 +26,21 @@ Details about lattice rules and Lattice Builder can be found in
 
 ## Quick Start Guide
 
-The quickest way to get started Lattice Builder is to [download a binary distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) pre-compiled for your platform (32/64-bit Linux/Windows):
+The quickest way to get started Lattice Builder is to [download a binary
+distribution](http://simul.iro.umontreal.ca/latbuilder/bin)
+pre-compiled for your platform (32/64-bit Linux/Windows):
 
-* If you use 64-bit Windows, click on `latbuilder-X.Y.Z-windows64.zip`, then click on the *download* arrow in the bottom right corner of the screen
-* If you use 32-bit Windows, click on `latbuilder-X.Y.Z-windows32.zip`, then click on the *download* arrow in the bottom right corner of the screen
-* If you use 64-bit Linux, click on `latbuilder-X.Y.Z-linux64.tar.bz2`
-* If you use 32-bit Linux, click on `latbuilder-X.Y.Z-linux32.tar.bz2`
+* If you use 64-bit Windows, grab `latbuilder-X.Y.Z-windows64.zip`
+* If you use 32-bit Windows, grab `latbuilder-X.Y.Z-windows32.zip`
+* If you use 64-bit Linux, grab `latbuilder-X.Y.Z-linux64.tar.bz2`
+* If you use 32-bit Linux, grab `latbuilder-X.Y.Z-linux32.tar.bz2`
 
 where `X.Y.Z` is the latest Lattice Builder version.
 Then, **simply unpack the archive; no further installation is required**.
 The executable programs — the Lattice Builder command-line and web interfaces — can be found in the `latbuilder/bin` subdirectory.
 
 You can then use the [Lattice Builder Web
-Interface](https://googledrive.com/host/0B_lX__trikOgaGpYTXhEaHFMSmM/webif.html)
+Interface](http://simul.iro.umontreal.ca/latbuilder/doc/d8/d2d/webif.html)
 by installing [Python 2.7](http://python.org/download/) and executing the script
 
 	latbuilder/bin/LatBuilderWeb.py
@@ -47,7 +49,7 @@ extracted from the binary package.
 
 ![Screenshot](doc/screenshots/latbuilder-web-1.png "Screenshot")
 
-Or, you can read the [Lattice Builder Command Line Tutorial](https://googledrive.com/host/0B_lX__trikOgaGpYTXhEaHFMSmM/cmdtut.html) to teach yourself how to use the executable program extracted from the binary package at
+Or, you can read the [Lattice Builder Command Line Tutorial](http://simul.iro.umontreal.ca/latbuilder/doc/d5/d56/cmdtut.html) to teach yourself how to use the executable program extracted from the binary package at
 
 	latbuilder/bin/latbuilder
 
@@ -61,13 +63,14 @@ for Windows distributions.
 The structure of the binary packages is described in more detail in the
 [Downloading Binaries](#downloading-binaries) section.
 
-You can also choose to [compile it from source](#compiling-from-source).
+You can also choose to
+[compile Lattice Builder from the source code](http://simul.iro.umontreal.ca/latbuilder/doc/d2/df6/building.html).
 
 
 ## Downloading Binaries
 
 The easiest way to start using Lattice Builder is to [download a binary
-distribution](https://drive.google.com/folderview?id=0B_lX__trikOgQ0kweFd0cHNGLTA&usp=sharing#list) of Lattice
+distribution](http://simul.iro.umontreal.ca/latbuilder/bin/) of Lattice
 Builder, that includes the executable `latbuilder` program, together with
 the Lattice Builder library and documentation.
 
@@ -88,72 +91,20 @@ lattice rule with 8191 points in 5 dimensions using the P-alpha criterion with
 alpha=2 and with uniform product weights with value 0.1, issue the following
 command on Linux:
 
-	bin/latbuilder -l ordinary -n 8191 -d 5 -m CS:sum:P2 -w product:0.1 -c CBC
+	bin/latbuilder -l ordinary -n 8191 -d 5 -m CS:P2 -w product:0.1 -c CBC
 
 or, on Window systems:
 
-	bin\latbuilder -l ordinary -n 8191 -d 5 -m CS:sum:P2 -w product:0.1 -c CBC
+	bin\latbuilder -l ordinary -n 8191 -d 5 -m CS:P2 -w product:0.1 -c CBC
 
 Try `bin/latbuilder --help` or read **share/doc/latbuilder/html/cmdtut.html**
 for more information on using the Lattice Builder program.
 
 
-## Compiling From Source
+## Compiling Lattice Builder
 
-### Requirements
-
-The following software must be installed in order to compile Lattice Builder:
-
-* [Git](http://git-scm.com/)
-* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
-* [C++11](http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=50372)-Compliant Compiler (e.g., [GCC](http://gcc.gnu.org) ≥ 4.7)
-* [Boost C++ Libraries](http://www.boost.org/)
-* [FFTW Library](http://www.fftw.org/)
-* [Python 2.7](http://python.org/download/)
-
-
-### Downloading from GitHub
-
-Clone the Lattice Builder repository with:
-
-	git clone git://github.com/mungerd/latbuilder.git
-
-Then, move to the root directory of the repository with:
-
-	cd latbuilder
-
-
-### Compiling Lattice Builder
-
-**Note:**
-The commands below should work verbatim under Linux and OS X systems.
-For Windows systems, every instance of `./waf` should be replaced with `python
-waf`, assuming that the Python executable (`python.exe`) is accessible from the
-system `%PATH%` environment variable.  Otherwise, the full path to the
-`python.exe` executable should be used.
-
-Lattice Builder can be built using the [waf](https://code.google.com/p/waf/)
-build system.  It is included with the source code, so there is no need to
-download it separately.
-
-From the root of the source tree, configure the project with:
-
-    ./waf configure
-
-In order to specify where to install Lattice Builder and where to find the
-Boost and FFTW libraries, consider using the options `--prefix`, `--boost` and
-`--fftw` described by running
-
-    ./waf --help
-
-Next, compile the library and program with:
-
-    ./waf build
-
-If the build process completed successfully, the software can be installed
-with:
-
-    ./waf install
+[Instructions to compile Lattice Builder](http://simul.iro.umontreal.ca/latbuilder/doc/d2/df6/building.html)
+are part of the [Lattice Builder manual](http://simul.iro.umontreal.ca/latbuilder/doc/).
 
 
 ## Using the Lattice Builder Program
