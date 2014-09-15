@@ -445,7 +445,7 @@ to embedded with:
     --dimension 10 \
     --construction fast-CBC \
     --figure-of-merit CS:P2 \
-    --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0
+    --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0 \
     --weights product:0.1 \
     --combiner sum
   \endverbatim
@@ -485,7 +485,7 @@ latbuilder \
   --dimension 5 \
   --construction fast-CBC \
   --figure-of-merit CS:P2 \
-  --multilevel-filters norm:P2-DPW08 low-pass:1.0
+  --multilevel-filters norm:P2-DPW08 low-pass:1.0 \
   --weights product:0.1 \
   --combiner sum
 \endverbatim
