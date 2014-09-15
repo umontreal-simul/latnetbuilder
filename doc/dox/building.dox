@@ -19,6 +19,7 @@
 
 Building Lattice Builder consists of the following steps:
 - Installing a \ref builddeps_compiler
+- Installing a \ref builddeps_python
 - Installing the \ref builddeps_boost
 - Installing the \ref builddeps_fftw
 - Optionally installing <a href="http://git-scm.com/">Git</a>
@@ -57,6 +58,16 @@ If a recent enough version of GCC is not available on your Linux system, you can
 install GCC manually by customizing and running the script \c install-gcc.sh
 that can found under the \c scripts directory with the source code.
 -->
+
+
+\subsection builddeps_python Python 2.7
+
+Lattice Builder relies on the <a
+href="https://code.google.com/p/waf/"><strong>waf</strong>
+meta build system</a> for configuring and compiling the software source.
+Waf is included in the Lattice Builder source tree, but it depends on <a
+href="http://python.org/download">Python 2.7</a>, which must be available
+on the host on which Lattice Builder is to be compiled.
 
 
 \subsection builddeps_boost Boost C++ Libraries
