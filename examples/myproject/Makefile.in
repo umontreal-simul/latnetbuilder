@@ -18,21 +18,24 @@
 # Example Makefile
 
 # installation prefix of Lattice Builder
-LATBUILDER = /usr
+LATBUILDER_PREFIX = @PREFIX@
 
-INCLUDES = -I$(LATBUILDER)/include
-LIBS = -L$(LATBUILDER)/lib -llatbuilder -llatcommon -lboost_program_options -lboost_chrono -lboost_system -lfftw3
+INCLUDES = -I$(LATBUILDER_PREFIX)/include @INCLUDES@
+LIBS = -L$(LATBUILDER_PREFIX)/lib -llatbuilder -llatcommon @LIBPATH@ @LIBRARIES@
 
-# production
-CXXFLAGS = -Wall -O2 -DNDEBUG
+# release
+CXXFLAGS = @CXXFLAGS@
 
 # debugging
 #CXXFLAGS = -Wall -O0 -g
 
-LDFLAGS = -Wl,-R,"$(LATBUILDER)/lib"
+LDFLAGS = -Wl,-R,"$(LATBUILDER_PREFIX)/lib"
 
 %.o: %.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -std=c++11 -c $< -o $@
 
 myproject: myproject.o
 	$(CXX) $(LDFLAGS) $< $(LIBS) -o $@
+
+clean:
+	- rm myproject.o

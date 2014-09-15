@@ -12,4 +12,6 @@ def build(ctx):
             target='latbuilder',
             install_path='${LIBDIR}')
 
-    ctx.install_files('${INCLUDEDIR}/latbuilder', inc_dir.ant_glob('latbuilder/*.h'))
+    # header files
+    for inc in inc_dir.ant_glob('**/*.h'):
+        ctx.install_files('${INCLUDEDIR}/' + inc.parent.path_from(inc_dir), inc)

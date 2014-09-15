@@ -38,8 +38,9 @@ def version(ctx):
 
 def options(ctx):
     ctx.load('compiler_cxx gnu_dirs waf_unit_test')
-    ctx.add_option('--no-docs', action='store_true', default=False, help='do not build documentation')
-    ctx.add_option('--no-examples', action='store_true', default=False, help='do not build examples')
+    ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
+    ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
+    ctx.add_option('--build-examples', action='store_true', default=False, help='build examples')
     ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
 
@@ -56,6 +57,14 @@ def configure(ctx):
     add_cxx_option('-Wno-unused-local-typedefs')
     add_cxx_option('-Wno-unused-function')
 
+    if ctx.options.link_static:
+        #flags = ['-static', '-static-libgcc', '-static-libstdc++']
+        flags = ['-static-libgcc', '-static-libstdc++']
+        if ctx.check(features='cxx cxxprogram',
+                linkflags=flags,
+                mandatory=False):
+            ctx.env.append_unique('LINKFLAGS', flags)
+
     ctx.version_file()
 
     def add_deps_path(what, where):
@@ -66,23 +75,54 @@ def configure(ctx):
         except:
             ctx.fatal("cannot locate %s installation under `%s'" % (what, where))
 
+    def st(f):
+        if ctx.options.link_static:
+            def f_static(*a, **kw):
+                if 'lib' in kw:
+                    kw['stlib'] = kw['lib']
+                    del kw['lib']
+                if 'shlib' in kw:
+                    kw['lib'] = kw['shlib']
+                    del kw['shlib']
+                return f(*a, **kw)
+            return f_static
+        else:
+            def f_shared(*a, **kw):
+                if 'shlib' in kw:
+                    kw['lib'] = kw.get('lib', []) + kw['shlib']
+                    del kw['shlib']
+                return f(*a, **kw)
+            return f_shared
+
     # options
     if ctx.options.boost:
         add_deps_path('Boost', ctx.options.boost)
         add_deps_path('FFTW', ctx.options.fftw)
 
-    # Boost
-    ctx.check(features='cxx cxxprogram', header_name='boost/program_options.hpp')
-    #ctx.check(features='cxx cxxprogram', header_name='boost/chrono/chrono_io.hpp', lib='boost_system')
-    #ctx.check(features='cxx cxxprogram', lib='boost_system')
-
     # FFTW
-    ctx.check(features='cxx cxxprogram', header_name='fftw3.h')
-    ctx.check(features='cxx cxxprogram', lib='fftw3')
+    st(ctx.check)(features='cxx cxxprogram', header_name='fftw3.h')
+    st(ctx.check)(features='cxx cxxprogram', lib='fftw3', uselib_store='FFTW')
+
+    # Boost
+    st(ctx.check)(features='cxx cxxprogram',
+            header_name='boost/program_options.hpp')
+    st(ctx.check)(features='cxx cxxprogram',
+            lib='boost_program_options',
+            uselib_store='PROGRAM_OPTIONS')
+    st(ctx.check)(features='cxx cxxprogram',
+            header_name='boost/chrono/chrono_io.hpp',
+            lib=['boost_chrono', 'boost_system'],
+            shlib=['rt'],
+            uselib_store='CHRONO',
+            mandatory=False)
 
     # Doxygen
-    if not ctx.options.no_docs:
+    if ctx.options.build_docs:
         ctx.find_program('doxygen', var='DOXYGEN', mandatory=False)
+
+    # examples
+    if ctx.options.build_examples:
+        ctx.env.BUILD_EXAMPLES = True
 
     # version
     ctx.define('LATBUILDER_VERSION', ctx.version())
@@ -110,12 +150,13 @@ def distclean(ctx):
 
 def build(ctx):
 
-    print("Building variant `%s'" % (ctx.variant,))
+    if ctx.variant:
+        print("Building variant `%s'" % (ctx.variant,))
 
     ctx.recurse('latcommon')
     ctx.recurse('latbuilder')
     ctx.recurse('doc')
-    if not ctx.options.no_examples:
+    if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
 
     lc_inc_dir = ctx.path.find_dir('latcommon/include')
@@ -127,7 +168,8 @@ def build(ctx):
     ctx(features='cxx cxxprogram',
             source=src_dir.ant_glob('*.cc'),
             includes=[lb_inc_dir, lc_inc_dir],
-            stlib=['boost_program_options', 'boost_chrono', 'boost_system', 'fftw3'],
+            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO,
+            stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
             target=prog,
             use=['latbuilder', 'latcommon'],
             install_path=None)
