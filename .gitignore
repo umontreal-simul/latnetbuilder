@@ -1,2 +1,3 @@
 __pycache__
 .waf-*
+.lock-waf_*
