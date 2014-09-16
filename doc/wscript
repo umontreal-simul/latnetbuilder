@@ -21,7 +21,6 @@ class doxygen(Task.Task):
 
 def build(ctx):
     if not ctx.env.DOXYGEN:
-        print('Skipping documentation')
         return
 
     ctx.post_mode = Build.POST_LAZY
