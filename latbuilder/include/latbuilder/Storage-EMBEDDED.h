@@ -283,6 +283,15 @@ public:
    static std::string name()
    { return "multilevel storage"; }
 
+   Storage(const Storage& other):
+      BasicStorage<Storage>(other.sizeParam()),
+      m_groups(other.m_groups),
+      m_genGroup(other.m_genGroup)
+   {
+      // This constructor should not be written explicitly.
+      // This is a workaround for a bug in LLVM.
+   }
+
    Storage(SizeParam sizeParam):
       BasicStorage<Storage>(std::move(sizeParam)),
       m_groups(this->sizeParam().maxLevel() + 1),
