@@ -34,7 +34,6 @@ from pyjamas.ui.Hyperlink import Hyperlink
 from pyjamas.ui.DialogBox import DialogBox
 from pyjamas import Window
 from pyjamas import DOM
-from pyjamas import log
 from pyjamas.JSONService import JSONProxy
 from __pyjamas__ import JS
 
@@ -84,8 +83,8 @@ class TextBoxArray:
     def size(self):
         return len(self._values)
 
-    @size.setter
-    def size(self, value):
+    #@size.setter
+    def set_size(self, value):
         add_count = value - len(self._values)
         if add_count < 0:
             for w in self._values[add_count:]:
@@ -136,9 +135,9 @@ class WeightValuesArray:
     def size(self):
         return self._array.size
 
-    @size.setter
-    def size(self, value):
-        self._array.size = value
+    #@size.setter
+    def set_size(self, value):
+        self._array.set_size(value)
 
     def show_expr_dialog(self, dialog):
         self._expr_dialog.setPopupPosition(*window_center())
@@ -201,17 +200,17 @@ class SimpleWeights(object):
     def dimension(self):
         return self.value_arrays and max(va.size for va in self.value_arrays) or 0
 
-    @dimension.setter
-    def dimension(self, value):
+    #@dimension.setter
+    def set_dimension(self, value):
         for va in self.value_arrays:
-            va.size = value
+            va.set_size(value)
 
     # abstract methods
 
     def as_arg(self):
         pass
 
-    def _create_arrays(self):
+    def _gen_arrays(self):
         pass
 
     # private methods
@@ -307,11 +306,11 @@ class CompoundWeights:
     def dimension(self):
         return self._dimension
 
-    @dimension.setter
-    def dimension(self, value):
+    #@dimension.setter
+    def set_dimension(self, value):
         self._dimension = value
         for w in self._weights:
-            w.dimension = value
+            w.set_dimension(value)
 
     @property
     def weights(self):
@@ -320,7 +319,7 @@ class CompoundWeights:
     def add_weights(self, wclass):
         self._weights.append(wclass(getattr(self, 'remove_weights')))
         self._list_panel.add(CaptionPanel(wclass.NAME, self._weights[-1].panel))
-        self._weights[-1].dimension = self.dimension
+        self._weights[-1].set_dimension(self.dimension)
 
     def remove_weights(self, obj):
         self._list_panel.remove(obj.panel.getParent())
@@ -376,9 +375,9 @@ class GeneratingVector(object):
     def dimension(self):
         return self._array.size
 
-    @dimension.setter
-    def dimension(self, value):
-        self._array.size = value
+    #@dimension.setter
+    def set_dimension(self, value):
+        self._array.set_size(value)
 
     @property
     def values(self):
@@ -796,8 +795,8 @@ class LatBuilderWeb:
         elif sender == self.dimension:
             # resize weights
             dimension = int(self.dimension.getText())
-            self.generating_vector.dimension = dimension
-            self.weights.dimension = dimension
+            self.generating_vector.set_dimension(dimension)
+            self.weights.set_dimension(dimension)
 
         elif sender == self.norm_type:
             q = self.norm_type.getText().strip()
