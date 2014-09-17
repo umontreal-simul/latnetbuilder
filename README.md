@@ -28,14 +28,7 @@ Details about lattice rules and Lattice Builder can be found in
 
 The quickest way to get started Lattice Builder is to [download a binary
 distribution](http://simul.iro.umontreal.ca/latbuilder/bin)
-pre-compiled for your platform (32/64-bit Linux/Windows):
-
-* If you use 64-bit Windows, grab `latbuilder-X.Y.Z-windows64.zip`
-* If you use 32-bit Windows, grab `latbuilder-X.Y.Z-windows32.zip`
-* If you use 64-bit Linux, grab `latbuilder-X.Y.Z-linux64.tar.bz2`
-* If you use 32-bit Linux, grab `latbuilder-X.Y.Z-linux32.tar.bz2`
-
-where `X.Y.Z` is the latest Lattice Builder version.
+pre-compiled for your platform.
 Then, **simply unpack the archive; no further installation is required**.
 The executable programs — the Lattice Builder command-line and web interfaces — can be found in the `latbuilder/bin` subdirectory.
 
