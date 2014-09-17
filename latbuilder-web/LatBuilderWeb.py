@@ -67,11 +67,18 @@ def format_time(seconds):
 
 
 class TextBoxArray:
-    def __init__(self, default_value='0', show_indices=True):
+    def __init__(self, default_value='0', value_label="", index_label=""):
         self._default_value = default_value
-        self._show_indices = show_indices
         self._values = []
+        self._show_indices = index_label != ""
         self.panel = FlowPanel()
+
+        panel = VerticalPanel(StyleName='TextBoxArrayCell')
+        panel.add(HTML(value_label, StyleName='TextBoxArrayCellLabel',
+            Visible=(value_label != "")))
+        panel.add(HTML(index_label, HorizontalAlignment='center',
+            Visible=(index_label != "")))
+        self.panel.add(panel)
 
     # public interface
 
@@ -108,22 +115,27 @@ class TextBoxArray:
 
 class WeightValuesArray:
     REMOTE = None
-    def __init__(self, label, expr_var, expr_var_desc, default_value='0.0'):
+    def __init__(self, label, weight_var, expr_var, expr_var_desc, default_value='0.0'):
+        self._weight_var = weight_var
         self._expr_var = expr_var
+        if self._expr_var[:2] == r'\(' and self._expr_var[-2:] == r'\)':
+            # strip MathJax markup
+            self._expr_var = self._expr_var[2:-2]
+        if self._expr_var[-1] in ["=", ":"]:
+            self._expr_var = self._expr_var[:-1]
         self._expr_var_desc = expr_var_desc
         self._expr_dialog, self._expr = self._create_expr_dialog()
-        link = Hyperlink("expression...", StyleName="action")
+        link = Hyperlink(u"enter an expression…", StyleName="action-right")
         link.addClickListener(getattr(self, 'show_expr_dialog'))
 
         self.panel = HorizontalPanel(Spacing=8)
-        self._array = TextBoxArray(default_value, show_indices=True)
+        self._array = TextBoxArray(default_value, value_label=weight_var, index_label=expr_var)
 
         panel = VerticalPanel(Spacing)
         panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
-        panel.add(HTML("{}: ".format(self._expr_var), StyleName="CaptionLabel"))
+        panel.add(link)
         self.panel.add(panel)
         self.panel.add(self._array.panel)
-        self.panel.add(link)
 
     # public interface
 
@@ -147,12 +159,15 @@ class WeightValuesArray:
 
     def _create_expr_dialog(self):
         contents = VerticalPanel(StyleName="Contents", Spacing=4)
-        msg = ("Enter an expression for the weights, using <em>{0}</em> as the "
-                "{1}, for example: <ul><li>{0}^-2</li><li>1/(1+{0}^2)</li><li>0.1^{0}</li></ul>.").format(self._expr_var, self._expr_var_desc)
+        msg = "Enter an expression for the weight values, using <em>{0}</em> as the {1}.".format(self._expr_var, self._expr_var_desc)
         contents.add(HTML(msg))
+        panel = HorizontalPanel(Spacing=8)
+        contents.add(panel)
         expr = TextBox(Text='0.1')
-        contents.add(expr)
-        contents.add(Button("OK", getattr(self, '_close_expr_dialog')))
+        panel.add(expr)
+        panel.add(Button("OK", getattr(self, '_close_expr_dialog')))
+        msg = "Examples: <ul><li>0.1*{0}^-2</li><li>1/(1+{0}^2)</li><li>0.1^{0}</li></ul>".format(self._expr_var)
+        contents.add(HTML(msg))
         dialog = DialogBox(glass=True)
         dialog.setHTML('<b>Set the weights from an expression</b>')
         dialog.setWidget(contents)
@@ -185,14 +200,14 @@ class SimpleWeights(object):
     def __init__(self, remove_callback):
         self._remove_callback = remove_callback
         self.panel = VerticalPanel()
+        link = Hyperlink("remove these weights", StyleName="action")
+        link.addClickListener(getattr(self, '_remove'))
+        self.panel.add(link)
         self.panel.add(HTML(self.desc(), StyleName='DisplayMath'))
         self.value_arrays = []
         for va in self._gen_arrays():
             self.value_arrays.append(va)
             self.panel.add(va.panel)
-        link = Hyperlink("remove", StyleName="action")
-        link.addClickListener(getattr(self, '_remove'))
-        self.panel.add(link)
 
     # public interface
 
@@ -229,7 +244,7 @@ class ProductWeights(SimpleWeights):
         pw, = self.value_arrays
         return 'product:0:' + ','.join(pw.values)
     def _gen_arrays(self):
-        yield WeightValuesArray(r'coordinate weights (\(\gamma_j\))', 'j', 'coordinate index', '0.1')
+        yield WeightValuesArray('coordinate weights', r'\(\gamma_j=\)', r'\(j=\)', 'coordinate index', '0.1')
 
 class OrderDependentWeights(SimpleWeights):
     NAME = 'Order-Dependent Weights'
@@ -241,7 +256,7 @@ class OrderDependentWeights(SimpleWeights):
         ow, = self.value_arrays
         return 'order-dependent:0:' + ','.join(ow.values)
     def _gen_arrays(self):
-        yield WeightValuesArray('order weights (\(\Gamma_k\))', 'k', 'projection order', '0.1')
+        yield WeightValuesArray('order weights', r'\(\Gamma_k=\)', r'\(k=\)', 'projection order', '0.1')
 
 class PODWeights(SimpleWeights):
     NAME = 'Product and Order-Dependent (POD) Weights'
@@ -255,8 +270,8 @@ class PODWeights(SimpleWeights):
         arg += ':0:' + ','.join(ow.values)
         return arg
     def _gen_arrays(self):
-        yield WeightValuesArray('coordinate weights (\(\gamma_j\))', 'j', 'coordinate index', '0.1')
-        yield WeightValuesArray('order weights (\(\Gamma_k\))', 'k', 'projection order', '0.1')
+        yield WeightValuesArray('coordinate weights', r'\(\gamma_j=\)', r'\(j=\)', 'coordinate index', '0.1')
+        yield WeightValuesArray('order weights',      r'\(\Gamma_k=\)', r'\(k=\)', 'projection order', '0.1')
 
 class ProjectionDependentWeights(object):
     NAME = 'Projection-Dependent Weights'
@@ -264,6 +279,9 @@ class ProjectionDependentWeights(object):
         self._remove_callback = remove_callback
         self.dimension = None
         self.panel = VerticalPanel()
+        link = Hyperlink("remove these weights", StyleName="action")
+        link.addClickListener(getattr(self, '_remove'))
+        self.panel.add(link)
         self.panel.add(HTML("Enter the mapping between coordinates and weights.  "
             "Each line must be <b>comma-separated list of coordinates</b> "
             "followed by a <b>colon</b> and a <b>weight value</b>.  "
@@ -271,9 +289,6 @@ class ProjectionDependentWeights(object):
             "Example line: <code>1,2,5: 0.7</code>."))
         self._text = TextArea(CharacterWidth=20, VisibleLines=8)
         self.panel.add(self._text)
-        link = Hyperlink("remove", StyleName="action")
-        link.addClickListener(getattr(self, '_remove'))
-        self.panel.add(link)
 
     def as_arg(self):
         arg = 'projection-dependent'
@@ -294,7 +309,7 @@ class CompoundWeights:
         self.panel = VerticalPanel()
         self._list_panel = VerticalPanel(Spacing=8)
         self.panel.add(self._list_panel)
-        link = Hyperlink("add...", StyleName="action")
+        link = Hyperlink(u"add another type of weights…", StyleName="action")
         link.addClickListener(getattr(self, 'show_add_dialog'))
         self.panel.add(link)
         self._weights = []
@@ -360,10 +375,10 @@ class GeneratingVector(object):
         self.panel = HorizontalPanel(Spacing=8)
 
         self.panel.add(HTML(r"<strong>Generating vector</strong> (\(\boldsymbol a\)): ", StyleName="CaptionLabel"))
-        self._array = TextBoxArray('1', show_indices=False)
+        self._array = TextBoxArray('1', value_label=r'\(a_j=\)', index_label=r'\(j=\)')
         self.panel.add(self._array.panel)
 
-        link = Hyperlink("Korobov...", StyleName="action")
+        link = Hyperlink(u"Korobov…", StyleName="action")
         link.addClickListener(getattr(self, 'show_korobov_dialog'))
         self.panel.add(link)
 
@@ -445,7 +460,7 @@ class LatBuilderWeb:
         self.setStyleSheet("./LatBuilderWeb.css")
         self.includeMathJax('TeX-AMS-MML_HTMLorMML')
 
-        self.TEXT_WAITING = "Lattice Builder is working..."
+        self.TEXT_WAITING = u"Lattice Builder is working…"
         self.TEXT_ERROR = "Server Error"
         self.FIGURES_OF_MERIT = [
                 # (key, name)
@@ -470,13 +485,13 @@ class LatBuilderWeb:
                 "retains the best one."),
             ('Korobov',
                 "Korobov",
-                "Examines all generating vectors of the form (1, a, a^2 mod n, "
-                "..., a^s mod n) and retains the best one."),
+                u"Examines all generating vectors of the form (1, a, a^2 mod n, "
+                u"…, a^s mod n) and retains the best one."),
             ('random-Korobov:{samples}',
                 "Random Korobov",
-                "Examines a number of randomly selected generating vectors of "
-                "the form (1, a, a^2 mod n, ..., a^s mod n) and retains the "
-                "best one."),
+                u"Examines a number of randomly selected generating vectors of "
+                u"the form (1, a, a^2 mod n, …, a^s mod n) and retains the "
+                u"best one."),
             ('CBC',
                 "Component-by-Component",
                 "Examines all possible values of the components of the "

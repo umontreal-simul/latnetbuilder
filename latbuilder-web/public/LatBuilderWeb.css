@@ -15,6 +15,10 @@ table {
     display: inline-table;
 }
 
+.TextBoxArrayCellLabel {
+    padding: 3px;
+}
+
 .gwt-TextBox, .gwt-TextArea, .gwt-ListBox, .gwt-Button {
     font-family: inherit;
     background-color: white;
@@ -69,7 +73,7 @@ table {
 }
 
 .gwt-Captionpanel {
-    background-color: #f8f8f8;
+    background-color: #fbfbfb;
     border: 1px solid #cccccc;
     border-radius: 3px;
     width: 100%;
@@ -85,7 +89,7 @@ table {
 }
 
 .gwt-Captionpanel .gwt-Captionpanel {
-    background-color: #f0f0f0;
+    background-color: #f8f8f8;
 }
 
 .CaptionLabel {
@@ -115,18 +119,24 @@ table {
 }
 
 .MathJax {
-   color: #006622;
+    color: #4C6B8B;
 }
 
 a {
     text-decoration: none;
-    color: #4183C4;
+    color: #812C1F;
 }
 
 a:hover, a:active {
-    color: #3D6184;
+    color: #BF4634;
+    text-decoration: underline;
 }
 
 .action {
     font-size: 90%;
+    margin-left: 2ex;
+}
+.action-right {
+    font-size: 90%;
+    text-align: right;
 }
