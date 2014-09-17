@@ -863,7 +863,7 @@ class LatBuilderWeb:
 
             self.status.setText(self.TEXT_WAITING)
 
-            self.current_request = self.remote.latbuilder_exec(
+            ret = self.remote.latbuilder_exec(
                     lattype,
                     size,
                     dimension,
@@ -876,17 +876,20 @@ class LatBuilderWeb:
                     mlfilters,
                     combiner_type,
                     self)
+            if len(ret) == 2:
+                # using patched version of pyjs
+                id, self.current_request = ret
+            else:
+                self.current_request = ret
 
         elif sender == self.button_abort:
-            # Need to patch JSONService.sendRequest():
-            #
-            # return HTTPRequest().asyncPost(self.url, msg_data,
-            #                                JSONResponseTextHandler(request_info)
-            #                                False, self.content_type,
-            #                                self.headers)
             if self.current_request:
-                self.current_request.abort()
-                self.current_request = None
+                if hasattr(self.current_request, 'abort'):
+                    # using patched version of pyjs
+                    self.current_request.abort()
+                    self.current_request = None
+                else:
+                    Window.alert("A patched version of pyjs is needed for `Abort' to work")
             self.button_abort.setVisible(False)
             self.button_search.setVisible(True)
 
@@ -933,8 +936,13 @@ class LatBuilderWeb:
 
 class LatBuilderService(JSONProxy):
     def __init__(self):
-        JSONProxy.__init__(self, "services/LatBuilderService.py",
-                ['latbuilder_exec', 'backend_version', 'array_from_expr'])
+        service =  "services/LatBuilderService.py"
+        methods=['latbuilder_exec', 'backend_version', 'array_from_expr']
+        try:
+            # if using patched pyjs
+            JSONProxy.__init__(self, service, methods=methods, return_object=True)
+        except:
+            JSONProxy.__init__(self, service, methods=methods)
 
 if __name__ == '__main__':
     app = LatBuilderWeb()
