@@ -172,7 +172,8 @@ Lattice Builder library and command-line tool:
 \code{.sh}
 ./waf build
 \endcode
-If <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> is available,
+If the project was configured with the \c \-\-build-docs option
+and <a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a> is available,
 the documentation will also be generated.
 
 If the build process completed without errors, Lattice Builder can be installed
