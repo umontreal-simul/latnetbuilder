@@ -148,8 +148,8 @@ The most relevant options include `--out` to specify the directory in which the
 files created during the build process will be placed, `--prefix` to specify
 the directory under which you wish to install the Lattice Builder software
 **once it is compiled**, and `--boost` and `--fftw` to specify the directories
-under which Boost and FFTW were installed.  First, the project must be
-configured with:
+under which Boost and FFTW were installed, if not under standard system
+directories.  First, the project must be configured with:
 
 	./waf configure --prefix $HOME/latsoft
 
@@ -160,8 +160,10 @@ directory to which you have permissions for write access, e.g., with `--prefix
 /tmp/latsoft`.
 
 If Boost and FFTW are not part of the standard system installation and were
-manually installed under, say, the `/opt/boost` and `/opt/fftw` directories,
-the following command indicates `waf` where to find these two libraries:
+manually installed under, say, the `/opt/boost` and `/opt/fftw` directories —
+which means that `/opt/boost` and `/opt/fftw` both contain subdirectories named
+`include` and `lib` — the following command indicates `waf` where to find these
+two libraries:
 
 	./waf configure --prefix $HOME/latsoft --boost /opt/boost --fftw /opt/fftw configure
 
@@ -210,7 +212,7 @@ executable program.
 
 To check that the program installed correctly, run:
 
-	$HOME/latsoft/latbuilder --version
+	$HOME/latsoft/bin/latbuilder --version
 
 which should report the current Lattice Builder version.
 Help on usage can be obtained by replacing the `--version` switch with the
