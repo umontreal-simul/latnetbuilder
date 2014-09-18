@@ -56,6 +56,7 @@ def configure(ctx):
 
     add_cxx_option('-Wno-unused-local-typedefs')
     add_cxx_option('-Wno-unused-function')
+    add_cxx_option('-Wno-unknown-warning-option')
 
     if ctx.options.link_static:
         #flags = ['-static', '-static-libgcc', '-static-libstdc++']
@@ -103,6 +104,12 @@ def configure(ctx):
     st(ctx.check)(features='cxx cxxprogram', header_name='fftw3.h')
     st(ctx.check)(features='cxx cxxprogram', lib='fftw3', uselib_store='FFTW')
 
+    # realtime (required for Boost chrono on Linux)
+    ctx.check(features='cxx cxxprogram',
+            lib='rt',
+            uselib_store='RT',
+            mandatory=False)
+
     # Boost
     st(ctx.check)(features='cxx cxxprogram',
             header_name='boost/program_options.hpp')
@@ -112,7 +119,7 @@ def configure(ctx):
     st(ctx.check)(features='cxx cxxprogram',
             header_name='boost/chrono/chrono_io.hpp',
             lib=['boost_chrono', 'boost_system'],
-            shlib=['rt'],
+            shlib=ctx.env.LIB_RT,
             uselib_store='CHRONO',
             mandatory=False)
 
@@ -168,7 +175,7 @@ def build(ctx):
     ctx(features='cxx cxxprogram',
             source=src_dir.ant_glob('*.cc'),
             includes=[lb_inc_dir, lc_inc_dir],
-            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO,
+            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT,
             stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
             target=prog,
             use=['latbuilder', 'latcommon'],
