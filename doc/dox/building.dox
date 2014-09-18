@@ -100,7 +100,7 @@ Installation instructions for the
 can be found on the
 <a href="http://www.boost.org/doc/libs/release/more/getting_started/">Getting Started</a>
 page for
-<a href="http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html">Unix variants</a>
+<a href="http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html">Linux / MacOS</a>
 or for
 <a href="http://www.boost.org/doc/libs/release/more/getting_started/windows.html">Microsoft Windows</a>.
 
@@ -148,7 +148,7 @@ Try:
 \endcode
 to see the various commands and options.
 The most relevant options include \c \-\-out to specify the directory in which the
-files created during the build process will be place, \c \-\-prefix to specify
+files created during the build process will be placed, \c \-\-prefix to specify
 the directory under which Lattice Builder will be installed, and \c \-\-boost and
 \c \-\-fftw to specify the directories under which Boost and FFTW were installed.
 First, the project must be configured with:
