@@ -83,7 +83,7 @@ installed prior to installing / using Lattice Builder.
   or [Microsoft Windows](http://www.boost.org/doc/libs/release/more/getting_started/windows.html)
   (**also follow the instructions from section 5!**)
 * [FFTW 3](http://fftw.org/)
-* [Git](http://git-scm.com/)*(optional for downloading the source code)*
+* [Git](http://git-scm.com/) *(optional for downloading the source code)*
 * [Doxygen](http://www.stack.nl/~dimitri/doxygen/) *(optional for generating
   the documentation)*
 
@@ -115,6 +115,13 @@ page](https://github.com/mungerd/latbuilder), then by unzipping the downloaded
 archive.
 
 #### Configuring the Build
+
+Lattice Builder relies on the
+[waf meta build system](https://code.google.com/p/waf/) for configuring and
+compiling the software source.
+Waf is included in the Lattice Builder source tree, but it depends on
+[Python 2.7](http://python.org/download), which must be available on the system
+on which Lattice Builder is to be compiled.
 
 The commands below should work verbatim under Linux and MacOS systems.
 **Microsoft Windows** users should replace every instance of `./waf` 

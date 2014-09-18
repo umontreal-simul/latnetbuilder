@@ -148,5 +148,57 @@ By convention in Lattice Builder, classes representing the same concept are
 regrouped in the same namespace.
 
 
+
+\section impl_cpp11 Usage of the C++11 Standard
+
+Lattice Builder makes uses of the following C++11 features:
+- auto-typed variables
+- range-based for-loop
+- std::function and std::bind
+- rvalue references
+- move constructors and assignment operators
+- static assertions
+- extern templates
+- null pointer constant
+- strongly typed enums
+- initializer lists
+- non-static data member initializers
+- template aliases
+
+
+
+\section impl_boost Usage of the Boost C++ Libraries
+
+The Lattice Builder library depends on the following
+<a href="http://www.boost.org/">Boost libraries</a>:
+<ul>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/math/doc/html/index.html">Math</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/numeric/ublas/doc/index.htm">uBLAS</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/index.html">Iterator</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/accumulators/">Accumulators</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/signals2/">Signals2</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/tokenizer/index.html">Tokenizer</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/conversion/lexical_cast.htm">Lexical Cast</a></li>
+</ul>
+
+In addition to these, the Lattice Builder command-line tool also depends on the
+following
+<a href="http://www.boost.org/">Boost libraries</a>:
+<ul>
+	<li><a href="http://www.boost.org/doc/libs/release/doc/html/program_options.html">Program Options</a></li>
+	<li><a href="http://www.boost.org/doc/libs/release/libs/chrono/index.html">Chrono</a></li>
+</ul>
+
+Only the Program Options and Chrono libraries require building and linking; the
+others are header-only libraries.
+
+
+
+\section impl_fftw Usage of FFTW
+
+The fast CBC implementation of Lattice Builder, as well as the computation of
+the \f$R_\alpha\f$ criterion, depends on the
+<a href="http://www.fftw.org/">FFTW library</a>.
+
 */
 vim: ft=doxygen spelllang=en spell

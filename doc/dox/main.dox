@@ -19,12 +19,15 @@
 \mainpage Lattice Builder Manual
 
 \section outline Outline
-- \subpage building
 - \subpage webif
 - \subpage cmdtut
 - \subpage hightut
 - \subpage libtut
 - \subpage impl
+
+Information about compiling Lattice Builder can be found in the
+<a href="https://github.com/mungerd/latbuilder#compiling-the-source-code">README file on GitHub</a>
+or <a href="http://simul.iro.umontreal.ca/latbuilder/#compiling-the-source-code">on the Simulation Group's site</a>.
 
 
 \section overview Overview
