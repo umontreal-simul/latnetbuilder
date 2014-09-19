@@ -174,18 +174,14 @@ def build(ctx):
     lb_inc_dir = ctx.path.find_dir('latbuilder/include')
     src_dir = ctx.path.find_dir('src')
 
-    prog = 'latbuilder-%s' % ctx.version()
-
     ctx(features='cxx cxxprogram',
             source=src_dir.ant_glob('*.cc'),
             includes=[lb_inc_dir, lc_inc_dir],
             lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT,
             stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
-            target=prog,
+            target='bin/latbuilder',
             use=['latbuilder', 'latcommon'],
-            install_path=None)
-
-    ctx.install_as('${BINDIR}/latbuilder', prog, chmod=755)
+            install_path='${BINDIR}')
 
 
 # build variants
