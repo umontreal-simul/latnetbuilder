@@ -21,6 +21,7 @@ class doxygen(Task.Task):
 
 def build(ctx):
     if not ctx.env.DOXYGEN:
+        print('not building web interface; Doxygen (http://www.stack.nl/~dimitri/doxygen/) is missing')
         return
 
     ctx.post_mode = Build.POST_LAZY

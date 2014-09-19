@@ -125,7 +125,10 @@ def configure(ctx):
 
     # Doxygen
     if ctx.options.build_docs:
-        ctx.find_program('doxygen', var='DOXYGEN', mandatory=False)
+        ctx.env.BUILD_DOCS = True
+        if not ctx.find_program('doxygen', var='DOXYGEN', mandatory=False):
+            print('WARNING: Doxygen is required for building documentation.')
+            print('         Get it from http://www.stack.nl/~dimitri/doxygen/')
 
     # examples
     if ctx.options.build_examples:
@@ -162,7 +165,8 @@ def build(ctx):
 
     ctx.recurse('latcommon')
     ctx.recurse('latbuilder')
-    ctx.recurse('doc')
+    if ctx.env.BUILD_DOCS:
+        ctx.recurse('doc')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
 
