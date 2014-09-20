@@ -13,7 +13,7 @@ GitHub](https://github.com/pyjs/pyjs)) with the following
 command line:
 
     pyjsbuild --disable-compile-inplace \
-              --output=share/latbuilder-web LatBuilderWeb
+              --output=share/latbuilder/web-ui LatBuilderWeb
 
 after creating the `share` subdirectory.
 

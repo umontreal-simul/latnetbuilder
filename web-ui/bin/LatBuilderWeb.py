@@ -18,15 +18,15 @@
 # along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import os
+import os, sys
 import subprocess
 
 if __name__ == '__main__':
     here = os.path.dirname(os.path.abspath(__file__))
-    serve = os.path.join(os.path.dirname(here), 'share', 'latbuilder-web', 'serve.py')
+    serve = os.path.join(os.path.dirname(here), 'share', 'latbuilder', 'web-ui', 'serve.py')
     path = here + os.pathsep + os.environ.get('PATH', os.defpath)
     os.environ['PATH'] = path
     try:
-        subprocess.call(serve, shell=True)
+        subprocess.call(sys.executable + " " + serve, shell=True)
     except KeyboardInterrupt:
         print("exiting")

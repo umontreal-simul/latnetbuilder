@@ -41,6 +41,7 @@ def options(ctx):
     ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples')
+    ctx.add_option('--build-web-ui', action='store_true', default=False, help='build web interface')
     ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
 
@@ -130,6 +131,16 @@ def configure(ctx):
             print('WARNING: Doxygen is required for building documentation.')
             print('         Get it from http://www.stack.nl/~dimitri/doxygen/')
 
+    # Git
+    if ctx.options.build_web_ui:
+        ctx.env.BUILD_WEB_UI = True
+        if not ctx.find_program('git', var='GIT', mandatory=False):
+            print('WARNING: Git is required for building the web interface.')
+            print('         Get it from http://git-scm.com/')
+        if not ctx.find_program('python2.7', var='PYTHON2', mandatory=False):
+            print('WARNING: Python 2.7 is required for building the web interface.')
+            print('         Get it from http://python.org/')
+
     # examples
     if ctx.options.build_examples:
         ctx.env.BUILD_EXAMPLES = True
@@ -167,6 +178,8 @@ def build(ctx):
     ctx.recurse('latbuilder')
     if ctx.env.BUILD_DOCS:
         ctx.recurse('doc')
+    if ctx.env.BUILD_WEB_UI:
+        ctx.recurse('web-ui')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
 

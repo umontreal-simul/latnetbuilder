@@ -944,6 +944,8 @@ class LatBuilderWeb:
         else:
             code = errobj['code']
             if code == -32603:
+                if request_info.method == 'backend_version':
+                    self.version_label.setHTML("<strong>Cannot communicate with the Lattice Builder CGI service.</strong>")
                 self.status.setText("Aborted.")
             else:
                 self.status.setText("JSONRPC Error %s: %s" % (code, message))
@@ -951,7 +953,7 @@ class LatBuilderWeb:
 
 class LatBuilderService(JSONProxy):
     def __init__(self):
-        service =  "services/LatBuilderService.py"
+        service = "services/LatBuilderService.py"
         methods=['latbuilder_exec', 'backend_version', 'array_from_expr']
         try:
             # if using patched pyjs
