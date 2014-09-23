@@ -11,7 +11,8 @@ def build(ctx):
         ctx(features='cxx cxxprogram test',
                 source=src,
                 includes=[lb_inc_dir, lc_inc_dir],
-                lib=['boost_program_options', 'boost_chrono', 'boost_system', 'fftw3'],
+                lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT,
+                stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
                 target=src.name[:-3],
                 use=['latbuilder', 'latcommon'],
                 install_path=None)
