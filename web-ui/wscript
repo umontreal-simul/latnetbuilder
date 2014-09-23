@@ -71,8 +71,13 @@ def build(ctx):
     pyjs_task = pyjs(env=ctx.env)
     pyjs_task.set_inputs([
         ctx.path.find_or_declare('pyjs-dist/bin/pyjsbuild'),
-        ctx.path.find_or_declare('LatBuilderWeb.py'),
-        ctx.path.find_or_declare('public/LatBuilderWeb.css')])
+        ctx.path.find_node('LatBuilderWeb.py'),
+        ctx.path.find_node('public/LatBuilderWeb.css'),
+        ctx.path.find_node('public/serve.py'),
+        ctx.path.find_node('public/services/LatBuilderService.py'),
+        ctx.path.find_node('public/services/latbuilder.py'),
+        ctx.path.find_node('public/services/parsemath.py'),
+        ])
     pyjs_task.set_outputs(ctx.path.find_or_declare('share/latbuilder/web-ui/index.html'))
     ctx.add_to_group(pyjs_task)
 

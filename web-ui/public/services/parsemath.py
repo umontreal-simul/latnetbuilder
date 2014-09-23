@@ -21,6 +21,7 @@
 import ast
 import operator
 import math
+import re
 
 __all__ = ['eval']
 
@@ -31,34 +32,44 @@ OPERATORS = {
         ast.Div:    operator.truediv,
         ast.Pow:    operator.pow,
         ast.BitXor: operator.pow,
+        ast.USub:   operator.neg,
         }
 
 FUNCTIONS = {
-        'exp':  math.exp,
-        'log':  math.log,
+        'exp':        math.exp,
+        'log':        math.log,
+        #'factorial':  math.factorial,
         }
 
 def eval(expr, variables={}):
-    names = dict(FUNCTIONS)
-    names.update(variables)
-    return parse_node(ast.parse(expr, mode='eval').body, names)
+    # add multiplication sign where needed
+    expr = re.sub(r"([0-9])\s*([A-Za-z])", r"\1*\2", expr) # coeff * var
+    return Parser(variables)(expr)
 
-def parse_node(node, names):
-    if isinstance(node, ast.Num):
-        return node.n
-    if isinstance(node, ast.Name):
-        return names[node.id]
-    if isinstance(node, ast.Call):
-        return parse_node(node.func, names)(
-                *(parse_node(n, names) for n in node.args))
-    elif isinstance(node, ast.operator):
-        return OPERATORS[type(node)]
-    elif isinstance(node, ast.BinOp):
-        return parse_node(node.op, names)(
-                parse_node(node.left, names),
-                parse_node(node.right, names))
-    else:
-        raise TypeError(node)
+class Parser(object):
+    def __init__(self, variables={}):
+        self._names = dict(FUNCTIONS)
+        self._names.update(variables)
+    def __call__(self, expr):
+        return self._parse_node(ast.parse(expr, mode='eval').body)
+    def _parse_node(self, node):
+        if isinstance(node, ast.Num):
+            return node.n
+        if isinstance(node, ast.Name):
+            return self._names[node.id]
+        if isinstance(node, ast.Call):
+            return self._parse_node(node.func)(
+                    *(self._parse_node(n) for n in node.args))
+        elif isinstance(node, ast.operator) or isinstance(node, ast.unaryop):
+            return OPERATORS[type(node)]
+        elif isinstance(node, ast.BinOp):
+            return self._parse_node(node.op)(
+                    self._parse_node(node.left),
+                    self._parse_node(node.right))
+        elif isinstance(node, ast.UnaryOp):
+            return self._parse_node(node.op)(self._parse_node(node.operand))
+        else:
+            raise TypeError(node)
 
 if __name__ == '__main__':
     import sys
