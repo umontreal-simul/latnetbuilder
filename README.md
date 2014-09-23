@@ -331,4 +331,7 @@ of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
 
 The above search is for n=2<sup>16</sup>=65,536 points in dimension 100.  Lattice Builder
 does that very quickly.
+It may be necessary to enclose some arguments in double quotes, depending on
+the shell (command line interpreter), e.g.:
 
+	latbuilder -l "ordinary" -n "2^16" -d "100" -m "CS:P2" -c "fast-CBC" -w "product:0.01"
