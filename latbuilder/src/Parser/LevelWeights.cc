@@ -32,7 +32,7 @@ auto LevelWeights::parse(
          // parse min/max levels
          const auto levels = splitPair<Level, Level>(args.second, ',', maxLevel);
          minLevel = levels.first;
-         maxLevel = levels.second;
+         maxLevel = std::min(levels.second, sizeParam.maxLevel());
       }
       RealVector weights(sizeParam.maxLevel() + 1, 0.0);
       for (Level level = minLevel; level <= maxLevel; level++)
