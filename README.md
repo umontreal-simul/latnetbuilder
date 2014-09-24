@@ -165,7 +165,11 @@ which means that `/opt/boost` and `/opt/fftw` both contain subdirectories named
 `include` and `lib` — the following command indicates `waf` where to find these
 two libraries:
 
-	./waf configure --prefix $HOME/latsoft --boost /opt/boost --fftw /opt/fftw configure
+	./waf configure --prefix $HOME/latsoft --boost /opt/boost --fftw /opt/fftw configure --link-static
+
+The `--link-static` option suggested above will case the Boost and FFTW
+libraries to be linked statically to the executable program, which may be
+desirable especially if these are not installed in standard locations.
 
 It is possible to set the `CXX` environment variable to the path to a specific
 C++ compiler to be used to build Lattice Builder, before running the `waf
