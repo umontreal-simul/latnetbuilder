@@ -42,9 +42,10 @@ of Lattice Builder are available for Linux and Microsoft Windows platforms.
 These include the executable `latbuilder` program, library and documentation,
 together with the optional web interface.
 
-The binary distribution packages have the following directory structure:
+The binary distribution packages, under the `latbuilder` base directory, have
+the following directory structure:
 
-* `bin`: contains the executable `labuilder` program;
+* `bin`: contains the executable `latbuilder` program;
 * `include`: contains the C++ header files necessary to use the Lattice Builder
   library;
 * `lib`: contains the binary Lattice Builder library;
