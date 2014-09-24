@@ -177,7 +177,9 @@ configure` command.
 
 It is also possible to pass the `--build-docs` option in order to generate the
 documentation, if [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available
-on the system.
+on the system, and to pass the `--build-web-ui` option to generate the web
+interface (this will cause waf to download a patched version of
+[pyjs](http://pyjs.org/) during the build process).
 
 Example code will be compiled, executed and installed together with the
 documentation if the `--build-examples` option is passed to the `waf configure`
