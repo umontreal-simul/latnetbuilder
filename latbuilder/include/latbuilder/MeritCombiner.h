@@ -37,7 +37,7 @@ namespace LatBuilder
  * Designed to be used to combined the per-level merit values for embedded
  * lattices into a compound merit value.
  *
- * \tparam ACCTAG          Tag from boost::accumulators that defines the
+ * \tparam ACC             Tag from boost::accumulators that defines the
  *                         operator \f$\mathcal K\f$ on the set elements.
  *                         Typically tag::sum or tag::max.
  */
