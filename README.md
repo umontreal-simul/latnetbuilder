@@ -176,15 +176,17 @@ It is possible to set the `CXX` environment variable to the path to a specific
 C++ compiler to be used to build Lattice Builder, before running the `waf
 configure` command.
 
-It is also possible to pass the `--build-docs` option in order to generate the
-documentation, if [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available
-on the system, and to pass the `--build-web-ui` option to generate the web
-interface (this will cause waf to download a patched version of
-[pyjs](http://pyjs.org/) during the build process).
+The above  ̀waf configure` commands configures `waf` for a minimal build,
+without documentation, code examples nor web interface.  These can be built by
+appending the following options to `waf configure`:
 
-Example code will be compiled, executed and installed together with the
-documentation if the `--build-examples` option is passed to the `waf configure`
-command.
+* `--build-docs` to generate the documentation, if
+  [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available on the system.
+* `--build-examples` to compile, execute and install example code, including
+  code from the tutorial.
+* `--build-web-ui` to generate the web interface (this will cause waf to
+  download a patched version of [pyjs](http://pyjs.org/) during the build
+  process).
 
 Errors will be reported if required software components cannot be found.  In
 that case, you should check the Boost and FFTW installation paths.
