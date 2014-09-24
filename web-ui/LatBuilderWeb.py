@@ -242,7 +242,7 @@ class ProductWeights(SimpleWeights):
         return r"\[ \gamma_u = \prod_{j \in u} \gamma_j \]"
     def as_arg(self):
         pw, = self.value_arrays
-        return 'product:0:' + ','.join(pw.values)
+        return 'product:%s:%s' % (pw.values[-1], ','.join(pw.values))
     def _gen_arrays(self):
         yield WeightValuesArray('coordinate weights', r'\(\gamma_j=\)', r'\(j=\)', 'coordinate index', '0.1')
 
@@ -254,7 +254,7 @@ class OrderDependentWeights(SimpleWeights):
         return r"\[ \gamma_u = \Gamma_{|u|} \]"
     def as_arg(self):
         ow, = self.value_arrays
-        return 'order-dependent:0:' + ','.join(ow.values)
+        return 'order-dependent:%s:%s' % (ow.values[-1], ','.join(ow.values))
     def _gen_arrays(self):
         yield WeightValuesArray('order weights', r'\(\Gamma_k=\)', r'\(k=\)', 'projection order', '0.1')
 
@@ -266,8 +266,9 @@ class PODWeights(SimpleWeights):
         return r"\[ \gamma_u = \Gamma_{|u|} \prod_{j \in u} \gamma_j \]"
     def as_arg(self):
         pw, ow = self.value_arrays
-        arg = 'POD:0:' + ','.join(pw.values)
-        arg += ':0:' + ','.join(ow.values)
+        arg = 'POD:%s:%s:%s:%s' % (
+                pw.values[-1], ','.join(pw.values),
+                ow.values[-1], ','.join(ow.values))
         return arg
     def _gen_arrays(self):
         yield WeightValuesArray('coordinate weights', r'\(\gamma_j=\)', r'\(j=\)', 'coordinate index', '0.1')
