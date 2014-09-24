@@ -207,7 +207,8 @@ The Lattice Builder executable can be found at `$HOME/latsoft/bin/latbuilder`
 Before executing the Lattice Builder program, it may be necessary to
 to add the paths to the Boost and FFTW libraries to the `LD_LIBRARY_PATH` (for
 Linux) or to the `DYLD_FALLBACK_LIBRARY_PATH` (for MacOS) environment
-variables.
+variables, especially if you did not use the `--link-static` option on `waf
+configure`.
 For example, if you're using an `sh`-compatible shell and Boost and FFTW were
 manually installed under the `/opt/boost` and `/opt/fftw` directories,
 respectively, type:
