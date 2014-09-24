@@ -37,7 +37,10 @@ def build(ctx):
 
     # Doxygen
     dox = doxygen(env=ctx.env)
-    dox.set_inputs(ctx.path.find_or_declare('Doxyfile'))
+    dox.set_inputs([ctx.path.find_or_declare('Doxyfile')]
+        + ctx.path.ant_glob('dox/*.dox')
+        + ctx.path.parent.ant_glob('latcommon/include/**/*.h')
+        + ctx.path.parent.ant_glob('latbuilder/include/**/*.h'))
     dox.set_outputs(ctx.path.find_or_declare('html/index.html'))
     ctx.add_to_group(dox)
 
