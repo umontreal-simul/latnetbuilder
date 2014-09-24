@@ -6,7 +6,7 @@ def build(ctx):
     inc_dir = ctx.path.find_dir('include')
 
     ctx(features='cxx cxxstlib',
-            source=src_dir.ant_glob('[A-Z]*.cc'),
+            source=src_dir.ant_glob('*.cc'),
             includes=[inc_dir],
             target='latcommon',
             install_path='${LIBDIR}')
