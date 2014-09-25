@@ -20,17 +20,20 @@
 
 #include <boost/numeric/ublas/detail/iterator.hpp>
 #include <boost/numeric/ublas/exception.hpp>
+#include <boost/numeric/ublas/vector_proxy.hpp>
 
 namespace LatBuilder {
 
 /**
- * Index map.
- *
  * Permutation of vector indices.
  *
- * \todo Example usage.
+ * This class is meant to permutations of Boost uBLAS vector object.
+ * The simplest way to use this class is through the permuteVector() function.
+ *
+ * Credits: this class is an adaptation of Boost's indirect array class.
+ *
+ * \example IndexMap.cc
  */
-// Adapted from Boost's indirect array class
 template<class M>
 class IndexMap {
     typedef IndexMap<M> self_type;
@@ -144,6 +147,41 @@ public:
 private:
     mapper_type mapper_;
 };
+
+/**
+ * Returns a vector proxy whose elements are a permutation of another vector.
+ *
+ * \param vec       Original vector.
+ * \param mapper    Object that defines a permutation of vector indices through
+ *                  the definition of its member \c operator().
+ *
+ * To use this function, first define a mapper class, say \c MyMapper, that
+ * defines the type \c size_type, that implements \c size() whose return value
+ * is number of elements in the permutation, and that implements \c operator()
+ * that maps an input index (the operator argument) to an output index, e.g.:
+ * \code
+ * class MyMapper {
+ * public:
+ *    typedef unsigned size_type;
+ *    size_type size() const { return ...; }
+ *    size_type operator() (size_type i) const { return ...; }
+ * };
+ * \endcode
+ * Next, simply instantiate a Boost uBLAS vector \c vec and obtain a
+ * permutation \c pvec:
+ * \code
+ * boost::numeric::ublas::vector<unsigned> vec(10);
+ * auto pvec = LatBuilder::permuteVector(vec, MyMapper());
+ * \endcode
+ *
+ * \example IndexMap.cc
+ */
+template <typename VEC, typename MAP>
+boost::numeric::ublas::vector_indirect<VEC,IndexMap<MAP>>
+permuteVector(VEC& vec, MAP mapper) {
+   typedef IndexMap<MAP> IMap;
+   return boost::numeric::ublas::vector_indirect<VEC,IMap>(vec, IMap(std::move(mapper)));
+}
 
 }
 
