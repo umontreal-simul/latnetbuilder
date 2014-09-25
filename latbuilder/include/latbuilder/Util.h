@@ -18,9 +18,6 @@
 /**
  * \file
  * Tools for streaming and poor man's factorization.
- *
- * \todo This is temporary.
- *
  */
 
 #ifndef LATBUILDER__UTIL_H
