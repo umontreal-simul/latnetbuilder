@@ -230,7 +230,6 @@ ProjectionDependentWeights* ProjectionDependentWeights::createFromXML (const pug
             throw pugi::xml_error(pnode, "missing <coordinates> element");
 
          // parse coordinate list as projection
-         // FIXME: have Coordinates parse their own XML
          Coordinates projection;
          for (node = node.child("coordinate"); node; node = node.next_sibling("coordinate"))
             projection.insert(lexical_cast<int>(node.child_value()));

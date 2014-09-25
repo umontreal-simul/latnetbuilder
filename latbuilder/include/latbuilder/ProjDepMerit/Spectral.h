@@ -100,8 +100,6 @@ namespace detail {
    {
       typedef NORM Normalizer;
 
-      // FIXME: aviser Richard que les anciens tests spectraux prenaient la
-      // dimension maximale au lieu de la dimension de la projection
       // Ref:
       //   P. L'Ecuyer and C. Lemieux.
       //   Variance Reduction via Lattice Rules.

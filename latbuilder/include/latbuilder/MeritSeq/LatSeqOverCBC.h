@@ -116,7 +116,7 @@ public:
       }
 
    private:
-      CBC& m_cbc; // FIXME: a reference won't work for multithreaded implementations
+      CBC& m_cbc;
    };
 
    /**
