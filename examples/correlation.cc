@@ -138,8 +138,8 @@ int main(int argc, const char *argv[])
    std::string weightsSpec2 = argv[iarg++];
    std::vector<std::string> filtersSpec(&argv[iarg], &argv[argc]);
 
-   auto weights1 = Parser::Weights::parse(weightsSpec1, 2);
-   auto weights2 = Parser::Weights::parse(weightsSpec2, 2);
+   auto weights1 = Parser::Weights::parse(weightsSpec1);
+   auto weights2 = Parser::Weights::parse(weightsSpec2);
 
    auto filters = Parser::MeritFilterList::parse(filtersSpec, size, *weights1, 2);
 
