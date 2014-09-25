@@ -27,16 +27,13 @@
 namespace LatBuilder { namespace Norm {
 
 /**
- * Bound on the weighted \f$\mathcal P_\alpha\f$ discrepancy.
+ * Bound on the average weighted \f$\mathcal P_\alpha\f$ discrepancy.
  *
- * A theorem in \cite vDIC08c states that, for \f$\mathcal D^2(\boldsymbol a_s,
- * n) = \mathcal P_\alpha(\boldsymbol a_s, n)\f$, there exists a generating
- * vector \f$\boldsymbol a_s \in \mathbb Z^s\f$ such that
+ * This is the bound
  * \f[
- *    N_{n,s}(c, \lambda) = \dots
+ *   \min_{1/\alpha < \lambda \leq 1} \overline{E}^2_{n,s,\alpha,\boldsymbol\gamma}(\lambda)
  * \f]
- * \todo Copy the definition of lambda.
- * \todo Precise theorem number.
+ * from Theorem 10 (with the minimization step proposed in Algorithm 2) in \cite vDIC08c .
  */
 class PAlphaDPW08 : public PAlphaBase<PAlphaDPW08> {
 public:
