@@ -62,7 +62,7 @@ public:
     * worst-case figure of merit.
     * One normally uses \f$\beta = 1\f$.
     *
-    * \todo Richard: Je crois que ce facteur
+    * \note Richard: Je crois que ce facteur
     * \c beta devrait disparaître car des poids beaucoup plus
     * généraux sont maintenant implantées dans les classes  \c *Weights.
     */

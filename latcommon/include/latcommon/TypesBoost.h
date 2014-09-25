@@ -32,7 +32,7 @@
  * \\url{http://www.boost.org/doc/libs/1_46_1/libs/numeric/ublas/doc/index.htm}).
  * 
  * 
- * \todo Richard: David aimerait remplacer <tt>NScal, NVect</tt>, \c NMat,
+ * \note Richard: David aimerait remplacer <tt>NScal, NVect</tt>, \c NMat,
  * <tt>RScal, RVect</tt>, \c RMat,
  * <tt>MScal, MVect</tt>, \c MMat,
  * <tt>BScal, BVect</tt>, \c BMat par des noms plus significatifs

@@ -130,7 +130,7 @@ public:
 
    /**
     * Copies the reducer \c red into this object. 
- * \todo Richard: Encore utile?
+ * \note Richard: Encore utile?
  * 
     */
    void copy (const Reducer & red);

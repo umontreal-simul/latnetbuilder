@@ -343,7 +343,7 @@ void Euclide (const MScal & a, const MScal & b, MScal & C, MScal & D,
 
 /**
  * Returns the value of the greatest common divisor of \f$a\f$ and \f$b\f$.
- * \todo Richard: Il y a déjà des fonctions GCD dans NTL, pour les \c long
+ * \note Richard: Il y a déjà des fonctions GCD dans NTL, pour les \c long
  * et les \c ZZ (voir fichier ZZ.h)
  */
 long gcd (long a, long b);

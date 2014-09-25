@@ -25,7 +25,7 @@
  * This module contains global constants used in
  * LatMRG{} and Lattice Builder.
  * 
- * \todo Richard: Most of these are used only in
+ * \note Richard: Most of these are used only in
  * LatMRG; thus should separate this in two different files:
  * one common and one in LatMRG.
  * 
@@ -204,7 +204,7 @@ enum SearchMethod { EXHAUST, RANDOM };
 
 /**
  * Returns the \c enum constants in this module as strings.
- * \todo Richard: These are global methods for now, but maybe \c Const should be a
+ * \note Richard: These are global methods for now, but maybe \c Const should be a
  * class containing these methods.
  */
 std::string toStringNorm (NormType);

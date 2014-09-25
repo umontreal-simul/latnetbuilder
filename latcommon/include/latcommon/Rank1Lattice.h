@@ -31,7 +31,7 @@ namespace LatCommon {
 /**
  * 
  * 
- * \todo Pierre (hidden): Il faut pouvoir choisir chaque \f$a_i\f$ ind\'ependamment
+ * \note Pierre (hidden): Il faut pouvoir choisir chaque \f$a_i\f$ ind\'ependamment
  * 
  * 
  * This class implements a general rank 1 lattice basis. For the values

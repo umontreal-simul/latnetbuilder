@@ -61,7 +61,7 @@ public:
    /**
     * Copy constructor.
     *
-    * \todo S'il y a un constructeur de recopie, il devrait prob. y avoir une
+    * \note S'il y a un constructeur de recopie, il devrait prob. y avoir une
     * méthode \c operator=
     */
    ProjectionDependentWeights (const ProjectionDependentWeights &);

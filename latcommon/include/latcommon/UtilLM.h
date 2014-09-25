@@ -105,7 +105,7 @@ inline double mysqrt (double x)
 
 /**
  * Returns \f$\sqrt{x}\f$. 
- * \todo Richard: Cette fonction est-elle encore utilis\'ee?
+ * \note Richard: Cette fonction est-elle encore utilis\'ee?
  * 
  */
 inline double SqrRoot (double x) 
@@ -158,7 +158,7 @@ inline long sign (const T & x)
  * remainder also differs.
  * Thus the following small \c inline functions for division and remainder.
  *
- * \todo Richard: Pour certaines fonctions, les résultats sont mis dans les premiers
+ * \note Richard: Pour certaines fonctions, les résultats sont mis dans les premiers
  * arguments de la fonction pour être compatible avec NTL; pour d'autres,
  * ils sont mis dans les derniers arguments pour être compatible avec notre
  * ancienne

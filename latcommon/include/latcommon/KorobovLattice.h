@@ -39,7 +39,7 @@ namespace LatCommon {
  * \f]
  * 
  * 
- * \todo Pierre: Reprogrammer \c incDim de fa\c con efficace comme dans
+ * \note Pierre: Reprogrammer \c incDim de fa\c con efficace comme dans
  * \c MRGLattice
  * 
  */
