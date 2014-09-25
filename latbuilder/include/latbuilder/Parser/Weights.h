@@ -116,7 +116,7 @@ struct Weights {
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
    static std::unique_ptr<LatCommon::Weights>
-   parse(const std::string& arg, Real powerScale=2);
+   parse(const std::string& arg, Real powerScale=1.0);
 };
 
 }}
