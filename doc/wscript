@@ -8,7 +8,8 @@ class doxygen(Task.Task):
     def run(self):
         src = self.inputs[0].abspath()
         cmd = '%s %s' % (self.env.DOXYGEN, src)
-        return self.exec_command(cmd)
+        cwd = self.generator.bld.path.abspath()
+        return self.exec_command(cmd, cwd=cwd)
 
     def post_run(self):
         html = self.generator.bld.path.find_dir('doc').get_bld().find_dir('html')
