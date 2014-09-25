@@ -24,6 +24,9 @@
 
 namespace LatBuilder {
 
+/**
+ * Vector of digits representing a number in an arbitrary base.
+ */
 template <typename INT>
 class Digits : public std::vector<unsigned int> {
 public:
@@ -31,6 +34,12 @@ public:
    typedef typename Digits::value_type DigitType;
    typedef typename Digits::size_type size_type;
 
+   /**
+    * Constructor.
+    *
+    * \param base   The base of the digits.
+    * \param number The initial number to be represented.
+    */
    Digits(DigitType base, IntegerType number = IntegerType(0)):
       m_base(base)
    {
@@ -43,9 +52,15 @@ public:
       }
    }
 
+   /**
+    * Returns the digits base.
+    */
    const DigitType& base() const
    { return m_base; }
 
+   /**
+    * Computes and returns the number represented by the digits in this vector.
+    */
    IntegerType value() const {
       IntegerType z = 0;
       for (auto it = this->rbegin(); it != this->rend(); ++it)
