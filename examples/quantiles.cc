@@ -141,7 +141,7 @@ int main(int argc, const char *argv[])
    try {
       if (argc < 4 + 1 || argc > 5 + 1) {
          std::cout << "usage: quantiles <size> <dimension> <figure-of-merit> <weights> [<random samples>]" << std::endl;
-         std::cout << "Note that the prefix `CS:' is assumed on <figure-of-merit>" << std::endl;
+         std::cout << "Do not use the prefix `CS:' on <figure-of-merit>; it will be automatically added." << std::endl;
          return -1;
       }
 
