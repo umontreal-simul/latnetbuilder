@@ -31,8 +31,6 @@ namespace LatBuilder {
  * The simplest way to use this class is through the permuteVector() function.
  *
  * Credits: this class is an adaptation of Boost's indirect array class.
- *
- * \example IndexMap.cc
  */
 template<class M>
 class IndexMap {
@@ -173,8 +171,6 @@ private:
  * boost::numeric::ublas::vector<unsigned> vec(10);
  * auto pvec = LatBuilder::permuteVector(vec, MyMapper());
  * \endcode
- *
- * \example IndexMap.cc
  */
 template <typename VEC, typename MAP>
 boost::numeric::ublas::vector_indirect<VEC,IndexMap<MAP>>
@@ -184,5 +180,10 @@ permuteVector(VEC& vec, MAP mapper) {
 }
 
 }
+
+/** \example IndexMap.cc
+    This example shows how to make use of the LatBuilder::IndexMap class to permute vector
+    elements.
+*/
 
 #endif
