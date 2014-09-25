@@ -44,6 +44,10 @@ struct Weights {
    /**
     * Parses a string specifying projection-dependent weights.
     *
+    * \param arg            Input string to be parsed as weights.
+    * \param powerScale     Power to which each number parsed from input will
+    *                       be raised before being assigned to a weight.
+    *
     * Example strings: <code>projection-dependent:1,2:1.0</code>,
     *    <code>projection-dependent:1,2:1.0:1,2,3:0.3</code>
     *
@@ -55,6 +59,10 @@ struct Weights {
    /**
     * Parses a string specifying order-dependent weights.
     *
+    * \param arg            Input string to be parsed as weights.
+    * \param powerScale     Power to which each number parsed from input will
+    *                       be raised before being assigned to a weight.
+    *
     * Example strings: <code>order-dependent:0.1</code>, <code>order-dependent:0.1:1.0,0.7,0.3</code>
     *
     * \return A pointer to a newly created object or \c nullptr on failure.
@@ -64,6 +72,10 @@ struct Weights {
 
    /**
     * Parses a string specifying product weights.
+    *
+    * \param arg            Input string to be parsed as weights.
+    * \param powerScale     Power to which each number parsed from input will
+    *                       be raised before being assigned to a weight.
     *
     * Example strings: <code>product:0.1</code>, <code>product:0.1:1.0,0.7,0.3</code>
     *
@@ -87,6 +99,16 @@ struct Weights {
 
    /**
     * Parses a string specifying weights.
+    *
+    * \param arg            Input string to be parsed as weights.
+    * \param powerScale     Power to which each number parsed from input will
+    *                       be raised before being assigned to a weight.
+    *                       This is useful to parse weights for a figure of
+    *                       merit defined as a \f$q\f$-norm with respect to the
+    *                       different projections, e.g., in the
+    *                       WeightedFigureOfMerit::WeightedFigureOfMerit
+    *                       constructor, the weights are assumed to be already
+    *                       raised to the power \f$q\f$.
     *
     * For example strings, see #parseProjectionDependent(),
     * #parseOrderDependent() and #parseProduct().
