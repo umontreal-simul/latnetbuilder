@@ -156,6 +156,13 @@ private:
 
 };
 
+/**
+ * Evaluator for WeightedFigureOfMerit.
+ *
+ * Using an evaluator allows for the WeightedFigureOfMerit object to be
+ * instantiated without prior knowledge of the storage class to be used during
+ * the evaluation.
+ */
 template <class FIGURE, LatType LAT, Compress COMPRESS>
 class WeightedFigureOfMeritEvaluator
 {
