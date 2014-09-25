@@ -33,6 +33,14 @@ template <class KERNEL>
 class CoordSymFigureOfMerit : public FigureOfMerit
 {
 public:
+   /**
+    * Constructor.
+    *
+    * \param weights    See WeightedFigureOfMerit::WeightedFigureOfMerit for
+    *                   details about this parameter.
+    * \param kernel     Kernel (\f$\omega\f$ in the reference paper).  See
+    *                   the Kernel namespace for examples.
+    */
    CoordSymFigureOfMerit(
          std::unique_ptr<LatCommon::Weights> weights,
          KERNEL kernel = KERNEL()

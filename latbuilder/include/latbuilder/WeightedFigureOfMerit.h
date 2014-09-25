@@ -45,8 +45,8 @@ class WeightedFigureOfMeritEvaluator;
  * This class implements generic weighted average-case figures of merit of the
  * form
  * \f[
- *    D^2(P_n) = \mathop{\mathcal K}_{\mathfrak u \in \mathcal J}
- *    \left\{ \gamma_{\mathfrak u} D_{\mathfrak u}^2(P_n(\mathfrak u)) \right\},
+ *    D(P_n) = \left[ \mathop{\mathcal K}_{\mathfrak u \in \mathcal J}
+ *    \left\{ \gamma_{\mathfrak u}^q D_{\mathfrak u}^q(P_n(\mathfrak u)) \right\} \right]^{1/q},
  * \f]
  * where \f$\mathcal K\f$ is an operator that combines the set elements
  * (typically a sum on its elements or the extraction of the maximum element),
@@ -72,6 +72,9 @@ class WeightedFigureOfMeritEvaluator;
  * \tparam ACC          Type of binary operator to use for the accumulator that
  *                      defines the operator \f$\mathcal K\f$ on the set elements.
  *                      For example, Functor::Max or Functor::Sum.
+ *
+ * \note The WeightedFigureOfMeritEvaluator object returned by the evaluator()
+ * function produces a <strong>square</strong> merit value.
  */
 template <class PROJDEP, template <typename> class ACC>
 class WeightedFigureOfMerit : public FigureOfMerit
@@ -80,9 +83,11 @@ public:
    /**
     * Constructor.
     *
-    * \param normType     Value of q as in the q-norm taken over all projections.
-    * \param weights      Weights.
-    * \param projdep      Projection-dependent figure of merit.
+    * \param normType     Value of \f$q\f$ as in the \f$q\f$-norm taken over all projections.
+    * \param weights      Weights \f$\gamma_{\mathfrak u}^q\f$, already raised
+    *                     to the power \f$q\f$.
+    * \param projdep      Projection-dependent figure of merit (evaluates to a
+    *                     square merit value).
     */
    WeightedFigureOfMerit(
          Real normType,
@@ -202,8 +207,8 @@ public:
    //@}
 
    /**
-    * Returns the value of the figure of merit applied to the projections \c
-    * projections of the lattice \c lat.
+    * Returns the <strong>square</strong> value of the figure of merit applied
+    * to the projections \c projections of the lattice \c lat.
     *
     * \param lat     Lattice for which the figure of merit will be computed.
     * \param projections  Set of projections \f$\mathcal J\f$ (see LatCommon::CoordinateSets).
