@@ -28,7 +28,9 @@ struct CompressTraits;
 
 /**
  * No compression.
- * \todo document this
+ *
+ * Without compression, the virtual vector is identical to the stored vector.
+ * No index conversion is necessary.
  */
 template<>
 struct CompressTraits<Compress::NONE> {
@@ -49,7 +51,12 @@ struct CompressTraits<Compress::NONE> {
 
 /**
  * Symmetric compression.
- * \todo document this
+ * 
+ * With symmetric compression, the second half of a virtual vector is identical
+ * to the first half, but in reverse order.  Thus, only the first half is
+ * stored in memory, and when an component from the second half is accessed, it
+ * is mapped to the identical element from the first half.  Modifying one
+ * modifies the other.
  */
 template<>
 struct CompressTraits<Compress::SYMMETRIC> {
