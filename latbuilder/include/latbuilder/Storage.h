@@ -64,7 +64,7 @@ public:
    {}
 
    static std::string name()
-   { return DERIVED::name() + " / " + Compress::name(); }
+   { return DERIVED::shortname() + " / " + Compress::name(); }
 
    size_type virtualSize() const
    { return derived().virtualSize(); }

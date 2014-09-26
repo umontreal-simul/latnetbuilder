@@ -101,7 +101,7 @@ public:
    typedef typename self_type::MeritValue MeritValue;
    typedef typename self_type::SizeParam  SizeParam;
 
-   static std::string name()
+   static std::string shortname()
    { return "flat storage"; }
 
    Storage(SizeParam sizeParam):
