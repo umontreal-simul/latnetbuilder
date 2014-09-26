@@ -151,9 +151,6 @@ struct StorageTraits<Storage<LatType::EMBEDDED, COMPRESS>> {
     * + 1}\f$.
     *
     * Reference: http://en.wikipedia.org/wiki/Circulant_matrix
-    *
-    * \todo This is impossible to understand.
-    * \todo Graphical illustrations.
     */
    class Stride {
    public:
@@ -198,7 +195,7 @@ struct StorageTraits<Storage<LatType::EMBEDDED, COMPRESS>> {
          if (not Compress::symmetric() and m_storage.sizeParam().base() == 2 and size >= 2) {
             // in base 2, on each level, we have 2 circulant half-blocks instead of
             // a single circulant block
-            // TODO: documenter ce bout d'après Cools et al. (2006)
+            // see Cools et al. (2006)
             bool reverse = m_row >= seqsize / 2;
             size /= 2;
             if ((i >= start + size) xor reverse)
@@ -260,8 +257,7 @@ struct StorageTraits<Storage<LatType::EMBEDDED, COMPRESS>> {
  *                      same value, for all \f$i = 0, \dots, b^M - 1\f$, where
  *                      \f$M\f$ is the maximum level of embedding.
  *
- * \todo Explain the map graphically.
- * \todo Explain symmetric storage graphically.
+ * See the output of \ref Storage.cc for an illustration of this.
  */
 template <Compress COMPRESS>
 class Storage<LatType::EMBEDDED, COMPRESS> :

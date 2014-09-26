@@ -29,6 +29,14 @@ namespace LatBuilder {
 
 /**
  * Storage policy.
+ *
+ * A storage policy indicates how kernel values are stored and represented in a
+ * vector.
+ * This template class acts as a selector for specialized templates, based on
+ * the type of lattice and on the type of compression.
+ *
+ * The output from \ref Storage.cc gives an intuition of how this works for
+ * different combination of lattice type and of compression.
  */
 template <LatType, Compress> class Storage;
 
@@ -90,8 +98,6 @@ public:
    /**
     * Returns a vector proxy to access the vector's elements in their natural
     * order.
-    *
-    * \todo Code example.
     */
    template <class V>
    boost::numeric::ublas::vector_indirect<V, IndexMap<Unpermute>> unpermuted(
@@ -130,6 +136,34 @@ private:
    { return static_cast<const DERIVED&>(*this); }
 };
 
+/**
+ * \example Storage.cc
+ * This examples shows how to use the LatBuilder::Storage template class.
+ *
+ * The output is as follows:
+ * \code{.unparsed}
+ * ==> storage / compression: flat storage / none
+ *     virtual / actual sizes: 12 / 12
+ *     original:   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+ *     unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+ *     strided(3): [0, 3, 6, 9, 0, 3, 6, 9, 0, 3, 6, 9]
+ * ==> storage / compression: flat storage / symmetric
+ *     virtual / actual sizes: 12 / 7
+ *     original:   [0, 1, 2, 3, 4, 5, 6]
+ *     unpermuted: [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
+ *     strided(3): [0, 3, 6, 3, 0, 3, 6]
+ * ==> storage / compression: multilevel storage / none
+ *     virtual / actual sizes: 16 / 16
+ *     original:   [0, 8, 4, 12, 2, 10, 14, 6, 1, 13, 9, 5, 15, 3, 7, 11]
+ *     unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+ *     strided(3): [0, 8, 12, 4, 6, 14, 10, 2, 3, 7, 11, 15, 13, 9, 5, 1]
+ * ==> storage / compression: multilevel storage / symmetric
+ *     virtual / actual sizes: 16 / 9
+ *     original:   [0, 8, 4, 2, 6, 1, 3, 7, 5]
+ *     unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1]
+ *     strided(3): [0, 8, 4, 6, 2, 3, 7, 5, 1]
+ * \endcode
+ */
 }
 
 #include "latbuilder/Storage-ORDINARY.h"

@@ -24,8 +24,8 @@ using TextStream::operator<<;
 template <LatType L, Compress C>
 void test(const Storage<L, C>& storage)
 {
-   std::cout << "storage name: " << Storage<L, C>::name() << std::endl;
-   std::cout << "  virtual size: " << storage.virtualSize() << std::endl;
+   std::cout << "==> storage / compression: " << Storage<L, C>::name() << std::endl;
+   std::cout << "    virtual / actual sizes: " << storage.virtualSize() << " / " << storage.size() << std::endl;
 
    RealVector original(storage.size());
 
@@ -36,9 +36,9 @@ void test(const Storage<L, C>& storage)
 
    auto strided = storage.strided(original, 3);
 
-   std::cout << "  original:   " << original << std::endl;
-   std::cout << "  unpermuted: " << unpermuted << std::endl;
-   std::cout << "  strided(3): " << strided << std::endl;
+   std::cout << "    original:   " << original << std::endl;
+   std::cout << "    unpermuted: " << unpermuted << std::endl;
+   std::cout << "    strided(3): " << strided << std::endl;
 }
 
 int main(int argc, const char *argv[])
