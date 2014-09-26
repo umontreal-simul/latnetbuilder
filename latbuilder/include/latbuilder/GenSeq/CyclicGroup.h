@@ -210,9 +210,7 @@ public:
     * \param power   \f$m\f$
     * \param checkPrime    If \c true, checks if the base is actually prime.
     *
-    * \todo Cite Nuyens' thesis, Chapter 4.  Or:
-    * H. Cohen. A Course in Computational Algebraic Number Theory. Graduate
-    * Texts in Mathematics. Springer-Verlag, 3rd edition, 1996.
+    * The algorithm is described in \cite mCOH93a .
     */
    static Modulus smallestGenerator(Modulus base, Level power, bool checkPrime = true);
 
