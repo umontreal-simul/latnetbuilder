@@ -1078,16 +1078,39 @@ Also make sure to add the relevant include file in
 \c latbuilder/include/latbuilder/Parser/Kernel.h:
 \snippet custom-figure.patch.cc parser header
 Then it should work out of the box if you recompile Lattice Builder, then run
-\c latbuilder with the option </code>--figure-of-merit CS:my-figure</code>.
-
-
-\todo Custom Projection Dependent Figure of Merit
+\c latbuilder with the option <code>--figure-of-merit CS:my-figure</code>.
 
 
 \section libtut_extending_weights Implementing Custom Weights
 
-\todo Custom Type of Weights (including custom coordinate-symmetric
-implementations)
+To compute weight values for any of the supported weight types (product,
+order-dependent, POD, projection-dependent), it is possible to use the
+<em>enter an expression</em> function from the web user interface.
+But let us assuming that we want to do this by deriving a new class of weights
+from an existing one.
+Consider product weights that depend a single parameter \f$\eta\f$ and that
+take the value
+\f[
+  \gamma_{\mathfrak u} = \prod_{j \in \mathfrak u} (1 / j^\eta)
+\f]
+for projection \f$\mathfrak u\f$.
+First, we define the new weights class that overrides
+ProductWeights::getWeightForCoordinate() in
+\c latcommon/include/latcommon/MyWeights.h:
+\snippet custom-weights.patch.cc weights def
+Next, we declare a new member function in Parser::Weights in
+\c latbuilder/include/latbuilder/Parser/Weights.h:
+\snippet custom-weights.patch.cc parser decl
+and implement it in
+\c latbuilder/src/Parser/Weights.cc:
+\snippet custom-weights.patch.cc parser impl
+after, of course, adding the new header with:
+\snippet custom-weights.patch.cc parser header
+We also need to add a conditional block in Parser::Weights::parse:
+\snippet custom-weights.patch.cc parser if
+Then, after recompiling Lattice Builder, the new weights should be available to
+use by invoking \c latbuilder with the option <code>--weights
+MyWeights:1.5</code>, for example.
 
 */
 
