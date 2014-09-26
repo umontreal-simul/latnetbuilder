@@ -47,8 +47,6 @@ struct LevelWeights {
     * Example string: <tt>even</tt>, <tt>even:5</tt>, <tt>even:5,12</tt>
     *
     * Empty string is interpreted as <tt>even</tt>.
-    *
-    * \todo This is too limited a parser and needs to be improved.
     */
    static result_type parse(
          const std::string& arg,

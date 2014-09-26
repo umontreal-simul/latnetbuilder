@@ -60,8 +60,6 @@ struct BinaryOperatorResult {
  * \tparam OP        Binary operator.
  * \tparam ISVEC1    \c true if first operand is a vector.
  * \tparam ISVEC2    \c true if second operand is a vector.
- *
- * \todo Vector-scalar and scalar-vector implementations.
  */
 template <typename OP, bool ISVEC1, bool ISVEC2>
 struct BinaryOperator {

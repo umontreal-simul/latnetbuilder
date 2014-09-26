@@ -36,10 +36,8 @@ class PAlphaBase
 {
 public:
    /// Maximum number of iterations to be used with the minimizer.
-   /// \todo Make this an instance member.
    static const unsigned MINIMIZER_MAX_ITER = 1000u;
    /// Relative precision on the minimum value to be used with the minimizer.
-   /// \todo Make this an instance member.
    static const int      MINIMIZER_PREC_BITS = 18;
 
    /**
