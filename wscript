@@ -8,6 +8,7 @@ top = '.'
 out = 'build'
 
 from waflib.Configure import conf
+from waflib import Utils, Context, Errors
 
 @conf
 def version_file(ctx):
@@ -46,18 +47,36 @@ def options(ctx):
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
 
 def configure(ctx):
-    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
+    build_platform = Utils.unversioned_sys_platform()
+    ctx.msg("Build platform", build_platform)
+
+    ctx.load('compiler_cxx python gnu_dirs waf_unit_test')
     ctx.check(features='cxx', cxxflags='-std=c++11')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
 
-    def add_cxx_option(option):
-        # suppress Boost ublas warnings
-        if ctx.check(features='cxx', cxxflags=option, mandatory=False):
-            ctx.env.append_value('CXXFLAGS', option)
+    def check_compiler_flag(flag, error_markers=['error:', 'warning:'], mandatory=True):
+        ctx.start_msg("checking for compiler flag %s" % flag)
+        cmd = ctx.env.CXX + ['-xc++', '-E', flag, '-']
+        result = True
+        try:
+            out, err = ctx.cmd_and_log(cmd, output=Context.BOTH, stdin=Utils.subprocess.PIPE)
+        except Errors.WafError:
+            result = False
+        if any([m in err for m in error_markers]):
+            result = False
+        ctx.end_msg(result and "yes" or "no")
+        if not result and mandatory:
+            ctx.fatal("%s doesn't support flag %s" % (ctx.env.get_flat('CXX'), str(flag)))
+        return result
 
-    add_cxx_option('-Wno-unused-local-typedefs')
-    add_cxx_option('-Wno-unused-function')
-    add_cxx_option('-Wno-unknown-warning-option')
+    def add_cxx_flag_if_supported(flag):
+        #if ctx.check(features='cxx', cxxflags=flag, mandatory=False):
+        if check_compiler_flag(flag, mandatory=False):
+            ctx.env.append_value('CXXFLAGS', flag)
+
+    # suppress Boost ublas warnings
+    add_cxx_flag_if_supported('-Wno-unused-local-typedefs')
+    add_cxx_flag_if_supported('-Wno-unused-function')
 
     if ctx.options.link_static:
         #flags = ['-static', '-static-libgcc', '-static-libstdc++']
