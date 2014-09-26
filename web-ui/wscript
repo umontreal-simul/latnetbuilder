@@ -45,7 +45,7 @@ def build(ctx):
 
     ctx.post_mode = Build.POST_LAZY
 
-    ctx(rule='%s clone --quiet --depth 1 --branch abortpatch %s' % (ctx.env.GIT, PYJS_GIT),
+    ctx(rule='%s clone --quiet --depth 1 --branch abortpatch %s' % (ctx.env.get_flat('GIT'), PYJS_GIT),
             cwd=ctx.path.get_bld().abspath(),
             target='pyjs/setup.py')
 
@@ -54,12 +54,12 @@ def build(ctx):
         import os
         pyjs = gen.path.find_or_declare('pyjs')
         pyjs_dist = gen.path.find_or_declare('pyjs-dist')
-        pythonpath = gen.path.find_or_declare('pyjs-dist/lib/python2.7/site-packages')
+        pythonpath = gen.path.find_or_declare('pyjs-dist/lib/python%s/site-packages' % ctx.env.get_flat('PYTHON_VERSION'))
         pythonpath.mkdir()
         env = dict(os.environ)
         env['PYTHONPATH'] = pythonpath.abspath()
         return gen.bld.exec_command(
-                '%s setup.py install --prefix %s' % (gen.env.PYTHON2, pyjs_dist.abspath()),
+                '%s setup.py install --prefix %s' % (gen.env.get_flat('PYTHON2'), pyjs_dist.abspath()),
                 cwd=pyjs.abspath(),
                 env=env)
 

@@ -7,7 +7,7 @@ class doxygen(Task.Task):
 
     def run(self):
         src = self.inputs[0].abspath()
-        cmd = '%s %s' % (self.env.DOXYGEN, src)
+        cmd = '%s %s' % (self.env.get_flat('DOXYGEN'), src)
         cwd = self.generator.bld.path.abspath()
         return self.exec_command(cmd, cwd=cwd)
 
