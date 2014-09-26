@@ -48,10 +48,12 @@ namespace LatBuilder { namespace MeritSeq {
  * \f]
  * for some function \f$\omega: [0,1) \to [0,\infty)\f$.
  *
+ * \tparam LAT          Type of lattice.
+ * \tparam COMPRESS     Type of compression.
+ * \tparam KERNEL       Kernel of the coordinate-symmetric figure of merit;
+ *                      should derive from Kernel::Base.
  * \tparam PROD         Type of inner product; either CoordSymInnerProd
  *                      or CoordSymInnerProdFast.
- *
- * \todo Explain requirements on template parameters.
  */
 template <LatType LAT, Compress COMPRESS, class KERNEL, template <LatType, Compress> class PROD = CoordSymInnerProd>
 class CoordSymCBC
