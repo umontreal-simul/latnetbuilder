@@ -45,9 +45,27 @@ def build(ctx):
 
     ctx.post_mode = Build.POST_LAZY
 
-    ctx(rule='%s clone --quiet --depth 1 --branch abortpatch %s' % (ctx.env.get_flat('GIT'), PYJS_GIT),
-            cwd=ctx.path.get_bld().abspath(),
-            target='pyjs/setup.py')
+    def download_pyjs(task):
+        gen = task.generator
+        import os
+        pyjs = gen.path.find_or_declare('pyjs')
+        pyjs_dist = gen.path.find_or_declare('pyjs-dist')
+        pythonpath = gen.path.find_or_declare('pyjs-dist/lib/python%s/site-packages' % ctx.env.get_flat('PYTHON_VERSION'))
+        pythonpath.mkdir()
+        env = dict(os.environ)
+        env['PYTHONPATH'] = pythonpath.abspath()
+        pyjs_git = gen.path.get_bld().find_dir('pyjs/.git')
+        if pyjs_git:
+            return gen.bld.exec_command(
+                    '%s pull' % (gen.env.get_flat('GIT')),
+                    cwd=pyjs_git.parent.abspath())
+        else:
+            return gen.bld.exec_command(
+                    '%s clone --quiet --depth 1 --branch abortpatch %s' % (gen.env.get_flat('GIT'), PYJS_GIT),
+                    cwd=gen.path.get_bld().abspath())
+
+    ctx(rule=download_pyjs,
+            target=ctx.path.find_or_declare('pyjs/setup.py'))
 
     def install_pyjs(task):
         gen = task.generator
