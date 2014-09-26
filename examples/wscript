@@ -6,7 +6,7 @@ def build(ctx):
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
     lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latbuilder/include')
 
-    for src in ctx.path.ant_glob('*.cc'):
+    for src in ctx.path.ant_glob('*.cc', excl=['extend']):
 
         ctx(features='cxx cxxprogram',
                 source=src,
