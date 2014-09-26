@@ -60,9 +60,6 @@ public:
 
    /**
     * Copy constructor.
-    *
-    * \note S'il y a un constructeur de recopie, il devrait prob. y avoir une
-    * méthode \c operator=
     */
    ProjectionDependentWeights (const ProjectionDependentWeights &);
 
@@ -75,7 +72,7 @@ public:
     * Returns a map of weights for all projections whose largest index is \c
     * largestIndex.
     */
-   const WeightsMap& getWeightsForLargestIndex(Coordinates::value_type largestIndex) const;
+   virtual const WeightsMap& getWeightsForLargestIndex(Coordinates::value_type largestIndex) const;
 
 #ifdef WITH_XML
    /**
@@ -88,7 +85,7 @@ public:
    /**
     * Sets the weight of the projection specified by \c projection.
     */
-   void setWeight (const Coordinates & projection, Weight weight);
+   virtual void setWeight (const Coordinates & projection, Weight weight);
 
 protected:
    /// \copydoc LatCommon::Weights::format()

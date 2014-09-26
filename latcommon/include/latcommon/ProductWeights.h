@@ -60,19 +60,19 @@ public:
    /**
     * Returns the weight associated to the given coordinate.
     */
-   Weight getWeightForCoordinate (unsigned int coordinate) const  {
+   virtual Weight getWeightForCoordinate (unsigned int coordinate) const  {
       return coordinate < m_weights.size() ? m_weights[coordinate] : m_defaultWeight; } 
 
    /**
     * Sets the weight for the coordinate specified by \c coordinate.
     */
-   void setWeightForCoordinate (unsigned int coordinate, Weight weight);
+   virtual void setWeightForCoordinate (unsigned int coordinate, Weight weight);
 
    /**
     * Sets the default weight of all coordinates for which a weight
     * has not been set explicitly set using #setWeightForCoordinate().
     */
-   void setDefaultWeight (Weight weight) 
+   virtual void setDefaultWeight (Weight weight) 
    { m_defaultWeight = weight; }
 
 #ifdef WITH_XML

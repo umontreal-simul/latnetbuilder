@@ -62,19 +62,19 @@ public:
    /**
     * Returns the weight associated to the given order.
     */
-   Weight getWeightForOrder (unsigned int order) const
+   virtual Weight getWeightForOrder (unsigned int order) const
    { return order < m_weights.size() ? m_weights[order] : m_defaultWeight; } 
 
    /**
     * Sets the weight for the order specified by \c order.
     */
-   void setWeightForOrder (unsigned int order, Weight weight);
+   virtual void setWeightForOrder (unsigned int order, Weight weight);
 
    /**
     * Sets the default weight of all orders for which a weight
     * has not been set explicitly set using #setWeightForOrder().
     */
-   void setDefaultWeight (Weight weight) 
+   virtual void setDefaultWeight (Weight weight) 
    { m_defaultWeight = weight; }
 
 #ifdef WITH_XML
