@@ -38,7 +38,7 @@ def version(ctx):
     return version
 
 def options(ctx):
-    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
+    ctx.load('compiler_cxx python gnu_dirs waf_unit_test')
     ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples')
@@ -150,13 +150,20 @@ def configure(ctx):
             print('WARNING: Doxygen is required for building documentation.')
             print('         Get it from http://www.stack.nl/~dimitri/doxygen/')
 
-    # Git
+    # Web UI requirements
     if ctx.options.build_web_ui:
+
+        # Git
         ctx.env.BUILD_WEB_UI = True
         if not ctx.find_program('git', var='GIT', mandatory=False):
             print('WARNING: Git is required for building the web interface.')
             print('         Get it from http://git-scm.com/')
-        if not ctx.find_program('python2.7', var='PYTHON2', mandatory=False):
+
+        # Python
+        ctx.find_program('python2', var='PYTHONx', mandatory=False)
+        ctx.env.PYTHON = ctx.env.PYTHONx # force detection and usage of Python 2
+        ret = ctx.check_python_version(minver=(2,7), mandatory=False)
+        if not ctx.env.PYTHON_VERSION or int(ctx.env.PYTHON_VERSION.split('.')[0]) > 2:
             print('WARNING: Python 2.7 is required for building the web interface.')
             print('         Get it from http://python.org/')
 

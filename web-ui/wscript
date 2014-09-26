@@ -39,8 +39,8 @@ def build(ctx):
     if not ctx.env.GIT:
         print('not building web interface; git (http://git-scm.com/) is missing')
         return
-    if not ctx.env.PYTHON2:
-        print('not building web interface; Python 2.8 (http://python.org/) is missing')
+    if not ctx.env.PYTHON_VERSION == "2.7":
+        print('not building web interface; Python 2.7 (http://python.org/) is missing')
         return
 
     ctx.post_mode = Build.POST_LAZY
@@ -59,7 +59,7 @@ def build(ctx):
         env = dict(os.environ)
         env['PYTHONPATH'] = pythonpath.abspath()
         return gen.bld.exec_command(
-                '%s setup.py install --prefix %s' % (gen.env.get_flat('PYTHON2'), pyjs_dist.abspath()),
+                '%s setup.py install --prefix %s' % (gen.env.get_flat('PYTHON'), pyjs_dist.abspath()),
                 cwd=pyjs.abspath(),
                 env=env)
 
