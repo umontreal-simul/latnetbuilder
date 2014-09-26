@@ -29,14 +29,14 @@ namespace LatBuilder { namespace MeritSeq {
  * Base base class for states used in the evaluation coordinate-symmetric
  * figures of merit.
  *
- * The complete state is stored internally and can be updated with #update().
+ * The complete state is stored internally and can be updated with update().
  * The weighted state can be obtained with #weightedState().
  *
  * \sa CoordSymEval
  *
- * \todo By taking a RealVector as a parameter, calls to #update() force a copy
+ * \note By taking a RealVector as a parameter, calls to update() force a copy
  * from some boost::numeric::ublas::vector_expression<E> to a new instance
- * of RealVector.  This is the cost for making #update() a virtual function: it
+ * of RealVector.  This is the cost for making update() a virtual function: it
  * cannot be a template.
  */
 template <LatType LAT, Compress COMPRESS>
