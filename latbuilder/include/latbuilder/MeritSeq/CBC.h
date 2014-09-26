@@ -33,8 +33,6 @@ namespace LatBuilder { namespace MeritSeq {
 /**
  * Sequence of lattice merit for CBC construction.
  *
- * \todo Explain standard CBC workflow (instantiate, iterate, select, ...)
- *
  * This class is intended to be used with the following steps:
  * <ol>
  * <li> Instantiate.  At that point, the dimension is zero. </li>
