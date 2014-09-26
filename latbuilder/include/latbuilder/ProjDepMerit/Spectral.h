@@ -53,8 +53,6 @@ public:
     *
     * \param power         Exponent to which the contribution for each contribution
     *                      is raised.
-    * 
-    * \todo Cache normalizers per dimension.
     */
    Spectral(
          Real power = 1.0
@@ -108,6 +106,8 @@ namespace detail {
             lat.sizeParam().numPoints(),
             1 /* lattice rank */,
             projection.size());
+      // idea: we could cache the normalizer values for each projection size
+      // (check in the profiler first if this is worth it)
 
       if (normalizer.getNorm () != LatCommon::L2NORM)
          // this is the L2NORM implementation
