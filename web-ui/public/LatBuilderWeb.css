@@ -9,10 +9,13 @@ body {
 
 table {
     font-size: inherit;
+    padding: 3px;
 }
 
 .TextBoxArrayCell {
     display: inline-table;
+    padding: 0;
+    text-align: center;
 }
 
 .TextBoxArrayCellLabel {
@@ -104,10 +107,14 @@ table {
     text-align: right;
     vertical-align: top;
     font-weight: bold;
+    margin-right: 1em;
 }
 
 .Command {
     font-family: monospace;
+    font-size: 12px;
+    max-width: 60em;
+    overflow: auto;
 }
 
 .DisplayMath {

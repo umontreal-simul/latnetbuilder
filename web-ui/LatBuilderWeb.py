@@ -46,7 +46,7 @@ class ValidTextBox(VerticalPanel):
     _ALL = {}
 
     def __init__(self, **kw):
-        VerticalPanel.__init__(self, Spacing=0)
+        VerticalPanel.__init__(self)
         regex = kw.pop('regex', None)
         errmsg = kw.pop('errmsg', None)
         self._textbox = TextBox(**kw)
@@ -56,6 +56,8 @@ class ValidTextBox(VerticalPanel):
         if errmsg:
             self._errmsg = HTML(errmsg, StyleName="errmsg")
             self.add(self._errmsg)
+        else:
+            self._errmsg = None
         self.set_regex(regex)
         self._listeners = []
 
@@ -240,16 +242,16 @@ class WeightValuesArray:
         link = Hyperlink(u"enter an expression…", StyleName="action-right")
         link.addClickListener(getattr(self, 'show_expr_dialog'))
 
-        self.panel = HorizontalPanel(Spacing=8)
+        self.panel = HorizontalPanel()
         def make_tb(**kw):
-            kw['errmsg'] = r"\(\not\in\mathbb R\)"
+            kw['errmsg'] = None
             return NumberTextBox(**kw)
         self._array = TextBoxArray(default_value,
                 value_label=weight_var,
                 index_label=expr_var,
                 tbtype=make_tb)
 
-        panel = VerticalPanel(Spacing)
+        panel = VerticalPanel()
         panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
         panel.add(link)
         self.panel.add(panel)
@@ -276,10 +278,10 @@ class WeightValuesArray:
     # private methods
 
     def _create_expr_dialog(self):
-        contents = VerticalPanel(StyleName="Contents", Spacing=4)
+        contents = VerticalPanel(StyleName="Contents")
         msg = "Enter an expression for the weight values, using <em>{0}</em> as the {1}.".format(self._expr_var, self._expr_var_desc)
         contents.add(HTML(msg))
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         contents.add(panel)
         expr = TextBox(Text='0.1')
         panel.add(expr)
@@ -426,7 +428,7 @@ class CompoundWeights:
                 ProjectionDependentWeights]
         self._add_dialog, self._wtype = self._create_add_dialog()
         self.panel = VerticalPanel()
-        self._list_panel = VerticalPanel(Spacing=8)
+        self._list_panel = VerticalPanel()
         self.panel.add(self._list_panel)
         link = Hyperlink(u"add another type of weights…", StyleName="action")
         link.addClickListener(getattr(self, 'show_add_dialog'))
@@ -466,12 +468,12 @@ class CompoundWeights:
     # private methods
 
     def _create_add_dialog(self):
-        contents = VerticalPanel(StyleName="Contents", Spacing=4)
+        contents = VerticalPanel(StyleName="Contents")
         wtype = ListBox(Width="14em")
         wtype.addChangeListener(self)
         for wclass in self.WEIGHT_TYPES:
             wtype.addItem(wclass.NAME, value=wclass)
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Weight type: ", **captionstyle))
         panel.add(wtype)
         contents.add(panel)
@@ -491,16 +493,16 @@ class CompoundWeights:
 class GeneratingVector(object):
     def __init__(self, latsize):
         self._latsize = latsize
-        self.panel = HorizontalPanel(Spacing=8)
+        self.panel = HorizontalPanel()
 
         self.panel.add(HTML(r"<strong>Generating vector</strong> (\(\boldsymbol a\)): ", StyleName="CaptionLabel"))
         def make_tb(**kw):
-            kw['errmsg'] = r"\(\not\in\mathbb Z\)"
+            kw['errmsg'] = None
             return IntegerTextBox(**kw)
         self._array = TextBoxArray('1',
                 value_label=r'\(a_j=\)',
                 index_label=r'\(j=\)',
-                tbtype=IntegerTextBox)
+                tbtype=make_tb)
         self.panel.add(self._array.panel)
 
         link = Hyperlink(u"Korobov…", StyleName="action")
@@ -532,7 +534,7 @@ class GeneratingVector(object):
     # private methods
 
     def _create_korobov_dialog(self):
-        contents = VerticalPanel(StyleName="Contents", Spacing=4)
+        contents = VerticalPanel(StyleName="Contents")
         contents.add(HTML( "Enter the Korobov parameter."))
         kparam = IntegerTextBox(Text='2')
         contents.add(kparam)
@@ -672,7 +674,7 @@ class LatBuilderWeb:
         main_panel.add(self.version_label)
         self.remote.backend_version(self)
 
-        params_panel = VerticalPanel(Spacing=15)
+        params_panel = VerticalPanel()
         main_panel.add(params_panel)
 
         # lattice type and size and dimension
@@ -689,7 +691,7 @@ class LatBuilderWeb:
         self.embedded = CheckBox("embedded")
         self.embedded.addClickListener(self)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML(r"Size (\(n\)): ", StyleName="CaptionLabel"))
         panel.add(self.size)
         panel.add(self.embedded)
@@ -698,7 +700,7 @@ class LatBuilderWeb:
         self.dimension = IntegerTextBox(Text="3", minval=1)
         self.dimension.addChangeListener(self)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML(r"Dimension (\(s\)): ", StyleName="CaptionLabel"))
         panel.add(self.dimension)
         lat_panel.add(panel)
@@ -723,7 +725,7 @@ class LatBuilderWeb:
                 errmsg='please a positive real number or <strong>inf</strong>')
         self.norm_type.addChangeListener(self)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML(r"Norm type (\(q\) or <b>inf</b>): ", StyleName="CaptionLabel"))
         panel.add(self.norm_type)
         merit_panel.add(panel)
@@ -736,13 +738,13 @@ class LatBuilderWeb:
         self.merit_cs = CheckBox("Use coordinate-symmetric implementation",
                 Checked=True)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Figure of merit: ", StyleName="CaptionLabel"))
         panel.add(self.merit)
         panel.add(self.merit_cs)
         merit_panel.add(panel)
 
-        self.merit_alpha_panel = HorizontalPanel(Spacing=8)
+        self.merit_alpha_panel = HorizontalPanel()
         self.merit_alpha = NumberTextBox(Text="2")
         self.merit_alpha_panel.add(HTML("Value of alpha: ", StyleName="CaptionLabel"))
         self.merit_alpha_panel.add(self.merit_alpha)
@@ -751,7 +753,7 @@ class LatBuilderWeb:
 
         # filters and combiner
 
-        multilevel_panel = VerticalPanel(Spacing=8)
+        multilevel_panel = VerticalPanel()
         self.multilevel_panel = CaptionPanel("Multilevel Filters and Combiner", multilevel_panel, Visible=False)
         params_panel.add(self.multilevel_panel)
 
@@ -759,10 +761,10 @@ class LatBuilderWeb:
         self.ml_normalization_enable.addClickListener(self)
         multilevel_panel.add(self.ml_normalization_enable)
 
-        self.ml_normalization_panel = VerticalPanel(Spacing=4, Visible=False, StyleName='SubPanel')
+        self.ml_normalization_panel = VerticalPanel(Visible=False, StyleName='SubPanel')
         multilevel_panel.add(self.ml_normalization_panel)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Normalization type: ", StyleName="CaptionLabel"))
         self.ml_normalization_type = ListBox()
         for key, name in self.NORMALIZATION_TYPES:
@@ -770,13 +772,13 @@ class LatBuilderWeb:
         panel.add(self.ml_normalization_type)
         self.ml_normalization_panel.add(panel)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Minimum level: ", StyleName="CaptionLabel"))
         self.ml_min_level = IntegerTextBox(Text="1", minval=0)
         panel.add(self.ml_min_level)
         self.ml_normalization_panel.add(panel)
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Maximum level: ", StyleName="CaptionLabel"))
         self.ml_max_level = IntegerTextBox(Text="1", minval=0)
         panel.add(self.ml_max_level)
@@ -786,11 +788,11 @@ class LatBuilderWeb:
         self.ml_lowpass_enable.addClickListener(self)
         multilevel_panel.add(self.ml_lowpass_enable)
 
-        self.ml_lowpass_panel = VerticalPanel(Spacing=4, Visible=False, StyleName='SubPanel')
+        self.ml_lowpass_panel = VerticalPanel(Visible=False, StyleName='SubPanel')
         multilevel_panel.add(self.ml_lowpass_panel)
 
         self.ml_lowpass = NumberTextBox(Text="1.0")
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Low-pass threshold: ", StyleName="CaptionLabel"))
         panel.add(self.ml_lowpass)
         self.ml_lowpass_panel.add(panel)
@@ -798,7 +800,7 @@ class LatBuilderWeb:
         self.combiner_type = ListBox()
         for key, name in self.COMBINER_TYPES:
             self.combiner_type.addItem(name, value=key)
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Combiner: ", StyleName="CaptionLabel"))
         panel.add(self.combiner_type)
         multilevel_panel.add(panel)
@@ -811,7 +813,7 @@ class LatBuilderWeb:
         weights_panel.add(HTML(r"\[ \gamma_u^p \qquad (u \subseteq \{1, \dots, s\}) \]", StyleName='DisplayMath'))
 
         self.weights_power = NumberTextBox(Text="2")
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML(r"Weights power (\(p\)): ", StyleName="CaptionLabel"))
         panel.add(self.weights_power)
 
@@ -830,12 +832,12 @@ class LatBuilderWeb:
             self.construction.addItem(name, value=key)
         self.construction_desc = HTML()
 
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel(Spacing=20)
         panel.add(self.construction)
         panel.add(self.construction_desc)
         cons_panel.add(panel)
 
-        self.construction_samples_panel = HorizontalPanel(Spacing=8)
+        self.construction_samples_panel = HorizontalPanel()
         self.construction_samples = IntegerTextBox(Text="30", minval=0)
         self.construction_samples_panel.add(HTML("Random samples: ", StyleName="CaptionLabel"))
         self.construction_samples_panel.add(self.construction_samples)
@@ -843,7 +845,7 @@ class LatBuilderWeb:
 
         # execute button
 
-        panel = VerticalPanel(Spacing=8, Width="100%", HorizontalAlignment='center')
+        panel = VerticalPanel(Width="100%", HorizontalAlignment='center')
         main_panel.add(panel)
 
         button_panel = HorizontalPanel()
@@ -863,31 +865,31 @@ class LatBuilderWeb:
         main_panel.add(self.results_panel)
 
         self.results_size = Label()
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Lattice size: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_size)
         results_panel.add(panel)
 
         self.results_gen = Label()
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Generating vector: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_gen)
         results_panel.add(panel)
 
         self.results_merit = Label()
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("Merit value: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_merit)
         results_panel.add(panel)
 
         self.results_cpu_time = Label()
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
         panel.add(HTML("CPU time: ", StyleName="ResultsCaptionLabel"))
         panel.add(self.results_cpu_time)
         results_panel.add(panel)
 
         self.results_cmd = Label(StyleName='Command', Visible=False)
-        panel = HorizontalPanel(Spacing=8)
+        panel = HorizontalPanel()
 
         self.results_cmd_link = Hyperlink("Command line: ", StyleName="ResultsCaptionLabel")
         self.results_cmd_link.addClickListener(self)
