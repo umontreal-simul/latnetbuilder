@@ -16,7 +16,7 @@
 // along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "latbuilder/Parser/CommandLine.h"
-#include "./EmbeddedLatticePoints.h"
+#include "EmbeddedLatticePoints.h"
 
 #include <iostream>
 

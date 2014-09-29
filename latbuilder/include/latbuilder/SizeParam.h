@@ -90,7 +90,7 @@ std::ostream& operator<<(std::ostream& os, const BasicSizeParam<D>& sizeParam)
 
 }
 
-#include "latbuilder/./SizeParam-ORDINARY.h"
-#include "latbuilder/./SizeParam-EMBEDDED.h"
+#include "latbuilder/SizeParam-ORDINARY.h"
+#include "latbuilder/SizeParam-EMBEDDED.h"
 
 #endif
