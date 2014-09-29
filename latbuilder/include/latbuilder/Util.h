@@ -42,7 +42,7 @@ namespace LatBuilder
  * http://en.wikipedia.org/wiki/Exponentiation_by_squaring#Computation_by_powers_of_2
  */
 template <typename T>
-T intPow(T base, unsigned int exponent)
+T intPow(T base, unsigned long exponent)
 {
    T result = 1;
    while (exponent) {
