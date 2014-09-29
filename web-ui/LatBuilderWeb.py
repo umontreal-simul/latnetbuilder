@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 
 # Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Université de Montréal.
 # 
@@ -37,8 +38,118 @@ from pyjamas import DOM
 from pyjamas.JSONService import JSONProxy
 from __pyjamas__ import JS
 
-# TODO: validation
 # TODO: extend existing lattice
+
+import re
+
+class ValidTextBox(VerticalPanel):
+    _ALL = {}
+
+    def __init__(self, **kw):
+        VerticalPanel.__init__(self, Spacing=0)
+        regex = kw.pop('regex', None)
+        errmsg = kw.pop('errmsg', None)
+        self._textbox = TextBox(**kw)
+        self._textbox.addChangeListener(self)
+        self._textbox.addKeyboardListener(self)
+        self.add(self._textbox)
+        if errmsg:
+            self._errmsg = HTML(errmsg, StyleName="errmsg")
+            self.add(self._errmsg)
+        self.set_regex(regex)
+        self._listeners = []
+
+    @staticmethod
+    def all_valid():
+        return all(ValidTextBox._ALL.values())
+
+    def onChange(self, sender):
+        # always validate on focus out
+        self.validate()
+        for x in self._listeners:
+            x.onChange(self)
+    def onKeyUp(self, sender, keycode, modifiers):
+        # validate only if not empty
+        if self._textbox.getText():
+            self.validate()
+
+    # delegates
+    def addChangeListener(self, who):
+        self._listeners.append(who)
+    def getText(self, *args, **kw):
+        return self._textbox.getText(*args, **kw)
+    def setText(self, *args, **kw):
+        return self._textbox.setText(*args, **kw)
+    def __getattr__(self, *args, **kw):
+        return getattr(self._textbox, *args, **kw)
+
+    def set_regex(self, regex=None):
+        if regex:
+            regex = '^' + regex + '$'
+        self._regex = regex
+        self.validate()
+
+    def validate(self, event):
+        if self._regex is None:
+            return
+        valid = re.match(self._regex, self._textbox.getText())
+        self.set_valid(valid)
+        return valid
+
+    def set_valid(self, valid):
+        if valid:
+            self._textbox.removeStyleName("invalidtext")
+            if self._errmsg:
+                self._errmsg.removeStyleName("errmsg-active")
+        else:
+            self._textbox.addStyleName("invalidtext")
+            if self._errmsg:
+                self._errmsg.addStyleName("errmsg-active")
+        ValidTextBox._ALL[self] = valid
+
+
+class NumberTextBox(ValidTextBox):
+    RE = r'[+-]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?'
+    def __init__(self, **kw):
+        self._minval = kw.pop('minval', None)
+        self._maxval = kw.pop('maxval', None)
+        showrange = kw.pop('showrange', True)
+        if not 'regex' in kw:
+            kw['regex'] = NumberTextBox.RE
+        if not 'errmsg' in kw:
+            kw['errmsg'] = 'please enter a real number'
+        if showrange and (self._minval or self._maxval):
+            kw['errmsg'] += r' \(\in [%s,%s]\)' % (
+                    self._minval and str(self._minval) or r'\infty',
+                    self._maxval and str(self._maxval) or r'\infty')
+        ValidTextBox.__init__(self, **kw)
+
+    def value(self):
+        return float(self._textbox.getText().strip())
+
+    def validate(self, event):
+        valid = ValidTextBox.validate(self, event)
+        val = self.value()
+        if valid and self._minval:
+            valid = val >= self._minval
+        if valid and self._maxval:
+            valid = val <= self._maxval
+        self.set_valid(valid)
+        return valid
+
+
+class IntegerTextBox(NumberTextBox):
+    RE = r'[0-9]+'
+    def __init__(self, **kw):
+        if not 'regex' in kw:
+            kw['regex'] = IntegerTextBox.RE
+        if not 'errmsg' in kw:
+            kw['errmsg'] = 'please enter an integer value'
+        NumberTextBox.__init__(self, **kw)
+
+    def value(self):
+        return int(self._textbox.getText().strip())
+
 
 def window_center():
     left = (Window.getClientWidth() - 300) / 2 + Window.getScrollLeft()
@@ -67,9 +178,10 @@ def format_time(seconds):
 
 
 class TextBoxArray:
-    def __init__(self, default_value='0', value_label="", index_label=""):
+    def __init__(self, default_value='0', value_label="", index_label="", tbtype=TextBox):
         self._default_value = default_value
         self._values = []
+        self._tbtype = tbtype
         self._show_indices = index_label != ""
         self.panel = FlowPanel()
 
@@ -103,7 +215,7 @@ class TextBoxArray:
             else:
                 newval = self._default_value
             for i in range(add_count):
-                w = TextBox(Width='3em', Text=newval)
+                w = self._tbtype(Width='3em', Text=newval)
                 self._values.append(w)
                 panel = VerticalPanel(StyleName='TextBoxArrayCell')
                 panel.add(w)
@@ -129,7 +241,13 @@ class WeightValuesArray:
         link.addClickListener(getattr(self, 'show_expr_dialog'))
 
         self.panel = HorizontalPanel(Spacing=8)
-        self._array = TextBoxArray(default_value, value_label=weight_var, index_label=expr_var)
+        def make_tb(**kw):
+            kw['errmsg'] = r"\(\not\in\mathbb R\)"
+            return NumberTextBox(**kw)
+        self._array = TextBoxArray(default_value,
+                value_label=weight_var,
+                index_label=expr_var,
+                tbtype=make_tb)
 
         panel = VerticalPanel(Spacing)
         panel.add(HTML("{}: ".format(label), StyleName="CaptionLabel"))
@@ -376,7 +494,13 @@ class GeneratingVector(object):
         self.panel = HorizontalPanel(Spacing=8)
 
         self.panel.add(HTML(r"<strong>Generating vector</strong> (\(\boldsymbol a\)): ", StyleName="CaptionLabel"))
-        self._array = TextBoxArray('1', value_label=r'\(a_j=\)', index_label=r'\(j=\)')
+        def make_tb(**kw):
+            kw['errmsg'] = r"\(\not\in\mathbb Z\)"
+            return IntegerTextBox(**kw)
+        self._array = TextBoxArray('1',
+                value_label=r'\(a_j=\)',
+                index_label=r'\(j=\)',
+                tbtype=IntegerTextBox)
         self.panel.add(self._array.panel)
 
         link = Hyperlink(u"Korobov…", StyleName="action")
@@ -410,7 +534,7 @@ class GeneratingVector(object):
     def _create_korobov_dialog(self):
         contents = VerticalPanel(StyleName="Contents", Spacing=4)
         contents.add(HTML( "Enter the Korobov parameter."))
-        kparam = TextBox(Text='2')
+        kparam = IntegerTextBox(Text='2')
         contents.add(kparam)
         contents.add(Button("OK", getattr(self, '_close_korobov_dialog')))
         dialog = DialogBox(glass=True)
@@ -420,7 +544,7 @@ class GeneratingVector(object):
 
     def _close_korobov_dialog(self):
         self._korobov_dialog.hide()
-        a = int(self._korobov_param.getText())
+        a = self._korobov_param.value()
         n = LatSize(self._latsize.getText()).points
         values = [1]
         for j in range(1, self.dimension):
@@ -557,7 +681,9 @@ class LatBuilderWeb:
         params_panel.add(CaptionPanel("Lattice Properties", lat_panel))
         lat_panel.add(HTML(r'\[ P_n = \left\{ (i \boldsymbol a \bmod n) / n \::\: i = 0, \dots, n \right\} \qquad (\boldsymbol a \in \mathbb Z^s) \]', StyleName='DisplayMath'))
 
-        self.size = TextBox(Text="2^10")
+        self.size = ValidTextBox(Text="2^10",
+                regex=r'[1-9][0-9]*(\^[1-9][0-9]*)?',
+                errmsg='invalid size; valid examples: <strong>127</strong> or <strong>2^10</strong>')
         self.size.addChangeListener(self)
 
         self.embedded = CheckBox("embedded")
@@ -569,7 +695,7 @@ class LatBuilderWeb:
         panel.add(self.embedded)
         lat_panel.add(panel)
 
-        self.dimension = TextBox(Text="3")
+        self.dimension = IntegerTextBox(Text="3", minval=1)
         self.dimension.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
@@ -592,7 +718,9 @@ class LatBuilderWeb:
             r"\qquad (q > 0) \]",
             StyleName='DisplayMath'))
 
-        self.norm_type = TextBox(Text="2")
+        self.norm_type = ValidTextBox(Text="2",
+                regex='(' + NumberTextBox.RE + '|inf)',
+                errmsg='please a positive real number or <strong>inf</strong>')
         self.norm_type.addChangeListener(self)
 
         panel = HorizontalPanel(Spacing=8)
@@ -615,7 +743,7 @@ class LatBuilderWeb:
         merit_panel.add(panel)
 
         self.merit_alpha_panel = HorizontalPanel(Spacing=8)
-        self.merit_alpha = TextBox(Text="2")
+        self.merit_alpha = NumberTextBox(Text="2")
         self.merit_alpha_panel.add(HTML("Value of alpha: ", StyleName="CaptionLabel"))
         self.merit_alpha_panel.add(self.merit_alpha)
         merit_panel.add(self.merit_alpha_panel)
@@ -644,13 +772,13 @@ class LatBuilderWeb:
 
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Minimum level: ", StyleName="CaptionLabel"))
-        self.ml_min_level = TextBox(Text="1")
+        self.ml_min_level = IntegerTextBox(Text="1", minval=0)
         panel.add(self.ml_min_level)
         self.ml_normalization_panel.add(panel)
 
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Maximum level: ", StyleName="CaptionLabel"))
-        self.ml_max_level = TextBox(Text="1")
+        self.ml_max_level = IntegerTextBox(Text="1", minval=0)
         panel.add(self.ml_max_level)
         self.ml_normalization_panel.add(panel)
 
@@ -661,7 +789,7 @@ class LatBuilderWeb:
         self.ml_lowpass_panel = VerticalPanel(Spacing=4, Visible=False, StyleName='SubPanel')
         multilevel_panel.add(self.ml_lowpass_panel)
 
-        self.ml_lowpass = TextBox(Text="1.0")
+        self.ml_lowpass = NumberTextBox(Text="1.0")
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML("Low-pass threshold: ", StyleName="CaptionLabel"))
         panel.add(self.ml_lowpass)
@@ -682,7 +810,7 @@ class LatBuilderWeb:
         params_panel.add(CaptionPanel("Weights", weights_panel))
         weights_panel.add(HTML(r"\[ \gamma_u^p \qquad (u \subseteq \{1, \dots, s\}) \]", StyleName='DisplayMath'))
 
-        self.weights_power = TextBox(Text="2")
+        self.weights_power = NumberTextBox(Text="2")
         panel = HorizontalPanel(Spacing=8)
         panel.add(HTML(r"Weights power (\(p\)): ", StyleName="CaptionLabel"))
         panel.add(self.weights_power)
@@ -708,7 +836,7 @@ class LatBuilderWeb:
         cons_panel.add(panel)
 
         self.construction_samples_panel = HorizontalPanel(Spacing=8)
-        self.construction_samples = TextBox(Text="30")
+        self.construction_samples = IntegerTextBox(Text="30", minval=0)
         self.construction_samples_panel.add(HTML("Random samples: ", StyleName="CaptionLabel"))
         self.construction_samples_panel.add(self.construction_samples)
         cons_panel.add(self.construction_samples_panel)
@@ -804,18 +932,18 @@ class LatBuilderWeb:
 
         elif sender == self.size:
             max_level = LatSize(self.size.getText()).max_level
-            if int(self.ml_min_level.getText()) > max_level:
+            if self.ml_min_level.value() > max_level:
                 self.ml_min_level.setText(max_level)
             self.ml_max_level.setText(max_level)
 
         elif sender == self.dimension:
             # resize weights
-            dimension = int(self.dimension.getText())
+            dimension = self.dimension.value()
             self.generating_vector.set_dimension(dimension)
             self.weights.set_dimension(dimension)
 
         elif sender == self.norm_type:
-            q = self.norm_type.getText().strip()
+            q = self.norm_type.getText().strip().lower()
             self.merit_cs.setVisible(q == '2')
             if q == 'inf':
                 self.weights_power.setText('1')
@@ -837,6 +965,10 @@ class LatBuilderWeb:
             self.results_cmd.setVisible(not self.results_cmd.getVisible())
 
         elif sender == self.button_search:
+
+            if not ValidTextBox.all_valid():
+                Window.alert('There are invalid values in the input boxes; please check above for error messages')
+                return
 
             self.results_panel.setVisible(False)
             self.button_search.setVisible(False)

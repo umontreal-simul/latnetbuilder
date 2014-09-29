@@ -140,3 +140,29 @@ a:hover, a:active {
     font-size: 90%;
     text-align: right;
 }
+
+.invalidtext {
+    background-color: #332;
+    color: #FF7733;
+}
+
+.errmsg {
+    color: #FF7733;
+    margin-top: 3px;
+    font-size: 82%;
+    visibility: hidden;
+    opacity: 0;
+    max-height: 0;
+    transition: 0.5s ease;
+}
+
+.errmsg-active {
+    visibility: visible;
+    opacity: 1;
+    max-height: 2em;
+}
+
+.errmsg .MathJax {
+    color: #FF7733;
+}
+
