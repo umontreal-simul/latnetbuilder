@@ -71,12 +71,13 @@ struct CoordSymFigureOfMerit {
    {
       try {
          const auto norm = boost::lexical_cast<Real>(strNorm);
-         if (norm == 2)
+         if (norm == 2) {
             Kernel::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+            return;
+         }
       }
-      catch (boost::bad_lexical_cast&) {
-         throw BadCoordSymFigureOfMerit("norm must be `2' for the coordinate-symmetric implementation");
-      }
+      catch (boost::bad_lexical_cast&) {}
+      throw BadCoordSymFigureOfMerit("norm must be `2' for the coordinate-symmetric implementation");
    }
 };
 
