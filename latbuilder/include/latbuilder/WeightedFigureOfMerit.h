@@ -146,12 +146,22 @@ private:
 
    std::ostream& format(std::ostream& os) const
    {
-      return os << "WeightedFigureOfMerit("
+      os << "WeightedFigureOfMerit("
          << "accumulator=" << Accumulator<ACC, Real>::name() << ", "
-         << "norm-type=" << normType() << ", "
+         << "norm-type=";
+      if (Accumulator<ACC, Real>::name() == "max") {
+         if (normType() == 1.0)
+            os << "inf";
+         else
+            os << "inf(" << normType() << ")";
+      }
+      else
+         os << normType();
+      os << ", "
          << "projDepMerit=" << projDepMerit() << ", "
          << "weights=" << weights()
          << ")";
+      return os;
    }
 
 };
