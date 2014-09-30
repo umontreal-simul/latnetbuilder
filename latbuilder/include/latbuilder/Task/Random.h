@@ -69,6 +69,8 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
       numRand(numRand_)
    {}
 
+   virtual ~LatSeqBasedSearchTraits() {}
+
    LatSeqType latSeq(const SizeParam& sizeParam, Dimension dimension)
    {
       auto infty = std::numeric_limits<typename Traversal::size_type>::max();

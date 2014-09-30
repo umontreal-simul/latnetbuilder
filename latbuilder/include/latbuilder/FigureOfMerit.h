@@ -34,6 +34,11 @@ namespace LatBuilder
 class FigureOfMerit {
 public:
    /**
+    * Destructor.
+    */
+   virtual ~FigureOfMerit() {}
+
+   /**
     * Returns \c true if the value of the figure of merit is invariant under the
     * transormation \f$a_j \mapsto n - a_j\f$ for any \f$j=1,\dots,s\f$, where
     * \f$n\f$ and \f$s\f$ are, respectively, the number of points and the

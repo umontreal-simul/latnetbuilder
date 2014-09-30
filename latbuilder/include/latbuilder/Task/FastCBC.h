@@ -81,6 +81,8 @@ struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, FIGURE>> {
    typedef typename FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::CBC CBC;
    typedef GenSeq::CyclicGroup<COMPRESS> GenSeqType;
 
+   virtual ~CBCBasedSearchTraits() {}
+
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension) const
    {
       auto vec = GenSeq::VectorCreator<GenSeqType>::create(sizeParam, dimension);

@@ -57,6 +57,8 @@ struct LatSeqBasedSearchTraits<KorobovTag<LAT, COMPRESS, FIGURE>> {
    typedef GenSeq::CoprimeIntegers<COMPRESS> GenSeqType;
    typedef LatSeq::Korobov<LAT, GenSeqType> LatSeqType;
 
+   virtual ~LatSeqBasedSearchTraits() {}
+
    LatSeqType latSeq(const SizeParam& sizeParam, Dimension dimension) const
    {
       return LatSeqType(

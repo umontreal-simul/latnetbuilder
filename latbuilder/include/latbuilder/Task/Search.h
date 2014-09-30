@@ -162,7 +162,15 @@ public:
       m_minObserver(new MinObserver())
    { connectSignals(); }
 
-   Search(Search&&) = default;
+   Search(Search&& other):
+      m_onLatticeSelected(std::move(other.m_onLatticeSelected)),
+      m_dimension(other.m_dimension),
+      m_bestLat(std::move(other.m_bestLat)),
+      m_bestMerit(std::move(other.m_bestMerit)),
+      m_minObserver(std::move(other.m_minObserver)),
+      m_minElement(std::move(other.m_minElement)),
+      m_filters(std::move(other.m_filters))
+   {}
 
    virtual ~Search() {}
 

@@ -72,6 +72,16 @@ public:
       m_baseLat(std::move(baseLat))
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
 
+   Extend(Extend&& other):
+      Search<LAT>(other.dimension()),
+      m_storage(std::move(other.m_storage)),
+      m_figure(std::move(other.m_figure)),
+      m_latSeqOverCBC(std::move(other.m_latSeqOverCBC)),
+      m_baseLat(std::move(other.m_baseLat))
+   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
+
+   virtual ~Extend() {}
+
    virtual void execute()
    {
       typedef GenSeq::Extend<> GenSeqType;

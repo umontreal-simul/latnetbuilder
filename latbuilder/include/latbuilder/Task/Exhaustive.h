@@ -57,6 +57,8 @@ struct LatSeqBasedSearchTraits<ExhaustiveTag<LAT, COMPRESS, FIGURE>> {
    typedef GenSeq::CoprimeIntegers<COMPRESS> GenSeqType;
    typedef LatSeq::Combiner<LAT, GenSeqType, CartesianProduct> LatSeqType;
 
+   virtual ~LatSeqBasedSearchTraits() {}
+
    LatSeqType latSeq(const SizeParam& sizeParam, Dimension dimension) const
    {
       auto vec = GenSeq::VectorCreator<GenSeqType>::create(sizeParam, dimension);

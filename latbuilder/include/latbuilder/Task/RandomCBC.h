@@ -63,6 +63,8 @@ struct CBCBasedSearchTraits<RandomCBCTag<LAT, COMPRESS, FIGURE>> {
 
    CBCBasedSearchTraits(unsigned int numRand_): numRand(numRand_) {}
 
+   virtual ~CBCBasedSearchTraits() {}
+
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension)
    {
       auto infty = std::numeric_limits<typename Traversal::size_type>::max();

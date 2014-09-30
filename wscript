@@ -77,7 +77,8 @@ def configure(ctx):
     # suppress Boost ublas warnings
     add_cxx_flag_if_supported('-Wno-unused-local-typedefs')
     add_cxx_flag_if_supported('-Wno-unused-function')
-    add_cxx_flag_if_supported('-Wshorten-64-to-32')
+    add_cxx_flag_if_supported('-Wnon-virtual-dtor')
+    add_cxx_flag_if_supported('-Wshorten-64-to-32') # clang
 
     if ctx.options.link_static:
         #flags = ['-static', '-static-libgcc', '-static-libstdc++']

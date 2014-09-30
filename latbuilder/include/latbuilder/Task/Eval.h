@@ -61,6 +61,8 @@ struct CBCBasedSearchTraits<EvalTag<LAT, COMPRESS, FIGURE>> {
 
    CBCBasedSearchTraits(GeneratingVector genVec): genVec(std::move(genVec)) {}
 
+   virtual ~CBCBasedSearchTraits() {}
+
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension) const
    {
       if (dimension > genVec.size())
