@@ -1,0 +1,16 @@
+figure of merit: WeightedFigureOfMerit(accumulator=max, norm-type=inf(2), projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
+CBC search for dimension: 1
+  base lattice: lattice(256, [])
+  base merit value: 0
+  new projections: [{1}]
+BEST LATTICE: lattice(256, [1]) with merit value 0.7
+CBC search for dimension: 2
+  base lattice: lattice(256, [1])
+  base merit value: 0.7
+  new projections: [{2}, {1,2}]
+BEST LATTICE: lattice(256, [1, 13]) with merit value 0.7
+CBC search for dimension: 3
+  base lattice: lattice(256, [1, 13])
+  base merit value: 0.7
+  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
+BEST LATTICE: lattice(256, [1, 13, 17]) with merit value 0.7

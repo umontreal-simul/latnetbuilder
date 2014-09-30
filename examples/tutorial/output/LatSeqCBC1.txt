@@ -1,0 +1,1 @@
+[lattice(8, [1, 5, 1]), lattice(8, [1, 5, 3]), lattice(8, [1, 5, 5]), lattice(8, [1, 5, 7])]

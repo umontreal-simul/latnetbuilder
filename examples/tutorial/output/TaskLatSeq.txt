@@ -1,0 +1,43 @@
+------------------------------------------------------------------------
+construction: coordinate-symmetric exhaustive search
+figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+size parameter: 256
+dimension: 3
+filters: scalar filters = ()
+BEST LATTICE: lattice(256, [1, 123, 55]): 0.0215366
+------------------------------------------------------------------------
+construction: coordinate-symmetric random search (10 random samples)
+figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+size parameter: 256
+dimension: 3
+filters: scalar filters = ()
+BEST LATTICE: lattice(256, [1, 47, 65]): 0.0253917
+------------------------------------------------------------------------
+construction: coordinate-symmetric Korobov search
+figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+size parameter: 256
+dimension: 3
+filters: scalar filters = ()
+BEST LATTICE: lattice(256, [1, 37, 89]): 0.0235313
+------------------------------------------------------------------------
+construction: coordinate-symmetric random Korobov search (10 random samples)
+figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+size parameter: 256
+dimension: 3
+filters: scalar filters = ()
+BEST LATTICE: lattice(256, [1, 123, 25]): 0.0271967
+------------------------------------------------------------------------
+construction: exhaustive search
+figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2 (symmetric), weights=ProductWeights([], default=0.7))
+size parameter: 256
+dimension: 3
+filters: scalar filters = ()
+BEST LATTICE: lattice(256, [1, 123, 55]): 0.0215366
+------------------------------------------------------------------------
+construction: extension of the number of points
+figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2 (symmetric), weights=ProductWeights([], default=0.7))
+base lattice: lattice(256, [1, 99, 27])
+size parameter: 512
+dimension: 3
+filters: scalar filters = ()
+BEST LATTICE: lattice(512, [1, 355, 283]): 0.00748687
