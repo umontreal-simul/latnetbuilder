@@ -226,6 +226,7 @@ int main(int argc, const char *argv[])
       cmd.weights       = opt["weights"].as<std::vector<std::string>>();
       cmd.combiner      = opt["combiner"].as<std::string>();
 
+      cmd.weightsPowerScale = 1.0;
       if (opt.count("weights-power") >= 1) {
          // assume 1.0 if norm-type is `inf' or anything else
          cmd.weightsPowerScale = 1.0;
@@ -238,8 +239,6 @@ int main(int argc, const char *argv[])
          // then scale down according to interpretation of input
          cmd.weightsPowerScale /= opt["weights-power"].as<Real>();
       }
-      else
-         cmd.weightsPowerScale = 1.0;
 
       if (opt.count("filters") >= 1)
          cmd.filters = opt["filters"].as<std::vector<std::string>>();
