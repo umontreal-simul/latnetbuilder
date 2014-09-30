@@ -279,15 +279,15 @@ class WeightValuesArray:
 
     def _create_expr_dialog(self):
         contents = VerticalPanel(StyleName="Contents")
-        msg = "Enter an expression for the weight values, using <em>{0}</em> as the {1}.".format(self._expr_var, self._expr_var_desc)
+        msg = "Enter a constant or an expression for the weight values, using <em>{0}</em> as the {1}.".format(self._expr_var, self._expr_var_desc)
         contents.add(HTML(msg))
         panel = HorizontalPanel()
         contents.add(panel)
         expr = TextBox(Text='0.1')
         panel.add(expr)
         panel.add(Button("OK", getattr(self, '_close_expr_dialog')))
-        msg = "Examples: <ul><li>0.1*{0}^-2</li><li>1/(1+{0}^2)</li><li>0.1^{0}</li></ul>".format(self._expr_var)
-        contents.add(HTML(msg))
+        msg = "<strong>EXAMPLES:</strong> <ul><li>0.1</li><li>0.1*{0}^-2</li><li>1/(1+{0}^2)</li><li>0.1^{0}</li></ul>".format(self._expr_var)
+        contents.add(HTML(msg, StyleName="infotip"))
         dialog = DialogBox(glass=True)
         dialog.setHTML('<b>Set the weights from an expression</b>')
         dialog.setWidget(contents)
@@ -328,6 +328,7 @@ class SimpleWeights(object):
         for va in self._gen_arrays():
             self.value_arrays.append(va)
             self.panel.add(va.panel)
+        self.panel.add(HTML(u"<strong>TIP:</strong> Use the <em>&quot;enter an expression…&quot;</em> link to set all weights at once.", StyleName="infotip"))
 
     # public interface
 

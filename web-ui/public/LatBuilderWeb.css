@@ -129,6 +129,15 @@ table {
     color: #4C6B8B;
 }
 
+.infotip {
+    color: #666;
+    font-size: 88%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0.8ex;
+    margin: 1.2ex;
+}
+
 a {
     text-decoration: none;
     color: #812C1F;
