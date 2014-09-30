@@ -104,7 +104,7 @@ public:
    void resize(size_type size)
    { this->base().resize(size); }
 
-   unsigned int modulus() const
+   Modulus modulus() const
    { return m_modulus; }
 
    unsigned int power() const

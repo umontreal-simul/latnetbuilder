@@ -24,18 +24,18 @@
 
 class ReverseMapper {
 public:
-   typedef unsigned size_type;
+   typedef size_t size_type;
    ReverseMapper(size_type size): m_size(size) { }
    size_type size() const { return m_size; }
    size_type operator() (size_type i) const { return m_size - i - 1; }
 private:
-   unsigned m_size;
+   size_type m_size;
 };
 
 template <typename VEC>
 void set_elems(VEC& vec)
 {
-   for (typename VEC::size_type i = 0; i < vec.size(); i++)
+   for (unsigned i = 0; i < vec.size(); i++)
       vec[i] = 10 + i;
 }
 

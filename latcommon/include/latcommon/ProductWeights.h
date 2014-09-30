@@ -60,13 +60,13 @@ public:
    /**
     * Returns the weight associated to the given coordinate.
     */
-   virtual Weight getWeightForCoordinate (unsigned int coordinate) const  {
+   virtual Weight getWeightForCoordinate (Coordinates::size_type coordinate) const  {
       return coordinate < m_weights.size() ? m_weights[coordinate] : m_defaultWeight; } 
 
    /**
     * Sets the weight for the coordinate specified by \c coordinate.
     */
-   virtual void setWeightForCoordinate (unsigned int coordinate, Weight weight);
+   virtual void setWeightForCoordinate (Coordinates::size_type coordinate, Weight weight);
 
    /**
     * Sets the default weight of all coordinates for which a weight

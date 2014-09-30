@@ -21,6 +21,7 @@
 
 #include <boost/math/special_functions/zeta.hpp>
 #include <vector>
+#include <cmath>
 
 namespace LatBuilder { namespace Norm {
 
@@ -44,7 +45,7 @@ namespace {
             if (weight)
                // weights are assumed to already be to the power normType; map
                // them to power 2
-               val += intPow(z, proj.size()) * pow(weight, lambda * 2 / normType);
+               val += intPow(z, proj.size()) * std::pow(weight, lambda * 2 / normType);
          }
          return val;
       }
@@ -153,7 +154,7 @@ namespace {
          if (weight)
                // weights are assumed to already be to the power normType; map
                // them to power 2
-            val += cumul * pow(weight, lambda * 2 / normType);
+            val += cumul * std::pow(weight, lambda * 2 / normType);
       }
       return val;
    }
@@ -177,7 +178,7 @@ namespace {
          if (weight)
                // weights are assumed to already be to the power normType; map
                // them to power 2
-            val *= 1.0 + z * pow(weight, lambda * 2 / normType);
+            val *= 1.0 + z * std::pow(weight, lambda * 2 / normType);
       }
       val -= 1.0;
       return val;
@@ -202,7 +203,7 @@ namespace {
       for (Dimension s = 1; s <= dimension; s++) {
          // weights are assumed to already be to the power normType; map
          // them to power 2
-         Real pweight = pow(weights.getProductWeights().getWeightForCoordinate(s), lambda * 2 / normType);
+         Real pweight = std::pow(weights.getProductWeights().getWeightForCoordinate(s), lambda * 2 / normType);
          states.push_back(0.0);
          for (Dimension order = states.size() - 1; order > 0; order--)
             states[order] += z * pweight * states[order - 1];
@@ -211,7 +212,7 @@ namespace {
       for (Dimension order = 1; order <= dimension; order++)
          // weights are assumed to already be to the power normType; map
          // them to power 2
-         val += pow(weights.getOrderDependentWeights().getWeightForOrder(order), lambda * 2 / normType) * states[order];
+         val += std::pow(weights.getOrderDependentWeights().getWeightForOrder(order), lambda * 2 / normType) * states[order];
       return val;
    }
 
@@ -240,7 +241,7 @@ Real PAlphaSL10::value(
          dimension
          );
 
-   return pow(norm * val, 1.0 / lambda);
+   return std::pow(norm * val, 1.0 / lambda);
 }
 
 template Real PAlphaSL10::value<LatType::ORDINARY>(Real, const SizeParam<LatType::ORDINARY>&, Dimension, Real) const;

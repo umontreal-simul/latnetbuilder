@@ -62,13 +62,13 @@ public:
    /**
     * Returns the weight associated to the given order.
     */
-   virtual Weight getWeightForOrder (unsigned int order) const
+   virtual Weight getWeightForOrder (Coordinates::size_type order) const
    { return order < m_weights.size() ? m_weights[order] : m_defaultWeight; } 
 
    /**
     * Sets the weight for the order specified by \c order.
     */
-   virtual void setWeightForOrder (unsigned int order, Weight weight);
+   virtual void setWeightForOrder (Coordinates::size_type order, Weight weight);
 
    /**
     * Sets the default weight of all orders for which a weight

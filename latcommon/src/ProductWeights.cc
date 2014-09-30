@@ -36,7 +36,7 @@ ProductWeights::ProductWeights (Weight defaultWeight)
 
 //===========================================================================
 
-void ProductWeights::setWeightForCoordinate (unsigned coordinate, Weight weight)
+void ProductWeights::setWeightForCoordinate (Coordinates::size_type coordinate, Weight weight)
 {
    if (coordinate >= m_weights.size())
       m_weights.resize(coordinate + 1);

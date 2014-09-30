@@ -115,7 +115,7 @@ struct fftw
          throw std::invalid_argument("fftw::fft(): result must have size v.size() / 2 + 1");
       // the transform is performed out-of-place, hence the const_cast is safe
       typename c_api::plan p = c_api::plan_dft_r2c_1d(
-            v.size(),
+            static_cast<int>(v.size()),
             const_cast<typename real_vector::value_type*>(&v[0]),
             &result[0],
             FFTW_ESTIMATE);
@@ -164,7 +164,7 @@ struct fftw
          throw std::invalid_argument("fftw::ifft(): v must have size result.size() / 2 + 1");
       // the transform is performed out-of-place, hence the const_cast is safe
       typename c_api::plan p = c_api::plan_dft_c2r_1d(
-            result.size(),
+            static_cast<int>(result.size()),
             const_cast<typename complex_vector::value_type*>(&v[0]),
             &result[0],
             FFTW_ESTIMATE);

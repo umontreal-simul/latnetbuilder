@@ -28,7 +28,7 @@ namespace LatBuilder {
  * Vector of digits representing a number in an arbitrary base.
  */
 template <typename INT>
-class Digits : public std::vector<unsigned int> {
+class Digits : public std::vector<INT> {
 public:
    typedef INT IntegerType;
    typedef typename Digits::value_type DigitType;

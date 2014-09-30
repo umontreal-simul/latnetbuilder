@@ -517,16 +517,16 @@ void IntLattice::buildProjection (IntLattice* lattice, const Coordinates & proj)
       ++i;
    }
 
-   lattice->setDim (proj.size());
+   lattice->setDim (static_cast<int>(proj.size()));
    lattice->m_order = m_order;
 
-   Triangularization<Base> (lattice->m_w, lattice->m_v, dim, proj.size(), m_m);
+   Triangularization<Base> (lattice->m_w, lattice->m_v, dim, static_cast<int>(proj.size()), m_m);
 // lattice->trace("\nESPION_4");
 /* cout << "  ***** build 2\n";
 lattice->getPrimalBasis ().setNegativeNorm (true);
 lattice->getPrimalBasis ().updateScalL2Norm (1,proj.size());
 lattice->getPrimalBasis ().write();*/
-   CalcDual<Base> (lattice->m_v, lattice->m_w, proj.size(), m_m);
+   CalcDual<Base> (lattice->m_v, lattice->m_w, static_cast<int>(proj.size()), m_m);
 /*
 cout << "  ***** build 3\n";
 lattice->getDualBasis ().setNegativeNorm (true);

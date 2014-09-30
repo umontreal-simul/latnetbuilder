@@ -34,7 +34,7 @@ OrderDependentWeights::OrderDependentWeights (Weight defaultWeight)
 
 //===========================================================================
 
-void OrderDependentWeights::setWeightForOrder (unsigned order, Weight weight)
+void OrderDependentWeights::setWeightForOrder (Coordinates::size_type order, Weight weight)
 {
    if (order >= m_weights.size())
       m_weights.resize(order + 1);

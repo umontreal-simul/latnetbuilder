@@ -105,7 +105,7 @@ namespace detail {
       Normalizer normalizer(
             lat.sizeParam().numPoints(),
             1 /* lattice rank */,
-            projection.size());
+            static_cast<int>(projection.size()));
       // idea: we could cache the normalizer values for each projection size
       // (check in the profiler first if this is worth it)
 
@@ -135,9 +135,9 @@ namespace detail {
       LatCommon::Rank1Lattice lattice(
             lat.sizeParam().numPoints(),
             gen,
-            projection.size(),
+            static_cast<int>(projection.size()),
             normalizer.getNorm());
-      lattice.buildBasis (projection.size ());
+      lattice.buildBasis (static_cast<int>(projection.size()));
       lattice.dualize ();
 
       LatCommon::Reducer reducer(lattice);
@@ -155,9 +155,9 @@ namespace detail {
 
       // normalization
       Real sqlength0 =
-         normalizer.getGamma (projection.size ()) * std::pow (
+         normalizer.getGamma(static_cast<int>(projection.size())) * std::pow(
                            lat.sizeParam().numPoints(),
-               2.0 / projection.size ());
+               2.0 / projection.size());
 
       Real merit = std::sqrt (sqlength0 / sqlength);
 
