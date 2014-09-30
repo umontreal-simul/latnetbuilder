@@ -60,9 +60,9 @@ def configure(ctx):
         result = True
         try:
             out, err = ctx.cmd_and_log(cmd, output=Context.BOTH, stdin=Utils.subprocess.PIPE)
+            if any([m in err for m in error_markers]):
+                result = False
         except Errors.WafError:
-            result = False
-        if any([m in err for m in error_markers]):
             result = False
         ctx.end_msg(result and "yes" or "no")
         if not result and mandatory:
