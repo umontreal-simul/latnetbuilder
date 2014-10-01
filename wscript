@@ -41,7 +41,7 @@ def options(ctx):
     ctx.load('compiler_cxx python gnu_dirs waf_unit_test')
     ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
-    ctx.add_option('--build-examples', action='store_true', default=False, help='build examples')
+    ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (an tests them)')
     ctx.add_option('--build-web-ui', action='store_true', default=False, help='build web interface')
     ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')

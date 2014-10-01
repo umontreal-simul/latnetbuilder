@@ -184,8 +184,8 @@ appending the following options to `waf configure`:
 
 * `--build-docs` to generate the documentation, if
   [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available on the system.
-* `--build-examples` to compile, execute and install example code, including
-  code from the tutorial.
+* `--build-examples` to compile and install example code, including
+  code from the tutorial, which will also be verified to yield correct output.
 * `--build-web-ui` to generate the web interface (this will cause waf to
   download a patched version of [pyjs](http://pyjs.org/) during the build
   process).
