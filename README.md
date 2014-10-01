@@ -83,15 +83,17 @@ installed prior to installing / using Lattice Builder.
   for [Linux / MacOS](http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html),
   or [Microsoft Windows](http://www.boost.org/doc/libs/release/more/getting_started/windows.html)
   (**also follow the instructions from section 5!**)
-* [FFTW 3](http://fftw.org/)
+* [FFTW](http://fftw.org/) 3.3.4 or later
 * [Git](http://git-scm.com/) *(optional for downloading the source code)*
 * [Doxygen](http://www.stack.nl/~dimitri/doxygen/) *(optional for generating
   the documentation)*
 
 You will also need a recent enough compiler compliant with the C++11 standard.
-Lattice Builder is known to compile using:
+Lattice Builder is **known to compile** using:
+
 * [GCC](http://gcc.gnu.org/) 4.8 or 4.9 on Linux
 * [clang](http://clang.llvm.org/) 3.6.0 on Linux
+* Apple LLVM version 6.0 (based on LLVM 3.5svn) on MacOS
 
 **MacOS** users can install these dependencies through
 [MacPorts](http://www.macports.org/) by [installing the MacPorts
