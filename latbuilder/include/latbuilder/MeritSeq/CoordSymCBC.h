@@ -208,13 +208,14 @@ public:
             m_seq(&seq),
             m_lat(m_seq->latSeq().begin()),
             m_prod(m_seq->prodSeq().begin()),
-            m_value(computeValue())
+            m_cached(false)
          {}
 
          const_iterator(const Seq& seq, const end&):
             m_seq(&seq),
             m_lat(m_seq->latSeq().end()),
-            m_prod(m_seq->prodSeq().end())
+            m_prod(m_seq->prodSeq().end()),
+            m_cached(false)
          {}
 
          /**
@@ -236,13 +237,19 @@ public:
          { return m_seq == other.m_seq and m_lat == other.m_lat; }
 
          const MeritValue& dereference() const
-         { return m_value;  }
+         {
+            if (not m_cached) {
+               m_value = computeValue();
+               m_cached = true;
+            }
+            return m_value;
+         }
 
          void increment()
          {
             ++m_prod;
             ++m_lat;
-            m_value = computeValue();
+            m_cached = false;
          }
 
          MeritValue computeValue() const
@@ -257,7 +264,8 @@ public:
          const Seq* m_seq;
          typename LatSeq::const_iterator m_lat;
          typename ProdSeq::const_iterator m_prod;
-         MeritValue m_value;
+         mutable bool m_cached;
+         mutable MeritValue m_value;
       };
 
       /**
