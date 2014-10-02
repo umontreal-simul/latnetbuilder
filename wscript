@@ -169,6 +169,12 @@ def configure(ctx):
             ctx.fatal('Python 2.7 is required for building the web interface.\n' +
                       'Get it from http://python.org/')
 
+        # probably MacOS
+        if not ctx.check_python_module('setuptools', mandatory=False):
+            ctx.fatal('The setuptools module is required for building the web interface.\n' +
+                      'Install it with: curl https://bootstrap.pypa.io/ez_setup.py -o - | %s'
+                      % ctx.env.get_flat('PYTHON'))
+
     # examples
     if ctx.options.build_examples:
         ctx.env.BUILD_EXAMPLES = True
