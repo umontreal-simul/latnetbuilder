@@ -64,8 +64,8 @@ public:
    LatSeqBasedSearch(LatSeqBasedSearch&& other):
       LatSeqBasedSearchTraits<TAG>::Search(other.dimension()),
       m_storage(std::move(other.m_storage)),
-      m_figure(std::move(other.m_figure)),
-      m_latSeqOverCBC(std::move(other.m_latSeqOverCBC)),
+      m_figure(other.m_figure.release()),
+      m_latSeqOverCBC(other.m_latSeqOverCBC.release()),
       m_traits(std::move(other.m_traits))
    { m_traits.init(*this); }
 

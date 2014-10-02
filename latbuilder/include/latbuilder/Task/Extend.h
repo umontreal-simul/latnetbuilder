@@ -76,7 +76,7 @@ public:
       Search<LAT>(other.dimension()),
       m_storage(std::move(other.m_storage)),
       m_figure(std::move(other.m_figure)),
-      m_latSeqOverCBC(std::move(other.m_latSeqOverCBC)),
+      m_latSeqOverCBC(other.m_latSeqOverCBC.release()),
       m_baseLat(std::move(other.m_baseLat))
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
 

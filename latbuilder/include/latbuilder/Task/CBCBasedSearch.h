@@ -62,8 +62,8 @@ public:
    CBCBasedSearch(CBCBasedSearch&& other) :
       CBCBasedSearchTraits<TAG>::Search(other.dimension()),
       m_storage(std::move(other.m_storage)),
-      m_figure(std::move(other.m_figure)),
-      m_cbc(std::move(other.m_cbc)),
+      m_figure(other.m_figure.release()),
+      m_cbc(other.m_cbc.release()),
       m_traits(std::move(other.m_traits))
    { m_traits.init(*this); }
 
