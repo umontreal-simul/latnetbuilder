@@ -40,7 +40,7 @@ struct CommandLine<LatBuilder::LatType::ORDINARY> {
    std::string normType;
    std::string figure;
    std::vector<std::string> weights;
-   Real weightsPowerScale;
+   Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
 
    std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::ORDINARY>> parse() const;
