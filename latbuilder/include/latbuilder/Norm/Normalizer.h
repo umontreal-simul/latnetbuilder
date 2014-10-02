@@ -50,7 +50,10 @@ public:
     * \param norm          Normalization function.
     */
    Normalizer(Norm norm):
-      m_norm(std::move(norm))
+      m_norm(std::move(norm)),
+      m_cachedNorm(0),
+      m_cachedSizeParam(0),
+      m_cachedDimension(0)
    {}
 
    /**
@@ -97,7 +100,10 @@ public:
     * \param norm          Normalization function.
     */
    Normalizer(Norm norm):
-      m_norm(std::move(norm))
+      m_norm(std::move(norm)),
+      m_cachedNorm(0),
+      m_cachedSizeParam(0),
+      m_cachedDimension(0)
    {}
 
    /**
