@@ -15,6 +15,7 @@ class check_output(Task.Task):
         if ret == Task.SKIP_ME:
             if getattr(Options.options, 'all_tests', False):
                 return Task.RUN_ME
+        return ret
 
     def run(self):
         # check that the output is consistent
