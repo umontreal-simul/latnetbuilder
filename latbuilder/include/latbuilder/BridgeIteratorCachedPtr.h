@@ -23,6 +23,7 @@
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <limits>
 #include <memory>
+#include <stdexcept>
 
 namespace LatBuilder {
 
@@ -84,6 +85,10 @@ private:
 
    const value_type& dereference() const
    {
+#ifndef NDEBUG
+      if (this->base_reference() == m_seq->base().end())
+         throw std::runtime_error("BridgeIteratorCachedPtr: dereferencing past end of sequence");
+#endif
       if (!m_cached) {
          m_value = m_seq->element(this->base_reference());
          m_cached = true;

@@ -31,6 +31,7 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #include <functional>
+#include <stdexcept>
 
 
 namespace LatBuilder { namespace MeritSeq {
@@ -238,6 +239,10 @@ public:
 
          const MeritValue& dereference() const
          {
+#ifndef NDEBUG
+            if (m_lat == m_seq->latSeq().end())
+               throw std::runtime_error("CoordSymCBC::Seq: dereferencing past end of sequence");
+#endif
             if (not m_cached) {
                m_value = computeValue();
                m_cached = true;

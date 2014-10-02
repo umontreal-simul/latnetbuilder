@@ -20,6 +20,7 @@
 
 #include <boost/iterator/iterator_adaptor.hpp>
 #include <limits>
+#include <stdexcept>
 
 namespace LatBuilder {
 
@@ -75,7 +76,13 @@ private:
    { return m_seq == other.m_seq and this->base_reference() == other.base_reference(); }
 
    value_type dereference() const
-   { return m_seq->element(this->base_reference()); }
+   {
+#ifndef NDEBUG
+      if (this->base_reference() == m_seq->base().end())
+         throw std::runtime_error("BridgeIteratorDynamic: dereferencing past end of sequence");
+#endif
+      return m_seq->element(this->base_reference());
+   }
 
    ptrdiff_t distance_to(const BridgeIteratorDynamic& other) const
    { return m_seq == other.m_seq ? other.base_reference() - this->base_reference() : std::numeric_limits<ptrdiff_t>::max(); }
