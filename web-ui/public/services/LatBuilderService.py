@@ -28,7 +28,12 @@ import sys, os, signal, platform
 
 @ServiceMethod
 def backend_version():
-    return latbuilder.get_version()
+    try:
+        return latbuilder.get_version()
+    except OSError, e:
+        return "ERROR: cannot execute the `latbuilder' program: " + e.strerror
+    except:
+        return "ERROR: unknown error"
 
 
 def sentry_run(pid, fd):
@@ -55,25 +60,27 @@ def latbuilder_exec(*args):
     process = latbuilder.LatBuilderProcess(*args) 
     cmd = ' '.join(arg.startswith('--') and arg or '"{}"'.format(arg)
             for arg in process.command)
-    process.start()
-
-    # we start a bogus process that waits for data on stdin
-    # to detect if the connection is lost
-    sentry = Process(target=sentry_run, args=(process.process.pid, sys.stdin.fileno()))
-    sentry.start()
-
     try:
+        process.start()
+
+        # we start a bogus process that waits for data on stdin
+        # to detect if the connection is lost
+        sentry = Process(target=sentry_run, args=(process.process.pid, sys.stdin.fileno()))
+        sentry.start()
+
         r = process.result()
         sentry.terminate()
         if not r:
             if process.process.returncode == 0:
                 return "ERROR: Aborted"
             else:
-                return "ERROR:\ncommand: " + cmd + "\nouput: " + process.output
+                return "ERROR: command: " + cmd + "\nouput: " + process.output
         else:
             return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
     except OSError, e:
-        return "ERROR:\ncannot execute the `latbuilder' program: " + e.strerror
+        return "ERROR: cannot execute the `latbuilder' program: " + e.strerror
+    except:
+        return "ERROR: unknown error"
 
 
 @ServiceMethod
