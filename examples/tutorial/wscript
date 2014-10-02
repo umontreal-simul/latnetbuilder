@@ -6,6 +6,9 @@ from waflib import Task, Options, Utils
 class check_output(Task.Task):
 
     def runnable_status(self):
+        if self.generator.bld.variant == 'debug':
+            print("WARNING: skipping output verification for the `debug' variant")
+            return Task.SKIP_ME
         if getattr(Options.options, 'no_tests', False):
             return Task.SKIP_ME
         ret = super(check_output, self).runnable_status()
