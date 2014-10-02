@@ -149,8 +149,8 @@ def configure(ctx):
     if ctx.options.build_docs:
         ctx.env.BUILD_DOCS = True
         if not ctx.find_program('doxygen', var='DOXYGEN', mandatory=False):
-            print('WARNING: Doxygen is required for building documentation.')
-            print('         Get it from http://www.stack.nl/~dimitri/doxygen/')
+            ctx.fatal('Doxygen is required for building documentation.\n' +
+                      'Get it from http://www.stack.nl/~dimitri/doxygen/')
 
     # Web UI requirements
     if ctx.options.build_web_ui:
@@ -158,16 +158,16 @@ def configure(ctx):
         # Git
         ctx.env.BUILD_WEB_UI = True
         if not ctx.find_program('git', var='GIT', mandatory=False):
-            print('WARNING: Git is required for building the web interface.')
-            print('         Get it from http://git-scm.com/')
+            ctx.fatal('Git is required for building the web interface.\n' +
+                      'Get it from http://git-scm.com/')
 
         # Python
         ctx.find_program('python2', var='PYTHONx', mandatory=False)
         ctx.env.PYTHON = ctx.env.PYTHONx # force detection and usage of Python 2
         ret = ctx.check_python_version(minver=(2,7), mandatory=False)
         if not ctx.env.PYTHON_VERSION or int(ctx.env.PYTHON_VERSION.split('.')[0]) > 2:
-            print('WARNING: Python 2.7 is required for building the web interface.')
-            print('         Get it from http://python.org/')
+            ctx.fatal('Python 2.7 is required for building the web interface.\n' +
+                      'Get it from http://python.org/')
 
     # examples
     if ctx.options.build_examples:
