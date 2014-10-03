@@ -72,8 +72,6 @@ public:
       m_baseMerit(this->storage().createMeritValue(0.0))
    {}
 
-   CBC(CBC&&) = default;
-
    /**
     * Resets the state of the CBC algorithm to dimension 0.
     */
