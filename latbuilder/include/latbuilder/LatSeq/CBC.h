@@ -113,7 +113,13 @@ public:
       { return m_seq == other.m_seq and this->base_reference() == other.base_reference(); }
 
       const value_type& dereference() const
-      { return m_value;  }
+      {
+#ifndef NDEBUG
+         if (this->base_reference() == m_seq->genSeq().end())
+            throw std::runtime_error("LatSeq::CBC: dereferencing past end of sequence");
+#endif
+         return m_value;
+      }
 
       ptrdiff_t distance_to(const const_iterator& other) const
       { return m_seq == other.m_seq ? other.base_reference() - this->base_reference() : std::numeric_limits<ptrdiff_t>::max(); }
