@@ -163,6 +163,7 @@ public:
    { connectSignals(); }
 
    Search(Search&& other):
+      Task(std::move(other)),
       m_onLatticeSelected(other.m_onLatticeSelected.release()),
       m_dimension(other.m_dimension),
       m_bestLat(std::move(other.m_bestLat)),

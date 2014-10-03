@@ -60,12 +60,12 @@ public:
    { m_traits.init(*this); }
 
    CBCBasedSearch(CBCBasedSearch&& other) :
-      CBCBasedSearchTraits<TAG>::Search(other.dimension()),
+      CBCBasedSearchTraits<TAG>::Search(std::move(other)),
       m_storage(std::move(other.m_storage)),
       m_figure(other.m_figure.release()),
       m_cbc(other.m_cbc.release()),
       m_traits(std::move(other.m_traits))
-   { m_traits.init(*this); }
+   {}
 
    virtual ~CBCBasedSearch() {}
 

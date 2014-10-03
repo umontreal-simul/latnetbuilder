@@ -73,12 +73,12 @@ public:
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
 
    Extend(Extend&& other):
-      Search<LAT>(other.dimension()),
+      Search<LAT>(std::move(other)),
       m_storage(std::move(other.m_storage)),
       m_figure(std::move(other.m_figure)),
       m_latSeqOverCBC(other.m_latSeqOverCBC.release()),
       m_baseLat(std::move(other.m_baseLat))
-   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
+   {}
 
    virtual ~Extend() {}
 
