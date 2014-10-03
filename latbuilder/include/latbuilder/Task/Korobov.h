@@ -72,7 +72,7 @@ struct LatSeqBasedSearchTraits<KorobovTag<LAT, COMPRESS, FIGURE>> {
    { return FIGURE::evaluationName() + " Korobov search"; }
 
    void init(LatBuilder::Task::Korobov<LAT, COMPRESS, FIGURE>& search) const
-   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }
+   { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 
 TASK_FOR_ALL(TASK_EXTERN_TEMPLATE, LatSeqBasedSearch, Korobov);

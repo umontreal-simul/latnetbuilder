@@ -70,7 +70,7 @@ public:
       m_figure(new FigureOfMerit(std::move(figure))),
       m_latSeqOverCBC(new MeritSeq::LatSeqOverCBC<CBC>(CBC(this->storage(), this->figureOfMerit()))),
       m_baseLat(std::move(baseLat))
-   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
+   { connectCBCProgress(this->cbc(), this->minObserver(), this->filters().empty()); }
 
    Extend(Extend&& other):
       Search<LAT>(std::move(other)),

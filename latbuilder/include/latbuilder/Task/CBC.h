@@ -67,7 +67,7 @@ struct CBCBasedSearchTraits<CBCTag<LAT, COMPRESS, FIGURE>> {
    { return FIGURE::evaluationName() + " CBC"; }
 
    void init(LatBuilder::Task::CBC<LAT, COMPRESS, FIGURE>& search) const
-   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }
+   { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 
 TASK_FOR_ALL(TASK_EXTERN_TEMPLATE, CBCBasedSearch, CBC);

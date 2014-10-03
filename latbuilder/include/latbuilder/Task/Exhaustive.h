@@ -70,7 +70,7 @@ struct LatSeqBasedSearchTraits<ExhaustiveTag<LAT, COMPRESS, FIGURE>> {
    { return FIGURE::evaluationName() + " exhaustive search"; }
 
    void init(LatBuilder::Task::Exhaustive<LAT, COMPRESS, FIGURE>& search) const
-   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }
+   { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 
 TASK_FOR_ALL(TASK_EXTERN_TEMPLATE, LatSeqBasedSearch, Exhaustive);

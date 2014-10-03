@@ -28,7 +28,7 @@
 namespace LatBuilder { namespace Task {
 
 /**
- * Traits for figures of merit.
+ * Glue for connecting search algorithms to the appropriate CBC algorithm.
  *
  * \tparam LAT          Type of lattice.
  * \tparam COMPRESS     Type of compression.
@@ -50,40 +50,11 @@ struct FigureOfMeritTraits;
 template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC>
 struct FigureOfMeritTraits<LAT, COMPRESS, WeightedFigureOfMerit<PROJDEP, ACC>> {
    typedef MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC> CBC;
-   /**
-    * Utility function to connect WeightedFigureOfMerit::OnProgress with
-    * Search::MinObserver.
-    */
-   template <class SEARCH> static void init(SEARCH& search)
-   {
-      typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
-      typedef bool (SEARCH::MinObserver::*ProgressCallback)(const MeritValue&) const;
-      ProgressCallback progress = &SEARCH::MinObserver::progress;
-
-      // We want to interrupt the evaluation of the figure of merit when it
-      // reaches a value larger than that threshold, so we pass the partial
-      // sum/max through the low-pass filter.
-      //
-      // Connect the onProgress signal to the function that checks that the
-      // current minimum value is greater than the partial sum/max.
-      //
-      // NOTE: this doesn't work for embedded lattices.
-      search.cbc().evaluator().onProgress().connect(boost::bind(
-               progress,
-               &search.minObserver(),
-               _1
-               ));
-
-      // truncate the sum over projections only if no filters are applied
-      // downstream
-      search.minObserver().setTruncateSum(search.filters().empty());
-   }
 };
 
 template <LatType LAT, Compress COMPRESS, class KERNEL>
 struct FigureOfMeritTraits<LAT, COMPRESS, CoordSymFigureOfMerit<KERNEL>> {
    typedef MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordSymInnerProd> CBC;
-   template <class SEARCH> static void init(SEARCH& search) {}
 };
 
 }}

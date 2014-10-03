@@ -94,7 +94,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
 
    void init(LatBuilder::Task::Random<LAT, COMPRESS, FIGURE>& search) const
    {
-      FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search);
+      connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty());
       search.minObserver().setMaxAcceptedCount(numRand);
    }
 

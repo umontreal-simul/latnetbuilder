@@ -89,7 +89,7 @@ struct CBCBasedSearchTraits<RandomCBCTag<LAT, COMPRESS, FIGURE>> {
 
    void init(LatBuilder::Task::RandomCBC<LAT, COMPRESS, FIGURE>& search) const
    {
-      FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search);
+      connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty());
       search.minObserver().setMaxAcceptedCount(numRand);
    }
 

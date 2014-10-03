@@ -68,7 +68,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, CoordSymFigureOfMerit<KERN
    { return "fast CBC"; }
 
    void init(LatBuilder::Task::FastCBC<LAT, COMPRESS, FigureOfMerit>& search) const
-   { FigureOfMeritTraits<LAT, COMPRESS, FigureOfMerit>::init(search); }
+   { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 
 // specialization for other figures of merit
@@ -94,7 +94,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, FIGURE>> {
    { return "unimplemented fast CBC"; }
 
    void init(LatBuilder::Task::FastCBC<LAT, COMPRESS, FIGURE>& search) const
-   { throw std::runtime_error("fast CBC not implemented for this type of figure of merit"); }
+   { throw std::runtime_error("fast CBC is implemented only for coordinate-symmetric figures of merit"); }
 };
 
 TASK_FOR_ALL_COORDSYM(TASK_EXTERN_TEMPLATE, CBCBasedSearch, FastCBC);

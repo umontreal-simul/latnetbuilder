@@ -77,7 +77,7 @@ struct CBCBasedSearchTraits<EvalTag<LAT, COMPRESS, FIGURE>> {
    { return FIGURE::evaluationName() + " evaluation"; }
 
    void init(LatBuilder::Task::Eval<LAT, COMPRESS, FIGURE>& search) const
-   { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }
+   { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 
    GeneratingVector genVec;
 };

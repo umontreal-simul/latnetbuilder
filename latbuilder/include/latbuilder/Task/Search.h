@@ -24,6 +24,10 @@
 #include "latbuilder/Functor/MinElement.h"
 #include "latbuilder/Functor/LowPass.h"
 
+// for the connect functions
+#include "latbuilder/MeritSeq/CBC.h"
+#include "latbuilder/MeritSeq/CoordSymCBC.h"
+
 #include <boost/signals2.hpp>
 
 #include <memory>
@@ -322,6 +326,40 @@ private:
                ));
    }
 };
+
+
+/**
+ * Connects WeightedFigureOfMerit::OnProgress with an Search::MinObserver::progress
+ * function and activates Search::MinObserver::setTruncateSum().
+ */
+template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC, class OBSERVER>
+void connectCBCProgress(const MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC>& cbc, OBSERVER& obs, bool truncateSum) {
+   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef bool (OBSERVER::*ProgressCallback)(const MeritValue&) const;
+   ProgressCallback progress = &OBSERVER::progress;
+
+   // We want to interrupt the evaluation of the figure of merit when it
+   // reaches a value larger than that threshold, so we pass the partial
+   // sum/max through the low-pass filter.
+   //
+   // Connect the onProgress signal to the function that checks that the
+   // current minimum value is greater than the partial sum/max.
+   //
+   // NOTE: this doesn't work for embedded lattices.
+   cbc.evaluator().onProgress().connect(boost::bind(progress, &obs, _1));
+
+   // truncate the sum over projections only if no filters are applied
+   // downstream
+   obs.setTruncateSum(truncateSum);
+}
+
+/**
+ * Does nothing.
+ */
+template <LatType LAT, Compress COMPRESS, class KERNEL, template <LatType, Compress> class PROD, class OBSERVER>
+void connectCBCProgress(const MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
+   // nothing to do with coordinate-symmetric CBC
+}
 
 }}
 
