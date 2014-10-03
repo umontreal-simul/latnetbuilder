@@ -139,13 +139,41 @@ requirements on the members of a class; unlike interfaces, the data types of the
 arguments and of the return value of a member function can differ across classes
 implementing the same concept.  Furthermore, a concept can require type
 definitions (typedefs or nested classes) inside of a class.
+A well-known example of concept it that of \c iterator or of \c const_iterator
+from the STL.
 
 Although requirements on the types are not explicited with concepts
-definitions are absent from Lattice Builder, but the code is built around the
+definitions in Lattice Builder, but the code is built around the
 idiom of concepts.
 
 By convention in Lattice Builder, classes representing the same concept are
 regrouped in the same namespace.
+
+The most important concepts are described by means of example in the \ref
+libtut.
+
+
+
+\section impl_memory Memory Management
+
+In Lattice Builder, when a non-trivial object is no longer needed in its scope
+after it is passed as an argument to a constructor or factory function, it is
+generally std::move()'d to the constructor or function in question.
+The compiler takes care of using the default move constructor on the object
+that is passed to the constructor and thus avoids copying the object, which can
+safely be stored as a class member of the `owner' object.
+Generator sequences (see the GenSeq namespace) are an example of non-trivial
+objects that are transferred to other  ̀owner' objects using this mechanism.
+Weights objects, such as instances of LatCommon::ProductWeights or of
+LatCommon::ProjectionDependentWeights, are other examples of non-trivial
+objects, but because they are polymorphic, they are stored using a
+std::unique_ptr, which in turn, is passed using either std::move() or,
+equivalently, std::unique_ptr::release().
+There are a few exceptions to that ownership policy, notably figures of merit
+like instances of WeightedFigureOfMerit or of CoordSymFigureOfMerit.
+Some classes store references to such objects, so the objects themselves are
+also stored using std::unique_ptr so that references remain valid even after
+the object ownership has changed.
 
 
 
