@@ -19,7 +19,6 @@
 #define LATBUILDER__TASK__CBC_H
 
 #include "latbuilder/Task/CBCBasedSearch.h"
-#include "latbuilder/Task/FigureOfMeritTraits.h"
 #include "latbuilder/Task/macros.h"
 
 #include "latbuilder/WeightedFigureOfMerit.h"
@@ -53,7 +52,7 @@ struct CBCBasedSearchTraits<CBCTag<LAT, COMPRESS, FIGURE>> {
    typedef LatBuilder::Task::Search<LAT> Search;
    typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
    typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::CBC CBC;
+   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
    typedef GenSeq::CoprimeIntegers<COMPRESS> GenSeqType;
 
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension) const

@@ -19,7 +19,6 @@
 #define LATBUILDER__TASK__EXTEND_H
 
 #include "latbuilder/Task/Search.h"
-#include "latbuilder/Task/FigureOfMeritTraits.h"
 #include "latbuilder/Task/macros.h"
 
 #include "latbuilder/MeritSeq/LatSeqOverCBC.h"
@@ -56,7 +55,7 @@ template <LatType LAT, Compress COMPRESS, class FIGURE>
 class Extend : public Search<LAT> {
 public:
    typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::CBC CBC;
+   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
    typedef typename CBC::FigureOfMerit FigureOfMerit;
    typedef typename Storage::SizeParam SizeParam;
 

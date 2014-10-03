@@ -19,7 +19,6 @@
 #define LATBUILDER__TASK__FAST_CBC_H
 
 #include "latbuilder/Task/CBCBasedSearch.h"
-#include "latbuilder/Task/FigureOfMeritTraits.h"
 #include "latbuilder/Task/macros.h"
 
 #include "latbuilder/CoordSymFigureOfMerit.h"
@@ -78,7 +77,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, FIGURE>> {
    typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
    typedef FIGURE FigureOfMerit;
    typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::CBC CBC;
+   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
    typedef GenSeq::CyclicGroup<COMPRESS> GenSeqType;
 
    virtual ~CBCBasedSearchTraits() {}

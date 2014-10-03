@@ -24,6 +24,11 @@
 #include "latbuilder/Functor/MinElement.h"
 #include "latbuilder/Functor/LowPass.h"
 
+// for CBCSelector
+#include "latbuilder/WeightedFigureOfMerit.h"
+#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/Storage.h"
+
 // for the connect functions
 #include "latbuilder/MeritSeq/CBC.h"
 #include "latbuilder/MeritSeq/CoordSymCBC.h"
@@ -325,6 +330,37 @@ private:
                _1
                ));
    }
+};
+
+
+/**
+ * Selector the proper CBC algorithm, given a figure of merit.
+ *
+ * \tparam LAT          Type of lattice.
+ * \tparam COMPRESS     Type of compression.
+ * \tparam FIGURE       Type of figure of merit.
+ *
+ * Supported types of figures of merit: any instance of the
+ * WeightedFigureOfMerit or of the CoordSymFigureOfMerit templates.
+ *
+ * These traits define:
+ * - a CBC type that is a component-by-component merit sequence (either an
+ *   instance of MeritSeq::CBC or of MeritSeq::CoordSymCBC) that is appropriate
+ *   for use with the FIGURE type;
+ * - an init() function that takes an instance of Task::Search as its argument
+ *   and that performs special actions depending on the type of CBC algorithm.
+ */
+template <LatType LAT, Compress COMPRESS, class FIGURE>
+struct CBCSelector;
+
+template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC>
+struct CBCSelector<LAT, COMPRESS, WeightedFigureOfMerit<PROJDEP, ACC>> {
+   typedef MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC> CBC;
+};
+
+template <LatType LAT, Compress COMPRESS, class KERNEL>
+struct CBCSelector<LAT, COMPRESS, CoordSymFigureOfMerit<KERNEL>> {
+   typedef MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordSymInnerProd> CBC;
 };
 
 
