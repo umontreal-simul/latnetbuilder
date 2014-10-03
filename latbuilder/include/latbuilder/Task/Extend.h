@@ -67,7 +67,7 @@ public:
          ):
       Search<LAT>(baseLat.dimension()),
       m_storage(std::move(storage)),
-      m_figure(std::move(figure)),
+      m_figure(new FigureOfMerit(std::move(figure))),
       m_latSeqOverCBC(new MeritSeq::LatSeqOverCBC<CBC>(CBC(this->storage(), this->figureOfMerit()))),
       m_baseLat(std::move(baseLat))
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(*this); }
@@ -75,7 +75,7 @@ public:
    Extend(Extend&& other):
       Search<LAT>(std::move(other)),
       m_storage(std::move(other.m_storage)),
-      m_figure(std::move(other.m_figure)),
+      m_figure(other.m_figure.release()),
       m_latSeqOverCBC(other.m_latSeqOverCBC.release()),
       m_baseLat(std::move(other.m_baseLat))
    {}
@@ -113,7 +113,7 @@ public:
     * Returns the figure of merit.
     */
    const FigureOfMerit& figureOfMerit() const
-   { return m_figure; }
+   { return *m_figure; }
 
    /**
     * Returns the base lattice on which to extend.
@@ -146,7 +146,7 @@ protected:
 
 private:
    Storage m_storage;
-   FigureOfMerit m_figure;
+   std::unique_ptr<FigureOfMerit> m_figure;
    std::unique_ptr<MeritSeq::LatSeqOverCBC<CBC>> m_latSeqOverCBC;
    LatDef<LAT> m_baseLat;
 };
