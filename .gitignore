@@ -1,3 +1,5 @@
 __pycache__
 .waf*
 .lock-waf_*
+build
+VERSION
