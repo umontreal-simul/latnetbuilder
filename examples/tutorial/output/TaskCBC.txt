@@ -34,14 +34,14 @@ dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 99, 27]): 0.0239383
 ------------------------------------------------------------------------
-construction: CBC
+construction: projection-by-projection CBC
 figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2 (symmetric), weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 99, 27]): 0.0239383
 ------------------------------------------------------------------------
-construction: CBC
+construction: projection-by-projection CBC
 figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2 (symmetric), weights=ProductWeights([], default=0.7))
 size parameter: 2^8
 dimension: 3
