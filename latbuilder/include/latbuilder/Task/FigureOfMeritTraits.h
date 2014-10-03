@@ -27,13 +27,29 @@
 
 namespace LatBuilder { namespace Task {
 
+/**
+ * Traits for figures of merit.
+ *
+ * \tparam LAT          Type of lattice.
+ * \tparam COMPRESS     Type of compression.
+ * \tparam FIGURE       Type of figure of merit.
+ *
+ * Supported types of figures of merit: any instance of the
+ * WeightedFigureOfMerit or of the CoordSymFigureOfMerit templates.
+ *
+ * These traits define:
+ * - a CBC type that is a component-by-component merit sequence (either an
+ *   instance of MeritSeq::CBC or of MeritSeq::CoordSymCBC) that is appropriate
+ *   for use with the FIGURE type;
+ * - an init() function that takes an instance of Task::Search as its argument
+ *   and that performs special actions depending on the type of CBC algorithm.
+ */
 template <LatType LAT, Compress COMPRESS, class FIGURE>
 struct FigureOfMeritTraits;
 
 template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC>
 struct FigureOfMeritTraits<LAT, COMPRESS, WeightedFigureOfMerit<PROJDEP, ACC>> {
    typedef MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC> CBC;
-   static std::string prefix() { return ""; }
    /**
     * Utility function to connect WeightedFigureOfMerit::OnProgress with
     * Search::MinObserver.
@@ -67,7 +83,6 @@ struct FigureOfMeritTraits<LAT, COMPRESS, WeightedFigureOfMerit<PROJDEP, ACC>> {
 template <LatType LAT, Compress COMPRESS, class KERNEL>
 struct FigureOfMeritTraits<LAT, COMPRESS, CoordSymFigureOfMerit<KERNEL>> {
    typedef MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordSymInnerProd> CBC;
-   static std::string prefix() { return "coordinate-symmetric "; }
    template <class SEARCH> static void init(SEARCH& search) {}
 };
 

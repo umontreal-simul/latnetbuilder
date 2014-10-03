@@ -67,7 +67,7 @@ struct LatSeqBasedSearchTraits<ExhaustiveTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "exhaustive search"; }
+   { return FIGURE::evaluationName() + " exhaustive search"; }
 
    void init(LatBuilder::Task::Exhaustive<LAT, COMPRESS, FIGURE>& search) const
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }

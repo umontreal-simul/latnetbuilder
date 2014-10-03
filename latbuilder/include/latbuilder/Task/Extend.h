@@ -136,7 +136,7 @@ public:
 protected:
    virtual void format(std::ostream& os) const
    {
-      std::string name = FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "extension of the number of points";
+      std::string name = FIGURE::evaluationName() + " extension of the number of points";
       os << "construction: " << name << std::endl;
       os << "figure of merit: " << figureOfMerit() << std::endl;
       os << "base lattice: " << baseLat() << std::endl;

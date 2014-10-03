@@ -85,7 +85,7 @@ struct CBCBasedSearchTraits<RandomCBCTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "random CBC (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return FIGURE::evaluationName() + " random CBC (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
 
    void init(LatBuilder::Task::RandomCBC<LAT, COMPRESS, FIGURE>& search) const
    {

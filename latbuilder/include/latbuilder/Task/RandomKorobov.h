@@ -83,7 +83,7 @@ struct LatSeqBasedSearchTraits<RandomKorobovTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "random Korobov search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return FIGURE::evaluationName() + " random Korobov search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
 
    void init(LatBuilder::Task::RandomKorobov<LAT, COMPRESS, FIGURE>& search) const
    {

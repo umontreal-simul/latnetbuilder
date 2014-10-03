@@ -69,7 +69,7 @@ struct LatSeqBasedSearchTraits<KorobovTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "Korobov search"; }
+   { return FIGURE::evaluationName() + " Korobov search"; }
 
    void init(LatBuilder::Task::Korobov<LAT, COMPRESS, FIGURE>& search) const
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }

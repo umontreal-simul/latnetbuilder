@@ -73,6 +73,9 @@ public:
    std::string name() const
    { return "CS:" + kernel().name(); }
 
+   static std::string evaluationName()
+   { return "coordinate-symmetric"; }
+
    Real normType() const
    { return 2.0; }
 

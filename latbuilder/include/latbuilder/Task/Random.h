@@ -90,7 +90,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "random search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return FIGURE::evaluationName() + " random search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
 
    void init(LatBuilder::Task::Random<LAT, COMPRESS, FIGURE>& search) const
    {

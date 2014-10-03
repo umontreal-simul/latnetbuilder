@@ -64,7 +64,7 @@ struct CBCBasedSearchTraits<CBCTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::prefix() + "CBC"; }
+   { return FIGURE::evaluationName() + " CBC"; }
 
    void init(LatBuilder::Task::CBC<LAT, COMPRESS, FIGURE>& search) const
    { FigureOfMeritTraits<LAT, COMPRESS, FIGURE>::init(search); }

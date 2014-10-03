@@ -139,6 +139,9 @@ public:
    std::string name() const
    { return Accumulator<ACC, Real>::name() + ":" + projDepMerit().name(); }
 
+   static std::string evaluationName()
+   { return "projection-by-projection"; }
+
 private:
    Real m_normType;
    std::unique_ptr<LatCommon::Weights> m_weights;
