@@ -22,7 +22,11 @@
 
 namespace LatBuilder {
 
-/// Compression types for vectors and matrices.
+/**
+ * Compression types for vectors and matrices.
+ *
+ * \see CompressTraits<Compress::NONE> CompressTraits<Compress::SYMMETRIC>
+ */
 template <Compress COMPRESS>
 struct CompressTraits;
 

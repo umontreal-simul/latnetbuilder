@@ -26,6 +26,13 @@
 
 namespace LatBuilder { namespace Task {
 
+/**
+ * Traits for CBCBasedSearch.
+ *
+ * A specialization for the CBCBasedSearchTraits class
+ * must define the \c Storage and \c CBC types, together with the static
+ * \c init(), \c genSeqs() and \c name() functions.
+ */
 template <class>
 struct CBCBasedSearchTraits;
 
@@ -33,10 +40,6 @@ struct CBCBasedSearchTraits;
  * Component-by-component search task.
  *
  * \tparam TAG Tag class.
- *
- * A specialization for the CBCBasedSearchTraits class must be available and
- * must define the \c Storage and \c CBC types, together with the static
- * \c init(), \c genSeqs() and \c name() functions.
  */
 template <class TAG>
 class CBCBasedSearch : public CBCBasedSearchTraits<TAG>::Search {

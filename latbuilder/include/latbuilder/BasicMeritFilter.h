@@ -25,6 +25,9 @@ namespace LatBuilder {
 
 /**
  * Traits class template for filters of merit values.
+ *
+ * It defines MeritValue as the type of merit value associated to a given type
+ * of lattice.
  */
 template <LatType>
 struct MeritFilterTraits;

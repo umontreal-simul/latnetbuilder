@@ -42,6 +42,17 @@ template <LatType, Compress> class Storage;
 
 /**
  * Storage traits.
+ *
+ * Specializations of this class template must define the types:
+ * - size_type: size type for vectors;
+ * - Compress: a specialization of CompressTraits;
+ * - MeritValue: data type for merit values;
+ * - SizeParam: specilization of LatBuilder::SizeParam;
+ * - Unpermute: operator that maps a logical vector index to a storage index;
+ * - Stride: operator that maps a point index to a storage index (a logical
+ *   vector index is first obtained by multiplying the point index is
+ *   multiplied with the <em>stride</em> factor, an integer value which
+ *   normally corresponds to that of a generating vector component.
  */
 template <class DERIVED>
 struct StorageTraits;

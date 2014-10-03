@@ -27,6 +27,13 @@
 
 namespace LatBuilder { namespace Task {
 
+/**
+ * Traits for LatSeqBasedSearch.
+ *
+ * A specialization for the CBCBasedSearchTraits class
+ * must define the \c Storage and \c CBC types, together with the static \c
+ * init(), \c latSeq() and \c name() functions.
+ */
 template <class>
 struct LatSeqBasedSearchTraits;
 
@@ -34,10 +41,6 @@ struct LatSeqBasedSearchTraits;
  * Search task based on a sequence of lattices.
  *
  * \tparam TAG Tag class.
- *
- * A specialization for the CBCBasedSearchTraits class must be available and
- * must define the \c Storage and \c CBC types, together with the static \c
- * init(), \c latSeq() and \c name() functions.
  */
 template <class TAG>
 class LatSeqBasedSearch : public LatSeqBasedSearchTraits<TAG>::Search {
