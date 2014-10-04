@@ -164,13 +164,15 @@ def configure(ctx):
         # Python
         ctx.find_program('python2', var='PYTHONx', mandatory=False)
         ctx.env.PYTHON = ctx.env.PYTHONx # force detection and usage of Python 2
-        ret = ctx.check_python_version(minver=(2,7), mandatory=False)
+        ctx.check_python_version(minver=(2,7), mandatory=False)
         if not ctx.env.PYTHON_VERSION or int(ctx.env.PYTHON_VERSION.split('.')[0]) > 2:
             ctx.fatal('Python 2.7 is required for building the web interface.\n' +
                       'Get it from http://python.org/')
 
         # probably MacOS
-        if not ctx.check_python_module('setuptools', mandatory=False):
+        try:
+            ctx.check_python_module('setuptools')
+        except:
             ctx.fatal('The setuptools module is required for building the web interface.\n' +
                       'Install it with: curl https://bootstrap.pypa.io/ez_setup.py -o - | %s'
                       % ctx.env.get_flat('PYTHON'))
