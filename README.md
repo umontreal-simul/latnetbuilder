@@ -23,8 +23,15 @@ levels and for their combination into a single merit value.
 
 #### Reference Publication
 
-Details about lattice rules and Lattice Builder can be found in
+Details about lattice rules and Lattice Builder can be found in the paper
 [*Lattice Builder*: A General Software Tool for Constructing Rank-1 Latice Rules](http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf).
+
+#### Manual
+
+Tutorials on using Lattice Builder can be found in the
+[Lattice Builder Manual](http://simul.iro.umontreal.ca/latbuilder/doc/),
+together with a technical reference about its implementation.
+
 
 
 ## Installing Lattice Builder
