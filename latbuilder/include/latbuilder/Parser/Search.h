@@ -37,7 +37,7 @@
 namespace LatBuilder { namespace Parser {
 
 /**
- * Parser for coordinate-symmetric figures of merit.
+ * Parser for coordinate-uniform figures of merit.
  */
 template <LatBuilder::LatType LAT>
 class Search {

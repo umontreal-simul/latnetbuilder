@@ -248,7 +248,7 @@ lattice rule with 8191 points in 5 dimensions using the P<sub>α</sub> criterion
 α=2 and with uniform product weights with value 0.1, issue the following
 command (from the installation directory):
 
-	bin/latbuilder -l ordinary -n 8191 -d 5 -m CS:P2 -w product:0.1 -c CBC
+	bin/latbuilder -l ordinary -n 8191 -d 5 -m CU:P2 -w product:0.1 -c CBC
 
 For more information on using the Lattice Builder program, read the [Lattice
 Builder command line
@@ -331,7 +331,7 @@ With clang, just replace `g++` with `clang++`.
 
 ### What construction type should I use to find good high-dimensional lattices in reasonable time?
 
-Fast CBC with a coordinate-symmetric figure of merit.
+Fast CBC with a coordinate-uniform figure of merit.
 
 For example, the following command line performs a fast CBC construction using
 the weighted P<sub>α</sub> criterion with α=2 and with product weights giving
@@ -339,11 +339,11 @@ the same weight of 0.01 to every coordinate (this means a weight of
 10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections
 of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
 
-	latbuilder -l ordinary -n 2^16 -d 100 -m CS:P2 -c fast-CBC -w product:0.01
+	latbuilder -l ordinary -n 2^16 -d 100 -m CU:P2 -c fast-CBC -w product:0.01
 
 The above search is for n=2<sup>16</sup>=65,536 points in dimension 100.  Lattice Builder
 does that very quickly.
 It may be necessary to enclose some arguments in double quotes, depending on
 the shell (command line interpreter), e.g.:
 
-	latbuilder -l "ordinary" -n "2^16" -d "100" -m "CS:P2" -c "fast-CBC" -w "product:0.01"
+	latbuilder -l "ordinary" -n "2^16" -d "100" -m "CU:P2" -c "fast-CBC" -w "product:0.01"

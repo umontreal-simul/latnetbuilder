@@ -478,7 +478,7 @@ type of lattice and of figure of merit under consideration.
 
 First, evaluating a figure of merit for ordinary or for embedded lattices
 imposes different requirement on internal data.
-For example, to evaluate a coordinate-symmetric figure of merit, the values
+For example, to evaluate a coordinate-uniform figure of merit, the values
 \f$\omega(i/n)\f$ of the kernel \f$\omega\f$ for \f$i=0,\dots,n-1\f$ are
 precomputed and stored in a vector for subsequent use.
 For ordinary lattices, the elements of the vector are stored in a natural order
@@ -570,7 +570,7 @@ replacing:
 \snippet tutorial/WeightedFigureOfMerit.cc ProjDepMerit
 with:
 \code
-   typedef ProjDepMerit::CoordSym<Kernel::PAlpha> ProjDep;
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlpha> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(std::move(weights), ProjDep(2));
 \endcode
 
@@ -785,37 +785,37 @@ The resulting code can be found in \ref tutorial/MeritSeqCBCSignals.cc .
 
 
 
-\section libtut_meritseq_coordsym CBC Construction for Coordinate-Symmetric Figures of Merit
+\section libtut_meritseq_coorduni CBC Construction for Coordinate-Uniform Figures of Merit
 
-Figures of merit in a coordinate-symmetric form can be evaluated more
+Figures of merit in a coordinate-uniform form can be evaluated more
 efficiently than the general weighted figures of merit.
 Here, we consider the case of the weighted \f$\mathcal P_\alpha\f$ discrepancy,
 by adapting the code from \ref libtut_meritseq_cbc_simple .
 First, we replace the WeightedFigureOfMerit instance with an instance of
-CoordSymFigureOfMerit:
-\snippet tutorial/MeritSeqCoordSym.cc figure
+CoordUniformFigureOfMerit:
+\snippet tutorial/MeritSeqCoordUniform.cc figure
 The type of weights must be specified as a template argument because a different
 evaluation algorithm is used for different types of weights.
-Then, we replace the MeritSeq::CBC instance with a MeritSeq::CoordSymCBC
+Then, we replace the MeritSeq::CBC instance with a MeritSeq::CoordUniformCBC
 instance:
-\snippet tutorial/MeritSeqCoordSym.cc cbc
-The MeritSeq::CoordSymInnerProd template argument specifies that we want to use
+\snippet tutorial/MeritSeqCoordUniform.cc cbc
+The MeritSeq::CoordUniformInnerProd template argument specifies that we want to use
 a standard inner product during the CBC algorithm.
-The complete example can be found in \ref tutorial/MeritSeqCoordSym.cc.
+The complete example can be found in \ref tutorial/MeritSeqCoordUniform.cc.
 
 
 
 \section libtut_meritseq_fastcbc Fast CBC Construction
 
-Here, we modify the example from \ref libtut_meritseq_coordsym in order to use
-the fast CBC method, which is implemented only with coordinate-symmetric figures
+Here, we modify the example from \ref libtut_meritseq_coorduni in order to use
+the fast CBC method, which is implemented only with coordinate-uniform figures
 of merit.
-First, we need to replace MeritSeq::CoordSymInnerProd with
-MeritSeq::CoordSymInnerProdFast:
+First, we need to replace MeritSeq::CoordUniformInnerProd with
+MeritSeq::CoordUniformInnerProdFast:
 \snippet tutorial/MeritSeqFastCBC.cc cbc
 The fast CBC algorithm requires a special ordering of the generator values, so
 we also need to replace:
-\snippet tutorial/MeritSeqCoordSym.cc Coprime
+\snippet tutorial/MeritSeqCoordUniform.cc Coprime
 with:
 \snippet tutorial/MeritSeqFastCBC.cc Coprime
 Note that instantiating GenSeq::CyclicGroup requires the number of points to be
@@ -836,10 +836,10 @@ currently examined.
 CBC construction can thus output only this one lattice, together with its merit
 value.
 This enables the efficient computation algorithms used in the
-coordinate-symmetric case with standard CBC.
+coordinate-uniform case with standard CBC.
 
 The example in \ref tutorial/MeritSeqNonCBC.cc illustrates how to transform the
-CBC search from \ref libtut_meritseq_coordsym into a Korobov search.
+CBC search from \ref libtut_meritseq_coorduni into a Korobov search.
 First, we create an instance of MeritSeq::LatSeqOverCBC and a sequence of
 Korobov lattice definitions:
 \snippet tutorial/MeritSeqNonCBC.cc latSeqOverCBC
@@ -860,9 +860,9 @@ Then, the whole CBC loop is replaced with the execution of the Korobov search:
     merit when its value has become too large.
 */
 
-/** \example tutorial/MeritSeqCoordSym.cc
+/** \example tutorial/MeritSeqCoordUniform.cc
     This example shows how to instantiate a sequence of merit values computed
-    using a specialized coordinate-symmetric algorithm.
+    using a specialized coordinate-uniform algorithm.
 */
 
 /** \example tutorial/MeritSeqFastCBC.cc
@@ -886,7 +886,7 @@ levels in the case of embedded lattices.
 
 \section libtut_filters_cbc_simple Normalization and Low-Pass
 
-Here we build on the example from \ref libtut_meritseq_coordsym by
+Here we build on the example from \ref libtut_meritseq_coorduni by
 normalizing the merit values and by applying a low-pass filter.
 
 We add a normalizer to our MeritFilterList instance with:
@@ -978,7 +978,7 @@ We also need change the storage type to Storage<LatType::EMBEDDED>:
 \snippet tutorial/FilteredCBC.cc Storage
 This example outputs:
 \verbatim
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 filters: multilevel filters=(normalizer, low-pass), combiner=sum, scalar filters=()
 CBC search for dimension: 1
   base lattice: lattice(2^8, [])
@@ -1064,7 +1064,7 @@ prob	quantile
 
 \section libtut_extending_figure Implementing a New Figure of Merit
 
-Assume that we want to introduce a new coordinate-symmetric figure of merit.
+Assume that we want to introduce a new coordinate-uniform figure of merit.
 The first thing we need to do is to add a new functor and a new kernel, by
 writing the following to \c latbuilder/include/latbuilder/Functor/MyFigure.h:
 \snippet custom-figure.patch.cc functor def
@@ -1078,7 +1078,7 @@ Also make sure to add the relevant include file in
 \c latbuilder/include/latbuilder/Parser/Kernel.h:
 \snippet custom-figure.patch.cc parser header
 Then it should work out of the box if you recompile Lattice Builder, then run
-\c latbuilder with the option <code>--figure-of-merit CS:my-figure</code>.
+\c latbuilder with the option <code>--figure-of-merit CU:my-figure</code>.
 
 
 \section libtut_extending_weights Implementing Custom Weights

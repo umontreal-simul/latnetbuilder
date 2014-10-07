@@ -18,7 +18,7 @@
 #ifndef LATBUILDER__MERIT_SEQ__INNER_PROD_H
 #define LATBUILDER__MERIT_SEQ__INNER_PROD_H
 
-#include "latbuilder/MeritSeq/CoordSymStateCreator.h"
+#include "latbuilder/MeritSeq/CoordUniformStateCreator.h"
 #include "latbuilder/BridgeSeq.h"
 #include "latbuilder/BridgeIteratorCached.h"
 #include "latbuilder/Kernel/Base.h"
@@ -35,10 +35,10 @@ namespace LatBuilder { namespace MeritSeq {
  * single vector.
  */
 template <LatType LAT, Compress COMPRESS>
-class CoordSymInnerProd {
+class CoordUniformInnerProd {
 public:
    typedef Storage<LAT, COMPRESS> InternalStorage;
-   typedef CoordSymStateList<LAT, COMPRESS> StateList;
+   typedef CoordUniformStateList<LAT, COMPRESS> StateList;
    typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
 
    /**
@@ -50,7 +50,7 @@ public:
     *                      one-dimensional lattice point.
     */
    template <class K>
-   CoordSymInnerProd(
+   CoordUniformInnerProd(
          Storage<LAT, COMPRESS> storage,
          const Kernel::Base<K>& kernel
          ):
@@ -107,7 +107,7 @@ public:
        */
       template <typename E>
       Seq(
-            const CoordSymInnerProd& parent, 
+            const CoordUniformInnerProd& parent, 
             GenSeq genSeq,
             const boost::numeric::ublas::vector_expression<E>& vec
          ):
@@ -135,11 +135,11 @@ public:
       /**
        * Returns the parent inner product of this sequence.
        */
-      const CoordSymInnerProd& innerProd() const
+      const CoordUniformInnerProd& innerProd() const
       { return m_parent; }
 
    private:
-      const CoordSymInnerProd& m_parent;
+      const CoordUniformInnerProd& m_parent;
       const RealVector m_constVec;
    };
 

@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latcommon/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latbuilder/Accumulator.h"
@@ -29,8 +29,8 @@
 #include "latbuilder/Norm/PAlphaSL10.h"
 #include "latbuilder/Functor/LowPass.h"
 
-#include "latbuilder/MeritSeq/CoordSymCBC.h"
-#include "latbuilder/MeritSeq/CoordSymInnerProd.h"
+#include "latbuilder/MeritSeq/CoordUniformCBC.h"
+#include "latbuilder/MeritSeq/CoordUniformInnerProd.h"
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
 #include "latbuilder/GenSeq/Creator.h"
 
@@ -75,7 +75,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    auto weights = unique<LatCommon::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   CoordSymFigureOfMerit<Kernel::PAlpha> figure(std::move(weights), 2);
+   CoordUniformFigureOfMerit<Kernel::PAlpha> figure(std::move(weights), 2);
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
@@ -84,7 +84,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));
 
    //! [cbc]
-   auto cbc = MeritSeq::cbc<MeritSeq::CoordSymInnerProd>(storage, figure);
+   auto cbc = MeritSeq::cbc<MeritSeq::CoordUniformInnerProd>(storage, figure);
    //! [cbc]
 
    //! [filters]

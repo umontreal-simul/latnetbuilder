@@ -18,7 +18,7 @@
 #ifndef LATBUILDER__MERIT_SEQ__CONCRETE_COORD_SYM_STATE_P_H
 #define LATBUILDER__MERIT_SEQ__CONCRETE_COORD_SYM_STATE_P_H
 
-#include "latbuilder/MeritSeq/CoordSymState.h"
+#include "latbuilder/MeritSeq/CoordUniformState.h"
 #include "latbuilder/Storage.h"
 
 #include "latcommon/ProductWeights.h"
@@ -28,10 +28,10 @@
 namespace LatBuilder { namespace MeritSeq {
 
 // forward declaration
-template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordSymState;
+template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUniformState;
 
 /**
- * Implementation of CoordSymState for product weights.
+ * Implementation of CoordUniformState for product weights.
  *
  * This formulation is as proposed in \cite rCOO06a .
  * Define
@@ -57,8 +57,8 @@ template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordSymS
  * \f]
  */
 template <LatType LAT, Compress COMPRESS>
-class ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProductWeights> :
-   public CoordSymState<LAT, COMPRESS> {
+class ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProductWeights> :
+   public CoordUniformState<LAT, COMPRESS> {
 public:
    /**
     * Constructor.
@@ -69,18 +69,18 @@ public:
     * \param storage       Storage configuration.
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
-   ConcreteCoordSymState(
+   ConcreteCoordUniformState(
          const Storage<LAT, COMPRESS>& storage,
          const LatCommon::ProductWeights& weights
          ):
-      CoordSymState<LAT, COMPRESS>(storage),
+      CoordUniformState<LAT, COMPRESS>(storage),
       m_weights(weights)
    { reset(); }
 
    void reset();
 
    /**
-    * \copydoc CoordSymState::update()
+    * \copydoc CoordUniformState::update()
     *
     * Computes
     * \f[
@@ -100,9 +100,9 @@ public:
     */
    RealVector weightedState() const;
 
-   /// \copydoc CoordSymState::clone()
-   std::unique_ptr<CoordSymState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordSymState<LAT, COMPRESS>>(new ConcreteCoordSymState(*this)); }
+   /// \copydoc CoordUniformState::clone()
+   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
+   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const LatCommon::ProductWeights& m_weights;
@@ -111,10 +111,10 @@ private:
    RealVector m_state;
 };
 
-extern template class ConcreteCoordSymState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordSymState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProductWeights>;
-extern template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProductWeights>;
 
 }}
 

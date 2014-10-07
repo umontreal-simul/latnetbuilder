@@ -22,7 +22,7 @@
 #include "latbuilder/Task/macros.h"
 
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/MeritSeq/CBC.h"
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
 

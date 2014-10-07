@@ -200,7 +200,7 @@ namespace detail {
 }
 
 /**
- * Evaluator for coordinate-symmetric projeciton-dependent figures of merit.
+ * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
 template <class NORM, LatType LAT, Compress COMPRESS>
 class Evaluator<Spectral<NORM>, LAT, COMPRESS> {

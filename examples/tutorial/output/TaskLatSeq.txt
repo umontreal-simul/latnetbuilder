@@ -1,27 +1,27 @@
 ------------------------------------------------------------------------
-construction: coordinate-symmetric exhaustive search
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform exhaustive search
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 123, 55]): 0.0215366
 ------------------------------------------------------------------------
-construction: coordinate-symmetric random search (10 random samples)
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform random search (10 random samples)
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 47, 65]): 0.0253917
 ------------------------------------------------------------------------
-construction: coordinate-symmetric Korobov search
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform Korobov search
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 37, 89]): 0.0235313
 ------------------------------------------------------------------------
-construction: coordinate-symmetric random Korobov search (10 random samples)
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform random Korobov search (10 random samples)
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()

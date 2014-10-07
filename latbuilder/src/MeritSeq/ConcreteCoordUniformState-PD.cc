@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-PD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-PD.h"
 
 namespace LatBuilder { namespace MeritSeq {
 
@@ -25,10 +25,10 @@ namespace LatBuilder { namespace MeritSeq {
 
 template <LatType LAT, Compress COMPRESS>
 void
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
 reset()
 {
-   CoordSymState<LAT, COMPRESS>::reset();
+   CoordUniformState<LAT, COMPRESS>::reset();
    m_state.clear();
    // empty set
    m_state[LatCommon::Coordinates()] =
@@ -40,7 +40,7 @@ reset()
 
 template <LatType LAT, Compress COMPRESS>
 const RealVector&
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
 createStateVector(const LatCommon::Coordinates& projection, const RealVector& kernelValues)
 {
    auto it = m_state.find(projection);
@@ -71,10 +71,10 @@ createStateVector(const LatCommon::Coordinates& projection, const RealVector& ke
 
 template <LatType LAT, Compress COMPRESS>
 void
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
 update(const RealVector& kernelValues, Modulus gen)
 {
-   CoordSymState<LAT, COMPRESS>::update(kernelValues, gen);
+   CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
    m_gen.push_back(gen);
 
    // Create a new state vector for each projection $\mathfrak u$ such that
@@ -94,7 +94,7 @@ update(const RealVector& kernelValues, Modulus gen)
 
 template <LatType LAT, Compress COMPRESS>
 RealVector
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights>::
 weightedState() const
 {
    using LatCommon::Coordinates;
@@ -121,9 +121,9 @@ weightedState() const
 
 //===========================================================================
 
-template class ConcreteCoordSymState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordSymState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
 
 }}

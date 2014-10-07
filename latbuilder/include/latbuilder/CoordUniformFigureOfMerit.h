@@ -27,10 +27,10 @@
 namespace LatBuilder {
 
 /**
- * Base base class for coordinate-symmetric figures of merit.
+ * Base base class for coordinate-uniform figures of merit.
  */
 template <class KERNEL>
-class CoordSymFigureOfMerit : public FigureOfMerit
+class CoordUniformFigureOfMerit : public FigureOfMerit
 {
 public:
    /**
@@ -41,7 +41,7 @@ public:
     * \param kernel     Kernel (\f$\omega\f$ in the reference paper).  See
     *                   the Kernel namespace for examples.
     */
-   CoordSymFigureOfMerit(
+   CoordUniformFigureOfMerit(
          std::unique_ptr<LatCommon::Weights> weights,
          KERNEL kernel = KERNEL()
          ):
@@ -54,7 +54,7 @@ public:
    { return *m_weights; }
 
    /**
-    * Returns the coordinate-symmetric kernel.
+    * Returns the coordinate-uniform kernel.
     */
    const KERNEL& kernel() const
    { return m_kernel; }
@@ -71,10 +71,10 @@ public:
    { return KERNEL::suggestedCompression(); }
 
    std::string name() const
-   { return "CS:" + kernel().name(); }
+   { return "CU:" + kernel().name(); }
 
    static std::string evaluationName()
-   { return "coordinate-symmetric"; }
+   { return "coordinate-uniform"; }
 
    Real normType() const
    { return 2.0; }
@@ -82,7 +82,7 @@ public:
 protected:
    std::ostream& format(std::ostream& os) const
    {
-      return os << "CoordSymFigureOfMerit("
+      return os << "CoordUniformFigureOfMerit("
          << "kernel=" << kernel() << ", "
          << "weights=" << weights()
          << ")";

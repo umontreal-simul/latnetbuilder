@@ -1,5 +1,5 @@
 construction: fast CBC
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=CombinedWeights(ProductWeights([], default=0.1)))
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=CombinedWeights(ProductWeights([], default=0.1)))
 size parameter: 2^8
 dimension: 10
 filters: scalar filters = (), combiner=sum, multilevel filters = (normalizer(PAlphaSL10), low-pass:1.0)

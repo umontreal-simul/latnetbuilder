@@ -36,7 +36,7 @@
 namespace LatBuilder { namespace ProjDepMerit {
 
 /**
- * Coordinate-symmetric projection-dependent figure of merit.
+ * Coordinate-uniform projection-dependent figure of merit.
  *
  * This type of projection-dependent figure of merit is base on a kernel
  * \f$\omega\f$ such that, for number of points \f$n\f$ and generating vector
@@ -50,17 +50,17 @@ namespace LatBuilder { namespace ProjDepMerit {
  * \tparam KERNEL Kernel \f$\omega\f$.
  */
 template <class KERNEL>
-class CoordSym : public Base<CoordSym<KERNEL>> {
+class CoordUniform : public Base<CoordUniform<KERNEL>> {
 public:
    /**
     * Constructor.
     *
     * \param kernel      Kernel \f$\omega\f$.
     */
-   CoordSym(
+   CoordUniform(
          KERNEL kernel = KERNEL()
          ):
-      Base<CoordSym<KERNEL>>(),
+      Base<CoordUniform<KERNEL>>(),
       m_kernel(std::move(kernel))
    {}
 
@@ -80,18 +80,18 @@ public:
     * Creates an evaluator for the projection-dependent figure of merit.
     */
    template <LatType LAT, Compress COMPRESS>
-   Evaluator<CoordSym, LAT, COMPRESS> evaluator(Storage<LAT, COMPRESS> storage) const
-   { return Evaluator<CoordSym, LAT, COMPRESS>(std::move(storage), kernel().valuesVector(storage)); }
+   Evaluator<CoordUniform, LAT, COMPRESS> evaluator(Storage<LAT, COMPRESS> storage) const
+   { return Evaluator<CoordUniform, LAT, COMPRESS>(std::move(storage), kernel().valuesVector(storage)); }
 
 private:
    KERNEL m_kernel;
 };
 
 /**
- * Evaluator for coordinate-symmetric projeciton-dependent figures of merit.
+ * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
 template <class KERNEL, LatType LAT, Compress COMPRESS>
-class Evaluator<CoordSym<KERNEL>, LAT, COMPRESS> {
+class Evaluator<CoordUniform<KERNEL>, LAT, COMPRESS> {
 public:
    typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
 
@@ -113,7 +113,7 @@ public:
          ) const
    {
       if (projection.size() == 0)
-         throw std::logic_error("CoordSym: undefined for an empty projection");
+         throw std::logic_error("CoordUniform: undefined for an empty projection");
 
 #ifdef DEBUG
       using TextStream::operator<<;

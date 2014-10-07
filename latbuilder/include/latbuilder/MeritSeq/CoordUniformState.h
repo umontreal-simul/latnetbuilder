@@ -26,13 +26,13 @@
 namespace LatBuilder { namespace MeritSeq {
 
 /**
- * Base base class for states used in the evaluation coordinate-symmetric
+ * Base base class for states used in the evaluation coordinate-uniform
  * figures of merit.
  *
  * The complete state is stored internally and can be updated with update().
  * The weighted state can be obtained with #weightedState().
  *
- * \sa CoordSymEval
+ * \sa CoordUniformEval
  *
  * \note By taking a RealVector as a parameter, calls to update() force a copy
  * from some boost::numeric::ublas::vector_expression<E> to a new instance
@@ -40,14 +40,14 @@ namespace LatBuilder { namespace MeritSeq {
  * cannot be a template.
  */
 template <LatType LAT, Compress COMPRESS>
-class CoordSymState {
+class CoordUniformState {
 public:
-   CoordSymState(Storage<LAT, COMPRESS> storage):
+   CoordUniformState(Storage<LAT, COMPRESS> storage):
       m_storage(std::move(storage)),
       m_dimension(0)
    {}
 
-   virtual ~CoordSymState()
+   virtual ~CoordUniformState()
    {}
 
    /**
@@ -90,7 +90,7 @@ public:
    /**
     * Returns a copy of this instance.
     */
-   virtual std::unique_ptr<CoordSymState> clone() const = 0;
+   virtual std::unique_ptr<CoordUniformState> clone() const = 0;
 
 private:
    Storage<LAT, COMPRESS> m_storage;

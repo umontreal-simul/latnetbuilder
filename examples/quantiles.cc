@@ -16,12 +16,12 @@
 // along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "latbuilder/Parser/SizeParam.h"
-#include "latbuilder/Parser/CoordSymFigureOfMerit.h"
+#include "latbuilder/Parser/CoordUniformFigureOfMerit.h"
 #include "latbuilder/Parser/Weights.h"
 #include "latbuilder/Parser/MeritFilterList.h"
 
 #include "latbuilder/MeritSeq/LatSeqOverCBC.h"
-#include "latbuilder/MeritSeq/CoordSymCBC.h"
+#include "latbuilder/MeritSeq/CoordUniformCBC.h"
 #include "latbuilder/LatSeq/Combiner.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/GenSeq/CoprimeIntegers.h"
@@ -141,7 +141,7 @@ int main(int argc, const char *argv[])
    try {
       if (argc < 4 + 1 || argc > 5 + 1) {
          std::cout << "usage: quantiles <size> <dimension> <figure-of-merit> <weights> [<random samples>]" << std::endl;
-         std::cout << "Do not use the prefix `CS:' on <figure-of-merit>; it will be automatically added." << std::endl;
+         std::cout << "Do not use the prefix `CU:' on <figure-of-merit>; it will be automatically added." << std::endl;
          return -1;
       }
 
@@ -158,7 +158,7 @@ int main(int argc, const char *argv[])
       auto size = Parser::SizeParam::parse<LatType::ORDINARY>(sizeSpec);
 
       if (nrand) {
-         Parser::CoordSymFigureOfMerit::parse(
+         Parser::CoordUniformFigureOfMerit::parse(
                "2",
                figureSpec,
                std::move(weights),
@@ -168,7 +168,7 @@ int main(int argc, const char *argv[])
                nrand);
       }
       else {
-         Parser::CoordSymFigureOfMerit::parse(
+         Parser::CoordUniformFigureOfMerit::parse(
                "2",
                figureSpec,
                std::move(weights),

@@ -1,34 +1,34 @@
 ------------------------------------------------------------------------
-construction: coordinate-symmetric CBC
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform CBC
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 99, 27]): 0.0239383
 ------------------------------------------------------------------------
-construction: coordinate-symmetric CBC
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform CBC
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 2^8
 dimension: 3
 filters: scalar filters = (), combiner=select level 8, multilevel filters = ()
 BEST LATTICE: lattice(2^8, [1, 99, 27]): 0.0239383
 ------------------------------------------------------------------------
 construction: fast CBC
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 75, 23]): 0.0239383
 ------------------------------------------------------------------------
-construction: coordinate-symmetric random CBC (5 random samples)
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform random CBC (5 random samples)
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()
 BEST LATTICE: lattice(256, [1, 35, 101]): 0.0229679
 ------------------------------------------------------------------------
-construction: coordinate-symmetric evaluation
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+construction: coordinate-uniform evaluation
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 size parameter: 256
 dimension: 3
 filters: scalar filters = ()

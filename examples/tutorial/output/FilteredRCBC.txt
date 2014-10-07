@@ -1,4 +1,4 @@
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 filters: scalar filters = (normalizer(PAlphaSL10), low-pass)
 CBC search for dimension: 1
   base lattice: lattice(257, [])

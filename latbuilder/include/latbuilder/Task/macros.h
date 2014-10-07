@@ -22,10 +22,10 @@
 
 #include "latbuilder/Types.h"
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/ProjDepMerit/Spectral.h"
 #include "latcommon/NormaBestLat.h"
-#include "latbuilder/ProjDepMerit/CoordSym.h"
+#include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latbuilder/Kernel/RAlpha.h"
 #include "latbuilder/Functor/binary.h"
@@ -44,8 +44,8 @@
 
 #define TASK_ADD_ARG_PROJDEP(func, ...) \
    func(__VA_ARGS__, ProjDepMerit::Spectral<LatCommon::NormaBestLat>); \
-   func(__VA_ARGS__, ProjDepMerit::CoordSym<Kernel::PAlpha>); \
-   func(__VA_ARGS__, ProjDepMerit::CoordSym<Kernel::RAlpha>)
+   func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::PAlpha>); \
+   func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::RAlpha>)
 
 #define TASK_ADD_ARG_KERNEL(func, ...) \
    func(__VA_ARGS__, Kernel::PAlpha); \
@@ -58,7 +58,7 @@
    func(z1, z2, __VA_ARGS__, WeightedFigureOfMerit<x, y>)
 
 #define TASK_ADD_COORDSYM_FIGURE(func, z1, z2, x, ...) \
-   func(z1, z2, __VA_ARGS__, CoordSymFigureOfMerit<x>)
+   func(z1, z2, __VA_ARGS__, CoordUniformFigureOfMerit<x>)
 
 #define TASK_FOR_ALL_WEIGHTED(func, ...) \
    TASK_INDIRECT( \

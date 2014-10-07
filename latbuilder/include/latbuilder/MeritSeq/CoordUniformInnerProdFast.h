@@ -18,7 +18,7 @@
 #ifndef LATBUILDER__MERIT_SEQ__INNER_PROD_FAST_H
 #define LATBUILDER__MERIT_SEQ__INNER_PROD_FAST_H
 
-#include "latbuilder/MeritSeq/CoordSymStateCreator.h"
+#include "latbuilder/MeritSeq/CoordUniformStateCreator.h"
 #include "latbuilder/BridgeSeq.h"
 #include "latbuilder/BridgeIteratorCached.h"
 #include "latbuilder/Storage.h"
@@ -54,7 +54,7 @@ namespace detail {
  * sequence at once.
  */
 template <LatType LAT, Compress COMPRESS>
-class CoordSymInnerProdFast {
+class CoordUniformInnerProdFast {
 
 protected:
    typedef typename fftw<Real>::real_vector FFTRealVector;
@@ -62,7 +62,7 @@ protected:
 
 public:
    typedef Storage<LatType::EMBEDDED, COMPRESS> InternalStorage;
-   typedef CoordSymStateList<LatType::EMBEDDED, COMPRESS> StateList;
+   typedef CoordUniformStateList<LatType::EMBEDDED, COMPRESS> StateList;
    typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
 
    /**
@@ -74,7 +74,7 @@ public:
     *                      one-dimensional lattice point.
     */
    template <class K>
-   CoordSymInnerProdFast(
+   CoordUniformInnerProdFast(
          Storage<LAT, COMPRESS> storage,
          const Kernel::Base<K>& kernel
          ):
@@ -229,7 +229,7 @@ public:
        */
       template <class E>
       Seq(
-            const CoordSymInnerProdFast& parent, 
+            const CoordUniformInnerProdFast& parent, 
             GenSeq genSeq,
             const boost::numeric::ublas::vector_expression<E>& vec
             ):
@@ -241,7 +241,7 @@ public:
       /**
        * Returns the parent inner product of this sequence.
        */
-      const CoordSymInnerProdFast& innerProd() const
+      const CoordUniformInnerProdFast& innerProd() const
       { return m_parent; }
 
       MeritValue element(const typename Base::const_iterator& it) const
@@ -261,7 +261,7 @@ public:
       }
 
    private:
-      const CoordSymInnerProdFast& m_parent;
+      const CoordUniformInnerProdFast& m_parent;
       RealVector m_values;
 
       Real& storeMeritValue(Real& dest, const RealVector& src) const

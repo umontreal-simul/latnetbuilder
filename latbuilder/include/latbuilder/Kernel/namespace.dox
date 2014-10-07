@@ -18,7 +18,7 @@
 namespace LatBuilder {
 
 /**
- * Kernels for coordinate-symmetric figures of merit.
+ * Kernels for coordinate-uniform figures of merit.
  */
 namespace Kernel {
 }}

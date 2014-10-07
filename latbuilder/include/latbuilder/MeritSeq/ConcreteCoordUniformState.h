@@ -21,7 +21,7 @@
 namespace LatBuilder { namespace MeritSeq {
 
 /**
- * Default implementation of CoordSymState that works with any implementation of
+ * Default implementation of CoordUniformState that works with any implementation of
  * LatCommon::Weights.
  *
  * Define
@@ -52,12 +52,12 @@ namespace LatBuilder { namespace MeritSeq {
  * For \f$s=0\f$ and \f$\mathfrak u = \emptyset\f$, we artificially define
  * \f$\mathcal D_0^2 = 0\f$ and \f$\boldsymbol p_{\emptyset} = \boldsymbol 1\f$.
  *
- * See CoordSymCBC for the definition of
+ * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
 template <LatType LAT, Compress COMPRESS, class WEIGHTS>
-class ConcreteCoordSymState :
-   public CoordSymState<LAT, COMPRESS> {
+class ConcreteCoordUniformState :
+   public CoordUniformState<LAT, COMPRESS> {
 public:
    /**
     * Constructor.
@@ -68,17 +68,17 @@ public:
     * \param storage       Storage configuration.
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
-   ConcreteCoordSymState(
+   ConcreteCoordUniformState(
          Storage<LAT, COMPRESS> storage,
          const WEIGHTS& weights
          ):
-      CoordSymState<LAT, COMPRESS>(std::move(storage)),
+      CoordUniformState<LAT, COMPRESS>(std::move(storage)),
       m_weights(weights)
    { reset(); }
 
    void reset()
    {
-	  CoordSymState<LAT, COMPRESS>::reset();
+	  CoordUniformState<LAT, COMPRESS>::reset();
 	  m_state.clear();
 	  // empty set
 	  m_state[LatCommon::Coordinates()] =
@@ -86,7 +86,7 @@ public:
    }
 
    /**
-    * \copydoc CoordSymState::update()
+    * \copydoc CoordUniformState::update()
     *
     * Computes
     * \f[
@@ -97,7 +97,7 @@ public:
     */
    void update(const RealVector& kernelValues, Modulus gen)
    {
-      CoordSymState<LAT, COMPRESS>::update(kernelValues, gen);
+      CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
 
       using LatCommon::Coordinates;
 
@@ -125,7 +125,7 @@ public:
    }
 
    /**
-    * \copydoc CoordSymState::weightedState()
+    * \copydoc CoordUniformState::weightedState()
     *
     * Computes
     * \f[
@@ -137,7 +137,7 @@ public:
     */
    RealVector weightedState() const
    {
-	  std::cerr << "warning: using default implementation of coordinate-symmetric state" << std::endl;
+	  std::cerr << "warning: using default implementation of coordinate-uniform state" << std::endl;
 
 	  using LatCommon::Coordinates;
 
@@ -160,8 +160,8 @@ public:
 	  return weightedState;
    }
 
-   std::unique_ptr<CoordSymState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordSymState<LAT, COMPRESS>>(new ConcreteCoordSymState(*this)); }
+   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
+   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const WEIGHTS& m_weights;
@@ -173,9 +173,9 @@ private:
 
 }}
 
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-PD.h"
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-OD.h"
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-P.h"
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-POD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-PD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-OD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-P.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-POD.h"
 
 #endif

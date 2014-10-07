@@ -18,7 +18,7 @@
 #ifndef LATBUILDER__MERIT_SEQ__CONCRETE_COORD_SYM_STATE_PD_H
 #define LATBUILDER__MERIT_SEQ__CONCRETE_COORD_SYM_STATE_PD_H
 
-#include "latbuilder/MeritSeq/CoordSymState.h"
+#include "latbuilder/MeritSeq/CoordUniformState.h"
 #include "latbuilder/Storage.h"
 
 #include "latcommon/ProjectionDependentWeights.h"
@@ -30,10 +30,10 @@
 namespace LatBuilder { namespace MeritSeq {
 
 // forward declaration
-template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordSymState;
+template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUniformState;
 
 /**
- * Implementation of CoordSymState for projection-dependent weights.
+ * Implementation of CoordUniformState for projection-dependent weights.
  *
  * Define
  * \f[
@@ -63,12 +63,12 @@ template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordSymS
  * For \f$s=0\f$ and \f$\mathfrak u = \emptyset\f$, we artificially define
  * \f$\mathcal D_0^2 = 0\f$ and \f$\boldsymbol p_{\emptyset} = \boldsymbol 1\f$.
  *
- * See CoordSymCBC for the definition of
+ * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
 template <LatType LAT, Compress COMPRESS>
-class ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights> :
-   public CoordSymState<LAT, COMPRESS> {
+class ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProjectionDependentWeights> :
+   public CoordUniformState<LAT, COMPRESS> {
 public:
    /**
     * Constructor.
@@ -79,18 +79,18 @@ public:
     * \param storage       Storage configuration.
     * \param weights       Projection-dependent weights \f$ \gamma_{\mathfrak u} \f$.
     */
-   ConcreteCoordSymState(
+   ConcreteCoordUniformState(
          const Storage<LAT, COMPRESS>& storage,
          const LatCommon::ProjectionDependentWeights& weights
          ):
-      CoordSymState<LAT, COMPRESS>(storage),
+      CoordUniformState<LAT, COMPRESS>(storage),
       m_weights(weights)
    { reset(); }
 
    void reset();
 
    /**
-    * \copydoc CoordSymState::update()
+    * \copydoc CoordUniformState::update()
     *
     * Computes
     * \f[
@@ -102,7 +102,7 @@ public:
    void update(const RealVector& kernelValues, Modulus gen);
 
    /**
-    * \copydoc CoordSymState::weightedState()
+    * \copydoc CoordUniformState::weightedState()
     *
     * Computes
     * \f[
@@ -114,9 +114,9 @@ public:
     */
    RealVector weightedState() const;
 
-   /// \copydoc CoordSymState::clone()
-   std::unique_ptr<CoordSymState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordSymState<LAT, COMPRESS>>(new ConcreteCoordSymState(*this)); }
+   /// \copydoc CoordUniformState::clone()
+   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
+   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const LatCommon::ProjectionDependentWeights& m_weights;
@@ -138,10 +138,10 @@ private:
    const RealVector& createStateVector(const LatCommon::Coordinates& projection, const RealVector& kernelValues);
 };
 
-extern template class ConcreteCoordSymState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordSymState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProjectionDependentWeights>;
 
 }}
 

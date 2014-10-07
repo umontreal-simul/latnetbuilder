@@ -28,8 +28,8 @@
 #include "latbuilder/LatSeq/Combiner.h"
 
 #include "latbuilder/MeritSeq/CBC.h"
-#include "latbuilder/MeritSeq/CoordSymCBC.h"
-#include "latbuilder/MeritSeq/CoordSymInnerProd.h"
+#include "latbuilder/MeritSeq/CoordUniformCBC.h"
+#include "latbuilder/MeritSeq/CoordUniformInnerProd.h"
 #include "latbuilder/MeritSeq/LatSeqOverCBC.h"
 
 #include <boost/lexical_cast.hpp>

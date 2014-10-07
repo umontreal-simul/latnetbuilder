@@ -15,20 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-POD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-OD.h"
 
 namespace LatBuilder { namespace MeritSeq {
 
 //========================================================================
-// PODWeights
+// OrderDependentWeights
 //========================================================================
 
 template <LatType LAT, Compress COMPRESS>
 void
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::PODWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::OrderDependentWeights>::
 reset()
 {
-   CoordSymState<LAT, COMPRESS>::reset();
+   CoordUniformState<LAT, COMPRESS>::reset();
    m_state.clear();
    // order 0
    m_state.push_back(RealVector(this->storage().size(), 1.0));
@@ -38,16 +38,12 @@ reset()
 
 template <LatType LAT, Compress COMPRESS>
 void
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::PODWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::OrderDependentWeights>::
 update(const RealVector& kernelValues, Modulus gen)
 {
-   CoordSymState<LAT, COMPRESS>::update(kernelValues, gen);
+   CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
 
    auto stridedKernelValues = this->storage().strided(kernelValues, gen);
-
-   const auto newCoordinate = this->dimension() - 1;
-
-   const Real pweight = m_weights.getProductWeights().getWeightForCoordinate(newCoordinate);
 
    // add new order
    m_state.push_back(RealVector(this->storage().size(), 0.0));
@@ -55,7 +51,7 @@ update(const RealVector& kernelValues, Modulus gen)
    // recursive update by decreasing order to avoid unwanted overwriting
    for (size_t order = m_state.size() - 1; order > 0; order--)
       m_state[order] += boost::numeric::ublas::element_prod(
-            pweight * stridedKernelValues,
+            stridedKernelValues,
             m_state[order - 1]
             );
 }
@@ -64,21 +60,17 @@ update(const RealVector& kernelValues, Modulus gen)
 
 template <LatType LAT, Compress COMPRESS>
 RealVector
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::PODWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::OrderDependentWeights>::
 weightedState() const
 {
    using LatCommon::Coordinates;
-
-   const auto nextCoordinate = this->dimension();
-
-   const Real pweight = m_weights.getProductWeights().getWeightForCoordinate(nextCoordinate);
 
    RealVector weightedState =
       boost::numeric::ublas::scalar_vector<Real>(this->storage().size(), 0.0);
 
    for (Coordinates::size_type order = 0; order < m_state.size(); order++) {
 
-      Real weight = m_weights.getOrderDependentWeights().getWeightForOrder(order + 1);
+      Real weight = m_weights.getWeightForOrder(order + 1);
 
       if (weight == 0.0)
          continue;
@@ -86,13 +78,12 @@ weightedState() const
       weightedState += weight * m_state[order];
    }
 
-   return pweight * weightedState;
+   return weightedState;
 }
 
-
-template class ConcreteCoordSymState<LatType::ORDINARY, Compress::NONE,      LatCommon::PODWeights>;
-template class ConcreteCoordSymState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::PODWeights>;
-template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::NONE,      LatCommon::PODWeights>;
-template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::OrderDependentWeights>;
 
 }}

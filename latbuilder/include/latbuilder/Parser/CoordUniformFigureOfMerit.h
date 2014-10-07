@@ -20,24 +20,24 @@
 
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Parser/Kernel.h"
-#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
 
 namespace LatBuilder { namespace Parser {
 
 /**
  * Exception thrown when trying to parse an invalid figure of merit.
  */
-class BadCoordSymFigureOfMerit : public ParserError {
+class BadCoordUniformFigureOfMerit : public ParserError {
 public:
-   BadCoordSymFigureOfMerit(const std::string& message):
-      ParserError("cannot parse coordinate-symmetric figure of merit string: " + message)
+   BadCoordUniformFigureOfMerit(const std::string& message):
+      ParserError("cannot parse coordinate-uniform figure of merit string: " + message)
    {}
 };
 
 /**
- * Parser for coordinate-symmetric figures of merit.
+ * Parser for coordinate-uniform figures of merit.
  */
-struct CoordSymFigureOfMerit {
+struct CoordUniformFigureOfMerit {
 
    struct ParseKernel {
       template <class KERNEL, typename FUNC, typename... ARGS>
@@ -48,7 +48,7 @@ struct CoordSymFigureOfMerit {
             ) const
       {
          func(
-               LatBuilder::CoordSymFigureOfMerit<KERNEL>(
+               LatBuilder::CoordUniformFigureOfMerit<KERNEL>(
                   std::move(weights),
                   std::move(kernel)
                   ),
@@ -58,7 +58,7 @@ struct CoordSymFigureOfMerit {
    };
 
    /**
-    * Parses a string specifying a coordinate-symmetric figure of merit.
+    * Parses a string specifying a coordinate-uniform figure of merit.
     *
     * Example strings: <code>P2</code>, <code>P4</code>, <code>P6</code>
     */
@@ -77,7 +77,7 @@ struct CoordSymFigureOfMerit {
          }
       }
       catch (boost::bad_lexical_cast&) {}
-      throw BadCoordSymFigureOfMerit("norm must be `2' for the coordinate-symmetric implementation");
+      throw BadCoordUniformFigureOfMerit("norm must be `2' for the coordinate-uniform implementation");
    }
 };
 

@@ -50,7 +50,7 @@ latbuilder \
   --size 2053 \
   --dimension 5 \
   --construction CBC \
-  --figure-of-merit CS:P2 \
+  --figure-of-merit CU:P2 \
   --weights product:0.7
 \endverbatim
 
@@ -78,10 +78,10 @@ Some arguments consists of several tokens, separated by a colon.
   should be used.  Specifying other construction methods is explained in
   \ref cmdtut_recipes_construction.
 
-- The argument <code>--figure-of-merit CS:P2</code> consists of three colon-separated
+- The argument <code>--figure-of-merit CU:P2</code> consists of three colon-separated
   tokens.
-  It tells Lattice Builder to use the specialized coordinate-symmetric
-  evaluation algorithm, whence the first \c CS token,  for the \f$\mathcal P_2\f$
+  It tells Lattice Builder to use the specialized coordinate-uniform
+  evaluation algorithm, whence the first \c CU token,  for the \f$\mathcal P_2\f$
   discrepancy.
 
 - The argument <code>--weights product:0.7</code> assigns product weights to the
@@ -91,13 +91,13 @@ Some arguments consists of several tokens, separated by a colon.
 
 To summarize, this command executes a CBC construction for an ordinary lattice
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
-of merit, in coordinate-symmetric with product weights such that \f$\gamma_j^2 =
+of merit, in coordinate-uniform with product weights such that \f$\gamma_j^2 =
 0.7\f$ for all \f$j\f$.
 
 Options come in long and short forms.  For example, the following has the same
 effect as the previous example:
 \verbatim
-latbuilder -l ordinary -n 2053 -d 5 -c CBC -m CS:P2 -w product:0.7
+latbuilder -l ordinary -n 2053 -d 5 -c CBC -m CU:P2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
@@ -288,21 +288,21 @@ as in \ref cmdtut_recipes_weights_product.
   \endverbatim
 
 - The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using a
-  coordinate-symmetric evaluation algorithm:
+  coordinate-uniform evaluation algorithm:
   \verbatim
-    --figure-of-merit CS:P4
+    --figure-of-merit CU:P4
   \endverbatim
 
 - The \f$\mathcal R_\alpha\f$ criterion with \f$\alpha=1\f$, using a
-  coordinate-symmetric evaluation algorithm:
+  coordinate-uniform evaluation algorithm:
   \verbatim
-    --figure-of-merit CS:R1
+    --figure-of-merit CU:R1
   \endverbatim
 
 - The normalized \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using
   the bound from \cite rSIN11a :
   \verbatim
-    --figure-of-merit CS:P2 --filters norm:P2-SL10
+    --figure-of-merit CU:P2 --filters norm:P2-SL10
   \endverbatim
   Usage of the <code>--filters</code> option is illustrated in \ref
   cmdtut_recipes_filters.
@@ -444,7 +444,7 @@ to embedded with:
     --size "2^16" \
     --dimension 10 \
     --construction fast-CBC \
-    --figure-of-merit CS:P2 \
+    --figure-of-merit CU:P2 \
     --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0 \
     --weights product:0.1 \
     --combiner sum
@@ -484,7 +484,7 @@ latbuilder \
   --size "2^8" \
   --dimension 5 \
   --construction fast-CBC \
-  --figure-of-merit CS:P2 \
+  --figure-of-merit CU:P2 \
   --multilevel-filters norm:P2-DPW08 low-pass:1.0 \
   --weights product:0.1 \
   --combiner sum
@@ -498,7 +498,7 @@ latbuilder \
   --size "2^9" \
   --dimension 5 \
   --construction "extend:2^8:1,45,101,41,25" \
-  --figure-of-merit CS:P2 \
+  --figure-of-merit CU:P2 \
   --weights product:0.1
 \endverbatim
 Note that only the merit value of the lattice with \f$2^9\f$ points, and not
@@ -536,10 +536,10 @@ options:
 		Specifies the accumulator type and figure of merit to be used.
 		Takes an argument of either of the following forms:
 		- <code><var>accumulator</var>:<var>figure</var></code>
-		- <code>CS:<var>accumulator</var>:<var>figure</var></code>
+		- <code>CU:<var>accumulator</var>:<var>figure</var></code>
 
-                where the optional prefix <code>CS:</code> indicates that a
-                coordinate-symmetric implementation of the evaluation algorithm
+                where the optional prefix <code>CU:</code> indicates that a
+                coordinate-uniform implementation of the evaluation algorithm
                 should be used;
 
 		and where <code><var>figure</var></code> is one of:
@@ -579,7 +579,7 @@ options:
 		  component-by-component search with <code><var>samples</var></code>
 		  random samples per coordinate;
 		- <code>fast-CBC</code> for a fast CBC search (requires a
-                  coordinate-symmetric implementation of the selected figure of
+                  coordinate-uniform implementation of the selected figure of
                   merit);
                 - <code>extend:<var>numberOfPoints</var>:<var>genVec</var></code>
                   to extend the number of points on a lattice with number of

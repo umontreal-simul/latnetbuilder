@@ -30,16 +30,16 @@ namespace LatBuilder { namespace Parser {
 class BadKernel : public ParserError {
 public:
    BadKernel(const std::string& message):
-      ParserError("cannot parse coordinate-symmetric kernel string: " + message)
+      ParserError("cannot parse coordinate-uniform kernel string: " + message)
    {}
 };
 
 /**
- * Parser for kernels for coordinate-symmetric figures of merit.
+ * Parser for kernels for coordinate-uniform figures of merit.
  */
 struct Kernel {
    /**
-    * Parses a string specifying a kernel for the coordinate-symmetric figure of
+    * Parses a string specifying a kernel for the coordinate-uniform figure of
     * merit, like the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R_\alpha\f$
     * figures of merit.
     *

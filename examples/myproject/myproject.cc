@@ -29,7 +29,7 @@ LatBuilder::GeneratingVector searchLattice(
    cmd.construction  = "fast-CBC";
    cmd.size          = boost::lexical_cast<std::string>(numPoints);
    cmd.dimension     = boost::lexical_cast<std::string>(dimension);
-   cmd.figure        = "CS:P2";
+   cmd.figure        = "CU:P2";
    cmd.weights       = std::vector<std::string>{"product:0.1"};
    auto search = cmd.parse();
    search->execute();

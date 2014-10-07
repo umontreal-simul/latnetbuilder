@@ -20,7 +20,7 @@
 
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Parser/Kernel.h"
-#include "latbuilder/ProjDepMerit/CoordSym.h"
+#include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/ProjDepMerit/Spectral.h"
 
 #include "latcommon/NormaBestLat.h"
@@ -44,7 +44,7 @@ public:
  */
 struct ProjDepMerit {
 
-   struct ParseCoordSym {
+   struct ParseCoordUniform {
       template <class KERNEL, typename FUNC, typename... ARGS>
       void operator()(
             KERNEL kernel,
@@ -52,7 +52,7 @@ struct ProjDepMerit {
             ) const
       {
          func(
-               LatBuilder::ProjDepMerit::CoordSym<KERNEL>(std::move(kernel)),
+               LatBuilder::ProjDepMerit::CoordUniform<KERNEL>(std::move(kernel)),
                std::forward<ARGS>(args)...
              );
       }
@@ -68,9 +68,9 @@ struct ProjDepMerit {
    template <typename FUNC, typename... ARGS>
    static void parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
-      // try coordinate-symmetric
+      // try coordinate-uniform
       try {
-         Kernel::parse(str, ParseCoordSym(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}

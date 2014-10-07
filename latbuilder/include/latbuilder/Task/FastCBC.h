@@ -21,8 +21,8 @@
 #include "latbuilder/Task/CBCBasedSearch.h"
 #include "latbuilder/Task/macros.h"
 
-#include "latbuilder/CoordSymFigureOfMerit.h"
-#include "latbuilder/MeritSeq/CoordSymInnerProdFast.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
+#include "latbuilder/MeritSeq/CoordUniformInnerProdFast.h"
 #include "latbuilder/GenSeq/CyclicGroup.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 
@@ -46,13 +46,13 @@ FastCBC<LAT, COMPRESS, FIGURE> fastCBC(
       )
 { return FastCBC<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
-// specialization for coordinate-symmetric figures of merit
+// specialization for coordinate-uniform figures of merit
 template <LatType LAT, Compress COMPRESS, class KERNEL>
-struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, CoordSymFigureOfMerit<KERNEL>>> {
+struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, CoordUniformFigureOfMerit<KERNEL>>> {
    typedef LatBuilder::Task::Search<LAT> Search;
    typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
    typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordSymInnerProdFast> CBC;
+   typedef MeritSeq::CoordUniformCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordUniformInnerProdFast> CBC;
    typedef typename CBC::FigureOfMerit FigureOfMerit;
    typedef GenSeq::CyclicGroup<COMPRESS> GenSeqType;
 
@@ -93,7 +93,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, FIGURE>> {
    { return "unimplemented fast CBC"; }
 
    void init(LatBuilder::Task::FastCBC<LAT, COMPRESS, FIGURE>& search) const
-   { throw std::runtime_error("fast CBC is implemented only for coordinate-symmetric figures of merit"); }
+   { throw std::runtime_error("fast CBC is implemented only for coordinate-uniform figures of merit"); }
 };
 
 TASK_FOR_ALL_COORDSYM(TASK_EXTERN_TEMPLATE, CBCBasedSearch, FastCBC);

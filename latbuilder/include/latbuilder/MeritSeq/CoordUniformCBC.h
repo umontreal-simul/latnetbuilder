@@ -18,10 +18,10 @@
 #ifndef LATBUILDER__MERIT_SEQ__COORD_SYM_CBC_H
 #define LATBUILDER__MERIT_SEQ__COORD_SYM_CBC_H
 
-#include "latbuilder/CoordSymFigureOfMerit.h"
-#include "latbuilder/MeritSeq/CoordSymInnerProd.h"
-#include "latbuilder/MeritSeq/CoordSymState.h"
-#include "latbuilder/MeritSeq/CoordSymStateCreator.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
+#include "latbuilder/MeritSeq/CoordUniformInnerProd.h"
+#include "latbuilder/MeritSeq/CoordUniformState.h"
+#include "latbuilder/MeritSeq/CoordUniformStateCreator.h"
 
 #include "latbuilder/LatDef.h"
 #include "latbuilder/Storage.h"
@@ -37,9 +37,9 @@
 namespace LatBuilder { namespace MeritSeq {
 
 /**
- * Sequence of lattice merit for weighted coordinate-symmetric figures of merit.
+ * Sequence of lattice merit for weighted coordinate-uniform figures of merit.
  *
- * A weighted coordinate-symmetric figure of merit is of the form:
+ * A weighted coordinate-uniform figure of merit is of the form:
  * \f[
  *    \mathcal D^2 =
  *    \sum_{\emptyset \neq \mathfrak u \subseteq \{1, \dots, s\}}
@@ -51,38 +51,38 @@ namespace LatBuilder { namespace MeritSeq {
  *
  * \tparam LAT          Type of lattice.
  * \tparam COMPRESS     Type of compression.
- * \tparam KERNEL       Kernel of the coordinate-symmetric figure of merit;
+ * \tparam KERNEL       Kernel of the coordinate-uniform figure of merit;
  *                      should derive from Kernel::Base.
- * \tparam PROD         Type of inner product; either CoordSymInnerProd
- *                      or CoordSymInnerProdFast.
+ * \tparam PROD         Type of inner product; either CoordUniformInnerProd
+ *                      or CoordUniformInnerProdFast.
  */
-template <LatType LAT, Compress COMPRESS, class KERNEL, template <LatType, Compress> class PROD = CoordSymInnerProd>
-class CoordSymCBC
+template <LatType LAT, Compress COMPRESS, class KERNEL, template <LatType, Compress> class PROD = CoordUniformInnerProd>
+class CoordUniformCBC
 {
-   typedef CoordSymCBC<LAT, COMPRESS, KERNEL, PROD> self_type;
+   typedef CoordUniformCBC<LAT, COMPRESS, KERNEL, PROD> self_type;
 
 public:
-   typedef PROD<LAT, COMPRESS> CoordSymInnerProd;
+   typedef PROD<LAT, COMPRESS> CoordUniformInnerProd;
    typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
    typedef LatBuilder::LatDef<LAT> LatDef;
-   typedef CoordSymFigureOfMerit<KERNEL> FigureOfMerit;
-   typedef typename CoordSymInnerProd::StateList StateList;
+   typedef CoordUniformFigureOfMerit<KERNEL> FigureOfMerit;
+   typedef typename CoordUniformInnerProd::StateList StateList;
    typedef MeritValue value_type;
 
    /**
     * Constructor.
     *
     * \param storage       Storage configuration.
-    * \param figure        Coordinate-symmetric figure of merit.
+    * \param figure        Coordinate-uniform figure of merit.
     */
-   CoordSymCBC(
+   CoordUniformCBC(
          Storage<LAT, COMPRESS> storage,
          const FigureOfMerit& figure
          ):
       m_storage(std::move(storage)),
       m_figure(std::move(figure)),
       m_innerProd(this->storage(), this->figureOfMerit().kernel()),
-      m_states(CoordSymStateCreator::create(m_innerProd.internalStorage(), this->figureOfMerit().weights())),
+      m_states(CoordUniformStateCreator::create(m_innerProd.internalStorage(), this->figureOfMerit().weights())),
       m_baseLat(LatDef(this->storage().sizeParam())),
       m_baseMerit(this->storage().createMeritValue(0.0))
    {}
@@ -105,7 +105,7 @@ public:
    { return m_storage; }
 
    /**
-    * Returns the coordinate-symmetric figure of merit.
+    * Returns the coordinate-uniform figure of merit.
     */
    const FigureOfMerit& figureOfMerit() const
    { return m_figure; }
@@ -113,7 +113,7 @@ public:
    /**
     * Returns the inner product instance.
     */
-   const CoordSymInnerProd& innerProd() const
+   const CoordUniformInnerProd& innerProd() const
    { return m_innerProd; }
 
    /**
@@ -129,7 +129,7 @@ public:
    {
       auto it = states().begin();
       if (it == states().end())
-         throw std::runtime_error("CoordSymCBC: empty list of states");
+         throw std::runtime_error("CoordUniformCBC: empty list of states");
       auto out = (*it)->weightedState();
       while (++it != states().end())
          out += (*it)->weightedState();
@@ -145,7 +145,7 @@ public:
    { return m_baseMerit; }
 
    /**
-    * Output sequence from the coordinate-symmetric CBC algorithm.
+    * Output sequence from the coordinate-uniform CBC algorithm.
     * It is based on a sequence of lattice definitions.
     *
     * \tparam GENSEQ    Type of sequence of generator values.
@@ -154,7 +154,7 @@ public:
    class Seq {
    public:
       typedef GENSEQ GenSeq;
-      typedef typename CoordSymInnerProd::template Seq<GenSeq> ProdSeq;
+      typedef typename CoordUniformInnerProd::template Seq<GenSeq> ProdSeq;
       typedef LatBuilder::LatSeq::CBC<LAT, GenSeq> LatSeq;
       typedef typename LatSeq::size_type size_type;
 
@@ -165,7 +165,7 @@ public:
        *                   copy made.
        * \param genSeq     Sequence of generator values.
        */
-      Seq(const CoordSymCBC& parent, const GenSeq& genSeq):
+      Seq(const CoordUniformCBC& parent, const GenSeq& genSeq):
          m_parent(parent),
          m_latSeq(m_parent.baseLat(), genSeq),
          m_prodSeq(m_parent.innerProd().prodSeq(
@@ -175,9 +175,9 @@ public:
       {}
 
       /**
-       * Returns a reference to the parent CoordSymCBC instance.
+       * Returns a reference to the parent CoordUniformCBC instance.
        */
-      const CoordSymCBC& cbc() const
+      const CoordUniformCBC& cbc() const
       { return m_parent; }
 
       /**
@@ -241,7 +241,7 @@ public:
          {
 #ifndef NDEBUG
             if (m_lat == m_seq->latSeq().end())
-               throw std::runtime_error("CoordSymCBC::Seq: dereferencing past end of sequence");
+               throw std::runtime_error("CoordUniformCBC::Seq: dereferencing past end of sequence");
 #endif
             if (not m_cached) {
                m_value = computeValue();
@@ -286,7 +286,7 @@ public:
       { return const_iterator(*this, typename const_iterator::end()); }
 
    private:
-      const CoordSymCBC& m_parent;
+      const CoordUniformCBC& m_parent;
       const LatSeq m_latSeq;
       const ProdSeq m_prodSeq;
    };
@@ -322,7 +322,7 @@ public:
 private:
    Storage<LAT, COMPRESS> m_storage;
    const FigureOfMerit& m_figure;
-   CoordSymInnerProd m_innerProd;
+   CoordUniformInnerProd m_innerProd;
    StateList m_states;
 
    LatDef m_baseLat;
@@ -330,13 +330,13 @@ private:
 };
 
 
-/// Creates a coordinate-symmetric CBC algorithm.
-template <template <LatType, Compress> class PROD = CoordSymInnerProd, LatType LAT, Compress COMPRESS, class KERNEL>
-CoordSymCBC<LAT, COMPRESS, KERNEL, PROD> cbc(
+/// Creates a coordinate-uniform CBC algorithm.
+template <template <LatType, Compress> class PROD = CoordUniformInnerProd, LatType LAT, Compress COMPRESS, class KERNEL>
+CoordUniformCBC<LAT, COMPRESS, KERNEL, PROD> cbc(
       Storage<LAT, COMPRESS> storage,
-      const CoordSymFigureOfMerit<KERNEL>& figure
+      const CoordUniformFigureOfMerit<KERNEL>& figure
       )
-{ return CoordSymCBC<LAT, COMPRESS, KERNEL, PROD>(std::move(storage), figure); }
+{ return CoordUniformCBC<LAT, COMPRESS, KERNEL, PROD>(std::move(storage), figure); }
 
 }}
 

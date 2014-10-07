@@ -95,8 +95,8 @@ makeOptionsDescription()
     "    <p>: a real number corresponding the l_<p> norm\n"
     "    inf: corresponding to the `max' norm\n")
    ("figure-of-merit,m", po::value<std::string>(),
-    "(required) type of figure of merit; format: [CS:]<merit>\n"
-    "  where the optional \"CS:\" prefix switches on the coordinate-symmetric evaluation algorithm,\n"
+    "(required) type of figure of merit; format: [CU:]<merit>\n"
+    "  where the optional \"CU:\" prefix switches on the coordinate-uniform evaluation algorithm,\n"
     "  and where <merit> is one of:\n"
     "    spectral\n"
     "    P<alpha>\n"

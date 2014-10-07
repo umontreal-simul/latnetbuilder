@@ -55,7 +55,7 @@ text of the same format as the command-line arguments (in the following order) t
 
 The following piece of code calls Lattice Builder to perform a fast
 CBC construction of an ordinary lattice rule with \f$n=2^8\f$ points in
-dimension 10 using the coordinate-symmetric implementation (required by fast
+dimension 10 using the coordinate-uniform implementation (required by fast
 CBC) of the \f$\mathcal P_2\f$ criterion, with product weights with
 \f$\gamma_j=0.1\f$ for all \f$j\f$, using no filters:
 \snippet tutorial/ParserFastCBC.cc search

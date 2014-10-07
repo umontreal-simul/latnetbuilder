@@ -736,7 +736,7 @@ class LatBuilderWeb:
         for key, name in self.FIGURES_OF_MERIT:
             self.merit.addItem(name)
 
-        self.merit_cs = CheckBox("Use coordinate-symmetric implementation",
+        self.merit_cs = CheckBox("Use coordinate-uniform implementation",
                 Checked=True)
 
         panel = HorizontalPanel()
@@ -985,7 +985,7 @@ class LatBuilderWeb:
             merit, merit_name = \
                     self.FIGURES_OF_MERIT[self.merit.getSelectedIndex()]
             alpha = self.merit_alpha.getText()
-            cs = norm_type == 2 and self.merit_cs.getChecked() and 'CS:' or ''
+            cs = norm_type == 2 and self.merit_cs.getChecked() and 'CU:' or ''
 
             weights_power = self.weights_power.getText()
             weights = [w.as_arg() for w in self.weights.weights]

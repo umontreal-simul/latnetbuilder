@@ -170,7 +170,7 @@ objects, but because they are polymorphic, they are stored using a
 std::unique_ptr, which in turn, is passed using either std::move() or,
 equivalently, std::unique_ptr::release().
 There are a few exceptions to that ownership policy, notably figures of merit
-like instances of WeightedFigureOfMerit or of CoordSymFigureOfMerit.
+like instances of WeightedFigureOfMerit or of CoordUniformFigureOfMerit.
 Some classes store references to such objects, so the objects themselves are
 also stored using std::unique_ptr so that references remain valid even after
 the object ownership has changed.

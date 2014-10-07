@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "latbuilder/MeritSeq/ConcreteCoordSymState-P.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-P.h"
 
 namespace LatBuilder { namespace MeritSeq {
 
@@ -25,10 +25,10 @@ namespace LatBuilder { namespace MeritSeq {
 
 template <LatType LAT, Compress COMPRESS>
 void
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProductWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProductWeights>::
 reset()
 {
-   CoordSymState<LAT, COMPRESS>::reset();
+   CoordUniformState<LAT, COMPRESS>::reset();
    m_state.clear();
    m_state = boost::numeric::ublas::scalar_vector<Real>(this->storage().size(), 1.0);
 }
@@ -37,10 +37,10 @@ reset()
 
 template <LatType LAT, Compress COMPRESS>
 void
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProductWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProductWeights>::
 update(const RealVector& kernelValues, Modulus gen)
 {
-   CoordSymState<LAT, COMPRESS>::update(kernelValues, gen);
+   CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
 
    auto stridedKernelValues = this->storage().strided(kernelValues, gen);
 
@@ -60,7 +60,7 @@ update(const RealVector& kernelValues, Modulus gen)
 
 template <LatType LAT, Compress COMPRESS>
 RealVector
-ConcreteCoordSymState<LAT, COMPRESS, LatCommon::ProductWeights>::
+ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProductWeights>::
 weightedState() const
 {
    const auto nextCoordinate = this->dimension();
@@ -70,9 +70,9 @@ weightedState() const
    return weight * m_state;
 }
 
-template class ConcreteCoordSymState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProductWeights>;
-template class ConcreteCoordSymState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProductWeights>;
-template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProductWeights>;
-template class ConcreteCoordSymState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProductWeights>;
 
 }}

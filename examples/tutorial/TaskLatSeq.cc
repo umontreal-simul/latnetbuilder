@@ -21,13 +21,13 @@
 #include "latbuilder/Task/RandomKorobov.h"
 #include "latbuilder/Task/Extend.h"
 
-#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latcommon/ProductWeights.h"
 #include "latbuilder/Storage.h"
 
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latbuilder/ProjDepMerit/CoordSym.h"
+#include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/Functor/binary.h"
 
 #include "latbuilder/TextStream.h"
@@ -52,16 +52,16 @@ void execute(SEARCH search)
    std::cout << "BEST LATTICE: " << search.bestLattice() << ": " << search.bestMeritValue() << std::endl;
 }
 
-CoordSymFigureOfMerit<Kernel::PAlpha> figureCS()
+CoordUniformFigureOfMerit<Kernel::PAlpha> figureCS()
 {
    auto weights = unique<LatCommon::ProductWeights>();
    weights->setDefaultWeight(0.7);
-   return CoordSymFigureOfMerit<Kernel::PAlpha>(std::move(weights), 2);
+   return CoordUniformFigureOfMerit<Kernel::PAlpha>(std::move(weights), 2);
 }
 
-WeightedFigureOfMerit<ProjDepMerit::CoordSym<Kernel::PAlpha>, Functor::Sum> figure()
+WeightedFigureOfMerit<ProjDepMerit::CoordUniform<Kernel::PAlpha>, Functor::Sum> figure()
 {
-   typedef ProjDepMerit::CoordSym<Kernel::PAlpha> ProjDep;
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlpha> ProjDep;
    auto weights = unique<LatCommon::ProductWeights>();
    weights->setDefaultWeight(0.7);
    return WeightedFigureOfMerit<ProjDep, Functor::Sum>(2, std::move(weights), ProjDep(2));

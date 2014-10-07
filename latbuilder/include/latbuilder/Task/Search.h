@@ -26,12 +26,12 @@
 
 // for CBCSelector
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latbuilder/CoordSymFigureOfMerit.h"
+#include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/Storage.h"
 
 // for the connect functions
 #include "latbuilder/MeritSeq/CBC.h"
-#include "latbuilder/MeritSeq/CoordSymCBC.h"
+#include "latbuilder/MeritSeq/CoordUniformCBC.h"
 
 #include <boost/signals2.hpp>
 
@@ -341,11 +341,11 @@ private:
  * \tparam FIGURE       Type of figure of merit.
  *
  * Supported types of figures of merit: any instance of the
- * WeightedFigureOfMerit or of the CoordSymFigureOfMerit templates.
+ * WeightedFigureOfMerit or of the CoordUniformFigureOfMerit templates.
  *
  * These traits define:
  * - a CBC type that is a component-by-component merit sequence (either an
- *   instance of MeritSeq::CBC or of MeritSeq::CoordSymCBC) that is appropriate
+ *   instance of MeritSeq::CBC or of MeritSeq::CoordUniformCBC) that is appropriate
  *   for use with the FIGURE type;
  * - an init() function that takes an instance of Task::Search as its argument
  *   and that performs special actions depending on the type of CBC algorithm.
@@ -359,8 +359,8 @@ struct CBCSelector<LAT, COMPRESS, WeightedFigureOfMerit<PROJDEP, ACC>> {
 };
 
 template <LatType LAT, Compress COMPRESS, class KERNEL>
-struct CBCSelector<LAT, COMPRESS, CoordSymFigureOfMerit<KERNEL>> {
-   typedef MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordSymInnerProd> CBC;
+struct CBCSelector<LAT, COMPRESS, CoordUniformFigureOfMerit<KERNEL>> {
+   typedef MeritSeq::CoordUniformCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordUniformInnerProd> CBC;
 };
 
 
@@ -393,8 +393,8 @@ void connectCBCProgress(const MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC>& cbc, O
  * Does nothing.
  */
 template <LatType LAT, Compress COMPRESS, class KERNEL, template <LatType, Compress> class PROD, class OBSERVER>
-void connectCBCProgress(const MeritSeq::CoordSymCBC<LAT, COMPRESS, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
-   // nothing to do with coordinate-symmetric CBC
+void connectCBCProgress(const MeritSeq::CoordUniformCBC<LAT, COMPRESS, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
+   // nothing to do with coordinate-uniform CBC
 }
 
 }}

@@ -1,4 +1,4 @@
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 filters: scalar filters = (normalizer(PAlphaSL10), low-pass)
 CBC search for dimension: 1
   base lattice: lattice(256, [])
@@ -12,7 +12,7 @@ CBC search for dimension: 3
   base lattice: lattice(256, [1, 99])
   base merit value: 0.00123717
 BEST LATTICE: lattice(256, [1, 99, 27]) with merit value 0.0874655
-figure of merit: CoordSymFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
 filters: scalar filters = (), combiner=sum, multilevel filters = (normalizer(PAlphaSL10), low-pass)
 CBC search for dimension: 1
   base lattice: lattice(2^8, [])
