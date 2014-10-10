@@ -1,0 +1,384 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from waflib.Configure import conf
+from waflib import Build, Utils, Context, Errors, Task
+import os
+import mimetypes, tarfile, zipfile, shutil
+
+APPNAME = 'latbuilder-package'
+
+top = '.'
+out = 'build'
+
+
+class DepBase:
+    def __init__(self):
+        pass
+    def build_dir(self, ctx):
+        d = ctx.path.get_bld().make_node(self.name() + '.build')
+        d.mkdir()
+        return d
+    def install_dir(self, ctx):
+        d = ctx.path.get_bld().make_node(self.name())
+        d.mkdir()
+        return d
+
+
+class Boost(DepBase):
+    def __init__(self, *version):
+        DepBase.__init__(self)
+        self._version = version
+    def name(self):
+        return 'boost'
+    def url(self):
+        return 'http://sourceforge.net/projects/boost/files/boost/{0}.{1}.{2}/boost_{0}_{1}_{2}.tar.bz2/download'.format(*self._version)
+    def src_prefix(self):
+        return 'boost_{0}_{1}_{2}'.format(*self._version)
+    def outputs(self, ctx):
+        prefix    = self.install_dir(ctx)
+        return [prefix.make_node('include/boost/config.hpp'), prefix.make_node('lib/libboost_program_options.a')]
+    def build(self, ctx):
+        srcdir    = ctx.env.SRCDIR.make_node(self.src_prefix())
+        archive   = srcdir.parent.make_node(ctx.env['ARCHIVE_' + self.name()])
+        bootstrap = srcdir.make_node('bootstrap.sh')
+        b2        = srcdir.make_node('b2')
+        siteconf  = srcdir.make_node('tools/build/src/site-config.jam')
+        prefix    = self.install_dir(ctx)
+        builddir  = self.build_dir(ctx)
+        libtest   = builddir.make_node('lib/libboost_program_options.a')
+        insttest  = self.outputs(ctx)
+
+        builddir.mkdir()
+        siteconf.parent.mkdir()
+        prefix.mkdir()
+
+        # unpack rule
+        add_task(ctx, unpack, archive, bootstrap)
+
+        # bootstrap
+        ctx(rule='{} --prefix={} --with-toolset=gcc --without-icu ' \
+                '--with-libraries=program_options,chrono,system'
+                .format(bootstrap.abspath(), prefix.abspath()),
+                source=bootstrap,
+                target=b2,
+                cwd=srcdir.abspath())
+
+        # site-config
+        ctx(rule=lambda arg: siteconf.write(ctx.B2_SITE_CONFIG), target=siteconf)
+
+        b2_cmd = '{} -j{} --build-dir={} --stagedir={} --prefix={} --layout=tagged ' \
+                'link=static threading=single variant=release ' \
+                'toolset={} target-os={} address-model={}' \
+                .format(b2.abspath(), ctx.options.jobs, builddir.abspath(),
+                        builddir.abspath(), prefix.abspath(), ctx.TOOLSET, ctx.OS, ctx.ADDR)
+
+        # build
+        ctx(rule=b2_cmd,
+                source=[b2, siteconf],
+                target=libtest,
+                cwd=srcdir.abspath())
+
+        # install
+        ctx(rule=b2_cmd + ' install',
+                source=libtest,
+                target=insttest,
+                cwd=srcdir.abspath())
+
+class FFTW(DepBase):
+    def __init__(self, *version):
+        DepBase.__init__(self)
+        self._version = version
+    def name(self):
+        return 'fftw'
+    def url(self):
+        return 'http://www.fftw.org/fftw-{0}.{1}.{2}.tar.gz'.format(*self._version)
+    def src_prefix(self):
+        return 'fftw-{0}.{1}.{2}'.format(*self._version)
+    def outputs(self, ctx):
+        prefix    = self.install_dir(ctx)
+        return [prefix.make_node('include/fftw3.h'), prefix.make_node('lib/libfftw3.a')]
+    def build(self, ctx):
+        srcdir    = ctx.env.SRCDIR.make_node(self.src_prefix())
+        archive   = srcdir.parent.make_node(ctx.env['ARCHIVE_' + self.name()])
+        configure = srcdir.make_node('configure')
+        prefix    = self.install_dir(ctx)
+        builddir  = self.build_dir(ctx)
+        makefile  = builddir.make_node('Makefile')
+        libtest   = builddir.make_node('libfftw3.la')
+        insttest  = self.outputs(ctx)
+
+        builddir.mkdir()
+        prefix.mkdir()
+
+        # unpack rule
+        add_task(ctx, unpack, archive, configure)
+
+        # configure
+        ctx(rule=' '.join([configure.abspath(),
+            '--prefix={}'.format(prefix.abspath()),
+            '--enable-static',
+            #'--enable-shared',
+            '--enable-threads',
+            '--with-combined-threads',
+            '--enable-sse2',
+            ] + ctx.FFTW_CONFIGURE),
+            source=configure,
+            target=makefile,
+            cwd=builddir.abspath())
+                
+        # build
+        ctx(rule='make -j{}'.format(ctx.options.jobs),
+                source=makefile,
+                target=libtest,
+                cwd=builddir.abspath())
+
+        # install
+        ctx(rule='make install'.format(ctx.options.jobs),
+                source=libtest,
+                target=insttest,
+                cwd=builddir.abspath())
+
+
+@conf
+def version(ctx):
+    """Returns by using Git"""
+    try:
+        version = ctx.cmd_and_log("git describe --tags --match 'v[0-9].*'").strip()[1:]
+        hashpos = version.rfind('-g')
+        if hashpos > 0:
+            version = version[:hashpos]
+        return version
+    except:
+        return 'unknown'
+
+def add_task(ctx, task, inputs=None, outputs=None):
+    t = task(env=ctx.env)
+    if inputs:
+        t.set_inputs(inputs)
+    if outputs:
+        t.set_outputs(outputs)
+    ctx.add_to_group(t)
+
+class download(Task.Task):
+    def runnable_status(self):
+        self.url = self.inputs[0]
+        del self.inputs[0]
+        ret = super(download, self).runnable_status()
+        if os.path.exists(self.outputs[0].abspath()):
+            return Task.SKIP_ME
+        else:
+            return Task.RUN_ME
+    def run(self):
+        target = self.outputs[0].abspath()
+        self.last_cmd = cmd = "curl -s -o %s -L %s" % (target, self.url)
+	return self.exec_command(cmd, env=self.env.env or None)
+
+class unpack(Task.Task):
+    def runnable_status(self):
+        ret = super(unpack, self).runnable_status()
+        if not os.path.exists(self.inputs[0].abspath()):
+            return Task.ASK_LATER
+        if os.path.exists(self.outputs[0].abspath()):
+            return Task.SKIP_ME
+        else:
+            return Task.RUN_ME
+    def run(self):
+        archive = self.inputs[0]
+        destdir = archive.parent
+        content, encoding = mimetypes.guess_type(archive.abspath())
+        if content == 'application/x-tar':
+            archive = tarfile.open(archive.abspath())
+        elif content == 'application/zip':
+            archive = zipfile.open(archive.abspath())
+        else:
+            raise RuntimeError('unknown archive type: {}'.format(content))
+        # extract files
+        archive.extractall(destdir.abspath())
+
+
+boost = Boost(1,56,0)
+fftw  = FFTW(3,3,4)
+
+def options(ctx):
+    ctx.load('compiler_c compiler_cxx')
+
+def configure(ctx):
+    build_platform = Utils.unversioned_sys_platform()
+    ctx.msg("Build platform", build_platform)
+
+    ctx.load('compiler_c compiler_cxx')
+
+    ctx.env.PACKAGE_NAME = APPNAME
+    ctx.env.LATBUILDER_VERSION = ctx.version()
+
+    # version
+    ctx.msg("Lattice Builder version", ctx.env.LATBUILDER_VERSION)
+
+    # dependencies
+    for lib in [boost, fftw]:
+        ctx.start_msg("%s archive name" % lib.name())
+        out, err = ctx.cmd_and_log(
+                "curl -s -o /dev/null -IL -w %%{url_effective} %s" % lib.url(),
+                output=Context.BOTH)
+        out = os.path.basename(out)
+        ctx.env['ARCHIVE_' + lib.name()] = out
+        ctx.end_msg(out)
+
+
+def build(ctx):
+
+    if not ctx.variant:
+        ctx.fatal("select a variant: linux32 linux64 win32 win64 macos")
+
+    if ctx.variant:
+        print("Building variant `%s'" % (ctx.variant,))
+
+    ctx.env.env = dict(os.environ)
+    ctx.env.env.update(ctx.ENV)
+
+    # share the same source for all builds
+    srcdir = ctx.root.find_dir(ctx.out_dir).make_node('src')
+    srcdir.mkdir()
+    ctx.env.SRCDIR = srcdir
+
+    # download
+    for lib in [boost, fftw]:
+        archive = srcdir.make_node(ctx.env['ARCHIVE_' + lib.name()])
+        add_task(ctx, download, lib.url(), archive)
+
+    ctx.add_group()
+    boost.build(ctx)
+    fftw.build(ctx)
+
+    # Lattice Builder
+
+    ctx.add_group()
+    latsoft_dir = ctx.root.find_dir(ctx.top_dir).parent
+
+    deps = boost.outputs(ctx) + fftw.outputs(ctx) + [latsoft_dir.find_node('wscript')]
+    prefix = ctx.path.get_bld().make_node('latbuilder')
+    builddir = ctx.path.get_bld().make_node('latbuilder.build')
+    prefix.mkdir()
+    builddir.mkdir()
+
+    ctx(rule='./waf configure --out %s --prefix %s --boost %s --fftw %s ' \
+            '--link-static --build-docs --build-examples build %s install' % (
+                builddir.abspath(),
+                prefix.abspath(),
+                boost.install_dir(ctx).abspath(),
+                fftw.install_dir(ctx).abspath(),
+                ctx.LATBUILDER_ARGS),
+            source=deps,
+            target=[prefix.make_node('bin/latbuilder' + ctx.EXE_EXT), prefix],
+            cwd=latsoft_dir.abspath(),
+            env=ctx.env)
+
+    # package
+    ctx.add_group()
+
+    def pack(task):
+        tgt = task.outputs[0].abspath()[:-len(ctx.ARCHIVE_EXT)]
+        src = task.inputs[0].name
+        cwd = task.inputs[0].parent.abspath()
+        archive = shutil.make_archive(tgt, ctx.ARCHIVE_TYPE, cwd, src)
+
+    archive = ctx.path.get_bld().make_node('latbuilder-%s-%s%s' % (
+        ctx.env.LATBUILDER_VERSION, ctx.variant, ctx.ARCHIVE_EXT))
+    ctx(rule=pack, source=prefix, target=archive)
+
+
+
+# build variants
+
+class linux32(Build.BuildContext):
+    cmd      = 'linux32'
+    variant  = 'linux32'
+    OS       = 'linux'
+    ADDR     = '32'
+    TARGET   = 'i686'
+    PLATFORM = 'x86_64-unknown-linux-gnu'
+    TOOLSET  = 'gcc-' + TARGET
+    ENV = {
+            'CC':  PLATFORM + '-gcc -m32',
+            'CXX': PLATFORM + '-g++ -m32',
+            'F77': PLATFORM + '-gfortran -m32',
+            }
+    B2_SITE_CONFIG = 'using gcc : {} : {}-g++ : <cxxflags>-m{} ;'.format(TARGET, PLATFORM, ADDR)
+    FFTW_CONFIGURE = ['--host=i686-pc-linux-gnu']
+    LATBUILDER_ARGS = ''
+    EXE_EXT      = ''
+    ARCHIVE_TYPE = 'bztar'
+    ARCHIVE_EXT  = '.tar.bz2'
+
+class linux64(Build.BuildContext):
+    cmd      = 'linux64'
+    variant  = 'linux64'
+    OS       = 'linux'
+    ADDR     = '64'
+    TARGET   = 'x86_64'
+    PLATFORM = 'x86_64-unknown-linux-gnu'
+    TOOLSET  = 'gcc-' + TARGET
+    ENV = {
+            'CC':  PLATFORM + '-gcc -m64',
+            'CXX': PLATFORM + '-g++ -m64',
+            'F77': PLATFORM + '-gfortran -m64',
+            }
+    FFTW_CONFIGURE = []
+    B2_SITE_CONFIG = 'using gcc : {} : {}-g++ : <cxxflags>-m{} ;'.format(TARGET, PLATFORM, ADDR)
+    LATBUILDER_ARGS = ''
+    EXE_EXT      = ''
+    ARCHIVE_TYPE = 'bztar'
+    ARCHIVE_EXT  = '.tar.bz2'
+
+class win32(Build.BuildContext):
+    cmd      = 'win32'
+    variant  = 'win32'
+    OS       = 'windows'
+    ADDR     = '32'
+    TARGET   = 'mingw32'
+    PLATFORM = 'i686-w64-mingw32'
+    TOOLSET  = 'gcc-' + TARGET
+    ENV = {
+            'CC':  PLATFORM + '-gcc',
+            'CXX': PLATFORM + '-g++',
+            'F77': PLATFORM + '-gfortran',
+            'AR':  PLATFORM + '-ar',
+            }
+    B2_SITE_CONFIG = 'using gcc : {} : {}-g++ : ;'.format(TARGET, PLATFORM)
+    FFTW_CONFIGURE = [
+            '--host=' + PLATFORM,
+            '--disable-alloca',
+            '--with-our-malloc16',
+            '--with-windows-f77-mangling',
+            ]
+    LATBUILDER_ARGS = '--notests'
+    EXE_EXT      = '.exe'
+    ARCHIVE_TYPE = 'zip'
+    ARCHIVE_EXT  = '.zip'
+
+class win64(Build.BuildContext):
+    cmd      = 'win64'
+    variant  = 'win64'
+    OS       = 'windows'
+    ADDR     = '64'
+    TARGET   = 'mingw64'
+    PLATFORM = 'x86_64-w64-mingw32'
+    TOOLSET  = 'gcc-' + TARGET
+    ENV = {
+            'CC':  PLATFORM + '-gcc',
+            'CXX': PLATFORM + '-g++',
+            'F77': PLATFORM + '-gfortran',
+            'AR':  PLATFORM + '-ar',
+            }
+    B2_SITE_CONFIG = 'using gcc : {} : {}-g++ : ;'.format(TARGET, PLATFORM)
+    FFTW_CONFIGURE = [
+            '--host=' + PLATFORM,
+            '--disable-alloca',
+            '--with-our-malloc16',
+            '--with-windows-f77-mangling',
+            ]
+    LATBUILDER_ARGS = '--notests'
+    EXE_EXT      = '.exe'
+    ARCHIVE_TYPE = 'zip'
+    ARCHIVE_EXT  = '.zip'
