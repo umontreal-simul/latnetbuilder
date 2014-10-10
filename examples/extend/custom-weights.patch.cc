@@ -59,7 +59,7 @@ Weights::parseMyWeights(const std::string& arg, Real powerScale)
  
 diff --git a/latcommon/include/latcommon/MyWeights.h b/latcommon/include/latcommon/MyWeights.h
 new file mode 100644
-index 0000000..e2e36f8
+index 0000000..e0e0a4d
 --- /dev/null
 +++ b/latcommon/include/latcommon/MyWeights.h
 @@ -0,0 +1,25 @@
@@ -75,7 +75,7 @@ class MyWeights : public ProductWeights {
 public:
    explicit MyWeights(Weight parameter=1.0) : m_parameter(parameter) {}
    virtual ~MyWeights() {} 
-   virtual Weight getWeightForCoordinate(unsigned int coordinate) const
+   virtual Weight getWeightForCoordinate(Coordinates::size_type coordinate) const
    { return std::pow(coordinate + 1, -m_parameter); }
 
 protected:
