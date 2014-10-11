@@ -312,7 +312,7 @@ function addWeights(wtype) {
         'POD': {
             title:   'POD Weights',
             display: '\\[ \\gamma_u = \\Gamma_{|u|} \\prod_{j \\in u} \\gamma_j \\]',
-            arrays:  [COORD_WEIGHTS, ORDER_WEIGHTS],
+            arrays:  [ORDER_WEIGHTS, COORD_WEIGHTS],
             asArg:   function() {
                 var v = $(this).find('.inputArray');
                 var v0 = v.eq(0).inputArrayValues();
