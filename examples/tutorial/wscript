@@ -23,6 +23,8 @@ class check_output(Task.Task):
         for i, (target, status, out, err) in enumerate(self.generator.bld.utest_results):
             name = self.generator.bld.root.find_node(target).name
             outcheck = Utils.readf(outpath.find_node(name + '.txt').abspath())
+            if type(out) == bytes:
+                out = out.decode()
             if out.strip() != outcheck.strip():
                 status = -1
             self.generator.bld.utest_results[i] = target, status, out, err
