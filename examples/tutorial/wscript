@@ -2,6 +2,7 @@
 # coding: utf-8
 
 from waflib import Task, Options, Utils
+import re
 
 class check_output(Task.Task):
 
@@ -18,6 +19,9 @@ class check_output(Task.Task):
         return ret
 
     def run(self):
+        # pattern for a generating vector
+        genpat = re.compile(r'(lattice\([^,]+,\s*)(\[[^\]]+)\](\s*\))')
+        genrepl = r'\1[<GEN>]\3'
         # check that the output is consistent
         outpath = self.generator.bld.path.find_dir('examples/tutorial/output')
         for i, (target, status, out, err) in enumerate(self.generator.bld.utest_results):
@@ -25,6 +29,10 @@ class check_output(Task.Task):
             outcheck = Utils.readf(outpath.find_node(name + '.txt').abspath())
             if type(out) == bytes:
                 out = out.decode()
+            # skip the generating vectors
+            out = genpat.sub(genrepl, out)
+            outcheck = genpat.sub(genrepl, outcheck)
+            # compare
             if out.strip() != outcheck.strip():
                 status = -1
             self.generator.bld.utest_results[i] = target, status, out, err
