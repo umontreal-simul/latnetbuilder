@@ -261,7 +261,7 @@ def build(ctx):
     builddir.mkdir()
 
     ctx(rule='./waf configure --out %s --prefix %s --boost %s --fftw %s ' \
-            '--link-static --build-docs --build-examples --build-web-ui build %s install' % (
+            '--link-static --build-docs --build-examples build %s install' % (
                 builddir.abspath(),
                 prefix.abspath(),
                 boost.install_dir(ctx).abspath(),
