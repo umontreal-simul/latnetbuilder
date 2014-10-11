@@ -286,7 +286,7 @@ function addWeights(wtype) {
     var ORDER_WEIGHTS = {
         name:      'Order Weights',
         pattern:   PAT_REAL,
-        caption:   '\\(\\Gamma_k\\)',
+        caption:   '\\(\\Gamma_k^p\\)',
         index:     'k',
         indexText: 'projection order',
         defVal:    DEFAULT_WEIGHT};
