@@ -185,7 +185,7 @@ It is possible to set the `CXX` environment variable to the path to a specific
 C++ compiler to be used to build Lattice Builder, before running the `waf
 configure` command.
 
-The above  ̀waf configure` commands configures `waf` for a minimal build,
+The above `waf configure` commands configures `waf` for a minimal build,
 without documentation nor code examples.  These can be built by
 appending the following options to `waf configure`:
 
