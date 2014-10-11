@@ -21,14 +21,14 @@ A cross-platform web interface to Lattice Builder is included in the binary
 packages.
 
 It requires <a href="http://python.org/">Python 2.7</a> to be run.
-It can be launched by executing the <code>LatBuilderWeb.py</code> script that
+It can be launched by executing the <code>latbuilder-web.py</code> script that
 can be found under the <code>bin</code> directory of the package.
 The <code>latbuilder</code> executable program <em>must</em> lie in the same
-directory as the <code>LatBuilderWeb.py</code> for the latter to be able to find
+directory as the <code>latbuilder-web.py</code> for the latter to be able to find
 the former.
 Once launched, the script runs a web server on the local machine which listen to
 connections to
-<a href="http://localhost:8080/LatBuilderWeb.html">http://localhost:8080/LatBuilderWeb.html</a>.
+<a href="http://127.0.0.1:8080/">http://127.0.0.1:8080/</a>.
 If the port 8080 is not available for the script, another port will be chosen
 and indicated in the script output in the console.
 

@@ -51,7 +51,7 @@ if __name__ == '__main__':
         url = q.get()
         if url is None:
             continue
-        url += 'LatBuilderWeb.html'
+        url += ''
         print('Lattice Builder web interface available at: {}'.format(url))
         try:
             webbrowser.open(url)

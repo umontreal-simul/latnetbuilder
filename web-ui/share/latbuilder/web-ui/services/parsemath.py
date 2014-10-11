@@ -33,6 +33,7 @@ OPERATORS = {
         ast.Pow:    operator.pow,
         ast.BitXor: operator.pow,
         ast.USub:   operator.neg,
+        ast.Mod:    operator.mod,
         }
 
 FUNCTIONS = {

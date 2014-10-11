@@ -186,16 +186,13 @@ C++ compiler to be used to build Lattice Builder, before running the `waf
 configure` command.
 
 The above  ̀waf configure` commands configures `waf` for a minimal build,
-without documentation, code examples nor web interface.  These can be built by
+without documentation nor code examples.  These can be built by
 appending the following options to `waf configure`:
 
 * `--build-docs` to generate the documentation, if
   [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available on the system.
 * `--build-examples` to compile and install example code, including
   code from the tutorial, which will also be verified to yield correct output.
-* `--build-web-ui` to generate the web interface (this will cause waf to
-  download a patched version of [pyjs](http://pyjs.org/) during the build
-  process).
 
 Errors will be reported if required software components cannot be found.  In
 that case, you should check the Boost and FFTW installation paths.
@@ -272,14 +269,14 @@ The Lattice Builder Web Interface is included in the binary packages.
 [Python 2.7](http://python.org/download/) must be installed on the host machine.
 The local web server can be started by launching the following Python script:
 
-	bin/LatBuilderWeb.py
+	bin/latbuilder-web.py
 
 The web interface can then be used by connecting a browser to the
-[http://localhost:8080](http://localhost:8080/LatBuilderWeb.html).
+[http://127.0.0.1:8080/](http://127.0.0.1:8080/).
 It requires the Lattice Builder program above to be working properly.
 
-**Microsoft Windows** users should replace `bin/LatBuilderWeb.py` with
-`C:\Python27\python.exe bin\LatBuilderWeb.py` in the above, assuming that
+**Microsoft Windows** users should replace `bin/latbuilder-web.py` with
+`C:\Python27\python.exe bin\latbuilder-web.py` in the above, assuming that
 Python 2.7 was installed under `C:\Python27`.
 
 ![Screenshot](doc/screenshots/latbuilder-web-1.png "Web Interface Screenshot")

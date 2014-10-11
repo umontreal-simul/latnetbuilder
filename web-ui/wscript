@@ -3,102 +3,11 @@
 
 from waflib import Utils, Task, Build
 
-PYJS_GIT = 'https://github.com/mungerd/pyjs.git'
-
-class pyjs(Task.Task):
-
-    def run(self):
-        import os
-        prog = self.inputs[0] # pyjs
-        source = self.inputs[1] # LatBuilderWeb.py
-        outdir = self.outputs[0].parent # share/latbuilder/web-ui
-        bldpath = self.generator.bld.path.find_dir('web-ui').get_bld()
-        pythonpath = bldpath.find_or_declare('pyjs-dist/lib/python2.7/site-packages')
-        pythonpath.mkdir()
-        env = dict(os.environ)
-        env['PYTHONPATH'] = pythonpath.abspath()
-        return self.generator.bld.exec_command(
-                '%s --disable-compile-inplace --output=%s %s' % (prog.abspath(), outdir.abspath(), source.name),
-                cwd=source.parent.abspath(),
-                env=env)
-
-    def post_run(self):
-        bldpath = self.generator.bld.path.find_dir('web-ui').get_bld()
-        outdir = bldpath.find_dir('share')
-        if outdir:
-            outputs = outdir.ant_glob('**/*', quiet=True)
-            for x in outputs:
-                x.sig = Utils.h_file(x.abspath())
-            self.outputs = outputs
-        exe = [outdir.find_node('latbuilder/web-ui/' + x) for x in ['serve.py', 'services/LatBuilderService.py']]
-        outputs = [x for x in outputs if x not in exe]
-        self.generator.bld.install_files('${DATADIR}', outputs, cwd=outdir, relative_trick=True)
-        self.generator.bld.install_files('${DATADIR}', exe, cwd=outdir, relative_trick=True, chmod=Utils.O755)
-
 def build(ctx):
-    if not ctx.env.GIT:
-        print('not building web interface; git (http://git-scm.com/) is missing')
-        return
-    if not ctx.env.PYTHON_VERSION == "2.7":
-        print('not building web interface; Python 2.7 (http://python.org/) is missing')
-        return
-
-    ctx.post_mode = Build.POST_LAZY
-
-    def download_pyjs(task):
-        gen = task.generator
-        import os
-        pyjs = gen.path.find_or_declare('pyjs')
-        pyjs_dist = gen.path.find_or_declare('pyjs-dist')
-        pythonpath = gen.path.find_or_declare('pyjs-dist/lib/python%s/site-packages' % ctx.env.get_flat('PYTHON_VERSION'))
-        pythonpath.mkdir()
-        env = dict(os.environ)
-        env['PYTHONPATH'] = pythonpath.abspath()
-        pyjs_git = gen.path.get_bld().find_dir('pyjs/.git')
-        if pyjs_git:
-            return gen.bld.exec_command(
-                    '%s pull' % (gen.env.get_flat('GIT')),
-                    cwd=pyjs_git.parent.abspath())
-        else:
-            return gen.bld.exec_command(
-                    '%s clone --quiet --depth 1 --branch abortpatch %s' % (gen.env.get_flat('GIT'), PYJS_GIT),
-                    cwd=gen.path.get_bld().abspath())
-
-    ctx(rule=download_pyjs,
-            target=ctx.path.find_or_declare('pyjs/setup.py'))
-
-    def install_pyjs(task):
-        gen = task.generator
-        import os
-        pyjs = gen.path.find_or_declare('pyjs')
-        pyjs_dist = gen.path.find_or_declare('pyjs-dist')
-        pythonpath = gen.path.find_or_declare('pyjs-dist/lib/python%s/site-packages' % ctx.env.get_flat('PYTHON_VERSION'))
-        pythonpath.mkdir()
-        env = dict(os.environ)
-        env['PYTHONPATH'] = pythonpath.abspath()
-        return gen.bld.exec_command(
-                '%s setup.py install --prefix %s' % (gen.env.get_flat('PYTHON'), pyjs_dist.abspath()),
-                cwd=pyjs.abspath(),
-                env=env)
-
-    ctx(rule=install_pyjs,
-            source=ctx.path.find_or_declare('pyjs/setup.py'),
-            target=ctx.path.find_or_declare('pyjs-dist/bin/pyjsbuild'))
-
-
-    pyjs_task = pyjs(env=ctx.env)
-    pyjs_task.set_inputs([
-        ctx.path.find_or_declare('pyjs-dist/bin/pyjsbuild'),
-        ctx.path.find_node('LatBuilderWeb.py'),
-        ctx.path.find_node('public/LatBuilderWeb.css'),
-        ctx.path.find_node('public/serve.py'),
-        ctx.path.find_node('public/services/LatBuilderService.py'),
-        ctx.path.find_node('public/services/latbuilder.py'),
-        ctx.path.find_node('public/services/parsemath.py'),
-        ])
-    pyjs_task.set_outputs(ctx.path.find_or_declare('share/latbuilder/web-ui/index.html'))
-    ctx.add_to_group(pyjs_task)
 
     # install files
-    ctx.add_group()
-    ctx.install_files('${BINDIR}', ctx.path.find_node('bin/LatBuilderWeb.py'), chmod=Utils.O755)
+    exe = [ctx.path.find_node('share/latbuilder/web-ui/' + x) for x in ['serve.py', 'services/lbjson.py']]
+    data = [x for x in ctx.path.ant_glob('share/**/*') if x not in exe]
+    ctx.install_files('${DATADIR}', data, cwd=ctx.path.find_dir('share'), relative_trick=True)
+    ctx.install_files('${DATADIR}', exe, cwd=ctx.path.find_dir('share'), relative_trick=True, chmod=Utils.O755)
+    ctx.install_files('${BINDIR}', ctx.path.find_node('bin/latbuilder-web.py'), chmod=Utils.O755)

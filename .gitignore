@@ -3,3 +3,5 @@ __pycache__
 .lock-waf_*
 build
 VERSION
+*.pyc
+*.pyo

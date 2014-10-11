@@ -38,11 +38,10 @@ def version(ctx):
     return version
 
 def options(ctx):
-    ctx.load('compiler_cxx python gnu_dirs waf_unit_test')
+    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
     ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (an tests them)')
-    ctx.add_option('--build-web-ui', action='store_true', default=False, help='build web interface')
     ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
 
@@ -50,7 +49,7 @@ def configure(ctx):
     build_platform = Utils.unversioned_sys_platform()
     ctx.msg("Build platform", build_platform)
 
-    ctx.load('compiler_cxx python gnu_dirs waf_unit_test')
+    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
     ctx.check(features='cxx', cxxflags='-std=c++11')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
 
@@ -152,31 +151,6 @@ def configure(ctx):
             ctx.fatal('Doxygen is required for building documentation.\n' +
                       'Get it from http://www.stack.nl/~dimitri/doxygen/')
 
-    # Web UI requirements
-    if ctx.options.build_web_ui:
-
-        # Git
-        ctx.env.BUILD_WEB_UI = True
-        if not ctx.find_program('git', var='GIT', mandatory=False):
-            ctx.fatal('Git is required for building the web interface.\n' +
-                      'Get it from http://git-scm.com/')
-
-        # Python
-        ctx.find_program('python2', var='PYTHONx', mandatory=False)
-        ctx.env.PYTHON = ctx.env.PYTHONx # force detection and usage of Python 2
-        ctx.check_python_version(minver=(2,7), mandatory=False)
-        if not ctx.env.PYTHON_VERSION or int(ctx.env.PYTHON_VERSION.split('.')[0]) > 2:
-            ctx.fatal('Python 2.7 is required for building the web interface.\n' +
-                      'Get it from http://python.org/')
-
-        # probably MacOS
-        try:
-            ctx.check_python_module('setuptools')
-        except:
-            ctx.fatal('The setuptools module is required for building the web interface.\n' +
-                      'Install it with: curl https://bootstrap.pypa.io/ez_setup.py -o - | %s'
-                      % ctx.env.get_flat('PYTHON'))
-
     # examples
     if ctx.options.build_examples:
         ctx.env.BUILD_EXAMPLES = True
@@ -214,10 +188,9 @@ def build(ctx):
     ctx.recurse('latbuilder')
     if ctx.env.BUILD_DOCS:
         ctx.recurse('doc')
-    if ctx.env.BUILD_WEB_UI:
-        ctx.recurse('web-ui')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
+    ctx.recurse('web-ui')
 
     lc_inc_dir = ctx.path.find_dir('latcommon/include')
     lb_inc_dir = ctx.path.find_dir('latbuilder/include')

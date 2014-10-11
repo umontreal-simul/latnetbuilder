@@ -25,15 +25,17 @@ import subprocess
 from multiprocessing import Process
 import sys, os, signal, platform
 
+class LatBuilderError(Exception):
+    pass
 
 @ServiceMethod
 def backend_version():
     try:
         return latbuilder.get_version()
     except OSError, e:
-        return "ERROR: cannot execute the `latbuilder' program: " + e.strerror
+        raise LatBuilderError("Cannot execute the `latbuilder' program (" + e.strerror + ")")
     except:
-        return "ERROR: unknown error"
+        raise LatBuilderError("Unknown error")
 
 
 def sentry_run(pid, fd):
@@ -72,15 +74,13 @@ def latbuilder_exec(*args):
         sentry.terminate()
         if not r:
             if process.process.returncode == 0:
-                return "ERROR: Aborted"
+                raise LatBuilderError("Aborted")
             else:
-                return "ERROR: command: " + cmd + "\nouput: " + process.output
+                raise LatBuilderError("<strong>Command</strong>: " + cmd + "\n<strong>Ouput:</strong> " + process.output)
         else:
             return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
     except OSError, e:
-        return "ERROR: cannot execute the `latbuilder' program: " + e.strerror
-    except:
-        return "ERROR: unknown error"
+        raise LatBuilderError("Cannot execute the `latbuilder' program (" + e.strerror + ")")
 
 
 @ServiceMethod
