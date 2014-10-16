@@ -119,6 +119,7 @@ def configure(ctx):
     # options
     if ctx.options.boost:
         add_deps_path('Boost', ctx.options.boost)
+    if ctx.options.fftw:
         add_deps_path('FFTW', ctx.options.fftw)
 
     # FFTW
