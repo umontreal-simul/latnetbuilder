@@ -527,6 +527,13 @@ function expressionDialog(array, attr) { return function(e) {
 
 $('document').ready(function() {
 
+    $('#size').on('change', function() {
+	var size = new LatSize($(this).val());
+	if (size && size.exp) {
+	    $('#level-max').val(size.exp);
+	    $('#level-max').trigger('change');
+	}
+    });
     $('#embedded').on('click', function() {
 	if ($(this).is(':checked')) {
 	    $('#multilevel-panel').slideDown();
@@ -554,6 +561,32 @@ $('document').ready(function() {
 	}
 	else {
 	    $('#low-pass-panel').slideUp();
+	}
+    });
+    $('#level-min').on('change', function() {
+	var val = parseInt($(this).val());
+	// check against lattice size
+	var size = new LatSize($('#size').val());
+	if (size && size.exp && val > size.exp) {
+	    val = size.exp;
+	    $(this).val(val);
+	}
+	// update max level if needed
+	if ($('#level-max').val() < val) {
+	    $('#level-max').val(val);
+	}
+    });
+    $('#level-max').on('change', function() {
+	var val = parseInt($(this).val());
+	// check against lattice size
+	var size = new LatSize($('#size').val());
+	if (size && size.exp && val > size.exp) {
+	    val = size.exp;
+	    $(this).val(val);
+	}
+	// update min level if needed
+	if ($('#level-min').val() > val) {
+	    $('#level-min').val(val);
 	}
     });
     $('#norm-type').on('change', function() {
@@ -607,12 +640,10 @@ $('document').ready(function() {
 	    var size = new LatSize($(this).val());
 	    if (size && size.base) {
 		$('#size-str').text("(" + size.value() + ")");
-		$('#level-max').val(size.exp);
+		return;
 	    }
 	}
-	else {
-	    $('#size-str').text("");
-	}
+	$('#size-str').text("");
     });
     $('#dimension').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
     $('#level-min').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
