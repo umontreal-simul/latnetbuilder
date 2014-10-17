@@ -155,7 +155,13 @@ span.infotip {
     margin-top: 7px;
 }
 
-#multilevel-panel, #results, #results-command, #construction-gen-panel, #construction-nrand-panel {
+#multilevel-panel,
+#results,
+#results-command,
+#construction-gen-panel,
+#construction-nrand-panel,
+#abort-button,
+.with-results {
     display: none;
 }
 
