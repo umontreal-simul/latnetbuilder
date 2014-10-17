@@ -729,6 +729,18 @@ $('document').ready(function() {
 	    $('#construction-gen').parent().slideUp();
 	}
     });
+    var GEN_ATTR = {
+	caption:   '\\(a_j\\)',
+	name:      'components of the generating vector (modulo \\(n\\))',
+	index:     'j',
+	indexText: 'coordinate index',
+	pattern:   PAT_INTEGER,
+	defVal:    1,
+	transform: (function(n) { return function(x) { return x % n; }})((new LatSize($('#size').val())).size)
+    };
+    $('#construction-gen').inputArray(GEN_ATTR);
+    $('#construction-gen').parent().find('a')
+	.on('click', expressionDialog($('#construction-gen'), GEN_ATTR));
     $('a[href$="#gen-from-results"]').on('click', function(e) {
 	e.preventDefault();
 	var self = $(this);
@@ -766,26 +778,16 @@ $('document').ready(function() {
     });
 
     // initial values
-    $('#size').val('2^10');
-    $('#dimension').val(3);
-    $('#level-min').val(1);
-    $('#low-pass-threshold').val(1.0);
-    $('#figure-alpha').val(2);
-    $('#norm-type').val(2);
-    $('#construction').val('CBC');
-    $('#construction-nrand').val(30);
-    var GEN_ATTR = {
-	caption:   '\\(a_j\\)',
-	name:      'components of the generating vector (modulo \\(n\\))',
-	index:     'j',
-        indexText: 'coordinate index',
-	pattern:   PAT_INTEGER,
-	defVal:    1,
-        transform: (function(n) { return function(x) { return x % n; }})((new LatSize($('#size').val())).size)
-    };
-    $('#construction-gen').inputArray(GEN_ATTR);
-    $('#construction-gen').parent().find('a')
-	.on('click', expressionDialog($('#construction-gen'), GEN_ATTR));
+    if (!$('#keepvalues').val()) { // skip on page refresh
+	$('#size').val('2^10');
+	$('#dimension').val(3);
+	$('#level-min').val(1);
+	$('#low-pass-threshold').val(1.0);
+	$('#figure-alpha').val(2);
+	$('#norm-type').val(2);
+	$('#construction').val('CBC');
+	$('#construction-nrand').val(30);
+    }
 
     // ensure consitency
     $('#size').triggerHandler('change');
@@ -829,6 +831,7 @@ $('document').ready(function() {
 
     getBackend();
 
+    $('#keepvalues').val(1);
     $('#size').focus();
 });
 
