@@ -79,12 +79,12 @@ input[type="text"].invalid-text {
 .errmsg {
     color: #FF7733;
     font-weight: bold;
-    display: none;
 }
 
 form .errmsg {
     font-size: 92%;
     font-weight: normal;
+    display: none;
 }
 
 .errmsg .MathJax {
