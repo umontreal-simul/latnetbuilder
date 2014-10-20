@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
-/** \page webif Lattice Builder Web Interface
+/** \page webif Lattice Builder Web Application
 
 A cross-platform web interface to Lattice Builder is included in the binary
 packages.
@@ -32,7 +32,7 @@ connections to
 If the port 8080 is not available for the script, another port will be chosen
 and indicated in the script output in the console.
 
-The web interface allows the user to specify lattice, figure of merit and
+The web application allows the user to specify lattice, figure of merit and
 construction method parameters, including the weights to be used in the figure
 of merit.
 When the user clicks on the <em>Search</em> button at the bottom,
