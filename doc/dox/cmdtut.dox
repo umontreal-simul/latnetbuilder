@@ -19,13 +19,15 @@
 
 This tutorial teaches how to use the Lattice Builder command-line tool to
 search for good rank-1 lattices.
-It is divided into the following sections:
+
+Alternatively, the \ref webif can be used to construct a command line, to
+invoke the command-line tool and to see the results.
+
+This tutorial is divided into the following sections:
 <ol>
     <li> \subpage cmdtut_recipes    </li>
     <li> \subpage cmdtut_summary    </li>
 </ol>
-
-Alternatively, the \ref webif can be used.
 
 The following typesetting semantics is adopted:
 - <code>verbatim</code> for text to be typed as is;

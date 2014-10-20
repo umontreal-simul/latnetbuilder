@@ -19,14 +19,18 @@ namespace LatBuilder {
 
 /** \page hightut High-Level API Tutorial
 
-If you need to use Lattice Builder from within your simulation software, this is
-the tutorial to read.
+If you need to use Lattice Builder from within your simulation software written
+in C++, this is the tutorial to read.
+To use Lattice Builder from software written in other languages, the
+recommended approach is to invoke the executable program with the appropriate
+options (see the \ref cmdtut).
+
 This tutorial describes the high-level features of the Lattice Builder
 application programming interface (API).
 The complete code of the examples in this tutorial can be found under the \c
 latbuilder/examples/tutorial/ directory.
 
-The tutorial is divided into the following sections:
+This tutorial comprises a single section:
 <ol>
     <li> \subpage hightut_parser         </li>
 </ol>

@@ -18,29 +18,33 @@
 /*!
 \mainpage Lattice Builder Manual
 
-\section outline Outline
+\section overview Overview
+
+<strong>Lattice Builder</strong> is a software package for constructing rank-1 lattices using 
+state-of-the-art techniques.
+
+Reference paper:
+<blockquote>
+<a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">
+P. L'Ecuyer and D. Munger.
+<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Latice Rules.</b>
+<i>Submitted, 2012, revised in 2013.</i>
+</a>
+</blockquote>
+
+\section outline Manual Outline
 - \subpage webif
 - \subpage cmdtut
 - \subpage hightut
 - \subpage libtut
 - \subpage impl
 
-Information about compiling Lattice Builder can be found in the
-<a href="https://github.com/mungerd/latbuilder#compiling-the-source-code">README file on GitHub</a>
-or <a href="http://simul.iro.umontreal.ca/latbuilder/#compiling-the-source-code">on the Simulation Group's site</a>.
+\section links Links
 
-
-\section overview Overview
-
-This is a software package for constructing rank-1 lattices using 
-state-of-the-art techniques.
-
-Reference paper:<br/>
-<a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">
-P. L'Ecuyer and D. Munger.
-<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Latice Rules.</b>
-<i>Submitted, 2012, revised in 2013.</i>
-</a>
+- <a href="http://simul.iro.umontreal.ca/latbuilder/">Lattice Builder Home</a>
+- <a href="http://simul.iro.umontreal.ca/latbuilder/download">Lattice Builder Downloads</a>
+- <a href="http://simul.iro.umontreal.ca/latbuilder/#compiling-the-source-code">Compiling Lattice Builder</a>
+- <a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">Reference Paper</a>
 
 */
 

@@ -32,6 +32,16 @@ connections to
 If the port 8080 is not available for the script, another port will be chosen
 and indicated in the script output in the console.
 
+The web interface allows the user to specify lattice, figure of merit and
+construction method parameters, including the weights to be used in the figure
+of merit.
+When the user clicks on the <em>Search</em> button at the bottom,
+the web application transparently invokes the Lattice Builder command-line with
+the appropriate options and reports the results at the bottom of the page.
+After a successful search, <strong>the actual command line that was used can be
+displayed by clicking on the <em>Command Line</em> link</strong> at the bottom
+of the results panel.
+
 The interface should be intuitive enough for most users.
 
 
