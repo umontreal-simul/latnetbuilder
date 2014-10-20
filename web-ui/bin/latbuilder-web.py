@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Universite de Montreal.
 # 
@@ -27,6 +27,6 @@ if __name__ == '__main__':
     path = here + os.pathsep + os.environ.get('PATH', os.defpath)
     os.environ['PATH'] = path
     try:
-        subprocess.call(sys.executable + " " + serve, shell=True)
+        subprocess.call([sys.executable, serve])
     except KeyboardInterrupt:
         print("exiting")
