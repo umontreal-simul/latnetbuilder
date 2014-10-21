@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Universite de Montreal.
 # 
@@ -26,13 +26,18 @@ from multiprocessing import Process
 import sys, os, signal, platform
 
 class LatBuilderError(Exception):
-    pass
+    def __init__(self, message):
+        Exception.__init__(self)
+        self.message = message
+    def __str__(self):
+       return self.message
 
 @ServiceMethod
 def backend_version():
     try:
         return latbuilder.get_version()
-    except OSError, e:
+    except OSError:
+        e = sys.exc_info()[1]
         raise LatBuilderError("Cannot execute the `latbuilder' program (" + e.strerror + ")")
     except:
         raise LatBuilderError("Unknown error")
@@ -76,10 +81,11 @@ def latbuilder_exec(*args):
             if process.process.returncode == 0:
                 raise LatBuilderError("Aborted")
             else:
-                raise LatBuilderError("<strong>Command</strong>: " + cmd + "\n<strong>Ouput:</strong> " + process.output)
+                raise LatBuilderError("<strong>Command</strong>: " + cmd + "<br/><strong>Ouput:</strong> " + process.output)
         else:
             return (cmd, r.lattice.size.points, r.lattice.gen, r.lattice.merit, r.seconds)
-    except OSError, e:
+    except OSError:
+        e = sys.exc_info()[1]
         raise LatBuilderError("Cannot execute the `latbuilder' program (" + e.strerror + ")")
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Universite de Montreal.
 # 
@@ -20,8 +20,11 @@
 
 from __future__ import print_function
 
-from CGIHTTPServer import CGIHTTPRequestHandler
-from BaseHTTPServer import HTTPServer
+try:
+    from http.server import HTTPServer, CGIHTTPRequestHandler
+except ImportError:
+    from CGIHTTPServer import CGIHTTPRequestHandler
+    from BaseHTTPServer import HTTPServer
 import os
 import sys
 import socket

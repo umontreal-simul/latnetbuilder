@@ -19,7 +19,7 @@ class CGIServiceHandler(ServiceHandler):
         try:
             contLen=int(env['CONTENT_LENGTH'])
             data = fin.read(contLen)
-        except Exception, e:
+        except Exception:
             data = ""
 
         resultData = ServiceHandler.handleRequest(self, data)

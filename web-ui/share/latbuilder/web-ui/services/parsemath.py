@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # Copyright (c) 2013 David Munger, Pierre L'Ecuyer, Universite de Montreal.
 # 

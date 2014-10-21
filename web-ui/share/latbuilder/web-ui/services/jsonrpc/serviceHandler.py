@@ -20,6 +20,7 @@
 """
 
 from jsonrpc import loads, dumps, JSONEncodeException
+import sys
 
 
 def ServiceMethod(fn):
@@ -51,8 +52,8 @@ class ServiceHandler(object):
         
         try:
             req = self.translateRequest(json)
-        except ServiceRequestNotTranslatable, e:
-            err = e
+        except ServiceRequestNotTranslatable:
+            err = sys.exc_info()[1]
             req={'id':id_}
 
         if err==None:
@@ -66,14 +67,14 @@ class ServiceHandler(object):
         if err == None:
             try:
                 meth = self.findServiceEndpoint(methName)
-            except Exception, e:
-                err = e
+            except Exception:
+                err = sys.exc_info()[1]
 
         if err == None:
             try:
                 result = self.invokeServiceEndpoint(meth, args)
-            except Exception, e:
-                err = e
+            except Exception:
+                err = sys.exc_info()[1]
 
         resultdata = self.translateResult(result, err, id_)
 
@@ -106,7 +107,7 @@ class ServiceHandler(object):
 
         try:
             data = dumps({"result":rslt,"id":id_,"error":err})
-        except JSONEncodeException, e:
+        except JSONEncodeException:
             err = {"name": "JSONEncodeException", "message":"Result Object Not Serializable"}
             data = dumps({"result":None, "id":id_,"error":err})
             

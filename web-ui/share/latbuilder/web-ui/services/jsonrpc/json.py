@@ -22,6 +22,11 @@
 from types import *
 import re
 
+try:
+    _unicode = unicode
+except NameError:
+    _unicode = str
+
 CharReplacements ={
         '\t': '\\t',
         '\b': '\\b',
@@ -77,18 +82,27 @@ def escapeChar(match):
             return c
 
 def dumps(obj):
-    return unicode("".join([part for part in dumpParts (obj)]))
+    return _unicode("".join([part for part in dumpParts (obj)]))
 
 def dumpParts (obj):
-    objType = type(obj)
-    if obj == None:
-       yield u'null'
-    elif objType is BooleanType:
+    try:
+        _str = basestring
+        _numberTypes = [int, long, float]
+    except NameError:
+        _str = str
+        _numberTypes = [int, float]
+
+    if isinstance(obj, bytes):
+        obj = obj.decode()
+
+    if obj is None:
+        yield u'null'
+    elif isinstance(obj, bool):
         if obj:
             yield u'true'
         else:
             yield u'false'
-    elif objType is DictionaryType:
+    elif isinstance(obj, dict):
         yield u'{'
         isFirst=True
         for (key, value) in obj.items():
@@ -100,10 +114,10 @@ def dumpParts (obj):
             for part in dumpParts (value):
                 yield part
         yield u'}'
-    elif objType in StringTypes:
+    elif isinstance(obj, _str):
         yield u'"' + StringEscapeRE.sub(escapeChar, obj) +u'"'
 
-    elif objType in [TupleType, ListType, GeneratorType]:
+    elif any(isinstance(obj, x) for x in [tuple, list, GeneratorType]):
         yield u'['
         isFirst=True
         for item in obj:
@@ -114,8 +128,8 @@ def dumpParts (obj):
             for part in dumpParts (item):
                 yield part
         yield u']'
-    elif objType in [IntType, LongType, FloatType]:
-        yield unicode(obj)
+    elif any(isinstance(obj, x) for x in _numberTypes):
+        yield _unicode(obj)
     else:
         raise JSONEncodeException(obj)
     
@@ -130,28 +144,28 @@ def loads(s):
         while(1):
             skip = False
             if not currCharIsNext:
-                c = chars.next()
+                c = next(chars)
             while(c in [' ', '\t', '\r','\n']):
-                c = chars.next()
+                c = next(chars)
             currCharIsNext=False
             if c=='"':
                 value = ''
                 try:
-                    c=chars.next()
+                    c=next(chars)
                     while c != '"':
                         if c == '\\':
-                            c=chars.next()
+                            c=next(chars)
                             try:
                                 value+=EscapeCharToChar[c]
                             except KeyError:
                                 if c == 'u':
-                                    hexCode = chars.next() + chars.next() + chars.next() + chars.next()
+                                    hexCode = next(chars) + next(chars) + next(chars) + next(chars)
                                     value += unichr(int(hexCode,16))
                                 else:
                                     raise JSONDecodeException("Bad Escape Sequence Found")
                         else:
                             value+=c
-                        c=chars.next()
+                        c=next(chars)
                 except StopIteration:
                     raise JSONDecodeException("Expected end of String")
             elif c == '{':
@@ -168,28 +182,28 @@ def loads(s):
                 skip=True
             elif c in Digits or c == '-':
                 digits=[c]
-                c = chars.next()
+                c = next(chars)
                 numConv = int
                 try:
                     while c in Digits:
                         digits.append(c)
-                        c = chars.next()
+                        c = next(chars)
                     if c == ".":
                         numConv=float
                         digits.append(c)
-                        c = chars.next()
+                        c = next(chars)
                         while c in Digits:
                             digits.append(c)
-                            c = chars.next()
+                            c = next(chars)
                         if c.upper() == 'E':
                             digits.append(c)
-                            c = chars.next()
+                            c = next(chars)
                             if c in ['+','-']:
                                 digits.append(c)
-                                c = chars.next()
+                                c = next(chars)
                                 while c in Digits:
                                     digits.append(c)
-                                    c = chars.next()
+                                    c = next(chars)
                             else:
                                 raise JSONDecodeException("Expected + or -")
                 except StopIteration:
@@ -198,12 +212,12 @@ def loads(s):
                 currCharIsNext=True
 
             elif c in ['t','f','n']:
-                kw = c+ chars.next() + chars.next() + chars.next()
+                kw = c+ next(chars) + next(chars) + next(chars)
                 if kw == 'null':
                     value = None
                 elif kw == 'true':
                     value = True
-                elif kw == 'fals' and chars.next() == 'e':
+                elif kw == 'fals' and next(chars) == 'e':
                     value = False
                 else:
                     raise JSONDecodeException('Expected Null, False or True')
@@ -212,12 +226,16 @@ def loads(s):
 
             if not skip:
                 if len(stack):
+                    try:
+                        _str = basestring
+                    except NameError:
+                        _str = str
                     top = stack[-1]
-                    if type(top) is ListType:
+                    if isinstance(top, list):
                         top.append(value)
-                    elif type(top) is DictionaryType:
+                    elif isinstance(top, dict):
                         stack.append(value)
-                    elif type(top)  in StringTypes:
+                    elif isinstance(top, _str):
                         key = stack.pop()
                         stack[-1][key] = value
                     else:
