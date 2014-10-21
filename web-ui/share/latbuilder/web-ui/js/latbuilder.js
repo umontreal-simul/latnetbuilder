@@ -892,7 +892,11 @@ $('document').ready(function() {
     $('#criteria-form').on('submit', function(e) {
 	e.preventDefault();
 	if ($('.invalid-text').size() > 0) {
-	    window.alert('There are invalid values in the input boxes; please check above for error messages');
+	    window.alert('There are invalid values in the input boxes; please check above for error messages.');
+	    return;
+	}
+	if ($('.weights-group').size() == 0) {
+	    window.alert('No weights are specified; please add at least one type of weights.');
 	    return;
 	}
 	executeLatBuilder();
