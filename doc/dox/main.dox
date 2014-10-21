@@ -27,7 +27,7 @@ Reference paper:
 <blockquote>
 <a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">
 P. L'Ecuyer and D. Munger.
-<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Latice Rules.</b>
+<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Lattice Rules.</b>
 <i>Submitted, 2012, revised in 2013.</i>
 </a>
 </blockquote>
@@ -44,7 +44,6 @@ P. L'Ecuyer and D. Munger.
 - <a href="http://simul.iro.umontreal.ca/latbuilder/">Lattice Builder Home</a>
 - <a href="http://simul.iro.umontreal.ca/latbuilder/download">Lattice Builder Downloads</a>
 - <a href="http://simul.iro.umontreal.ca/latbuilder/#compiling-the-source-code">Compiling Lattice Builder</a>
-- <a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">Reference Paper</a>
 
 */
 

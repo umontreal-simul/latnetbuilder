@@ -19,40 +19,44 @@ namespace LatBuilder {
 
 /** \page hightut High-Level API Tutorial
 
-If you need to use Lattice Builder from within your simulation software written
-in C++, this is the tutorial to read.
-To use Lattice Builder from software written in other languages, the
-recommended approach is to invoke the executable program with the appropriate
-options (see the \ref cmdtut).
+&nbsp;
 
-This tutorial describes the high-level features of the Lattice Builder
-application programming interface (API).
+This tutorial shows how to use high-level features of the Lattice Builder
+application programming interface (API), in the context of simulation software.
+
+Simulation software written in an arbitrary language can always make use of
+Lattice Builder by invoking the command-line tool with appropriate options (see
+the \ref cmdtut) and by parsing its text output to extract the generating
+vector from the results.
+This is what the \ref webif does.
+Calling an external command can be done in most programming languages.
+
+From software written in C++, it is also possible avoids the overhead of
+loading and executing an external program by directly calling functions of
+the Lattice Builder library instead of invoking the command-line tool.
+In fact, the command-line tool is just an interface to the API described in
+this tutorial.
+
 The complete code of the examples in this tutorial can be found under the \c
 latbuilder/examples/tutorial/ directory.
 
-This tutorial comprises a single section:
-<ol>
-    <li> \subpage hightut_parser         </li>
-</ol>
 
-*/
 
-/** \page hightut_parser Parsing Text Arguments
 
 The Parser namespace contains the tools to make calls to Lattice Builder using
 text arguments similar to those of the command-line tool (see \ref cmdtut).
 The Parser::Search class provides a \c parse() method that returns a
 pointer to a Task::Search instance.  The arguments to \c parse() are all
 text of the same format as the command-line arguments (in the following order) to:
-- \c --construction
-- \c --lattice-type
-- \c --size
-- \c --dimension
-- \c --figure-of-merit
-- \c --weights
-- \c --filters
-- \c --multilevel-filters
-- \c --combiner
+- \c \--construction
+- \c \--lattice-type
+- \c \--size
+- \c \--dimension
+- \c \--figure-of-merit
+- \c \--weights
+- \c \--filters
+- \c \--multilevel-filters
+- \c \--combiner
 
 
 \section hightut_ordinary Constructing and Using Ordinary Lattice Rules
