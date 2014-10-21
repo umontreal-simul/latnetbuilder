@@ -166,7 +166,8 @@ var CONSTRUCTIONS = {
     },
     'fast-CBC': {
 	name: "Fast CBC",
-	desc: "<h5>Fast Component-by-Component Construction</h5><p>Examines all possible values of the components components \\(a_j\\) of the generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\) and selects the best ones, one coordinate at a time.  Computation is accelerated by using fast Fourier transforms.</p>"
+	desc: "<h5>Fast Component-by-Component Construction</h5><p>Examines all possible values of the components components \\(a_j\\) of the generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\) and selects the best ones, one coordinate at a time.  Computation is accelerated by using fast Fourier transforms.</p><p>Requires the Coordinate-Uniform evaluation method.</p>",
+	needsCU: true
     }
 };
             
@@ -200,7 +201,7 @@ LatSize.prototype = {
 function formatTime(seconds) {
     var s = seconds % 60
         var m = (seconds - s) / 60
-        s = Math.round(s * 100) / 100;
+        s = Math.round(s * 1000) / 1000;
     if (m == 0) {
         return s + " s";
     }
@@ -742,8 +743,9 @@ $('document').ready(function() {
 	window.setTimeout(function() { div.removeClass('alert'); }, 800);
     });
     $('#coord-uniform').on('click', function() {
+	var checked = $(this).is(':checked');
 	var pout, pin;
-	if ($(this).is(':checked')) {
+	if (checked) {
 	    $('#norm-type').val(2).trigger('change');
 	    pout = $('#norm-type-panel');
 	    pin  = $('#norm-type-2');
@@ -752,6 +754,20 @@ $('document').ready(function() {
 	    pout = $('#norm-type-2');
 	    pin  = $('#norm-type-panel');
 	}
+	var cons = $('#construction');
+	cons.find('option').each(function() {
+	    var self = $(this);
+	    if (CONSTRUCTIONS[self.val()].needsCU && !checked) {
+		if (cons.val() == self.val()) {
+		    cons.val('CBC');
+		    cons.triggerHandler('change');
+		}
+		self.attr('disabled', 'disabled');
+	    }
+	    else {
+		self.removeAttr('disabled');
+	    }
+	});
 	pin.clearQueue().finish();
 	pout.clearQueue().finish().fadeOut('fast', function() { pin.fadeIn('fast'); });
     });
@@ -762,7 +778,7 @@ $('document').ready(function() {
 	    $('#coord-uniform').triggerHandler('click');
 	}
 	else {
-	    $('#coord-uniform').removeAttr('checked').attr('disabled', true);
+	    $('#coord-uniform').removeAttr('checked').attr('disabled', 'disabled');
 	    $('#coord-uniform').triggerHandler('click');
 	}
 	if (fig.indexOf('{alpha}') >= 0) {
@@ -845,7 +861,7 @@ $('document').ready(function() {
 	$('#results-command').slideToggle();
     });
 
-    // fill lists
+    // populate lists
     var list = $('#figure');
     $.each(FIGURES, function(x) {
 	list.append($('<option>').val(x).html(FIGURES[x].name));
