@@ -42,7 +42,7 @@ together with a technical reference about its implementation.
 
 The easiest way to use Lattice Builder is to:
 
-1. Install [Python 2.7.x](http://python.org/download) (required for the web application).
+1. Install [Python](http://python.org/download) (required for the web application).
 2. [**Download a binary
    package**](http://simul.iro.umontreal.ca/latbuilder/download) corresponding
    to your platform (currently, we are able to provide binary packages only for
@@ -97,7 +97,7 @@ Compiling Lattice Builder requires
 [some software dependencies](#software-dependencies) must be
 installed prior to installing / using Lattice Builder.
 
-* [Python 2.7.x](http://python.org/)
+* [Python](http://python.org/) 2.7 or later
 * [Boost C++ Libraries](http://www.boost.org/) 1.55.0 or later: installation instructions
   for [Linux / MacOS](http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html),
   or [Microsoft Windows](http://www.boost.org/doc/libs/release/more/getting_started/windows.html)
@@ -142,7 +142,7 @@ Lattice Builder relies on the
 [waf meta build system](https://code.google.com/p/waf/) for configuring and
 compiling the software source.
 Waf is included in the Lattice Builder source tree, but it depends on
-[Python 2.7](http://python.org/download), which must be available on the system
+[Python](http://python.org/download), which must be available on the system
 on which Lattice Builder is to be compiled.
 
 The commands below should work verbatim under Linux and MacOS systems.
@@ -281,7 +281,7 @@ contains the `bin` subdirectory.  If you installed a binary package, it is the
 ### The Lattice Builder Web Application
 
 The Lattice Builder Web Application is included in the binary packages.
-[Python 2.7](http://python.org/download/) must be installed on the host machine.
+[Python](http://python.org/download/) must be installed on the host machine.
 The local web server can be started by launching the following Python script:
 
 	bin/latbuilder-web.py
@@ -292,7 +292,7 @@ It requires the Lattice Builder program above to be working properly.
 
 **Microsoft Windows** users should replace `bin/latbuilder-web.py` with
 `C:\Python27\python.exe bin\latbuilder-web.py` in the above, assuming that
-Python 2.7 was installed under `C:\Python27`.
+Python was installed under `C:\Python27`.
 
 ![Screenshot](doc/screenshots/latbuilder-web-1.png "Web Application Screenshot")
 

@@ -3,7 +3,7 @@
 
 ## Requirements
 
-- [Python 2.7](http://python.org/download/)
+- [Python](http://python.org/download/) version 2.7 or later
 
 
 ## Usage
