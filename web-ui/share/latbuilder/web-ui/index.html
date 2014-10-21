@@ -26,6 +26,11 @@
 		displayAlign: "left",
 		displayIndent: "0em"
 		*/
+		/*
+		'HTML-CSS': {
+		    scale: 110
+		}
+		*/
 	    };
 	</script>
         <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
@@ -44,11 +49,13 @@
             <div class="sixteen columns">
                 <p>
                 This Web interface allows
-                <a href="http://simul.iro.umontreal.ca/latbuilder/">Lattice Builder</a>
+                <a href="http://simul.iro.umontreal.ca/latbuilder/" target="_blank">Lattice Builder</a>
                 users to call the executable program without having to construct the
                 command line explicitly.
 		Refer to the
-		<a href="http://simul.iro.umontreal.ca/latbuilder/doc/">Lattice Builder Manual</a>
+		<a href="http://simul.iro.umontreal.ca/latbuilder/doc/" target="_blank">Lattice Builder Manual</a>
+		and to the
+		<a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf" target="_blank">reference paper</a>
 		for more information.
                 </p>
                 <p>
@@ -73,9 +80,9 @@
                         </p>
                     </div>
                     <div class="six columns alpha">
-                        <label for="size">Size (\(n\))</label>
+                        <label for="size">Size \(n\)</label>
                         <input id="size" type="text" required>
-                        <span id="size-str"></span>
+                        <span id="size-str" class="tip"></span>
                         <div id="size-errmsg" class="errmsg">please enter a valid size, e.g., <strong>127</strong> or <strong>2^10</strong></div>
                     </div>
                     <div class="five columns">
@@ -86,7 +93,7 @@
                         </label>
                     </div>
                     <div class="five columns omega">
-                        <label for="dimension">Dimension (\(s\))</label>
+                        <label for="dimension">Dimension \(s\)</label>
                         <input id="dimension" type="text" required>
                         <div id="dimension-errmsg" class="errmsg">please enter a positive integer value</div>
                     </div>
@@ -94,7 +101,14 @@
                 <fieldset id="multilevel-panel" class="sixteen columns clearfix">
                     <div class="sixteen columns alpha omega">
                         <a name="multilevel"></a>
-                        <legend>Multilevel Filters and Combiner</legend>
+			<legend>
+			    Multilevel Filters and Combiner
+			    <span class="tip">
+				See the
+				<a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf" target="_blank">reference paper</a>
+				for details.
+			    </span>
+			</legend>
                     </div>
                     <div class="sixteen columns alpha omega clearfix">
 			<div class="three columns alpha">
@@ -160,14 +174,10 @@
                     <div class="six columns alpha omega clearfix">
 			<div class="three columns alpha">
 			    <label for="figure">Figure of Merit</label>
-			    <select id="figure">
-				 <option value="{CU}P{alpha}">P<sub>α</sub></option>
-				 <option value="{CU}R{alpha}">R<sub>α</sub></option>
-				 <option value="spectral">spectral</option>
-			    </select>
+			    <select id="figure"></select>
 			</div>
 			<div class="three columns omega">
-			    <label for="figure-alpha">Value of \(\alpha\)</label>
+			    <label for="figure-alpha">Value of <span id="figure-alpha-var">\(\alpha\)</span></label>
 			    <input id="figure-alpha" type="text">
 			</div>
 		    </div>
@@ -175,14 +185,21 @@
                         <label for="">Evaluation Method</label>
                         <label for="coord-uniform">
                             <input id="coord-uniform" type="checkbox" checked="checked">
-                            <span>Coordinate-Uniform</span>
+			    <span>Coordinate-Uniform</span>
                         </label>
+			<div class="tip">Generally faster, but requires \(q=2\).</div>
                     </div>
                     <div class="five columns omega">
-                        <label for="norm-type">Norm Type (\(q\))</label>
-                        <input id="norm-type" type="text" required>
-                        <span style="margin-left: 1ex">(type <code>inf</code> for \(\infty\))</span>
-                        <div id="norm-type-errmsg" class="errmsg">please enter a positive real number or <strong>inf</strong></div>
+			<label for="norm-type">Norm Type \(q > 0\)</label>
+			<div id="norm-type-panel">
+			    <input id="norm-type" type="text" required>
+			    <span class="tip">Type <code>inf</code> for \(\infty\).</span>
+			    <div id="norm-type-errmsg" class="errmsg">please enter a positive real number or <strong>inf</strong></div>
+			</div>
+			<div id="norm-type-2">
+			    <span>\(q = 2\)</span>
+			    <div class="tip">Uncheck Coordinate-Uniform to use \(q \neq 2\).</div>
+			</div>
                     </div>
                 </fieldset>
 
@@ -198,14 +215,14 @@
                     <div class="three columns alpha">
                         <a id="add-weights" href="#new-weights-dialog">[add]</a>
                     </div>
-                    <div class="eight columns">
-                        <span class="infotip">
-			    <span class="caption">TIP&thinsp;:</span> Use the <strong>[expression]</strong> link(s) above to set all weights at once.
-                        </span>
-                    </div>
-                    <div class="five columns omega">
-                        <label for="weights-power">Weights Power (\(p\))</label>
+                    <div class="five columns offset-by-three omega">
+			<label for="weights-power">
+			    Weights Power \(p\)
+			</label>
                         <input id="weights-power" type="text" required>
+			<span class="tip">
+			    Usually \(p=q\) or \(p=1\).
+			</span>
                         <div id="weights-power-errmsg" class="errmsg">please enter a positive real number</div>
                     </div>
                 </fieldset>
@@ -217,18 +234,9 @@
                     </div>
                     <div class="six columns alpha">
                         <label for="construction">Construction Method</label>
-                        <select id="construction">
-			    <option value="explicit:{gen}">Explicit (Evaluation)</option>
-                            <option value="exhaustive">Exhaustive</option>
-			    <option value="random:{nrand}">Random</option>
-                            <option value="Korobov">Korobov</option>
-			    <option value="random-Korobov:{nrand}">Random Korobov</option>
-                            <option value="CBC">CBC</option>
-			    <option value="random-CBC:{nrand}">Random CBC</option>
-                            <option value="fast-CBC">Fast CBC</option>
-                        </select>
+                        <select id="construction"></select>
                         <div id="construction-nrand-panel">
-                            <label for="construction-nrand">Number of Random Samples</label>
+                            <label for="construction-nrand" id="construction-nrand-label">Number \(r\) of Random Samples</label>
                             <input id="construction-nrand" type="text">
                             <div id="construction-nrand-errmsg" class="errmsg">please enter a positive integer</div>
                         </div>
@@ -236,7 +244,7 @@
                     <div id="construction-desc" class="ten columns omega"></div>
 		    <div id="construction-gen-panel" class="sixteen columns alpha omega">
 			<label for="construction-gen">
-			    Generating Vector
+			    Generating Vector \(\boldsymbol a = (a_1, \ldots, a_s)\)
 			    <a href="#expression-dialog">[expression]</a>
 			    <a class="with-results" href="#gen-from-results">[from results]</a>
 			</label>
@@ -255,8 +263,6 @@
 			<span id="waiting">Waiting for Lattice Builder to respond...</span>
 		    </div>
                 </fieldset>
-
-		<input id="keepvalues" type="hidden" value="">
             </form>
 
             <div id="results" class="sixteen columns clearfix">

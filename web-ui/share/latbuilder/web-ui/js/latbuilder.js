@@ -23,90 +23,90 @@ if (!String.prototype.trim) {
 // Reference: http://es5.github.io/#x15.4.4.19
 if (!Array.prototype.map) {
 
-  Array.prototype.map = function(callback, thisArg) {
+    Array.prototype.map = function(callback, thisArg) {
 
-    var T, A, k;
+	var T, A, k;
 
-    if (this == null) {
-      throw new TypeError(' this is null or not defined');
-    }
+	if (this == null) {
+	    throw new TypeError(' this is null or not defined');
+	}
 
-    // 1. Let O be the result of calling ToObject passing the |this| 
-    //    value as the argument.
-    var O = Object(this);
+	// 1. Let O be the result of calling ToObject passing the |this| 
+	//    value as the argument.
+	var O = Object(this);
 
-    // 2. Let lenValue be the result of calling the Get internal 
-    //    method of O with the argument "length".
-    // 3. Let len be ToUint32(lenValue).
-    var len = O.length >>> 0;
+	// 2. Let lenValue be the result of calling the Get internal 
+	//    method of O with the argument "length".
+	// 3. Let len be ToUint32(lenValue).
+	var len = O.length >>> 0;
 
-    // 4. If IsCallable(callback) is false, throw a TypeError exception.
-    // See: http://es5.github.com/#x9.11
-    if (typeof callback !== 'function') {
-      throw new TypeError(callback + ' is not a function');
-    }
+	// 4. If IsCallable(callback) is false, throw a TypeError exception.
+	// See: http://es5.github.com/#x9.11
+	if (typeof callback !== 'function') {
+	    throw new TypeError(callback + ' is not a function');
+	}
 
-    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-    if (arguments.length > 1) {
-      T = thisArg;
-    }
+	// 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+	if (arguments.length > 1) {
+	    T = thisArg;
+	}
 
-    // 6. Let A be a new array created as if by the expression new Array(len) 
-    //    where Array is the standard built-in constructor with that name and 
-    //    len is the value of len.
-    A = new Array(len);
+	// 6. Let A be a new array created as if by the expression new Array(len) 
+	//    where Array is the standard built-in constructor with that name and 
+	//    len is the value of len.
+	A = new Array(len);
 
-    // 7. Let k be 0
-    k = 0;
+	// 7. Let k be 0
+	k = 0;
 
-    // 8. Repeat, while k < len
-    while (k < len) {
+	// 8. Repeat, while k < len
+	while (k < len) {
 
-      var kValue, mappedValue;
+	    var kValue, mappedValue;
 
-      // a. Let Pk be ToString(k).
-      //   This is implicit for LHS operands of the in operator
-      // b. Let kPresent be the result of calling the HasProperty internal 
-      //    method of O with argument Pk.
-      //   This step can be combined with c
-      // c. If kPresent is true, then
-      if (k in O) {
+	    // a. Let Pk be ToString(k).
+	    //   This is implicit for LHS operands of the in operator
+	    // b. Let kPresent be the result of calling the HasProperty internal 
+	    //    method of O with argument Pk.
+	    //   This step can be combined with c
+	    // c. If kPresent is true, then
+	    if (k in O) {
 
-        // i. Let kValue be the result of calling the Get internal 
-        //    method of O with argument Pk.
-        kValue = O[k];
+		// i. Let kValue be the result of calling the Get internal 
+		//    method of O with argument Pk.
+		kValue = O[k];
 
-        // ii. Let mappedValue be the result of calling the Call internal 
-        //     method of callback with T as the this value and argument 
-        //     list containing kValue, k, and O.
-        mappedValue = callback.call(T, kValue, k, O);
+		// ii. Let mappedValue be the result of calling the Call internal 
+		//     method of callback with T as the this value and argument 
+		//     list containing kValue, k, and O.
+		mappedValue = callback.call(T, kValue, k, O);
 
-        // iii. Call the DefineOwnProperty internal method of A with arguments
-        // Pk, Property Descriptor
-        // { Value: mappedValue,
-        //   Writable: true,
-        //   Enumerable: true,
-        //   Configurable: true },
-        // and false.
+		// iii. Call the DefineOwnProperty internal method of A with arguments
+		// Pk, Property Descriptor
+		// { Value: mappedValue,
+		//   Writable: true,
+		//   Enumerable: true,
+		//   Configurable: true },
+		// and false.
 
-        // In browsers that support Object.defineProperty, use the following:
-        // Object.defineProperty(A, k, {
-        //   value: mappedValue,
-        //   writable: true,
-        //   enumerable: true,
-        //   configurable: true
-        // });
+		// In browsers that support Object.defineProperty, use the following:
+		// Object.defineProperty(A, k, {
+		//   value: mappedValue,
+		//   writable: true,
+		//   enumerable: true,
+		//   configurable: true
+		// });
 
-        // For best browser support, use the following:
-        A[k] = mappedValue;
-      }
-      // d. Increase k by 1.
-      k++;
-    }
+		// For best browser support, use the following:
+		A[k] = mappedValue;
+	    }
+	    // d. Increase k by 1.
+	    k++;
+	}
 
-    // 9. return A
-    return A;
-  };
+	// 9. return A
+	return A;
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -118,15 +118,56 @@ var PAT_NORM     = /^(\d*\.?\d+|\d+\.?\d*)(e[\+-]?[0-9]+)?$|^inf$/;
 var PAT_REAL_POS = /^(\d*\.?\d+|\d+\.?\d*)(e[\+-]?[0-9]+)?$/;
 var PAT_REAL     = /^[\+-]?(\d*\.?\d+|\d+\.?\d*)(e[\+-]?[0-9]+)?$/;
 
-var CONSTRUCTION_DESC = {
-    'explicit:{gen}':         "<h5>Evaluation</h5><p>Evaluates the figure of merit for a given generating vector.<br/><strong>Please specify the generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\) below.</strong></p>",
-    'exhaustive':             "<h5>Exhaustive Search</h5><p>Examines all generating vectors and retains the best one.</p>",
-    'random:{nrand}':         "<h5>Random Search</h5><p>Examines a number of randomly selected generating vectors and retains the best one.<br/><strong>Please specify the desired number of random samples under the Construction Method selection.</strong></p>",
-    'Korobov':                "<h5>Korobov Search</h5><p>Examines all generating vectors of the form \\(\\boldsymbol a = (1, a \\bmod n, a^2 \\bmod n, …, a^s \\bmod n)\\) and retains the best one.</p>",
-    'random-Korobov:{nrand}': "<h5>Random Korobov Search</h5><p>Examines a number of randomly selected generating vectors of the form \\(\\boldsymbol a = (1, a \\bmod n, a^2 \\bmod n, …, a^s \\bmod n)\\) and retains the best one.<br/><strong>Please specify the desired number of random samples under the Construction Method selection.</strong></p>",
-    'CBC':                    "<h5>Component-by-Component Construction</h5><p>Examines all possible values of the components of the generating vector and selects the best ones, one coordinate at a time.</p>",
-    'random-CBC:{nrand}':     "<h5>Random Component-by-Component Construction</h5><p>Examines a number of randomly selected values of the components of the generating vector and selects the best ones, one coordinate at a time.<br/><strong>Please specify the desired number of random samples under the Construction Method selection.</strong></p>",
-    'fast-CBC':               "<h5>Fast Component-by-Component Construction</h5><p>Examines all possible values of the components of the generating vector and selects the best ones, one coordinate at a time.  Computation is accelerated by using fast Fourier transforms.</p>"
+var FIGURES = {
+     '{CU}P{alpha}': {
+	name:  "P<sub>α</sub>",
+	alpha: "\\(\\alpha = 2,4,6\\)"
+    },
+     '{CU}R{alpha}': {
+	name:  "R<sub>α</sub>",
+	alpha: "\\(\\alpha > 0\\)"
+    },
+     'spectral': {
+	name:  "spectral"
+    }
+};
+
+var CONSTRUCTIONS = {
+    'explicit:{gen}': {
+	name: "Explicit (Evaluation)",
+	desc: "<h5>Evaluation</h5><p>Evaluates the figure of merit for a given generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\).</p>"
+    },
+    'exhaustive': {
+	name: "Exhaustive",
+	desc: "<h5>Exhaustive Search</h5><p>Examines all generating vectors and retains the best one.</p>"
+    },
+    'random:{nrand}': {
+	name: "Random",
+	desc: "<h5>Random Search</h5><p>Examines a number \\(r\\) of randomly selected generating vectors \\(\\boldsymbol a\\) and retains the best one.</p>",
+	rand: "Number \\(r\\) of Random Samples of \\(\\boldsymbol a\\)"
+    },
+    'Korobov': {
+	name: "Korobov",
+	desc: "<h5>Korobov Search</h5><p>Examines all generating vectors of the form \\(\\boldsymbol a = (1, a \\bmod n, a^2 \\bmod n, …, a^s \\bmod n)\\) and retains the best one.</p>"
+    },
+    'random-Korobov:{nrand}': {
+	name: "Random Korobov",
+	desc: "<h5>Random Korobov Search</h5><p>Examines a number \\(r\\) of randomly selected generating vectors of the form \\(\\boldsymbol a = (1, a \\bmod n, a^2 \\bmod n, …, a^s \\bmod n)\\) and retains the best one.</p>",
+	rand: "Number \\(r\\) of Random Samples of \\(a\\)"
+    },
+    'CBC': {
+	name: "CBC",
+	desc: "<h5>Component-by-Component Construction</h5><p>Examines all possible values of the components \\(a_j\\) of the generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\) and selects the best ones, one coordinate at a time.</p>"
+    },
+    'random-CBC:{nrand}': {
+	name: "Random CBC",
+	desc: "<h5>Random Component-by-Component Construction</h5><p>Examines a number \\(r\\) of randomly selected values for each component \\(a_j\\) of the generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\) and selects the best ones, one coordinate at a time.</p>",
+	rand: "Number \\(r\\) of Random Samples of \\(a_j\\) for each \\(j\\)"
+    },
+    'fast-CBC': {
+	name: "Fast CBC",
+	desc: "<h5>Fast Component-by-Component Construction</h5><p>Examines all possible values of the components components \\(a_j\\) of the generating vector \\(\\boldsymbol a = (a_1, \\ldots, a_s)\\) and selects the best ones, one coordinate at a time.  Computation is accelerated by using fast Fourier transforms.</p>"
+    }
 };
             
 //-----------------------------------------------------------------------------
@@ -335,7 +376,7 @@ function formatTime(seconds) {
 			// [expression] link
 			.append($('<a>')
 				.attr('href', '#expression-dialog')
-				.text('[expression]')
+				.append('[expression (set all weights at once)]')
 				.on('click', expressionDialog(array, attr.arrays[i])));
 		    array_container.append(label);
 		    array_container.append(array);
@@ -689,34 +730,61 @@ $('document').ready(function() {
 	var norm = $(this).val();
 	$('#weights-power').val(norm == "inf" ? 1.0 : norm);
 	if (norm != 2) {
+	    // should not happen!
 	    $('#coord-uniform').removeAttr('checked');
+	    $('#coord-uniform').triggerHandler('click');
 	}
+    });
+    $('#norm-type-2').on('click', function() {
+	var div = $('#coord-uniform').parent();
+	div.css('transition-duration', '800ms');
+	div.addClass('alert');
+	window.setTimeout(function() { div.removeClass('alert'); }, 800);
     });
     $('#coord-uniform').on('click', function() {
+	var pout, pin;
 	if ($(this).is(':checked')) {
-	    $('#norm-type').val(2);
+	    $('#norm-type').val(2).trigger('change');
+	    pout = $('#norm-type-panel');
+	    pin  = $('#norm-type-2');
 	}
+	else {
+	    pout = $('#norm-type-2');
+	    pin  = $('#norm-type-panel');
+	}
+	pin.clearQueue().finish();
+	pout.clearQueue().finish().fadeOut('fast', function() { pin.fadeIn('fast'); });
     });
-    $('#figure').on('change', function() {
+    $('#figure').on('keyup change', function() {
 	var fig = $(this).val();
 	if (fig.indexOf('{CU}') >= 0) {
 	    $('#coord-uniform').removeAttr('disabled');
+	    $('#coord-uniform').triggerHandler('click');
 	}
 	else {
 	    $('#coord-uniform').removeAttr('checked').attr('disabled', true);
+	    $('#coord-uniform').triggerHandler('click');
 	}
 	if (fig.indexOf('{alpha}') >= 0) {
-	    $('#figure-alpha').parent().fadeIn().typeset();
+	    $('#figure-alpha-var').html(FIGURES[fig].alpha);
+	    $('#figure-alpha').parent().finish().fadeIn().typeset();
 	}
 	else {
-	    $('#figure-alpha').parent().fadeOut();
+	    $('#figure-alpha').parent().finish().fadeOut();
 	}
 	adjustFigureAlpha();
     });
-    $('#construction').on('change', function() {
+    $('#weights-power').on('change', function() {
+	var self = $(this);
+	if (self.val().trim().toLowerCase() == 'q') {
+	    self.val($('#norm-type').val());
+	}
+    });
+    $('#construction').on('keyup change', function() {
 	var cons = $(this).val();
-	$('#construction-desc').html(CONSTRUCTION_DESC[cons]).typeset();
+	$('#construction-desc').html(CONSTRUCTIONS[cons].desc).typeset();
 	if (cons.indexOf('{nrand}') >= 0) {
+	    $('#construction-nrand-label').html(CONSTRUCTIONS[cons].rand).typeset();
 	    $('#construction-nrand').parent().slideDown();
 	}
 	else {
@@ -757,11 +825,11 @@ $('document').ready(function() {
 	if ($(this).validate(/^[1-9][0-9]*(\^[1-9][0-9]*)?$/)) {
 	    var size = new LatSize($(this).val());
 	    if (size && size.base) {
-		$('#size-str').text("(" + size.value() + ")");
+		$('#size-str').text(' = ' + size.value()).show();
 		return;
 	    }
 	}
-	$('#size-str').text("");
+	$('#size-str').text("").hide();
     });
     $('#dimension').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
     $('#level-min').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
@@ -771,23 +839,31 @@ $('document').ready(function() {
     $('#figure-alpha').on('change', adjustFigureAlpha);
     $('#norm-type').on('keyup change', function() { $(this).validate(PAT_NORM); });
     $('#weights-power').on('keyup change', function() { $(this).validate(PAT_REAL_POS); });
-    $('#construction-param').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
+    $('#construction-nrand').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
     $('#results-command-toggle').on('click', function(e) {
 	e.preventDefault();
 	$('#results-command').slideToggle();
     });
 
+    // fill lists
+    var list = $('#figure');
+    $.each(FIGURES, function(x) {
+	list.append($('<option>').val(x).html(FIGURES[x].name));
+    });
+    var list = $('#construction');
+    $.each(CONSTRUCTIONS, function(x) {
+	list.append($('<option>').val(x).html(CONSTRUCTIONS[x].name));
+    });
+
     // initial values
-    if (!$('#keepvalues').val()) { // skip on page refresh
-	$('#size').val('2^10');
-	$('#dimension').val(3);
-	$('#level-min').val(1);
-	$('#low-pass-threshold').val(1.0);
-	$('#figure-alpha').val(2);
-	$('#norm-type').val(2);
-	$('#construction').val('CBC');
-	$('#construction-nrand').val(30);
-    }
+    $('#size').val('2^10');
+    $('#dimension').val(3);
+    $('#level-min').val(1);
+    $('#low-pass-threshold').val(1.0);
+    $('#figure-alpha').val(2);
+    $('#norm-type').val(2);
+    $('#construction').val('CBC');
+    $('#construction-nrand').val(30);
 
     // ensure consitency
     $('#size').triggerHandler('change');
@@ -831,7 +907,6 @@ $('document').ready(function() {
 
     getBackend();
 
-    $('#keepvalues').val(1);
     $('#size').focus();
 });
 
