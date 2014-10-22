@@ -371,17 +371,18 @@ function formatTime(seconds) {
 	    // inputArray contents
 	    else {
 		var array_container = $('<div class="thirteen columns omega clearfix">');
-		for (var i in attr.arrays) {
+		$.each(attr.arrays, function(i) {
 		    var array = $('<div>').inputArray(attr.arrays[i]);
-		    var label = $('<div class="label">').html(attr.arrays[i].name)
+		    var label = $('<div class="label">')
+			.html(attr.arrays[i].name)
 			// [expression] link
 			.append($('<a>')
-				.attr('href', '#expression-dialog')
+				.attr('href', '#')
 				.append('[expression (set all weights at once)]')
-				.on('click', expressionDialog(array, attr.arrays[i])));
+				.on('click', makeExpressionDialog(array, attr.arrays[i])));
 		    array_container.append(label);
 		    array_container.append(array);
-		}
+		});
 		self.append(array_container);
 	    }
 	    return self;
@@ -469,12 +470,12 @@ function addWeights(wtype) {
                 var ret = 'projection-dependent';
                 var lines = $(this).find('textarea').val().split('\n');
                 lines = lines.map(function(s){ return s.trim().replace(/\s/g, ''); });
-                for (var i in lines) {
+		$.each(lines, function(i) {
                     var l = lines[i];
                     if (l.length > 0) {
                         ret = ret + ':' + l;
                     }
-                }
+                });
                 return ret;
             }
         }
@@ -649,18 +650,24 @@ function adjustFigureAlpha() {
     }
 }
 
-function expressionDialog(array, attr) { return function(e) {
+function makeExpressionDialog(array, attr) { return function(e) {
     e.preventDefault();
-    $('#expression-dialog .expr-val').html(attr.caption);
-    $('#expression-dialog .expr-name').html(attr.name.toLowerCase());
-    $('#expression-dialog .expr-var').html(attr.index);
-    $('#expression-dialog .expr-desc').html(attr.indexText);
-    $('#expression-ok').off('click');
-    $('#expression-ok').on('click', function() {
-	var val = $('#expression').val();
+    var dialog = $('#expression-dialog');
+    var input = dialog.find('input');
+    var form = dialog.find('form');
+    dialog.find('.expr-val').html(attr.caption);
+    dialog.find('.expr-name').html(attr.name.toLowerCase());
+    dialog.find('.expr-var').html(attr.index);
+    dialog.find('.expr-desc').html(attr.indexText);
+    form.off('submit');
+    form.on('submit', function(e) {
+	e.preventDefault();
+	var val = input.val();
 	arrayFromExpr(val, array, attr);
+	dialog.jqmHide();
     });
-    $('#expression-dialog').typeset();
+    dialog.typeset().jqmShow();
+    input.focus().select();
 }}
 
 $('document').ready(function() {
@@ -820,12 +827,12 @@ $('document').ready(function() {
 	indexText: 'coordinate index',
 	pattern:   PAT_INTEGER,
 	defVal:    1,
-	transform: (function(n) { return function(x) { return x % n; }})((new LatSize($('#size').val())).size)
+	transform: function(x) { return x % (new LatSize($('#size').val())).size; }
     };
     $('#construction-gen').inputArray(GEN_ATTR);
-    $('#construction-gen').parent().find('a')
-	.on('click', expressionDialog($('#construction-gen'), GEN_ATTR));
-    $('a[href$="#gen-from-results"]').on('click', function(e) {
+    $('#construction-gen-panel .expression-dialog-trigger')
+	.on('click', makeExpressionDialog($('#construction-gen'), GEN_ATTR));
+    $('#construction-gen-panel .from-results-trigger').on('click', function(e) {
 	e.preventDefault();
 	var self = $(this);
 	var res = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
@@ -861,6 +868,16 @@ $('document').ready(function() {
 	$('#results-command').slideToggle();
     });
 
+    // dialogs
+    $('#expression-dialog').jqm({trigger: false});
+    $('#new-weights-dialog').jqm({trigger: 'a.new-weights-dialog-trigger'});
+    $('#new-weights-dialog a').on('click', function(e) {
+	e.preventDefault();
+	var wtype = e.target.id.substr(12);
+	$('#new-weights-dialog').jqmHide();
+	addWeights(wtype);
+    });
+
     // populate lists
     var list = $('#figure');
     $.each(FIGURES, function(x) {
@@ -892,15 +909,6 @@ $('document').ready(function() {
     $('#coord-uniform').triggerHandler('click');
     $('#construction').triggerHandler('change');
 
-    // dialogs
-    $('#expression-dialog').on('dialog-opened', function() {
-	$('#expression').focus();
-    });
-    $('#new-weights-dialog a').on('click', function(e) {
-	e.preventDefault();
-	var wtype = e.target.id.substr(12);
-	addWeights(wtype);
-    });
     addWeights('product');
 
 

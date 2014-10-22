@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="css/base.css">
 	<link rel="stylesheet" href="css/skeleton.css">
 	<link rel="stylesheet" href="css/layout.css">
-	<link rel="stylesheet" href="css/dialog.css">
+	<link rel="stylesheet" href="css/jqModal.css">
         <link rel="stylesheet" href="css/latbuilder.css">
         <script src="js/modernizr.js"></script>
 	<script>
@@ -213,7 +213,7 @@
                     </div>
                     <div id="weights-panel" class="sixteen columns alpha omega clearfix"></div>
                     <div class="three columns alpha">
-                        <a id="add-weights" href="#new-weights-dialog">[add]</a>
+                        <a id="add-weights" href="#" class="new-weights-dialog-trigger">[add]</a>
                     </div>
                     <div class="five columns offset-by-three omega">
 			<label for="weights-power">
@@ -245,8 +245,8 @@
 		    <div id="construction-gen-panel" class="sixteen columns alpha omega">
 			<label for="construction-gen">
 			    Generating Vector \(\boldsymbol a = (a_1, \ldots, a_s)\)
-			    <a href="#expression-dialog">[expression]</a>
-			    <a class="with-results" href="#gen-from-results">[from results]</a>
+			    <a class="expression-dialog-trigger" href="#">[expression]</a>
+			    <a class="with-results from-results-trigger" href="#">[from results]</a>
 			</label>
 			<div id="construction-gen"></div>
 		    </div>
@@ -306,7 +306,7 @@
         </div><!-- container -->
 
 	<!-- dialogs -->
-	<div id="expression-dialog" class="dialog">
+	<div id="expression-dialog" class="jqmWindow">
 	    <div class="seven columns">
 		<h4>Set all weights using an expression</h4>
 		<p>Enter a constant or an expression for the
@@ -333,7 +333,7 @@
 		</ul>
 	    </div>
 	</div>
-	<div id="new-weights-dialog" class="dialog">
+	<div id="new-weights-dialog" class="jqmWindow">
 	    <div class="seven columns">
 		<h4>Select a new type of weights</h4>
 		<ul>
@@ -346,12 +346,12 @@
 	</div>
 
         <!-- for IE7 -->
-        <script>typeof JSON == 'undefined' && document.write('<script src="https://raw.githubusercontent.com/douglascrockford/JSON-js/master/json2.js"><\/script>')</script>
+        <script>typeof JSON == 'undefined' && document.write('<script src="js/json3.min.js"><\/script>')</script>
 
         <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
-        <script src="js/dialog.min.js"></script>
+        <script src="js/jqModal.js"></script>
         <script src="js/latbuilder.js"></script>
 
     </body>
