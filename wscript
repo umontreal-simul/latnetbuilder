@@ -151,11 +151,24 @@ def configure(ctx):
             mandatory=False)
 
     # Boost
+    # Boost Version
+    boost_version = (1,55,0)
+    boost_version_str = '.'.join(str(x) for x in boost_version)
+    st(ctx.check)(features='cxx',
+            msg='Checking for Boost version >= %s' % boost_version_str,
+            fragment=
+            '#include <boost/version.hpp>\n'
+            '#if BOOST_VERSION < %d\n'
+            '#error "Boost >= %s is required"\n'
+            '#endif' %
+            (boost_version[0] * 100000 + boost_version[1] * 100 + boost_version[2], boost_version_str))
+    # Boost Program Options
     st(ctx.check)(features='cxx cxxprogram',
             header_name='boost/program_options.hpp')
     st(ctx.check)(features='cxx cxxprogram',
             lib='boost_program_options',
             uselib_store='PROGRAM_OPTIONS')
+    # Boost Chrono
     st(ctx.check)(features='cxx cxxprogram',
             header_name='boost/chrono/chrono_io.hpp',
             lib=['boost_chrono', 'boost_system'],
