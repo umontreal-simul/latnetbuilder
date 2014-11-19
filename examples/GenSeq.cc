@@ -31,7 +31,7 @@
 using namespace LatBuilder;
 
 template <class GENSEQ, class SIZE, typename... ARGS>
-void test(const std::initializer_list<SIZE>& init, ARGS&&... args) {
+void test(const std::vector<SIZE>& init, ARGS&&... args) {
    std::cout << "==> " << GENSEQ::name() << std::endl;
    for (SIZE size : init) {
       auto seq = GenSeq::Creator<GENSEQ>::create(size, std::forward<ARGS>(args)...);
@@ -49,10 +49,10 @@ int main()
 {
    using namespace LatBuilder::GenSeq;
 
-   auto init1 = std::initializer_list<SizeParam<LatType::ORDINARY>>{5, 6, 7, 8, 9, 10, 11, 12};
-   auto init2 = std::initializer_list<SizeParam<LatType::EMBEDDED>>{{2,5}, {3,3}, {11,1}};
-   auto init3 = std::initializer_list<SizeParam<LatType::ORDINARY>>{256, 257, 1000};
-   auto init4 = std::initializer_list<SizeParam<LatType::EMBEDDED>>{{2,8}, {3,5}};
+   auto init1 = std::vector<SizeParam<LatType::ORDINARY>>{5, 6, 7, 8, 9, 10, 11, 12};
+   auto init2 = std::vector<SizeParam<LatType::EMBEDDED>>{{2,5}, {3,3}, {11,1}};
+   auto init3 = std::vector<SizeParam<LatType::ORDINARY>>{256, 257, 1000};
+   auto init4 = std::vector<SizeParam<LatType::EMBEDDED>>{{2,8}, {3,5}};
 
    test<CoprimeIntegers<Compress::NONE>>(init1);
    test<CoprimeIntegers<Compress::SYMMETRIC>>(init1);
