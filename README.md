@@ -332,6 +332,24 @@ using the following command line with GCC:
 With clang, just replace `g++` with `clang++`.
 
 
+#### Using Lattice Builder with Xcode 6.0
+
+To create an Xcode project that uses Lattice Builder, follow the following
+steps:
+
+1. Create a new Xcode projet as: **Application &#9658; Command Line Tool**
+2. Once the Xcode project displays, select the application name (blue file) on the left pane.
+3. Set **Build Settings &#9658; Search Paths &#9658; Always Search User Paths** to **Yes**.
+4. To **Build Settings &#9658; Search Paths &#9658; User Header Search Paths**, add the path
+   to the `include` directory from your Lattice Builder installation (e.g.,
+   `/Users/me/latbuilder/include`) and the paths to the `include` directories
+   from your Boost and FFTW installations if not under standard system
+   locations.
+5. To **Build Phases &#9658; Link Binary With Libraries**, add (+) the following files:
+     - `liblatbuilder.a` and `liblatcommon.a ` from the `lib` directory of your
+       Lattice Builder installation (e.g., `/Users/me/latbuilder/lib`);
+     - `libfftw3.a` from your FFTW installation.
+
 
 ## Frequently Asked Questions
 
