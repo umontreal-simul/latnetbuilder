@@ -877,6 +877,40 @@ $('document').ready(function() {
 	$('#new-weights-dialog').jqmHide();
 	addWeights(wtype);
     });
+    $('#code-dialog').jqm({trigger: 'a.code-dialog-trigger'});
+    $('#code-c').on('click', function(e) {
+	var gen = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
+	$('#code-dialog h4').html('C Code');
+	$('#code-dialog textarea').html(
+		'int n = ' + $('#results-size').text() + ';\n' +
+		'int s = ' + gen.length + ';\n' +
+		'int a[] = {' + $('#results-gen').text()  + '};\n' +
+		'double points[n][s];\n' +
+		'int i, j;\n' +
+		'for (i = 0; i < n; i++)\n' +
+		'  for (j = 0; j < s; j++)\n' +
+		'    points[i][j] = ((long long)i * a[j]) % n / (double)n;')
+	    .focus().select();
+    });
+    $('#code-python').on('click', function(e) {
+	$('#code-dialog h4').html('Python Code');
+	$('#code-dialog textarea').html(
+		'n = ' + $('#results-size').text() + '\n' +
+		'a = [' + $('#results-gen').text() + ']\n' +
+		'points = [[(i * aj % n) / float(n) for aj in a] for i in range(n)]')
+	    .focus().select();
+    });
+    $('#code-matlab').on('click', function(e) {
+	$('#code-dialog h4').html('Matlab Code');
+	$('#code-dialog textarea').html(
+		'n = ' + $('#results-size').text() + ';\n' +
+		'a = [' + $('#results-gen').text() + '];\n' +
+		'points = zeros(n,length(a));\n' +
+		'for i = 1:n\n' +
+		'    points(i,:) = mod((i - 1) * a, n) / n;\n' +
+		'end')
+	    .focus().select();
+    });
 
     // populate lists
     var list = $('#figure');

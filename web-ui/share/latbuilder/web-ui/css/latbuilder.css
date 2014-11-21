@@ -170,6 +170,19 @@ div.tip {
     display: none;
 }
 
+#code-dialog textarea {
+    font-family: monospace;
+    font-size: 90%;
+    width: 90%;
+    height: 16em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em;
+    background-color: white;
+    border: 1px inset #aaa;
+    border-radius: 3px;
+}
+
 #results-command {
     font-family: monospace;
     overflow: auto;
