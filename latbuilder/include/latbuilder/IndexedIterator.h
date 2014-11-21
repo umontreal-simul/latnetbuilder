@@ -35,10 +35,10 @@ namespace IndexedIterator {
  *             value_type operator[](SEQ::size_type).
  */
 template <typename SEQ>
-class Forward : public boost::iterator_facade<
+class Forward : public boost::iterators::iterator_facade<
    Forward<SEQ>,
    const typename SEQ::value_type,
-   boost::forward_traversal_tag>
+   boost::iterators::random_access_traversal_tag>
 {
 public:
    typedef SEQ Seq;
@@ -72,7 +72,7 @@ public:
    { return *m_seq; }
 
 private:
-   friend class boost::iterator_core_access;
+   friend class boost::iterators::iterator_core_access;
 
    void updateValue()
    { m_value = index() < seq().size() ? seq()[index()] : value_type(); }
@@ -104,10 +104,10 @@ private:
  * \tparam RAND     Random generator type.
  */
 template <typename SEQ, typename RAND>
-class Random : public boost::iterator_facade<
+class Random : public boost::iterators::iterator_facade<
    Random<SEQ, RAND>,
    const typename SEQ::value_type,
-   boost::forward_traversal_tag>
+   boost::iterators::forward_traversal_tag>
 {
 public:
    typedef SEQ Seq;
@@ -156,7 +156,7 @@ public:
    { return *m_seq; }
 
 private:
-   friend class boost::iterator_core_access;
+   friend class boost::iterators::iterator_core_access;
 
    void updateValue()
    { m_value = index() < seq().size() ? seq()[index()] : value_type(); }

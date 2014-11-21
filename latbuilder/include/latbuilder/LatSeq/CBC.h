@@ -73,7 +73,7 @@ public:
    /**
     * Constant iterator.
     */
-   class const_iterator : public boost::iterator_adaptor<const_iterator,
+   class const_iterator : public boost::iterators::iterator_adaptor<const_iterator,
       typename GenSeq::const_iterator,
       const value_type>
    {
@@ -98,7 +98,7 @@ public:
       { return *m_seq; }
 
    private:
-      friend class boost::iterator_core_access;
+      friend class boost::iterators::iterator_core_access;
 
       void increment()
       {

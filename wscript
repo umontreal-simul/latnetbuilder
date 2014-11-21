@@ -152,7 +152,7 @@ def configure(ctx):
 
     # Boost
     # Boost Version
-    boost_version = (1,55,0)
+    boost_version = (1,57,0)
     boost_version_str = '.'.join(str(x) for x in boost_version)
     st(ctx.check)(features='cxx',
             msg='Checking for Boost version >= %s' % boost_version_str,

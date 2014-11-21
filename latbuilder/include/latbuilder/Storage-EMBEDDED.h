@@ -357,9 +357,9 @@ public:
       /**
        * Constant iterator.
        */
-      class const_iterator : public boost::iterator_facade<const_iterator,
+      class const_iterator : public boost::iterators::iterator_facade<const_iterator,
          const value_type,                      // value
-         boost::forward_traversal_tag,          // traversal
+         boost::iterators::forward_traversal_tag,          // traversal
          const value_type,                      // reference
          ptrdiff_t>                             // difference
       {
@@ -389,7 +389,7 @@ public:
          { return m_level; }
 
       private:
-         friend class boost::iterator_core_access;
+         friend class boost::iterators::iterator_core_access;
 
          void increment()
          {

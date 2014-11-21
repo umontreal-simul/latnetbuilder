@@ -90,7 +90,7 @@ Compiling Lattice Builder requires the following software to be installed on
 the system:
 
 * [Python](http://python.org/) 2.7 or later
-* [Boost C++ Libraries](http://www.boost.org/) 1.55.0 or later  
+* [Boost C++ Libraries](http://www.boost.org/) 1.57.0 or later
   <small>
   Installation instructions (**section 5 is important**):
   [for Linux / MacOS](http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html),

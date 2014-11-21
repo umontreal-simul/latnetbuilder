@@ -29,7 +29,7 @@ namespace LatBuilder {
  */
 template <typename SEQ>
 class BridgeIteratorDynamic :
-   public boost::iterator_adaptor<
+   public boost::iterators::iterator_adaptor<
       BridgeIteratorDynamic<SEQ>,
       typename SEQ::Base::const_iterator,
       const typename SEQ::value_type,
@@ -67,7 +67,7 @@ public:
    { return this->base_reference().index(); }
 
 private:
-   friend class boost::iterator_core_access;
+   friend class boost::iterators::iterator_core_access;
 
    void increment()
    { ++this->base_reference(); }

@@ -197,7 +197,7 @@ class unpack(Task.Task):
         archive.extractall(destdir.abspath())
 
 
-boost = Boost(1,56,0)
+boost = Boost(1,57,0)
 fftw  = FFTW(3,3,4)
 
 def options(ctx):

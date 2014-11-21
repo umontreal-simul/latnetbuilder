@@ -196,10 +196,10 @@ public:
        * Constant iterator.
        */
       class const_iterator :
-         public boost::iterator_facade<
+         public boost::iterators::iterator_facade<
             const_iterator,
             const MeritValue&,
-            boost::forward_traversal_tag>
+            boost::iterators::forward_traversal_tag>
       {
       public:
 
@@ -232,7 +232,7 @@ public:
          { return m_lat; }
 
       private:
-         friend class boost::iterator_core_access;
+         friend class boost::iterators::iterator_core_access;
 
          bool equal(const const_iterator& other) const
          { return m_seq == other.m_seq and m_lat == other.m_lat; }

@@ -129,9 +129,9 @@ public:
     * Constant iterator.
     */
    class const_iterator :
-      public boost::iterator_facade<const_iterator,
+      public boost::iterators::iterator_facade<const_iterator,
       const value_type,
-      boost::forward_traversal_tag>,
+      boost::iterators::forward_traversal_tag>,
       private INCREMENT<const_iterator>
    {
    public:
@@ -172,7 +172,7 @@ public:
       { return m_its; }
 
    private:
-      friend class boost::iterator_core_access;
+      friend class boost::iterators::iterator_core_access;
       friend class INCREMENT<const_iterator>;
 
       bool equal(const const_iterator& other) const

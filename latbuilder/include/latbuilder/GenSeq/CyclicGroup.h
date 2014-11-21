@@ -383,9 +383,9 @@ namespace LatBuilder { namespace Traversal {
       /**
        * Immutable iterator type.
        */
-      class const_iterator : public boost::iterator_facade<const_iterator,
+      class const_iterator : public boost::iterators::iterator_facade<const_iterator,
          const value_type,             // value
-         boost::forward_traversal_tag, // traversal
+         boost::iterators::random_access_traversal_tag, // traversal
          const value_type,             // reference
          ptrdiff_t>                    // difference
       {
@@ -415,7 +415,7 @@ namespace LatBuilder { namespace Traversal {
          { return *m_seq; }
 
       private:
-         friend class boost::iterator_core_access;
+         friend class boost::iterators::iterator_core_access;
 
          value_type dereference() const   
          { return m_value == 1 ? 1 : CompressTraits<Seq::compress()>::compressIndex(m_value, m_seq->modulus()); }

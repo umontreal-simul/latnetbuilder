@@ -94,9 +94,9 @@ private:
    const RangeMap& ranges() const { return m_ranges; }
 
 public:
-   class const_iterator : public boost::iterator_facade<const_iterator,
+   class const_iterator : public boost::iterators::iterator_facade<const_iterator,
       const Coordinates,                     // value
-      boost::forward_traversal_tag>          // traversal
+      boost::iterators::forward_traversal_tag>          // traversal
    {
    public:
       struct end_tag {};
@@ -114,7 +114,7 @@ public:
       { }
 
    private:
-      friend class boost::iterator_core_access;
+      friend class boost::iterators::iterator_core_access;
 
       void increment();
 
@@ -174,9 +174,9 @@ public:
    Coordinates::size_type maxOrder() const { return m_maxOrder; }
 
 public:
-   class const_iterator : public boost::iterator_facade<const_iterator,
+   class const_iterator : public boost::iterators::iterator_facade<const_iterator,
       const Coordinates,                     // value
-      boost::forward_traversal_tag>          // traversal
+      boost::iterators::forward_traversal_tag>          // traversal
    {
    public:
       struct end_tag {};
@@ -194,7 +194,7 @@ public:
       { }
 
    private:
-      friend class boost::iterator_core_access;
+      friend class boost::iterators::iterator_core_access;
 
       void increment();
 
@@ -277,7 +277,7 @@ public:
    { return m_coord; }
 
 public:
-   class const_iterator : public boost::iterator_adaptor<const_iterator,
+   class const_iterator : public boost::iterators::iterator_adaptor<const_iterator,
       typename Base::const_iterator>
    {
    public:
@@ -299,7 +299,7 @@ public:
       { }
 
    private:
-      friend class boost::iterator_core_access;
+      friend class boost::iterators::iterator_core_access;
 
       void increment()
       { ++this->base_reference(); updateValue(); }
