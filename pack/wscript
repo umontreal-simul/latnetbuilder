@@ -145,10 +145,29 @@ def version(ctx):
     """Returns by using Git"""
     try:
         version = ctx.cmd_and_log("git describe --tags --match 'v[0-9].*'").strip()[1:]
-        hashpos = version.rfind('-g')
-        if hashpos > 0:
-            version = version[:hashpos]
+
+        # extract revision
+        pos = version.rfind('-g')
+        if pos > 0:
+            version = version[:pos]
+        pos = version.rfind('-')
+        if pos > 0:
+            r = version[pos:]
+            version = version[:pos]
+        else:
+            r = ''
+
+        # branch
+        branch = ctx.cmd_and_log("git rev-parse --abbrev-ref HEAD").strip()
+        if branch == 'HEAD':
+            version += '-unknown'
+        elif branch != 'master':
+            version += '-' + branch
+
+        version += r
+
         return version
+
     except:
         return 'unknown'
 
