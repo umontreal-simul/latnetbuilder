@@ -19,11 +19,7 @@
 #include "latbuilder/Parser/CommandLine.h"
 #include "latbuilder/TextStream.h"
 
-#ifdef HAVE_BOOST_CHRONO_CHRONO_IO_HPP
-#include <boost/chrono/chrono_io.hpp>
-typedef boost::chrono::high_resolution_clock Clock;
-typedef boost::chrono::time_point<boost::chrono::high_resolution_clock, boost::chrono::duration<double, boost::ratio<1>>> TimePoint;
-#endif
+#include <chrono>
 
 #ifndef LATBUILDER_VERSION
 #define LATBUILDER_VERSION "(unkown version)"
@@ -161,6 +157,8 @@ parse(int argc, const char* argv[])
 template <LatType LAT>
 void execute(const Parser::CommandLine<LAT>& cmd, bool quiet, unsigned int repeat)
 {
+   using namespace std::chrono;
+
    auto search = cmd.parse();
 
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
@@ -175,20 +173,15 @@ void execute(const Parser::CommandLine<LAT>& cmd, bool quiet, unsigned int repea
       if (not quiet)
          std::cout << separator << std::endl;
 
-#ifdef HAVE_BOOST_CHRONO_CHRONO_IO_HPP
-      TimePoint t0 = Clock::now();
-#endif
+      auto t0 = high_resolution_clock::now();
       search->execute();
-#ifdef HAVE_BOOST_CHRONO_CHRONO_IO_HPP
-      TimePoint t1 = Clock::now();
-#endif
+      auto t1 = high_resolution_clock::now();
 
       if (not quiet) {
+	 auto dt = duration_cast<duration<double>>(t1 - t0);
          std::cout << std::endl;
          std::cout << "BEST LATTICE: " << search->bestLattice() << ": " << search->bestMeritValue() << std::endl;
-#ifdef HAVE_BOOST_CHRONO_CHRONO_IO_HPP
-         std::cout << "ELAPSED CPU TIME: " << (t1 - t0) << std::endl;
-#endif
+         std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
       }
       else {
          const auto lat = search->bestLattice();

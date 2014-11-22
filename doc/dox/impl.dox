@@ -214,10 +214,9 @@ following
 <a href="http://www.boost.org/">Boost libraries</a>:
 <ul>
 	<li><a href="http://www.boost.org/doc/libs/release/doc/html/program_options.html">Program Options</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/chrono/index.html">Chrono</a></li>
 </ul>
 
-Only the Program Options and Chrono libraries require building and linking; the
+Only the Program Options library requires building and linking; the
 others are header-only libraries.
 
 

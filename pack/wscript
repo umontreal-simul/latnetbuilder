@@ -58,7 +58,7 @@ class Boost(DepBase):
 
         # bootstrap
         ctx(rule='{} --prefix={} --with-toolset=gcc --without-icu ' \
-                '--with-libraries=program_options,chrono,system'
+                '--with-libraries=program_options,system'
                 .format(bootstrap.abspath(), prefix.abspath()),
                 source=bootstrap,
                 target=b2,
