@@ -252,6 +252,60 @@ function formatTime(seconds) {
 	},
 
 	// ===========================================================================
+	// spinner widget
+	// ===========================================================================
+
+	spinner: function(getMin, getMax, value) {
+	    var self = $(this);
+	    self.addClass('spinner-widget');
+	    var dec = $('<a href="#" class="spinner-dec">').html('&#x25c4;');
+	    var inc = $('<a href="#" class="spinner-inc">').html('&#x25ba;');
+	    var input = $('<input type="text">');
+	    self.append(dec).append(input).append(inc);
+	    input.on('change', function() {
+		var val = parseInt($(this).val());
+		if (isNaN(val)) { val = 0; }
+		val = Math.max(getMin(), Math.min(getMax(), val));
+		$(this).val(val);
+	    });
+	    input.on('keyup change', function() { $(this).validate(/^[-+]?[0-9]+[0-9]*$/); });
+	    if (value !== undefined) {
+		input.val(value);
+	    }
+	    self.data('input', input);
+	    function doDec() {
+		var val = parseInt(input.val()) - 1;
+		if (val >= getMin()) {
+		    input.val(val).triggerHandler('change');
+		}
+	    }
+	    function doInc() {
+		var val = parseInt(input.val()) + 1;
+		if (val <= getMax()) {
+		    input.val(val).triggerHandler('change');
+		}
+	    }
+	    var timeout;
+	    dec.on('click', function(e) { e.preventDefault(); });
+	    inc.on('click', function(e) { e.preventDefault(); });
+	    dec.on('mousedown', function(e) { e.preventDefault(); doDec(); timeout = setInterval(function() { doDec(); }, 400); });
+	    inc.on('mousedown', function(e) { e.preventDefault(); doInc(); timeout = setInterval(function() { doInc(); }, 400); });
+	    dec.on('mouseup mouseout', function(e) { e.preventDefault(); clearInterval(timeout); });
+	    inc.on('mouseup mouseout', function(e) { e.preventDefault(); clearInterval(timeout); });
+	    return self;
+	},
+
+	spinnerValue: function(value) {
+	    if (value === undefined) {
+		return parseInt($(this).data('input').val());
+	    }
+	    else {
+		$(this).data('input').val(value).triggerHandler('change');
+		return $(this);
+	    }
+	},
+
+	// ===========================================================================
 	// input array
 	// ===========================================================================
 
@@ -629,6 +683,12 @@ function executeLatBuilder() {
 		$('#abort-button').hide();
 		$('.with-results').show();
 		$('.without-results').hide();
+		if ($("#results-size").text() <= 4100) {
+		    $('.plot-dialog-trigger').show();
+		}
+		else {
+		    $('.plot-dialog-trigger').hide();
+		}
 		$('html, body').animate({scrollTop: $("#results").offset().top}, 600);
             }
         }
@@ -881,7 +941,6 @@ $('document').ready(function() {
 	e.preventDefault();
 	$('#results-command').slideToggle();
     });
-    $('#plot-coordinate1').add('#plot-coordinate2').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
 
     // dialogs
     $('#expression-dialog').jqm({trigger: false});
@@ -929,28 +988,33 @@ $('document').ready(function() {
     });
     // plot
     $('#plot-dialog').jqm({trigger: 'a.plot-dialog-trigger'});
+    $('#plot-coordinate1').spinner(function() { return 1; }, function() { return $('#dimension').val(); }, 1);
+    $('#plot-coordinate2').spinner(function() { return 1; }, function() { return $('#dimension').val(); }, 2);
+    $('#plot-level').spinner(function() { return 0; }, function() { return global_submitted_lattice_size.exp; });
     $('.plot-dialog-trigger').on('click', function(e) {
-	$('#plot-coordinate1').val(Math.max(1,Math.min($('#plot-coordinate1').val(), $('#dimension').val())));
-	$('#plot-coordinate2').val(Math.max(1,Math.min($('#plot-coordinate2').val(), $('#dimension').val())));
-	$('#plot-coordinate1').triggerHandler('change');
+	$('#plot-coordinate1').spinnerValue($('#plot-coordinate1').spinnerValue());
+	$('#plot-coordinate2').spinnerValue($('#plot-coordinate2').spinnerValue());
+	if (global_submitted_lattice_size && global_submitted_lattice_size.exp >= 2) {
+	    $('#plot-level-info').show();
+	    $('#plot-level').spinnerValue(global_submitted_lattice_size.exp);
+	}
+	else {
+	    $('#plot-level-info').hide();
+	}
     });
-    function coordInc(c) {
+    function coordInc(c, maxval) {
 	var val = parseInt(c.val()) + 1;
-	if (val <= $('#dimension').val()) {
+	if (val <= maxval) {
 	    c.val(val).triggerHandler('change');
 	}
     }
-    function coordDec(c) {
+    function coordDec(c, minval) {
 	var val = parseInt(c.val()) - 1;
-	if (val >= 1) {
+	if (val >= minval) {
 	    c.val(val).triggerHandler('change');
 	}
     }
-    $('#plot-coordinate1-dec').on('click', function(e) { e.preventDefault(); coordDec($('#plot-coordinate1')); });
-    $('#plot-coordinate1-inc').on('click', function(e) { e.preventDefault(); coordInc($('#plot-coordinate1')); });
-    $('#plot-coordinate2-dec').on('click', function(e) { e.preventDefault(); coordDec($('#plot-coordinate2')); });
-    $('#plot-coordinate2-inc').on('click', function(e) { e.preventDefault(); coordInc($('#plot-coordinate2')); });
-    $('#plot-coordinate1').add('#plot-coordinate2').on('change', function() {
+    $('#plot-coordinate-info input').add('#plot-level input').on('change', function() {
 	var plot_options = {
 	    lines:  { show: false },
 	    points: { show: true, radius: 2, fill: true, fillColor: '#4C6B8B' },
@@ -959,9 +1023,17 @@ $('document').ready(function() {
 	    yaxis:  { min: 0, max: 1 },
 	};
 	var n = $('#results-size').text();
+	if (global_submitted_lattice_size) {
+	    if (global_submitted_lattice_size.exp) {
+		n = Math.floor(Math.pow(global_submitted_lattice_size.base, $('#plot-level').spinnerValue()));
+	    }
+	    else {
+		n = global_submitted_lattice_size.size;
+	    }
+	}
 	var gen = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
-	var j1 = parseInt($('#plot-coordinate1').val()) - 1;
-	var j2 = parseInt($('#plot-coordinate2').val()) - 1;
+	var j1 = parseInt($('#plot-coordinate1').spinnerValue()) - 1;
+	var j2 = parseInt($('#plot-coordinate2').spinnerValue()) - 1;
 	$.plot($("#plot"), [ makeLattice(n, [gen[j1],gen[j2]]) ], plot_options);
     });
 
@@ -1010,6 +1082,7 @@ $('document').ready(function() {
 	    window.alert('No weights are specified; please add at least one type of weights.');
 	    return;
 	}
+	global_submitted_lattice_size = new LatSize($('#size').val());
 	executeLatBuilder();
     });
 
@@ -1024,6 +1097,12 @@ $('document').ready(function() {
 
     $('#size').focus();
 });
+
+//-----------------------------------------------------------------------------
+// Global Variables
+//-----------------------------------------------------------------------------
+
+var global_submitted_lattice_size;
 
 var _cur_request_id = 0;
 function nextRequestId() {

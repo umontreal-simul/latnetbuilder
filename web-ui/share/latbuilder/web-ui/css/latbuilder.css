@@ -2,6 +2,10 @@ fieldset {
     margin-bottom: 1em;
     margin-top: 1em;
 }
+
+.spinner-widget input[type="text"] { width: 2em; }
+.spinner-widget a { text-decoration: none; }
+
 .inputArray ul {
     list-style: none;
     margin: 0;

@@ -363,13 +363,20 @@
 	    <a href="#" class="jqmClose">[close]</a>
 	</div>
 	<div id="plot-dialog" class="jqmWindow">
-	    <div id="plot-container" class="seven columns">
+	    <div id="plot-container" class="ten columns">
 		<div style="text-align:center">
-		    Coordinates&thinsp;:&emsp;
-		    <a id="plot-coordinate1-dec" href="#">&#x25c4;</a><input id="plot-coordinate1" type="text" value="1" style="width:2em"><a id="plot-coordinate1-inc" href="#">&#x25ba;</a>&emsp;
-		    <a id="plot-coordinate2-dec" href="#">&#x25c4;</a><input id="plot-coordinate2" type="text" value="2" style="width:2em"><a id="plot-coordinate2-inc" href="#">&#x25ba;</a>
+		    <span id="plot-coordinate-info">
+			Coordinates&thinsp;:&ensp;
+			<span id="plot-coordinate1"></span>&ensp;
+			<span id="plot-coordinate2"></span>
+		    </span>
+		    &emsp;
+		    <span id="plot-level-info">
+			Level&thinsp;:&ensp;
+			<span id="plot-level"></span>
+		    </span>
 		</div>
-		<div id="plot" style="width:500px;height:500px;margin-left:auto;margin-right:auto"></div>
+		<div id="plot" style="width:560px;height:560px;margin-left:auto;margin-right:auto"></div>
 	    </div>
 	    <div style="text-align:center"><a href="#" class="jqmClose">[close]</a></div>
 	</div>
