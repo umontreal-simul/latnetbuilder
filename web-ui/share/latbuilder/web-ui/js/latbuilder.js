@@ -111,6 +111,8 @@ if (!Array.prototype.map) {
 
 //-----------------------------------------------------------------------------
 
+var CGI_PATH = 'services';
+
 var DEFAULT_WEIGHT = 0.1;
 
 var PAT_INTEGER  = /^[1-9]+[0-9]*$/;
@@ -489,7 +491,7 @@ function addWeights(wtype) {
 
 function getBackend() {
     $.ajax({
-        url: "services/lbjson.py",
+        url: CGI_PATH + "/lbjson.py",
         type: "post",
         data: JSON.stringify({'id': nextRequestId(), 'method': 'backend_version', 'params':{}}),
         dataType: "json",
@@ -517,7 +519,7 @@ function getBackend() {
 
 function arrayFromExpr(expr, array, attr) {
     $.ajax({
-        url: "services/lbjson.py",
+        url: CGI_PATH + "/lbjson.py",
         type: "post",
         data: JSON.stringify({'id': nextRequestId(), 'method': 'array_from_expr', 'params':
 	    [expr, attr.index, array.inputArraySize()]}),
@@ -588,7 +590,7 @@ function executeLatBuilder() {
     params = [lat, size, dim, norm, fig, cons, weights, wpow, '', mlFilters, combiner];
     
     var xhr = $.ajax({
-        url: "services/lbjson.py",
+        url: CGI_PATH + "/lbjson.py",
         type: "post",
         data: JSON.stringify({'id': nextRequestId(), 'method': 'latbuilder_exec', 'params': params}),
         dataType: "json",
