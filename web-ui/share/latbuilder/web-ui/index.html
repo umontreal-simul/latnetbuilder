@@ -290,11 +290,12 @@
 			    <div id="results-command" class="nine columns omega command"></div>
 			</div>
 			<div class="twelve columns alpha omega clearfix">
-			    <div class="three columns alpha caption">Usage Code&thinsp;:</div>
-			    <div id="code-choices" class="nine columns omega command">
-				<a id="code-c" href="#" class="code-dialog-trigger">[C]</a>
-				<a id="code-python" href="#" class="code-dialog-trigger">[Python]</a>
-				<a id="code-matlab" href="#" class="code-dialog-trigger">[Matlab]</a>
+			    <div class="three columns alpha caption">Utilities&thinsp;:</div>
+			    <div class="nine columns omega command">
+				<a id="code-c" href="#" class="code-dialog-trigger">[C Code]</a>&ensp;
+				<a id="code-python" href="#" class="code-dialog-trigger">[Python Code]</a>&ensp;
+				<a id="code-matlab" href="#" class="code-dialog-trigger">[Matlab Code]</a>&ensp;
+				<a href="#" class="plot-dialog-trigger">[Plot]</a>
 			    </div>
 			</div>
 		    </div>
@@ -361,6 +362,17 @@
 	    </div>
 	    <a href="#" class="jqmClose">[close]</a>
 	</div>
+	<div id="plot-dialog" class="jqmWindow">
+	    <div id="plot-container" class="seven columns">
+		<div style="text-align:center">
+		    Coordinates&thinsp;:&emsp;
+		    <a id="plot-coordinate1-dec" href="#">&#x25c4;</a><input id="plot-coordinate1" type="text" value="1" style="width:2em"><a id="plot-coordinate1-inc" href="#">&#x25ba;</a>&emsp;
+		    <a id="plot-coordinate2-dec" href="#">&#x25c4;</a><input id="plot-coordinate2" type="text" value="2" style="width:2em"><a id="plot-coordinate2-inc" href="#">&#x25ba;</a>
+		</div>
+		<div id="plot" style="width:500px;height:500px;margin-left:auto;margin-right:auto"></div>
+	    </div>
+	    <div style="text-align:center"><a href="#" class="jqmClose">[close]</a></div>
+	</div>
 
         <!-- for IE7 -->
         <script>typeof JSON == 'undefined' && document.write('<script src="js/json3.min.js"><\/script>')</script>
@@ -369,6 +381,8 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
         <script src="js/jqModal.js"></script>
+	<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="js/excanvas.min.js"></script><![endif]-->
+        <script src="js/jquery.flot.min.js"></script>
         <script src="js/latbuilder.js"></script>
 
     </body>

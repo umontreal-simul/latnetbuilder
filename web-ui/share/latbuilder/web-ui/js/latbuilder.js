@@ -670,6 +670,18 @@ function makeExpressionDialog(array, attr) { return function(e) {
     input.focus().select();
 }}
 
+function makeLattice(n, gen) {
+    var points = [];
+    for (var i = 0; i < n; i++) {
+	p = [];
+	for (var j in gen) {
+	    p.push((i * gen[j] % n) / n);
+	}
+	points.push(p);
+    }
+    return points;
+}
+
 $('document').ready(function() {
 
     $('#size').on('change', function() {
@@ -867,6 +879,7 @@ $('document').ready(function() {
 	e.preventDefault();
 	$('#results-command').slideToggle();
     });
+    $('#plot-coordinate1').add('#plot-coordinate2').on('keyup change', function() { $(this).validate(PAT_INTEGER); });
 
     // dialogs
     $('#expression-dialog').jqm({trigger: false});
@@ -877,6 +890,7 @@ $('document').ready(function() {
 	$('#new-weights-dialog').jqmHide();
 	addWeights(wtype);
     });
+    // code
     $('#code-dialog').jqm({trigger: 'a.code-dialog-trigger'});
     $('#code-c').on('click', function(e) {
 	var gen = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
@@ -910,6 +924,43 @@ $('document').ready(function() {
 		'    points(i,:) = mod((i - 1) * a, n) / n;\n' +
 		'end')
 	    .focus().select();
+    });
+    // plot
+    $('#plot-dialog').jqm({trigger: 'a.plot-dialog-trigger'});
+    $('.plot-dialog-trigger').on('click', function(e) {
+	$('#plot-coordinate1').val(Math.max(1,Math.min($('#plot-coordinate1').val(), $('#dimension').val())));
+	$('#plot-coordinate2').val(Math.max(1,Math.min($('#plot-coordinate2').val(), $('#dimension').val())));
+	$('#plot-coordinate1').triggerHandler('change');
+    });
+    function coordInc(c) {
+	var val = parseInt(c.val()) + 1;
+	if (val <= $('#dimension').val()) {
+	    c.val(val).triggerHandler('change');
+	}
+    }
+    function coordDec(c) {
+	var val = parseInt(c.val()) - 1;
+	if (val >= 1) {
+	    c.val(val).triggerHandler('change');
+	}
+    }
+    $('#plot-coordinate1-dec').on('click', function(e) { e.preventDefault(); coordDec($('#plot-coordinate1')); });
+    $('#plot-coordinate1-inc').on('click', function(e) { e.preventDefault(); coordInc($('#plot-coordinate1')); });
+    $('#plot-coordinate2-dec').on('click', function(e) { e.preventDefault(); coordDec($('#plot-coordinate2')); });
+    $('#plot-coordinate2-inc').on('click', function(e) { e.preventDefault(); coordInc($('#plot-coordinate2')); });
+    $('#plot-coordinate1').add('#plot-coordinate2').on('change', function() {
+	var plot_options = {
+	    lines:  { show: false },
+	    points: { show: true, radius: 2, fill: true, fillColor: '#4C6B8B' },
+	    colors: ['#4C6B8B'],
+	    xaxis:  { min: 0, max: 1 },
+	    yaxis:  { min: 0, max: 1 },
+	};
+	var n = $('#results-size').text();
+	var gen = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
+	var j1 = parseInt($('#plot-coordinate1').val()) - 1;
+	var j2 = parseInt($('#plot-coordinate2').val()) - 1;
+	$.plot($("#plot"), [ makeLattice(n, [gen[j1],gen[j2]]) ], plot_options);
     });
 
     // populate lists
