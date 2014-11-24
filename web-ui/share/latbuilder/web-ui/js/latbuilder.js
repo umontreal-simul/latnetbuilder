@@ -515,7 +515,7 @@ function addWeights(wtype) {
             display: '',
             custom:  $('<div class="thirteen columns omega clearfix">')
                 .append($('<div class="four columns alpha">')
-                        .html($('<textarea class="three columns" style="height: 160px">')))
+                        .html($('<textarea class="three columns" style="height: 160px">').val('')))
                 .append($('<div class="four columns">')
                         .html("Enter the mapping between coordinates and weights.  " +
                             "Each line must be <b>comma-separated list of coordinates</b> " +
@@ -956,7 +956,7 @@ $('document').ready(function() {
     $('#code-c').on('click', function(e) {
 	var gen = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
 	$('#code-dialog h4').html('C Code');
-	$('#code-dialog textarea').html(
+	$('#code-dialog textarea').val(
 		'int n = ' + $('#results-size').text() + ';\n' +
 		'int s = ' + gen.length + ';\n' +
 		'int a[] = {' + $('#results-gen').text()  + '};\n' +
@@ -969,7 +969,7 @@ $('document').ready(function() {
     });
     $('#code-python').on('click', function(e) {
 	$('#code-dialog h4').html('Python Code');
-	$('#code-dialog textarea').html(
+	$('#code-dialog textarea').val(
 		'n = ' + $('#results-size').text() + '\n' +
 		'a = [' + $('#results-gen').text() + ']\n' +
 		'points = [[(i * aj % n) / float(n) for aj in a] for i in range(n)]')
@@ -977,7 +977,7 @@ $('document').ready(function() {
     });
     $('#code-matlab').on('click', function(e) {
 	$('#code-dialog h4').html('Matlab Code');
-	$('#code-dialog textarea').html(
+	$('#code-dialog textarea').val(
 		'n = ' + $('#results-size').text() + ';\n' +
 		'a = [' + $('#results-gen').text() + '];\n' +
 		'points = zeros(n,length(a));\n' +
@@ -1020,7 +1020,7 @@ $('document').ready(function() {
 	    points: { show: true, radius: 2, fill: true, fillColor: '#4C6B8B' },
 	    colors: ['#4C6B8B'],
 	    xaxis:  { min: 0, max: 1 },
-	    yaxis:  { min: 0, max: 1 },
+	    yaxis:  { min: 0, max: 1 }
 	};
 	var n = $('#results-size').text();
 	if (global_submitted_lattice_size) {
