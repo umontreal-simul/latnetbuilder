@@ -1002,18 +1002,6 @@ $('document').ready(function() {
 	    $('#plot-level-info').hide();
 	}
     });
-    function coordInc(c, maxval) {
-	var val = parseInt(c.val()) + 1;
-	if (val <= maxval) {
-	    c.val(val).triggerHandler('change');
-	}
-    }
-    function coordDec(c, minval) {
-	var val = parseInt(c.val()) - 1;
-	if (val >= minval) {
-	    c.val(val).triggerHandler('change');
-	}
-    }
     $('#plot-coordinate-info input').add('#plot-level input').on('change', function() {
 	var plot_options = {
 	    lines:  { show: false },
@@ -1025,15 +1013,20 @@ $('document').ready(function() {
 	var n = $('#results-size').text();
 	if (global_submitted_lattice_size) {
 	    if (global_submitted_lattice_size.exp) {
-		n = Math.floor(Math.pow(global_submitted_lattice_size.base, $('#plot-level').spinnerValue()));
+		var base = global_submitted_lattice_size.base;
+		var level = $('#plot-level').spinnerValue();
+		n = Math.floor(Math.pow(base, level));
+		$('#plot-lattice-size').html(base + '<sup>' + level + '</sup> = ' + n);
 	    }
 	    else {
 		n = global_submitted_lattice_size.size;
+		$('#plot-lattice-size').html('' + n);
 	    }
 	}
 	var gen = $('#results-gen').text().split(',').map(function(x) { return x.trim(); });
 	var j1 = parseInt($('#plot-coordinate1').spinnerValue()) - 1;
 	var j2 = parseInt($('#plot-coordinate2').spinnerValue()) - 1;
+	$('#plot-generating-vector').text('(' + gen[j1] + ', ' + gen[j2] + ')');
 	$.plot($("#plot"), [ makeLattice(n, [gen[j1],gen[j2]]) ], plot_options);
     });
 

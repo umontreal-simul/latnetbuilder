@@ -76,7 +76,7 @@
                         <a name="lattice"></a>
                         <legend>Lattice Properties</legend>
                         <p class="DisplayMath">
-                        \[ P_n = \left\{ (i \boldsymbol a \bmod n) / n \::\: i = 0, \dots, n \right\} \qquad (\boldsymbol a \in \mathbb Z^s) \]
+                        \[ P_n = \left\{ (i \boldsymbol a \bmod n) / n \::\: i = 0, \dots, n - 1 \right\} \qquad (\boldsymbol a \in \mathbb Z^s) \]
                         </p>
                     </div>
                     <div class="six columns alpha">
@@ -318,6 +318,7 @@
 
 	<!-- dialogs -->
 	<div id="expression-dialog" class="jqmWindow">
+	    <a href="#" class="jqmClose close-button">&#x2716;</a>
 	    <div class="seven columns">
 		<h4>Set all weights using an expression</h4>
 		<p>Enter a constant or an expression for the
@@ -345,6 +346,7 @@
 	    </div>
 	</div>
 	<div id="new-weights-dialog" class="jqmWindow">
+	    <a href="#" class="jqmClose close-button">&#x2716;</a>
 	    <div class="seven columns">
 		<h4>Select a new type of weights</h4>
 		<ul>
@@ -356,15 +358,22 @@
 	    </div>
 	</div>
 	<div id="code-dialog" class="jqmWindow">
+	    <a href="#" class="jqmClose close-button">&#x2716;</a>
 	    <div class="seven columns">
 		<h4>Code</h4>
 		<textarea></textarea>
 	    </div>
-	    <a href="#" class="jqmClose">[close]</a>
 	</div>
 	<div id="plot-dialog" class="jqmWindow">
+	    <a href="#" class="jqmClose close-button">&#x2716;</a>
 	    <div id="plot-container" class="ten columns">
-		<div style="text-align:center">
+		<div class="plot-title">
+		    generating vector&thinsp;:&ensp;<span id="plot-generating-vector">1,1</span>
+		    &emsp;&mdash;&emsp;
+		    number of points&thinsp;:&ensp;<span id="plot-lattice-size">2</span>
+		</div>
+		<div id="plot" style="width:560px;height:560px;margin-left:auto;margin-right:auto"></div>
+		<div class="plot-info">
 		    <span id="plot-coordinate-info">
 			Coordinates&thinsp;:&ensp;
 			<span id="plot-coordinate1"></span>&ensp;
@@ -376,9 +385,7 @@
 			<span id="plot-level"></span>
 		    </span>
 		</div>
-		<div id="plot" style="width:560px;height:560px;margin-left:auto;margin-right:auto"></div>
 	    </div>
-	    <div style="text-align:center"><a href="#" class="jqmClose">[close]</a></div>
 	</div>
 
         <!-- for IE7 -->

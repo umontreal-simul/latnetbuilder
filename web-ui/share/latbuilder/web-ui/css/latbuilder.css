@@ -174,6 +174,20 @@ div.tip {
     display: none;
 }
 
+.jqmWindow a.jqmClose {
+    text-decoration: none;
+}
+.jqmWindow a.jqmClose:hover,
+.jqmWindow a.jqmClose:active {
+    color: #BF4634;
+}
+.jqmWindow .close-button {
+    position:  absolute;
+    right:     0.6ex;
+    top:       0.6ex;
+    font-size: 22px;
+}
+
 #code-dialog textarea {
     font-family: monospace;
     font-size: 90%;
@@ -185,6 +199,21 @@ div.tip {
     background-color: white;
     border: 1px inset #aaa;
     border-radius: 3px;
+}
+
+.plot-info {
+    text-align: center;
+}
+.plot-title {
+    text-align:   center;
+}
+.plot-title sup {
+    font-size: smaller;
+}
+#plot-dialog {
+    position: fixed;
+    top:      auto;
+    bottom:   7%;
 }
 
 #results-command {
