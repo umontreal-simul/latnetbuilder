@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-from waflib import Task, Options, Utils
+from waflib import Task, Options, Utils, Logs
 import re
 
 class check_output(Task.Task):
@@ -35,6 +35,21 @@ class check_output(Task.Task):
             # compare
             if out.strip() != outcheck.strip():
                 status = -1
+                Logs.warn('=====================================================================')
+                Logs.warn('Test `{}\' failed:'.format(name))
+                linescheck = [re.sub(r'\s\+$', '', s) for s in outcheck.split('\n')]
+                lines      = [re.sub(r'\s\+$', '', s) for s in out     .split('\n')]
+                # pad outputs
+                linescheck += [''] * max(0, len(lines) - len(linescheck))
+                lines      += [''] * max(0, len(linescheck) - len(lines))
+                # line by line comparison
+                for line, linecheck in zip(lines, linescheck):
+                    if line != linecheck:
+                        Logs.error('EXPECTED| {}'.format(linecheck))
+                        Logs.error('  ACTUAL| {}'.format(line))
+                    else:
+                        Logs.warn('        | {}'.format(line))
+                Logs.warn('=====================================================================')
             self.generator.bld.utest_results[i] = target, status, out, err
 
 def build(ctx):
