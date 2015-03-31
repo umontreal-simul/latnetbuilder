@@ -696,6 +696,13 @@ options:
                   level.
 
         </dd>
+	<dt><code>\--precision</code></dt>
+	<dd><em>Optional.</em>
+                Sets the number of significant figures to use when displaying
+		merit values.
+                Takes a positive integer as its argument.
+
+        </dd>
 </dl>
 
 
