@@ -183,7 +183,7 @@ two libraries:
 
 	./waf configure --prefix $HOME/latsoft --boost /opt/boost --fftw /opt/fftw configure --link-static
 
-The `--link-static` option suggested above will case the Boost and FFTW
+The `--link-static` option suggested above will cause the Boost and FFTW
 libraries to be linked statically to the executable program, which may be
 desirable especially if these are not installed in standard locations.
 
