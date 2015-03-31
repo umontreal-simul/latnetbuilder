@@ -276,6 +276,8 @@ contains the `bin` subdirectory.  If you installed a binary package, it is the
 
 The Lattice Builder Web Application is included in the binary packages.
 [Python](http://python.org/download/) must be installed on the host machine.
+A connection to the Internet is also necessary to display the mathematical
+symbols.
 The local web server can be started by launching the following Python script:
 
 	bin/latbuilder-web.py
