@@ -28,16 +28,16 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-static unsigned int float_format_precision = 0;
+static unsigned int merit_digits_displayed = 0;
 
 template <LatType LAT>
 void onLatticeSelected(const Task::Search<LAT>& s)
 {
    unsigned int old_precision = std::cout.precision();
-   if (float_format_precision)
-      std::cout.precision(float_format_precision);
+   if (merit_digits_displayed)
+      std::cout.precision(merit_digits_displayed);
    std::cout << "==> " << s.bestLattice() << ": " << s.bestMeritValue() << std::endl;
-   if (float_format_precision)
+   if (merit_digits_displayed)
       std::cout.precision(old_precision);
    const auto accepted = s.minObserver().acceptedCount();
    const auto rejected = s.minObserver().rejectedCount();
@@ -123,7 +123,7 @@ makeOptionsDescription()
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
 	"(can be useful to obtain different results from random constructions)\n")
-   ("precision", po::value<unsigned int>()->default_value(0),
+   ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
    return desc;
@@ -186,8 +186,8 @@ void execute(const Parser::CommandLine<LAT>& cmd, bool quiet, unsigned int repea
       auto t1 = high_resolution_clock::now();
 
       unsigned int old_precision = std::cout.precision();
-      if (float_format_precision)
-	 std::cout.precision(float_format_precision);
+      if (merit_digits_displayed)
+	 std::cout.precision(merit_digits_displayed);
       if (not quiet) {
 	 auto dt = duration_cast<duration<double>>(t1 - t0);
          std::cout << std::endl;
@@ -201,7 +201,7 @@ void execute(const Parser::CommandLine<LAT>& cmd, bool quiet, unsigned int repea
             std::cout << "\t" << a;
          std::cout << "\t" << search->bestMeritValue() << std::endl;
       }
-      if (float_format_precision)
+      if (merit_digits_displayed)
 	 std::cout.precision(old_precision);
 
       search->reset();
@@ -225,7 +225,7 @@ int main(int argc, const char *argv[])
       auto repeat = opt["repeat"].as<unsigned int>();
 
       // global variable
-      float_format_precision = opt["precision"].as<unsigned int>();
+      merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
       cmd.construction  = opt["construction"].as<std::string>();
       cmd.size          = opt["size"].as<std::string>();
