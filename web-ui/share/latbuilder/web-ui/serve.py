@@ -45,7 +45,7 @@ def serve(port, q):
         q.put(None)
 
 if __name__ == '__main__':
-    os.chdir(os.path.dirname(__file__))
+    os.chdir(os.path.dirname(__file__) or ".")
 
     for port in range(8080, 8080 + 20):
         q = Queue()
