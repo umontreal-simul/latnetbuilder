@@ -199,6 +199,8 @@ appending the following options to `waf configure`:
   [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available on the system.
 * `--build-examples` to compile and install example code, including
   code from the tutorial, which will also be verified to yield correct output.
+  The expected outputs are stored in text files with names matching those of
+  programs, under the `examples/tutorial/output` subdirectory.
 
 Errors will be reported if required software components cannot be found.  In
 that case, you should check the Boost and FFTW installation paths.
