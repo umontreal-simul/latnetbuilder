@@ -93,8 +93,8 @@ Some arguments consists of several tokens, separated by a colon.
 
 To summarize, this command executes a CBC construction for an ordinary lattice
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
-of merit, in coordinate-uniform with product weights such that \f$\gamma_j^2 =
-0.7\f$ for all \f$j\f$.
+of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with product weights
+such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
 
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
@@ -282,6 +282,13 @@ as in \ref cmdtut_recipes_weights_product.
   \endverbatim
   The optional third colon-separated token specifies the exponent applied to the
   square brackets.  It defaults to 1, as in the previous example.
+
+- The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using a
+  coordinate-uniform evaluation algorithm with an \f$\ell_q\f$ norm with
+  \f$q=1.5\f$:
+  \verbatim
+    --figure-of-merit CU:P2 --norm-type 2
+  \endverbatim
 
 - The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using
   term-by-term evaluation of the sum:
