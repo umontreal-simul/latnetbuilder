@@ -222,7 +222,9 @@ function formatTime(seconds) {
 
 	typeset: function() {
 	    var self = $(this);
-	    MathJax.Hub.Queue(['Typeset', MathJax.Hub, self.get()]);
+	    if (MathJax && MathJax.Hub) {
+		MathJax.Hub.Queue(['Typeset', MathJax.Hub, self.get()]);
+	    }
 	    return self;
 	},
 
