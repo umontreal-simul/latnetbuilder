@@ -284,10 +284,10 @@ as in \ref cmdtut_recipes_weights_product.
   square brackets.  It defaults to 1, as in the previous example.
 
 - The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using a
-  coordinate-uniform evaluation algorithm with an \f$\ell_q\f$ norm with
+  term-by-term evaluation of the sum with an \f$\ell_q\f$ norm with
   \f$q=1.5\f$:
   \verbatim
-    --figure-of-merit CU:P2 --norm-type 2
+    --figure-of-merit P2 --norm-type 1.5
   \endverbatim
 
 - The \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=4\f$, using
