@@ -15,18 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Lattice Builder.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-from __future__ import print_function
-from __future__ import generators
-
 import os, subprocess, re
 
-LATBUILDER = 'latbuilder'
-#LATBUILDER = os.path.abspath(os.path.join(
-#   os.path.dirname(__file__),
-#   'bin',
-#   'latbuilder',
-#   ))
+LATBUILDER = os.environ.get('LATBUILDER', 'latbuilder')
 
 class LatMerit:
     def __init__(self, size, gen, merit):
@@ -158,8 +149,8 @@ class LatBuilderProcess:
             self.process.terminate()
 
 
-def execute(*args):
-    p = LatBuilderProcess(*args)
+def execute(*args, **kwargs):
+    p = LatBuilderProcess(*args, **kwargs)
     r = p.result()
     return p.command, r
 
@@ -194,15 +185,20 @@ def get_version():
 
 if __name__ == '__main__':
     print('testing latbuilder module')
-    line, result = execute(
+    p = LatBuilderProcess(
             lattype='ordinary',
             size=100,
             normtype='2',
-            merit='sum:P2',
+            merit='CU:P2',
             weights='product:0.1',
             dimension=3,
             construction='CBC')
-    print('size:    {}'.format(result.lattice.size))
-    print('gen:     {}'.format(result.lattice.gen))
-    print('merit:   {}'.format(result.lattice.merit))
-    print('seconds: {}'.format(result.seconds))
+    result = p.result()
+    #print('command: {}'.format(' '.join(p.command)))
+    if result:
+        print('size:    {}'.format(result.lattice.size))
+        print('gen:     {}'.format(result.lattice.gen))
+        print('merit:   {}'.format(result.lattice.merit))
+        print('seconds: {}'.format(result.seconds))
+    else:
+        print(p.output)
