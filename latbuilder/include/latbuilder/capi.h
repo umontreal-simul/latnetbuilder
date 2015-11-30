@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 /**
- *  \file latbuilder.h
+ *  \file capi.h
  *  C API for Lattice Builder
  *
  *  **IMPORTANT:** Programs that use the C API *must* link with the standard C++ library (libstdc++).
