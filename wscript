@@ -70,6 +70,8 @@ def configure(ctx):
     ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
     ctx.check(features='cxx', cxxflags='-std=c++11')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
+    ctx.check(features='c', cflags='-std=c99')
+    ctx.env.append_unique('CFLAGS', ['-std=c99', '-Wall'])
 
     def check_compiler_flag(flag, error_markers=['error:', 'warning:'], mandatory=True):
         ctx.start_msg("checking for compiler flag %s" % flag)
