@@ -56,7 +56,7 @@ def version(ctx):
     return version
 
 def options(ctx):
-    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
+    ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
     ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (an tests them)')
@@ -67,7 +67,7 @@ def configure(ctx):
     build_platform = Utils.unversioned_sys_platform()
     ctx.msg("Build platform", build_platform)
 
-    ctx.load('compiler_cxx gnu_dirs waf_unit_test')
+    ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
     ctx.check(features='cxx', cxxflags='-std=c++11')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
 

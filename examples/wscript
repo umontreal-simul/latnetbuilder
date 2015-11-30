@@ -17,7 +17,18 @@ def build(ctx):
                 use=['latbuilder', 'latcommon'],
                 install_path=None)
 
-    ctx.install_files('${DOCDIR}/examples', ctx.path.ant_glob('*.cc'))
+    for src in ctx.path.ant_glob('*.c', excl=['extend']):
+
+        ctx(features='c cprogram',
+                source=src,
+                includes=[lb_inc_dir, lc_inc_dir],
+                lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ['stdc++', 'm'],
+                stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS,
+                target=src.name[:-2],
+                use=['latbuilder', 'latcommon'],
+                install_path=None)
+
+    ctx.install_files('${DOCDIR}/examples', ctx.path.ant_glob(['*.cc', '*.c']))
 
     ctx.recurse('tutorial')
 
