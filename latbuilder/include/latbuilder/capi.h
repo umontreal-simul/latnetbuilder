@@ -94,3 +94,6 @@ extern "C" {
 #endif
 
 #endif /* LATBUILDER_H */
+
+/** \example capi.c
+ */
