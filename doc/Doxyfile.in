@@ -681,9 +681,9 @@ LAYOUT_FILE            =
 # search path. See also \cite for info how to create references.
 
 CITE_BIB_FILES         = \
-    @DOCDIR@/bib/random.bib \
-    @DOCDIR@/bib/vrt.bib \
-    @DOCDIR@/bib/math.bib
+    @LCDOCDIR@/bib/random.bib \
+    @LCDOCDIR@/bib/vrt.bib \
+    @LCDOCDIR@/bib/math.bib
 
 #---------------------------------------------------------------------------
 # Configuration options related to warning and progress messages
@@ -756,7 +756,7 @@ WARN_LOGFILE           =
 
 INPUT                  = \
     @DOCDIR@/dox \
-    @TOPDIR@/latbuilder/include \
+    @TOPDIR@/include \
     @TOPDIR@/latcommon/include
 
 # This tag can be used to specify the character encoding of the source files

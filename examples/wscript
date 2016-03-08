@@ -4,13 +4,13 @@
 def build(ctx):
 
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
-    lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latbuilder/include')
+    inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
     for src in ctx.path.ant_glob('*.cc', excl=['extend']):
 
         ctx(features='cxx cxxprogram',
                 source=src,
-                includes=[lb_inc_dir, lc_inc_dir],
+                includes=[inc_dir, lc_inc_dir],
                 lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS,
                 stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS,
                 target=src.name[:-3],
@@ -21,7 +21,7 @@ def build(ctx):
 
         ctx(features='c cprogram',
                 source=src,
-                includes=[lb_inc_dir, lc_inc_dir],
+                includes=[inc_dir, lc_inc_dir],
                 lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ['stdc++', 'm'],
                 stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS,
                 target=src.name[:-2],

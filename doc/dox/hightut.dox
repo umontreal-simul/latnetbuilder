@@ -38,7 +38,7 @@ In fact, the command-line tool is just an interface to the API described in
 this tutorial.
 
 The complete code of the examples in this tutorial can be found under the \c
-latbuilder/examples/tutorial/ directory.
+examples/tutorial/ directory.
 
 
 

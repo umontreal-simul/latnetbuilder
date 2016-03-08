@@ -23,7 +23,7 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
 
-#include "latcommon/Nume.h"
+#include "latcommon/Num.h"
 #include "latcommon/Coordinates.h"
 
 #include <boost/numeric/ublas/vector.hpp>

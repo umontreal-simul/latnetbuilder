@@ -1,7 +1,7 @@
-diff --git a/latbuilder/include/latbuilder/Parser/Weights.h b/latbuilder/include/latbuilder/Parser/Weights.h
+diff --git a/include/latbuilder/Parser/Weights.h b/include/latbuilder/Parser/Weights.h
 index eb2964e..9991c13 100644
---- a/latbuilder/include/latbuilder/Parser/Weights.h
-+++ b/latbuilder/include/latbuilder/Parser/Weights.h
+--- a/include/latbuilder/Parser/Weights.h
++++ b/include/latbuilder/Parser/Weights.h
 @@ -97,6 +97,11 @@ struct Weights {
     static std::unique_ptr<LatCommon::Weights>
     parsePOD(const std::string& arg, Real powerScale);
@@ -14,10 +14,10 @@ index eb2964e..9991c13 100644
     /**
      * Parses a string specifying weights.
      *
-diff --git a/latbuilder/src/Parser/Weights.cc b/latbuilder/src/Parser/Weights.cc
+diff --git a/src/Parser/Weights.cc b/src/Parser/Weights.cc
 index 0c07669..8555f08 100644
---- a/latbuilder/src/Parser/Weights.cc
-+++ b/latbuilder/src/Parser/Weights.cc
+--- a/src/Parser/Weights.cc
++++ b/src/Parser/Weights.cc
 @@ -22,6 +22,9 @@
  #include "latcommon/OrderDependentWeights.h"
  #include "latcommon/PODWeights.h"

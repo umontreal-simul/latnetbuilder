@@ -1,150 +1,30 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-APPNAME = 'latbuilder'
-VERSION = 'undefined'
-
 top = '.'
 out = 'build'
 
-from waflib.Configure import conf
-from waflib import Utils, Context, Errors
+from waflib import Utils
 
-@conf
-def version_file(ctx):
-    """Update the VERSION file by reading Git tags"""
-    try:
-        version = ctx.cmd_and_log("git describe --tags --match 'v[0-9].*'").strip()[1:]
+import imp
+def waftool(name):
+    return imp.load_module('waf_' + name, *imp.find_module(name, ['./latcommon/waftools']))
 
-        # extract revision
-        pos = version.rfind('-g')
-        if pos > 0:
-            version = version[:pos]
-        pos = version.rfind('-')
-        if pos > 0:
-            r = version[pos:]
-            version = version[:pos]
-        else:
-            r = ''
-
-        # branch
-        branch = ctx.cmd_and_log("git rev-parse --abbrev-ref HEAD").strip()
-        if branch == 'HEAD':
-            version += '-unknown'
-        elif branch != 'master':
-            version += '-' + branch
-
-        version += r
-
-        ctx.path.make_node('VERSION').write(version)
-    except:
-        pass
-
-@conf
-def version(ctx):
-    """Returns VERSION from environment or by reading the VERSION file"""
-    if 'VERSION' in ctx.env:
-        version = ctx.env['VERSION']
-    else:
-        verfile = ctx.path.find_node('VERSION')
-        if verfile:
-            version = verfile.read().strip()
-        else:
-            version = 'unknown'
-    global VERSION
-    VERSION = version
-    return version
+version = waftool('version')
+compiler = waftool('compiler')
+deps = waftool('deps')
 
 def options(ctx):
-    ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
-    ctx.add_option('--link-static', action='store_true', help='statically link with Boost and FFTW')
+    ctx.recurse('latcommon')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
-    ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (an tests them)')
-    ctx.add_option('--boost', action='store', help='prefix under which Boost is installed')
-    ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
+    ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (and tests them)')
 
 def configure(ctx):
-    build_platform = Utils.unversioned_sys_platform()
-    ctx.msg("Build platform", build_platform)
-
-    ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
-    ctx.check(features='cxx', cxxflags='-std=c++11')
-    ctx.env.append_unique('CXXFLAGS', ['-std=c++11', '-Wall'])
-    ctx.check(features='c', cflags='-std=c99')
-    ctx.env.append_unique('CFLAGS', ['-std=c99', '-Wall'])
-
-    def check_compiler_flag(flag, error_markers=['error:', 'warning:'], mandatory=True):
-        ctx.start_msg("checking for compiler flag %s" % flag)
-        cmd = ctx.env.CXX + ['-xc++', '-E', flag, '-']
-        result = True
-        try:
-            out, err = ctx.cmd_and_log(cmd, output=Context.BOTH, stdin=Utils.subprocess.PIPE)
-            if any([m in err for m in error_markers]):
-                result = False
-        except Errors.WafError:
-            result = False
-        ctx.end_msg(result and "yes" or "no")
-        if not result and mandatory:
-            ctx.fatal("%s doesn't support flag %s" % (ctx.env.get_flat('CXX'), str(flag)))
-        return result
-
-    def add_cxx_flag_if_supported(flag):
-        #if ctx.check(features='cxx', cxxflags=flag, mandatory=False):
-        if check_compiler_flag(flag, mandatory=False):
-            ctx.env.append_value('CXXFLAGS', flag)
-
-    # suppress Boost ublas warnings
-    add_cxx_flag_if_supported('-Wno-unused-local-typedefs')
-    add_cxx_flag_if_supported('-Wno-unused-function')
-    add_cxx_flag_if_supported('-Wnon-virtual-dtor')
-    add_cxx_flag_if_supported('-Wshorten-64-to-32') # clang
-
-    if ctx.options.link_static:
-        #flags = ['-static', '-static-libgcc', '-static-libstdc++']
-        flags = ['-static-libgcc', '-static-libstdc++']
-        if ctx.check(features='cxx cxxprogram',
-                linkflags=flags,
-                mandatory=False):
-            ctx.env.append_unique('LINKFLAGS', flags)
+    ctx.recurse('latcommon')
 
     ctx.version_file()
 
-    def add_deps_path(what, where):
-        try:
-            prefix = ctx.root.find_node(where)
-            ctx.env.append_value('INCLUDES', prefix.find_dir('include').abspath())
-            ctx.env.append_value('LIBPATH',  prefix.find_dir('lib').abspath())
-        except:
-            ctx.fatal("cannot locate %s installation under `%s'" % (what, where))
-
-    def st(f):
-        if ctx.options.link_static:
-            def f_static(*a, **kw):
-                if 'lib' in kw:
-                    kw['stlib'] = kw['lib']
-                    del kw['lib']
-                if 'shlib' in kw:
-                    kw['lib'] = kw['shlib']
-                    del kw['shlib']
-                return f(*a, **kw)
-            return f_static
-        else:
-            def f_shared(*a, **kw):
-                if 'shlib' in kw:
-                    kw['lib'] = kw.get('lib', []) + kw['shlib']
-                    del kw['shlib']
-                return f(*a, **kw)
-            return f_shared
-
-    # options
-    if ctx.options.boost:
-        add_deps_path('Boost', ctx.options.boost)
-    if ctx.options.fftw:
-        add_deps_path('FFTW', ctx.options.fftw)
-
-    # FFTW
-    st(ctx.check)(features='cxx cxxprogram', header_name='fftw3.h')
-    st(ctx.check)(features='cxx cxxprogram', lib='fftw3', uselib_store='FFTW')
+    ctx_check = deps.shared_or_static(ctx, ctx.check)
 
     # realtime (required for Boost chrono on Linux)
     ctx.check(features='cxx cxxprogram',
@@ -152,26 +32,14 @@ def configure(ctx):
             uselib_store='RT',
             mandatory=False)
 
-    # Boost
-    # Boost Version
-    boost_version = (1,57,0)
-    boost_version_str = '.'.join(str(x) for x in boost_version)
-    st(ctx.check)(features='cxx',
-            msg='Checking for Boost version >= %s' % boost_version_str,
-            fragment=
-            '#include <boost/version.hpp>\n'
-            '#if BOOST_VERSION < %d\n'
-            '#error "Boost >= %s is required"\n'
-            '#endif' %
-            (boost_version[0] * 100000 + boost_version[1] * 100 + boost_version[2], boost_version_str))
     # Boost Program Options
-    st(ctx.check)(features='cxx cxxprogram',
+    ctx_check(features='cxx cxxprogram',
             header_name='boost/program_options.hpp')
-    st(ctx.check)(features='cxx cxxprogram',
+    ctx_check(features='cxx cxxprogram',
             lib='boost_program_options',
             uselib_store='PROGRAM_OPTIONS')
     # Boost Chrono
-    st(ctx.check)(features='cxx cxxprogram',
+    ctx_check(features='cxx cxxprogram',
             header_name='boost/chrono/chrono_io.hpp',
             lib=['boost_chrono', 'boost_system'],
             shlib=ctx.env.LIB_RT,
@@ -190,8 +58,8 @@ def configure(ctx):
         ctx.env.BUILD_EXAMPLES = True
 
     # version
-    ctx.define('LATBUILDER_VERSION', ctx.version())
-    ctx.msg("Setting Lattice Builder version to", VERSION)
+    ctx.define('LATBUILDER_VERSION', ctx.set_version())
+    ctx.msg("Setting Lattice Builder version", version.VERSION)
 
     # build variants
     env = ctx.env.derive()
@@ -205,7 +73,9 @@ def configure(ctx):
     ctx.env.append_unique('CXXFLAGS', ['-g'])
     ctx.define('DEBUG', 1)
 
+
 def distclean(ctx):
+    ctx.recurse('latcommon')
     verfile = ctx.path.find_node('VERSION')
     if verfile:
         verfile.delete()
@@ -219,25 +89,13 @@ def build(ctx):
         print("Building variant `%s'" % (ctx.variant,))
 
     ctx.recurse('latcommon')
-    ctx.recurse('latbuilder')
+    ctx.recurse('src')
+    ctx.recurse('progs')
     if ctx.env.BUILD_DOCS:
         ctx.recurse('doc')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
     ctx.recurse('web-ui')
-
-    lc_inc_dir = ctx.path.find_dir('latcommon/include')
-    lb_inc_dir = ctx.path.find_dir('latbuilder/include')
-    src_dir = ctx.path.find_dir('src')
-
-    ctx(features='cxx cxxprogram',
-            source=src_dir.ant_glob('*.cc'),
-            includes=[lb_inc_dir, lc_inc_dir],
-            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT,
-            stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
-            target='bin/latbuilder',
-            use=['latbuilder', 'latcommon'],
-            install_path='${BINDIR}')
 
 
 # build variants

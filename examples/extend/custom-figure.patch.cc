@@ -1,8 +1,8 @@
-diff --git a/latbuilder/include/latbuilder/Functor/MyFigure.h b/latbuilder/include/latbuilder/Functor/MyFigure.h
+diff --git a/include/latbuilder/Functor/MyFigure.h b/include/latbuilder/Functor/MyFigure.h
 new file mode 100644
 index 0000000..6a16f59
 --- /dev/null
-+++ b/latbuilder/include/latbuilder/Functor/MyFigure.h
++++ b/include/latbuilder/Functor/MyFigure.h
 @@ -0,0 +1,35 @@
 #ifndef LATBUILDER__FUNCTOR__MYFIGURE_H
 #define LATBUILDER__FUNCTOR__MYFIGURE_H
@@ -39,11 +39,11 @@ std::ostream& operator<<(std::ostream& os, const MyFigure& functor)
 //! [functor def]
 
 #endif
-diff --git a/latbuilder/include/latbuilder/Kernel/MyFigure.h b/latbuilder/include/latbuilder/Kernel/MyFigure.h
+diff --git a/include/latbuilder/Kernel/MyFigure.h b/include/latbuilder/Kernel/MyFigure.h
 new file mode 100644
 index 0000000..e69d2ad
 --- /dev/null
-+++ b/latbuilder/include/latbuilder/Kernel/MyFigure.h
++++ b/include/latbuilder/Kernel/MyFigure.h
 @@ -0,0 +1,20 @@
 #ifndef LATBUILDER__KERNEL__MYFIGURE_H
 #define LATBUILDER__KERNEL__MYFIGURE_H
@@ -65,10 +65,10 @@ public:
 //! [kernel def]
 
 #endif
-diff --git a/latbuilder/include/latbuilder/Parser/Kernel.h b/latbuilder/include/latbuilder/Parser/Kernel.h
+diff --git a/include/latbuilder/Parser/Kernel.h b/include/latbuilder/Parser/Kernel.h
 index 1a3005c..3ef140a 100644
---- a/latbuilder/include/latbuilder/Parser/Kernel.h
-+++ b/latbuilder/include/latbuilder/Parser/Kernel.h
+--- a/include/latbuilder/Parser/Kernel.h
++++ b/include/latbuilder/Parser/Kernel.h
 @@ -21,6 +21,9 @@
  #include "latbuilder/Parser/Common.h"
  #include "latbuilder/Kernel/RAlpha.h"

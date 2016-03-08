@@ -2,9 +2,9 @@
 # coding: utf-8
 
 def build(ctx):
-    lc_inc_dir = ctx.path.find_dir('../latcommon/include')
-    inc_dir = ctx.path.find_dir('include')
-    src_dir = ctx.path.find_dir('src')
+    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
+    inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
+    src_dir = ctx.path
 
     ctx(features='cxx cxxstlib',
             source=src_dir.ant_glob('**/*.cc'),

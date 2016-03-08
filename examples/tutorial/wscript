@@ -55,7 +55,7 @@ class check_output(Task.Task):
 def build(ctx):
 
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
-    lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latbuilder/include')
+    lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
     targets = []
     for src in ctx.path.ant_glob('*.cc'):

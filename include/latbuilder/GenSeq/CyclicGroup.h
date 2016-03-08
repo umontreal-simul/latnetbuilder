@@ -21,7 +21,7 @@
 #include "latbuilder/Traversal.h"
 #include "latbuilder/CompressTraits.h"
 
-#include "latcommon/UtilLC.h"
+#include "latcommon/Util.h"
 
 #include <iterator>
 #include <boost/iterator/iterator_facade.hpp>
@@ -244,6 +244,7 @@ private:
 //================================================================================
 
 #include "latbuilder/Util.h"
+#include "latcommon/IntFactor.h"
 
 namespace LatBuilder { namespace GenSeq {
 
@@ -259,7 +260,7 @@ Modulus CyclicGroup<COMPRESS, TRAV, ORDER>::smallestGenerator(Modulus base, Leve
    if (base < 2)
       throw std::invalid_argument("smallestGenerator(): base must be >= 2");
 
-   if (checkPrime and not LatCommon::IsPrime(base))
+   if (checkPrime and LatCommon::IntFactor::isPrime(base, 0) == LatCommon::COMPOSITE)
       throw std::invalid_argument("smallestGenerator(): n must be prime");
 
    auto factors = primeFactors(base - 1);

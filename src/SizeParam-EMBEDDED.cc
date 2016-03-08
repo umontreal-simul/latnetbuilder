@@ -17,7 +17,8 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Util.h"
-#include "latcommon/UtilLC.h"
+#include "latcommon/Util.h"
+#include "latcommon/IntFactor.h"
 
 namespace LatBuilder {
 
@@ -26,7 +27,7 @@ SizeParam<LatType::EMBEDDED>::SizeParam(Modulus primeBase, Level maxLevel):
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
-   if (primeBase >= 2 and !LatCommon::IsPrime(primeBase))
+   if (primeBase >= 2 and LatCommon::IntFactor::isPrime(primeBase, 0) == LatCommon::COMPOSITE)
       throw std::invalid_argument("SizeParam: primeBase is not prime");
 }
 

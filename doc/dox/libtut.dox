@@ -23,7 +23,7 @@ This tutorial aims at explaining through a series of examples how to use the
 different facilities provided by the Lattice Builder application programming
 interface.
 The complete code of the examples in this tutorial can be found under the \c
-latbuilder/examples/tutorial/ directory.
+examples/tutorial/ directory.
 
 The tutorial is divided into the following sections:
 <ol>
@@ -1066,16 +1066,16 @@ prob	quantile
 
 Assume that we want to introduce a new coordinate-uniform figure of merit.
 The first thing we need to do is to add a new functor and a new kernel, by
-writing the following to \c latbuilder/include/latbuilder/Functor/MyFigure.h:
+writing the following to \c include/latbuilder/Functor/MyFigure.h:
 \snippet custom-figure.patch.cc functor def
-and the following to \c latbuilder/include/latbuilder/Kernel/MyFigure.h:
+and the following to \c include/latbuilder/Kernel/MyFigure.h:
 \snippet custom-figure.patch.cc kernel def
 Then, teach the kernel parser to recognize the string \c my-figure as our new
 figure of merit by appending the \c try block in Parser::Kernel::parse() with
 the following code:
 \snippet custom-figure.patch.cc parser if
 Also make sure to add the relevant include file in
-\c latbuilder/include/latbuilder/Parser/Kernel.h:
+\c include/latbuilder/Parser/Kernel.h:
 \snippet custom-figure.patch.cc parser header
 Then it should work out of the box if you recompile Lattice Builder, then run
 \c latbuilder with the option <code>--figure-of-merit CU:my-figure</code>.
@@ -1099,10 +1099,10 @@ ProductWeights::getWeightForCoordinate() in
 \c latcommon/include/latcommon/MyWeights.h:
 \snippet custom-weights.patch.cc weights def
 Next, we declare a new member function in Parser::Weights in
-\c latbuilder/include/latbuilder/Parser/Weights.h:
+\c include/latbuilder/Parser/Weights.h:
 \snippet custom-weights.patch.cc parser decl
 and implement it in
-\c latbuilder/src/Parser/Weights.cc:
+\c src/Parser/Weights.cc:
 \snippet custom-weights.patch.cc parser impl
 after, of course, adding the new header with:
 \snippet custom-weights.patch.cc parser header
