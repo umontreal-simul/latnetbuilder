@@ -6,6 +6,12 @@ from waflib import Build, Utils, Context, Errors, Task
 import os
 import mimetypes, tarfile, zipfile, shutil
 
+import imp
+def waftool(name):
+    return imp.load_module('waf_' + name, *imp.find_module(name, ['../latcommon/waftools']))
+
+version = waftool('version')
+
 APPNAME = 'latbuilder-package'
 
 top = '.'
@@ -140,37 +146,6 @@ class FFTW(DepBase):
                 cwd=builddir.abspath())
 
 
-@conf
-def version(ctx):
-    """Returns by using Git"""
-    try:
-        version = ctx.cmd_and_log("git describe --tags --match 'v[0-9].*'").strip()[1:]
-
-        # extract revision
-        pos = version.rfind('-g')
-        if pos > 0:
-            version = version[:pos]
-        pos = version.rfind('-')
-        if pos > 0:
-            r = version[pos:]
-            version = version[:pos]
-        else:
-            r = ''
-
-        # branch
-        branch = ctx.cmd_and_log("git rev-parse --abbrev-ref HEAD").strip()
-        if branch == 'HEAD':
-            version += '-unknown'
-        elif branch != 'master':
-            version += '-' + branch
-
-        version += r
-
-        return version
-
-    except:
-        return 'unknown'
-
 def add_task(ctx, task, inputs=None, outputs=None):
     t = task(env=ctx.env)
     if inputs:
@@ -226,8 +201,9 @@ def configure(ctx):
     build_platform = Utils.unversioned_sys_platform()
     ctx.msg("Build platform", build_platform)
 
+    ctx.version_file()
     ctx.env.PACKAGE_NAME = APPNAME
-    ctx.env.LATBUILDER_VERSION = ctx.version()
+    ctx.env.LATBUILDER_VERSION = ctx.set_version()
 
     # version
     ctx.msg("Lattice Builder version", ctx.env.LATBUILDER_VERSION)
