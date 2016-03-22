@@ -24,7 +24,7 @@ levels and for their combination into a single merit value.
 #### Get the Software
 
 - [**Download a binary release**](http://simul.iro.umontreal.ca/latbuilder/download/)
-- [**Browse the source code**](https://github.com/mungerd/latbuilder.git)
+- [**Browse the source code**](https://github.com/umontreal-simul/latbuilder.git)
 
 #### Documentation
 
@@ -122,12 +122,12 @@ Lattice Builder is **known to compile** using:
 
 Get the latest source tree from GitHub, either by typing:
 
-	git clone https://github.com/mungerd/latbuilder.git
+	git clone --recursive https://github.com/umontreal-simul/latbuilder.git
 
 If [Git](http://git-scm.com/) is not available on your system, you can click on
-the [Download ZIP](https://github.com/mungerd/latbuilder/archive/master.zip)
+the [Download ZIP](https://github.com/umontreal-simul/latbuilder/archive/master.zip)
 link from the [Lattice Builder GitHub
-page](https://github.com/mungerd/latbuilder), then by unzipping the downloaded
+page](https://github.com/umontreal-simul/latbuilder), then by unzipping the downloaded
 archive.
 
 ### Configuring the Build
