@@ -16,6 +16,7 @@ deps = waftool('deps')
 
 def options(ctx):
     ctx.recurse('latcommon')
+    ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (and tests them)')
 
@@ -23,6 +24,9 @@ def configure(ctx):
     ctx.recurse('latcommon')
 
     ctx.version_file()
+
+    if ctx.options.fftw:
+        deps.add_deps_path(ctx, 'FFTW', ctx.options.fftw)
 
     ctx_check = deps.shared_or_static(ctx, ctx.check)
 
@@ -45,6 +49,10 @@ def configure(ctx):
             shlib=ctx.env.LIB_RT,
             uselib_store='CHRONO',
             mandatory=False)
+
+    # FFTW
+    ctx_check(features='cxx cxxprogram', header_name='fftw3.h')
+    ctx_check(features='cxx cxxprogram', lib='fftw3', uselib_store='FFTW')
 
     # Doxygen
     if ctx.options.build_docs:
