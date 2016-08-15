@@ -4,7 +4,7 @@ _A general software tool for constructing rank-1 lattice rules_
 *Lattice rules* are often used as a replacement for [Monte
 Carlo](http://en.wikipedia.org/wiki/Monte_Carlo_integration) to integrate
 multidimensional functions.
-For certain problems, well-constructed lattice rules can dramatically reduce the integration error with respect to Monte Carlo. Test.
+For certain problems, well-constructed lattice rules can dramatically reduce the integration error with respect to Monte Carlo.
 
 Lattice Builder is a software tool and library that implements a variety of
 construction algorithms for good rank-1 lattice rules.
