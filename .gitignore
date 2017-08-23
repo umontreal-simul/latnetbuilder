@@ -5,3 +5,4 @@ build
 VERSION
 *.pyc
 *.pyo
+.directory
