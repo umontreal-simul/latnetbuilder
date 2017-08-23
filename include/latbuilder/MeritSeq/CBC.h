@@ -42,15 +42,15 @@ namespace LatBuilder { namespace MeritSeq {
  * <li> Repeat from step 2 until desired dimension is reached. </li>
  * </ol>
  */
-template <LatType LAT, Compress COMPRESS, class PROJDEP, template <typename> class ACC>
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO , class PROJDEP, template <typename> class ACC>
 class CBC
 {
 public:
    typedef WeightedFigureOfMerit<PROJDEP, ACC> FigureOfMerit;
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
-   typedef LatBuilder::LatDef<LAT> LatDef;
+   typedef typename Storage<LR, LAT, COMPRESS, PLO>::MeritValue MeritValue;
+   typedef LatBuilder::LatDef<LR, LAT> LatDef;
    typedef MeritValue value_type;
-   typedef decltype(std::declval<FigureOfMerit>().evaluator(std::declval<Storage<LAT, COMPRESS>>())) Evaluator;
+   typedef decltype(std::declval<FigureOfMerit>().evaluator(std::declval<Storage<LR, LAT, COMPRESS, PLO>>())) Evaluator;
 
    typedef LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges> Projections;
 
@@ -61,7 +61,7 @@ public:
     * \param figure      Figure of merit instance to be used.
     */
    CBC(
-         Storage<LAT, COMPRESS> storage,
+         Storage<LR, LAT, COMPRESS, PLO> storage,
          const FigureOfMerit& figure
          ):
       m_storage(std::move(storage)),
@@ -83,7 +83,7 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LAT, COMPRESS>& storage() const
+   const Storage<LR, LAT, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -142,7 +142,7 @@ public:
    class Seq :
       public BridgeSeq<
          Seq<GENSEQ>,
-         LatSeq::CBC<LAT, GENSEQ>,
+         LatSeq::CBC<LR, LAT, GENSEQ>,
          value_type,
          BridgeIteratorCached>
    {
@@ -209,7 +209,7 @@ public:
    }
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, LAT, COMPRESS, PLO> m_storage;
    const FigureOfMerit& m_figureOfMerit;
    Evaluator m_eval;
    LatDef m_baseLat;
@@ -217,11 +217,11 @@ private:
 };
 
 /// Creates a CBC algorithm.
-template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC>
-CBC<LAT, COMPRESS, PROJDEP, ACC> cbc(
-      Storage<LAT, COMPRESS> storage,
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class PROJDEP, template <class> class ACC >
+CBC<LR, LAT, COMPRESS, PLO, PROJDEP, ACC> cbc(
+      Storage<LR, LAT, COMPRESS, PLO> storage,
       const WeightedFigureOfMerit<PROJDEP, ACC>& figure)
-{ return CBC<LAT, COMPRESS, PROJDEP, ACC>(std::move(storage), figure); }
+{ return CBC<LR, LAT, COMPRESS, PLO, PROJDEP, ACC>(std::move(storage), figure); }
 
 }}
 

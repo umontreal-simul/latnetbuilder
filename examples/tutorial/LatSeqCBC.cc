@@ -16,7 +16,7 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatSeq/CBC.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -36,14 +36,14 @@ typename SEQ::const_iterator findBest(const SEQ& seq)
 }
 //! [findBest]
 
-int main()
-{
-   SizeParam<LatType::ORDINARY> size(8);
+template<Lattice LA>
+void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
+   SizeParam<LA, LatType::ORDINARY> size(modulus);
    Dimension dim = 4;
 
-   auto baseLat = createLatDef(size, GeneratingVector{1});
+   auto baseLat = createLatDef(size, typename LatticeTraits<LA>::GeneratingVector{typename LatticeTraits<LA>::GenValue(1)});
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Coprime;
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;
 
    //! [loop]
    while (baseLat.dimension() < dim) {
@@ -53,6 +53,12 @@ int main()
       std::cout << "    selected lattice: " << baseLat << std::endl;
    }
    //! [loop]
+
+}
+int main()
+{
+   CBCsearch<Lattice::INTEGRATION>(8);
+   CBCsearch<Lattice::POLYNOMIAL>(PolynomialFromInt(7));
 
    return 0;
 }

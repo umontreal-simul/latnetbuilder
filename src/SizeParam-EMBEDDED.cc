@@ -18,11 +18,14 @@
 #include "latbuilder/Util.h"
 #include "latcommon/Util.h"
 #include "latcommon/IntFactor.h"
+#include <NTL/GF2XFactoring.h>
 
 namespace LatBuilder {
 
-SizeParam<LatType::EMBEDDED>::SizeParam(Modulus primeBase, Level maxLevel):
-   BasicSizeParam<SizeParam<LatType::EMBEDDED>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
+//===============================================================================================================
+template<>
+SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::SizeParam(uInteger primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
@@ -30,8 +33,22 @@ SizeParam<LatType::EMBEDDED>::SizeParam(Modulus primeBase, Level maxLevel):
       throw std::invalid_argument("SizeParam: primeBase is not prime");
 }
 
-SizeParam<LatType::EMBEDDED>::SizeParam(Modulus numPoints):
-   BasicSizeParam<SizeParam<LatType::EMBEDDED>>(numPoints)
+template<>
+SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::SizeParam(Polynomial primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>>(IsZero(primeBase) ? Polynomial(0) : intPow(primeBase, maxLevel)),
+   m_base(primeBase),
+   m_maxLevel(maxLevel)
+{
+   if ( !IterIrredTest(primeBase))
+      throw std::invalid_argument("SizeParam: primeBase is not prime");
+
+}
+
+//===================================================================================================================
+
+template<>
+SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::SizeParam(uInteger numPoints):
+   BasicSizeParam<SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>>(numPoints)
 {
    if (numPoints == 0) {
       m_base = 0;
@@ -51,34 +68,80 @@ SizeParam<LatType::EMBEDDED>::SizeParam(Modulus numPoints):
    }
 }
 
-Modulus
-SizeParam<LatType::EMBEDDED>::numPointsOnLevel(Level level) const
+template<>
+SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::SizeParam(Polynomial modulus):
+   BasicSizeParam<SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>>(modulus)
+{
+   if (IsZero(modulus)) {
+      m_base = Polynomial(0);
+      m_maxLevel = 0;
+   }
+   else {
+      NTL::vector< NTL::Pair< Polynomial, long > > factors ;
+      CanZass(factors, modulus); // calls "Cantor/Zassenhaus" algorithm from <NTL/GF2XFactoring.h>
+      if (factors.size() != 1)
+         throw std::runtime_error("not an integer power of a prime base");
+      const auto& factor = *factors.begin();
+      m_base = factor.a; // = factor.first
+      m_maxLevel = factor.b; // = factor.second
+   }
+}
+//=======================================================================================================================
+
+template<>
+SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::size_type
+SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::numPointsOnLevel(Level level) const
 {
    if (level > maxLevel())
       throw std::invalid_argument("level > maxLevel");
    return base() == 0 ? 0 : intPow(base(), level);
 }
 
+template<>
+SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::size_type
+SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::numPointsOnLevel(Level level) const
+{
+   if (level > maxLevel())
+      throw std::invalid_argument("level > maxLevel");
+   return IsZero(base())  ? 0 : intPow( 2, deg(base())*level );
+}
+//========================================================================================================================
+
+template<>
 size_t
-SizeParam<LatType::EMBEDDED>::totient() const
+SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::totient() const
 { return base() == 0 ? 0 : (base() - 1) * this->numPoints() / base(); }
 
+template<>
+size_t
+SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::totient() const
+{ return IsZero(base()) == 0 ? 0 : (intPow(2,deg(base())) - 1) * this->numPoints() / intPow(2,deg(base())); }
+
+//=========================================================================================================================
+
+template<Lattice LR>
 void
-SizeParam<LatType::EMBEDDED>::normalize(Real& merit) const
+SizeParam<LR,LatType::EMBEDDED>::normalize(Real& merit) const
 { merit /= this->numPoints(); }
 
+template<Lattice LR>
 void
-SizeParam<LatType::EMBEDDED>::normalize(RealVector& merit) const
+SizeParam<LR,LatType::EMBEDDED>::normalize(RealVector& merit) const
 {
    if (merit.size() != maxLevel() + 1)
       throw std::logic_error("merit vector size and maximum level do not match");
    for (Level level = 0; level < merit.size(); level++)
       merit[level] /= numPointsOnLevel(level);
 }
-
+//===========================================================================================================================
+template<Lattice LR>
 std::ostream&
-SizeParam<LatType::EMBEDDED>::format(std::ostream& os) const
+SizeParam<LR,LatType::EMBEDDED>::format(std::ostream& os) const
 { os << base(); if (maxLevel() != 1) os << "^" << maxLevel(); return os; }
+//===========================================================================================================================
+
+template class SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>;
+template class SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>;
 
 }
 

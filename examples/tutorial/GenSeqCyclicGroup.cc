@@ -23,21 +23,30 @@ using namespace LatBuilder;
 using TextStream::operator<<;
 
 //! [main]
-typedef GenSeq::CyclicGroup<Compress::NONE> WholeSeq;
-typedef GenSeq::CyclicGroup<Compress::SYMMETRIC> HalfSeq;
+typedef GenSeq::CyclicGroup<Lattice::INTEGRATION, Compress::NONE> WholeIntSeq;
+typedef GenSeq::CyclicGroup<Lattice::INTEGRATION, Compress::SYMMETRIC> HalfIntSeq;
+typedef GenSeq::CyclicGroup<Lattice::POLYNOMIAL, Compress::NONE> WholePolySeq;
 
-void displaySeq(int base, int power)
+void displayIntSeq(int base, int power)
 {
    std::cout << "lattice size: " << base << "^" << power << std::endl;
-   std::cout << "    whole sequence: " << WholeSeq(base, power) << std::endl;
-   std::cout << "     half sequence: " << HalfSeq(base, power) << std::endl;
+   std::cout << "    whole sequence: " << WholeIntSeq(base, power) << std::endl;
+   std::cout << "     half sequence: " << HalfIntSeq(base, power) << std::endl;
+}
+
+void displayPolySeq(Polynomial base, int power)
+{
+   std::cout << "polynomial lattice size: " << base << "^" << power << std::endl;
+   std::cout << "    whole sequence: " << WholePolySeq(base, power) << std::endl;
 }
 
 int main()
 {
-   displaySeq(7, 1);
-   displaySeq(2, 3);
-   displaySeq(3, 2);
+   displayIntSeq(7, 1);
+   displayIntSeq(2, 3);
+   displayIntSeq(3, 2);
+   displayPolySeq(PolynomialFromInt(13),1); 
+
    return 0;
 }
 //! [main]

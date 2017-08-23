@@ -20,13 +20,15 @@
 
 #include "latbuilder/ProjDepMerit/Spectral.h"
 #include "latcommon/NormaBestLat.h"
+#include "latbuilder/ProjDepMerit/CoordUniform.h" 
+#include "latbuilder/Kernel/PAlphaPLR.h"
 
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Storage.h"
 #include "latbuilder/Functor/binary.h"
 
 #include "latbuilder/LatSeq/Korobov.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 
 #include "latbuilder/TextStream.h"
 
@@ -41,9 +43,10 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 //! [Observer]
+template<Lattice LA>
 class Observer {
 public:
-   typedef LatBuilder::LatDef<LatType::ORDINARY> LatDef;
+   typedef LatBuilder::LatDef<LA, LatType::ORDINARY> LatDef;
 
    Observer() { reset(); }
 
@@ -76,8 +79,8 @@ private:
 //! [Observer]
 
 
-template <LatType L, Compress C>
-void test(const Storage<L, C>& storage, Dimension dimension)
+template <Lattice LA, LatType L, Compress C>
+void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
    auto weights = unique<LatCommon::ProductWeights>();
@@ -90,11 +93,24 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
+   /*
+   // The P_{\alpha,PLR} figure of merit for polynomial lattices
+   //! [pfigure]
+   auto weights = unique<LatCommon::ProductWeights>();
+   weights->setDefaultWeight(0.7);
+
+   //! [pProjDepMerit]
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaPLR> ProjDep;
+   WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(2, std::move(weights), ProjDep(2));
+   //! [pProjDepMerit]
+   std::cout << "figure of merit: " << figure << std::endl;
+   //! [pfigure]
+   */
    // sequence of lattice definitions
-   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
+   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression()> Coprime;
    auto latSeq = LatSeq::korobov(
          storage.sizeParam(),
-         Coprime(storage.sizeParam().numPoints()),
+         Coprime(storage.sizeParam().modulus()),
          dimension
          );
 
@@ -112,7 +128,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
 
    //! [loop]
    auto eval = figure.evaluator(storage);
-   Observer obs;
+   Observer<LA> obs;
    for (const auto& lat : latSeq) {
       // compute merit value of lattice for all projections
       auto merit = eval(lat, allProjections, initialMerit);
@@ -126,10 +142,16 @@ void test(const Storage<L, C>& storage, Dimension dimension)
 int main()
 {
    Dimension dim = 3;
-
+   
    //! [storage]
-   test(Storage<LatType::ORDINARY, Compress::SYMMETRIC>(19), dim);
+   test(Storage<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC>(19), dim);
    //! [storage]
+   /*
+   //! [pstorage]
+   test(Storage<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE>(PolynomialFromInt(13)), dim);
+   //! [pstorage]
+   */
+   
 
    return 0;
 }

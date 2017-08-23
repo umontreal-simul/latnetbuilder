@@ -22,49 +22,49 @@
 
 #include "latbuilder/WeightedFigureOfMerit.h"
 #include "latbuilder/CoordUniformFigureOfMerit.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
 struct CBCTag {};
 
 
 /// CBC construction.
-template <LatType LAT, Compress COMPRESS, class FIGURE> using CBC =
-   CBCBasedSearch<CBCTag<LAT, COMPRESS, FIGURE>>;
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using CBC =
+   CBCBasedSearch<CBCTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// CBC construction.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-CBC<LAT, COMPRESS, FIGURE> cbc(
-      Storage<LAT, COMPRESS> storage,
+template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+CBC<LR, LAT, COMPRESS, PLO, FIGURE> cbc(
+      Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return CBC<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return CBC<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct CBCBasedSearchTraits<CBCTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef GenSeq::CoprimeIntegers<COMPRESS> GenSeqType;
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<CBCTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, LAT> Search;
+   typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, LAT, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, LAT, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef GenSeq::GeneratingValues<LR, COMPRESS> GenSeqType;
 
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension) const
    {
       auto vec = GenSeq::VectorCreator<GenSeqType>::create(sizeParam, dimension);
-      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(2));
+      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(LatticeTraits<LR>::TrivialModulus));
       return vec;
    }
 
    std::string name() const
    { return FIGURE::evaluationName() + " CBC"; }
 
-   void init(LatBuilder::Task::CBC<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::CBC<LR, LAT, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 

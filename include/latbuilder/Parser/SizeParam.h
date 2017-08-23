@@ -25,19 +25,38 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for size parameters.
  */
+	template <Lattice LR, LatBuilder::LatType LAT>
 struct SizeParam {
-   template <LatBuilder::LatType LAT>
-   static LatBuilder::SizeParam<LAT> parse(const std::string& str);
+   
+   static LatBuilder::SizeParam<LR, LAT> parse(const std::string& str);
 };
 
+/*
 template <>
-LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY> SizeParam::parse(const std::string&);
+LatBuilder::SizeParam<Lattice LatBuilder::LatType::ORDINARY> SizeParam::parse(const std::string&);
 template <>
 LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED> SizeParam::parse(const std::string&);
+*/
+/*
+extern template LatBuilder::SizeParam<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY> 
+			LatBuilder::Parser::SizeParam<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>::parse(const std::string& str);
 
-extern template LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY> SizeParam::parse<LatBuilder::LatType::ORDINARY>(const std::string&);
-extern template LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED> SizeParam::parse<LatBuilder::LatType::EMBEDDED>(const std::string&);
+extern template LatBuilder::SizeParam<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED> 
+			LatBuilder::Parser::SizeParam<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>::parse(const std::string& str);
 
+extern template LatBuilder::SizeParam<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY> 
+			LatBuilder::Parser::SizeParam<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>::parse(const std::string& str);
+
+extern template LatBuilder::SizeParam<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED> 
+			LatBuilder::Parser::SizeParam<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>::parse(const std::string& str);
+
+
+extern template struct LatBuilder::Parser::SizeParam<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>;
+extern template struct LatBuilder::Parser::SizeParam<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>;
+
+extern template struct LatBuilder::Parser::SizeParam<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>;
+extern template struct LatBuilder::Parser::SizeParam<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>;
+*/
 }}
 
 #endif

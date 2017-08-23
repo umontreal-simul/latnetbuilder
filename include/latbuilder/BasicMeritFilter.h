@@ -34,7 +34,7 @@ struct MeritFilterTraits;
 /**
  * Abstract base class for filters.
  */
-template <LatType LAT, LatType OUT = LAT>
+template <Lattice LR, LatType LAT, LatType OUT = LAT>
 struct BasicMeritFilter;
 
 /**
@@ -46,11 +46,11 @@ struct LatticeRejectedException : std::exception {};
 //========================================================================
 
 
-template <LatType LAT, LatType OUT>
+template <Lattice LR, LatType LAT, LatType OUT>
 struct BasicMeritFilter {
    typedef typename MeritFilterTraits<LAT>::MeritValue InputMeritValue;
    typedef typename MeritFilterTraits<OUT>::MeritValue OutputMeritValue;
-   typedef LatBuilder::LatDef<LAT> LatDef;
+   typedef LatBuilder::LatDef<LR, LAT> LatDef;
    virtual ~BasicMeritFilter() {}
    virtual OutputMeritValue operator() (const InputMeritValue&, const LatDef&) const = 0;
    virtual std::string name() const = 0;

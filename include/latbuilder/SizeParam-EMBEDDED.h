@@ -24,38 +24,44 @@ namespace LatBuilder {
 /**
  * Lattice size type for embedded lattices.
  * Defining parameters:
- * - prime base for the number of points;
+ * - prime base for the modulus (prime integer in the case of lattices rules and an irreductible polynomial in the case of polynomial lattices);
  * - maximum embedding level (power of the base for the last lattice in the sequence).
  */
-template <>
-class SizeParam<LatType::EMBEDDED> :
-   public BasicSizeParam<SizeParam<LatType::EMBEDDED>> {
+template <Lattice LR>
+class SizeParam<LR,LatType::EMBEDDED> :
+   public BasicSizeParam<SizeParam<LR,LatType::EMBEDDED>> {
+
+    typedef SizeParam<LR, LatType::ORDINARY> self_type;
+
 public:
+
+    typedef typename self_type::Modulus Modulus;
+    typedef typename self_type::size_type size_type;
 
    /**
     * Constructor.
     *
-    * \param primeBase     Prime base for the number of points.
+    * \param primeBase     (prime integer in the case of lattices rules and an irreductible polynomial in the case of polynomial lattices).
     * \param maxLevel      The last lattice in the sequence (the one with the
-    *                      largest number of points) has
-    *                      \f$\mathtt{primeBase}^{\mathtt{maxLevel}}\f$ points.
+    *                      largest number of points) has 
+    *                      \f$\mathtt{primeBase}^{\mathtt{maxLevel}}\f$ as modulus.
     */
    SizeParam(Modulus primeBase, Level maxLevel);
 
    /**
     * Constructor.
     *
-    * \param numPoints  Number of points factorizable as an integer power of
+    * \param modulus  modulus factorizable as an integer power of
     *                   a prime base.
     */
-   SizeParam(Modulus numPoints = 0);
+   SizeParam(Modulus modulus = (Modulus)(0));
 
    template <class D>
-   SizeParam(const BasicSizeParam<D>& other): SizeParam(other.numPoints())
+   SizeParam(const BasicSizeParam<D>& other): SizeParam(other.modulus())
    {}
 
    /**
-    * Returns the prime base for the number of points.
+    * Returns the prime base for the modulus.
     */
    Modulus base() const
    { return m_base; }
@@ -70,7 +76,7 @@ public:
     * Returns the number of points for the lattice at embedding level \c level
     * in the sequence.
     */
-   Modulus numPointsOnLevel(Level level) const;
+   size_type numPointsOnLevel(Level level) const;
 
    size_t totient() const;
 

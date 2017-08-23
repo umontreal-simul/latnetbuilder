@@ -38,7 +38,7 @@ Weights::parseProjectionDependent(const std::string& arg, Real powerScale)
    while (!rest.empty()) {
       auto s1 = splitPair<>(rest, ':');
       auto s2 = splitPair<LatCommon::Weight, std::string>(s1.second, ':');
-      auto p = splitCSV<Modulus>(s1.first);
+      auto p = splitCSV<uInteger>(s1.first);
       for (auto& pi : p) pi--;
       rest = s2.second;
       LatCommon::Coordinates proj(p.begin(), p.end());

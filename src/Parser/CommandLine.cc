@@ -28,15 +28,16 @@ namespace LatBuilder { namespace Parser {
 
 namespace {
 
+   template<Lattice LR>
    static void setFilters(
-         LatBuilder::MeritFilterList<LatBuilder::LatType::ORDINARY>& filters,
-         const CommandLine<LatBuilder::LatType::ORDINARY>& args,
-         const LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>& size,
+         LatBuilder::MeritFilterList<LR, LatBuilder::LatType::ORDINARY>& filters,
+         const CommandLine<LR, LatBuilder::LatType::ORDINARY>& args,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatType::ORDINARY>& size,
          const LatCommon::Weights& weights,
          Real normType
          )
    {
-      Parser::MeritFilterList::parse(
+      Parser::MeritFilterList<LR>::parse(
             filters,
             args.filters,
             size,
@@ -45,15 +46,16 @@ namespace {
             );
    }
 
+   template<Lattice LR>
    static void setFilters(
-         LatBuilder::MeritFilterList<LatBuilder::LatType::EMBEDDED>& filters,
-         const CommandLine<LatBuilder::LatType::EMBEDDED>& args,
-         const LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>& size,
+         LatBuilder::MeritFilterList<LR, LatBuilder::LatType::EMBEDDED>& filters,
+         const CommandLine<LR, LatBuilder::LatType::EMBEDDED>& args,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatType::EMBEDDED>& size,
          const LatCommon::Weights& weights,
          Real normType
          )
    {
-      Parser::MeritFilterList::parse(
+      Parser::MeritFilterList<LR>::parse(
             filters,
             args.filters,
             args.multilevelFilters,
@@ -64,35 +66,35 @@ namespace {
             );
    }
 
-   template <LatBuilder::LatType LAT>
+   template <LatBuilder::Lattice LR, LatBuilder::LatType LAT>
    class Parse {
    private:
-      const CommandLine<LAT>& m_args;
-      std::unique_ptr<LatBuilder::Task::Search<LAT>> m_search;
+      const CommandLine<LR, LAT>& m_args;
+      std::unique_ptr<LatBuilder::Task::Search<LR, LAT>> m_search;
 
    public:
 
-      Parse(const CommandLine<LAT>& args_): m_args(args_)
+      Parse(const CommandLine<LR, LAT>& args_): m_args(args_)
       {}
 
 
-      std::unique_ptr<LatBuilder::Task::Search<LAT>> search()
+      std::unique_ptr<LatBuilder::Task::Search<LR, LAT>> search()
       {
-         Parser::FigureOfMerit::parse(
+         Parser::FigureOfMerit<LR>::parse(
                m_args.normType,
                m_args.figure,
                Parser::CombinedWeights::parse(m_args.weights, m_args.weightsPowerScale),
                *this,
-               Parser::SizeParam::parse<LAT>(m_args.size),
+               Parser::SizeParam<LR, LAT>::parse(m_args.size),
                boost::lexical_cast<Dimension>(m_args.dimension)
                );
          return std::move(m_search);
       }
 
       template <class FIGURE>
-      void operator()(FIGURE figure, LatBuilder::SizeParam<LAT> size, Dimension dimension)
+      void operator()(FIGURE figure, LatBuilder::SizeParam<LR, LAT> size, Dimension dimension)
       {
-         m_search = Parser::Search<LAT>::parse(
+         m_search = Parser::Search<LR, LAT>::parse(
                m_args.construction,
                size,
                dimension,
@@ -108,15 +110,31 @@ namespace {
 
 }
 
-std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::ORDINARY>>
-CommandLine<LatBuilder::LatType::ORDINARY>::parse() const
-{ return Parse<LatBuilder::LatType::ORDINARY>(*this).search(); }
+template<>
+std::unique_ptr<LatBuilder::Task::Search<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>>
+CommandLine<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>::parse() const
+{ return Parse<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>(*this).search(); }
 
-std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::EMBEDDED>>
-CommandLine<LatBuilder::LatType::EMBEDDED>::parse() const
-{ return Parse<LatBuilder::LatType::EMBEDDED>(*this).search(); }
+template<>
+std::unique_ptr<LatBuilder::Task::Search<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>>
+CommandLine<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>::parse() const
+{ return Parse<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>(*this).search(); }
 
-template struct CommandLine<LatBuilder::LatType::ORDINARY>;
-template struct CommandLine<LatBuilder::LatType::EMBEDDED>;
+template<>
+std::unique_ptr<LatBuilder::Task::Search<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>>
+CommandLine<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>::parse() const
+{ return Parse<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>(*this).search(); }
+
+template<>
+std::unique_ptr<LatBuilder::Task::Search<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>>
+CommandLine<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>::parse() const
+{ return Parse<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>(*this).search(); }
+
+/*
+template struct CommandLine<LatBuilder::Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>;
+template struct CommandLine<LatBuilder::Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>;
+template struct CommandLine<LatBuilder::Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>;
+template struct CommandLine<LatBuilder::Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>;
+*/
 
 }}

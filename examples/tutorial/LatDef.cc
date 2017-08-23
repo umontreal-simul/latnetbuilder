@@ -13,18 +13,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 #include "latbuilder/LatDef.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/TextStream.h"
 #include <iostream>
-
 using namespace LatBuilder;
 using TextStream::operator<<;
 
 //! [printLatDef]
-template <LatType L>
-void printLatDef(const LatDef<L>& def)
+template <Lattice LA, LatType L>
+void printLatDef(const LatDef<LA, L>& def)
 {
    std::cout << "    dimension:         " << def.dimension() << std::endl;
    std::cout << "    size parameter:    " << def.sizeParam() << std::endl;
@@ -32,20 +30,32 @@ void printLatDef(const LatDef<L>& def)
    std::cout << "    definition:        " << def << std::endl;
 }
 //! [printLatDef]
-
 int main()
 {
    //! [ordinary]
-   auto ordinary = createLatDef(SizeParam<LatType::ORDINARY>(31), {1, 12, 3});
-   std::cout << "ordinary lattice:" << std::endl;
+   auto ordinary = createLatDef(SizeParam<Lattice::INTEGRATION, LatType::ORDINARY>(31), {1, 12, 3});
+   std::cout << "integration - ordinary lattice:" << std::endl;
    printLatDef(ordinary);
-   //! [ordinary]
+    //! [ordinary]
 
-   //! [embedded]
-   auto embedded = createLatDef(SizeParam<LatType::EMBEDDED>(2, 5), {1, 7, 9});
-   std::cout << "embedded lattice:" << std::endl;
+    //! [embedded]
+   auto embedded = createLatDef(SizeParam<Lattice::INTEGRATION, LatType::EMBEDDED>(2, 5), {1, 7, 9});
+   std::cout << "integration - embedded lattice:" << std::endl;
    printLatDef(embedded);
    //! [embedded]
+
+   //! [pordinary]
+   Polynomial P = PolynomialFromInt(13); // P = 1 + z^2 + z^3
+   auto pordinary = createLatDef(SizeParam<Lattice::POLYNOMIAL, LatType::ORDINARY>(P), {PolynomialFromInt(1), PolynomialFromInt(5), PolynomialFromInt(3)});
+   std::cout << "polynomial - ordinary lattice:" << std::endl;
+   printLatDef(pordinary);
+   //! [pordinary]
+
+   //! [pembedded]
+   auto pembedded = createLatDef(SizeParam<Lattice::POLYNOMIAL, LatType::EMBEDDED>(PolynomialFromInt(2), 5),{PolynomialFromInt(1), PolynomialFromInt(10), PolynomialFromInt(3)});
+   std::cout << "polynomial - embedded lattice:" << std::endl;
+   printLatDef(pembedded);
+   //! [pembedded]
 
    return 0;
 }

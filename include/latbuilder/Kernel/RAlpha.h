@@ -95,12 +95,12 @@ public:
     *
     * \remark Returns only the real part of the kernel value.
     */
-   Real pointValue(const Real& x, Modulus n) const
+   Real pointValue(const Real& x, uInteger n) const
    {
       const auto pi = boost::math::constants::pi<Real>();
-      Modulus hmax = (n - 1) / 2;
+      uInteger hmax = (n - 1) / 2;
       Real sum = 0.0;
-      for (Modulus h = 1; h <= hmax; h++)
+      for (uInteger h = 1; h <= hmax; h++)
          sum += std::pow(h, -alpha()) * 2 * std::cos(2 * pi * h * x);
       if (n % 2 == 0)
          sum += std::pow(n / 2, -alpha()) * cos(pi * n * x);
@@ -112,9 +112,9 @@ public:
     *
     * Creates a new vector of kernel values using fast Fourier transforms.
     */
-   template <LatType L, Compress C>
+   template <Lattice LR, LatType L, Compress C, PerLvlOrder P >
    RealVector valuesVector(
-         const Storage<L, C>& storage
+         const Storage<LR, L, C, P>& storage
          ) const
    {
       fftw<Real>::real_vector rvec(storage.sizeParam().numPoints());

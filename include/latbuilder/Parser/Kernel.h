@@ -20,6 +20,8 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Kernel/RAlpha.h"
 #include "latbuilder/Kernel/PAlpha.h"
+#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/RPLR.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -36,6 +38,7 @@ public:
 /**
  * Parser for kernels for coordinate-uniform figures of merit.
  */
+template <Lattice LR>
 struct Kernel {
    /**
     * Parses a string specifying a kernel for the coordinate-uniform figure of
@@ -47,24 +50,56 @@ struct Kernel {
     * \return A shared pointer to a newly created object or \c nullptr on failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args);
+   
+};
+
+
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void Kernel<Lattice::INTEGRATION>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       try {
-         if (str[0] == 'P') {
-            auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
-            func(LatBuilder::Kernel::PAlpha(alpha), std::forward<ARGS>(args)...);
-            return;
-         }
-         else if (str[0] == 'R') {
-            auto alpha = boost::lexical_cast<Real>(str.substr(1));
-            func(LatBuilder::Kernel::RAlpha(alpha), std::forward<ARGS>(args)...);
-            return;
-         }
-      }
-      catch (boost::bad_lexical_cast&) {}
-      throw BadKernel(str);
+             if (str[0] == 'P') {
+                auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
+                func(LatBuilder::Kernel::PAlpha(alpha), std::forward<ARGS>(args)...);
+                return;
+             }
+             else if (str[0] == 'R') {
+                auto alpha = boost::lexical_cast<Real>(str.substr(1));
+                func(LatBuilder::Kernel::RAlpha(alpha), std::forward<ARGS>(args)...);
+                return;
+             }
+          }
+          catch (boost::bad_lexical_cast&) {}
+          throw BadKernel(str);
    }
-};
+   
+template<>
+template <typename FUNC, typename... ARGS>
+   void Kernel<Lattice::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   {
+      try {
+             if (str[0] == 'P') {
+                auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
+                func(LatBuilder::Kernel::PAlphaPLR(alpha), std::forward<ARGS>(args)...);
+                return;
+             }
+             else if (str[0] == 'R') {
+                
+                func(LatBuilder::Kernel::RPLR(), std::forward<ARGS>(args)...);
+                return;
+             }
+          }
+          catch (boost::bad_lexical_cast&) {}
+          throw BadKernel(str);
+   }
+
+/*
+extern template struct Kernel<Lattice::INTEGRATION>;
+extern template struct Kernel<Lattice::POLYNOMIAL>;
+*/
 
 }}
 

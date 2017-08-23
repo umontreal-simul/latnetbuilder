@@ -36,30 +36,23 @@ public:
    {}
 };
 
+
+template <Lattice LR, LatType LAT>
 struct MeritFilter {
-   template <LatType LAT>
-   static std::unique_ptr<BasicMeritFilter<LAT>> parse(
+   
+   static std::unique_ptr<BasicMeritFilter<LR, LAT>> parse(
          const std::string& str,
-         const LatBuilder::SizeParam<LAT>& sizeParam,
+         const LatBuilder::SizeParam<LR, LAT>& sizeParam,
          const LatCommon::Weights& weights,
          Real normType);
 };
 
-extern template
-std::unique_ptr<BasicMeritFilter<LatType::ORDINARY>>
-MeritFilter::parse(
-      const std::string&,
-      const LatBuilder::SizeParam<LatType::ORDINARY>&,
-      const LatCommon::Weights&,
-      Real);
+extern template struct LatBuilder::Parser::MeritFilter <Lattice::INTEGRATION, LatType::ORDINARY> ;
+extern template struct LatBuilder::Parser::MeritFilter <Lattice::INTEGRATION, LatType::EMBEDDED> ;
+extern template struct LatBuilder::Parser::MeritFilter <Lattice::POLYNOMIAL, LatType::ORDINARY> ;
+extern template struct LatBuilder::Parser::MeritFilter <Lattice::POLYNOMIAL, LatType::EMBEDDED> ;
 
-extern template
-std::unique_ptr<BasicMeritFilter<LatType::EMBEDDED>>
-MeritFilter::parse(
-      const std::string&,
-      const LatBuilder::SizeParam<LatType::EMBEDDED>&,
-      const LatCommon::Weights&,
-      Real);
+
 
 }}
 

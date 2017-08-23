@@ -18,6 +18,7 @@
 #define LATBUILDER__SIZE_PARAM_H
 
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 
 #include <ostream>
 
@@ -26,7 +27,51 @@ namespace LatBuilder {
 /**
  * Lattice size parameter.
  */
-template <LatType> class SizeParam;
+template <Lattice, LatType> class SizeParam;
+
+/**
+ * SizeParam traits.
+ *
+ * Specializations of this class template must define the type:
+ * - Modulus: type of the modulus;
+ * - size_type : type for the number of points in the lattice;
+ * And must define the static function:
+ * - size_type ComputeNumPoints(const Modulus& modulus) number of the points in the lattice point set 
+ */
+template <class DERIVED>
+struct SizeParamTraits;
+
+/**
+ * SizeParam traits for ordinary lattice rule.
+ *
+ */
+template<LatType LAT>
+struct SizeParamTraits<SizeParam<Lattice::INTEGRATION,LAT>>{
+  ///  type for modulus (= number of points) values.
+  typedef typename LatticeTraits<Lattice::INTEGRATION>::Modulus Modulus;
+  typedef uInteger size_type;
+
+  static size_type ComputeNumPoints(const Modulus& modulus){
+    return LatticeTraits<Lattice::INTEGRATION>::NumPoints(modulus);
+  }
+  
+};
+
+/**
+ * SizeParam traits for polynomial lattice rule.
+ *
+ */
+template<LatType LAT>
+struct SizeParamTraits<SizeParam<Lattice::POLYNOMIAL,LAT>>{
+  ///  type for modulus values.
+  typedef typename LatticeTraits<Lattice::POLYNOMIAL>::Modulus Modulus;
+  typedef uInteger size_type;
+
+  static size_type ComputeNumPoints(const Modulus& modulus){
+    return LatticeTraits<Lattice::POLYNOMIAL>::NumPoints(modulus);
+  }
+  
+};
 
 /**
  * Abstract CRTP base class for lattice size parameter.
@@ -37,22 +82,29 @@ protected:
    BasicSizeParam(const BasicSizeParam&) = default;
 
 public:
-   BasicSizeParam(Modulus numPoints): m_numPoints(numPoints) { }
 
-   Modulus numPoints() const { return m_numPoints; }
-   operator Modulus() const { return m_numPoints; }
+   typedef typename SizeParamTraits<DERIVED>::Modulus Modulus;
+   typedef typename SizeParamTraits<DERIVED>::size_type size_type;
+
+   BasicSizeParam(Modulus modulus): m_modulus(modulus),
+                                    m_numPoints(SizeParamTraits<DERIVED>::ComputeNumPoints(m_modulus)) { }
+
+   Modulus modulus() const { return m_modulus; }
+   size_type numPoints() const { return m_numPoints; }
+   operator Modulus() const { return m_modulus; }
 
    /**
     * Returns the value of Euler's totient function.
-    * It is the number of positive integers that are smaller than and coprime
-    * to the number of points.
+    * -For integration lattices: It is the number of positive integers that are smaller than and coprime
+    * to the modulus.
+    * -For polynomial lattices: It is the number of polynomials coprime with the modulus and with (strictly) smaller degree
     */
    size_t totient() const
    { return derived().totient(); }
 
-   template <class D> bool operator== (const BasicSizeParam<D>& other) const { return numPoints() == other.numPoints(); }
+   template <class D> bool operator== (const BasicSizeParam<D>& other) const { return modulus() == other.modulus(); }
    template <class D> bool operator!= (const BasicSizeParam<D>& other) const { return !operator==(other); }
-   template <class D> bool operator<  (const BasicSizeParam<D>& other) const { return m_numPoints < other.m_numPoints; }
+   template <class D> bool operator<  (const BasicSizeParam<D>& other) const { return m_modulus < other.m_modulus; }
 
    /**
     * Divides the merit value \c merit by the number of points.
@@ -67,7 +119,8 @@ public:
    { derived().normalize(merit); }
 
 private:
-   Modulus m_numPoints;
+   Modulus m_modulus;
+   size_type m_numPoints;
 
    template <class D>
    friend std::ostream& operator<<(std::ostream&, const BasicSizeParam<D>&);

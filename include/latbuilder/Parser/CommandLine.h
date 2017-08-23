@@ -25,14 +25,14 @@ namespace LatBuilder { namespace Parser {
 /**
  * Collection of arguments required to construct a Search instance.
  */
-template <LatBuilder::LatType>
+template <LatBuilder::Lattice , LatBuilder::LatType>
 struct CommandLine;
 
 /**
  * Specialization of CommandLine for ordinary lattices.
  */
-template <>
-struct CommandLine<LatBuilder::LatType::ORDINARY> {
+template <LatBuilder::Lattice LR>
+struct CommandLine<LR, LatBuilder::LatType::ORDINARY> {
    std::string construction;
    std::string size;
    std::string dimension;
@@ -42,23 +42,26 @@ struct CommandLine<LatBuilder::LatType::ORDINARY> {
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
 
-   std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::ORDINARY>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::LatType::ORDINARY>> parse() const;
 };
 
 /**
  * Specialization of CommandLine for embedded lattices.
  */
-template <>
-struct CommandLine<LatBuilder::LatType::EMBEDDED> : CommandLine<LatBuilder::LatType::ORDINARY> {
+template <LatBuilder::Lattice LR>
+struct CommandLine<LR, LatBuilder::LatType::EMBEDDED> : CommandLine<LR, LatBuilder::LatType::ORDINARY> {
    std::vector<std::string> multilevelFilters;
    std::string combiner;
 
-   std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::EMBEDDED>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::LatType::EMBEDDED>> parse() const;
 };
 
-extern template struct CommandLine<LatBuilder::LatType::ORDINARY>;
-extern template struct CommandLine<LatBuilder::LatType::EMBEDDED>;
-
+/*
+extern template struct CommandLine<LatBuilder::Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>;
+extern template struct CommandLine<LatBuilder::Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>;
+extern template struct CommandLine<LatBuilder::Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>;
+extern template struct CommandLine<LatBuilder::Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>;
+*/
 }}
 
 #endif

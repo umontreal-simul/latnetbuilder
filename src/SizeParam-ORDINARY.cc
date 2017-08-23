@@ -16,15 +16,21 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Util.h"
+#include <NTL/GF2XFactoring.h>
 
 namespace LatBuilder {
 
-SizeParam<LatType::ORDINARY>::SizeParam(Modulus numPoints):
-   BasicSizeParam<SizeParam<LatType::ORDINARY>>(numPoints)
+//===========================================================================================
+template <Lattice LR>
+SizeParam<LR,LatType::ORDINARY>::SizeParam(SizeParam<LR,LatType::ORDINARY>::Modulus modulus):
+   BasicSizeParam<SizeParam<LR,LatType::ORDINARY>>(modulus)
 {}
 
+//===========================================================================================
+
+template<>
 size_t
-SizeParam<LatType::ORDINARY>::totient() const
+SizeParam<Lattice::INTEGRATION,LatType::ORDINARY>::totient() const
 {
    auto n = numPoints();
    for (const auto& p : LatBuilder::primeFactors(n))
@@ -32,17 +38,40 @@ SizeParam<LatType::ORDINARY>::totient() const
    return n;
 }
 
-void
-SizeParam<LatType::ORDINARY>::normalize(Real& merit) const
-{ merit /= numPoints(); }
+template<>
+size_t
+SizeParam<Lattice::POLYNOMIAL,LatType::ORDINARY>::totient() const
+{
+   auto polynomial = modulus();
+   auto n = intPow(2,deg(polynomial));
+   NTL::vector< NTL::Pair< Polynomial, long > > factors ;
+   CanZass(factors, polynomial); // calls "Cantor/Zassenhaus" algorithm from <NTL/GF2XFactoring.h>
+   for (const auto& p : factors)
+      n = n * (intPow(2,deg(p.a)) - 1) / intPow(2,deg(p.a));
+   return n;
+}
 
-void
-SizeParam<LatType::ORDINARY>::normalize(RealVector& merit) const
-{ merit /= numPoints(); }
+//================================================================================================
 
+template <Lattice LR>
+void
+SizeParam<LR,LatType::ORDINARY>::normalize(Real& merit) const
+{ merit /= this->numPoints(); }
+
+template <Lattice LR>
+void
+SizeParam<LR,LatType::ORDINARY>::normalize(RealVector& merit) const
+{ merit /= this->numPoints(); }
+
+template <Lattice LR>
 std::ostream&
-SizeParam<LatType::ORDINARY>::format(std::ostream& os) const
-{ return os << numPoints(); }
+SizeParam<LR,LatType::ORDINARY>::format(std::ostream& os) const
+{ return os << this->modulus(); }
+
+//==================================================================================================
+
+template class SizeParam<Lattice::INTEGRATION,LatType::ORDINARY>;
+template class SizeParam<Lattice::POLYNOMIAL,LatType::ORDINARY>;
 
 }
 

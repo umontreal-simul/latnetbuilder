@@ -22,20 +22,21 @@
 
 namespace LatBuilder { namespace Parser {
 
-std::unique_ptr<typename LatBuilder::MeritFilterList<LatType::EMBEDDED>::Combiner>
-MeritCombiner::parse(
+template<Lattice LR>
+std::unique_ptr<typename LatBuilder::MeritFilterList<LR, LatType::EMBEDDED>::Combiner>
+MeritCombiner<LR>::parse(
       const std::string& str,
-      const LatBuilder::SizeParam<LatType::EMBEDDED>& sizeParam
+      const LatBuilder::SizeParam<LR, LatType::EMBEDDED>& sizeParam
       )
 {
-   typedef std::unique_ptr<MeritFilterList<LatType::EMBEDDED>::Combiner> Ptr;
+   typedef std::unique_ptr<typename MeritFilterList<LR, LatType::EMBEDDED>::Combiner> Ptr;
    const auto strSplit = splitPair<>(str, ':');
    if (strSplit.first == "level") {
       if (strSplit.second == "max")
-         return Ptr(new LatBuilder::MeritCombiner::SelectLevel(sizeParam.maxLevel()));
+         return Ptr(new LatBuilder::MeritCombiner::SelectLevel<LR>(sizeParam.maxLevel()));
       else {
          try {
-            return Ptr(new LatBuilder::MeritCombiner::SelectLevel(boost::lexical_cast<Level>(strSplit.second)));
+            return Ptr(new LatBuilder::MeritCombiner::SelectLevel<LR>(boost::lexical_cast<Level>(strSplit.second)));
          }
          catch (boost::bad_lexical_cast&) {
             throw ParserError("cannot interpret \"" + strSplit.second + "\" as a level number");
@@ -44,11 +45,14 @@ MeritCombiner::parse(
    }
 
    if (str == "sum")
-      return Ptr(new LatBuilder::MeritCombiner::Accumulator<Functor::Sum>());
+      return Ptr(new LatBuilder::MeritCombiner::Accumulator<LR, Functor::Sum>());
    if (str == "max")
-      return Ptr(new LatBuilder::MeritCombiner::Accumulator<Functor::Max>());
+      return Ptr(new LatBuilder::MeritCombiner::Accumulator<LR, Functor::Max>());
 
    throw BadCombiner(str);
 }
+
+template struct MeritCombiner<Lattice::INTEGRATION>;
+template struct MeritCombiner<Lattice::POLYNOMIAL>;
 
 }}

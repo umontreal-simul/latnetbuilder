@@ -31,52 +31,56 @@ namespace LatBuilder { namespace Parser {
  * Parses a vector of strings consisting of either filters or, for embedded
  * lattices, combiners.
  */
+   template <Lattice LR>
 struct MeritFilterList {
 
-   static LatBuilder::MeritFilterList<LatBuilder::LatType::ORDINARY> parse(
+   static LatBuilder::MeritFilterList<LR, LatBuilder::LatType::ORDINARY> parse(
          const std::vector<std::string>& filters,
-         const LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatType::ORDINARY>& sizeParam,
          const LatCommon::Weights& weights,
          Real normType
          )
    {
-      LatBuilder::MeritFilterList<LatType::ORDINARY> f;
+      LatBuilder::MeritFilterList<LR, LatType::ORDINARY> f;
       parse(f, filters, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
-         LatBuilder::MeritFilterList<LatBuilder::LatType::ORDINARY>& list,
+         LatBuilder::MeritFilterList<LR, LatBuilder::LatType::ORDINARY>& list,
          const std::vector<std::string>& filters,
-         const LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatType::ORDINARY>& sizeParam,
          const LatCommon::Weights& weights,
          Real normType
          );
 
-   static LatBuilder::MeritFilterList<LatBuilder::LatType::EMBEDDED> parse(
+   static LatBuilder::MeritFilterList<LR, LatBuilder::LatType::EMBEDDED> parse(
          const std::vector<std::string>& filters,
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
-         const LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatType::EMBEDDED>& sizeParam,
          const LatCommon::Weights& weights,
          Real normType
          )
    {
-      LatBuilder::MeritFilterList<LatType::EMBEDDED> f;
+      LatBuilder::MeritFilterList<LR, LatType::EMBEDDED> f;
       parse(f, filters, multilevelFilters, combiner, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
-         LatBuilder::MeritFilterList<LatBuilder::LatType::EMBEDDED>& list,
+         LatBuilder::MeritFilterList<LR, LatBuilder::LatType::EMBEDDED>& list,
          const std::vector<std::string>& filters,
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
-         const LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatType::EMBEDDED>& sizeParam,
          const LatCommon::Weights& weights,
          Real normType
          );
 };
+
+extern template struct MeritFilterList<Lattice::INTEGRATION> ;
+extern template struct MeritFilterList<Lattice::POLYNOMIAL> ;
 
 }}
 

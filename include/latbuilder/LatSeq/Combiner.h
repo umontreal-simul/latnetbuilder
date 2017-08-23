@@ -28,28 +28,29 @@ namespace LatBuilder {
 namespace LatSeq {
 
 /**
- * Sequence of lattices based on a combination of integer sequences.
+ * Sequence of lattices based on a combination of sequences of generator values.
  *
  * Contains all lattices with the same size parameter and dimension, with
  * components of the generating vectors taken from a user-specified vector of
- * integer sequences, one corresponding to each coordinate.
+ * sequences of generator values, one corresponding to each coordinate.
  *
  * \tparam LAT       Type of lattice.
  * \tparam GENSEQ    Type of sequence of generator values.
  * \tparam POLICY    See SeqCombiner.
  */
 template <
+   Lattice LR,
    LatType LAT,
    class GENSEQ,
    template <class> class POLICY>
 class Combiner :
    public BridgeSeq<
-      Combiner<LAT, GENSEQ, POLICY>,
+      Combiner<LR, LAT, GENSEQ, POLICY>,
       SeqCombiner<GENSEQ, POLICY>,
-      LatDef<LAT>,
+      LatDef<LR, LAT>,
       BridgeIteratorCached>
 {
-   typedef Combiner<LAT, GENSEQ, POLICY> self_type;
+   typedef Combiner<LR, LAT, GENSEQ, POLICY> self_type;
 
 public:
 
@@ -66,7 +67,7 @@ public:
     *                      generating vector can take.
     */
    Combiner(
-         SizeParam<LAT> sizeParam,
+         SizeParam<LR, LAT> sizeParam,
          std::vector<GenSeq> genSeqs
          ):
       self_type::BridgeSeq_(Base(std::move(genSeqs))),
@@ -76,7 +77,7 @@ public:
    /**
     * Returns the size parameter of the lattices in the sequence.
     */
-   const SizeParam<LAT>& sizeParam() const
+   const SizeParam<LR, LAT>& sizeParam() const
    { return m_sizeParam; }
 
    /**
@@ -92,17 +93,17 @@ public:
    { return value_type(m_sizeParam, *it); }
 
 private:
-   SizeParam<LAT> m_sizeParam;
+   SizeParam<LR, LAT> m_sizeParam;
 };
 
-/// Creates a lattice sequence based on a combination of sequences of integers.
-template <template <class> class POLICY, LatType LAT, class GENSEQ>
-Combiner<LAT, GENSEQ, POLICY>
+/// Creates a lattice sequence based on a combination of sequences of generator values.
+template <template <class> class POLICY,Lattice LR, LatType LAT, class GENSEQ>
+Combiner<LR, LAT, GENSEQ, POLICY>
 combine(
-      SizeParam<LAT> size,
+      SizeParam<LR, LAT> size,
       std::vector<GENSEQ> genSeqs
       ) {
-   return Combiner<LAT, GENSEQ, POLICY>(std::move(size), std::move(genSeqs));
+   return Combiner<LR, LAT, GENSEQ, POLICY>(std::move(size), std::move(genSeqs));
 }
 
 }}

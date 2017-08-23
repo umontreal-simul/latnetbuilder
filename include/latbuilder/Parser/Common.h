@@ -18,6 +18,7 @@
 #define LATBUILDER__PARSER__COMMON_H
 
 #include "latbuilder/TypeInfo.h"
+#include "latbuilder/Types.h"
 
 #include <memory>
 #include <string>
@@ -93,6 +94,63 @@ std::vector<T> splitCSV(const std::string& input)
    }
    return vec;
 }
+
+/**
+*  convert lattice parameter strings to the appropriate input format  
+*
+*/
+template <LatBuilder::Lattice LR>
+struct LatticeParametersParseHelper ;
+
+template <>
+struct LatticeParametersParseHelper<Lattice::INTEGRATION> {
+   
+   static std::string ToParsableModulus (const std::string& str)
+   {return str ;}
+
+   
+   static std::string ToParsableGenValue (const std::string& str)
+   {return str ;}
+
+   static typename LatticeTraits<Lattice::INTEGRATION>::GeneratingVector ParseGeneratingVector(const std::string& str)
+   {return splitCSV<uInteger>(str);}
+};
+
+template <>
+struct LatticeParametersParseHelper<Lattice::POLYNOMIAL> {
+   
+   static std::string ToParsableModulus (const std::string& str){
+      uInteger size = str.size();
+      std::string str_NTLInput(2*size -1,' ');
+      for(uInteger i = 0; i<size ; i++){
+         str_NTLInput[2*i] = str[i];
+      }
+      str_NTLInput = "[" + str_NTLInput + "]" ; 
+      return str_NTLInput;
+   }
+
+   
+   static std::string ToParsableGenValue (const std::string& str){
+      uInteger size = str.size();
+      std::string str_NTLInput(2*size -1,' ');
+      for(uInteger i = 0; i<size ; i++){
+         str_NTLInput[2*i] = str[i];
+      }
+      str_NTLInput = "[" + str_NTLInput + "]" ; 
+      return str_NTLInput;
+   }
+
+   static typename LatticeTraits<LatBuilder::Lattice::POLYNOMIAL>::GeneratingVector ParseGeneratingVector(const std::string& str)
+   {
+      auto genVec_str = splitCSV<std::string>(str);
+      typename LatticeTraits<Lattice::POLYNOMIAL>::GeneratingVector genVec ;
+      for(const auto& gen_str: genVec_str) {
+         std::string str_NTLInput = LatticeParametersParseHelper<Lattice::POLYNOMIAL>::ToParsableGenValue(gen_str);
+         genVec.push_back((boost::lexical_cast<typename LatticeTraits<Lattice::POLYNOMIAL>::GenValue>(str_NTLInput)));
+      }
+      return genVec;
+   }
+};
 
 }}
 

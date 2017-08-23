@@ -27,7 +27,7 @@
 namespace LatBuilder { namespace MeritSeq {
 
 // forward declaration
-template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUniformState;
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class WEIGHTS> class ConcreteCoordUniformState;
 
 /**
  * Implementation of CoordUniformState for product weights.
@@ -55,9 +55,9 @@ template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUnif
  *       (\boldsymbol 1 + \gamma_s \boldsymbol\omega_s) \odot \boldsymbol p_{s-1}.
  * \f]
  */
-template <LatType LAT, Compress COMPRESS>
-class ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProductWeights> :
-   public CoordUniformState<LAT, COMPRESS> {
+template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO >
+class ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProductWeights> :
+   public CoordUniformState<LR, LAT, COMPRESS, PLO> {
 public:
    /**
     * Constructor.
@@ -69,10 +69,10 @@ public:
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
    ConcreteCoordUniformState(
-         const Storage<LAT, COMPRESS>& storage,
+         const Storage<LR, LAT, COMPRESS, PLO>& storage,
          const LatCommon::ProductWeights& weights
          ):
-      CoordUniformState<LAT, COMPRESS>(storage),
+      CoordUniformState<LR, LAT, COMPRESS, PLO>(storage),
       m_weights(weights)
    { reset(); }
 
@@ -87,7 +87,7 @@ public:
     *       (\boldsymbol 1 + \gamma_s \boldsymbol\omega_s) \odot \boldsymbol p_{s-1}.
     * \f]
     */
-   void update(const RealVector& kernelValues, Modulus gen);
+   void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen);
 
    /**
     * Computes the weighted combination state vectors.
@@ -100,8 +100,8 @@ public:
    RealVector weightedState() const;
 
    /// \copydoc CoordUniformState::clone()
-   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
+   std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const LatCommon::ProductWeights& m_weights;
@@ -110,11 +110,17 @@ private:
    RealVector m_state;
 };
 
-extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProductWeights>;
 
+extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC,      LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC, PerLvlOrder::BASIC, LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC,      LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC, PerLvlOrder::CYCLIC, LatCommon::ProductWeights>;
+
+extern template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC,      LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC,      LatCommon::ProductWeights>;
+
+
+extern template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::BASIC,      LatCommon::ProductWeights>;
 }}
 
 #endif

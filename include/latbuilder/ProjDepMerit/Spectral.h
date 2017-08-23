@@ -75,12 +75,16 @@ public:
    std::string name() const
    { std::ostringstream os; os << "spectral^" << power(); return os.str(); }
 
+   template <LatType LAT, Compress COMPRESS, PerLvlOrder PLO >
+   static Storage<Lattice::INTEGRATION,LAT, COMPRESS> asAcceptableStorage(Storage<Lattice::INTEGRATION,LAT, COMPRESS, PLO> storage)
+   {return Storage<Lattice::INTEGRATION,LAT, COMPRESS>(storage.sizeParam());}
+
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <LatType LAT, Compress COMPRESS>
-   Evaluator<Spectral, LAT, COMPRESS> evaluator(Storage<LAT, COMPRESS> storage) const
-   { return Evaluator<Spectral, LAT, COMPRESS>(std::move(storage), power()); }
+   template <LatType LAT, Compress COMPRESS, PerLvlOrder PLO = defaultPerLvlOrder<Lattice::INTEGRATION, LAT>::Order>
+   Evaluator<Spectral,Lattice::INTEGRATION, LAT, COMPRESS, PLO> evaluator(Storage<Lattice::INTEGRATION,LAT, COMPRESS, PLO> storage) const
+   { return Evaluator<Spectral,Lattice::INTEGRATION, LAT, COMPRESS, PLO>(std::move(asAcceptableStorage<LAT,COMPRESS,PLO>(storage)), power()); }
 
 private:
    Real m_power;
@@ -89,8 +93,8 @@ private:
 namespace detail {
    template <class NORM, Compress COMPRESS, LatType LAT>
    Real spectralEval(
-            const Storage<LatType::ORDINARY, COMPRESS>& storage,
-            const LatDef<LAT>& lat,
+            const Storage<Lattice::INTEGRATION, LatType::ORDINARY, COMPRESS>& storage,
+            const LatDef<Lattice::INTEGRATION, LAT>& lat,
             const LatCommon::Coordinates& projection,
             Real power
             )
@@ -174,8 +178,8 @@ namespace detail {
 
    template <class NORM, Compress COMPRESS, LatType LAT>
    RealVector spectralEval(
-            const Storage<LatType::EMBEDDED, COMPRESS>& storage,
-            const LatDef<LAT>& lat,
+            const Storage<Lattice::INTEGRATION, LatType::EMBEDDED, COMPRESS>& storage,
+            const LatDef<Lattice::INTEGRATION, LAT>& lat,
             const LatCommon::Coordinates& projection,
             Real power
             )
@@ -185,8 +189,8 @@ namespace detail {
 
       for (Level level = 0; level <= storage.sizeParam().maxLevel(); level++) {
 
-         typename Storage<LatType::ORDINARY, COMPRESS>::SizeParam osize(storage.sizeParam().numPointsOnLevel(level));
-         Storage<LatType::ORDINARY, COMPRESS> ostorage(osize);
+         typename Storage<Lattice::INTEGRATION, LatType::ORDINARY, COMPRESS>::SizeParam osize(storage.sizeParam().numPointsOnLevel(level));
+         Storage<Lattice::INTEGRATION, LatType::ORDINARY, COMPRESS> ostorage(osize);
 
          auto olat = createLatDef(osize, lat.gen());
 
@@ -201,13 +205,13 @@ namespace detail {
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class NORM, LatType LAT, Compress COMPRESS>
-class Evaluator<Spectral<NORM>, LAT, COMPRESS> {
+template <class NORM, LatType LAT, Compress COMPRESS, PerLvlOrder PLO >
+class Evaluator<Spectral<NORM>,Lattice::INTEGRATION, LAT, COMPRESS, PLO> {
 public:
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef typename Storage<Lattice::INTEGRATION, LAT, COMPRESS>::MeritValue MeritValue;
 
    Evaluator(
-      Storage<LAT, COMPRESS> storage,
+      Storage<Lattice::INTEGRATION, LAT, COMPRESS> storage,
       Real power
       ):
       m_storage(std::move(storage)),
@@ -219,7 +223,7 @@ public:
     * \c projection.
     */
    MeritValue operator() (
-         const LatDef<LAT>& lat,
+         const LatDef<Lattice::INTEGRATION, LAT>& lat,
          const LatCommon::Coordinates& projection
          ) const
    {
@@ -239,7 +243,7 @@ public:
    }
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<Lattice::INTEGRATION, LAT, COMPRESS> m_storage;
    Real m_power;
 };
 

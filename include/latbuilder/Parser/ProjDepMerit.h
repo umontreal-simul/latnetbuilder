@@ -41,6 +41,7 @@ public:
 /**
  * Parser for projection-dependent figures of merit.
  */
+template< Lattice LR>
 struct ProjDepMerit {
 
    struct ParseCoordUniform {
@@ -65,27 +66,58 @@ struct ProjDepMerit {
     * \throws BadProjDepMerit On failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args);
+   
+};
+
+
+
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void ProjDepMerit<Lattice::INTEGRATION>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       // try coordinate-uniform
       try {
-         Kernel::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<Lattice::INTEGRATION>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
 
       // try spectral
-      if (str == "spectral") {
-         func(
-               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
-               std::forward<ARGS>(args)...
-             );
-         return;
-      }
+        if (str == "spectral") {
+           func(
+                 LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
+                 std::forward<ARGS>(args)...
+               );
+           return;
+        }
+      
 
       throw BadProjDepMerit(str);
    }
-};
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void ProjDepMerit<Lattice::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   {
+      // try coordinate-uniform
+      try {
+         Kernel<Lattice::POLYNOMIAL>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         return;
+      }
+      catch (BadKernel& e) {}
+
+      
+      
+
+      throw BadProjDepMerit(str);
+   }
+
+/*
+extern template struct ProjDepMerit<Lattice::INTEGRATION>;
+extern template struct ProjDepMerit<Lattice::POLYNOMIAL>;
+*/
 
 }}
 

@@ -53,24 +53,30 @@ public:
     *
     * \return The newly created vector.
     *
+    * The \f$i^{\text{th}}\f$ element  \f$\omega_i\f$ is:
+    *- \f$\omega(i/n)\f$ in the case of an integration lattice with modulus \f$n\f$.
+    *-  \f$\omega((\nu_m(\frac{i(z)}{P(z)}))\f$ in the case of a polynomial lattice of modulus \f$P(z)\f$ (\f$ i(z) = \sum a_iz^i\f$ where \f$i =\sum a_i2^i\f$).
+    *
+    *
     * \remark Checks that the functor and the compression are compatible, or
     * throws a std::logic_error.
     */
-   template <LatType L, Compress C>
+   template <Lattice LR, LatType L, Compress C, PerLvlOrder P >
    RealVector valuesVector(
-         const Storage<L, C>& storage
+         const Storage<LR, L, C, P>& storage
          ) const
    { 
       if (storage.symmetric() and not m_functor.symmetric())
         throw std::logic_error("functor must be symmetric in order to use symmetric compression");
 
-      const auto modulus = storage.virtualSize();
+      const auto numPoints = storage.virtualSize();
+      const auto modulus = storage.sizeParam().modulus();
 
       RealVector vec(storage.size());
       auto proxy = storage.unpermuted(vec);
 
       for (size_t i = 0; i < vec.size(); i++)
-         proxy(i) = m_functor(Real(i) / modulus, modulus);
+         proxy(i) = m_functor(Real(LatticeTraits<LR>::ToKernelIndex(i,modulus)) / numPoints, modulus);
 
       return vec;
    }

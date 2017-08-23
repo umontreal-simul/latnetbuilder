@@ -53,6 +53,7 @@ different specific tasks.
 Consider the following basic example:
 \verbatim
 latbuilder \
+  --lattice integration
   --lattice-type ordinary \
   --size 2053 \
   --dimension 5 \
@@ -64,6 +65,9 @@ latbuilder \
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
 
+- The argument <code>\--lattice integration</code> indicates that we seek an integration
+  (in contrast to polynomial) rank-1 lattice rule. The construction of polynomial lattices 
+  is illustrated in \ref cmdtut_polynomial_lattices.
 - The argument <code>\--lattice-type ordinary</code> indicates that we seek an
   ordinary (in contrast to embedded) rank-1 lattice rule.
   The construction of embedded lattices is illustrated in
@@ -90,7 +94,7 @@ Some arguments consists of several tokens, separated by a colon.
   general examples on how to specify the weights are given below in \ref
   cmdtut_recipes_weights.
 
-To summarize, this command executes a CBC construction for an ordinary lattice
+To summarize, this command executes a CBC construction for an ordinary integration lattice
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
 of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with product weights
 such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
@@ -98,7 +102,7 @@ such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
 \verbatim
-latbuilder -l ordinary -n 2053 -d 5 -c CBC -m CU:P2 -w product:0.7
+latbuilder -L integration -l ordinary -n 2053 -d 5 -c CBC -m CU:P2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
@@ -111,6 +115,7 @@ should be left as in the basic example.
 
 This section covers the following topics:
 <ol>
+    <li> \subpage cmdtut_polynomial_lattices   </li>
     <li> \subpage cmdtut_recipes_weights       </li>
     <li> \subpage cmdtut_recipes_merit         </li>
     <li> \subpage cmdtut_recipes_filters       </li>
@@ -118,6 +123,15 @@ This section covers the following topics:
     <li> \subpage cmdtut_recipes_embedded      </li>
     <li> \subpage cmdtut_recipes_extensible    </li>
 </ol>
+
+\subsection cmdtut_polynomial_lattices Polynomial lattices
+We can construct polynomial lattices by setting the argument <code>\--lattice </code> to <code>\polynomial</code>, and by specifying a polynomial 
+modulus as the size parameter to the argument <code>\--size </code>. The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.
+For example, changing the arguments <code>\--lattice </code>, <code>\--size </code> to
+\verbatim
+--lattice polynomial --size 1011
+\endverbatim
+means that we seek a polynomial lattice rule with modulus \f$1+z^2+z^3\f$.
 
 \subsection cmdtut_recipes_weights Specifying the Weights
 
@@ -248,7 +262,7 @@ as in \ref cmdtut_recipes_weights_product.
 
 
 \subsection cmdtut_recipes_merit Figures of Merit
-
+\subsubsection cmdtut_integration_lattices Integration Lattice Rules
 - The spectral figure of merit (weighted worst projection):
   \f[
     \max_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
@@ -315,6 +329,29 @@ as in \ref cmdtut_recipes_weights_product.
   Usage of the <code>\--filters</code> option is illustrated in \ref
   cmdtut_recipes_filters.
 
+\subsubsection cmdtut_figures_polynomial_lattices Polynomial Lattice Rules
+- The \f$\mathcal P_{\alpha,PLR}\f$ discrepancy with \f$\alpha=2\f$, using a
+  term-by-term evaluation of the sum with an \f$\ell_q\f$ norm with
+  \f$q=1.5\f$:
+  \verbatim
+    --figure-of-merit P2 --norm-type 1.5
+  \endverbatim
+- The \f$\mathcal P_{\alpha,PLR}\f$ discrepancy with \f$\alpha=4\f$, using
+  term-by-term evaluation of the sum:
+  \verbatim
+    --figure-of-merit P4
+  \endverbatim
+
+- The \f$\mathcal P_{\alpha,PLR}\f$ discrepancy with \f$\alpha=4\f$, using a
+  coordinate-uniform evaluation algorithm:
+  \verbatim
+    --figure-of-merit CU:P4
+  \endverbatim
+- The \f$\mathcal R\f$ criterion, using a
+  coordinate-uniform evaluation algorithm:
+  \verbatim
+    --figure-of-merit CU:R
+  \endverbatim
 
 
 \subsection cmdtut_recipes_filters Filtering Merit Values
@@ -355,10 +392,15 @@ For usage with embedded lattices, see \ref cmdtut_recipes_embedded.
 
 \subsection cmdtut_recipes_construction Construction Type
 
-- Simply evaluate the figure of merit for a lattice rule with generating vector
+- Simply evaluate the figure of merit for an integration lattice rule with generating vector
   \f$(1, 468, 896, 603, 367)\f$:
   \verbatim
   --construction explicit:1,468,896,603,367
+  \endverbatim
+- Evaluate the figure of merit for an polynomial lattice rule with generating vector
+  \f$(1, z, z+z^2, 1+z^3+z^4, 1+z^4+z^5)\f$:
+  \verbatim
+  --construction explicit:1,01,011,10011,100011
   \endverbatim
 - Search among all possible generating vectors:
   \verbatim
@@ -420,11 +462,12 @@ to embedded with:
 --lattice-type embedded
 \endverbatim
 
-- To build embedded lattices with CBC construction in dimension 5 with
+- To build embedded integration lattices with CBC construction in dimension 5 with
   \f$n=2^m\f$ points with \f$m=1,\dots,16\f$ using the maximum value of the
   spectral merit across all levels, with the same weight for all projections:
   \verbatim
   latbuilder \
+    --lattice integration \
     --lattice-type embedded \
     --size "2^16" \
     --dimension 5 \
@@ -440,7 +483,7 @@ to embedded with:
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
   
-- To build embedded lattices with fast CBC construction in dimension 10 with
+- To build embedded integration lattices with fast CBC construction in dimension 10 with
   \f$n=2^m\f$ points with \f$m=8,\dots,16\f$, using a weighted sum of the
   normalized values of the \f$\mathcal P_2\f$ figure of merit with product
   weights, and rejecting any candidate lattice that has such an individual
@@ -448,6 +491,7 @@ to embedded with:
   the even weights across all levels:
   \verbatim
   latbuilder \
+    --lattice integration \
     --lattice-type embedded \
     --size "2^16" \
     --dimension 10 \
@@ -468,6 +512,28 @@ to embedded with:
   Here the argument <code>\--combiner sum</code> indicates that the normalized
   merit values should be added to produce the combined merit value.
 
+- To build embedded polynomial lattices with CBC construction in dimension 5 with
+  \f$P(z)=z^m\f$ with \f$m=1,\dots,8\f$ using the maximum value of the
+  \f$\mathcal P_{2,PLR}\f$  merit across all levels, with the same weight for all projections:
+  \verbatim
+  latbuilder \
+    --lattice polynomial \
+    --lattice-type embedded \
+    --size "01^8" \
+    --dimension 5 \
+    --construction CBC \
+    --figure-of-merit CU:P2 \
+    --weights product:1.0 \
+    --combiner max
+  \endverbatim
+  The size of the lattice with the largest number of points can be specified
+  with the <code>\--size b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
+  simply with <code>\--size 000000001</code>, where 00000001 represents \f$z^{8}\f$.
+  The \f$\mathcal P_{2,PLR}\f$ merit is evaluated for each nested level, and the maximum value
+  across all level is selected as the compound merit value, as specified with the
+  argument <code>\--combiner max</code>.
+
+
 
 If no combiner is explicitly specified, Lattice Builder defaults to selecting
 the merit value of the maximum level (highest value of \f$m\f$), which is
@@ -484,10 +550,11 @@ It is also possible to select any given level, say \f$m=8\f$, with
 
 \subsection cmdtut_recipes_extensible Extensible Lattices
 
-Suppose you have constructed embedded lattice rules up to $2^8$ points in
+Suppose you have constructed embedded integration lattice rules up to \f$2^8\f$ points in
 dimension 5 with:
 \verbatim
 latbuilder \
+  --lattice integration \
   --lattice-type embedded \
   --size "2^8" \
   --dimension 5 \
@@ -502,6 +569,7 @@ Then, you find out that you need to extend the number of points to \f$2^9\f$.
 This can be done with:
 \verbatim
 latbuilder \
+  --lattice integration \
   --lattice-type ordinary \
   --size "2^9" \
   --dimension 5 \
@@ -523,6 +591,15 @@ that we want to extend on a lattice with \f$2^8\f$ points and generating vector
 The <code>latbuilder</code> executable supports the following command-line
 options:
 <dl>
+  <dt><code>\--lattice</code> / <code>-L</code></dt>
+  <dd><em>Optional (default: integration).</em>
+    Specifies the lattice.
+    Takes one of the following values:
+    - <code>integration</code>
+      to search for integration lattices; or
+    - <code>polynomial</code>
+      to search for polynomial lattices.
+  </dd>
 	<dt><code>\--lattice-type</code> / <code>-l</code></dt>
 	<dd><em>Required.</em>
 		Specifies the lattice size.

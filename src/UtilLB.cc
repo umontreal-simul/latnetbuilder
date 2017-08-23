@@ -21,29 +21,48 @@
 namespace LatBuilder
 {
 
-//================================================================================
-
-Modulus modularPow(Modulus base, Modulus exponent, Modulus modulus)
+//===============================================================================
+Polynomial PolynomialFromInt(uInteger x)
 {
-   Modulus result = 1;
-   while (exponent) {
-      if (exponent % 2 == 1)
-         result = (result * base) % modulus;
-      exponent /= 2;
-      base = (base * base) % modulus;
+   Polynomial P; 
+   uInteger y=x;
+   long i=0;
+   while(y>0){
+      P += Polynomial(INIT_MONO, i, y%2);
+      i++;
+      y /= 2;
    }
-   return result;
+    return P;
 }
 
 //================================================================================
 
-std::vector<Modulus> primeFactors(Modulus n, bool raise)
+uInteger IndexOfPolynomial(Polynomial P)
 {
-   std::vector<Modulus> factors;
-   Modulus p = 2;
+   uInteger x=0;
+   uInteger q=1;
+   
+   for (int i = 0; i <= deg(P); i++)
+    { 
+       if(IsOne(coeff(P,i))){
+            x+= q;
+       }
+       q *= 2;
+    }
+    return x;
+}
+
+
+
+//================================================================================
+
+std::vector<uInteger> primeFactors(uInteger n, bool raise)
+{
+   std::vector<uInteger> factors;
+   uInteger p = 2;
    while (p <= n) {
       ldiv_t qr = std::ldiv(n, p);
-      Modulus factor = 1;
+      uInteger factor = 1;
       while (qr.rem == 0) {
          n = qr.quot;
          factor *= p;
@@ -63,10 +82,10 @@ std::vector<Modulus> primeFactors(Modulus n, bool raise)
 
 //================================================================================
 
-std::map<Modulus, Modulus> primeFactorsMap(Modulus n)
+std::map<uInteger, uInteger> primeFactorsMap(uInteger n)
 {
-   std::map<Modulus, Modulus> factors;
-   Modulus factor = 2;
+   std::map<uInteger, uInteger> factors;
+   uInteger factor = 2;
    while (factor <= n) {
       ldiv_t qr = std::ldiv(n, factor);
       while (qr.rem == 0) {
@@ -84,7 +103,7 @@ std::map<Modulus, Modulus> primeFactorsMap(Modulus n)
 
 //================================================================================
 
-std::pair<long long, long long> egcd(Modulus a, Modulus b)
+std::pair<long long, long long> egcd(uInteger a, uInteger b)
 {
    typedef std::pair<long long, long long> result_type;
    result_type cur{0, 1};
@@ -100,6 +119,31 @@ std::pair<long long, long long> egcd(Modulus a, Modulus b)
    return last;
 }
 
+//================================================================================
+
+
+uInteger Vm(const Polynomial& h, const Polynomial& P)
+{
+   
+   long m = deg(P);
+   NTL::vector<GF2> w;
+   w.resize(m);
+   uInteger res = 0;
+   for(long i=0; i<m; i++){
+      w[i] = (m-i-1>deg(h)) ? GF2(0) : coeff(h,m-i-1);
+      for(long j=0; j<i; j++){
+         w[i] += w[j]* coeff(P,m-(i-j));
+      }  
+   }
+   uInteger q = 1;
+   for(long i=m-1; i>=0; i--){
+      res += IsOne(w[i])*q;
+      q *= 2;
+   }
+
+   return res;
+
+}
 //================================================================================
 
 } // namespace LatBuilder

@@ -25,29 +25,36 @@ using namespace LatBuilder;
 using TextStream::operator<<;
 
 template <typename SEQ>
-void showSeq(Modulus base, const SEQ& seq)
+void showSeq(uInteger base, const SEQ& seq)
 {
    for (auto x : seq) {
-      Digits<Modulus> digits(base, x);
+      Digits<uInteger> digits(base, x);
       std::cout << "    " << digits << std::endl;
    }
 }
 
 int main()
 {
-   Modulus m = 2;
+   uInteger m = 2;
 
    //! [main]
-   for (Modulus b : {2, 3, 5}) {
-      Modulus numPoints = intPow(b, m); // n = b^m
-      Modulus gen = numPoints - 2;      // a_j = n - 2 for this example
+   for (uInteger b : {2, 3, 5}) {
+      uInteger numPoints = intPow(b, m); // n = b^m
+      uInteger gen = numPoints - 2;      // a_j = n - 2 for this example
       std::cout << "base: " << b << std::endl;
       //! [Extend]
-      GenSeq::Extend<> seq(b * numPoints, numPoints, gen);
+      GenSeq::Extend<Lattice::INTEGRATION> seq(b * numPoints, numPoints, gen);
       //! [Extend]
       std::cout << "  one level: " << seq << std::endl;
       showSeq(b, seq);
    }
+
+   Polynomial base = PolynomialFromInt(7);
+   Polynomial P = intPow(base,3);
+   Polynomial generator = PolynomialFromInt(5);
+   //! [pExtend]
+   GenSeq::Extend<Lattice::INTEGRATION> seq(base * P, P, generator);
+   //! [pExtend]
    //! [main]
 
    return 0;

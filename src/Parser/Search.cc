@@ -18,7 +18,10 @@
 
 namespace LatBuilder { namespace Parser {
 
-template class Search<LatBuilder::LatType::ORDINARY>;
-template class Search<LatBuilder::LatType::EMBEDDED>;
+template class Search<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>;
+template class Search<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>;
+
+template class Search<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>;
+template class Search<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>;
 
 }}
