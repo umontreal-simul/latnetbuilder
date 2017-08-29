@@ -38,7 +38,7 @@ public:
 /**
  * Parser for kernels for coordinate-uniform figures of merit.
  */
-template <Lattice LR>
+template <LatticeType LR>
 struct Kernel {
    /**
     * Parses a string specifying a kernel for the coordinate-uniform figure of
@@ -58,7 +58,7 @@ struct Kernel {
 
 template<>
 template <typename FUNC, typename... ARGS>
-   void Kernel<Lattice::INTEGRATION>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void Kernel<LatticeType::ORDINARY>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       try {
              if (str[0] == 'P') {
@@ -78,7 +78,7 @@ template <typename FUNC, typename... ARGS>
    
 template<>
 template <typename FUNC, typename... ARGS>
-   void Kernel<Lattice::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void Kernel<LatticeType::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       try {
              if (str[0] == 'P') {
@@ -97,8 +97,8 @@ template <typename FUNC, typename... ARGS>
    }
 
 /*
-extern template struct Kernel<Lattice::INTEGRATION>;
-extern template struct Kernel<Lattice::POLYNOMIAL>;
+extern template struct Kernel<LatticeType::ORDINARY>;
+extern template struct Kernel<LatticeType::POLYNOMIAL>;
 */
 
 }}

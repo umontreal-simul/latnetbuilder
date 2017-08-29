@@ -39,7 +39,7 @@ struct Creator {
    /**
     * Creates a new sequence object.
     */
-   template <Lattice LR, LatType L, typename... ARGS>
+   template <LatticeType LR, LatEmbed L, typename... ARGS>
    static result_type create(
          const SizeParam<LR, L>& sizeParam,
          ARGS&&... t
@@ -50,24 +50,24 @@ struct Creator {
 /**
  * Creator specialization for cyclic groups.
  */
-template <Lattice LR,Compress COMPRESS, class TRAV, GroupOrder ORDER>
+template <LatticeType LR,Compress COMPRESS, class TRAV, GroupOrder ORDER>
 struct Creator<CyclicGroup<LR,COMPRESS, TRAV, ORDER>> {
    typedef CyclicGroup<LR, COMPRESS, TRAV, ORDER> result_type;
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LR,LatType::EMBEDDED>& sizeParam,
+         const SizeParam<LR,LatEmbed::EMBEDDED>& sizeParam,
          ARGS&&... t
          )
    { return result_type(sizeParam.base(), sizeParam.maxLevel(), std::forward<ARGS>(t)...); }
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LR,LatType::ORDINARY>& sizeParam,
+         const SizeParam<LR,LatEmbed::SIMPLE>& sizeParam,
          ARGS&&... t
          )
    {
-      SizeParam<LR, LatType::EMBEDDED> ml(sizeParam.modulus());
+      SizeParam<LR, LatEmbed::EMBEDDED> ml(sizeParam.modulus());
       return result_type(ml.base(), ml.maxLevel(), std::forward<ARGS>(t)...);
    }
 };
@@ -81,7 +81,7 @@ struct Creator<PowerSeq<SEQ>> {
    /**
     * Creates a new sequence object.
     */
-   template <Lattice LR, LatType L, typename... ARGS>
+   template <LatticeType LR, LatEmbed L, typename... ARGS>
    static result_type create(
          const SizeParam<LR, L>& sizeParam,
          unsigned int power,

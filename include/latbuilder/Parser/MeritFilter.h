@@ -37,7 +37,7 @@ public:
 };
 
 
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 struct MeritFilter {
    
    static std::unique_ptr<BasicMeritFilter<LR, LAT>> parse(
@@ -47,10 +47,10 @@ struct MeritFilter {
          Real normType);
 };
 
-extern template struct LatBuilder::Parser::MeritFilter <Lattice::INTEGRATION, LatType::ORDINARY> ;
-extern template struct LatBuilder::Parser::MeritFilter <Lattice::INTEGRATION, LatType::EMBEDDED> ;
-extern template struct LatBuilder::Parser::MeritFilter <Lattice::POLYNOMIAL, LatType::ORDINARY> ;
-extern template struct LatBuilder::Parser::MeritFilter <Lattice::POLYNOMIAL, LatType::EMBEDDED> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, LatEmbed::SIMPLE> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, LatEmbed::EMBEDDED> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, LatEmbed::SIMPLE> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED> ;
 
 
 

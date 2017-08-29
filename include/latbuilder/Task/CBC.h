@@ -27,17 +27,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCTag {};
 
 
 /// CBC construction.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using CBC =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using CBC =
    CBCBasedSearch<CBCTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// CBC construction.
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 CBC<LR, LAT, COMPRESS, PLO, FIGURE> cbc(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -46,7 +46,7 @@ CBC<LR, LAT, COMPRESS, PLO, FIGURE> cbc(
 { return CBC<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCBasedSearchTraits<CBCTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

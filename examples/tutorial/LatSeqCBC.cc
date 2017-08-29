@@ -36,9 +36,9 @@ typename SEQ::const_iterator findBest(const SEQ& seq)
 }
 //! [findBest]
 
-template<Lattice LA>
+template<LatticeType LA>
 void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
-   SizeParam<LA, LatType::ORDINARY> size(modulus);
+   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
    Dimension dim = 4;
 
    auto baseLat = createLatDef(size, typename LatticeTraits<LA>::GeneratingVector{typename LatticeTraits<LA>::GenValue(1)});
@@ -57,8 +57,8 @@ void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
 }
 int main()
 {
-   CBCsearch<Lattice::INTEGRATION>(8);
-   CBCsearch<Lattice::POLYNOMIAL>(PolynomialFromInt(7));
+   CBCsearch<LatticeType::ORDINARY>(8);
+   CBCsearch<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
 
    return 0;
 }

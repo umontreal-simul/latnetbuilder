@@ -36,14 +36,14 @@ public:
  * Parser Lattice (ORDINARY - POLYNOMIAL).
  */
 struct LatticeParser {
-   typedef LatBuilder::Lattice result_type;
+   typedef LatBuilder::LatticeType result_type;
 
    static result_type parse(const std::string& str)
    {
-      if (str == "integration")
-         return LatBuilder::Lattice::INTEGRATION;
+      if (str == "ordinary")
+         return LatBuilder::LatticeType::ORDINARY;
       else if (str == "polynomial")
-         return LatBuilder::Lattice::POLYNOMIAL;
+         return LatBuilder::LatticeType::POLYNOMIAL;
       throw BadLattice(str);
    }
 };

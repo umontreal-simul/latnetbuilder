@@ -27,7 +27,7 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for generic weighted figures of merit.
  */
-  template<Lattice LR>
+  template<LatticeType LR>
 struct FigureOfMerit {
    /**
     * Parses a string specifying a weighted figure of merit and a string

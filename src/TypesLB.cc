@@ -19,29 +19,29 @@
 
 namespace LatBuilder {
 
-std::ostream& operator<<(std::ostream& os, LatType latType)
-{ return os << (latType == LatType::EMBEDDED ? "embedded" : "ordinary"); }
+std::ostream& operator<<(std::ostream& os, LatEmbed latType)
+{ return os << (latType == LatEmbed::EMBEDDED ? "embedded" : "ordinary"); }
 //============================================================================================================================================
 
-uInteger LatticeTraits<Lattice::INTEGRATION>::ToIndex(const LatticeTraits<Lattice::INTEGRATION>::GenValue& value) {return value;}
+uInteger LatticeTraits<LatticeType::ORDINARY>::ToIndex(const LatticeTraits<LatticeType::ORDINARY>::GenValue& value) {return value;}
 
-LatticeTraits<Lattice::INTEGRATION>::GenValue LatticeTraits<Lattice::INTEGRATION>::ToGenValue(const uInteger& index) {return index;}
+LatticeTraits<LatticeType::ORDINARY>::GenValue LatticeTraits<LatticeType::ORDINARY>::ToGenValue(const uInteger& index) {return index;}
 
-uInteger LatticeTraits<Lattice::INTEGRATION>::NumPoints(const LatticeTraits<Lattice::INTEGRATION>::Modulus& modulus){return modulus ;}
+uInteger LatticeTraits<LatticeType::ORDINARY>::NumPoints(const LatticeTraits<LatticeType::ORDINARY>::Modulus& modulus){return modulus ;}
 
-uInteger LatticeTraits<Lattice::INTEGRATION>::ToKernelIndex(const size_t& index, const LatticeTraits<Lattice::INTEGRATION>::Modulus& modulus){return index ;}
+uInteger LatticeTraits<LatticeType::ORDINARY>::ToKernelIndex(const size_t& index, const LatticeTraits<LatticeType::ORDINARY>::Modulus& modulus){return index ;}
 
 //=================================================================================================================================================
 
-const LatticeTraits<Lattice::POLYNOMIAL>::Modulus LatticeTraits<Lattice::POLYNOMIAL>::TrivialModulus = Polynomial(INIT_MONO,1);
+const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus LatticeTraits<LatticeType::POLYNOMIAL>::TrivialModulus = Polynomial(INIT_MONO,1);
 
-uInteger LatticeTraits<Lattice::POLYNOMIAL>::ToIndex(const LatticeTraits<Lattice::POLYNOMIAL>::GenValue& value) {return IndexOfPolynomial(value);}
+uInteger LatticeTraits<LatticeType::POLYNOMIAL>::ToIndex(const LatticeTraits<LatticeType::POLYNOMIAL>::GenValue& value) {return IndexOfPolynomial(value);}
 
-LatticeTraits<Lattice::POLYNOMIAL>::GenValue LatticeTraits<Lattice::POLYNOMIAL>::ToGenValue(const uInteger& index) {return PolynomialFromInt(index);}
+LatticeTraits<LatticeType::POLYNOMIAL>::GenValue LatticeTraits<LatticeType::POLYNOMIAL>::ToGenValue(const uInteger& index) {return PolynomialFromInt(index);}
 
-uInteger LatticeTraits<Lattice::POLYNOMIAL>::NumPoints(const LatticeTraits<Lattice::POLYNOMIAL>::Modulus& modulus){return intPow(2,deg(modulus));}
+uInteger LatticeTraits<LatticeType::POLYNOMIAL>::NumPoints(const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus& modulus){return intPow(2,deg(modulus));}
 
-uInteger LatticeTraits<Lattice::POLYNOMIAL>::ToKernelIndex(const size_t& index, const LatticeTraits<Lattice::POLYNOMIAL>::Modulus& modulus)
+uInteger LatticeTraits<LatticeType::POLYNOMIAL>::ToKernelIndex(const size_t& index, const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus& modulus)
 	{return Vm(PolynomialFromInt(index),modulus) ;}
 
 } // namespace

@@ -29,17 +29,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomCBCTag {};
 
 
 /// Random CBC construction.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using RandomCBC =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomCBC =
    CBCBasedSearch<RandomCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// Random CBC construction.
-template <class FIGURE,Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE,LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 RandomCBC<LR, LAT, COMPRESS, PLO, FIGURE> randomCBC(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -49,7 +49,7 @@ RandomCBC<LR, LAT, COMPRESS, PLO, FIGURE> randomCBC(
 { return RandomCBC<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCBasedSearchTraits<RandomCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

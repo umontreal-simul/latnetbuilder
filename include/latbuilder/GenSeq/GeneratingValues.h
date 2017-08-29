@@ -44,7 +44,7 @@ namespace LatBuilder { namespace GenSeq {
  * -For ordinary lattices: integers coprime with a specified modulus (Integer).
  * -For polynomial lattices: polynomials coprime with a specified modulus (Polynomial).
  */
-  template <Lattice,Compress = Compress::NONE, class TRAV = Traversal::Forward>
+  template <LatticeType,Compress = Compress::NONE, class TRAV = Traversal::Forward>
    class GeneratingValues ;
   
  

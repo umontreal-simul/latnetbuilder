@@ -33,7 +33,7 @@ namespace LatBuilder { namespace MeritSeq {
  * Standard implementation of the inner product for a sequence of vector with a
  * single vector.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO >
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformInnerProd {
 public:
    typedef Storage<LR, LAT, COMPRESS, PLO> InternalStorage;

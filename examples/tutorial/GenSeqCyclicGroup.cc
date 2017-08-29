@@ -23,9 +23,9 @@ using namespace LatBuilder;
 using TextStream::operator<<;
 
 //! [main]
-typedef GenSeq::CyclicGroup<Lattice::INTEGRATION, Compress::NONE> WholeIntSeq;
-typedef GenSeq::CyclicGroup<Lattice::INTEGRATION, Compress::SYMMETRIC> HalfIntSeq;
-typedef GenSeq::CyclicGroup<Lattice::POLYNOMIAL, Compress::NONE> WholePolySeq;
+typedef GenSeq::CyclicGroup<LatticeType::ORDINARY, Compress::NONE> WholeIntSeq;
+typedef GenSeq::CyclicGroup<LatticeType::ORDINARY, Compress::SYMMETRIC> HalfIntSeq;
+typedef GenSeq::CyclicGroup<LatticeType::POLYNOMIAL, Compress::NONE> WholePolySeq;
 
 void displayIntSeq(int base, int power)
 {

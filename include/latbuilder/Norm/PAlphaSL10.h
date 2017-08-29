@@ -122,7 +122,7 @@ public:
     */
    PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType=2);
 
-   template <Lattice LR, LatType L>
+   template <LatticeType LR, LatEmbed L>
    Real value(
          Real lambda,
          const SizeParam<LR, L>& sizeParam,

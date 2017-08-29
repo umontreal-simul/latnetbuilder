@@ -38,7 +38,7 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for coordinate-uniform figures of merit.
  */
-template <Lattice LR, LatBuilder::LatType LAT>
+template <LatticeType LR, LatBuilder::LatEmbed LAT>
 class Search {
 public:
 
@@ -83,7 +83,7 @@ public:
          FUNC&& func, ARGS&&... args
          )
    {
-      const LatBuilder::PerLvlOrder P = defaultPerLvlOrder<LR, LAT>::Order;
+      const LatBuilder::PerLevelOrder P = defaultPerLevelOrder<LR, LAT>::Order;
 
       auto storage = createStorage< FIGURE::suggestedCompression(), P>(std::move(size));
 
@@ -142,7 +142,7 @@ public:
    }
 
 private:
-   template <Compress COMPRESS, PerLvlOrder PLO>
+   template <Compress COMPRESS, PerLevelOrder PLO>
    static Storage<LR, LAT, COMPRESS, PLO> createStorage(LatBuilder::SizeParam<LR, LAT> size)
    { return Storage<LR, LAT, COMPRESS, PLO>(std::move(size)); }
 
@@ -155,10 +155,10 @@ private:
    };
 };
 
-extern template class Search<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>;
-extern template class Search<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>;
-extern template class Search<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>;
-extern template class Search<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>;
+extern template class Search<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>;
+extern template class Search<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>;
+extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>;
+extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>;
 
 }}
 

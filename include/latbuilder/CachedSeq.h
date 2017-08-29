@@ -37,7 +37,7 @@ namespace LatBuilder {
  *   std::cout << elem << std::endl;
  * \endcode
  */
-template <class BASE, Lattice LR, LatType LAT, Compress COMPRESS>
+template <class BASE, LatticeType LR, LatEmbed LAT, Compress COMPRESS>
 class CachedSeq : public BASE {
 public:
    typedef BASE Base;

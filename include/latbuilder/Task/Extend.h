@@ -30,12 +30,12 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 class Extend;
 
 
 /// Exhaustive search.
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 Extend<LR, LAT, COMPRESS, PLO, FIGURE> extend(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       LatDef<LR, LAT> baseLat,
@@ -50,7 +50,7 @@ Extend<LR, LAT, COMPRESS, PLO, FIGURE> extend(
  * \tparam LAT, COMPRESS Type of storage.
  * \tparam FIGURE Type of figure of merit.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 class Extend : public Search<LR, LAT> {
 public:
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

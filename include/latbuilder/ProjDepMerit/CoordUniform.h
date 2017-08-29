@@ -78,7 +78,7 @@ public:
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+   template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
    Evaluator<CoordUniform, LR, LAT, COMPRESS, PLO> evaluator(Storage<LR, LAT, COMPRESS, PLO> storage) const
    { return Evaluator<CoordUniform, LR, LAT, COMPRESS, PLO>(std::move(storage), kernel().valuesVector(storage)); }
 
@@ -89,7 +89,7 @@ private:
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class KERNEL, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class KERNEL, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 class Evaluator<CoordUniform<KERNEL>, LR, LAT, COMPRESS, PLO> {
 public:
    typedef typename Storage<LR, LAT, COMPRESS, PLO>::MeritValue MeritValue;

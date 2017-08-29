@@ -39,7 +39,7 @@ public:
 /**
  * Parser for generic weighted figures of merit.
  */
-template< Lattice LR>
+template< LatticeType LR>
 struct WeightedFigureOfMerit {
 
    template <template <typename> class ACC>

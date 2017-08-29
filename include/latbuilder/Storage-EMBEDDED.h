@@ -26,11 +26,11 @@
 
 namespace LatBuilder {
 
-template <PerLvlOrder, Lattice LR, Compress COMPRESS>
-struct PerLvlOrderTraits;
+template <PerLevelOrder, LatticeType LR, Compress COMPRESS>
+struct PerLevelOrderTraits;
 
-template <Lattice LR, Compress COMPRESS>
-struct PerLvlOrderTraits<PerLvlOrder::CYCLIC, LR, COMPRESS>{
+template <LatticeType LR, Compress COMPRESS>
+struct PerLevelOrderTraits<PerLevelOrder::CYCLIC, LR, COMPRESS>{
   typedef GenSeq::CyclicGroup<LR, COMPRESS, Traversal::Forward, GenSeq::GroupOrder::INVERSE> GroupType; 
   typedef GenSeq::CyclicGroup<LR, COMPRESS, Traversal::Forward, GenSeq::GroupOrder::DIRECT> GenGroupType; 
   typedef typename GroupType::value_type  value_type;
@@ -44,8 +44,8 @@ struct PerLvlOrderTraits<PerLvlOrder::CYCLIC, LR, COMPRESS>{
 
 };
 
-template <Lattice LR, Compress COMPRESS>
-struct PerLvlOrderTraits<PerLvlOrder::BASIC, LR, COMPRESS>{
+template <LatticeType LR, Compress COMPRESS>
+struct PerLevelOrderTraits<PerLevelOrder::BASIC, LR, COMPRESS>{
   typedef GenSeq::GeneratingValues<LR, COMPRESS, Traversal::Forward> GroupType; 
   typedef GroupType GenGroupType; 
   typedef typename GroupType::value_type  value_type;
@@ -62,15 +62,15 @@ struct PerLvlOrderTraits<PerLvlOrder::BASIC, LR, COMPRESS>{
 };
 
 
-template <Lattice LR, Compress COMPRESS, PerLvlOrder PLO>
-struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
+template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
+struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
    typedef uInteger               size_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef RealVector            MeritValue;
-   typedef LatBuilder::SizeParam<LR, LatType::EMBEDDED> SizeParam;
+   typedef LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED> SizeParam;
 
-   typedef typename PerLvlOrderTraits<PLO, LR, COMPRESS>::GroupType GroupType; 
-   typedef typename PerLvlOrderTraits<PLO, LR, COMPRESS>::GenGroupType GenGroupType; 
+   typedef typename PerLevelOrderTraits<PLO, LR, COMPRESS>::GroupType GroupType; 
+   typedef typename PerLevelOrderTraits<PLO, LR, COMPRESS>::GenGroupType GenGroupType; 
 
    typedef typename GroupType::value_type  value_type;
 
@@ -82,7 +82,7 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
       typedef StorageTraits::size_type size_type;
       typedef std::pair<boost::numeric::ublas::range, size_type> AddressType;
       typedef StorageTraits::value_type value_type;
-      Unpermute(Storage<LR, LatType::EMBEDDED, COMPRESS, PLO> storage):
+      Unpermute(Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> storage):
          m_storage(std::move(storage))
       {
          // initialize addresses
@@ -112,7 +112,7 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
    private:
       typedef std::map< value_type, AddressType> MapType;
 
-      Storage<LR, LatType::EMBEDDED, COMPRESS, PLO > m_storage;
+      Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO > m_storage;
       MapType m_indexToAddress;
 
       /**
@@ -169,26 +169,26 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
     * The elements on each block are visited by applying a stride permutaion.
     * The \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ block. (more details in Storage)
     *
-    * \paragraph 
+    * 
     *
-    * For integration lattices: \n
+    * For ordinary lattices: 
     * a Stride with parameter \f$a \in \mathbb{N}\f$ is the mapping that maps an index \f$i\f$ to \f$a \times i \mod n\f$.\n
     * Consider the unpermuted vector \f$\boldsymbol v = (v_1, \dots, v_n)\f$ for
     * some positive integer \f$n\f$.  The \f$j\f$-th component of the vector
     * with stride length \f$a\f$ has value \f$v_{j a \bmod n}\f$.
     *
-    * \paragraph 
+    * 
     *
-    * For polynomial lattices: \n
+    * For polynomial lattices: 
     * A Stride with parameter \f$q(z) \in \mathbb{Z}_2[z]\f$ is the mapping that maps a polynomial \f$i(z)\f$ modulo \f$P(z)\f$ with the polynomial \f$h(z) = i(z)q(z) \mod P(z)\f$ .\n
     * Consider the unpermuted vector \f$\boldsymbol v = (v_1, \dots, v_n) \sim (v_{1(z)}, \dots, v_{n(z)})\f$ for
     * some positive integer \f$n\f$, where \f$j(z) = \sum a_lz^l\f$ if \f$j = \sum a_l2^l\f$. Let \f$P(z)\f$ be the modulus polynomial.  The \f$j\f$-th component of the vector
     * with stride parameter \f$q(z) \in \mathbb{Z}_2[z]\f$ has value \f$v_{j(z) q(z) \bmod P(z)}\f$.
     *
     *
-    * \paragraph
+    * 
     *
-    * If the per level order is inverse-cyclic: \n
+    * If the per level order is inverse-cyclic: 
     * The stride length \f$a\f$ can be identified to the \f$i\f$-th element
     * \f$g_i\f$ of the cyclic group \f$\{ g_1, \dots, g_p \}\f$ integers (respectively polynomials) modulo
     * \f$n\f$ (respectively \f$P(z)\f$), with \f$g_1 = 1\f$. Applying a stride with parameter \f$g_i\f$ is equivalent
@@ -196,7 +196,7 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
     * the stride parameters (as column indexs) in the increasing order of  \f$ i \f$. i.e in the cyclic order of the group.
     * 
     *
-    * \paragraph
+    * 
     *
     * A \f$n \times n\f$ circulant matrix \f$\boldsymbol C\f$ with elements
     * \f$C_{i,j}\f$ is completely defined in terms of its first column
@@ -210,7 +210,7 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
       typedef StorageTraits::size_type size_type;
       typedef StorageTraits::value_type value_type;
 
-      Stride(Storage<LR, LatType::EMBEDDED, COMPRESS, PLO> storage, value_type stride):
+      Stride(Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> storage, value_type stride):
          m_storage(std::move(storage)),
          m_stride(stride),
          m_row(findRow(stride))
@@ -248,8 +248,8 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
          size_type seqsize = m_storage.indices().size();
          
 
-         if (PLO == PerLvlOrder::CYCLIC){
-             if (LR == Lattice::INTEGRATION){
+         if (PLO == PerLevelOrder::CYCLIC){
+             if (LR == LatticeType::ORDINARY){
                if (not Compress::symmetric() and m_storage.sizeParam().base() == (value_type)(2) and size >= 2) {
                   // in base 2, on each level, we have 2 circulant half-blocks instead of
                   // a single circulant block
@@ -266,7 +266,7 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
              return start + k;
          }
 
-         else if(PLO == PerLvlOrder::BASIC){
+         else if(PLO == PerLevelOrder::BASIC){
             auto& subgroup = m_storage.indices(level);
             // We apply the stride
             value_type x = (level == 0) ? value_type(1) : Compress::compressIndex((subgroup[i-start] * m_stride) %  subgroup.modulus() , subgroup.modulus());
@@ -282,7 +282,7 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
       { return m_storage.size(); }
 
    private:
-      Storage<LR, LatType::EMBEDDED, COMPRESS, PLO> m_storage;
+      Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> m_storage;
       value_type m_stride;
       size_type m_row;
 
@@ -298,13 +298,13 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
                stride)
             - m_storage.indices().begin();
 #else
-         if(PLO == PerLvlOrder::CYCLIC)
+         if(PLO == PerLevelOrder::CYCLIC)
             return std::find(
                m_storage.generators().begin(),
                m_storage.generators().end(),
                Compress::compressIndex(stride, m_storage.sizeParam().modulus()))
             - m_storage.generators().begin();
-        else if (PLO == PerLvlOrder::BASIC) // no nedd to compute the row of the stride 
+        else if (PLO == PerLevelOrder::BASIC) // no nedd to compute the row of the stride 
             return 0;
 #endif
       }
@@ -325,9 +325,9 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
  * The indices are ordered by level.  Thus, refining a logical vector by adding
  * a new level op components can be achieved by appending elements at the end of
  * the physical vector.
- * Within each block, a permutation is given by the template parameter PerLvlOrder is applied:
- * - PerLvlOrder::CYCLIC corresponds to inverse cyclic subgroup corresponding to that block.
- * - PerLvlOrder::BASIC corresponds to the "natural order".
+ * Within each block, a permutation is given by the template parameter PerLevelOrder is applied:
+ * - PerLevelOrder::CYCLIC corresponds to inverse cyclic subgroup corresponding to that block.
+ * - PerLevelOrder::BASIC corresponds to the "natural order".
  * more details in Storage.
  *
  * \tparam COMPRESS     Compression type (either None or Symmetric).
@@ -339,11 +339,11 @@ struct StorageTraits<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
  *
  * See the output of \ref Storage.cc for an illustration of this.
  */
-template <Lattice LR, Compress COMPRESS, PerLvlOrder PLO>
-class Storage<LR, LatType::EMBEDDED, COMPRESS, PLO> :
-   public BasicStorage<Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>> {
+template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
+class Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> :
+   public BasicStorage<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
 
-   typedef Storage<LR, LatType::EMBEDDED, COMPRESS, PLO> self_type;
+   typedef Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> self_type;
 
 private:
    typedef typename StorageTraits<self_type>::GroupType    GroupType;
@@ -358,8 +358,8 @@ public:
 
    static std::string shortname()
    {
-    if(PLO == PerLvlOrder::BASIC) return "multilevel storage, natural per level order" ;
-    return "multilevel storage, inverse-cyclic per level order" ; 
+    if(PLO == PerLevelOrder::BASIC) return "multilevel storage, PerLevelOrder : basic" ;
+    return "multilevel storage, PerLevelOrder : inverse-cyclic" ; 
     }
 
    Storage(const Storage& other):
@@ -377,7 +377,7 @@ public:
       
    {
     
-      PerLvlOrderTraits<PLO, LR, COMPRESS>::initializeGroups(this->sizeParam().base(), this->sizeParam().maxLevel(),m_groups, m_genGroup);
+      PerLevelOrderTraits<PLO, LR, COMPRESS>::initializeGroups(this->sizeParam().base(), this->sizeParam().maxLevel(),m_groups, m_genGroup);
       
    }
 

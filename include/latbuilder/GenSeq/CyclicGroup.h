@@ -47,7 +47,7 @@ constexpr GroupOrder operator!(GroupOrder order) { return order == GroupOrder::D
 /**
  * Default traversal policy for cyclic groups.
  */
-template<Lattice LR>
+template<LatticeType LR>
 class CyclicGroupTraversal {
 public:
    typedef CyclicGroupTraversal<LR> self_type;
@@ -113,7 +113,7 @@ private:
  *      single cyclic group.
  * - In the polynomial case, the power must be set to 1 otherwise the group does not have a cyclic stucture
  */
-template <Lattice LR, 
+template <LatticeType LR, 
          Compress COMPRESS = Compress::NONE,
          class TRAV = CyclicGroupTraversal<LR>,
          GroupOrder ORDER = GroupOrder::DIRECT>
@@ -128,7 +128,7 @@ class CyclicGroup ;
 #include "latbuilder/GenSeq/CyclicGroup-PLR.h"
 
 namespace LatBuilder { namespace Traversal {
-   template <typename SEQ, Lattice LR>
+   template <typename SEQ, LatticeType LR>
    class Policy<SEQ, GenSeq::CyclicGroupTraversal<LR>> :
       public GenSeq::CyclicGroupTraversal<LR> {
 

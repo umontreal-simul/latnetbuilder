@@ -30,10 +30,10 @@ using TextStream::operator<<;
 
 
 //! [genSeqs]
-template <Lattice LA>
+template <LatticeType LA>
 void test(typename LatticeTraits<LA>::Modulus modulus){
-   SizeParam<LA, LatType::ORDINARY> size(modulus);      
-   SizeParam<LA, LatType::ORDINARY> size0(LatticeTraits<LA>::TrivialModulus);   
+   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);      
+   SizeParam<LA, LatEmbed::SIMPLE> size0(LatticeTraits<LA>::TrivialModulus);   
    Dimension dim = 3;
    size_t r = 4; // 4 random samples
 
@@ -55,10 +55,10 @@ int main()
    
 
    //! [output]
-   test<Lattice::INTEGRATION>(31);
+   test<LatticeType::ORDINARY>(31);
    //! [output]
    //! [poutput]
-   test<Lattice::POLYNOMIAL>(PolynomialFromInt(31));
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(31));
    //! [poutput]
 
    return 0;

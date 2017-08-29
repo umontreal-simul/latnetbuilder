@@ -27,17 +27,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct KorobovTag {};
 
 
 /// Korobov search.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using Korobov =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Korobov =
    LatSeqBasedSearch<KorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// Korobov search.
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 Korobov<LR, LAT, COMPRESS, PLO, FIGURE> korobov(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -46,7 +46,7 @@ Korobov<LR, LAT, COMPRESS, PLO, FIGURE> korobov(
 { return Korobov<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct LatSeqBasedSearchTraits<KorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

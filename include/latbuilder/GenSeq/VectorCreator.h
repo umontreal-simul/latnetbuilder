@@ -80,7 +80,7 @@ struct VectorCreator {
     * \param dimension        Dimension of the output vector.
     * \param t                Other arguments to be passed to GenSeq::Creator
     */
-   template <Lattice LR, LatType L, typename... ARGS>
+   template <LatticeType LR, LatEmbed L, typename... ARGS>
    static result_type create(
          const SizeParam<LR,L>& sizeParam,
          Dimension dimension, 

@@ -41,15 +41,15 @@ template <typename T, typename... ARGS>
 std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
-template<Lattice LR>
-void setCombiner(MeritFilterList<LR, LatType::ORDINARY>&, const SizeParam<LR, LatType::ORDINARY>&) {}
+template<LatticeType LR>
+void setCombiner(MeritFilterList<LR, LatEmbed::SIMPLE>&, const SizeParam<LR, LatEmbed::SIMPLE>&) {}
 
-template<Lattice LR>
-void setCombiner(MeritFilterList<LR, LatType::EMBEDDED>& filters, const SizeParam<LR, LatType::EMBEDDED>& size) 
+template<LatticeType LR>
+void setCombiner(MeritFilterList<LR, LatEmbed::EMBEDDED>& filters, const SizeParam<LR, LatEmbed::EMBEDDED>& size) 
 { filters.add(unique<MeritCombiner::SelectLevel<LR>>(size.maxLevel())); }
 
 
-template <Lattice LA, LatType L, Compress C>
+template <LatticeType LA, LatEmbed L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
@@ -120,14 +120,14 @@ int main()
    Dimension dim = 3;
 
    //! [storage]
-   test(Storage<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC>(256), dim);
-   test(Storage<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(256), dim);
    //! [storage]
 
    /*
    //! [pstorage]
-   test(Storage<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE>(PolynomialFromInt(115)), dim);
-   test(Storage<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(PolynomialFromInt(115)), dim);
    //! [pstorage]
    */
 

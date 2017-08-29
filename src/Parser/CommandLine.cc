@@ -28,11 +28,11 @@ namespace LatBuilder { namespace Parser {
 
 namespace {
 
-   template<Lattice LR>
+   template<LatticeType LR>
    static void setFilters(
-         LatBuilder::MeritFilterList<LR, LatBuilder::LatType::ORDINARY>& filters,
-         const CommandLine<LR, LatBuilder::LatType::ORDINARY>& args,
-         const LatBuilder::SizeParam<LR, LatBuilder::LatType::ORDINARY>& size,
+         LatBuilder::MeritFilterList<LR, LatBuilder::LatEmbed::SIMPLE>& filters,
+         const CommandLine<LR, LatBuilder::LatEmbed::SIMPLE>& args,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatEmbed::SIMPLE>& size,
          const LatCommon::Weights& weights,
          Real normType
          )
@@ -46,11 +46,11 @@ namespace {
             );
    }
 
-   template<Lattice LR>
+   template<LatticeType LR>
    static void setFilters(
-         LatBuilder::MeritFilterList<LR, LatBuilder::LatType::EMBEDDED>& filters,
-         const CommandLine<LR, LatBuilder::LatType::EMBEDDED>& args,
-         const LatBuilder::SizeParam<LR, LatBuilder::LatType::EMBEDDED>& size,
+         LatBuilder::MeritFilterList<LR, LatBuilder::LatEmbed::EMBEDDED>& filters,
+         const CommandLine<LR, LatBuilder::LatEmbed::EMBEDDED>& args,
+         const LatBuilder::SizeParam<LR, LatBuilder::LatEmbed::EMBEDDED>& size,
          const LatCommon::Weights& weights,
          Real normType
          )
@@ -66,7 +66,7 @@ namespace {
             );
    }
 
-   template <LatBuilder::Lattice LR, LatBuilder::LatType LAT>
+   template <LatBuilder::LatticeType LR, LatBuilder::LatEmbed LAT>
    class Parse {
    private:
       const CommandLine<LR, LAT>& m_args;
@@ -111,30 +111,30 @@ namespace {
 }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>>
-CommandLine<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>::parse() const
-{ return Parse<Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>>
+CommandLine<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>::parse() const
+{ return Parse<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>(*this).search(); }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>>
-CommandLine<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>::parse() const
-{ return Parse<Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>>
+CommandLine<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>::parse() const
+{ return Parse<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>(*this).search(); }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>>
-CommandLine<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>::parse() const
-{ return Parse<Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>>
+CommandLine<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>::parse() const
+{ return Parse<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>(*this).search(); }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>>
-CommandLine<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>::parse() const
-{ return Parse<Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>>
+CommandLine<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>::parse() const
+{ return Parse<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>(*this).search(); }
 
 /*
-template struct CommandLine<LatBuilder::Lattice::INTEGRATION, LatBuilder::LatType::ORDINARY>;
-template struct CommandLine<LatBuilder::Lattice::INTEGRATION, LatBuilder::LatType::EMBEDDED>;
-template struct CommandLine<LatBuilder::Lattice::POLYNOMIAL, LatBuilder::LatType::ORDINARY>;
-template struct CommandLine<LatBuilder::Lattice::POLYNOMIAL, LatBuilder::LatType::EMBEDDED>;
+template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>;
+template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>;
+template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>;
+template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>;
 */
 
 }}

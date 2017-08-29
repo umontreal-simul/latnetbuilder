@@ -54,7 +54,7 @@ namespace LatBuilder { namespace MeritSeq {
  * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO , class WEIGHTS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO , class WEIGHTS>
 class ConcreteCoordUniformState :
    public CoordUniformState<LR, LAT, COMPRESS, PLO> {
 public:

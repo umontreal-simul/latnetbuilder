@@ -26,10 +26,10 @@ namespace LatBuilder {
  *
  * In an compressed vector some elements are implicitly repeated.
  */
-template <Lattice LR, Compress COMPRESS, PerLvlOrder PLO, class E>
-typename Storage<LR, LatType::ORDINARY, COMPRESS, PLO>::MeritValue
+template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO, class E>
+typename Storage<LR, LatEmbed::SIMPLE, COMPRESS, PLO>::MeritValue
 compressedSum(
-      const Storage<LR, LatType::ORDINARY, COMPRESS, PLO>& storage, 
+      const Storage<LR, LatEmbed::SIMPLE, COMPRESS, PLO>& storage, 
       const boost::numeric::ublas::vector_expression<E>& e
       ) 
 {
@@ -38,7 +38,7 @@ compressedSum(
    Real sum = 0.0;
    for (const auto& x : vec)
       sum += x;
-   if (LR == Lattice::INTEGRATION){
+   if (LR == LatticeType::ORDINARY){
       if (COMPRESS == Compress::SYMMETRIC) {
          // compression ratio except first element
          sum *= 2;
@@ -57,10 +57,10 @@ compressedSum(
  * Returns the per-level sums of the elements of the compressed multilevel
  * vector expression \c e.
  */
-template <Lattice LR, Compress COMPRESS, PerLvlOrder PLO, class E>
-typename Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>::MeritValue
+template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO, class E>
+typename Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>::MeritValue
 compressedSum(
-      const Storage<LR, LatType::EMBEDDED, COMPRESS, PLO>& storage, 
+      const Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>& storage, 
       const boost::numeric::ublas::vector_expression<E>& e
       ) 
 {

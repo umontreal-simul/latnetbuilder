@@ -54,14 +54,14 @@ public:
     * \return The newly created vector.
     *
     * The \f$i^{\text{th}}\f$ element  \f$\omega_i\f$ is:
-    *- \f$\omega(i/n)\f$ in the case of an integration lattice with modulus \f$n\f$.
+    *- \f$\omega(i/n)\f$ in the case of an ordinary lattice with modulus \f$n\f$.
     *-  \f$\omega((\nu_m(\frac{i(z)}{P(z)}))\f$ in the case of a polynomial lattice of modulus \f$P(z)\f$ (\f$ i(z) = \sum a_iz^i\f$ where \f$i =\sum a_i2^i\f$).
     *
     *
     * \remark Checks that the functor and the compression are compatible, or
     * throws a std::logic_error.
     */
-   template <Lattice LR, LatType L, Compress C, PerLvlOrder P >
+   template <LatticeType LR, LatEmbed L, Compress C, PerLevelOrder P >
    RealVector valuesVector(
          const Storage<LR, L, C, P>& storage
          ) const

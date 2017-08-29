@@ -26,9 +26,9 @@ using TextStream::operator<<;
 
 
 //! [main]
-template<Lattice LA>
+template<LatticeType LA>
 void test(typename LatticeTraits<LA>::Modulus modulus, typename LatticeTraits<LA>::GeneratingVector genv){
-   SizeParam<LA, LatType::ORDINARY> size(modulus);
+   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
    
    //! [baseLat]
    auto baseLat = createLatDef(size, genv);
@@ -48,8 +48,8 @@ int main()
 {
    
    //! [output]
-   test<Lattice::INTEGRATION>(8, {1,5});
-   test<Lattice::POLYNOMIAL>(PolynomialFromInt(7), {PolynomialFromInt(1),PolynomialFromInt(5)});
+   test<LatticeType::ORDINARY>(8, {1,5});
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(7), {PolynomialFromInt(1),PolynomialFromInt(5)});
    //! [output]
 
 

@@ -30,10 +30,10 @@ namespace LatBuilder { namespace GenSeq {
 
   
   template<Compress COMPRESS,class TRAV>
-  struct GeneratingValuesTraits<GeneratingValues<Lattice::INTEGRATION,COMPRESS,TRAV>>{
+  struct GeneratingValuesTraits<GeneratingValues<LatticeType::ORDINARY,COMPRESS,TRAV>>{
     typedef size_t size_type;
-    typedef LatticeTraits<Lattice::INTEGRATION>::GenValue value_type;
-    typedef LatticeTraits<Lattice::INTEGRATION>::Modulus Modulus;
+    typedef LatticeTraits<LatticeType::ORDINARY>::GenValue value_type;
+    typedef LatticeTraits<LatticeType::ORDINARY>::Modulus Modulus;
 
     static std::string name()
       { return std::string("coprime integers / "); }
@@ -90,10 +90,10 @@ namespace LatBuilder { namespace GenSeq {
  */
 
 template <Compress COMPRESS , class TRAV >
-class GeneratingValues<Lattice::INTEGRATION, COMPRESS, TRAV> :
-   public Traversal::Policy<GeneratingValues<Lattice::INTEGRATION,COMPRESS, TRAV>, TRAV> {
+class GeneratingValues<LatticeType::ORDINARY, COMPRESS, TRAV> :
+   public Traversal::Policy<GeneratingValues<LatticeType::ORDINARY,COMPRESS, TRAV>, TRAV> {
 
-   typedef GeneratingValues<Lattice::INTEGRATION, COMPRESS, TRAV> self_type;
+   typedef GeneratingValues<LatticeType::ORDINARY, COMPRESS, TRAV> self_type;
    typedef Traversal::Policy<self_type, TRAV> TraversalPolicy;
    typedef CompressTraits<COMPRESS> Compress;
 public:
@@ -133,7 +133,7 @@ public:
     */
    template <class TRAV2>
    GeneratingValues(
-         const GeneratingValues<Lattice::INTEGRATION, COMPRESS, TRAV2>& other,
+         const GeneratingValues<LatticeType::ORDINARY, COMPRESS, TRAV2>& other,
          Traversal trav = Traversal()):
       TraversalPolicy(std::move(trav)),
       m_modulus(other.m_modulus),
@@ -146,7 +146,7 @@ public:
     */
    template <class TRAV2>
    struct RebindTraversal {
-      typedef GeneratingValues<Lattice::INTEGRATION,COMPRESS, TRAV2> Type;
+      typedef GeneratingValues<LatticeType::ORDINARY,COMPRESS, TRAV2> Type;
    };
 
    /**
@@ -176,7 +176,7 @@ public:
    value_type operator[](size_type i) const;
 
 private:
-   template <LatBuilder::Lattice,LatBuilder::Compress , class > friend class GeneratingValues;
+   template <LatBuilder::LatticeType,LatBuilder::Compress , class > friend class GeneratingValues;
 
    Modulus m_modulus;
    size_type m_size;
@@ -192,7 +192,7 @@ private:
 namespace LatBuilder { namespace GenSeq {
 
 template <Compress COMPRESS, class TRAV>
-GeneratingValues<Lattice::INTEGRATION, COMPRESS, TRAV>::GeneratingValues(
+GeneratingValues<LatticeType::ORDINARY, COMPRESS, TRAV>::GeneratingValues(
       Modulus modulus,
       Traversal trav):
    TraversalPolicy(std::move(trav)),
@@ -219,7 +219,7 @@ GeneratingValues<Lattice::INTEGRATION, COMPRESS, TRAV>::GeneratingValues(
 }
 
 template <Compress COMPRESS, class TRAV>
-auto GeneratingValues<Lattice::INTEGRATION, COMPRESS, TRAV>::operator[](size_type i) const -> value_type
+auto GeneratingValues<LatticeType::ORDINARY, COMPRESS, TRAV>::operator[](size_type i) const -> value_type
 {
    long long ret = 0;
    for (const auto& e : m_basis) {

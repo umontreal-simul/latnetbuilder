@@ -26,7 +26,7 @@
 
 namespace LatBuilder { namespace ProjDepMerit {
 
-template <class DERIVED, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO = defaultPerLvlOrder<LR, LAT>::Order>
+template <class DERIVED, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LR, LAT>::Order>
 class Evaluator;
 
 /**
@@ -39,7 +39,7 @@ public:
     * Computes the value of the figure of merit of lattice \c lat for projection
     * \c projection.
     */
-   template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+   template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
    typename Storage<LR, LAT, COMPRESS, PLO>::MeritValue operator() (
          const Storage<LR, LAT, COMPRESS, PLO>& storage,
          const LatDef<LR, LAT>& lat,
@@ -65,7 +65,7 @@ public:
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+   template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
    Evaluator<DERIVED, LR, LAT, COMPRESS, PLO> evaluator(const Storage<LR, LAT, COMPRESS, PLO>& storage) const
    { return derived().evaluator(storage); }
 

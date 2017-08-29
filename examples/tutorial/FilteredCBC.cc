@@ -46,12 +46,12 @@ template <typename T, typename... ARGS>
 std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
-template <Lattice LA, class NORMALIZER>
-void setLevelWeights(NORMALIZER&, const SizeParam<LA, LatType::ORDINARY>&)
+template <LatticeType LA, class NORMALIZER>
+void setLevelWeights(NORMALIZER&, const SizeParam<LA, LatEmbed::SIMPLE>&)
 {}
 
-template <Lattice LA, class NORMALIZER>
-void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, LatType::EMBEDDED>& sizeParam)
+template <LatticeType LA, class NORMALIZER>
+void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, LatEmbed::EMBEDDED>& sizeParam)
 {
    //! [per-level weights]
    normalizer.setWeights(RealVector(
@@ -61,16 +61,16 @@ void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, LatType::EMBEDD
    //! [per-level weights]
 }
 
-template<Lattice LA>
-void setCombiner(MeritFilterList<LA, LatType::ORDINARY>&) {}
+template<LatticeType LA>
+void setCombiner(MeritFilterList<LA, LatEmbed::SIMPLE>&) {}
 
 //! [combiner]
-template<Lattice LA>
-void setCombiner(MeritFilterList<LA, LatType::EMBEDDED>& filters)
+template<LatticeType LA>
+void setCombiner(MeritFilterList<LA, LatEmbed::EMBEDDED>& filters)
 { filters.add(unique<MeritCombiner::Accumulator<LA, Functor::Sum>>()); }
 //! [combiner]
 
-template <Lattice LA, LatType L, Compress C>
+template <LatticeType LA, LatEmbed L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {  
 
@@ -157,14 +157,14 @@ int main()
    Dimension dim = 3;
    
    //! [Storage]
-   test(Storage<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC>(256), dim);
-   test(Storage<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(256), dim);
    //! [Storage]
    
    /*
    //! [pstorage]
-   test(Storage<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE>(PolynomialFromInt(115)), dim);
-   test(Storage<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(PolynomialFromInt(115)), dim);
    //! [pstorage]
    */
 

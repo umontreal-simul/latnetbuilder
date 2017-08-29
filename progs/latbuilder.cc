@@ -14,16 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/Parser/LatType.h"
+#include "latbuilder/Parser/LatEmbed.h"
 #include "latbuilder/Parser/Lattice.h"
 #include "latbuilder/Parser/CommandLine.h"  
+#include "latbuilder/Parser/OutputPoly.h" 
 #include "latbuilder/TextStream.h"
 #include "latbuilder/Types.h"
 
+#include <fstream>
 #include <chrono>
 
 #ifndef LATBUILDER_VERSION
-#define LATBUILDER_VERSION "(unkown version)" 
+#define LATBUILDER_VERSION "(unkown version)"  
 #endif
 
 using namespace LatBuilder;
@@ -31,9 +33,9 @@ using TextStream::operator<<;
 
 static unsigned int merit_digits_displayed = 0; 
 
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 void onLatticeSelected(const Task::Search<LR, LAT>& s)
-{
+   {
    unsigned int old_precision = std::cout.precision();
    if (merit_digits_displayed)
       std::cout.precision(merit_digits_displayed);
@@ -45,7 +47,7 @@ void onLatticeSelected(const Task::Search<LR, LAT>& s)
    const auto total = s.minObserver().totalCount();
    std::cout << "    accepted/rejected/total: "
       << accepted << "/" << rejected << "/" << total << std::endl; 
-}
+   }
 
 boost::program_options::options_description
 makeOptionsDescription()
@@ -57,15 +59,15 @@ makeOptionsDescription()
    ("help,h", "produce help message")
    ("version,V", "show version")
    ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
-   ("lattice,L", po::value<std::string>()->default_value("integration"),
+   ("lattice-type,l", po::value<std::string>()->default_value("ordinary"),
    "lattice; possible values:\n"
    "  ordinary (default)\n"
    "  polynomial\n")
-   ("lattice-type,l", po::value<std::string>()->default_value("ordinary"),
+   ("embedded-lattice,e", po::value<std::string>()->default_value("false"),
     "type of lattice; possible values:\n"
-   "  ordinary (default)\n"
-   "  embedded\n")
-   ("size,n", po::value<std::string>(),
+   "  false (default)\n"
+   "  true\n")
+   ("modulus,s", po::value<std::string>(),
     "(required) modulus of the lattice; possible values:\n"
    "  <modulus>\n"
    "  <base>^<max-power>\n"
@@ -131,6 +133,11 @@ makeOptionsDescription()
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
    "(can be useful to obtain different results from random constructions)\n")
+   ("output-poly,g", po::value<std::string>()->default_value("file:$HOME/output.out"),
+    "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
+   "  file:\"<file>\":format\n"
+   "  available output formats\n"
+   "  - ssj ")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -161,7 +168,7 @@ parse(int argc, const char* argv[])
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"size", "construction", "dimension", "figure-of-merit"}) {
+   for (const auto x : {"modulus", "construction", "dimension", "figure-of-merit"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
@@ -170,11 +177,10 @@ parse(int argc, const char* argv[])
 }
 
 
-
-
-template <Lattice LR, LatType LAT>
-void execute(const Parser::CommandLine<LR, LAT>& cmd, bool quiet, unsigned int repeat)
+template <LatEmbed LAT>
+void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, LAT>& cmd, bool quiet, unsigned int repeat)
 {
+   const LatticeType LR = LatticeType::ORDINARY ;
    using namespace std::chrono;
 
    auto search = cmd.parse();
@@ -182,7 +188,7 @@ void execute(const Parser::CommandLine<LR, LAT>& cmd, bool quiet, unsigned int r
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
    if (not quiet) {
-      search->onLatticeSelected().connect(onLatticeSelected<LR, LAT>);
+      search->onLatticeSelected().connect(onLatticeSelected<LR,LAT>);
       std::cout << *search << std::endl;
    }
 
@@ -198,6 +204,8 @@ void execute(const Parser::CommandLine<LR, LAT>& cmd, bool quiet, unsigned int r
       unsigned int old_precision = std::cout.precision();
       if (merit_digits_displayed)
    std::cout.precision(merit_digits_displayed);
+     const auto lat = search->bestLattice();
+     
       if (not quiet) {
    auto dt = duration_cast<duration<double>>(t1 - t0);
          std::cout << std::endl;
@@ -205,21 +213,97 @@ void execute(const Parser::CommandLine<LR, LAT>& cmd, bool quiet, unsigned int r
          std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
       }
       else {
-         const auto lat = search->bestLattice();
-         std::cout << lat.sizeParam().numPoints();
+         std::cout << lat.sizeParam().modulus();
          for (const auto& a : lat.gen())
             std::cout << "\t" << a;
          std::cout << "\t" << search->bestMeritValue() << std::endl;
       }
+
+      
       if (merit_digits_displayed)
    std::cout.precision(old_precision);
 
       search->reset();
-   }
+    }
 
    if (not quiet)
       std::cout << separator << std::endl;
 }
+
+
+template <LatEmbed LAT>
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, LAT>& cmd, bool quiet, unsigned int repeat, const Parser::OutputPolyParameters& outPoly)
+{
+   const LatticeType LR = LatticeType::POLYNOMIAL ;
+   using namespace std::chrono;
+
+   auto search = cmd.parse();
+
+   const std::string separator = "\n--------------------------------------------------------------------------------\n";
+
+   if (not quiet) {
+      search->onLatticeSelected().connect(onLatticeSelected<LR,LAT>);
+      std::cout << *search << std::endl;
+   }
+   ofstream outPolyFile;
+    if(outPoly.doOutput()){
+        
+        outPolyFile.open (outPoly.file());
+     }
+
+   for (unsigned int i = 0; i < repeat; i++) {
+
+        if (not quiet)
+           std::cout << separator << std::endl;
+
+        auto t0 = high_resolution_clock::now();
+        search->execute();
+        auto t1 = high_resolution_clock::now();
+
+        unsigned int old_precision = std::cout.precision();
+        if (merit_digits_displayed)
+            std::cout.precision(merit_digits_displayed);
+       const auto lat = search->bestLattice();
+      
+
+        if (not quiet) {
+        auto dt = duration_cast<duration<double>>(t1 - t0);
+           std::cout << std::endl;
+           std::cout << "BEST LATTICE: " << search->bestLattice() << ": " << search->bestMeritValue() << std::endl;
+           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
+        }
+        else {
+           std::cout << lat.sizeParam().modulus();
+           for (const auto& a : lat.gen())
+              std::cout << "\t" << a;
+           std::cout << "\t" << search->bestMeritValue() << std::endl;
+        }
+        if(outPoly.doOutput()){
+           LatBuilder::DigitalNet::PolynomialLatticeBase2 PolLat (lat.sizeParam().modulus(),lat.gen());
+           PolLat.setOutputFormat(outPoly.outputFormat());
+           
+           outPolyFile << PolLat ;
+         }
+       outPolyFile.close();
+
+        
+        if (merit_digits_displayed)
+            std::cout.precision(old_precision);
+
+        search->reset();
+    }
+    if(outPoly.doOutput())
+     outPolyFile.close();
+
+   if (not quiet)
+      std::cout << separator << std::endl;
+}
+
+   
+ 
+
+
+
 
 int main(int argc, const char *argv[])
 {
@@ -234,16 +318,16 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
-       LatBuilder::Lattice lattice = Parser::LatticeParser::parse(opt["lattice"].as<std::string>());
+       LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["lattice-type"].as<std::string>());
 
-       if(lattice == Lattice::INTEGRATION){
+       if(lattice == LatticeType::ORDINARY){
 
-            Parser::CommandLine<Lattice::INTEGRATION, LatType::EMBEDDED> cmd;
+            Parser::CommandLine<LatticeType::ORDINARY, LatEmbed::EMBEDDED> cmd;
 
             
 
             cmd.construction  = opt["construction"].as<std::string>();
-            cmd.size          = opt["size"].as<std::string>();
+            cmd.size          = opt["modulus"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
@@ -270,22 +354,27 @@ int main(int argc, const char *argv[])
             if (opt.count("multilevel-filters") >= 1)
                cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
-            LatType latType = Parser::LatType::parse(opt["lattice-type"].as<std::string>());
+            LatEmbed latType = Parser::LatEmbed::parse(opt["embedded-lattice"].as<std::string>());
 
-            if (latType == LatType::ORDINARY)
-               execute<Lattice::INTEGRATION, LatType::ORDINARY>(cmd, quiet, repeat);
-            else
-               execute<Lattice::INTEGRATION, LatType::EMBEDDED>(cmd, quiet, repeat);
+            if (latType == LatEmbed::SIMPLE){
+
+               executeOrdinary<LatEmbed::SIMPLE> (cmd, quiet, repeat);
+               
+             }
+            else{
+               executeOrdinary<LatEmbed::EMBEDDED> (cmd, quiet, repeat);
+               
+             }
       }
 
-      else if(lattice == Lattice::POLYNOMIAL){
+      else if(lattice == LatticeType::POLYNOMIAL){
 
-            Parser::CommandLine<Lattice::POLYNOMIAL, LatType::EMBEDDED> cmd;
+            Parser::CommandLine<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED> cmd;
 
             
 
             cmd.construction  = opt["construction"].as<std::string>();
-            cmd.size          = opt["size"].as<std::string>();
+            cmd.size          = opt["modulus"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
@@ -312,12 +401,18 @@ int main(int argc, const char *argv[])
             if (opt.count("multilevel-filters") >= 1)
                cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
-            LatType latType = Parser::LatType::parse(opt["lattice-type"].as<std::string>());
+            LatEmbed latType = Parser::LatEmbed::parse(opt["embedded-lattice"].as<std::string>());
 
-            if (latType == LatType::ORDINARY)
-               execute<Lattice::POLYNOMIAL, LatType::ORDINARY>(cmd, quiet, repeat);
-            else
-               execute<Lattice::POLYNOMIAL, LatType::EMBEDDED>(cmd, quiet, repeat);
+            Parser::OutputPolyParameters outPoly = Parser::OutputPoly::parse(opt["output-poly"].as<std::string>());
+
+            if (latType == LatEmbed::SIMPLE){
+               executePolynomial< LatEmbed::SIMPLE> (cmd, quiet, repeat, outPoly);
+               
+             }
+            else{
+               executePolynomial<LatEmbed::EMBEDDED> (cmd, quiet, repeat, outPoly);
+               
+             }
       }
    }
    catch (Parser::ParserError& e) {

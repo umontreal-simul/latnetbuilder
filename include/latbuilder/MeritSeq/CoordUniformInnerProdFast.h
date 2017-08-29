@@ -38,7 +38,7 @@ namespace detail {
    struct IsFastCompatible
    { static constexpr bool value = false; };
 
-   template <Lattice LR, Compress COMPRESS>
+   template <LatticeType LR, Compress COMPRESS>
    struct IsFastCompatible<GenSeq::CyclicGroup<LR, COMPRESS>> 
    { static constexpr bool value = true; };
 }
@@ -52,7 +52,7 @@ namespace detail {
  * Computes the inner product with a second vector for all vectors in the
  * sequence at once.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 class CoordUniformInnerProdFast {
 
 protected:
@@ -60,8 +60,8 @@ protected:
    typedef typename fftw<Real>::complex_vector FFTComplexVector;
 
 public:
-   typedef Storage<LR, LatType::EMBEDDED, COMPRESS, PerLvlOrder::CYCLIC> InternalStorage;
-   typedef CoordUniformStateList<LR, LatType::EMBEDDED, COMPRESS, PerLvlOrder::CYCLIC> StateList;
+   typedef Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PerLevelOrder::CYCLIC> InternalStorage;
+   typedef CoordUniformStateList<LR, LatEmbed::EMBEDDED, COMPRESS, PerLevelOrder::CYCLIC> StateList;
    typedef typename Storage<LR, LAT, COMPRESS>::MeritValue MeritValue;
 
    /**
@@ -130,7 +130,7 @@ private:
          const boost::numeric::ublas::vector_expression<E>& ve
          ) const
    {
-      if(LR == Lattice::INTEGRATION){
+      if(LR == LatticeType::ORDINARY){
         // in base 2, on each level, we have 2 circulant half-blocks instead of
         // a single circulant block
         if (not internalStorage().symmetric() and internalStorage().sizeParam().base() == 2)
@@ -163,7 +163,7 @@ private:
          // ratio of the number or natural elements to the number of internal
          // elements, multiplied by normalization
          size_t compressionRatio = 1;
-         if(LR == Lattice::INTEGRATION){
+         if(LR == LatticeType::ORDINARY){
            if (internalStorage().symmetric() and (itRange - levelRanges().begin()) >= (internalStorage().sizeParam().base() == 2 ? 2 : 1)) {
               // compressionRatio except if uncompressed level has only one element
               compressionRatio = 2;
@@ -331,7 +331,7 @@ private:
    InternalStorage asIntenalStorage(const InternalStorage& s)
    { return s; }
 
-   template <LatType L, Compress C, PerLvlOrder P>
+   template <LatEmbed L, Compress C, PerLevelOrder P>
    InternalStorage asIntenalStorage(const Storage<LR, L, C, P>& s)
    { return InternalStorage(s.sizeParam().modulus()); }
 

@@ -226,5 +226,10 @@ The fast CBC implementation of Lattice Builder, as well as the computation of
 the \f$R_\alpha\f$ criterion, depends on the
 <a href="http://www.fftw.org/">FFTW library</a>.
 
+\section impl_ntl Usage of NTL
+
+The implementation of polynomials over \f$Z_2\f$ in Lattice Builder, depends on the
+<a href="http://www.shoup.net/ntl/">NTL library</a>.
+
 */
 vim: ft=doxygen spelllang=en spell

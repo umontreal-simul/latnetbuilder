@@ -38,7 +38,7 @@ namespace LatBuilder { namespace MeritSeq {
  * of RealVector.  This is the cost for making update() a virtual function: it
  * cannot be a template.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO >
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformState {
 public:
 

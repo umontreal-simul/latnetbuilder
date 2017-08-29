@@ -39,8 +39,8 @@ namespace LatSeq {
  * \tparam POLICY    See SeqCombiner.
  */
 template <
-   Lattice LR,
-   LatType LAT,
+   LatticeType LR,
+   LatEmbed LAT,
    class GENSEQ,
    template <class> class POLICY>
 class Combiner :
@@ -97,7 +97,7 @@ private:
 };
 
 /// Creates a lattice sequence based on a combination of sequences of generator values.
-template <template <class> class POLICY,Lattice LR, LatType LAT, class GENSEQ>
+template <template <class> class POLICY,LatticeType LR, LatEmbed LAT, class GENSEQ>
 Combiner<LR, LAT, GENSEQ, POLICY>
 combine(
       SizeParam<LR, LAT> size,

@@ -29,17 +29,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct EvalTag {};
 
 
 /// Explicit construction (evaluates a figure of merit for a single lattice).
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using Eval =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Eval =
    CBCBasedSearch<EvalTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// Explicit construction (evaluates a figure of merit for a single lattice).
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 Eval<LR, LAT, COMPRESS, PLO, FIGURE> eval(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -49,7 +49,7 @@ Eval<LR, LAT, COMPRESS, PLO, FIGURE> eval(
 { return Eval<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), std::move(genVec)); }
 
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCBasedSearchTraits<EvalTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

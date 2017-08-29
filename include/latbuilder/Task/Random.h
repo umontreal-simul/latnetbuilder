@@ -32,17 +32,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomTag {};
 
 
 /// Fully random search.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using Random =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Random =
    LatSeqBasedSearch<RandomTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// Fully random search.
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 Random<LR, LAT, COMPRESS, PLO, FIGURE> random(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -52,7 +52,7 @@ Random<LR, LAT, COMPRESS, PLO, FIGURE> random(
 { return Random<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct LatSeqBasedSearchTraits<RandomTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

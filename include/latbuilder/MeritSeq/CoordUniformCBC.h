@@ -55,8 +55,8 @@ namespace LatBuilder { namespace MeritSeq {
  * \tparam PROD         Type of inner product; either CoordUniformInnerProd
  *                      or CoordUniformInnerProdFast.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO,
-                 class KERNEL, template <Lattice, LatType, Compress, PerLvlOrder> class PROD = CoordUniformInnerProd >
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO,
+                 class KERNEL, template <LatticeType, LatEmbed, Compress, PerLevelOrder> class PROD = CoordUniformInnerProd >
 class CoordUniformCBC
 {
    typedef CoordUniformCBC<LR, LAT, COMPRESS, PLO, KERNEL, PROD> self_type;
@@ -332,7 +332,7 @@ private:
 
 
 /// Creates a coordinate-uniform CBC algorithm.
-template <template <Lattice, LatType, Compress, PerLvlOrder > class PROD = CoordUniformInnerProd, Lattice LR,  LatType LAT, Compress COMPRESS, PerLvlOrder PLO ,
+template <template <LatticeType, LatEmbed, Compress, PerLevelOrder > class PROD = CoordUniformInnerProd, LatticeType LR,  LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO ,
                                                                      class KERNEL>
 CoordUniformCBC<LR, LAT, COMPRESS, PLO, KERNEL, PROD> cbc(
       Storage<LR, LAT, COMPRESS, PLO> storage,

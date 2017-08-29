@@ -24,41 +24,41 @@
 
 namespace LatBuilder { namespace Parser {
 
-template <Lattice LR>
+template <LatticeType LR>
 void MeritFilterList<LR>::parse(
-      LatBuilder::MeritFilterList<LR, LatType::ORDINARY>& list,
+      LatBuilder::MeritFilterList<LR, LatEmbed::SIMPLE>& list,
       const std::vector<std::string>& filters,
-      const LatBuilder::SizeParam<LR, LatType::ORDINARY>& sizeParam,
+      const LatBuilder::SizeParam<LR, LatEmbed::SIMPLE>& sizeParam,
       const LatCommon::Weights& weights,
       Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, LatType::ORDINARY>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, LatEmbed::SIMPLE>::parse(arg, sizeParam, weights, normType));
 }
 
-template <Lattice LR>
+template <LatticeType LR>
 void MeritFilterList<LR>::parse(
-      LatBuilder::MeritFilterList<LR, LatType::EMBEDDED>& list,
+      LatBuilder::MeritFilterList<LR, LatEmbed::EMBEDDED>& list,
       const std::vector<std::string>& filters,
       const std::vector<std::string>& multilevelFilters,
       const std::string& combiner,
-      const LatBuilder::SizeParam<LR, LatType::EMBEDDED>& sizeParam,
+      const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam,
       const LatCommon::Weights& weights,
       Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, LatType::EMBEDDED>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, LatEmbed::EMBEDDED>::parse(arg, sizeParam, weights, normType));
 
    for (const auto& arg : multilevelFilters)
-      list.add(MeritFilter<LR, LatType::EMBEDDED>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, LatEmbed::EMBEDDED>::parse(arg, sizeParam, weights, normType));
 
    list.add(MeritCombiner<LR>::parse(combiner, sizeParam));
 }
 
-template struct MeritFilterList<Lattice::INTEGRATION> ;
-template struct MeritFilterList<Lattice::POLYNOMIAL> ;
+template struct MeritFilterList<LatticeType::ORDINARY> ;
+template struct MeritFilterList<LatticeType::POLYNOMIAL> ;
 
 
 }}

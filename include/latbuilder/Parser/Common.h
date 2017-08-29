@@ -99,11 +99,11 @@ std::vector<T> splitCSV(const std::string& input)
 *  convert lattice parameter strings to the appropriate input format  
 *
 */
-template <LatBuilder::Lattice LR>
+template <LatBuilder::LatticeType LR>
 struct LatticeParametersParseHelper ;
 
 template <>
-struct LatticeParametersParseHelper<Lattice::INTEGRATION> {
+struct LatticeParametersParseHelper<LatticeType::ORDINARY> {
    
    static std::string ToParsableModulus (const std::string& str)
    {return str ;}
@@ -112,12 +112,12 @@ struct LatticeParametersParseHelper<Lattice::INTEGRATION> {
    static std::string ToParsableGenValue (const std::string& str)
    {return str ;}
 
-   static typename LatticeTraits<Lattice::INTEGRATION>::GeneratingVector ParseGeneratingVector(const std::string& str)
+   static typename LatticeTraits<LatticeType::ORDINARY>::GeneratingVector ParseGeneratingVector(const std::string& str)
    {return splitCSV<uInteger>(str);}
 };
 
 template <>
-struct LatticeParametersParseHelper<Lattice::POLYNOMIAL> {
+struct LatticeParametersParseHelper<LatticeType::POLYNOMIAL> {
    
    static std::string ToParsableModulus (const std::string& str){
       uInteger size = str.size();
@@ -140,13 +140,13 @@ struct LatticeParametersParseHelper<Lattice::POLYNOMIAL> {
       return str_NTLInput;
    }
 
-   static typename LatticeTraits<LatBuilder::Lattice::POLYNOMIAL>::GeneratingVector ParseGeneratingVector(const std::string& str)
+   static typename LatticeTraits<LatBuilder::LatticeType::POLYNOMIAL>::GeneratingVector ParseGeneratingVector(const std::string& str)
    {
       auto genVec_str = splitCSV<std::string>(str);
-      typename LatticeTraits<Lattice::POLYNOMIAL>::GeneratingVector genVec ;
+      typename LatticeTraits<LatticeType::POLYNOMIAL>::GeneratingVector genVec ;
       for(const auto& gen_str: genVec_str) {
-         std::string str_NTLInput = LatticeParametersParseHelper<Lattice::POLYNOMIAL>::ToParsableGenValue(gen_str);
-         genVec.push_back((boost::lexical_cast<typename LatticeTraits<Lattice::POLYNOMIAL>::GenValue>(str_NTLInput)));
+         std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableGenValue(gen_str);
+         genVec.push_back((boost::lexical_cast<typename LatticeTraits<LatticeType::POLYNOMIAL>::GenValue>(str_NTLInput)));
       }
       return genVec;
    }

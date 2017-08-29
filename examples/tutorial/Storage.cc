@@ -22,7 +22,7 @@
 using namespace LatBuilder;
 
 //! [all]
-template <Lattice LA, LatType LAT, Compress COMP>
+template <LatticeType LA, LatEmbed LAT, Compress COMP>
 void test(typename LatticeTraits<LA>::Modulus modulus)
 {
    SizeParam<LA, LAT> size(modulus);
@@ -38,13 +38,13 @@ int main()
 
    uInteger n = 16;
    Polynomial P = PolynomialFromInt(7);
-   test<Lattice::INTEGRATION, LatType::ORDINARY, Compress::NONE>(n);
-   test<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE>(n);
-   test<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC>(n);
-   test<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC>(n);
+   test<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE>(n);
+   test<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE>(n);
+   test<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(n);
+   test<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(n);
 
-   test<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE>(P);
-   test<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE>(P);
+   test<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(P);
+   test<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(P);
 
    return 0;
 }

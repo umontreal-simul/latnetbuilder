@@ -30,17 +30,17 @@ namespace LatBuilder { namespace Norm {
  * \tparam LAT   Type of lattice.
  * \tparam NORM  Type of norm.
  */
-template <Lattice LR, LatType LAT, class NORM>
+template <LatticeType LR, LatEmbed LAT, class NORM>
 class Normalizer;
 
 /**
- * Specialization of LatType::Normalizer for ordinary lattices.
+ * Specialization of LatEmbed::Normalizer for ordinary lattices.
  */
-template <Lattice LR, class NORM>
-class Normalizer<LR, LatType::ORDINARY, NORM> : public BasicMeritFilter<LR, LatType::ORDINARY> {
+template <LatticeType LR, class NORM>
+class Normalizer<LR, LatEmbed::SIMPLE, NORM> : public BasicMeritFilter<LR, LatEmbed::SIMPLE> {
 public:
    typedef Real MeritValue;
-   typedef LatBuilder::LatDef<LR, LatType::ORDINARY> LatDef;
+   typedef LatBuilder::LatDef<LR, LatEmbed::SIMPLE> LatDef;
    typedef NORM Norm;
 
    /**
@@ -74,23 +74,23 @@ private:
 
    /// Cache parameters.
    mutable Real m_cachedNorm;
-   mutable SizeParam<LR, LatType::ORDINARY> m_cachedSizeParam;
+   mutable SizeParam<LR, LatEmbed::SIMPLE> m_cachedSizeParam;
    mutable Dimension m_cachedDimension;
 
    void updateCache(
-         const SizeParam<LR, LatType::ORDINARY>& sizeParam,
+         const SizeParam<LR, LatEmbed::SIMPLE>& sizeParam,
          const Dimension dimension
          ) const;
 };
 
 /**
- * Specialization of LatType::Normalizer for embedded lattices.
+ * Specialization of LatEmbed::Normalizer for embedded lattices.
  */
-template <Lattice LR, class NORM>
-class Normalizer<LR, LatType::EMBEDDED, NORM> : public BasicMeritFilter<LR, LatType::EMBEDDED> {
+template <LatticeType LR, class NORM>
+class Normalizer<LR, LatEmbed::EMBEDDED, NORM> : public BasicMeritFilter<LR, LatEmbed::EMBEDDED> {
 public:
    typedef RealVector MeritValue;
-   typedef LatBuilder::LatDef<LR, LatType::EMBEDDED> LatDef;
+   typedef LatBuilder::LatDef<LR, LatEmbed::EMBEDDED> LatDef;
    typedef NORM Norm;
 
    /**
@@ -141,7 +141,7 @@ private:
 
    /// Cache parameters.
    mutable RealVector m_cachedNorm;
-   mutable SizeParam<LR, LatType::EMBEDDED> m_cachedSizeParam;
+   mutable SizeParam<LR, LatEmbed::EMBEDDED> m_cachedSizeParam;
    mutable Dimension m_cachedDimension;
 
    /**
@@ -151,7 +151,7 @@ private:
    static void checkWeights(const RealVector& levelWeights);
 
    void updateCache(
-         const SizeParam<LR, LatType::EMBEDDED>& sizeParam,
+         const SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam,
          const Dimension dimension,
          bool force = false
          ) const;
@@ -159,8 +159,8 @@ private:
 
 //================================================================================
 
-template <Lattice LR, class NORM>
-Real Normalizer<LR, LatType::ORDINARY, NORM>::operator()(
+template <LatticeType LR, class NORM>
+Real Normalizer<LR, LatEmbed::SIMPLE, NORM>::operator()(
       const MeritValue& merit,
       const LatDef& lat) const
 {
@@ -170,8 +170,8 @@ Real Normalizer<LR, LatType::ORDINARY, NORM>::operator()(
 
 //================================================================================
 
-template <Lattice LR, class NORM>
-RealVector Normalizer<LR, LatType::EMBEDDED, NORM>::operator()(
+template <LatticeType LR, class NORM>
+RealVector Normalizer<LR, LatEmbed::EMBEDDED, NORM>::operator()(
       const MeritValue& merit,
       const LatDef& lat) const
 {
@@ -189,9 +189,9 @@ RealVector Normalizer<LR, LatType::EMBEDDED, NORM>::operator()(
 
 //================================================================================
 
-template <Lattice LR, class NORM>
-void Normalizer<LR, LatType::ORDINARY, NORM>::updateCache(
-      const SizeParam<LR, LatType::ORDINARY>& sizeParam,
+template <LatticeType LR, class NORM>
+void Normalizer<LR, LatEmbed::SIMPLE, NORM>::updateCache(
+      const SizeParam<LR, LatEmbed::SIMPLE>& sizeParam,
       const Dimension dimension) const
 {
    if (m_cachedSizeParam == sizeParam and m_cachedDimension == dimension)
@@ -209,9 +209,9 @@ void Normalizer<LR, LatType::ORDINARY, NORM>::updateCache(
 
 //================================================================================
 
-template <Lattice LR, class NORM>
-void Normalizer<LR, LatType::EMBEDDED, NORM>::updateCache(
-      const SizeParam<LR, LatType::EMBEDDED>& sizeParam,
+template <LatticeType LR, class NORM>
+void Normalizer<LR, LatEmbed::EMBEDDED, NORM>::updateCache(
+      const SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam,
       const Dimension dimension, bool force) const
 {
    if (m_cachedSizeParam == sizeParam and m_cachedDimension == dimension)
@@ -226,7 +226,7 @@ void Normalizer<LR, LatType::EMBEDDED, NORM>::updateCache(
 
    for (Level level = 0; level < m_cachedNorm.size(); level++) {
 
-      SizeParam<LR, LatType::EMBEDDED> levelSizeParam(
+      SizeParam<LR, LatEmbed::EMBEDDED> levelSizeParam(
             sizeParam.base(),
             level
             );
@@ -250,8 +250,8 @@ void Normalizer<LR, LatType::EMBEDDED, NORM>::updateCache(
 
 //================================================================================
 
-template <Lattice LR, class NORM>
-void Normalizer<LR, LatType::EMBEDDED, NORM>::setWeights(RealVector levelWeights)
+template <LatticeType LR, class NORM>
+void Normalizer<LR, LatEmbed::EMBEDDED, NORM>::setWeights(RealVector levelWeights)
 {
    m_levelWeights = std::move(levelWeights);
    //checkWeights(m_levelWeights);
@@ -260,8 +260,8 @@ void Normalizer<LR, LatType::EMBEDDED, NORM>::setWeights(RealVector levelWeights
 
 //================================================================================
 
-template <Lattice LR, class NORM>
-void Normalizer<LR, LatType::EMBEDDED, NORM>::checkWeights(
+template <LatticeType LR, class NORM>
+void Normalizer<LR, LatEmbed::EMBEDDED, NORM>::checkWeights(
       const RealVector& levelWeights)
 {
    Real wsum = 0.0;

@@ -49,7 +49,7 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 //! [Observer]
-template <Lattice LA, LatType LAT>
+template <LatticeType LA, LatEmbed LAT>
 class Observer {
 public:
    typedef LatBuilder::LatDef<LA, LAT> LatDef;
@@ -68,7 +68,7 @@ private:
 //! [Observer]
 
 
-template <Lattice LA, LatType L, Compress C>
+template <LatticeType LA, LatEmbed L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension, int samples)
 {
    //! [figure]
@@ -169,11 +169,11 @@ int main()
    Dimension dim = 3;
    int samples = 15;
    //! [storage]
-   test(Storage<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC>(257), dim, samples);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(257), dim, samples);
    //! [storage]
    /*
    //! [pstorage]
-   test(Storage<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE>(PolynomialFromInt(115)), dim, samples);
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(PolynomialFromInt(115)), dim, samples);
    //! [pstorage]
    */
    return 0;

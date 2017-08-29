@@ -25,9 +25,9 @@ using namespace LatBuilder;
 using TextStream::operator<<;
 
 //! [main]
-template<Lattice LA>
+template<LatticeType LA>
 void test(typename LatticeTraits<LA>::Modulus modulus){
-   SizeParam<LA, LatType::ORDINARY> size(modulus);
+   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
    Dimension dim = 3;
 
    typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;
@@ -43,8 +43,8 @@ void test(typename LatticeTraits<LA>::Modulus modulus){
 int main()
 {
    //! [output]
-   test<Lattice::INTEGRATION>(7);
-   test<Lattice::POLYNOMIAL>(PolynomialFromInt(7));
+   test<LatticeType::ORDINARY>(7);
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
    //! [output]
 
    return 0;

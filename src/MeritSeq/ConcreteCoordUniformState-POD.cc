@@ -22,7 +22,7 @@ namespace LatBuilder { namespace MeritSeq {
 // PODWeights
 //========================================================================
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 void
 ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::PODWeights>::
 reset()
@@ -35,7 +35,7 @@ reset()
 
 //===========================================================================
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 void
 ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::PODWeights>::
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
@@ -61,7 +61,7 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 
 //===========================================================================
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
 ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::PODWeights>::
 weightedState() const
@@ -89,15 +89,15 @@ weightedState() const
 }
 
 
-template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC, PerLvlOrder::BASIC,  LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC, PerLvlOrder::CYCLIC,  LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  LatCommon::PODWeights>;
 
-template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,       LatCommon::PODWeights>;
 
 
-template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::BASIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
 
 }}

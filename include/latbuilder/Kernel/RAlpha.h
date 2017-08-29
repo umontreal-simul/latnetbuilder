@@ -112,7 +112,7 @@ public:
     *
     * Creates a new vector of kernel values using fast Fourier transforms.
     */
-   template <Lattice LR, LatType L, Compress C, PerLvlOrder P >
+   template <LatticeType LR, LatEmbed L, Compress C, PerLevelOrder P >
    RealVector valuesVector(
          const Storage<LR, L, C, P>& storage
          ) const

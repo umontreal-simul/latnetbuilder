@@ -29,29 +29,29 @@ namespace LatBuilder {
 
 
 /**
- *  default per level value depending on the lattice (integration/polynomial) and the lattice type (ordinary/embedded).
+ *  default per level value depending on the lattice (ordinary/polynomial) and the lattice type (ordinary/embedded).
  *
  */
-template <Lattice LR, LatType LAT>
-struct defaultPerLvlOrder;
+template <LatticeType LR, LatEmbed LAT>
+struct defaultPerLevelOrder;
 
 template <>
-struct defaultPerLvlOrder<Lattice::INTEGRATION, LatType::ORDINARY>{
-   static const PerLvlOrder Order = PerLvlOrder::BASIC;
+struct defaultPerLevelOrder<LatticeType::ORDINARY, LatEmbed::SIMPLE>{
+   static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 template <>
-struct defaultPerLvlOrder<Lattice::POLYNOMIAL, LatType::ORDINARY>{
-   static const PerLvlOrder Order = PerLvlOrder::BASIC;
-};
-
-template <>
-struct defaultPerLvlOrder<Lattice::INTEGRATION, LatType::EMBEDDED>{
-   static const PerLvlOrder Order = PerLvlOrder::CYCLIC;
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>{
+   static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLvlOrder<Lattice::POLYNOMIAL, LatType::EMBEDDED>{
-   static const PerLvlOrder Order = PerLvlOrder::BASIC;
+struct defaultPerLevelOrder<LatticeType::ORDINARY, LatEmbed::EMBEDDED>{
+   static const PerLevelOrder Order = PerLevelOrder::CYCLIC;
+};
+
+template <>
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>{
+   static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 
@@ -63,47 +63,48 @@ struct defaultPerLvlOrder<Lattice::POLYNOMIAL, LatType::EMBEDDED>{
  * This template class acts as a selector for specialized templates, based on
  * the type of lattice and on the type of compression.
  *
- * \paragraph
+ * 
  *
- * - For (ordinary) integration lattice rules with modulud \f$n\f$:
+ * - For (simple) ordinary lattice rules with modulud \f$n\f$:
  * The kernel values are stored in the natural order: the ith value \f$w_i\f$ is \f$w(i/n)\f$.
  * A Stride with parameter \f$a \in \mathbb{N}\f$ is the mapping that maps an index \f$i\f$ to \f$a \times i \mod n\f$.
  *  
- * \paragraph
+ * 
  *
- * - For an (ordinary) polynomnial lattice rule with modulus \f$P(z)\f$:
+ * - For a (simple) polynomnial lattice rule with modulus \f$P(z)\f$:
  * Polynomials modulo \f$P(z)\f$ are identified with integers via the formula  \f$h=\sum a_j2^j\f$ where  \f$h(z) = \sum a_jz^j\f$. 
  * The kernel values are stored in the following order: the \f$i^{\text{th}}\f$ value \f$w_i\f$ is \f$w(\nu_m(\frac{i(z)}{P(z)}))\f$. with \f$i(z) = \sum a_jz^j\f$ where \f$i=\sum a_j2^j\f$. 
  * A Stride with parameter \f$q(z) \in \mathbb{Z}_2[z]\f$ is the mapping that maps a polynomial \f$i(z)\f$ modulo \f$P(z)\f$ with the polynomial \f$h(z) = i(z)q(z) \mod P(z)\f$ .
  *
  *   
  *
- * \paragraph
+ * 
  *
- * - For integration lattice rules with modulus \f$p^m\f$ for a prime \f$p\f$: \n
+ * - For embedded ordinary lattice rules with modulus \f$p^m\f$ for a prime \f$p\f$: \n
  * The kernel values are stored in \f$m+1\f$ blocks: the \f$k^{\text{th}}\f$ block (\f$k=0..m\f$) is the set \f$p^{m-k}U_{p^k}\f$. 
  * the \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ blocks. 
- * The elements within each block can be ordered according to the inversed cyclic order of \f$U_{p^k}\f$. i.e the block (ordered) elements are \f$\{p^{m-k}g^{-l}, l=0..\varphi(p^k)-1 \}\f$ with \f$g\f$ a generator of  \f$U_{p^k}\f$.
- * This order permits to do fast CBC construction.  This order can be obtained by setting the PerLvlOrder template parameter to PerLvlOrder::CYCLIC.
- * One can set PerLvlOrder to PerLvlOrder::BASIC, in this case, elements within each block are ordered in the non-decreasing order.
- * PerLvlOrder::CYCLIC is set as the default order, the basic order was introduced especially for polynomial lattices, where the cyclic structure does not apply if \f$m>1\f$.
+ * The elements within each block can be ordered according to the inversed cyclic order of \f$U_{p^k}\f$. i.e the block (ordered) elements are
+ * \f$\{p^{m-k}g^{-l}, l=0..\varphi(p^k)-1 \}\f$ with \f$g\f$ a generator of  \f$U_{p^k}\f$.
+ * This order permits to do fast CBC construction.  This order can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
+ * One can set PerLevelOrder to PerLevelOrder::BASIC, in this case, elements within each block are ordered in the non-decreasing order.
+ * PerLevelOrder::CYCLIC is set as the default order, the basic order was introduced especially for polynomial lattices, where the cyclic structure does not apply if \f$m>1\f$.
  *
  * 
- * \paragraph
+ * 
  *
- * - For polynomial lattice rules with modulus \f$b(z)^m\f$ for an irreductible polynomial  \f$b(z)\f$:
+ * - For embedded polynomial lattice rules with modulus \f$b(z)^m\f$ for an irreductible polynomial  \f$b(z)\f$:
  * The kernel values are stored in \f$m+1\f$ blocks: the \f$k^{\text{th}}\f$ block (\f$k=0..m\f$) is the set \f$b(z)^{m-k}(\mathbb{Z}_2[z]/(b(z)^k))^*\f$.
  * The \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ blocks.
  * If \f$m=1\f$, we have two block with sizes 1 and \f$2^{\deg(b(z))}-1\f$ and the elements within the second block can be ordered according to the inversed cyclic order of \f$(\mathbb{Z}_2[z]/(b(z)))^*\f$.
  * i.e the block (ordered) elements are \f$\{g^{-l}, l=0..\varphi(b(z))-1 \}\f$ with \f$g\f$ a generator of \f$(\mathbb{Z}_2[z]/(b(z)))^*\f$.
- * This order permits to do fast CBC construction, and can be obtained by setting the PerLvlOrder template parameter to PerLvlOrder::CYCLIC.
- * If \f$m>1\f$, the cyclic structure does not apply and we have to set PerLvlOrder to PerLvlOrder::BASIC.
- * In this case, elements of \f$(\mathbb{Z}_2[z]/(b(z)^k))^*\f$ are ordered according to the order given by the class \ref GenSeq/GeneratingValues.
+ * This order permits to do fast CBC construction, and can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
+ * If \f$m>1\f$, the cyclic structure does not apply and we have to set PerLevelOrder to PerLevelOrder::BASIC.
+ * In this case, elements of \f$(\mathbb{Z}_2[z]/(b(z)^k))^*\f$ are ordered according to the order given by the class GeneratingValues.
  * 
  * The output from \ref Storage.cc gives an intuition of how this works for
  * different combination of lattice type and of compression.
  */
-template <Lattice LR, LatType LAT, Compress COM, PerLvlOrder PLO = defaultPerLvlOrder<LR, LAT>::Order > class Storage;
+template <LatticeType LR, LatEmbed LAT, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, LAT>::Order > class Storage;
 
 /**
  * Storage traits.
@@ -229,22 +230,22 @@ private:
  *   original:   [0, 1, 2, 3, 4, 5, 6]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
  *   strided(3): [0, 3, 6, 3, 0, 3, 6]
- *==> storage / compression: multilevel storage, inverse-cyclic per level order / none
+ *==> storage / compression: multilevel storage, PerLevelOrder : inverse-cyclic / none
  *   virtual / actual sizes: 16 / 16
  *   original:   [0, 8, 4, 12, 2, 10, 14, 6, 1, 13, 9, 5, 15, 3, 7, 11]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
  *   strided(3): [0, 8, 12, 4, 6, 14, 10, 2, 3, 7, 11, 15, 13, 9, 5, 1] 
- *==> storage / compression: multilevel storage, inverse-cyclic per level order / symmetric
+ *==> storage / compression: multilevel storage, PerLevelOrder : inverse-cyclic / symmetric
  *   virtual / actual sizes: 16 / 9
  *   original:   [0, 8, 4, 2, 6, 1, 3, 7, 5]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1]
  *   strided(3): [0, 8, 4, 6, 2, 3, 7, 5, 1]
- *==> storage / compression: multilevel storage, natural per level order / none
+ *==> storage / compression: multilevel storage, PerLevelOrder : basic / none
  *   virtual / actual sizes: 16 / 16
  *   original:   [0, 8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
  *   strided(3): [0, 8, 12, 4, 6, 2, 14, 10, 3, 9, 15, 5, 11, 1, 7, 13]
- *==> storage / compression: multilevel storage, natural per level order / symmetric
+ *==> storage / compression: multilevel storage, PerLevelOrder : basic / symmetric
  *   virtual / actual sizes: 16 / 9
  *   original:   [0, 8, 4, 2, 6, 1, 3, 5, 7]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1]
@@ -254,12 +255,12 @@ private:
  *   original:   [0, 1, 2, 3, 4, 5, 6, 7]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7]
  *   strided([1 1]): [0, 3, 6, 5, 1, 2, 7, 4]
- *==> storage / compression: multilevel storage, natural per level order / none
+ *==> storage / compression: multilevel storage, PerLevelOrder : basic / none
  *   virtual / actual sizes: 8 / 8
  *   original:   [0, 1, 2, 3, 4, 5, 6, 7]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7]
  *   strided([1 1]): [0, 3, 6, 5, 1, 2, 7, 4]
- *==> storage / compression: multilevel storage, inverse-cyclic per level order / none
+ *==> storage / compression: multilevel storage, PerLevelOrder : inverse-cyclic / none
  *   virtual / actual sizes: 8 / 8
  *   original:   [0, 1, 6, 3, 7, 5, 4, 2]
  *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7]
@@ -269,7 +270,7 @@ private:
  */
 }
 
-#include "latbuilder/Storage-ORDINARY.h"
+#include "latbuilder/Storage-SIMPLE.h"
 #include "latbuilder/Storage-EMBEDDED.h"
 
 #endif

@@ -31,7 +31,7 @@ using TextStream::operator<<;
 
 
 
-template <Lattice LA, LatType L, Compress C, PerLvlOrder PLO>
+template <LatticeType LA, LatEmbed L, Compress C, PerLevelOrder PLO>
 void test(const Storage<LA, L, C, PLO>& storage, typename LatticeTraits<LA>::GenValue stride_param)
 {
    std::cout << "==> storage / compression: " << Storage<LA, L, C, PLO>::name() << std::endl;
@@ -48,15 +48,15 @@ void test(const Storage<LA, L, C, PLO>& storage, typename LatticeTraits<LA>::Gen
 int main(int argc, const char *argv[])
 {
 
-   test(Storage<Lattice::INTEGRATION, LatType::ORDINARY, Compress::NONE     >(12), 3);
-   test(Storage<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC>(12), 3);
-   test(Storage<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE     >(16), 3);
-   test(Storage<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC>(16), 3); 
-   test(Storage<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE     ,PerLvlOrder::BASIC>(16), 3);
-   test(Storage<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC,PerLvlOrder::BASIC>(16), 3); 
+   test(Storage<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE     >(12), 3);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(12), 3);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE     >(16), 3);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(16), 3); 
+   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE     ,PerLevelOrder::BASIC>(16), 3);
+   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC,PerLevelOrder::BASIC>(16), 3); 
 
-   test(Storage<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
-   test(Storage<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
-   test(Storage<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC>(PolynomialFromInt(13)), PolynomialFromInt(3)); //irreductible modulus
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
+   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC>(PolynomialFromInt(13)), PolynomialFromInt(3)); //irreductible modulus
    return 0;
 }

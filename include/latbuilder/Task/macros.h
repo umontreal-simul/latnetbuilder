@@ -32,15 +32,15 @@
 #include "latbuilder/Functor/binary.h"
 
 #define TASK_ADD_ARG_PARAMETERS_LATTICE_ORDINARY(func, ...) \
-   func(__VA_ARGS__,Lattice::INTEGRATION, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC); \
-   func(__VA_ARGS__,Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC, PerLvlOrder::BASIC); \
-   func(__VA_ARGS__,Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC); \
-   func(__VA_ARGS__,Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC, PerLvlOrder::CYCLIC)
+   func(__VA_ARGS__,LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC); \
+   func(__VA_ARGS__,LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC)
 
 #define TASK_ADD_ARG_PARAMETERS_LATTICE_POLYNOMIAL(func, ...) \
-   func(__VA_ARGS__,Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC); \
-   func(__VA_ARGS__,Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::BASIC); \
-   func(__VA_ARGS__,Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC)
+   func(__VA_ARGS__,LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC)
 
 
 

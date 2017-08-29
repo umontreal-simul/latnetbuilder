@@ -53,9 +53,9 @@ different specific tasks.
 Consider the following basic example:
 \verbatim
 latbuilder \
-  --lattice integration
-  --lattice-type ordinary \
-  --size 2053 \
+  --lattice-type ordinary
+  --embedded-lattice false \
+  --modulus 2053 \
   --dimension 5 \
   --construction CBC \
   --figure-of-merit CU:P2 \
@@ -65,16 +65,16 @@ latbuilder \
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
 
-- The argument <code>\--lattice integration</code> indicates that we seek an integration
+- The argument <code>\--lattice-type ordinary</code> indicates that we seek an ordinary
   (in contrast to polynomial) rank-1 lattice rule. The construction of polynomial lattices 
   is illustrated in \ref cmdtut_polynomial_lattices.
-- The argument <code>\--lattice-type ordinary</code> indicates that we seek an
-  ordinary (in contrast to embedded) rank-1 lattice rule.
+- The argument <code>\--embedded-lattice false</code> indicates that we seek a
+  simple (in contrast to embedded) rank-1 lattice rule.
   The construction of embedded lattices is illustrated in
   \ref cmdtut_recipes_embedded.
 
-- The argument <code>\--size 2053</code> indicates that we seek a lattice rule
-  with 2053 points.
+- The argument <code>\--modulus 2053</code> indicates that we seek a lattice rule
+  with modulus 2053.
 
 - The argument <code>\--dimension 5</code> specifies that we seek a lattice point
   set of dimension 5. 
@@ -94,7 +94,7 @@ Some arguments consists of several tokens, separated by a colon.
   general examples on how to specify the weights are given below in \ref
   cmdtut_recipes_weights.
 
-To summarize, this command executes a CBC construction for an ordinary integration lattice
+To summarize, this command executes a CBC construction for an ordinary, simple lattice
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
 of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with product weights
 such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
@@ -102,7 +102,7 @@ such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
 \verbatim
-latbuilder -L integration -l ordinary -n 2053 -d 5 -c CBC -m CU:P2 -w product:0.7
+latbuilder -l ordinary -e false -s 2053 -d 5 -c CBC -m CU:P2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
@@ -125,13 +125,16 @@ This section covers the following topics:
 </ol>
 
 \subsection cmdtut_polynomial_lattices Polynomial lattices
-We can construct polynomial lattices by setting the argument <code>\--lattice </code> to <code>\polynomial</code>, and by specifying a polynomial 
-modulus as the size parameter to the argument <code>\--size </code>. The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.
-For example, changing the arguments <code>\--lattice </code>, <code>\--size </code> to
+We can construct polynomial lattices by setting the argument <code>\--lattice-type </code> to <code>polynomial</code>, and by specifying a polynomial as the modulus parameter to the argument <code>\--modulus </code>. The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.Optionally, we can print the generator matrices of the the retained polynomial lattice (as a digital net in base 2) in a specified file and using a specified format, by adding the argument  <code>\--output-poly </code> with the value <code>file:<var>file.txt</var>,format:<var>format</var></code>.
+For example, changing the arguments <code>\--lattice-type </code>, <code>\--modulus </code> to
 \verbatim
---lattice polynomial --size 1011
+--lattice-type polynomial --modulus 1011 
 \endverbatim
-means that we seek a polynomial lattice rule with modulus \f$1+z^2+z^3\f$.
+and adding
+\verbatim
+--output-poly file:outFile.txt,format:ssj
+\endverbatim
+means that we seek a polynomial lattice rule with modulus \f$1+z^2+z^3\f$ and we want to print its generator matrices in  <code>outFile.txt</code> in the input format of digital nets in base 2 for the library ssj.
 
 \subsection cmdtut_recipes_weights Specifying the Weights
 
@@ -262,7 +265,7 @@ as in \ref cmdtut_recipes_weights_product.
 
 
 \subsection cmdtut_recipes_merit Figures of Merit
-\subsubsection cmdtut_integration_lattices Integration Lattice Rules
+\subsubsection cmdtut_integration_lattices Ordinary Lattice Rules
 - The spectral figure of merit (weighted worst projection):
   \f[
     \max_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
@@ -392,12 +395,12 @@ For usage with embedded lattices, see \ref cmdtut_recipes_embedded.
 
 \subsection cmdtut_recipes_construction Construction Type
 
-- Simply evaluate the figure of merit for an integration lattice rule with generating vector
+- Simply evaluate the figure of merit for an ordinary lattice rule with generating vector
   \f$(1, 468, 896, 603, 367)\f$:
   \verbatim
   --construction explicit:1,468,896,603,367
   \endverbatim
-- Evaluate the figure of merit for an polynomial lattice rule with generating vector
+- Evaluate the figure of merit for a polynomial lattice rule with generating vector
   \f$(1, z, z+z^2, 1+z^3+z^4, 1+z^4+z^5)\f$:
   \verbatim
   --construction explicit:1,01,011,10011,100011
@@ -459,31 +462,31 @@ computed as follows:
 This mechanism can be selected in Lattice Builder by changing the lattice type
 to embedded with:
 \verbatim
---lattice-type embedded
+--embedded-lattice true
 \endverbatim
 
-- To build embedded integration lattices with CBC construction in dimension 5 with
+- To build embedded ordinary lattices with CBC construction in dimension 5 with
   \f$n=2^m\f$ points with \f$m=1,\dots,16\f$ using the maximum value of the
   spectral merit across all levels, with the same weight for all projections:
   \verbatim
   latbuilder \
-    --lattice integration \
-    --lattice-type embedded \
-    --size "2^16" \
+    --lattice-type ordinary \
+    --embedded-lattice true \
+    --modulus "2^16" \
     --dimension 5 \
     --construction CBC \
     --figure-of-merit spectral \
     --weights product:1.0 \
     --combiner max
   \endverbatim
-  The size of the lattice with the largest number of points can be specified
-  with the <code>\--size b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
-  simply with <code>\--size 65536</code>, where \f$65,536 = 2^{16}\f$.
+  The modulus of the lattice with the largest number of points can be specified
+  with the <code>\--modulus b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
+  simply with <code>\--modulus 65536</code>, where \f$65,536 = 2^{16}\f$.
   The spectral merit is evaluated for each nested level, and the maximum value
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
   
-- To build embedded integration lattices with fast CBC construction in dimension 10 with
+- To build embedded ordinary lattices with fast CBC construction in dimension 10 with
   \f$n=2^m\f$ points with \f$m=8,\dots,16\f$, using a weighted sum of the
   normalized values of the \f$\mathcal P_2\f$ figure of merit with product
   weights, and rejecting any candidate lattice that has such an individual
@@ -491,9 +494,9 @@ to embedded with:
   the even weights across all levels:
   \verbatim
   latbuilder \
-    --lattice integration \
-    --lattice-type embedded \
-    --size "2^16" \
+    --lattice-type ordinary \
+    --embedded-lattice true \
+    --modulus "2^16" \
     --dimension 10 \
     --construction fast-CBC \
     --figure-of-merit CU:P2 \
@@ -517,18 +520,18 @@ to embedded with:
   \f$\mathcal P_{2,PLR}\f$  merit across all levels, with the same weight for all projections:
   \verbatim
   latbuilder \
-    --lattice polynomial \
-    --lattice-type embedded \
-    --size "01^8" \
+    --lattice-type polynomial \
+    --embedded-lattice true \
+    --modulus "01^8" \
     --dimension 5 \
     --construction CBC \
     --figure-of-merit CU:P2 \
     --weights product:1.0 \
     --combiner max
   \endverbatim
-  The size of the lattice with the largest number of points can be specified
-  with the <code>\--size b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
-  simply with <code>\--size 000000001</code>, where 00000001 represents \f$z^{8}\f$.
+  The modulus of the lattice with the largest number of points can be specified
+  with the <code>\--modulus b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
+  simply with <code>\--modulus 000000001</code>, where 00000001 represents \f$z^{8}\f$.
   The \f$\mathcal P_{2,PLR}\f$ merit is evaluated for each nested level, and the maximum value
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
@@ -537,7 +540,7 @@ to embedded with:
 
 If no combiner is explicitly specified, Lattice Builder defaults to selecting
 the merit value of the maximum level (highest value of \f$m\f$), which is
-equivalent to constructing ordinary lattices.
+equivalent to constructing simple lattices.
 This combiner can also be explicitly selected with:
 \verbatim
 --combiner level:max
@@ -550,13 +553,13 @@ It is also possible to select any given level, say \f$m=8\f$, with
 
 \subsection cmdtut_recipes_extensible Extensible Lattices
 
-Suppose you have constructed embedded integration lattice rules up to \f$2^8\f$ points in
+Suppose you have constructed embedded ordinary lattice rules up to \f$2^8\f$ points in
 dimension 5 with:
 \verbatim
 latbuilder \
-  --lattice integration \
-  --lattice-type embedded \
-  --size "2^8" \
+  --lattice-type ordinary \
+  --embedded-lattice true \
+  --modulus "2^8" \
   --dimension 5 \
   --construction fast-CBC \
   --figure-of-merit CU:P2 \
@@ -569,9 +572,9 @@ Then, you find out that you need to extend the number of points to \f$2^9\f$.
 This can be done with:
 \verbatim
 latbuilder \
-  --lattice integration \
   --lattice-type ordinary \
-  --size "2^9" \
+  --embedded-lattice false \
+  --modulus "2^9" \
   --dimension 5 \
   --construction "extend:2^8:1,45,101,41,25" \
   --figure-of-merit CU:P2 \
@@ -579,7 +582,7 @@ latbuilder \
 \endverbatim
 Note that only the merit value of the lattice with \f$2^9\f$ points, and not
 that of the embedded lattices, is considered in this type of construction.
-The argument <code>\--size "2^9"</code> specifies the extended number of points
+The argument <code>\--modulus "2^9"</code> specifies the extended number of points
 and the argument <code>\--construction "extend:2^8:1,45,101,41,25"</code> indicates
 that we want to extend on a lattice with \f$2^8\f$ points and generating vector 
 \f$\boldsymbol a=(1,45,101,41,25)\f$.
@@ -591,29 +594,29 @@ that we want to extend on a lattice with \f$2^8\f$ points and generating vector
 The <code>latbuilder</code> executable supports the following command-line
 options:
 <dl>
-  <dt><code>\--lattice</code> / <code>-L</code></dt>
-  <dd><em>Optional (default: integration).</em>
-    Specifies the lattice.
+  <dt><code>\--lattice-type</code> / <code>-L</code></dt>
+  <dd><em>Optional (default: ordinary).</em>
+    Specifies the lattice type.
     Takes one of the following values:
-    - <code>integration</code>
-      to search for integration lattices; or
+    - <code>ordinary</code>
+      to search for ordinary lattices; or
     - <code>polynomial</code>
       to search for polynomial lattices.
   </dd>
-	<dt><code>\--lattice-type</code> / <code>-l</code></dt>
-	<dd><em>Required.</em>
-		Specifies the lattice size.
+	<dt><code>\--embedded-lattice</code> / <code>-l</code></dt>
+	<dd><em>Optional (default: false).</em>
+		Specifies the lattice modulus.
 		Takes one of the following values:
-		- <code>ordinary</code>
-			to search for ordinary lattices; or
+		- <code>false</code>
+			to search for a simple lattice; or
 		- <code>embedded</code>
 			to search for embedded lattices.
 	</dd>
-	<dt><code>\--size</code> / <code>-n</code></dt>
+	<dt><code>\--modulus</code> / <code>-s</code></dt>
 	<dd><em>Required.</em>
-		Specifies the lattice size.
+		Specifies the lattice modulus.
 		Takes an argument of either form:
-		- <code><var>numberOfPoints</var></code>; or
+		- <code><var>modulus</var></code>; or
 		- <code><var>primeBase</var>^<var>power</var></code>.
 	</dd>
 	<dt><code>\--figure-of-merit</code> / <code>-m</code></dt>
@@ -631,11 +634,15 @@ options:
                 - <code>spectral</code> for the spectral figure
                   of merit;
                 - <code>P<var>alpha</var></code> for the weighted \f$\mathcal
-                  P_\alpha\f$ figure of merit with
+                  P_\alpha\f$ figure of merit in the case of an ordinary lattice
+                  or \f$\mathcal P_{\alpha,PLR}\f$ figure of merit in the 
+                  case of a polynomial lattice with
                   \f$\alpha=\f$<code><var>alpha</var></code>; or
                 - <code>R<var>alpha</var></code> for the weighted \f$\mathcal
                   R_\alpha\f$ figure of merit with
                   \f$\alpha=\f$<code><var>alpha</var></code>.
+                - <code>R</code> for the weighted \f$\mathcal
+                  R\f$ figure of merit in the case of a polynomial lattice.
 	</dd>
 	<dt><code>\--norm-type</code> / <code>-p</code></dt>
 	<dd><em>Optional (default: 2).</em>
@@ -652,7 +659,7 @@ options:
 		- <code>explicit:<var>genVec</var></code> to just compute the
 		  merit value of the lattice with generating vector
                   <code><var>genVec</var></code> specified as a list
-                  comma-separated integers;
+                  comma-separated integers/polynomials;
 		- <code>exhaustive</code> for exhaustive search;
 		- <code>random:<var>samples</var></code> for a random search with
 		  <code><var>samples</var></code> random samples;
@@ -666,11 +673,11 @@ options:
 		- <code>fast-CBC</code> for a fast CBC search (requires a
                   coordinate-uniform implementation of the selected figure of
                   merit);
-                - <code>extend:<var>numberOfPoints</var>:<var>genVec</var></code>
-                  to extend the number of points on a lattice with number of
-                  points <code><var>numberOfPoints</var></code> and generating
+                - <code>extend:<var>modulus</var>:<var>genVec</var></code>
+                  to extend the lattice to a lattice with modulus
+                   <code><var>modulus</var></code> and generating
                   vector <code><var>genVec</var></code> specified as a list
-                  comma-separated integers.
+                  comma-separated integers/polynomials.
 
 	    Because the implementation of the fast CBC algorithm in lattice
 	    builder supports only numbers of points that are an integer power of
@@ -779,6 +786,15 @@ options:
                   level.
 
         </dd>
+  <dt><code>\--output-poly</code> / <code>-g</code></dt>
+  <dd><em>Optional.</em>
+    In the case of a polynomial lattice search, prints the generator matrices of
+    the retained lattice in a file, in a specified format.
+    Takes an argument of the form:
+    - <code>file:<var>file.txt</var>,format:<var>format</var></code>
+    Available output formats are:
+    - ssj : input format of digital nets in base 2 for the library ssj. 
+  </dd>
 	<dt><code>\--merit-digits-displayed</code></dt>
 	<dd><em>Optional.</em>
                 Sets the number of significant figures to use when displaying

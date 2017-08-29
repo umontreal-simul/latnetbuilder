@@ -24,8 +24,8 @@ namespace LatBuilder {
 
 //===============================================================================================================
 template<>
-SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::SizeParam(uInteger primeBase, Level maxLevel):
-   BasicSizeParam<SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
+SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::SizeParam(uInteger primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
@@ -34,8 +34,8 @@ SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::SizeParam(uInteger primeBase,
 }
 
 template<>
-SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::SizeParam(Polynomial primeBase, Level maxLevel):
-   BasicSizeParam<SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>>(IsZero(primeBase) ? Polynomial(0) : intPow(primeBase, maxLevel)),
+SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::SizeParam(Polynomial primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>>(IsZero(primeBase) ? Polynomial(0) : intPow(primeBase, maxLevel)),
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
@@ -47,8 +47,8 @@ SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::SizeParam(Polynomial primeBase
 //===================================================================================================================
 
 template<>
-SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::SizeParam(uInteger numPoints):
-   BasicSizeParam<SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>>(numPoints)
+SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::SizeParam(uInteger numPoints):
+   BasicSizeParam<SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>>(numPoints)
 {
    if (numPoints == 0) {
       m_base = 0;
@@ -69,8 +69,8 @@ SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::SizeParam(uInteger numPoints)
 }
 
 template<>
-SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::SizeParam(Polynomial modulus):
-   BasicSizeParam<SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>>(modulus)
+SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::SizeParam(Polynomial modulus):
+   BasicSizeParam<SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>>(modulus)
 {
    if (IsZero(modulus)) {
       m_base = Polynomial(0);
@@ -89,8 +89,8 @@ SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::SizeParam(Polynomial modulus):
 //=======================================================================================================================
 
 template<>
-SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::size_type
-SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::numPointsOnLevel(Level level) const
+SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::size_type
+SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::numPointsOnLevel(Level level) const
 {
    if (level > maxLevel())
       throw std::invalid_argument("level > maxLevel");
@@ -98,8 +98,8 @@ SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::numPointsOnLevel(Level level)
 }
 
 template<>
-SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::size_type
-SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::numPointsOnLevel(Level level) const
+SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::size_type
+SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::numPointsOnLevel(Level level) const
 {
    if (level > maxLevel())
       throw std::invalid_argument("level > maxLevel");
@@ -109,24 +109,24 @@ SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::numPointsOnLevel(Level level) 
 
 template<>
 size_t
-SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>::totient() const
+SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::totient() const
 { return base() == 0 ? 0 : (base() - 1) * this->numPoints() / base(); }
 
 template<>
 size_t
-SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>::totient() const
+SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::totient() const
 { return IsZero(base()) == 0 ? 0 : (intPow(2,deg(base())) - 1) * this->numPoints() / intPow(2,deg(base())); }
 
 //=========================================================================================================================
 
-template<Lattice LR>
+template<LatticeType LR>
 void
-SizeParam<LR,LatType::EMBEDDED>::normalize(Real& merit) const
+SizeParam<LR,LatEmbed::EMBEDDED>::normalize(Real& merit) const
 { merit /= this->numPoints(); }
 
-template<Lattice LR>
+template<LatticeType LR>
 void
-SizeParam<LR,LatType::EMBEDDED>::normalize(RealVector& merit) const
+SizeParam<LR,LatEmbed::EMBEDDED>::normalize(RealVector& merit) const
 {
    if (merit.size() != maxLevel() + 1)
       throw std::logic_error("merit vector size and maximum level do not match");
@@ -134,14 +134,14 @@ SizeParam<LR,LatType::EMBEDDED>::normalize(RealVector& merit) const
       merit[level] /= numPointsOnLevel(level);
 }
 //===========================================================================================================================
-template<Lattice LR>
+template<LatticeType LR>
 std::ostream&
-SizeParam<LR,LatType::EMBEDDED>::format(std::ostream& os) const
+SizeParam<LR,LatEmbed::EMBEDDED>::format(std::ostream& os) const
 { os << base(); if (maxLevel() != 1) os << "^" << maxLevel(); return os; }
 //===========================================================================================================================
 
-template class SizeParam<Lattice::INTEGRATION,LatType::EMBEDDED>;
-template class SizeParam<Lattice::POLYNOMIAL,LatType::EMBEDDED>;
+template class SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>;
+template class SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>;
 
 }
 

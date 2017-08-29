@@ -17,7 +17,7 @@
 #include "latbuilder/capi.h"
 
 #include "latbuilder/Types.h"
-#include "latbuilder/Parser/LatType.h"
+#include "latbuilder/Parser/LatEmbed.h"
 #include "latbuilder/Parser/CommandLine.h"
 #include "latbuilder/TextStream.h"
 
@@ -30,30 +30,35 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-#define FOR_TYPE(type, ord, emb, member) (type == LatType::ORDINARY ? ord.member : emb.member)
+#define FOR_TYPE(type, ord, emb, member) (type == LatEmbed::SIMPLE ? ord.member : emb.member)
+#define LR LatticeType::ORDINARY
 
 struct latbuilder_result_ {
 
-  latbuilder_result_(const LatDef<LatType::ORDINARY>& lat, double merit = 0.0, double seconds = 0.0) :
-    m_type(LatType::ORDINARY), m_ord(lat), m_emb(), m_merit(merit), m_seconds(seconds) {}
-  latbuilder_result_(const LatDef<LatType::EMBEDDED>& lat, double merit = 0.0, double seconds = 0.0) :
-    m_type(LatType::EMBEDDED), m_ord(), m_emb(lat), m_merit(merit), m_seconds(seconds) {}
+  typedef LatticeTraits<LR>::Modulus Modulus;
 
-  Modulus num_points() const { return FOR_TYPE(m_type, m_ord, m_emb, sizeParam().numPoints()); }
+  latbuilder_result_(const LatDef<LR, LatEmbed::SIMPLE>& lat, double merit = 0.0, double seconds = 0.0) :
+    m_type(LatEmbed::SIMPLE), m_ord(lat), m_emb(), m_merit(merit), m_seconds(seconds) {}
+  latbuilder_result_(const LatDef<LR, LatEmbed::EMBEDDED>& lat, double merit = 0.0, double seconds = 0.0) :
+    m_type(LatEmbed::EMBEDDED), m_ord(), m_emb(lat), m_merit(merit), m_seconds(seconds) {}
+
+  uInteger num_points() const { return FOR_TYPE(m_type, m_ord, m_emb, sizeParam().numPoints()); }
+  Modulus modulus() const { return FOR_TYPE(m_type, m_ord, m_emb, sizeParam().modulus()); }
   Dimension dimension()const { return FOR_TYPE(m_type, m_ord, m_emb, dimension()); }
   const Modulus* gen() const { return FOR_TYPE(m_type, m_ord, m_emb, gen().data()); }
   double merit()       const { return m_merit; }
   double cpu_seconds() const { return m_seconds; }
 
-  LatType m_type;
-  LatDef<LatType::ORDINARY> m_ord;
-  LatDef<LatType::EMBEDDED> m_emb;
+  LatEmbed m_type;
+  LatDef<LR, LatEmbed::SIMPLE> m_ord;
+  LatDef<LR, LatEmbed::EMBEDDED> m_emb;
   double m_merit;
   double m_seconds;
 };
 
 
 std::string latbuilder_error_string;
+
 
 void latbuilder_release_result(latbuilder_result* result) {
   if (result) delete result;
@@ -67,44 +72,49 @@ const char* latbuilder_get_error_string() {
   return latbuilder_error_string.c_str();
 }
 
+
 unsigned long latbuilder_result_get_num_points(const latbuilder_result* result) {
   return result->num_points();
 }
+
 
 size_t latbuilder_result_get_dimension(const latbuilder_result* result) {
   return result->dimension();
 }
 
-const unsigned long* latbuilder_result_get_gen(const latbuilder_result* result) {
+
+const typename LatticeTraits<LR>::Modulus* latbuilder_result_get_gen(const latbuilder_result* result) {
   return result->gen();
 }
+
 
 double latbuilder_result_get_merit(const latbuilder_result* result) {
   return result->merit();
 }
 
+
 double latbuilder_result_get_cpu_seconds(const latbuilder_result* result) {
   return result->cpu_seconds();
 }
 
-template <LatType LAT>
+template <LatEmbed LAT>
 void latbuilder_search_str_init_cmd_extra(
-  Parser::CommandLine<LAT>& cmd,
+  Parser::CommandLine<LR, LAT>& cmd,
   size_t multilevel_filter_count,
   const char** multilevel_filters,
   const char* combiner);
 
 template <>
-void latbuilder_search_str_init_cmd_extra<LatType::ORDINARY>(
-  Parser::CommandLine<LatType::ORDINARY>& cmd,
+void latbuilder_search_str_init_cmd_extra<LatEmbed::SIMPLE>(
+  Parser::CommandLine<LR, LatEmbed::SIMPLE>& cmd,
   size_t multilevel_filter_count,
   const char** multilevel_filters,
   const char* combiner) {
 }
 
 template <>
-void latbuilder_search_str_init_cmd_extra<LatType::EMBEDDED>(
-  Parser::CommandLine<LatType::EMBEDDED>& cmd,
+void latbuilder_search_str_init_cmd_extra<LatEmbed::EMBEDDED>(
+  Parser::CommandLine<LR, LatEmbed::EMBEDDED>& cmd,
   size_t multilevel_filter_count,
   const char** multilevel_filters,
   const char* combiner) {
@@ -115,7 +125,7 @@ void latbuilder_search_str_init_cmd_extra<LatType::EMBEDDED>(
     cmd.combiner = combiner;
 }
 
-template <LatType LAT>
+template <LatEmbed LAT>
 static
 latbuilder_status search_str(
   const char* construction,
@@ -135,7 +145,7 @@ latbuilder_status search_str(
 
     try {
 
-      Parser::CommandLine<LAT> cmd;
+      Parser::CommandLine<LR, LAT> cmd;
 
       cmd.construction = construction;
       cmd.size         = size;
@@ -186,6 +196,7 @@ latbuilder_status search_str(
     return LATBUILDER_ERROR;
 }
 
+
 latbuilder_status latbuilder_search_ordinary_str(
   const char* construction,
   const char* size,
@@ -199,8 +210,9 @@ latbuilder_status latbuilder_search_ordinary_str(
   const char** filters,
   latbuilder_result** result) {
 
-    return search_str<LatType::ORDINARY>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, 0, NULL, NULL, result);
+    return search_str<LatEmbed::SIMPLE>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, 0, NULL, NULL, result);
 }
+
 
 latbuilder_status latbuilder_search_embedded_str(
   const char* construction,
@@ -218,16 +230,16 @@ latbuilder_status latbuilder_search_embedded_str(
   const char* combiner,
   latbuilder_result** result) {
 
-    return search_str<LatType::EMBEDDED>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, multilevel_filter_count, multilevel_filters, combiner, result);
+    return search_str<LatEmbed::EMBEDDED>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, multilevel_filter_count, multilevel_filters, combiner, result);
 }
 
-// template <LatType LAT>
+// template <LatEmbed LAT>
 // struct latbuilder_search_str_base;
 //
 // template <>
-// struct latbuilder_search_str_base<LatType::ORDINARY> {
+// struct latbuilder_search_str_base<LatEmbed::SIMPLE> {
 //   void init_cmd_extra(
-//     Parser::CommandLine<LatType::ORDINARY>& cmd,
+//     Parser::CommandLine<LatEmbed::SIMPLE>& cmd,
 //     size_t multilevel_filter_count,
 //     const char** multilevel_filters,
 //     const char* combiner) {
@@ -235,9 +247,9 @@ latbuilder_status latbuilder_search_embedded_str(
 // };
 //
 // template <>
-// struct latbuilder_search_str_base<LatType::EMBEDDED> {
+// struct latbuilder_search_str_base<LatEmbed::EMBEDDED> {
 //   void init_cmd_extra(
-//     Parser::CommandLine<LatType::EMBEDDED>& cmd,
+//     Parser::CommandLine<LatEmbed::EMBEDDED>& cmd,
 //     size_t multilevel_filter_count,
 //     const char** multilevel_filters,
 //     const char* combiner) {

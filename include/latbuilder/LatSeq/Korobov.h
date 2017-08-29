@@ -33,7 +33,7 @@ namespace LatBuilder { namespace LatSeq {
  *
  * \sa GenSeqSeq
  */
-template <Lattice LR, LatType LAT, class GENSEQ>
+template <LatticeType LR, LatEmbed LAT, class GENSEQ>
 class Korobov :
    public Combiner<
       LR,
@@ -76,7 +76,7 @@ private:
 };
 
 /// Creates a Korobov lattice sequence.
-template <Lattice LR, LatType LAT, class GENSEQ>
+template <LatticeType LR, LatEmbed LAT, class GENSEQ>
 Korobov<LR, LAT, GENSEQ>
 korobov(
       const SizeParam<LR, LAT>& size,

@@ -29,7 +29,7 @@ int main()
    //! [main]
    //! [types]
    typedef Traversal::Random<LFSR113> Trav;
-   typedef GenSeq::GeneratingValues<Lattice::INTEGRATION, Compress::SYMMETRIC, Trav> RandomSeq;
+   typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::SYMMETRIC, Trav> RandomSeq;
    //! [types]
 
    size_t r = 4; // 4 random samples

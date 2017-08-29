@@ -27,11 +27,11 @@ namespace LatBuilder {
  * - prime base for the modulus (prime integer in the case of lattices rules and an irreductible polynomial in the case of polynomial lattices);
  * - maximum embedding level (power of the base for the last lattice in the sequence).
  */
-template <Lattice LR>
-class SizeParam<LR,LatType::EMBEDDED> :
-   public BasicSizeParam<SizeParam<LR,LatType::EMBEDDED>> {
+template <LatticeType LR>
+class SizeParam<LR,LatEmbed::EMBEDDED> :
+   public BasicSizeParam<SizeParam<LR,LatEmbed::EMBEDDED>> {
 
-    typedef SizeParam<LR, LatType::ORDINARY> self_type;
+    typedef SizeParam<LR, LatEmbed::SIMPLE> self_type;
 
 public:
 

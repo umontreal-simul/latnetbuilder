@@ -28,23 +28,23 @@ namespace LatBuilder { namespace Parser {
 
 namespace {
 
-   template <Lattice LR, class NORM>
+   template <LatticeType LR, class NORM>
    void setLevelWeights(
-         Norm::Normalizer<LR, LatType::ORDINARY, NORM>&,
+         Norm::Normalizer<LR, LatEmbed::SIMPLE, NORM>&,
          const std::string&,
-         const LatBuilder::SizeParam<LR, LatType::ORDINARY>&
+         const LatBuilder::SizeParam<LR, LatEmbed::SIMPLE>&
          )
    {}
 
-   template <Lattice LR, class NORM>
+   template <LatticeType LR, class NORM>
    void setLevelWeights(
-         Norm::Normalizer<LR, LatType::EMBEDDED, NORM>& normalizer,
+         Norm::Normalizer<LR, LatEmbed::EMBEDDED, NORM>& normalizer,
          const std::string& levelWeights,
-         const LatBuilder::SizeParam<LR, LatType::EMBEDDED>& sizeParam
+         const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
          )
    { normalizer.setWeights(LevelWeights<LR>::parse(levelWeights, sizeParam)); }
 
-   template <Lattice LR, class NORM, LatType LAT>
+   template <LatticeType LR, class NORM, LatEmbed LAT>
    std::unique_ptr<BasicMeritFilter<LR, LAT>> createNormalizer(
          unsigned int alpha,
          const LatBuilder::SizeParam<LR, LAT>& sizeParam,
@@ -63,7 +63,7 @@ namespace {
     *
     * Example strings: \c P2-SL10, \c P4-SL10, \c P2-DPW08, \c P4-DPW08
     */
-   template <Lattice LR, LatType LAT>
+   template <LatticeType LR, LatEmbed LAT>
    std::unique_ptr<BasicMeritFilter<LR, LAT>> parseNormalizer(
          const std::string& str,
          const LatBuilder::SizeParam<LR, LAT>& sizeParam,
@@ -73,7 +73,7 @@ namespace {
    {
       const auto args = splitPair(str, ':');
       const auto strSplit = splitPair<>(args.first, '-');
-      if(LR == Lattice::INTEGRATION){
+      //if(LR == LatticeType::ORDINARY){
          try {
             if (strSplit.first[0] == 'P') {
                const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(1));
@@ -85,12 +85,12 @@ namespace {
          }
          catch (boost::bad_lexical_cast&) {}
          throw BadFilter("cannot parse norm: " + str);
-      }
-      throw BadFilter("no normalizers implemented for polynomial lattices" );
+      //}
+      
    }
 }
 
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 std::unique_ptr<BasicMeritFilter<LR, LAT>>
 MeritFilter<LR,LAT>::parse(
       const std::string& str,
@@ -109,26 +109,26 @@ MeritFilter<LR,LAT>::parse(
    throw BadFilter(x.first);
 }
 
-template struct LatBuilder::Parser::MeritFilter <Lattice::INTEGRATION, LatType::ORDINARY> ;
-template struct LatBuilder::Parser::MeritFilter <Lattice::INTEGRATION, LatType::EMBEDDED> ;
-template struct LatBuilder::Parser::MeritFilter <Lattice::POLYNOMIAL, LatType::ORDINARY> ;
-template struct LatBuilder::Parser::MeritFilter <Lattice::POLYNOMIAL, LatType::EMBEDDED> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, LatEmbed::SIMPLE> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, LatEmbed::EMBEDDED> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, LatEmbed::SIMPLE> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED> ;
 
 
 /*
 template
-std::unique_ptr<BasicMeritFilter<LatType::ORDINARY>>
+std::unique_ptr<BasicMeritFilter<LatEmbed::SIMPLE>>
 MeritFilter::parse(
       const std::string&,
-      const LatBuilder::SizeParam<LatType::ORDINARY>&,
+      const LatBuilder::SizeParam<LatEmbed::SIMPLE>&,
       const LatCommon::Weights&,
       Real);
 
 template
-std::unique_ptr<BasicMeritFilter<LatType::EMBEDDED>>
+std::unique_ptr<BasicMeritFilter<LatEmbed::EMBEDDED>>
 MeritFilter::parse(
       const std::string&,
-      const LatBuilder::SizeParam<LatType::EMBEDDED>&,
+      const LatBuilder::SizeParam<LatEmbed::EMBEDDED>&,
       const LatCommon::Weights&,
       Real);
 */

@@ -27,7 +27,7 @@ namespace LatBuilder {
 /**
  * Lattice size parameter.
  */
-template <Lattice, LatType> class SizeParam;
+template <LatticeType, LatEmbed> class SizeParam;
 
 /**
  * SizeParam traits.
@@ -45,14 +45,14 @@ struct SizeParamTraits;
  * SizeParam traits for ordinary lattice rule.
  *
  */
-template<LatType LAT>
-struct SizeParamTraits<SizeParam<Lattice::INTEGRATION,LAT>>{
+template<LatEmbed LAT>
+struct SizeParamTraits<SizeParam<LatticeType::ORDINARY,LAT>>{
   ///  type for modulus (= number of points) values.
-  typedef typename LatticeTraits<Lattice::INTEGRATION>::Modulus Modulus;
+  typedef typename LatticeTraits<LatticeType::ORDINARY>::Modulus Modulus;
   typedef uInteger size_type;
 
   static size_type ComputeNumPoints(const Modulus& modulus){
-    return LatticeTraits<Lattice::INTEGRATION>::NumPoints(modulus);
+    return LatticeTraits<LatticeType::ORDINARY>::NumPoints(modulus);
   }
   
 };
@@ -61,14 +61,14 @@ struct SizeParamTraits<SizeParam<Lattice::INTEGRATION,LAT>>{
  * SizeParam traits for polynomial lattice rule.
  *
  */
-template<LatType LAT>
-struct SizeParamTraits<SizeParam<Lattice::POLYNOMIAL,LAT>>{
+template<LatEmbed LAT>
+struct SizeParamTraits<SizeParam<LatticeType::POLYNOMIAL,LAT>>{
   ///  type for modulus values.
-  typedef typename LatticeTraits<Lattice::POLYNOMIAL>::Modulus Modulus;
+  typedef typename LatticeTraits<LatticeType::POLYNOMIAL>::Modulus Modulus;
   typedef uInteger size_type;
 
   static size_type ComputeNumPoints(const Modulus& modulus){
-    return LatticeTraits<Lattice::POLYNOMIAL>::NumPoints(modulus);
+    return LatticeTraits<LatticeType::POLYNOMIAL>::NumPoints(modulus);
   }
   
 };
@@ -95,7 +95,7 @@ public:
 
    /**
     * Returns the value of Euler's totient function.
-    * -For integration lattices: It is the number of positive integers that are smaller than and coprime
+    * -For ordinary lattices: It is the number of positive integers that are smaller than and coprime
     * to the modulus.
     * -For polynomial lattices: It is the number of polynomials coprime with the modulus and with (strictly) smaller degree
     */
@@ -142,7 +142,7 @@ std::ostream& operator<<(std::ostream& os, const BasicSizeParam<D>& sizeParam)
 
 }
 
-#include "latbuilder/SizeParam-ORDINARY.h"
+#include "latbuilder/SizeParam-SIMPLE.h"
 #include "latbuilder/SizeParam-EMBEDDED.h"
 
 #endif

@@ -31,17 +31,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomKorobovTag {};
 
 
 /// Random Korobov search.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using RandomKorobov =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomKorobov =
    LatSeqBasedSearch<RandomKorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// Random Korobov search.
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 RandomKorobov<LR, LAT, COMPRESS, PLO, FIGURE> randomKorobov(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -51,7 +51,7 @@ RandomKorobov<LR, LAT, COMPRESS, PLO, FIGURE> randomKorobov(
 { return RandomKorobov<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct LatSeqBasedSearchTraits<RandomKorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

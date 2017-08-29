@@ -31,39 +31,39 @@ namespace LatBuilder {
 /**
  * Container class for merit filters.
  */
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 class BasicMeritFilterList;
 
 /**
  * Policy class template for MeritFilterList.
  */
-template <Lattice, LatType>
+template <LatticeType, LatEmbed>
 class MeritFilterListPolicy;
 
-template <Lattice, LatType>
+template <LatticeType, LatEmbed>
 class MeritFilterList;
 
 /**
  * Formats and outputs \c filters to \c os.
  */
-template< Lattice LR>
-std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, LatType::ORDINARY>&);
-template< Lattice LR>
-std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, LatType::EMBEDDED>&);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, LatEmbed::SIMPLE>&);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, LatEmbed::EMBEDDED>&);
 
 /**
  * Formats and outputs \c filters to \c os.
  */
-template< Lattice LR>
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, LatType::ORDINARY>& filters);
-template< Lattice LR>
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, LatType::EMBEDDED>& filters);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, LatEmbed::SIMPLE>& filters);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, LatEmbed::EMBEDDED>& filters);
 
 
 //========================================================================
 
 
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 class BasicMeritFilterList {
 public:
 
@@ -122,10 +122,10 @@ private:
    FilterList m_filters;
 };
 
-extern template class BasicMeritFilterList<Lattice::INTEGRATION, LatType::ORDINARY>;
-extern template class BasicMeritFilterList<Lattice::INTEGRATION, LatType::EMBEDDED>;
-extern template class BasicMeritFilterList<Lattice::POLYNOMIAL, LatType::ORDINARY>;
-extern template class BasicMeritFilterList<Lattice::POLYNOMIAL, LatType::EMBEDDED>;
+extern template class BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>;
+extern template class BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::EMBEDDED>;
+extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>;
+extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>;
 
 
 
@@ -172,7 +172,7 @@ extern template class BasicMeritFilterList<Lattice::POLYNOMIAL, LatType::EMBEDDE
  * call \c base() to trace back the original sequence.  These are the main
  * reasons why there are filters in Lattice Builder.
  */
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 class MeritFilterList : public MeritFilterListPolicy<LR, LAT> {
 public:
    typedef MeritFilterListPolicy<LR, LAT> Policy;
@@ -225,7 +225,7 @@ public:
       value_type element(const typename Base::const_iterator& it, const IT& it2, const T&) const
       { return element(it, it2.base()); }
 
-      template <class IT, LatType L>
+      template <class IT, LatEmbed L>
       value_type element(const typename Base::const_iterator& it, const IT& it2, const LatDef<LR, L>&) const
       { return m_parent.applyFilters(*it, *it2); }
    };
@@ -248,36 +248,36 @@ public:
 /**
  * Specialization of MeritFilterListPolicy for ordinary lattices.
  */
-template <Lattice LR>
-class MeritFilterListPolicy<LR, LatType::ORDINARY> :
-   public BasicMeritFilterList<LR, LatType::ORDINARY> {
+template <LatticeType LR>
+class MeritFilterListPolicy<LR, LatEmbed::SIMPLE> :
+   public BasicMeritFilterList<LR, LatEmbed::SIMPLE> {
 
-   typedef BasicMeritFilterList<LR, LatType::ORDINARY> OBase;
+   typedef BasicMeritFilterList<LR, LatEmbed::SIMPLE> OBase;
 
 public:
-   template <LatType L>
+   template <LatEmbed L>
    typename OBase::OnReject& onReject() const
    { return OBase::onReject(); }
 
 protected:
-   Real applyFilters(Real merit, const LatDef<LR,LatType::ORDINARY>& lat) const;
+   Real applyFilters(Real merit, const LatDef<LR,LatEmbed::SIMPLE>& lat) const;
 };
 
 
 /**
  * Specialization of MeritFilterListPolicy for embedded lattices.
  */
-template <Lattice LR>
-class MeritFilterListPolicy<LR, LatType::EMBEDDED> :
-   public BasicMeritFilterList<LR, LatType::ORDINARY>,
-   public BasicMeritFilterList<LR, LatType::EMBEDDED> {
+template <LatticeType LR>
+class MeritFilterListPolicy<LR, LatEmbed::EMBEDDED> :
+   public BasicMeritFilterList<LR, LatEmbed::SIMPLE>,
+   public BasicMeritFilterList<LR, LatEmbed::EMBEDDED> {
 
-   typedef BasicMeritFilterList<LR, LatType::ORDINARY> OBase;
-   typedef BasicMeritFilterList<LR, LatType::EMBEDDED> EBase;
+   typedef BasicMeritFilterList<LR, LatEmbed::SIMPLE> OBase;
+   typedef BasicMeritFilterList<LR, LatEmbed::EMBEDDED> EBase;
 
 public:
 
-   typedef BasicMeritFilter<LR, LatType::EMBEDDED, LatType::ORDINARY> Combiner;
+   typedef BasicMeritFilter<LR, LatEmbed::EMBEDDED, LatEmbed::SIMPLE> Combiner;
 
    /**
     * Returns \c true if and only if the list of filters is empty.
@@ -307,7 +307,7 @@ public:
 
    //@}
 
-   template <LatType L>
+   template <LatEmbed L>
    typename BasicMeritFilterList<LR, L>::OnReject& onReject() const
    { return BasicMeritFilterList<LR, L>::onReject(); }
 
@@ -325,10 +325,10 @@ private:
    std::unique_ptr<Combiner> m_combiner;
 };
 
-extern template class MeritFilterListPolicy<Lattice::INTEGRATION, LatType::ORDINARY>;
-extern template class MeritFilterListPolicy<Lattice::INTEGRATION, LatType::EMBEDDED>;
-extern template class MeritFilterListPolicy<Lattice::POLYNOMIAL, LatType::ORDINARY>;
-extern template class MeritFilterListPolicy<Lattice::POLYNOMIAL, LatType::EMBEDDED>;
+extern template class MeritFilterListPolicy<LatticeType::ORDINARY, LatEmbed::SIMPLE>;
+extern template class MeritFilterListPolicy<LatticeType::ORDINARY, LatEmbed::EMBEDDED>;
+extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>;
+extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>;
 
 }
 

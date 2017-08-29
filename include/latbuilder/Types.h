@@ -52,17 +52,17 @@ typedef size_t Dimension;
 /// polynomial over Z/2Z type 
 typedef NTL::GF2X Polynomial;
 
-/// Lattices supported: integration lattice rules amd polynomial lattice rules
-enum class Lattice { INTEGRATION, POLYNOMIAL };
+/// Lattices supported: ordinary lattice rules amd polynomial lattice rules
+enum class LatticeType { ORDINARY , POLYNOMIAL };
 
-/// Types of lattices. 
-enum class LatType { ORDINARY, EMBEDDED };
+/// Simple lattice / a sequence of embedded lattices 
+enum class LatEmbed { SIMPLE, EMBEDDED };
 
 /// Types of compression.
 enum class Compress { NONE, SYMMETRIC };
 
 // Per level order for embedded lattices 
-enum class PerLvlOrder {BASIC, CYCLIC};
+enum class PerLevelOrder {BASIC, CYCLIC};
 
 
 /**
@@ -81,11 +81,11 @@ enum class PerLvlOrder {BASIC, CYCLIC};
  * - GenValue ToGenValue(const uInteger& index) : the inverse mapping of ToIndex
  * - uInteger NumPoints(const Modulus& modulus) given a modulus returns the number of points in the lattice point set
  * - uInteger ToKernelIndex(const size_t& index, const Modulus& modulus) For cooddinate uniform figures of merit, given an index \f$i\f$, we need 
- *			to compute \f$w(i/n)\f$ in the case of an integration lattice with modulus \f$n\f$, and \f$w((\nu_m(i(z)/P(z)))\f$ in the case of a polynomial 
+ *			to compute \f$w(i/n)\f$ in the case of an ordinary lattice with modulus \f$n\f$, and \f$w((\nu_m(i(z)/P(z)))\f$ in the case of a polynomial 
  *			lattice of modulus \f$P(z)\f$ (\f$ i(z) = \sum a_iz^i\f$ where \f$i =\sum a_i2^i\f$). ToKernelIndex computes an integer \f$x\f$ such that the required quantity is \f$w(x/n)\f$, where \f$n\f$ is the number of points. i.e. 
- *			\f$x = i\f$ in the case of an integration lattice and \f$x = n\nu_m(i(z)/P(z))\f$ for polynomial lattices.
+ *			\f$x = i\f$ in the case of an ordinary lattice and \f$x = n\nu_m(i(z)/P(z))\f$ for polynomial lattices.
  */
-template <Lattice LR>
+template <LatticeType LR>
 struct LatticeTraits;
 
 /**
@@ -93,7 +93,7 @@ struct LatticeTraits;
  *
  */
 template<>
-struct LatticeTraits<Lattice::INTEGRATION>{
+struct LatticeTraits<LatticeType::ORDINARY>{
 	/// Scalar integer type for modulus (= number of points) values.
 	typedef uInteger Modulus;
 	/// Scalar integer type for genarating values.
@@ -114,7 +114,7 @@ struct LatticeTraits<Lattice::INTEGRATION>{
  *
  */
 template<>
-struct LatticeTraits<Lattice::POLYNOMIAL>{
+struct LatticeTraits<LatticeType::POLYNOMIAL>{
 	/// type for modulus  values.
 	typedef Polynomial Modulus;
 	/// type for genarating values.
@@ -133,7 +133,7 @@ struct LatticeTraits<Lattice::POLYNOMIAL>{
 
 
 //@}
-std::ostream& operator<<(std::ostream& os, LatType latType);
+std::ostream& operator<<(std::ostream& os, LatEmbed latType);
 
 
 }

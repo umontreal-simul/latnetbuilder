@@ -43,7 +43,7 @@ int main()
       uInteger gen = numPoints - 2;      // a_j = n - 2 for this example
       std::cout << "base: " << b << std::endl;
       //! [Extend]
-      GenSeq::Extend<Lattice::INTEGRATION> seq(b * numPoints, numPoints, gen);
+      GenSeq::Extend<LatticeType::ORDINARY> seq(b * numPoints, numPoints, gen);
       //! [Extend]
       std::cout << "  one level: " << seq << std::endl;
       showSeq(b, seq);
@@ -53,7 +53,7 @@ int main()
    Polynomial P = intPow(base,3);
    Polynomial generator = PolynomialFromInt(5);
    //! [pExtend]
-   GenSeq::Extend<Lattice::INTEGRATION> seq(base * P, P, generator);
+   GenSeq::Extend<LatticeType::POLYNOMIAL> seq(base * P, P, generator);
    //! [pExtend]
    //! [main]
 

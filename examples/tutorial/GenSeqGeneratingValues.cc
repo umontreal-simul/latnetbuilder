@@ -26,15 +26,15 @@ int main()
 {
    
    //! [all]
-   typedef GenSeq::GeneratingValues<Lattice::INTEGRATION, Compress::NONE> WholeSeqIntegers;
+   typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::NONE> WholeSeqIntegers;
    //! [all]
 
    //! [symmetric]
-   typedef GenSeq::GeneratingValues<Lattice::INTEGRATION, Compress::SYMMETRIC> HalfSeqIntegers;
+   typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::SYMMETRIC> HalfSeqIntegers;
    //! [symmetric]
 
    //! [pall]
-   typedef GenSeq::GeneratingValues<Lattice::POLYNOMIAL, Compress::NONE> WholeSeqPolynomials;
+   typedef GenSeq::GeneratingValues<LatticeType::POLYNOMIAL, Compress::NONE> WholeSeqPolynomials;
    //! [pall]
 
    //! [main]

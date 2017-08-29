@@ -31,10 +31,10 @@ namespace LatBuilder { namespace GenSeq {
 
   
    template<Compress COMPRESS, class TRAV>
-  struct GeneratingValuesTraits<GeneratingValues<Lattice::POLYNOMIAL,COMPRESS,TRAV>>{
+  struct GeneratingValuesTraits<GeneratingValues<LatticeType::POLYNOMIAL,COMPRESS,TRAV>>{
     typedef size_t size_type;
-    typedef LatticeTraits<Lattice::POLYNOMIAL>::GenValue value_type;
-    typedef LatticeTraits<Lattice::POLYNOMIAL>::Modulus Modulus;
+    typedef LatticeTraits<LatticeType::POLYNOMIAL>::GenValue value_type;
+    typedef LatticeTraits<LatticeType::POLYNOMIAL>::Modulus Modulus;
     
     static std::string name()
       { return std::string("coprime polynomials / ") ; }
@@ -95,10 +95,10 @@ namespace LatBuilder { namespace GenSeq {
  */
 
 template <Compress COMPRESS , class TRAV >
-class GeneratingValues<Lattice::POLYNOMIAL, COMPRESS, TRAV> :
-   public Traversal::Policy<GeneratingValues<Lattice::POLYNOMIAL,COMPRESS, TRAV>, TRAV> {
+class GeneratingValues<LatticeType::POLYNOMIAL, COMPRESS, TRAV> :
+   public Traversal::Policy<GeneratingValues<LatticeType::POLYNOMIAL,COMPRESS, TRAV>, TRAV> {
 
-   typedef GeneratingValues<Lattice::POLYNOMIAL, COMPRESS, TRAV> self_type;
+   typedef GeneratingValues<LatticeType::POLYNOMIAL, COMPRESS, TRAV> self_type;
    typedef Traversal::Policy<self_type, TRAV> TraversalPolicy;
    typedef CompressTraits<COMPRESS> Compress;
 public:
@@ -138,7 +138,7 @@ public:
     */
    template <class TRAV2>
    GeneratingValues(
-         const GeneratingValues<Lattice::POLYNOMIAL, COMPRESS, TRAV2>& other,
+         const GeneratingValues<LatticeType::POLYNOMIAL, COMPRESS, TRAV2>& other,
          Traversal trav = Traversal()):
       TraversalPolicy(std::move(trav)),
       m_modulus(other.m_modulus),
@@ -151,7 +151,7 @@ public:
     */
    template <class TRAV2>
    struct RebindTraversal {
-      typedef GeneratingValues<Lattice::POLYNOMIAL,COMPRESS, TRAV2> Type;
+      typedef GeneratingValues<LatticeType::POLYNOMIAL,COMPRESS, TRAV2> Type;
    };
 
    /**
@@ -181,7 +181,7 @@ public:
    value_type operator[](size_type i) const;
 
 private:
-   template <LatBuilder::Lattice, LatBuilder::Compress , class > friend class GeneratingValues;
+   template <LatBuilder::LatticeType, LatBuilder::Compress , class > friend class GeneratingValues;
 
    Modulus m_modulus;
    size_type m_size;
@@ -197,7 +197,7 @@ private:
 namespace LatBuilder { namespace GenSeq {
 
 template <Compress COMPRESS, class TRAV>
-GeneratingValues<Lattice::POLYNOMIAL, COMPRESS, TRAV>::GeneratingValues(
+GeneratingValues<LatticeType::POLYNOMIAL, COMPRESS, TRAV>::GeneratingValues(
       Modulus modulus,
       Traversal trav):
    TraversalPolicy(std::move(trav)),
@@ -231,7 +231,7 @@ GeneratingValues<Lattice::POLYNOMIAL, COMPRESS, TRAV>::GeneratingValues(
 }
 
 template <Compress COMPRESS, class TRAV>
-auto GeneratingValues<Lattice::POLYNOMIAL, COMPRESS, TRAV>::operator[](size_type i) const -> value_type
+auto GeneratingValues<LatticeType::POLYNOMIAL, COMPRESS, TRAV>::operator[](size_type i) const -> value_type
 {
    value_type ret = value_type(0);
    for (const auto& e : m_basis) {

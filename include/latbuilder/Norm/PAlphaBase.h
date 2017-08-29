@@ -74,7 +74,7 @@ public:
     * \param dimension  Dimension.
     * \param norm       Additional normalization \f$ c \f$.
     */
-   template <Lattice LR, LatType L>
+   template <LatticeType LR, LatEmbed L>
    Real value(
          Real lambda,
          const SizeParam<LR, L>& sizeParam,
@@ -90,7 +90,7 @@ public:
     * \param dimension  Dimension.
     * \param norm       Additional normalization \f$ c \f$.
     */
-   template <Lattice LR, LatType L>
+   template <LatticeType LR, LatEmbed L>
    Real operator()(
          const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
@@ -103,7 +103,7 @@ public:
     * Uses BrentMinimizer to minimize the bound function.  The value of
     * \f$\lambda\f$ at which the minimum is reached is not returned.
     */
-   template <Lattice LR, LatType L>
+   template <LatticeType LR, LatEmbed L>
    Real minimum(
          const SizeParam<LR, L>& sizeParam,
          Dimension dimension,

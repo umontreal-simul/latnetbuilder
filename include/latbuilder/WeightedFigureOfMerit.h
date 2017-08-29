@@ -35,7 +35,7 @@
 namespace LatBuilder
 {
 
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO = defaultPerLvlOrder<LR, LAT>::Order>
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LR, LAT>::Order>
 class WeightedFigureOfMeritEvaluator;
 
 /**
@@ -130,7 +130,7 @@ public:
    /**
     * Creates an evaluator for the figure of merit.
     */
-   template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+   template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
    WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, LAT, COMPRESS, PLO>
    evaluator(Storage<LR, LAT, COMPRESS, PLO> storage) const
    { return WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, LAT, COMPRESS, PLO>(*this, std::move(storage)); }
@@ -175,7 +175,7 @@ private:
  * instantiated without prior knowledge of the storage class to be used during
  * the evaluation.
  */
-template <class FIGURE, Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO >
+template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
 class WeightedFigureOfMeritEvaluator
 {
 public:

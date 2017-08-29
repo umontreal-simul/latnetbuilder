@@ -42,7 +42,7 @@ namespace LatBuilder { namespace MeritSeq {
  * <li> Repeat from step 2 until desired dimension is reached. </li>
  * </ol>
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO , class PROJDEP, template <typename> class ACC>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO , class PROJDEP, template <typename> class ACC>
 class CBC
 {
 public:
@@ -217,7 +217,7 @@ private:
 };
 
 /// Creates a CBC algorithm.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class PROJDEP, template <class> class ACC >
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC >
 CBC<LR, LAT, COMPRESS, PLO, PROJDEP, ACC> cbc(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       const WeightedFigureOfMerit<PROJDEP, ACC>& figure)

@@ -41,7 +41,7 @@ public:
 /**
  * Parser for projection-dependent figures of merit.
  */
-template< Lattice LR>
+template< LatticeType LR>
 struct ProjDepMerit {
 
    struct ParseCoordUniform {
@@ -75,11 +75,11 @@ struct ProjDepMerit {
 
 template<>
 template <typename FUNC, typename... ARGS>
-   void ProjDepMerit<Lattice::INTEGRATION>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void ProjDepMerit<LatticeType::ORDINARY>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       // try coordinate-uniform
       try {
-         Kernel<Lattice::INTEGRATION>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<LatticeType::ORDINARY>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
@@ -99,11 +99,11 @@ template <typename FUNC, typename... ARGS>
 
 template<>
 template <typename FUNC, typename... ARGS>
-   void ProjDepMerit<Lattice::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void ProjDepMerit<LatticeType::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       // try coordinate-uniform
       try {
-         Kernel<Lattice::POLYNOMIAL>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<LatticeType::POLYNOMIAL>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
@@ -115,8 +115,8 @@ template <typename FUNC, typename... ARGS>
    }
 
 /*
-extern template struct ProjDepMerit<Lattice::INTEGRATION>;
-extern template struct ProjDepMerit<Lattice::POLYNOMIAL>;
+extern template struct ProjDepMerit<LatticeType::ORDINARY>;
+extern template struct ProjDepMerit<LatticeType::POLYNOMIAL>;
 */
 
 }}

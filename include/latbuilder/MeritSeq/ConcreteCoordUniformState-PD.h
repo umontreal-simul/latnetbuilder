@@ -29,7 +29,7 @@
 namespace LatBuilder { namespace MeritSeq {
 
 // forward declaration
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class WEIGHTS > class ConcreteCoordUniformState;
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class WEIGHTS > class ConcreteCoordUniformState;
 
 /**
  * Implementation of CoordUniformState for projection-dependent weights.
@@ -65,7 +65,7 @@ template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class WEI
  * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 class ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProjectionDependentWeights> :
    public CoordUniformState<LR, LAT, COMPRESS, PLO> {
 public:
@@ -141,16 +141,16 @@ private:
 
 
 
-extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::ORDINARY, Compress::SYMMETRIC, PerLvlOrder::BASIC, LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<Lattice::INTEGRATION, LatType::EMBEDDED, Compress::SYMMETRIC, PerLvlOrder::CYCLIC, LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProjectionDependentWeights>;
 
-extern template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::ORDINARY, Compress::NONE, PerLvlOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
 
 
-extern template class ConcreteCoordUniformState<Lattice::POLYNOMIAL, LatType::EMBEDDED, Compress::NONE, PerLvlOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
 
 }}
 

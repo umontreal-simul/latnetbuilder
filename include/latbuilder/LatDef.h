@@ -32,7 +32,7 @@ namespace LatBuilder
  *
  * \tparam LAT  Type of lattice.
  */
-template <Lattice LR, LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 class LatDef {
 public:
 
@@ -51,7 +51,7 @@ public:
       m_gen(std::move(gen))
    {}
 
-   template <LatType L>
+   template <LatEmbed L>
    LatDef(const LatDef<LR,L>& other): LatDef(other.sizeParam(), other.gen())
    {}
 
@@ -112,16 +112,16 @@ private:
 /**
  * Formats \c lat and outputs it to \c os.
  */
-template <LatType LAT>
-std::ostream& operator<< (std::ostream& os, const LatDef<Lattice::INTEGRATION,LAT>& lat)
+template <LatEmbed LAT>
+std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::ORDINARY,LAT>& lat)
 {
    using TextStream::operator<<;
    os << "lattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
    return os;
 }
 
-template <LatType LAT>
-std::ostream& operator<< (std::ostream& os, const LatDef<Lattice::POLYNOMIAL,LAT>& lat)
+template <LatEmbed LAT>
+std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::POLYNOMIAL,LAT>& lat)
 {
    using TextStream::operator<<;
    os << "PolynomialLattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
@@ -132,7 +132,7 @@ std::ostream& operator<< (std::ostream& os, const LatDef<Lattice::POLYNOMIAL,LAT
 /**
  * Returns a lattice definition instance with the proper type of size parameter.
  */
-template <Lattice LR,LatType LAT>
+template <LatticeType LR,LatEmbed LAT>
 LatDef<LR,LAT> createLatDef(
       SizeParam<LR,LAT> sizeParam = SizeParam<LR,LAT>(), 
       typename LatDef<LR,LAT>::GeneratingVector gen = typename LatDef<LR,LAT>::GeneratingVector()

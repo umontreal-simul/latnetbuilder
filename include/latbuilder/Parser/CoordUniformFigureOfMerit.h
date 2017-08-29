@@ -36,7 +36,7 @@ public:
 /**
  * Parser for coordinate-uniform figures of merit.
  */
-template <Lattice LR>
+template <LatticeType LR>
 struct CoordUniformFigureOfMerit {
 
    struct ParseKernel {

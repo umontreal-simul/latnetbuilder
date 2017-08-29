@@ -27,17 +27,17 @@
 
 namespace LatBuilder { namespace Task {
 
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct FastCBCTag {};
 
 
 /// Fast CBC construction.
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE> using FastCBC =
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using FastCBC =
    CBCBasedSearch<FastCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
 
 
 /// Fast CBC construction.
-template <class FIGURE,Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO>
+template <class FIGURE,LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 FastCBC<LR, LAT, COMPRESS, PLO, FIGURE> fastCBC(
       Storage<LR, LAT, COMPRESS, PLO> storage,
       Dimension dimension,
@@ -46,7 +46,7 @@ FastCBC<LR, LAT, COMPRESS, PLO, FIGURE> fastCBC(
 { return FastCBC<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 // specialization for coordinate-uniform figures of merit
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class KERNEL>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
 struct CBCBasedSearchTraits<FastCBCTag<LR, LAT, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;
@@ -70,7 +70,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LR, LAT, COMPRESS, PLO, CoordUniformFigur
 };
 
 // specialization for other figures of merit
-template <Lattice LR, LatType LAT, Compress COMPRESS, PerLvlOrder PLO, class FIGURE>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCBasedSearchTraits<FastCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Task::Search<LR, LAT> Search;
    typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;

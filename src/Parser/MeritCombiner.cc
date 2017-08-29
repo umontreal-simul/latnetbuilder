@@ -22,14 +22,14 @@
 
 namespace LatBuilder { namespace Parser {
 
-template<Lattice LR>
-std::unique_ptr<typename LatBuilder::MeritFilterList<LR, LatType::EMBEDDED>::Combiner>
+template<LatticeType LR>
+std::unique_ptr<typename LatBuilder::MeritFilterList<LR, LatEmbed::EMBEDDED>::Combiner>
 MeritCombiner<LR>::parse(
       const std::string& str,
-      const LatBuilder::SizeParam<LR, LatType::EMBEDDED>& sizeParam
+      const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
       )
 {
-   typedef std::unique_ptr<typename MeritFilterList<LR, LatType::EMBEDDED>::Combiner> Ptr;
+   typedef std::unique_ptr<typename MeritFilterList<LR, LatEmbed::EMBEDDED>::Combiner> Ptr;
    const auto strSplit = splitPair<>(str, ':');
    if (strSplit.first == "level") {
       if (strSplit.second == "max")
@@ -52,7 +52,7 @@ MeritCombiner<LR>::parse(
    throw BadCombiner(str);
 }
 
-template struct MeritCombiner<Lattice::INTEGRATION>;
-template struct MeritCombiner<Lattice::POLYNOMIAL>;
+template struct MeritCombiner<LatticeType::ORDINARY>;
+template struct MeritCombiner<LatticeType::POLYNOMIAL>;
 
 }}

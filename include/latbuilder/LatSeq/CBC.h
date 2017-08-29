@@ -32,7 +32,7 @@ namespace LatBuilder { namespace LatSeq {
  * \tparam GENSEQ    Type of sequences of generator values.
  * 
  */
-template <Lattice LR, LatType LAT, class GENSEQ>
+template <LatticeType LR, LatEmbed LAT, class GENSEQ>
 class CBC {
 public:
 
@@ -143,7 +143,7 @@ public:
 };
 
 /// Creates a CBC lattice sequence.
-template <Lattice LR, LatType LAT, class GENSEQ>
+template <LatticeType LR, LatEmbed LAT, class GENSEQ>
 CBC<LR, LAT, GENSEQ>
 cbc(LatDef<LR, LAT> baseLat, GENSEQ genSeq)
 { return CBC<LR, LAT, GENSEQ>(std::move(baseLat), std::move(genSeq)); }

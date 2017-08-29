@@ -32,7 +32,7 @@ namespace LatBuilder { namespace GenSeq {
  * Given a small integer \f$x\f$ smaller than the grain \f$n_0\f$, the
  * \f$i\f$-th integer this sequence is given by \f$i n_0 + x\f$.
  */
-template <Lattice LR, class TRAV = Traversal::Forward>
+template <LatticeType LR, class TRAV = Traversal::Forward>
 class Extend :
    public Traversal::Policy<Extend<LR, TRAV>, TRAV> {
 
@@ -116,7 +116,7 @@ public:
    value_type operator[](size_type i) const;
 
 private:
-   template <Lattice, typename> friend class Extend;
+   template <LatticeType, typename> friend class Extend;
 
    value_type m_modulus;
    value_type m_grain;
@@ -132,7 +132,7 @@ private:
 
 namespace LatBuilder { namespace GenSeq {
 
-template <Lattice LR, class TRAV>
+template <LatticeType LR, class TRAV>
 Extend<LR, TRAV>::Extend(
       value_type modulus,
           value_type grain,
@@ -146,7 +146,7 @@ Extend<LR, TRAV>::Extend(
 {
 }
 
-template <Lattice LR, class TRAV>
+template <LatticeType LR, class TRAV>
 auto Extend<LR, TRAV>::operator[](size_type i) const -> value_type
 {
    return LatticeTraits<LR>::ToGenValue(i) * m_grain + m_low;
