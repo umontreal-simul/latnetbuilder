@@ -7,3 +7,4 @@ VERSION
 *.pyo
 .directory
 .Rhistory
+.vscode/
