@@ -37,11 +37,11 @@ namespace LatBuilder {
  *   std::cout << elem << std::endl;
  * \endcode
  */
-template <class BASE, LatType LAT, Compress COMPRESS>
+template <class BASE, LatticeType LR, LatEmbed LAT, Compress COMPRESS>
 class CachedSeq : public BASE {
 public:
    typedef BASE Base;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
+   typedef LatBuilder::Storage<LR, LAT, COMPRESS> Storage;
    typedef typename Storage::value_type value_type;
    typedef typename Storage::size_type size_type;
    typedef typename Storage::const_iterator const_iterator;

@@ -25,18 +25,12 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for size parameters.
  */
+	template <LatticeType LR, LatBuilder::LatEmbed LAT>
 struct SizeParam {
-   template <LatBuilder::LatType LAT>
-   static LatBuilder::SizeParam<LAT> parse(const std::string& str);
+   
+   static LatBuilder::SizeParam<LR, LAT> parse(const std::string& str);
 };
 
-template <>
-LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY> SizeParam::parse(const std::string&);
-template <>
-LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED> SizeParam::parse(const std::string&);
-
-extern template LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY> SizeParam::parse<LatBuilder::LatType::ORDINARY>(const std::string&);
-extern template LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED> SizeParam::parse<LatBuilder::LatType::EMBEDDED>(const std::string&);
 
 }}
 

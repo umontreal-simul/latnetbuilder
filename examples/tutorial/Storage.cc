@@ -22,11 +22,11 @@
 using namespace LatBuilder;
 
 //! [all]
-template <LatType LAT, Compress COMP>
-void test(Modulus n)
+template <LatticeType LA, LatEmbed LAT, Compress COMP>
+void test(typename LatticeTraits<LA>::Modulus modulus)
 {
-   SizeParam<LAT> size(n);
-   Storage<LAT, COMP> storage(size);
+   SizeParam<LA, LAT> size(modulus);
+   Storage<LA, LAT, COMP> storage(size);
    std::cout << "storage name: " << storage.name() << std::endl;
    std::cout << "  size parameter: " << storage.sizeParam() << std::endl;
    std::cout << "  virtual size:   " << storage.virtualSize() << std::endl;
@@ -36,11 +36,15 @@ void test(Modulus n)
 int main()
 {
 
-   Modulus n = 16;
-   test<LatType::ORDINARY, Compress::NONE>(n);
-   test<LatType::EMBEDDED, Compress::NONE>(n);
-   test<LatType::ORDINARY, Compress::SYMMETRIC>(n);
-   test<LatType::EMBEDDED, Compress::SYMMETRIC>(n);
+   uInteger n = 16;
+   Polynomial P = PolynomialFromInt(7);
+   test<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE>(n);
+   test<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE>(n);
+   test<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(n);
+   test<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(n);
+
+   test<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(P);
+   test<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(P);
 
    return 0;
 }

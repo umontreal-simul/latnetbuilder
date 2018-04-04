@@ -34,7 +34,8 @@ std::ostream& operator<<(std::ostream& os, const std::vector<double>& point)
 }
 
 //! [simulate]
-void simulate(EmbeddedLatticePoints lat)
+template<LatBuilder::LatticeType LA>
+void simulate(EmbeddedLatticePoints<LA> lat)
 {
    while (lat.level() <= lat.maxLevel()) {
       std::cout << "==> level " << lat.level() << std::endl;
@@ -46,15 +47,16 @@ void simulate(EmbeddedLatticePoints lat)
 //! [simulate]
 
 //! [search]
-EmbeddedLatticePoints search()
+template<LatBuilder::LatticeType LA>
+EmbeddedLatticePoints<LA> search()
 {
    //! [search inst]
-   LatBuilder::Parser::CommandLine<LatBuilder::LatType::EMBEDDED> cmd;
+   LatBuilder::Parser::CommandLine<LA, LatBuilder::LatEmbed::EMBEDDED> cmd;
    cmd.construction  = "fast-CBC";
    cmd.size          = "2^8";
    cmd.dimension     = "10";
    cmd.figure        = "CU:P2";
-   cmd.weights       = std::vector<std::string>{"product:0.1"};
+   cmd.weights       = std::vector<std::string>{"product:0.1"}; 
    cmd.weightsPowerScale = 1.0;
    cmd.normType      = "2";
    //! [filters]
@@ -71,14 +73,14 @@ EmbeddedLatticePoints search()
 
    //! [return lattice]
    const auto& lat = search->bestLattice();
-   return EmbeddedLatticePoints(lat.sizeParam().base(), lat.sizeParam().maxLevel(), lat.gen());
+   return EmbeddedLatticePoints<LA>(lat.sizeParam().base(), lat.sizeParam().maxLevel(), lat.gen());
    //! [return lattice]
 }
 //! [search]
 
 int main(int argc, const char *argv[])
 {
-   EmbeddedLatticePoints lat = search();
-   simulate(lat);
+   EmbeddedLatticePoints<LatBuilder::LatticeType::ORDINARY> lat = search<LatBuilder::LatticeType::ORDINARY>();
+   simulate<LatBuilder::LatticeType::ORDINARY>(lat);
    return 0;
 }

@@ -35,6 +35,7 @@ public:
 /**
  * Parser for per-level weights.
  */
+template <LatticeType LR>
 struct LevelWeights {
    typedef RealVector result_type;
    /**
@@ -49,9 +50,12 @@ struct LevelWeights {
     */
    static result_type parse(
          const std::string& arg,
-         const SizeParam<LatType::EMBEDDED>& sizeParam
+         const SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
          );
 };
+
+extern template struct LevelWeights<LatticeType::ORDINARY>;
+extern template struct LevelWeights<LatticeType::POLYNOMIAL>;
 
 }}
 

@@ -38,8 +38,8 @@ namespace detail {
    struct IsFastCompatible
    { static constexpr bool value = false; };
 
-   template <Compress COMPRESS>
-   struct IsFastCompatible<GenSeq::CyclicGroup<COMPRESS>> 
+   template <LatticeType LR, Compress COMPRESS>
+   struct IsFastCompatible<GenSeq::CyclicGroup<LR, COMPRESS>> 
    { static constexpr bool value = true; };
 }
 
@@ -52,7 +52,7 @@ namespace detail {
  * Computes the inner product with a second vector for all vectors in the
  * sequence at once.
  */
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 class CoordUniformInnerProdFast {
 
 protected:
@@ -60,9 +60,9 @@ protected:
    typedef typename fftw<Real>::complex_vector FFTComplexVector;
 
 public:
-   typedef Storage<LatType::EMBEDDED, COMPRESS> InternalStorage;
-   typedef CoordUniformStateList<LatType::EMBEDDED, COMPRESS> StateList;
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PerLevelOrder::CYCLIC> InternalStorage;
+   typedef CoordUniformStateList<LR, LatEmbed::EMBEDDED, COMPRESS, PerLevelOrder::CYCLIC> StateList;
+   typedef typename Storage<LR, LAT, COMPRESS>::MeritValue MeritValue;
 
    /**
     * Constructor.
@@ -74,7 +74,7 @@ public:
     */
    template <class K>
    CoordUniformInnerProdFast(
-         Storage<LAT, COMPRESS> storage,
+         Storage<LR, LAT, COMPRESS, PLO> storage,
          const Kernel::Base<K>& kernel
          ):
       m_storage(std::move(storage)),
@@ -87,7 +87,7 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LAT, COMPRESS>& storage() const
+   const Storage<LR, LAT, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -130,10 +130,12 @@ private:
          const boost::numeric::ublas::vector_expression<E>& ve
          ) const
    {
-      // in base 2, on each level, we have 2 circulant half-blocks instead of
-      // a single circulant block
-      if (not internalStorage().symmetric() and internalStorage().sizeParam().base() == 2)
-         throw std::logic_error("not implemented for non-symmetric vectors in base 2");
+      if(LR == LatticeType::ORDINARY){
+        // in base 2, on each level, we have 2 circulant half-blocks instead of
+        // a single circulant block
+        if (not internalStorage().symmetric() and internalStorage().sizeParam().base() == 2)
+           throw std::logic_error("not implemented for non-symmetric vectors in base 2");
+       }
 
       const auto& vec = ve();
       using namespace boost::numeric::ublas;
@@ -161,9 +163,11 @@ private:
          // ratio of the number or natural elements to the number of internal
          // elements, multiplied by normalization
          size_t compressionRatio = 1;
-         if (internalStorage().symmetric() and (itRange - levelRanges().begin()) >= (internalStorage().sizeParam().base() == 2 ? 2 : 1)) {
-            // compressionRatio except if uncompressed level has only one element
-            compressionRatio = 2;
+         if(LR == LatticeType::ORDINARY){
+           if (internalStorage().symmetric() and (itRange - levelRanges().begin()) >= (internalStorage().sizeParam().base() == 2 ? 2 : 1)) {
+              // compressionRatio except if uncompressed level has only one element
+              compressionRatio = 2;
+           }
          }
 
          // multiply in Fourier space
@@ -327,9 +331,9 @@ private:
    InternalStorage asIntenalStorage(const InternalStorage& s)
    { return s; }
 
-   template <LatType L, Compress C>
-   InternalStorage asIntenalStorage(const Storage<L, C>& s)
-   { return InternalStorage(s.sizeParam().numPoints()); }
+   template <LatEmbed L, Compress C, PerLevelOrder P>
+   InternalStorage asIntenalStorage(const Storage<LR, L, C, P>& s)
+   { return InternalStorage(s.sizeParam().modulus()); }
 
 private:
    class CirculantTranspose {
@@ -356,7 +360,7 @@ private:
 
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, LAT, COMPRESS, PLO> m_storage;
    InternalStorage m_internalStorage;
    RealVector m_kernelValues;
    std::vector<boost::numeric::ublas::range> m_levelRanges;

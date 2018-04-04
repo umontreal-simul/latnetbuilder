@@ -21,30 +21,89 @@
 namespace LatBuilder { namespace Parser {
 
 template <>
-LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>
-SizeParam::parse<LatBuilder::LatType::ORDINARY>(const std::string& str)
+LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>
+SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str)
 {
    // try b^p form first
-   auto n = splitPair<Modulus, Level>(str, '^', 0);
+   auto n = splitPair<uInteger, Level>(str, '^', 0);
    if (n.second == 0)
-      return LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>(n.first);
+      return LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>(n.first);
    else
-      return LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY>(intPow(n.first, n.second));
+      return LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>(intPow(n.first, n.second));
 }
 
 template <>
-LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>
-SizeParam::parse<LatBuilder::LatType::EMBEDDED>(const std::string& str)
+LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>
+SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str)
 {
    // try b^p form first
-   auto n = splitPair<Modulus, Level>(str, '^', 0);
+   auto n = splitPair<uInteger, Level>(str, '^', 0);
    if (n.second == 0)
-      return LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>(n.first);
+      return LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>(n.first);
    else
-      return LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED>(n.first, n.second);
+      return LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>(n.first, n.second);
 }
 
-extern template LatBuilder::SizeParam<LatType::ORDINARY> SizeParam::parse<LatType::ORDINARY>(const std::string&);
-extern template LatBuilder::SizeParam<LatType::EMBEDDED> SizeParam::parse<LatType::EMBEDDED>(const std::string&);
+template <>
+LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>
+SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str)
+{
+   
+   auto n = splitPair<std::string, Level>(str, '^', 0);
+   std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
+   try {
+      Polynomial base = boost::lexical_cast<Polynomial>(str_NTLInput);
+      
+      // try b^p form first
+      
+      if (n.second == 0)
+         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>(base);
+      else
+         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>(intPow(base, n.second));
+   }
+   catch (boost::bad_lexical_cast&) {
+      throw ParserError("cannot interpret \"" + n.first + "\" as " + TypeInfo<Polynomial>::name());
+   }
+}
 
+template <>
+LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>
+SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str)
+{
+   auto n = splitPair<std::string, Level>(str, '^', 0);
+   std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
+   try{
+
+      Polynomial base = boost::lexical_cast<Polynomial>(str_NTLInput);
+      // try b^p form first
+      
+      if (n.second == 0)
+         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>(base);
+      else
+         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>(base, n.second);
+   }
+   catch (boost::bad_lexical_cast&) {
+      throw ParserError("cannot interpret \"" + n.first + "\" as " + TypeInfo<Polynomial>::name());
+   }
+}
+
+/*
+template LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE> 
+         LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str);
+
+template LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED> 
+         LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str);
+
+template LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE> 
+         LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str);
+
+template LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED> 
+         LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str);
+
+template struct LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>;
+template struct LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>;
+
+template struct LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>;
+template struct LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>;
+*/
 }}

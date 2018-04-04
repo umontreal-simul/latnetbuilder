@@ -54,6 +54,14 @@ def configure(ctx):
     ctx_check(features='cxx cxxprogram', header_name='fftw3.h')
     ctx_check(features='cxx cxxprogram', lib='fftw3', uselib_store='FFTW')
 
+    # NTL
+    ctx_check(features='cxx cxxprogram',
+            header_name='NTL/vector.h',
+            lib=['ntl', 'gmp'],
+            shlib=ctx.env.LIB_NTL,
+            uselib_store='NTL',
+            mandatory=True)
+
     # Doxygen
     if ctx.options.build_docs:
         ctx.env.BUILD_DOCS = True

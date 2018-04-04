@@ -24,35 +24,41 @@
 
 namespace LatBuilder { namespace Parser {
 
-void MeritFilterList::parse(
-      LatBuilder::MeritFilterList<LatType::ORDINARY>& list,
+template <LatticeType LR>
+void MeritFilterList<LR>::parse(
+      LatBuilder::MeritFilterList<LR, LatEmbed::SIMPLE>& list,
       const std::vector<std::string>& filters,
-      const LatBuilder::SizeParam<LatType::ORDINARY>& sizeParam,
+      const LatBuilder::SizeParam<LR, LatEmbed::SIMPLE>& sizeParam,
       const LatCommon::Weights& weights,
       Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, LatEmbed::SIMPLE>::parse(arg, sizeParam, weights, normType));
 }
 
-void MeritFilterList::parse(
-      LatBuilder::MeritFilterList<LatType::EMBEDDED>& list,
+template <LatticeType LR>
+void MeritFilterList<LR>::parse(
+      LatBuilder::MeritFilterList<LR, LatEmbed::EMBEDDED>& list,
       const std::vector<std::string>& filters,
       const std::vector<std::string>& multilevelFilters,
       const std::string& combiner,
-      const LatBuilder::SizeParam<LatType::EMBEDDED>& sizeParam,
+      const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam,
       const LatCommon::Weights& weights,
       Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, LatEmbed::EMBEDDED>::parse(arg, sizeParam, weights, normType));
 
    for (const auto& arg : multilevelFilters)
-      list.add(MeritFilter::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, LatEmbed::EMBEDDED>::parse(arg, sizeParam, weights, normType));
 
-   list.add(MeritCombiner::parse(combiner, sizeParam));
+   list.add(MeritCombiner<LR>::parse(combiner, sizeParam));
 }
+
+template struct MeritFilterList<LatticeType::ORDINARY> ;
+template struct MeritFilterList<LatticeType::POLYNOMIAL> ;
+
 
 }}

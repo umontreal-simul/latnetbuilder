@@ -16,7 +16,7 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatSeq/Combiner.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/TextStream.h"
 
@@ -25,26 +25,36 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-int main()
-{
-   //! [genSeqs]
-   SizeParam<LatType::ORDINARY> size(8);
-   SizeParam<LatType::ORDINARY> size0(2);
+//! [genSeqs]
+template <LatticeType LA>
+void test(typename LatticeTraits<LA>::Modulus modulus){
+   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);      
+   SizeParam<LA, LatEmbed::SIMPLE> size0(LatticeTraits<LA>::TrivialModulus);   
    Dimension dim = 3;
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Coprime;
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;
    auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dim);
    // consider only 1 for 1st coordinate
    genSeqs[0] = GenSeq::Creator<Coprime>::create(size0);
    //! [genSeqs]
-
    //! [latSeq]
    auto latSeq = LatSeq::combine<CartesianProduct>(size, genSeqs);
-   //! [latSeq]
+
+   std::cout << latSeq << std::endl;
+   
+}
+//! [latSeq]
+
+int main()
+{
+   
 
    //! [output]
-   std::cout << latSeq << std::endl;
+   test<LatticeType::ORDINARY>(8);
    //! [output]
+   //! [poutput]
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
+   //! [poutput]
 
    return 0;
 }

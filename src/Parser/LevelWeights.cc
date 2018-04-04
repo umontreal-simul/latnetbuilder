@@ -18,9 +18,11 @@
 
 namespace LatBuilder { namespace Parser {
 
-auto LevelWeights::parse(
+
+template <LatticeType LR> 
+auto LevelWeights<LR>::parse(
       const std::string& arg,
-      const SizeParam<LatType::EMBEDDED>& sizeParam
+      const SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
       ) -> result_type
 {
    const auto args = splitPair<>(arg, ':');
@@ -40,5 +42,8 @@ auto LevelWeights::parse(
    }
    throw BadLevelWeights(arg);
 }
+
+template struct LevelWeights<LatticeType::ORDINARY>;
+template struct LevelWeights<LatticeType::POLYNOMIAL>;
 
 }}

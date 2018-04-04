@@ -16,29 +16,32 @@
 
 #ifndef EMBEDDED_LATTICE_POINTS_H
 #define EMBEDDED_LATTICE_POINTS_H
-
+#include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 // virtual container for lattice points
+template<LatBuilder::LatticeType LA>
 class EmbeddedLatticePoints {
 public:
    // standard container type definitions
    typedef std::vector<double> value_type;
    typedef size_t size_type;
+   typedef typename LatBuilder::LatticeTraits<LA>::Modulus Modulus;
+   typedef typename LatBuilder::LatticeTraits<LA>::GeneratingVector GeneratingVector;
 
-   EmbeddedLatticePoints(size_type base, size_type maxLevel, std::vector<unsigned long> gen):
+   EmbeddedLatticePoints(Modulus base, size_type maxLevel, GeneratingVector gen):
       m_base(base),
       m_maxLevel(maxLevel),
-      m_intGen(std::move(gen)),
-      m_gen(m_intGen.size())
+      m_gen(std::move(gen))
    { reset(); }
 
    // returns to level 0
-   void reset() { m_level = 0; m_numPoints = 1; updateGen(); }
+   void reset() { m_level = 0; m_numPoints = 1;  m_modulus = Modulus(1); }
 
    // increases the level
-   void extend() { m_level++; m_numPoints *= m_base; updateGen(); }
+   void extend() { m_level++; m_numPoints *= LatBuilder::LatticeTraits<LA>::NumPoints(m_base); m_modulus *= m_base; }
 
    // returns the base for the number of points
-   size_type base() const { return m_base; }
+   Modulus base() const { return m_base; }
 
    // returns the maximum level number
    size_type maxLevel() const { return m_maxLevel; }
@@ -49,9 +52,12 @@ public:
    // returns the total number of points on the current level
    size_type numPoints() const { return m_numPoints; }
 
+   // returns the modulus of the current level
+   Modulus modulus() const { return m_modulus; }
+
    // returns the number of points on the current level but not on previous
    // levels
-   size_type size() const { return numPoints() <= 1 ? numPoints() : (base() - 1) * numPoints() / base(); }
+   size_type size() const { return numPoints() <= 1 ? numPoints() : (LatBuilder::LatticeTraits<LA>::NumPoints(m_base) - 1) * numPoints() / LatBuilder::LatticeTraits<LA>::NumPoints(m_base); }
 
    // returns the lattice dimension
    size_type dimension() const { return m_gen.size(); }
@@ -69,20 +75,42 @@ public:
    }
 
 private:
-   size_type m_base;
+   Modulus m_base;
    size_type m_maxLevel;
-   std::vector<unsigned long> m_intGen;
-   std::vector<double> m_gen;
+   GeneratingVector m_gen;
    size_type m_numPoints;
    size_type m_level;
+   Modulus m_modulus;
 
    size_type map(size_type i) const { return numPoints() <= 1 ? i : (base() + 1) * (i + 1) / base(); }
 
-   void updateGen()
-   {
-      for (size_type j = 0; j < m_gen.size(); j++)
-         m_gen[j] = double(m_intGen[j]) / m_numPoints;
-   }
 };
+
+//================================================================
+template <>
+auto EmbeddedLatticePoints<LatBuilder::LatticeType::ORDINARY>::operator[](size_type i) const -> value_type
+{
+   std::vector<double> point(dimension());
+   for (size_type j = 0; j < point.size(); j++) {
+       unsigned long index = numPoints() <= 1 ? i : (base() + 1) * (i + 1) / base();
+       point[j] = (double)(index * m_gen[j] % numPoints())/numPoints();
+    }
+    return point;
+}
+
+template <>
+auto EmbeddedLatticePoints<LatBuilder::LatticeType::POLYNOMIAL>::operator[](size_type i) const -> value_type
+{
+   std::vector<double> point(dimension());
+   const unsigned long leap = LatBuilder::LatticeTraits<LatBuilder::LatticeType::POLYNOMIAL>::NumPoints(base()) - 1;
+   for (size_type j = 0; j < point.size(); j++) {
+       unsigned long R = i % leap +1;
+       unsigned long Q = i / leap ;
+       LatBuilder::Polynomial h = numPoints() <= 1 ? LatBuilder::PolynomialFromInt(i) : LatBuilder::PolynomialFromInt(Q) * base() + LatBuilder::PolynomialFromInt(R);
+       unsigned long x = LatBuilder::Vm((h * m_gen[j]) % modulus(), modulus());
+       point[j] = (double) (x) / numPoints();
+    }
+    return point;
+}
 
 #endif

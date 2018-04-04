@@ -54,9 +54,9 @@ namespace LatBuilder { namespace MeritSeq {
  * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
-template <LatType LAT, Compress COMPRESS, class WEIGHTS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO , class WEIGHTS>
 class ConcreteCoordUniformState :
-   public CoordUniformState<LAT, COMPRESS> {
+   public CoordUniformState<LR, LAT, COMPRESS, PLO> {
 public:
    /**
     * Constructor.
@@ -68,16 +68,16 @@ public:
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
    ConcreteCoordUniformState(
-         Storage<LAT, COMPRESS> storage,
+         Storage<LR, LAT, COMPRESS, PLO> storage,
          const WEIGHTS& weights
          ):
-      CoordUniformState<LAT, COMPRESS>(std::move(storage)),
+      CoordUniformState<LR, LAT, COMPRESS, PLO>(std::move(storage)),
       m_weights(weights)
    { reset(); }
 
    void reset()
    {
-	  CoordUniformState<LAT, COMPRESS>::reset();
+	  CoordUniformState<LR, LAT, COMPRESS, PLO>::reset();
 	  m_state.clear();
 	  // empty set
 	  m_state[LatCommon::Coordinates()] =
@@ -94,9 +94,9 @@ public:
     *       \quad (\forall \mathfrak u \subseteq \{1,\dots,s-1\}).
     * \f]
     */
-   void update(const RealVector& kernelValues, Modulus gen)
+   void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
    {
-      CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
+      CoordUniformState<LR, LAT, COMPRESS, PLO>::update(kernelValues, gen);
 
       using LatCommon::Coordinates;
 
@@ -159,8 +159,8 @@ public:
 	  return weightedState;
    }
 
-   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
+   std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const WEIGHTS& m_weights;

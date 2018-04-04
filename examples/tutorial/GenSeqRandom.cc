@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/Traversal.h"
 #include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
@@ -29,7 +29,7 @@ int main()
    //! [main]
    //! [types]
    typedef Traversal::Random<LFSR113> Trav;
-   typedef GenSeq::CoprimeIntegers<Compress::SYMMETRIC, Trav> RandomSeq;
+   typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::SYMMETRIC, Trav> RandomSeq;
    //! [types]
 
    size_t r = 4; // 4 random samples
@@ -37,7 +37,7 @@ int main()
    //! [trav]
    Trav trav(r);
    //! [trav]
-   for (Modulus n : {31, 256}) {
+   for (uInteger n : {31, 256}) {
       std::cout << "lattice size: " << n
          << " (" << trav.size() << " random samples)" << std::endl;
       //! [seq]

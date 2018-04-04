@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__SIZE_PARAM_ORDINARY_H
-#define LATBUILDER__SIZE_PARAM_ORDINARY_H
+#ifndef LATBUILDER__SIZE_PARAM_SIMPLE_H
+#define LATBUILDER__SIZE_PARAM_SIMPLE_H
 
 #include "latbuilder/SizeParam.h"
 
@@ -24,20 +24,29 @@ namespace LatBuilder {
 /**
  * Ordinary lattice size parameter.
  */
-template <>
-class SizeParam<LatType::ORDINARY> :
-   public BasicSizeParam<SizeParam<LatType::ORDINARY>> {
-public:
-   SizeParam(Modulus numPoints = 0);
+template <LatticeType LR>
+class SizeParam<LR, LatEmbed::SIMPLE> :
+   public BasicSizeParam<SizeParam<LR, LatEmbed::SIMPLE>> {
 
-   template <LatType L>
-   SizeParam(const SizeParam<L>& other): SizeParam(other.numPoints())
+    typedef SizeParam<LR, LatEmbed::SIMPLE> self_type;
+
+public:
+
+   typedef typename self_type::Modulus Modulus;
+   typedef typename self_type::size_type size_type;
+
+   SizeParam(Modulus modulus = (Modulus)(0));
+
+   template <LatEmbed L>
+   SizeParam(const SizeParam<LR,L>& other): SizeParam(other.modulus())
    {}
 
    /**
     * Returns the value of Euler's totient function.
-    * It is the number of positive integers that are smaller than and coprime
+    * For ordinary lattices It is the number of positive integers that are smaller than and coprime
     * to the number of points.
+    * For polynomial lattices It is the number of polynomials that have smaller degree than and coprime
+    * to the modulus polynomial.
     */
    size_t totient() const;
 
@@ -53,6 +62,7 @@ public:
 
    std::ostream& format(std::ostream& os) const;
 };
+
 
 }
 

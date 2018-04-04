@@ -34,7 +34,8 @@ std::ostream& operator<<(std::ostream& os, const std::vector<double>& point)
 }
 
 //! [simulate]
-void simulate(const LatticePoints& lat)
+template<LatBuilder::LatticeType LA>
+void simulate(const LatticePoints<LA>& lat)
 {
    for (size_t i = 0; i < lat.size(); i++)
       std::cout << "point " << i << ":\t" << lat[i] << std::endl;
@@ -42,11 +43,12 @@ void simulate(const LatticePoints& lat)
 //! [simulate]
 
 //! [search]
-LatticePoints search()
+template<LatBuilder::LatticeType LA>
+LatticePoints<LA> search()
 {
-   LatBuilder::Parser::CommandLine<LatBuilder::LatType::ORDINARY> cmd;
+   LatBuilder::Parser::CommandLine<LA, LatBuilder::LatEmbed::SIMPLE> cmd;
    cmd.construction  = "fast-CBC";
-   cmd.size          = "2^8";
+   cmd.size          = "2^8"; // for example "1011" for polynomial lattice
    cmd.dimension     = "10";
    cmd.figure        = "CU:P2";
    cmd.weights       = std::vector<std::string>{"product:0.1"};
@@ -60,13 +62,13 @@ LatticePoints search()
    std::cout << "MERIT:        " << search->bestMeritValue() << std::endl;
 
    const auto& lat = search->bestLattice();
-   return LatticePoints(lat.sizeParam().numPoints(), lat.gen());
+   return LatticePoints<LA>(lat.sizeParam().modulus(), lat.gen());
 }
 //! [search]
 
 int main(int argc, const char *argv[])
 {
-   LatticePoints lat = search();
-   simulate(lat);
+   LatticePoints<LatBuilder::LatticeType::ORDINARY> lat = search<LatBuilder::LatticeType::ORDINARY>();
+   simulate<LatBuilder::LatticeType::ORDINARY>(lat);
    return 0;
 }

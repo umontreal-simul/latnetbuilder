@@ -41,6 +41,7 @@ public:
 /**
  * Parser for projection-dependent figures of merit.
  */
+template< LatticeType LR>
 struct ProjDepMerit {
 
    struct ParseCoordUniform {
@@ -65,27 +66,58 @@ struct ProjDepMerit {
     * \throws BadProjDepMerit On failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args);
+   
+};
+
+
+
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void ProjDepMerit<LatticeType::ORDINARY>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
    {
       // try coordinate-uniform
       try {
-         Kernel::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<LatticeType::ORDINARY>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
 
       // try spectral
-      if (str == "spectral") {
-         func(
-               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
-               std::forward<ARGS>(args)...
-             );
-         return;
-      }
+        if (str == "spectral") {
+           func(
+                 LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
+                 std::forward<ARGS>(args)...
+               );
+           return;
+        }
+      
 
       throw BadProjDepMerit(str);
    }
-};
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void ProjDepMerit<LatticeType::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   {
+      // try coordinate-uniform
+      try {
+         Kernel<LatticeType::POLYNOMIAL>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         return;
+      }
+      catch (BadKernel& e) {}
+
+      
+      
+
+      throw BadProjDepMerit(str);
+   }
+
+/*
+extern template struct ProjDepMerit<LatticeType::ORDINARY>;
+extern template struct ProjDepMerit<LatticeType::POLYNOMIAL>;
+*/
 
 }}
 

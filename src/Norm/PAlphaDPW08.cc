@@ -118,10 +118,10 @@ PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights, 
    m_weights(weights)
 {}
 
-template <LatType L>
+template <LatticeType LR, LatEmbed L>
 Real PAlphaDPW08::value(
       Real lambda,
-      const SizeParam<L>& sizeParam,
+      const SizeParam<LR, L>& sizeParam,
       Dimension dimension,
       Real norm
       ) const
@@ -142,7 +142,10 @@ Real PAlphaDPW08::value(
    return pow(norm * val, 1.0 / lambda);
 }
 
-template Real PAlphaDPW08::value<LatType::ORDINARY>(Real, const SizeParam<LatType::ORDINARY>&, Dimension, Real) const;
-template Real PAlphaDPW08::value<LatType::EMBEDDED>(Real, const SizeParam<LatType::EMBEDDED>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::ORDINARY, LatEmbed::SIMPLE>(Real, const SizeParam<LatticeType::ORDINARY, LatEmbed::SIMPLE>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::ORDINARY, LatEmbed::EMBEDDED>(Real, const SizeParam<LatticeType::ORDINARY, LatEmbed::EMBEDDED>&, Dimension, Real) const;
+
+template Real PAlphaDPW08::value<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>(Real, const SizeParam<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>(Real, const SizeParam<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>&, Dimension, Real) const;
 
 }}

@@ -16,7 +16,7 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatSeq/Korobov.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -24,20 +24,28 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-int main()
-{
-   //! [main]
-   SizeParam<LatType::ORDINARY> size(7);
+//! [main]
+template<LatticeType LA>
+void test(typename LatticeTraits<LA>::Modulus modulus){
+   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
    Dimension dim = 3;
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Coprime;
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;
 
    //! [latSeq]
    auto latSeq = LatSeq::korobov(size, Coprime(size), dim);
    //! [latSeq]
 
    std::cout << latSeq << std::endl;
-   //! [main]
+}
+//! [main]
+
+int main()
+{
+   //! [output]
+   test<LatticeType::ORDINARY>(7);
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
+   //! [output]
 
    return 0;
 }

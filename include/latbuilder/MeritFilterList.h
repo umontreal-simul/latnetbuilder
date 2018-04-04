@@ -31,39 +31,43 @@ namespace LatBuilder {
 /**
  * Container class for merit filters.
  */
-template <LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 class BasicMeritFilterList;
 
 /**
  * Policy class template for MeritFilterList.
  */
-template <LatType>
+template <LatticeType, LatEmbed>
 class MeritFilterListPolicy;
 
-template <LatType>
+template <LatticeType, LatEmbed>
 class MeritFilterList;
 
 /**
  * Formats and outputs \c filters to \c os.
  */
-std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LatType::ORDINARY>&);
-std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LatType::EMBEDDED>&);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, LatEmbed::SIMPLE>&);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, LatEmbed::EMBEDDED>&);
 
 /**
  * Formats and outputs \c filters to \c os.
  */
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatType::ORDINARY>& filters);
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatType::EMBEDDED>& filters);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, LatEmbed::SIMPLE>& filters);
+template< LatticeType LR>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, LatEmbed::EMBEDDED>& filters);
 
 
 //========================================================================
 
 
-template <LatType LAT>
+template <LatticeType LR, LatEmbed LAT>
 class BasicMeritFilterList {
 public:
 
-   typedef BasicMeritFilter<LAT> Filter;
+   typedef BasicMeritFilter<LR, LAT> Filter;
    typedef typename Filter::InputMeritValue  MeritValue;
    typedef typename Filter::LatDef           LatDef;
    typedef std::list<std::unique_ptr<Filter>> FilterList;
@@ -118,8 +122,10 @@ private:
    FilterList m_filters;
 };
 
-extern template class BasicMeritFilterList<LatType::ORDINARY>;
-extern template class BasicMeritFilterList<LatType::EMBEDDED>;
+extern template class BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>;
+extern template class BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::EMBEDDED>;
+extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>;
+extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>;
 
 
 
@@ -166,10 +172,10 @@ extern template class BasicMeritFilterList<LatType::EMBEDDED>;
  * call \c base() to trace back the original sequence.  These are the main
  * reasons why there are filters in Lattice Builder.
  */
-template <LatType LAT>
-class MeritFilterList : public MeritFilterListPolicy<LAT> {
+template <LatticeType LR, LatEmbed LAT>
+class MeritFilterList : public MeritFilterListPolicy<LR, LAT> {
 public:
-   typedef MeritFilterListPolicy<LAT> Policy;
+   typedef MeritFilterListPolicy<LR, LAT> Policy;
 
    /**
     * Output sequence from the filters.
@@ -219,8 +225,8 @@ public:
       value_type element(const typename Base::const_iterator& it, const IT& it2, const T&) const
       { return element(it, it2.base()); }
 
-      template <class IT, LatType L>
-      value_type element(const typename Base::const_iterator& it, const IT& it2, const LatDef<L>&) const
+      template <class IT, LatEmbed L>
+      value_type element(const typename Base::const_iterator& it, const IT& it2, const LatDef<LR, L>&) const
       { return m_parent.applyFilters(*it, *it2); }
    };
 
@@ -242,36 +248,36 @@ public:
 /**
  * Specialization of MeritFilterListPolicy for ordinary lattices.
  */
-template <>
-class MeritFilterListPolicy<LatType::ORDINARY> :
-   public BasicMeritFilterList<LatType::ORDINARY> {
+template <LatticeType LR>
+class MeritFilterListPolicy<LR, LatEmbed::SIMPLE> :
+   public BasicMeritFilterList<LR, LatEmbed::SIMPLE> {
 
-   typedef BasicMeritFilterList<LatType::ORDINARY> OBase;
+   typedef BasicMeritFilterList<LR, LatEmbed::SIMPLE> OBase;
 
 public:
-   template <LatType L>
+   template <LatEmbed L>
    typename OBase::OnReject& onReject() const
    { return OBase::onReject(); }
 
 protected:
-   Real applyFilters(Real merit, const LatDef& lat) const;
+   Real applyFilters(Real merit, const LatDef<LR,LatEmbed::SIMPLE>& lat) const;
 };
 
 
 /**
  * Specialization of MeritFilterListPolicy for embedded lattices.
  */
-template <>
-class MeritFilterListPolicy<LatType::EMBEDDED> :
-   public BasicMeritFilterList<LatType::ORDINARY>,
-   public BasicMeritFilterList<LatType::EMBEDDED> {
+template <LatticeType LR>
+class MeritFilterListPolicy<LR, LatEmbed::EMBEDDED> :
+   public BasicMeritFilterList<LR, LatEmbed::SIMPLE>,
+   public BasicMeritFilterList<LR, LatEmbed::EMBEDDED> {
 
-   typedef BasicMeritFilterList<LatType::ORDINARY> OBase;
-   typedef BasicMeritFilterList<LatType::EMBEDDED> EBase;
+   typedef BasicMeritFilterList<LR, LatEmbed::SIMPLE> OBase;
+   typedef BasicMeritFilterList<LR, LatEmbed::EMBEDDED> EBase;
 
 public:
 
-   typedef BasicMeritFilter<LatType::EMBEDDED, LatType::ORDINARY> Combiner;
+   typedef BasicMeritFilter<LR, LatEmbed::EMBEDDED, LatEmbed::SIMPLE> Combiner;
 
    /**
     * Returns \c true if and only if the list of filters is empty.
@@ -293,17 +299,17 @@ public:
    void add(std::unique_ptr<Combiner> combiner)
    { m_combiner = std::move(combiner); }
 
-   void add(std::unique_ptr<OBase::Filter> filter)
+   void add(std::unique_ptr<typename OBase::Filter> filter)
    { OBase::add(std::move(filter)); }
 
-   void add(std::unique_ptr<EBase::Filter> filter)
+   void add(std::unique_ptr<typename EBase::Filter> filter)
    { EBase::add(std::move(filter)); }
 
    //@}
 
-   template <LatType L>
-   typename BasicMeritFilterList<L>::OnReject& onReject() const
-   { return BasicMeritFilterList<L>::onReject(); }
+   template <LatEmbed L>
+   typename BasicMeritFilterList<LR, L>::OnReject& onReject() const
+   { return BasicMeritFilterList<LR, L>::onReject(); }
 
    const Combiner& combiner() const
    { 
@@ -318,6 +324,11 @@ protected:
 private:
    std::unique_ptr<Combiner> m_combiner;
 };
+
+extern template class MeritFilterListPolicy<LatticeType::ORDINARY, LatEmbed::SIMPLE>;
+extern template class MeritFilterListPolicy<LatticeType::ORDINARY, LatEmbed::EMBEDDED>;
+extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>;
+extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>;
 
 }
 

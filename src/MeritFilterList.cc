@@ -25,8 +25,8 @@ namespace {
    { merit = boost::numeric::ublas::scalar_vector<Real>(merit.size(), value); }
 }
 
-template <LatType LAT>
-auto BasicMeritFilterList<LAT>::apply(
+template <LatticeType LR, LatEmbed LAT>
+auto BasicMeritFilterList<LR, LAT>::apply(
       MeritValue merit,
       const LatDef& lat
       ) const -> MeritValue
@@ -42,15 +42,23 @@ auto BasicMeritFilterList<LAT>::apply(
    return merit;
 }
 
-template class BasicMeritFilterList<LatType::ORDINARY>;
-template class BasicMeritFilterList<LatType::EMBEDDED>;
+template class BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>;
+template class BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::EMBEDDED>;
+template class BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>;
+template class BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>;
 
-
-Real MeritFilterListPolicy<LatType::ORDINARY>::applyFilters(Real merit, const LatDef& lat) const
+template< LatticeType LR>
+Real MeritFilterListPolicy<LR, LatEmbed::SIMPLE>::applyFilters(Real merit, const LatDef<LR,LatEmbed::SIMPLE>& lat) const
 { return OBase::apply(merit, lat); }
 
-Real MeritFilterListPolicy<LatType::EMBEDDED>::applyFilters(const RealVector& merit, const typename EBase::LatDef& lat) const
+template< LatticeType LR>
+Real MeritFilterListPolicy<LR, LatEmbed::EMBEDDED>::applyFilters(const RealVector& merit, const typename EBase::LatDef& lat) const
 { return OBase::apply(combiner()(EBase::apply(merit, lat), lat), lat); }
+
+template class MeritFilterListPolicy<LatticeType::ORDINARY, LatEmbed::SIMPLE>;
+template class MeritFilterListPolicy<LatticeType::ORDINARY, LatEmbed::EMBEDDED>;
+template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>;
+template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>;
 
 namespace {
    template <typename LIST>
@@ -66,23 +74,55 @@ namespace {
    }
 }
 
-std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatType::ORDINARY>& filters)
+template<>
+std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>& filters)
 { filtersFormatHelper(os, filters.filters(), "scalar filters"); return os; }
 
-std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatType::EMBEDDED>& filters)
+template<>
+std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::EMBEDDED>& filters)
 { filtersFormatHelper(os, filters.filters(), "multilevel filters"); return os; }
 
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatType::ORDINARY>& filters)
-{ return os << dynamic_cast<const BasicMeritFilterList<LatType::ORDINARY>&>(filters); return os; }
+template<>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>& filters)
+{ return os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>&>(filters); return os; }
 
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatType::EMBEDDED>& filters)
+template<>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::ORDINARY, LatEmbed::EMBEDDED>& filters)
 {
-   os << dynamic_cast<const BasicMeritFilterList<LatType::ORDINARY>&>(filters);
+   os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::SIMPLE>&>(filters);
    os << ", ";
    os << "combiner=" << filters.combiner().name();
    os << ", ";
-   os << dynamic_cast<const BasicMeritFilterList<LatType::EMBEDDED>&>(filters);
+   os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, LatEmbed::EMBEDDED>&>(filters);
    return os;
 }
+
+//===============================================================================================================
+
+template<>
+std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>& filters)
+{ filtersFormatHelper(os, filters.filters(), "scalar filters"); return os; }
+
+template<>
+std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>& filters)
+{ filtersFormatHelper(os, filters.filters(), "multilevel filters"); return os; }
+
+template<>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>& filters)
+{ return os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>&>(filters); return os; }
+
+template<>
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>& filters)
+{
+   os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>&>(filters);
+   os << ", ";
+   os << "combiner=" << filters.combiner().name();
+   os << ", ";
+   os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>&>(filters);
+   return os;
+}
+
+
+
 
 }

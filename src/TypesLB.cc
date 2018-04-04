@@ -15,10 +15,33 @@
 // limitations under the License.
 
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder {
 
-std::ostream& operator<<(std::ostream& os, LatType latType)
-{ return os << (latType == LatType::EMBEDDED ? "embedded" : "ordinary"); }
+std::ostream& operator<<(std::ostream& os, LatEmbed latType)
+{ return os << (latType == LatEmbed::EMBEDDED ? "embedded" : "ordinary"); }
+//============================================================================================================================================
 
-}
+uInteger LatticeTraits<LatticeType::ORDINARY>::ToIndex(const LatticeTraits<LatticeType::ORDINARY>::GenValue& value) {return value;}
+
+LatticeTraits<LatticeType::ORDINARY>::GenValue LatticeTraits<LatticeType::ORDINARY>::ToGenValue(const uInteger& index) {return index;}
+
+uInteger LatticeTraits<LatticeType::ORDINARY>::NumPoints(const LatticeTraits<LatticeType::ORDINARY>::Modulus& modulus){return modulus ;}
+
+uInteger LatticeTraits<LatticeType::ORDINARY>::ToKernelIndex(const size_t& index, const LatticeTraits<LatticeType::ORDINARY>::Modulus& modulus){return index ;}
+
+//=================================================================================================================================================
+
+const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus LatticeTraits<LatticeType::POLYNOMIAL>::TrivialModulus = Polynomial(INIT_MONO,1);
+
+uInteger LatticeTraits<LatticeType::POLYNOMIAL>::ToIndex(const LatticeTraits<LatticeType::POLYNOMIAL>::GenValue& value) {return IndexOfPolynomial(value);}
+
+LatticeTraits<LatticeType::POLYNOMIAL>::GenValue LatticeTraits<LatticeType::POLYNOMIAL>::ToGenValue(const uInteger& index) {return PolynomialFromInt(index);}
+
+uInteger LatticeTraits<LatticeType::POLYNOMIAL>::NumPoints(const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus& modulus){return intPow(2,deg(modulus));}
+
+uInteger LatticeTraits<LatticeType::POLYNOMIAL>::ToKernelIndex(const size_t& index, const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus& modulus)
+	{return Vm(PolynomialFromInt(index),modulus) ;}
+
+} // namespace

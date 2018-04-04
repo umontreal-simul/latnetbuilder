@@ -38,10 +38,13 @@ namespace LatBuilder { namespace MeritSeq {
  * of RealVector.  This is the cost for making update() a virtual function: it
  * cannot be a template.
  */
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformState {
 public:
-   CoordUniformState(Storage<LAT, COMPRESS> storage):
+
+  
+
+   CoordUniformState(Storage<LR, LAT, COMPRESS, PLO> storage):
       m_storage(std::move(storage)),
       m_dimension(0)
    {}
@@ -66,7 +69,7 @@ public:
     *
     * This increases the internal dimension counter.
     */
-   virtual void update(const RealVector& kernelValues, Modulus gen)
+   virtual void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
    { m_dimension++; }
 
    /**
@@ -77,7 +80,7 @@ public:
    /**
     * Returns a pointer to the storage configuration.
     */
-   const Storage<LAT, COMPRESS>& storage() const
+   const Storage<LR, LAT, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -92,7 +95,7 @@ public:
    virtual std::unique_ptr<CoordUniformState> clone() const = 0;
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, LAT, COMPRESS, PLO> m_storage;
    Dimension m_dimension;
 };
 

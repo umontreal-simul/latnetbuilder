@@ -14,35 +14,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/SizeParam.h"
-#include "latbuilder/Util.h"
+#ifndef LATBUILDER__KERNEL__R_PLR_H
+#define LATBUILDER__KERNEL__R_PLR_H
 
-namespace LatBuilder {
+#include "latbuilder/Kernel/Base.h"
+#include "latbuilder/Kernel/FunctorAdaptor.h"
+#include "latbuilder/Functor/RPLR.h"
 
-SizeParam<LatType::ORDINARY>::SizeParam(Modulus numPoints):
-   BasicSizeParam<SizeParam<LatType::ORDINARY>>(numPoints)
-{}
+namespace LatBuilder { namespace Kernel {
 
-size_t
-SizeParam<LatType::ORDINARY>::totient() const
-{
-   auto n = numPoints();
-   for (const auto& p : LatBuilder::primeFactors(n))
-      n = n * (p - 1) / p;
-   return n;
-}
+class RPLR : public FunctorAdaptor<Functor::RPLR> {
+public:
+   RPLR():
+	  FunctorAdaptor<Functor>(Functor())
+   {}
 
-void
-SizeParam<LatType::ORDINARY>::normalize(Real& merit) const
-{ merit /= numPoints(); }
+   };
 
-void
-SizeParam<LatType::ORDINARY>::normalize(RealVector& merit) const
-{ merit /= numPoints(); }
+}}
 
-std::ostream&
-SizeParam<LatType::ORDINARY>::format(std::ostream& os) const
-{ return os << numPoints(); }
-
-}
-
+#endif

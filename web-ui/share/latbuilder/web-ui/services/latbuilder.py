@@ -86,9 +86,14 @@ class LatBuilderProcess:
             combiner=None,
             repeat=None):
 
+        if lattype == 'embedded':
+            embed = 'true'
+        else:
+            embed = 'false'
         command = [LATBUILDER,
-                '--lattice-type', lattype,
-                '--size', str(size),
+                'lattice-type', 'ordinary',
+                '--embedded-lattice', embed,
+                '--modulus', str(size),
                 '--dimension', str(dimension),
                 '--norm-type', str(normtype),
                 '--figure-of-merit', merit,

@@ -22,12 +22,12 @@ namespace LatBuilder { namespace MeritSeq {
 // OrderDependentWeights
 //========================================================================
 
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::OrderDependentWeights>::
+ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::OrderDependentWeights>::
 reset()
 {
-   CoordUniformState<LAT, COMPRESS>::reset();
+   CoordUniformState<LR, LAT, COMPRESS, PLO>::reset();
    m_state.clear();
    // order 0
    m_state.push_back(RealVector(this->storage().size(), 1.0));
@@ -35,12 +35,12 @@ reset()
 
 //===========================================================================
 
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::OrderDependentWeights>::
-update(const RealVector& kernelValues, Modulus gen)
+ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::OrderDependentWeights>::
+update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 {
-   CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
+   CoordUniformState<LR, LAT, COMPRESS, PLO>::update(kernelValues, gen);
 
    auto stridedKernelValues = this->storage().strided(kernelValues, gen);
 
@@ -57,9 +57,9 @@ update(const RealVector& kernelValues, Modulus gen)
 
 //===========================================================================
 
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
-ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::OrderDependentWeights>::
+ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::OrderDependentWeights>::
 weightedState() const
 {
    using LatCommon::Coordinates;
@@ -80,9 +80,15 @@ weightedState() const
    return weightedState;
 }
 
-template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::OrderDependentWeights>;
-template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::OrderDependentWeights>;
-template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::OrderDependentWeights>;
-template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::OrderDependentWeights>;
+
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::OrderDependentWeights>;
+
+
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
 
 }}

@@ -27,14 +27,14 @@
 namespace LatBuilder { namespace MeritSeq {
 
 // forward declaration
-template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUniformState;
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS , PerLevelOrder PLO, class WEIGHTS> class ConcreteCoordUniformState;
 
 /**
  * Implementation of CoordUniformState for POD weights.
  */
-template <LatType LAT, Compress COMPRESS>
-class ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::PODWeights> :
-   public CoordUniformState<LAT, COMPRESS> {
+template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+class ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::PODWeights> :
+   public CoordUniformState<LR, LAT, COMPRESS, PLO> {
 public:
    /**
     * Constructor.
@@ -46,10 +46,10 @@ public:
     * \param weights       POD weights
     */
    ConcreteCoordUniformState(
-         const Storage<LAT, COMPRESS>& storage,
+         const Storage<LR, LAT, COMPRESS, PLO>& storage,
          const LatCommon::PODWeights& weights
          ):
-      CoordUniformState<LAT, COMPRESS>(storage),
+      CoordUniformState<LR, LAT, COMPRESS, PLO>(storage),
       m_weights(weights)
    { reset(); }
 
@@ -64,7 +64,7 @@ public:
     *       \boldsymbol p_{s-1,\ell} + \boldsymbol\omega_s \odot \boldsymbol p_{s-1,\ell-1}.
     * \f]
     */
-   void update(const RealVector& kernelValues, Modulus gen);
+   void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen);
 
    /**
     * \copydoc CoordUniformState::weightedState()
@@ -77,8 +77,8 @@ public:
    RealVector weightedState() const;
 
    /// \copydoc CoordUniformState::clone()
-   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
+   std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const LatCommon::PODWeights& m_weights;
@@ -87,11 +87,17 @@ private:
    std::vector<RealVector> m_state;
 };
 
-extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::PODWeights>;
-extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::PODWeights>;
-extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::PODWeights>;
-extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::PODWeights>;
 
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatCommon::PODWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,       LatCommon::PODWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  LatCommon::PODWeights>;
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,       LatCommon::PODWeights>;
+
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
 }}
 
 #endif

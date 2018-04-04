@@ -80,7 +80,7 @@ public:
    /**
     * Returns the one-dimensional function evaluated at \c x.
     */
-   result_type operator()(const value_type& x, Modulus n = 0) const
+   result_type operator()(const value_type& x, uInteger n = 0) const
    { return m_scaling * m_bernoulli(x); }
 
    std::string name() const
