@@ -15,103 +15,80 @@
 // limitations under the License.
 
 #ifndef DIGITAL_NET_DIGITAL_NET_H
-#define DIGITAL_NET_DIGITAL_NET__H
+#define DIGITAL_NET_DIGITAL_NET_H
 #include "latbuilder/Types.h"
 #include "latbuilder/Util.h"
-#include <NTL/mat_ZZ_p>
-#include <NTL/mat_GF2>
+#include "NTL/mat_ZZ_p.h"
+#include "NTL/mat_GF2.h"
 
 namespace LatBuilder { namespace DigitalNet {
 
-template <DERIVED, uInteger BASE>
+typedef std::vector<std::vector<short>> GeneratingMatrix;
+
+typedef size_t size_type;
+
+template <typename DERIVED, uInteger BASE>
 class DigitalNet {
-    public:
-        typedef size_t size_type;
-        typedef NTL::mat_ZZ_p GeneratorMatrix;
     
-    DigitalNet(size_type nb_columns, size_type nb_rows, std::vector<GeneratorMatrix> generatorMatrices):
-      m_base(BASE),
-      m_rows(nb_rows),
-      m_columns(nb_colums),
-      m_numPoints(intPow(BASE, m_columns)),
-      m_generatorMatrices(std::move(generatorMatrices))
-    {}
-
+   public:
    // returns the base of the digital net
-   uInteger base() const { return m_base; } 
+   uInteger base() const { return derived().base(); } 
 
    // returns the modulus of the digital net
-   size_type numColumns() const { return m_columns; }
+   size_type numColumns() const { return derived().numColumns(); }
 
    // returns the modulus of the digital net
-   size_type numRows() const { return m_rows; }
+   size_type numRows() const { return derived().numRows(); }
 
    // returns the number of points of the digital net
-   size_type numPoints() const { return m_numPoints; }
+   size_type numPoints() const { return derived().numPoints(); }
 
    // returns the number of points of the digital net
-   size_type size() const { return m_numPoints; }
+   size_type size() const { return numPoints(); }
 
    // returns the dimension of the digital net
-   size_type dimension() const { return m_generatorMatrices.size(); }
+   size_type dimension() const { return derived().dimension(); }
 
+   std::vector<GeneratingMatrix> generatingMatrices() const {return derived().generatingMatrices(); }
+
+    protected:
+        DigitalNet() = default;
 
     private:
-       uInteger m_base;
-       size_type m_rows;
-       size_type m_columns;
-       size_type m_numPoints;
-       std::vector<GeneratorMatrix> m_generatorMatrices;
 
-       DERIVED& derived(){
-           return static_cast<DERIVED&>*this
-       }
+        DERIVED& derived()
+        { return static_cast<DERIVED&>(*this); }
+
+        const DERIVED& derived() const
+        { return static_cast<const DERIVED&>(*this); }
+}
+;
+
+template <typename DERIVED>
+std::vector<std::vector<uInteger>> rolledGeneratingMatrices(const DigitalNet<DERIVED,2>& net)
+{
+    std::vector<std::vector<uInteger>> res;
+    std::vector<GeneratingMatrix> matrices = net.generatingMatrices();
+    auto m = net.numColumns();
+    auto s = net.dimension();
+    uInteger acc;
+
+    for (int i = 0; i<s; ++i)
+    {
+        std::vector<uInteger> tmp;
+        for(int j = 0; j < net.numRows(); ++j)
+        {
+            acc = 0;
+            for(int k = 0; k<m; ++k){
+                acc += matrices[i][j][k] << (m-k-1);
+            }
+            tmp.push_back(acc);
+        }
+        res.push_back(tmp);
+    }
+    return res;
 }
 
-template <DERIVED>
-class DigitalNet<DERIVED, uInteger 2> {
-    public:
-        typedef size_t size_type;
-        typedef NTL::mat_GF2 GeneratorMatrix;
-    
-    DigitalNet(size_type nb_columns, size_type nb_rows, std::vector<GeneratorMatrix> generatorMatrices):
-      m_base(2),
-      m_rows(nb_rows),
-      m_columns(nb_colums),
-      m_numPoints(intPow(2, m_columns)),
-      m_generatorMatrices(std::move(generatorMatrices))
-    {}
-
-   // returns the base of the digital net
-   uInteger base() const { return m_base; } 
-
-   // returns the modulus of the digital net
-   size_type numColumns() const { return m_columns; }
-
-   // returns the modulus of the digital net
-   size_type numRows() const { return m_rows; }
-
-   // returns the number of points of the digital net
-   size_type numPoints() const { return m_numPoints; }
-
-   // returns the number of points of the digital net
-   size_type size() const { return m_numPoints; }
-
-   // returns the dimension of the digital net
-   size_type dimension() const { return m_generatorMatrices.size(); }
-
-
-    private:
-       uInteger m_base;
-       size_type m_rows;
-       size_type m_columns;
-       size_type m_numPoints;
-       std::vector<GeneratorMatrix> m_generatorMatrices;
-
-       DERIVED& derived(){
-           return static_cast<DERIVED&>*this
-       };
-};
 }}
 
 #endif

@@ -14,26 +14,66 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SOBOL_NET_H
-#define SOBOL_NET__H
+#ifndef DIGITAL_NET_SOBOL_NET_H
+#define DIGITAL_NET_SOBOL_NET_H
 
-#include "latbuilder/DigitalNet.h"
+#include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
+#include "latbuilder/DigitalNet/DigitalNet.h"
 
 namespace LatBuilder { namespace DigitalNet {
 
-typename DigitalNet<DERIVED,2>::GeneratorMatrix generatorMatrices
+typedef uInteger Modulus;
 
-template <>
-class Sobol : public DigitalNet<Sobol, 2> {
+typedef std::pair<uInteger,uInteger> PrimitivePolynomial;
+
+class SobolNet : public DigitalNet<SobolNet,2>{
 
     public:
-     Sobol(Modulus modulus, std::vector<std::vector<uiInteger>> directionNumbers):
-       DigitalNet<Sobol,2>(modulus,modulus,directionNumbersToGeneratingMatrices(directionNumbers)),
-       m_directionNumbers(std::move(directionNumbers))
-       ;
-};
+      SobolNet(Modulus modulus, uInteger dimension, std::vector<std::vector<uInteger>> directionNumbers):
+        m_base(2),
+        m_dimension(dimension),
+        m_modulus(modulus),
+        m_numPoints(intPow(2,modulus)),
+        m_directionNumbers(std::move(directionNumbers))
+      {};
+      
+      uInteger base() const { return m_base; } 
 
+      // returns the modulus of the digital net
+      size_type modulus() const { return m_modulus; }
 
+      // returns the modulus of the digital net
+      size_type numColumns() const { return m_modulus; }
+
+      // returns the modulus of the digital net
+      size_type numRows() const { return m_modulus; }
+
+      // returns the number of points of the digital net
+      size_type numPoints() const { return m_numPoints; }
+
+      // returns the dimension of the digital net
+      size_type dimension() const { return m_dimension; }
+
+      // TO IMPLEMENT
+      static PrimitivePolynomial nthPrimitivePolynomial(uInteger n);
+
+      static uInteger nthPrimitivePolynomialDegree(uInteger n){
+        return nthPrimitivePolynomial(n).first;
+      }
+
+      // TO IMPLEMENT   
+      std::vector<GeneratingMatrix> generatingMatrices() const;
+
+      // TO IMPLEMENT
+      static GeneratingMatrix generatingMatrix(uInteger coord, Modulus m, std::vector<uInteger> directionNumbers);
+
+    private:
+      uInteger m_base;
+      size_type m_dimension;
+      size_type m_modulus;
+      size_type m_numPoints;
+      std::vector<std::vector<uInteger>> m_directionNumbers;  
+      };
 }}
-
 #endif
