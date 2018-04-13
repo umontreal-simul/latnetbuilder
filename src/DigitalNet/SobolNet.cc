@@ -102,6 +102,9 @@ GeneratingMatrix  SobolNet::generatingMatrix(uInteger coord, Modulus m, std::vec
     return tmp;
 }
 
+GeneratingMatrix SobolNet::generatingMatrix(size_type dim) const {
+    return SobolNet::generatingMatrix(dim,modulus(),m_directionNumbers[dim-1]);
+}
 
 std::vector<GeneratingMatrix> SobolNet::generatingMatrices() const {
     std::vector<GeneratingMatrix> res;

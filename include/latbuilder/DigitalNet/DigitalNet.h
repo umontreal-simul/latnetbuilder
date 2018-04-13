@@ -18,8 +18,6 @@
 #define DIGITAL_NET_DIGITAL_NET_H
 #include "latbuilder/Types.h"
 #include "latbuilder/Util.h"
-#include "NTL/mat_ZZ_p.h"
-#include "NTL/mat_GF2.h"
 
 namespace LatBuilder { namespace DigitalNet {
 
@@ -50,6 +48,8 @@ class DigitalNet {
    size_type dimension() const { return derived().dimension(); }
 
    std::vector<GeneratingMatrix> generatingMatrices() const {return derived().generatingMatrices(); }
+
+   GeneratingMatrix generatingMatrix(size_type dim) const {return derived().generatingMatrix(dim); }
 
     protected:
         DigitalNet() = default;

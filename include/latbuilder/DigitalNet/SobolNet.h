@@ -55,17 +55,16 @@ class SobolNet : public DigitalNet<SobolNet,2>{
       // returns the dimension of the digital net
       size_type dimension() const { return m_dimension; }
 
-      // TO IMPLEMENT
       static PrimitivePolynomial nthPrimitivePolynomial(uInteger n);
 
       static uInteger nthPrimitivePolynomialDegree(uInteger n){
         return nthPrimitivePolynomial(n).first;
       }
-
-      // TO IMPLEMENT   
+ 
       std::vector<GeneratingMatrix> generatingMatrices() const;
 
-      // TO IMPLEMENT
+      GeneratingMatrix generatingMatrix(size_type dim) const;
+
       static GeneratingMatrix generatingMatrix(uInteger coord, Modulus m, std::vector<uInteger> directionNumbers);
 
     private:
