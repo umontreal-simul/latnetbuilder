@@ -14,27 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/DigitalNet.h"
-#include "latbuilder/DigitalNet/SobolNet.h"
-#include "latbuilder/Types.h"
+#include <iostream>
+#include "latbuilder/DigitalNet/Row.h"
 
 using namespace LatBuilder::DigitalNet;
 
-typedef LatBuilder::uInteger uInteger;
-
-int main(int argc, const char *argv[])
-{
-    std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};
-    int m = 10;
-    int s = 6;
-    auto test = SobolNet(m,s,directionNumbers);
-
-    std::cout << test.generatingMatrix(1) << std::endl;
-    std::cout << test.generatingMatrix(2) << std::endl;
-    std::cout << test.generatingMatrix(3) << std::endl;
-    std::cout << test.generatingMatrix(4) << std::endl;
-    std::cout << test.generatingMatrix(5) << std::endl;
-    std::cout << test.generatingMatrix(6) << std::endl;
+int main(){
+    Row l("100");
+    Row l2(4, 13);
+    std::cout <<  l << std::endl;
+    std::cout <<  l2 << std::endl;
+    std::cout <<  l[0] << std::endl;
     return 0;
+    Row l3 = l2;
+    Row l4 = (Row) (l ^ l2);
 }
-

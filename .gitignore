@@ -8,3 +8,4 @@ VERSION
 .directory
 .Rhistory
 .vscode/
+*.txt

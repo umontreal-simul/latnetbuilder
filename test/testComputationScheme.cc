@@ -36,18 +36,24 @@ struct dummyMethod{
     }
 };
 
+struct MaxFigure{
+    void updateFigure(double& acc, int tValue, double weight){
+        acc = std::max(acc,tValue*weight);
+    }
+};
+
 int main(int argc, const char *argv[])
 {
     int lastDimension = 6;
     int maximalCardinality = 4;
 
-    auto foo =  ComputationScheme<dummyWeights,dummyMethod>(lastDimension,maximalCardinality,dummyWeights());
+    auto foo =  ComputationScheme<dummyWeights,dummyMethod,MaxFigure>(lastDimension,maximalCardinality,dummyWeights());
 
     std::cout << foo;
 
     foo.setTValuesBestNet();
 
-    auto foo2 = ComputationScheme<dummyWeights,dummyMethod>(lastDimension+1,maximalCardinality,dummyWeights(),foo);
+    auto foo2 = ComputationScheme<dummyWeights,dummyMethod,MaxFigure>(lastDimension+1,maximalCardinality,dummyWeights(),foo);
 
     std::cout << foo2;
 

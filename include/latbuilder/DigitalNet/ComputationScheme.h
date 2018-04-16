@@ -29,7 +29,7 @@ namespace LatBuilder { namespace DigitalNet {
 /** Class organizing the computation of figure of merits base on the t-value of a subset \fJ_d\f of projections
  * where \f \left{ u \subset \{1,...,d\} : d \in u, |u| \leq \alpha \right} \f.
  */ 
-template <typename WEIGHTS, typename COMPUTATION_METHOD>
+template <typename WEIGHTS, typename COMPUTATION_METHOD, typename FIGURE_OF_MERIT>
 class ComputationScheme
 {
     public:
@@ -272,6 +272,7 @@ class ComputationScheme
                 genMatrices.push_back(it->GeneratingMatrix(it->lastDimension()));
 
                 int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getLowerBound()); // compute the t-value of the projection
+                FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
                 it->setTValueCurrentNet(tValue); // update the t-value of the node
                 it = it->getNextNode(); // skip to next node
             }

@@ -58,28 +58,28 @@ class SobolNet : public DigitalNet<SobolNet,2>{
       };
       
       /** Returns the base of the net.  */
-      int base() const { return m_base; } 
+      unsigned int base() const { return m_base; } 
 
       /** Return the modulus of the net. */
-      int modulus() const { return m_modulus; }
+      unsigned int modulus() const { return m_modulus; }
 
       /** Return the modulus of the net. */
-      int numColumns() const { return m_modulus; }
+      unsigned int numColumns() const { return m_modulus; }
 
       /** Return the modulus of the net. */
-      int numRows() const { return m_modulus; }
+      unsigned int numRows() const { return m_modulus; }
 
       /** Return the number of points of the net. */
       uInteger numPoints() const { return m_numPoints; }
 
       /** Returns the dimension of the net */
-      int dimension() const { return m_dimension; }
+      unsigned int dimension() const { return m_dimension; }
 
       /** Returns the degree of the nth primitive polynomial overs F_2.
        * @param n number of the primitive polynomial. 
        * @return 0 if n outside the accepted range.
        */ 
-      static int nthPrimitivePolynomialDegree(uInteger n){
+      static unsigned int nthPrimitivePolynomialDegree(unsigned int n){
         if (n>0)
         {
           return nthPrimitivePolynomial(n).first;
@@ -95,21 +95,21 @@ class SobolNet : public DigitalNet<SobolNet,2>{
      /** Returns the generating matrix of the net corresponding to the given coordinate.
       * @param coord an integer constant refering to the coordinate
       */
-      GeneratingMatrix generatingMatrix(size_type coord) const;
+      GeneratingMatrix generatingMatrix(unsigned int coord) const;
 
     private:
-      int m_base; // base of the net
-      int m_dimension; // dimension of the net
-      int m_modulus; // modulus of the net 
+      unsigned int m_base; // base of the net
+      unsigned int m_dimension; // dimension of the net
+      unsigned int m_modulus; // modulus of the net 
       uInteger m_numPoints; // size of the net
       std::vector<std::vector<uInteger>> m_directionNumbers; // set of direction numbers
 
-      typedef std::pair<int,uInteger> PrimitivePolynomial; 
+      typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
       /** Returns a binary presentation of the nth primitive polynomial over F^2.
        * @param n rank of the primitie polynomial to return
        */ 
-      static PrimitivePolynomial nthPrimitivePolynomial(uInteger n); // returns a representation of the nt
+      static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n); // returns a representation of the nt
 
       };
 }}

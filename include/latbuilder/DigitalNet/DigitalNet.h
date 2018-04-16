@@ -18,12 +18,9 @@
 #define DIGITAL_NET_DIGITAL_NET_H
 #include "latbuilder/Types.h"
 #include "latbuilder/Util.h"
+#include "latbuilder/DigitalNet/Matrix.h"
 
 namespace LatBuilder { namespace DigitalNet {
-
-template <uInteger BASE>
-using Matrix = std::vector<std::vector<short>>;
-
 
 typedef size_t size_type;
 
@@ -40,13 +37,13 @@ class DigitalNet {
     // Accessors
 
    /** Returns the base of the net. */
-   uInteger base() const { return derived().base(); } 
+   unsigned int base() const { return derived().base(); } 
 
    /** Return the number of columns of generating matrices of the net. */
-   int numColumns() const { return derived().numColumns(); }
+   unsigned int numColumns() const { return derived().numColumns(); }
 
    /** Returns the modulus of the net*/
-   int numRows() const { return derived().numRows(); }
+   unsigned int numRows() const { return derived().numRows(); }
 
    /** Returns the number of points of the net */
    uInteger numPoints() const { return derived().numPoints(); }
@@ -55,7 +52,7 @@ class DigitalNet {
    uInteger size() const { return numPoints(); }
 
    /** Returns the dimension (number of coordinates) of the net.*/
-   int dimension() const { return derived().dimension(); }
+   unsigned int dimension() const { return derived().dimension(); }
 
    /** Returns a vector containing all the generating matrices of the net. */
    std::vector<GeneratingMatrix> generatingMatrices() const {return derived().generatingMatrices(); }
@@ -63,7 +60,7 @@ class DigitalNet {
    /** Returns the generating matrix of the net corresponding to the given coordinate.
     * @param coord an integer constant refering to the coordinate
    */
-   GeneratingMatrix generatingMatrix(size_type coord) const {return derived().generatingMatrix(coord); }
+   GeneratingMatrix generatingMatrix(unsigned int coord) const {return derived().generatingMatrix(coord); }
 
     protected:
         /** Default constructor. This constructor is protected because DigitalNet is a generic class that 

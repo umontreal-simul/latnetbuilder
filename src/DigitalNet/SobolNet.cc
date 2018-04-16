@@ -20,23 +20,23 @@
 using namespace LatBuilder::DigitalNet;
 
 using LatBuilder::uInteger; 
-typedef SobolNet::GeneratingMatrix GeneratingMatrix;
+typedef typename SobolNet::GeneratingMatrix GeneratingMatrix;
 
-SobolNet::PrimitivePolynomial SobolNet::nthPrimitivePolynomial(uInteger n){
+SobolNet::PrimitivePolynomial SobolNet::nthPrimitivePolynomial(unsigned int n){
     // primitive polynomials are hard-coded because their computation is really complex.
-    constexpr int degrees[] =
+    constexpr unsigned int degrees[] =
     {
         #include "data/primitive_polynomials_degrees.csv"
     };
 
-    constexpr unsigned int representations[] =
+    constexpr unsigned long representations[] =
     {
         #include "data/primitive_polynomials_representations.csv"
     };
     if (n>0 && n <= 21200)
-    return std::pair<int,uInteger>(degrees[n-1],representations[n-1]);
+    return std::pair<unsigned int,uInteger>(degrees[n-1],representations[n-1]);
     else{
-        return std::pair<int,uInteger>(0,0);
+        return std::pair<unsigned int,uInteger>(0,0);
     }
 }
 
@@ -47,7 +47,7 @@ SobolNet::PrimitivePolynomial SobolNet::nthPrimitivePolynomial(uInteger n){
  */
 std::vector<uInteger> bin_vector(uInteger num, size_type m){
     std::vector<uInteger> res(m);
-    for(int i = 0; i<m; ++i){
+    for(unsigned int i = 0; i<m; ++i){
         res[m-i-1] = num % 2;
         num = num >> 1;
     }
@@ -61,21 +61,21 @@ std::vector<uInteger> bin_vector(uInteger num, size_type m){
 uInteger xor_prod_reduce(std::vector<uInteger> a, std::vector<uInteger> b){
     uInteger res = 0;
     size_type n = a.size();
-    for (int i = 0; i<n; ++i){
+    for (unsigned int i = 0; i<n; ++i){
         res ^= a[i]*b[i];
     }
     return res;
 }
 
-GeneratingMatrix SobolNet::generatingMatrix(size_type coord) const {
+GeneratingMatrix SobolNet::generatingMatrix(unsigned int coord) const {
 
-    int m = modulus(); // size of the generating matrix
-    const std::vector<uInteger>& directionNumbers = m_directionNumbers[coord]; // direction number for the given coordinate
+    unsigned int m = modulus(); // size of the generating matrix
+    const std::vector<uInteger>& directionNumbers = m_directionNumbers[coord-1]; // direction number for the given coordinate
 
-    GeneratingMatrix tmp(m,std::vector<short>(m,0));
+    GeneratingMatrix tmp(m,m);
 
-    for(uInteger k = 0; k<m; ++k){
-        tmp[k][k] = 1; // start with identity
+    for(unsigned int k = 0; k<m; ++k){
+        tmp(k,k) = 1; // start with identity
     }
 
     if (coord==1) // special case for the first dimension
@@ -92,17 +92,17 @@ GeneratingMatrix SobolNet::generatingMatrix(size_type coord) const {
     std::vector<uInteger> a = bin_vector(poly_rep,degree-1);
     a.push_back(1);
 
-    for(uInteger i = 0; i<degree; ++i){
+    for(unsigned int i = 0; i<degree; ++i){
         a[i] *= 2 << i;
     }
 
     // initialization of the first columns
 
-    for(uInteger k = 0; k < std::min(degree,m); ++k){
+    for(unsigned int k = 0; k < std::min(degree,m); ++k){
         auto dirNum = bin_vector(directionNumbers[k],k+1);
 
-        for(uInteger i = 0; i<k; ++i){
-            tmp[i][k] = dirNum[i];
+        for(unsigned int i = 0; i<k; ++i){
+            tmp(i,k) = dirNum[i];
         }
     }
 
@@ -110,13 +110,13 @@ GeneratingMatrix SobolNet::generatingMatrix(size_type coord) const {
     std::reverse_copy(directionNumbers.begin(),directionNumbers.end(), reg.begin()); // should be reversed
 
     // computation of the recurrence
-    for(uInteger k = degree; k<m; ++k){
+    for(unsigned int k = degree; k<m; ++k){
         uInteger new_num = xor_prod_reduce(a,reg) ^ reg[degree-1];
         reg.pop_back();
         reg.insert(reg.begin(),new_num);
         auto dirNum = bin_vector(new_num,k+1);
-        for(uInteger i = 0; i<k; ++i){
-            tmp[i][k] = dirNum[i];
+        for(unsigned int i = 0; i<k; ++i){
+            tmp(i,k) = dirNum[i];
         }
     }
     return tmp;
@@ -124,7 +124,7 @@ GeneratingMatrix SobolNet::generatingMatrix(size_type coord) const {
 
 std::vector<GeneratingMatrix> SobolNet::generatingMatrices() const {
     std::vector<GeneratingMatrix> res;
-    for(int j = 0; j<dimension(); ++j){
+    for(unsigned int j = 0; j<dimension(); ++j){
         res.push_back(generatingMatrix(j+1));
     }
     return res;
