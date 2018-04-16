@@ -20,19 +20,18 @@
 
 using namespace LatBuilder::DigitalNet;
 
+
+typedef boost::dynamic_bitset<> projection;
+typedef LatBuilder::uInteger uInteger;
+
 class dummyWeights{
     public:
-        float operator()(const LatBuilder::DigitalNet::bitset& projRep, int d){ return rand() % 1000;; }
+        float operator()(const projection& projRep){ return rand() % 1000;; }
 };
 
 struct dummyMethod{
-    int computeUpperLimit(double acc, double weight, double optimalFigureOfMerit){
-        return std::floor(optimalFigureOfMerit/weight);
-    }
-    
-    template <typename DERIVED, uInteger BASE>
-    int updateFigureOfMerit(const DigitalNet<DERIVED, BASE>& net, double& acc, LatBuilder::DigitalNet::bitset projection, int lowerBound, int upperLimit)
-    {
+    template <uInteger BASE>
+    int computeTValue(std::vector<Matrix<BASE>> matrices, int lowerBound){
         return 0;
     }
 };

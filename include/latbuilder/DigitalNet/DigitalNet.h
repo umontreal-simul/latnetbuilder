@@ -21,73 +21,66 @@
 
 namespace LatBuilder { namespace DigitalNet {
 
-typedef std::vector<std::vector<short>> GeneratingMatrix;
+template <uInteger BASE>
+using Matrix = std::vector<std::vector<short>>;
+
 
 typedef size_t size_type;
 
+/** Generic class to represent a digital net in any base. The integral template parameter BASE represents the base of the net. 
+ * This class implements the CRTP through the template 
+ * parameter DERIVED for static polymorphism purpose. */
 template <typename DERIVED, uInteger BASE>
 class DigitalNet {
     
    public:
-   // returns the base of the digital net
+
+    typedef Matrix<BASE> GeneratingMatrix; // type alias for generating matrices
+
+    // Accessors
+
+   /** Returns the base of the net. */
    uInteger base() const { return derived().base(); } 
 
-   // returns the modulus of the digital net
-   size_type numColumns() const { return derived().numColumns(); }
+   /** Return the number of columns of generating matrices of the net. */
+   int numColumns() const { return derived().numColumns(); }
 
-   // returns the modulus of the digital net
-   size_type numRows() const { return derived().numRows(); }
+   /** Returns the modulus of the net*/
+   int numRows() const { return derived().numRows(); }
 
-   // returns the number of points of the digital net
-   size_type numPoints() const { return derived().numPoints(); }
+   /** Returns the number of points of the net */
+   uInteger numPoints() const { return derived().numPoints(); }
 
-   // returns the number of points of the digital net
-   size_type size() const { return numPoints(); }
+   /** Returns the number of points of the net */
+   uInteger size() const { return numPoints(); }
 
-   // returns the dimension of the digital net
-   size_type dimension() const { return derived().dimension(); }
+   /** Returns the dimension (number of coordinates) of the net.*/
+   int dimension() const { return derived().dimension(); }
 
+   /** Returns a vector containing all the generating matrices of the net. */
    std::vector<GeneratingMatrix> generatingMatrices() const {return derived().generatingMatrices(); }
 
-   GeneratingMatrix generatingMatrix(size_type dim) const {return derived().generatingMatrix(dim); }
+   /** Returns the generating matrix of the net corresponding to the given coordinate.
+    * @param coord an integer constant refering to the coordinate
+   */
+   GeneratingMatrix generatingMatrix(size_type coord) const {return derived().generatingMatrix(coord); }
 
     protected:
+        /** Default constructor. This constructor is protected because DigitalNet is a generic class that 
+         * should no be directly instantiated. */
         DigitalNet() = default;
 
     private:
 
+        /** Returns a reference to the object statically cast to the DERIVED class. */
         DERIVED& derived()
         { return static_cast<DERIVED&>(*this); }
 
+        /** Returns a constant reference to the object statically cast to the DERIVED class. */
         const DERIVED& derived() const
         { return static_cast<const DERIVED&>(*this); }
 }
 ;
-
-template <typename DERIVED>
-std::vector<std::vector<uInteger>> rolledGeneratingMatrices(const DigitalNet<DERIVED,2>& net)
-{
-    std::vector<std::vector<uInteger>> res;
-    std::vector<GeneratingMatrix> matrices = net.generatingMatrices();
-    auto m = net.numColumns();
-    auto s = net.dimension();
-    uInteger acc;
-
-    for (int i = 0; i<s; ++i)
-    {
-        std::vector<uInteger> tmp;
-        for(int j = 0; j < net.numRows(); ++j)
-        {
-            acc = 0;
-            for(int k = 0; k<m; ++k){
-                acc += matrices[i][j][k] << (m-k-1);
-            }
-            tmp.push_back(acc);
-        }
-        res.push_back(tmp);
-    }
-    return res;
-}
 
 }}
 
