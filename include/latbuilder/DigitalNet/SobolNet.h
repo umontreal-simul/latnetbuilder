@@ -61,11 +61,11 @@ class SobolNet : public DigitalNet<SobolNet,2>{
         return nthPrimitivePolynomial(n).first;
       }
  
-      std::vector<GeneratingMatrix> generatingMatrices() const;
+      std::vector<Matrix> generatingMatrices() const;
 
-      GeneratingMatrix generatingMatrix(size_type dim) const;
+      Matrix createMatrix(size_type dim) const;
 
-      static GeneratingMatrix generatingMatrix(uInteger coord, Modulus m, std::vector<uInteger> directionNumbers);
+      static Matrix createMatrix(uInteger coord, Modulus m, std::vector<uInteger> directionNumbers);
 
     private:
       uInteger m_base;

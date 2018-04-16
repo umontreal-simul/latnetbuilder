@@ -54,9 +54,9 @@ uInteger xor_prod_reduce(std::vector<uInteger> a, std::vector<uInteger> b){
     return res;
 }
 
-GeneratingMatrix  SobolNet::generatingMatrix(uInteger coord, Modulus m, std::vector<uInteger> directionNumbers){
+Matrix  SobolNet::createMatrix(uInteger coord, Modulus m, std::vector<uInteger> directionNumbers){
 
-    std::vector<std::vector<short>> tmp(m,std::vector<short>(m,0));
+    std::vector<Row> tmp(m,Row(m,0));
 
     for(uInteger k = 0; k<m; ++k){
         tmp[k][k] = 1;
@@ -102,14 +102,14 @@ GeneratingMatrix  SobolNet::generatingMatrix(uInteger coord, Modulus m, std::vec
     return tmp;
 }
 
-GeneratingMatrix SobolNet::generatingMatrix(size_type dim) const {
-    return SobolNet::generatingMatrix(dim,modulus(),m_directionNumbers[dim-1]);
+Matrix SobolNet::createMatrix(size_type dim) const {
+    return SobolNet::createMatrix(dim,modulus(),m_directionNumbers[dim-1]);
 }
 
-std::vector<GeneratingMatrix> SobolNet::generatingMatrices() const {
-    std::vector<GeneratingMatrix> res;
+std::vector<Matrix> SobolNet::generatingMatrices() const {
+    std::vector<Matrix> res;
     for(int j = 0; j<dimension(); ++j){
-        res.push_back(SobolNet::generatingMatrix(j+1,modulus(),m_directionNumbers[j]));
+        res.push_back(SobolNet::createMatrix(j+1,modulus(),m_directionNumbers[j]));
     }
     return res;
 }

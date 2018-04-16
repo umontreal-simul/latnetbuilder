@@ -18,10 +18,11 @@
 #define DIGITAL_NET_DIGITAL_NET_H
 #include "latbuilder/Types.h"
 #include "latbuilder/Util.h"
+#include "latbuilder/DigitalNet/Row.h"
 
 namespace LatBuilder { namespace DigitalNet {
 
-typedef std::vector<std::vector<short>> GeneratingMatrix;
+typedef std::vector<Row> Matrix;
 
 typedef size_t size_type;
 
@@ -47,9 +48,9 @@ class DigitalNet {
    // returns the dimension of the digital net
    size_type dimension() const { return derived().dimension(); }
 
-   std::vector<GeneratingMatrix> generatingMatrices() const {return derived().generatingMatrices(); }
+   std::vector<Matrix> generatingMatrices() const {return derived().generatingMatrices(); }
 
-   GeneratingMatrix generatingMatrix(size_type dim) const {return derived().generatingMatrix(dim); }
+   Matrix createMatrix(size_type dim) const {return derived().Matrix(dim); }
 
     protected:
         DigitalNet() = default;
@@ -68,7 +69,7 @@ template <typename DERIVED>
 std::vector<std::vector<uInteger>> rolledGeneratingMatrices(const DigitalNet<DERIVED,2>& net)
 {
     std::vector<std::vector<uInteger>> res;
-    std::vector<GeneratingMatrix> matrices = net.generatingMatrices();
+    std::vector<Matrix> matrices = net.generatingMatrices();
     auto m = net.numColumns();
     auto s = net.dimension();
     uInteger acc;
