@@ -46,4 +46,12 @@ std::vector<std::vector<int>> compositions(int n, int nb_parts){
         return V_grand;
     }
 }
+
+Row permutation(Row& row, std::vector<int>& C){
+    Row new_row(row.size());
+    for (int i=0; i < row.size(); i++){
+        new_row[i] = row[C[i]];
+    }
+    return new_row;
+}
 }}
