@@ -22,6 +22,11 @@ using namespace LatBuilder::DigitalNet;
 
 typedef LatBuilder::uInteger uInteger;
 
+class dummyWeights{
+    public:
+        float operator()(const projection& projRep){ return rand() % 1000;; }
+};
+
 int main(int argc, const char *argv[])
 {
     std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};

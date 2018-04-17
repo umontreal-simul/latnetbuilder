@@ -35,15 +35,16 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowe
     unsigned int m = matrices[0].nCols();
     //std::cout << "m: " << m << std::endl;
     unsigned int s = (unsigned int)matrices.size();
+    //std::cout << "s: " << s << std::endl;
 
     size_type upperLimit = (1<<(m-lowerBound))-1;
     std::vector<unsigned int> flipingOrder(upperLimit);
     for(uInteger r = 0; r < upperLimit; ++r)
     {
         flipingOrder[r] = getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1)));
-        std::cout << flipingOrder[r] << " ";
+        //std::cout << flipingOrder[r] << " ";
     }
-    std::cout << std::endl << "Done." << std::endl;
+    //std::cout << std::endl << "Done." << std::endl;
 
     unsigned int k;
     for(k = s ; k <= m-lowerBound; ++k)
@@ -65,18 +66,18 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowe
 
             //std::cout << "Here: " << idx << std::endl;
             boost::dynamic_bitset<> v(m);
-            for(uInteger r = 0; r < ((1 << (k-s)) - 1); ++r)
+            for(uInteger r = 0; r < ((1 << k) - 1); ++r)
             {
                 //std::cout << flipingOrder[r] << " " << std::endl;
                 v ^= *tmp[flipingOrder[r]];
                 if (v.none())
                 {
-                    std::cout << "Hello." << std::endl;
+                    //std::cout << "Hello." << std::endl;
                     return m-k+1;
                 }
             }
         }
     }
-    return m-k;
+    return m-k+1;
 }
 
