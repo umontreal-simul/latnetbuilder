@@ -23,11 +23,14 @@
 #define DIGITAL__UTIL_H
 
 #include <vector>
+#include <boost/dynamic_bitset.hpp> 
 
 //================================================================================
 
 namespace LatBuilder { namespace DigitalNet
 {
+
+typedef boost::dynamic_bitset<> Row;
 
 // Returns all possible sequences of positive integers d_i such that sum_{i=1}^s d_i = n
 // i.e. the compositions of n in exactly s parts
@@ -35,6 +38,8 @@ namespace LatBuilder { namespace DigitalNet
 // Must have s >= 2, n >= s
 std::vector<std::vector<int>> compositions(int n, int nb_parts);
 
+// returns a new row with row permuted by according to the permutation defined by C
+Row permutation(Row& row, std::vector<int>& C);
 }}
 
 #endif

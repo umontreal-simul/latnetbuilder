@@ -18,6 +18,8 @@
 #define DIGITAL_LINE_H
 #include <boost/dynamic_bitset.hpp> 
 #include <iostream>
+#include <string>
+#include <algorithm>
 #include "latbuilder/Types.h"
 
 // For now, only works in base 2, needs to be templated by the base.
@@ -96,6 +98,20 @@ class Matrix<2> {
             }
         };
 
+        Matrix(unsigned int n_rows, unsigned int n_cols, std::vector<string> init):
+        m_data(n_rows),
+        m_rows(n_rows),
+        m_cols(n_cols)
+        {
+            assert(init.size() == m_rows);
+            for(unsigned int i = 0; i < m_rows; ++i)
+            {
+                assert(init[i].length() == m_cols);
+                std::reverse(init[i].begin(), init[i].end());
+                m_data[i] = boost::dynamic_bitset<>(init[i]);
+            }
+        };
+
         unsigned int nCols() const { return m_cols; }
 
         unsigned int nRows() const { return m_rows; }
@@ -123,6 +139,10 @@ class Matrix<2> {
         void flip(unsigned int row, unsigned int column)
         {
             m_data[row].flip(column);
+        }
+
+        void swap_rows(unsigned int row1, unsigned int row2){
+            std::swap(m_data[row1], m_data[row2]);
         }
 
         void swap_columns(unsigned int col1, unsigned int col2)
