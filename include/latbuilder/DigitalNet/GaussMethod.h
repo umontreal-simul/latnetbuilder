@@ -24,7 +24,7 @@ namespace LatBuilder { namespace DigitalNet {
     struct GaussMethod{
     // compute the t-value of the set of matrices Origin_Mats with `maxSubProj' the maximum of
     // the t-value of all strict subprojections
-    static int computeTValue(std::vector<Matrix<2>>& Origin_Mats, int maxSubProj);
+    static int computeTValue(std::vector<Matrix<2>>& Origin_Mats, int maxSubProj, bool verbose);
 };
 }}
 

@@ -22,6 +22,8 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <time.h>
+#include <stdlib.h>
 
 
 using namespace LatBuilder::DigitalNet;
@@ -37,6 +39,22 @@ int main(int argc, const char *argv[])
     // Matrix<2> M1(5, 5, S1);
     // Matrix<2> M2(5, 5, S2);
     // std::vector<Matrix<2>> foo = {M2, M1};
+    // int m = 6;
+    
+    // std::vector<std::string*> S1;
+    // std::string* str;
+    // for (int i=0; i<m; i++){
+    //     str = new std::string[m];
+    //     // str = "";
+    //     for (int j=0; j<m; j++){
+    //         *(str + j) = (char) rand() % 2;
+    //     }
+    //     // int v1 = 
+    //     S1.push_back(str);
+    // }
+    // std::cout<< *(S1[0]) <<std::endl;
+    // Matrix<2> M1(m, m, S1);
+    // std::cout<<M1<<std::endl;
 
     // std::vector<std::string> S1 = {"111001", "010011", "001010", "000110", "100010", "010100"};
     // std::vector<std::string> S2 = {"101011", "011101", "001000", "000101", "010100", "010001"};
@@ -46,22 +64,32 @@ int main(int argc, const char *argv[])
     // Matrix<2> M3(6, 6, S3);  
     // std::vector<Matrix<2>> foo = {M1, M2, M3};  
 
+    // std::vector<std::vector<uInteger>> directionNumbers = {{}, {1},{1,3},{1,3,1}, 
+    //                                                 {1,1,1},{1,1,3,3}, {1, 3, 5, 13}, {1, 1, 5, 5, 17}, {1, 1, 5, 5, 5}};
     std::vector<std::vector<uInteger>> directionNumbers = {{}, {1},{1,3},{1,3,1}};
-    int m = 10;
+
+    int m = 400;
     int s = 4;
     std::vector<Matrix<2>> foo = SobolNet(m,s,directionNumbers).generatingMatrices();
     foo.erase(foo.begin());
 
+    clock_t t1,t2, t3, t4;   
+    // clock_t t3, t4;    
+
+    // t1=clock();
     // std::cout << "Schmid method" << std::endl;
     // std::cout << SchmidMethod::computeTValue(foo,0) << std::endl;
-    // std::cout << "Writing to file" << std::endl;
+    // t2=clock();
+    // float diff ((float)t2-(float)t1);
+    // cout<<diff<<endl;
 
-    // std::ofstream myfile;
-    // myfile.open("example.txt");
-    // myfile << "Writing this to a file.\n";
-    // myfile << "Gauss method" << std::endl;
-    std::cout << GaussMethod::computeTValue(foo,0) << std::endl;
-    // myfile.close();
+    t3=clock();
+    std::cout << "Gauss method" << std::endl;
+    bool verbose = false;
+    std::cout << GaussMethod::computeTValue(foo,0, verbose) << std::endl;
+    t4=clock();
+    float diff2 ((float)t4-(float)t3);
+    cout<<diff2<<endl;
 
     return 0;
 }

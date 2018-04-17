@@ -21,13 +21,13 @@
 
 using namespace LatBuilder::DigitalNet;
 
-void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C){
+void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C, bool verbose=false){
     int k = M.nRows();
     int m = M.nCols();
     
     int i_pivot=0;
     int j=-1;
-    int Pivots[k];
+    int Pivots[k] = {0};
     
     while (i_pivot < k && j < m-1){
         j++;
@@ -49,9 +49,10 @@ void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C){
         }
         i_pivot++;
     }
-    std::cout << "middle of pivoting" << std::endl;
-    std::cout << M << std::endl;
-    // print(M);
+    if (verbose){
+        std::cout << "middle of pivoting" << std::endl;
+        std::cout << M << std::endl;
+    }
     if (Pivots[k-1] == 0){
         throw std::runtime_error("Matrice non inversible");
     }
@@ -72,22 +73,24 @@ void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C){
         std::swap(C[i_pivot],C[j]);
         // swap_col(M, C, i_pivot, j);
     }
-    std::cout << "end of pivoting" << std::endl;
-    std::cout << M << std::endl;
-    // print(M);
+    if (verbose){
+        std::cout << "end of pivoting" << std::endl;
+        std::cout << M << std::endl;
+    }  
+    // delete Pivots;
 }
 
-void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::vector<int>& C, Row& newLine, int i_new_in_Origin[2], int i_old_in_Origin[2]){
+void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::vector<int>& C, Row& newLine, int i_new_in_Origin[2], int i_old_in_Origin[2], bool verbose=false){
     int k = T.nRows();
     int m = T.nCols();
     
     int i_old;
     int i_old_inM = Origin_to_M[i_old_in_Origin[0]*m + i_old_in_Origin[1]];
-    std::cout << T << std::endl;
-    std::cout << D << std::endl;
-    // print(T);
-    // print(D);
-    std::cout << "i_old_inM = j_old : " << i_old_inM << std::endl;
+    if (verbose){
+        std::cout << T << std::endl;
+        std::cout << D << std::endl;
+        std::cout << "i_old_inM = j_old : " << i_old_inM << std::endl;
+    }    
     int j_old = i_old_inM;
     bool found = false;
     
@@ -103,12 +106,12 @@ void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::
             }
         }
     }
-    std::cout << "i_old : " << i_old << std::endl;
-    std::cout << "de-pivot old line" << std::endl;
-    std::cout << T << std::endl;
-    std::cout << D << std::endl;
-    // print(T);
-    // print(D);
+    if (verbose){
+        std::cout << "i_old : " << i_old << std::endl;
+        std::cout << "de-pivot old line" << std::endl;
+        std::cout << T << std::endl;
+        std::cout << D << std::endl;
+    }
     
     T[i_old] = newLine;
     D[i_old] = Row(k, 0);
@@ -116,11 +119,11 @@ void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::
         D[i][j_old] = 0;
     }
     D[i_old][j_old] = 1;
-    std::cout << "swapped old line and new line" << std::endl;
-    std::cout << T << std::endl;
-    std::cout << D << std::endl;
-    // print(T);
-    // print(D);
+    if (verbose){
+        std::cout << "swapped old line and new line" << std::endl;
+        std::cout << T << std::endl;
+        std::cout << D << std::endl;
+    }
     
     Origin_to_M.erase(i_old_in_Origin[0]*m + i_old_in_Origin[1]);
     Origin_to_M[i_new_in_Origin[0]*m + i_new_in_Origin[1]] = i_old_inM;
@@ -131,11 +134,11 @@ void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::
             D[i_old] = D[i] ^ D[i_old];
         }
     }
-    std::cout << "simplified new line" << std::endl;
-    std::cout << T << std::endl;
-    std::cout << D << std::endl;
-    // print(T);
-    // print(D);
+    if (verbose){
+        std::cout << "simplified new line" << std::endl;
+        std::cout << T << std::endl;
+        std::cout << D << std::endl;
+    }
 
     if (T[i_old][i_old] == 0){
         int j = k;
@@ -151,11 +154,11 @@ void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::
             // swap_col(T, C, i_old, j);
         }
     }
-    std::cout << "brought new pivot on the good column" << std::endl;
-    std::cout << T << std::endl;
-    std::cout << D << std::endl;
-    // print(T);
-    // print(D);
+    if (verbose){
+        std::cout << "brought new pivot on the good column" << std::endl;
+        std::cout << T << std::endl;
+        std::cout << D << std::endl;
+    }
     
     for (int i=0; i<k; i++){
         if (i == i_old){
@@ -167,14 +170,14 @@ void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::
             D[i] = D[i] ^ D[i_old];
         }
     }
-    std::cout << "re-pivoted with new pivot" << std::endl;
-    std::cout << T << std::endl;
-    std::cout << D << std::endl;
-    // print(T);
-    // print(D);
+    if (verbose){
+        std::cout << "re-pivoted with new pivot" << std::endl;
+        std::cout << T << std::endl;
+        std::cout << D << std::endl;
+    }
 }
 
-int iteration_on_k(std::vector<Matrix<2>> Origin_Mats, int k){
+int iteration_on_k(std::vector<Matrix<2>>& Origin_Mats, int k, bool verbose=false){
     int s = Origin_Mats.size();
     int m = Origin_Mats[0].nCols();
 
@@ -188,13 +191,13 @@ int iteration_on_k(std::vector<Matrix<2>> Origin_Mats, int k){
         Origin_to_M[i] = i;
         // T.push_back(Origin_Mats[0][i]);
         // D.push_back(Row(k, 1 << i));
-        T[i] = Origin_Mats[0][i];
+        T[i] = Row(Origin_Mats[0][i]);
         D[i] = Row(k, 1 << i);
 
     }
     for (int i=1; i<s; i++){
         Origin_to_M[i*m] = i;
-        T[k-s+i] = Origin_Mats[i][0];
+        T[k-s+i] = Row(Origin_Mats[i][0]);
         D[k-s+i] = Row(k, 1 << (k-s+i));
         // T.push_back(Origin_Mats[i][0]);
         // D.push_back(Row(k, 1 << (k-s+i)));
@@ -205,7 +208,7 @@ int iteration_on_k(std::vector<Matrix<2>> Origin_Mats, int k){
     }
 
     try{
-        first_pivot(T, D, C);
+        first_pivot(T, D, C, verbose);
     }
     catch (const std::runtime_error& e){
         return 1;
@@ -213,7 +216,9 @@ int iteration_on_k(std::vector<Matrix<2>> Origin_Mats, int k){
 
     int step = 0;
     for (auto it = begin (lines_order); it != end (lines_order) - 1; ++it) {
-        std::cout << "STEP " << step << std::endl;
+        if (verbose){
+            std::cout << "STEP " << step << std::endl;
+        }
         step++;
         std::vector<int> old_choice_of_lines = *it;
         std::vector<int> new_choice_of_lines = *(it+1);
@@ -236,13 +241,15 @@ int iteration_on_k(std::vector<Matrix<2>> Origin_Mats, int k){
                 ind_old_line[1] = new_choice_of_lines[i];
             }
         }
-        std::cout << "new line " << new_line << std::endl;
+        if (verbose){
+            std::cout << "new line " << new_line << std::endl;
+        }
 
         // apply permutation to new line
         new_line = permutation(new_line, C);
 
         try{
-            add_line(T, D, Origin_to_M, C, new_line, ind_new_line, ind_old_line);
+            add_line(T, D, Origin_to_M, C, new_line, ind_new_line, ind_old_line, verbose);
         }
         catch (const std::runtime_error& e){
             return 1;
@@ -251,13 +258,15 @@ int iteration_on_k(std::vector<Matrix<2>> Origin_Mats, int k){
     return 0;
 }
 
-int GaussMethod::computeTValue(std::vector<Matrix<2>>& Origin_Mats, int maxSubProj)
+int GaussMethod::computeTValue(std::vector<Matrix<2>>& Origin_Mats, int maxSubProj, bool verbose=false)
 {
     int m = Origin_Mats[0].nRows();
     int s = Origin_Mats.size();
     for (int k=m-maxSubProj; k >= s; k--){
-        int status = iteration_on_k(Origin_Mats, k);
-        std::cout << "after iteration " << k << ", status : " << status << std::endl;
+        int status = iteration_on_k(Origin_Mats, k, verbose);
+        if (verbose){
+            std::cout << "after iteration " << k << ", status : " << status << std::endl;
+        }     
         if (status == 0){
             return std::max(m-k, maxSubProj);
         }
