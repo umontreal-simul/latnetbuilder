@@ -44,18 +44,20 @@ struct MaxFigure{
 
 int main(int argc, const char *argv[])
 {
-    int lastDimension = 6;
+    int lastDimension = 5;
     int maximalCardinality = 4;
 
-    auto foo =  ComputationScheme<dummyWeights,dummyMethod,MaxFigure>(lastDimension,maximalCardinality,dummyWeights());
+    auto foo =  ComputationScheme<dummyWeights,dummyMethod,MaxFigure>(maximalCardinality,dummyWeights());
 
-    std::cout << foo;
-
-    foo.setTValuesBestNet();
-
-    auto foo2 = ComputationScheme<dummyWeights,dummyMethod,MaxFigure>(lastDimension+1,maximalCardinality,dummyWeights(),foo);
-
-    std::cout << foo2;
+    int s = 1;
+    do
+    {
+        std::cout << "Last dimension: " << s << std::endl;
+        foo.print(s);
+        foo.extend();
+        ++s;
+    }
+    while(s <= lastDimension);
 
     return 0;
 }

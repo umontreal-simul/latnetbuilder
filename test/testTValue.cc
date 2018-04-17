@@ -55,26 +55,18 @@ struct MaxFigure{
 int main(int argc, const char *argv[])
 {
     std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};
-    int m = 20;
+    int m = 10;
     int s = 6;
     auto test = SobolNet(m,s,directionNumbers);
 
     int maximalCardinality = s;
 
-    double fig = 0;
-    std::map<projection,int> tValuesSubProjections;
+    auto comp = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    comp.extend(s-1);
 
-    for(unsigned lastDimension = 2; lastDimension <=s; ++lastDimension)
-    {
-        ComputationScheme<tValueWeights, SchmidMethod, MaxFigure> comp = 
-            ComputationScheme<tValueWeights, SchmidMethod, MaxFigure>(  lastDimension,
-                                                                        maximalCardinality,
-                                                                        tValueWeights(s),
-                                                                        tValuesSubProjections);
-        comp.evaluateFigureOfMerit(test,fig);
-        tValuesSubProjections = comp.getAllTValues();
-    }
-    std::cout << "t-value: " <<fig << std::endl;
+    double tValue = 0;
+    comp.evaluateFigureOfMerit(test,tValue);
 
+    std::cout << "t-value: " << tValue << std::endl;
     return 0;
 }
