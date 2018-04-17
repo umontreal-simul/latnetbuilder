@@ -14,18 +14,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_NET_SCHMID_METHOD_H
-#define DIGITAL_NET_SCHMID_METHOD_H
-
+#include "latbuilder/DigitalNet/DigitalUtil.h"
+#include "latbuilder/DigitalNet/SchmidMethod.h"
 #include "latbuilder/DigitalNet/DigitalNet.h"
-
-namespace LatBuilder { namespace DigitalNet {
-
-    struct SchmidMethod{
-    static int computeTValue(std::vector<Matrix<2>> matrices, int lowerBound);
-};
-}}
-
-#endif
+#include "latbuilder/DigitalNet/SobolNet.h"
+#include <iostream>
+#include <vector>
 
 
+using namespace LatBuilder::DigitalNet;
+
+typedef LatBuilder::uInteger uInteger;
+
+int main(int argc, const char *argv[])
+{
+    std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};
+    int m = 10;
+    int s = 6;
+    auto test = SobolNet(m,s,directionNumbers);
+
+    std::vector<SobolNet::GeneratingMatrix> foo;
+
+    foo.push_back(test.generatingMatrix(1));
+    foo.push_back(test.generatingMatrix(2));
+
+    std::cout << SchmidMethod::computeTValue(foo,0) << std::endl;
+
+    return 0;
+}

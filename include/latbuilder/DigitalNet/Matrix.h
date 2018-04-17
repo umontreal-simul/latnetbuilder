@@ -35,6 +35,11 @@ class Matrix {
     m_cols(n_cols)
     {};
 
+    unsigned int nCols() const { return m_cols; }
+
+    unsigned int nRows() const { return m_rows; }
+
+
     const uInteger& operator()(unsigned int row, unsigned int column) const
     {
         return m_data[row*m_rows+column];
@@ -69,7 +74,8 @@ template<>
 class Matrix<2> {
 
     public:
-        typedef boost::dynamic_bitset<>::reference reference;
+        typedef boost::dynamic_bitset<> Row;
+        typedef Row::reference reference;
 
         Matrix(unsigned int n_rows, unsigned int n_cols):
         m_data(n_rows,boost::dynamic_bitset<>(n_cols)),
@@ -89,6 +95,20 @@ class Matrix<2> {
                 m_data[i] = boost::dynamic_bitset<>(n_cols,init[i]);
             }
         };
+
+        unsigned int nCols() const { return m_cols; }
+
+        unsigned int nRows() const { return m_rows; }
+
+        Row operator[](unsigned int row) const
+        {
+            return m_data[row];
+        }
+
+        Row& operator[](unsigned int row)
+        {
+            return m_data[row];
+        }
 
         bool operator()(unsigned int row, unsigned int column) const
         {

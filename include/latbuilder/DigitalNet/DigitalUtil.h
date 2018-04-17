@@ -22,11 +22,11 @@
 #ifndef DIGITAL__UTIL_H
 #define DIGITAL__UTIL_H
 
-
+#include <vector>
 
 //================================================================================
 
-namespace LatBuilder
+namespace LatBuilder { namespace DigitalNet
 {
 
 // Returns all possible sequences of positive integers d_i such that sum_{i=1}^s d_i = n
@@ -35,6 +35,6 @@ namespace LatBuilder
 // Must have s >= 2, n >= s
 std::vector<std::vector<int>> compositions(int n, int nb_parts);
 
-}
+}}
 
 #endif

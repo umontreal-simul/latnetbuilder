@@ -15,12 +15,13 @@
 // limitations under the License.
 
 #include "latbuilder/DigitalNet/DigitalUtil.h"
+#include <assert.h>
 
-namespace LatBuilder
+namespace LatBuilder { namespace DigitalNet
 {
 std::vector<std::vector<int>> compositions(int n, int nb_parts){
-    assert(s>= 2 && n>= s);
-    if (s == 2){
+    assert(nb_parts>= 2 && n>= nb_parts);
+    if (nb_parts == 2){
         std::vector<std::vector<int>> v;
         for (int k=n-1; k>0; k--){
             v.push_back(std::vector<int>({k, n-k}));
@@ -29,8 +30,8 @@ std::vector<std::vector<int>> compositions(int n, int nb_parts){
     }
     else{
         std::vector<std::vector<int>> V_grand;
-        for (int k=n-s+1; k>=1; k--){
-            auto V_petit = evolution_sans_zero(n-k, s-1);
+        for (int k=n-nb_parts+1; k>=1; k--){
+            auto V_petit = compositions(n-k, nb_parts-1);
             for (std::vector<int> v: V_petit){
                 if (k & 1){   // k is odd
                     v.insert(v.begin(), k);
@@ -45,5 +46,4 @@ std::vector<std::vector<int>> compositions(int n, int nb_parts){
         return V_grand;
     }
 }
-
-}
+}}
