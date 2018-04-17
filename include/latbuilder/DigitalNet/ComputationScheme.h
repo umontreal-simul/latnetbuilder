@@ -254,7 +254,7 @@ class ComputationScheme
          * @param optimalFigureOfMerit is a reference to the best figure of merit so far.
          */ 
         template <typename DERIVED, uInteger BASE>
-        void computeFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, DigitalNet<DERIVED,BASE>* &bestNet, double& optimalFigureOfMerit)
+        void computeFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, DigitalNet<DERIVED,BASE>*& bestNet, double& optimalFigureOfMerit)
         {
             typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
             double acc = 0; // accumulatof for the figure of merit
@@ -263,15 +263,16 @@ class ComputationScheme
             {   
                 double weight = it->getWeight();
                 std::vector<GeneratingMatrix> genMatrices;
-                for(int i = 0; i < it->lastDimension()-1; ++i)
+                for(int i = 0; i < m_lastDimension-1; ++i)
                 {
                     if (it->getProjectionRepresentation()[i]){
-                        genMatrices.push_back(it->GeneratingMatrix(i+1)); // compute the generating matrices
+                        genMatrices.push_back(net.generatingMatrix(i+1)); // compute the generating matrices
                     }
                 }
-                genMatrices.push_back(it->GeneratingMatrix(it->lastDimension()));
+                genMatrices.push_back(net.generatingMatrix(m_lastDimension));
 
                 int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getLowerBound()); // compute the t-value of the projection
+                std::cout << *it << " - t-value: " << tValue << std::endl;
                 FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
                 it->setTValueCurrentNet(tValue); // update the t-value of the node
                 it = it->getNextNode(); // skip to next node
@@ -280,7 +281,7 @@ class ComputationScheme
             if (acc < optimalFigureOfMerit)
             {
                 // update the references and the t-values for the best net if required.
-                bestNet = &net;
+                *bestNet = net;
                 optimalFigureOfMerit = acc;
                 setTValuesBestNet();
             }
@@ -424,7 +425,7 @@ class ComputationScheme
                  */
                 friend std::ostream& operator<<(std::ostream& os, const Node& dt)
                 {
-                    os << "{";
+                    os << "projection: " << "{";
                     for (projection::size_type n = 0; n < dt.m_lastDimension-1; ++n){
                         if (dt.m_projRep.test(n)){
                             os << n+1 << ", ";
@@ -434,9 +435,7 @@ class ComputationScheme
                     {
                         os << dt.m_lastDimension;
                     }
-                    os << "} - " ;
-                    os << dt.getProjectionRepresentation() << " - ";
-                    os << dt.getWeight() << std::endl;
+                    os << "} - weight: " << dt.getWeight();
                     return os;
                 }
 

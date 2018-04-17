@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_LINE_H
-#define DIGITAL_LINE_H
+#ifndef DIGITAL_NET_MATRIX_H
+#define DIGITAL_NET_MATRIX_H
 #include <boost/dynamic_bitset.hpp> 
 #include <iostream>
 #include <string>

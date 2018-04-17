@@ -18,13 +18,26 @@
 #include "latbuilder/DigitalNet/SchmidMethod.h"
 #include "latbuilder/DigitalNet/DigitalNet.h"
 #include "latbuilder/DigitalNet/SobolNet.h"
+#include "latbuilder/DigitalNet/ComputationScheme.h"
 #include <iostream>
 #include <vector>
-
+#include <limits>
 
 using namespace LatBuilder::DigitalNet;
 
 typedef LatBuilder::uInteger uInteger;
+typedef boost::dynamic_bitset<> projection;
+
+class dummyWeights{
+    public:
+        float operator()(const projection& projRep){ return 1; }
+};
+
+struct MaxFigure{
+    static void updateFigure(double& acc, int tValue, double weight){
+        acc = std::max(acc,tValue*weight);
+    }
+};
 
 int main(int argc, const char *argv[])
 {
@@ -33,12 +46,37 @@ int main(int argc, const char *argv[])
     int s = 6;
     auto test = SobolNet(m,s,directionNumbers);
 
-    std::vector<SobolNet::GeneratingMatrix> foo;
+    auto gen1 = test.generatingMatrix(1);
+    auto gen2 = test.generatingMatrix(2);
+    auto gen3 = test.generatingMatrix(3);
+    auto gen4 = test.generatingMatrix(4);
+    auto gen5 = test.generatingMatrix(5);
+    auto gen6 = test.generatingMatrix(6);
 
-    foo.push_back(test.generatingMatrix(1));
-    foo.push_back(test.generatingMatrix(2));
+    auto comp1 = ComputationScheme<dummyWeights,SchmidMethod,MaxFigure>(2,2,dummyWeights());
 
-    std::cout << SchmidMethod::computeTValue(foo,0) << std::endl;
+    DigitalNet<SobolNet,2>* bestNet = 0;
+
+    double optimalFigureOfMerit = std::numeric_limits<double>::max();
+
+    std::cout << (0 < optimalFigureOfMerit) << std::endl;
+
+    comp1.computeFigureOfMerit(test,bestNet,optimalFigureOfMerit);
+    std::cout << optimalFigureOfMerit << std::endl;
+
+    optimalFigureOfMerit = std::numeric_limits<double>::max();
+    auto comp2 = ComputationScheme<dummyWeights,SchmidMethod,MaxFigure>(3,2,dummyWeights(),comp1);
+    comp2.computeFigureOfMerit(test,bestNet,optimalFigureOfMerit);
+    std::cout << optimalFigureOfMerit << std::endl;
+
+/*  std::cout << SchmidMethod::computeTValue({gen1,gen2},0) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen1,gen3},0) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen2,gen3},0) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen1,gen4},0) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen2,gen4},0) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen3,gen4},0) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen1,gen2,gen3},1) << std::endl;
+    std::cout << SchmidMethod::computeTValue({gen1,gen2,gen3,gen4},2) << std::endl; */
 
     return 0;
 }
