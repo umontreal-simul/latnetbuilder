@@ -30,7 +30,7 @@ typedef boost::dynamic_bitset<> projection;
 
 class dummyWeights{
     public:
-        float operator()(const projection& projRep){ return 1; }
+        float operator()(const projection& projRep){ return rand() % 1000;; }
 };
 
 struct MaxFigure{
@@ -39,14 +39,32 @@ struct MaxFigure{
     }
 };
 
+template<typename DERIVED,typename WEIGHTS,typename COMPUTATION_METHOD, typename FIGURE_OF_MERIT>
+double computeFigureOFMerit(const DigitalNet<DERIVED,2>& net, int maximalCardinality, WEIGHTS weights)
+{
+
+}
+
 int main(int argc, const char *argv[])
 {
     std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};
-    int m = 10;
+    int m = 15;
     int s = 6;
     auto test = SobolNet(m,s,directionNumbers);
 
-    auto gen1 = test.generatingMatrix(1);
+    int maximalCardinality = 3;
+
+    unsigned int dim = test.dimension();
+    double fig = 0;
+    for(unsigned lastDimension = 2; lastDimension <=dim; ++lastDimension)
+    {
+        auto comp = ComputationScheme<dummyWeights, SchmidMethod, MaxFigure>(lastDimension,maximalCardinality,dummyWeights());
+        comp.evaluateFigureOfMerit(test,fig);
+    }
+    std::cout << fig << std::endl;
+
+
+    /* auto gen1 = test.generatingMatrix(1);
     auto gen2 = test.generatingMatrix(2);
     auto gen3 = test.generatingMatrix(3);
     auto gen4 = test.generatingMatrix(4);
@@ -68,7 +86,7 @@ int main(int argc, const char *argv[])
     auto comp2 = ComputationScheme<dummyWeights,SchmidMethod,MaxFigure>(3,2,dummyWeights(),comp1);
     comp2.computeFigureOfMerit(test,bestNet,optimalFigureOfMerit);
     std::cout << optimalFigureOfMerit << std::endl;
-
+ */
 /*  std::cout << SchmidMethod::computeTValue({gen1,gen2},0) << std::endl;
     std::cout << SchmidMethod::computeTValue({gen1,gen3},0) << std::endl;
     std::cout << SchmidMethod::computeTValue({gen2,gen3},0) << std::endl;

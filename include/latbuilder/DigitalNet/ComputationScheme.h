@@ -42,96 +42,14 @@ class ComputationScheme
         typedef typename LatBuilder::uInteger uInteger; /**< type alia for unsigned */
 
         /** Constructs of a computation scheme for a figure of merits based on the t-value of subjprojections.
-         * @param lastDimension is the last dimension added to the net
-         * @param maximalCardinality is the maximum cardinality of subprojections to consider
-         * @param weights is TO CLARIFY
-         */  
-        ComputationScheme(int lastDimension, int maximalCardinality, WEIGHTS weights):
-        m_lastDimension(lastDimension),
-        m_maximalCardinality(maximalCardinality),
-        m_weights(weights)
-        {
-            //assertions that we do not intend to create an empty network
-            assert(lastDimension >= 2);
-            assert(maximalCardinality >= 2);
-
-            // creating the 2D projections
-            std::vector<Node*> projections;
-            for(int i = 0; i < lastDimension - 1; ++i){
-                projection tmp = projection(lastDimension).flip(i).flip(lastDimension-1);
-                double weight = weights(tmp);
-                projections.push_back(new Node(std::move(tmp),lastDimension,weight));
-            }
-
-            // sorting the 2D projections by decreasing weights
-            std::sort(projections.begin(),projections.end(),compareNodePointers);
-            
-            for(int i = 0; i < projections.size() - 1; ++i){
-                projections[i]->setNextNode(projections[i+1]);
-            }
-
-            m_root = projections.front();
-
-            int card = 2;
-            std::map<projection,std::set<int>> seen;
-            std::vector<Node*> newProjections;
-            //creating the bigger projections
-            while (card<maximalCardinality)
-            {
-                newProjections.clear();
-                seen.clear();
-                for(int i = 0; i < projections.size(); ++i)
-                {
-                    for(int j = i + 1; j < projections.size(); ++j)
-                    {
-                        projection newProjRep = projections[i]->getProjectionRepresentation() | projections[j]->getProjectionRepresentation();
-                        int new_card = newProjRep.count();
-                        if (new_card == card+1)
-                        {
-                            auto it = seen.find(newProjRep);
-                            if (it != seen.end()){
-                                it->second.insert(i);
-                                it->second.insert(j);
-                            }
-                            else
-                            {
-                                std::set<int> tmp;
-                                tmp.insert(i);
-                                tmp.insert(j);
-                                seen[newProjRep] = std::move(tmp);
-                                double weight = weights(newProjRep);
-                                newProjections.push_back(new Node(std::move(newProjRep),lastDimension,weight));
-                            }
-                        }
-                    }
-                }
-                std::sort(newProjections.begin(), newProjections.end(), compareNodePointers);
-                for (auto* proj : newProjections)
-                {
-                    std::vector<Node*> mothers;
-                    for(const auto& idx : seen[proj->getProjectionRepresentation()])
-                    {
-                        mothers.push_back(projections[idx]);
-                    }
-                    proj->setMotherNodes(std::move(mothers));
-                }
-                for(int i = 0; i < newProjections.size()-1; ++i){
-                    newProjections[i]->setNextNode(newProjections[i+1]);
-                }
-                projections.back()->setNextNode(newProjections.front());
-                projections = std::move(newProjections);
-                ++card;
-            }
-        };
-
-        /** Constructs of a computation scheme for a figure of merits based on the t-value of subjprojections.
          * This constructor use a computation scheme whose last dimension is one less to get the t-values of the subprojections
          * which are not is the current computation scheme.
          * @param lastDimension is the last dimension added to the net
          * @param maximalCardinality is the maximum cardinality of subprojections to consider
          * @param weights is TO CLARIFY
+         * @param tValuesSubProjections is a map between the subprojections for the previously added coordinate and the their t-values
          */ 
-        ComputationScheme(int lastDimension, int maximalCardinality, WEIGHTS weights, const ComputationScheme& previousProjections):
+        ComputationScheme(int lastDimension, int maximalCardinality, WEIGHTS weights, const std::map<projection,int>& tValuesSubProjections = std::map<projection,int>()):
         m_lastDimension(lastDimension),
         m_maximalCardinality(maximalCardinality),
         m_weights(weights)
@@ -139,10 +57,6 @@ class ComputationScheme
             //assertions that we do not intend to create an empty network
             assert(lastDimension >= 2);
             assert(maximalCardinality >= 2);
-
-            //recover the lower bound for t-value from previous projections
-            std::map<projection,int> lowerBoundspreviousProjections;
-            previousProjections.getAllTValues(lowerBoundspreviousProjections);
 
             // creating the 2D projections
             std::vector<Node*> projections;
@@ -165,7 +79,7 @@ class ComputationScheme
             std::map<projection,std::set<int>> seen;
             std::vector<Node*> newProjections;
             //creating the bigger projections
-            while (card<maximalCardinality)
+            while (card<maximalCardinality && card < lastDimension)
             {
                 newProjections.clear();
                 seen.clear();
@@ -191,16 +105,16 @@ class ComputationScheme
                                 double weight = weights(newProjRep);
                                 
                                 int lowerBound = 0;
-                                projection resizedNewProjRep = newProjRep;
+/*                                 projection resizedNewProjRep = newProjRep;
                                 resizedNewProjRep.resize(lastDimension-1);
-                                for( auto& kv : lowerBoundspreviousProjections)
+                                for( auto& kv : tValuesSubProjections)
                                 {
                                     auto k = kv.first;
                                     if ((resizedNewProjRep - kv.first).empty())
                                     {
-                                        lowerBound = std::min(kv.second,lowerBound);
+                                        lowerBound = std::max(kv.second,lowerBound);
                                     }
-                                }
+                                } */
 
                                 newProjections.push_back(new Node(std::move(newProjRep),lastDimension,weight,lowerBound));
                             }
@@ -237,14 +151,16 @@ class ComputationScheme
          * The keys are bitset representation of the projections.
          * @param tValuesMap is a map to contain the tvalues.
          */ 
-        void getAllTValues(std::map<projection,int>& tValuesMap) const{
+        std::map<projection,int> getAllTValues() const{
+            std::map<projection,int> tValuesMap;
             const Node* it = m_root;
             do
             {
-                tValuesMap.insert(std::pair<projection,int>(it->getProjectionRepresentation(),it->getTValueBestNet()));
+                tValuesMap.insert(std::pair<projection,int>(it->getProjectionRepresentation(),it->getTValueMem()));
                 it = it->getNextNode();
             }
             while(it != NULL);
+            return tValuesMap;
         }
 
         /** Compute a figure of merit on the given net, update the pointer to the best net and the optimal figure of merit
@@ -262,6 +178,8 @@ class ComputationScheme
             do
             {   
                 double weight = it->getWeight();
+                it->computeMaxTValuesSubProj();
+    
                 std::vector<GeneratingMatrix> genMatrices;
                 for(int i = 0; i < m_lastDimension-1; ++i)
                 {
@@ -272,9 +190,9 @@ class ComputationScheme
                 genMatrices.push_back(net.generatingMatrix(m_lastDimension));
 
                 int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getLowerBound()); // compute the t-value of the projection
-                std::cout << *it << " - t-value: " << tValue << std::endl;
+                std::cout << *it << "- t-value sub: " << it->getLowerBound() << " - t-value: " << tValue << std::endl;
                 FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
-                it->setTValueCurrentNet(tValue); // update the t-value of the node
+                it->setTValueTmp(tValue); // update the t-value of the node
                 it = it->getNextNode(); // skip to next node
             }
             while(it != NULL);
@@ -283,18 +201,45 @@ class ComputationScheme
                 // update the references and the t-values for the best net if required.
                 *bestNet = net;
                 optimalFigureOfMerit = acc;
-                setTValuesBestNet();
+                saveTValues();
             }
         }
 
-        /** Set the t-values for the best net of all the nodes to be the t-values of the current net.
+        template <typename DERIVED, uInteger BASE>
+        void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc)
+        {
+            typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
+            Node* it = m_root; // iterator over the nodes
+            do
+            {   
+                double weight = it->getWeight();
+                std::vector<GeneratingMatrix> genMatrices;
+                for(int i = 0; i < m_lastDimension-1; ++i)
+                {
+                    if (it->getProjectionRepresentation()[i]){
+                        genMatrices.push_back(net.generatingMatrix(i+1)); // compute the generating matrices
+                    }
+                }
+                genMatrices.push_back(net.generatingMatrix(m_lastDimension));
+                it->computeMaxTValuesSubProj();
+                int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getLowerBound()); // compute the t-value of the projection
+                std::cout << *it << "- t-value sub: " << it->getLowerBound() << " - t-value: " << tValue << std::endl;
+                FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
+                it->setTValueTmp(tValue); // update the t-value of the node
+                it = it->getNextNode(); // skip to next node
+            }
+            while(it != NULL);
+            saveTValues();
+        }
+
+        /** Save the t-values of all the nodes for the current net.
          */  
-        void setTValuesBestNet()
+        void saveTValues()
         {
             Node* it = m_root;
             do
             {
-                it->setTValueBestNet();
+                it->saveTValue();
                 it = it->getNextNode();
             }
             while(it != NULL);
@@ -358,11 +303,11 @@ class ComputationScheme
 
                 /** Returns the t-value of the projection represented by the node for the best net so far.
                  */ 
-                int getTValueBestNet() const {return m_tValueBestNet; }
+                int getTValueMem() const {return m_tValueMem; }
 
                 /** Returns the t-value of the projection represented by the node for the current net.
                  */ 
-                int getTValueCurrentNet() const {return m_tValueCurrentNet; }
+                int getTValueTmp() const {return m_tValueTmp; }
 
                 /** Returns a pointer to the next projection to evaluate.
                  */ 
@@ -380,7 +325,7 @@ class ComputationScheme
                 /** Set the t-value of the node to be the given t-value
                  * @param tValue is the t-value to assign to the node.
                  */ 
-                void setTValueCurrentNet(int tValue) {m_tValueCurrentNet = tValue; }
+                void setTValueTmp(int tValue) {m_tValueTmp = tValue; }
 
                 /** Set the next node of the current node.
                  * @param node is a pointer to the next node.
@@ -395,18 +340,18 @@ class ComputationScheme
                 /** Set the t-value of the current projection for the best net so far to be the t-value for the current net.
                  * This should be used when a better net is found.
                  */ 
-                void setTValueBestNet() {m_tValueBestNet = m_tValueCurrentNet; }
+                void saveTValue() {m_tValueMem = m_tValueTmp; }
 
                 /** Compute a lower bound on the t-value of the projection represented by the node. 
                  * Notice that this bound is based on the t-values of the mothers and on a private member variable which 
                  * represents an the maximum of the t-values of the subprojections of the current projection which are not in
                  * the computation scheme.
                  */ 
-                void updateLowerBound(){
+                void computeMaxTValuesSubProj(){
                     m_lowerBound = m_lowerBoundPreviousProjections;
                     for (auto const* m : m_mothersNodes)
                     {
-                        m_lowerBound = std::min(m->getTValueCurrentNet(),m_lowerBound);
+                        m_lowerBound = std::max(m->getTValueTmp(),m_lowerBound);
                     }
                 }
 
@@ -448,8 +393,8 @@ class ComputationScheme
                 Node* m_nextNode = NULL; // pointer to the next projection to evaluate
                 std::vector<Node*> m_mothersNodes; // pointers to the subprojections which are is the scheme
                 int m_lowerBound = 0; // lower bound on the t-value of the projection
-                int m_tValueBestNet = 0; // t-value of the projection for the best net so far
-                int m_tValueCurrentNet = 0; // t-value of the projection for the current net
+                int m_tValueMem = 0; // t-value of the projection for the best net so far
+                int m_tValueTmp = 0; // t-value of the projection for the current net
                 int m_lowerBoundPreviousProjections; // maximum of the t-values of the projections no in the scheme 
                                                      // which where previously evaluated.
         };
