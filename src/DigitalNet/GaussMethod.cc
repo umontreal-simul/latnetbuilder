@@ -27,7 +27,10 @@ void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C, bool verbose=f
     
     int i_pivot=0;
     int j=-1;
-    int Pivots[k] = {0};
+    int Pivots[k];
+    for (int i=0; i<k; i++){
+        Pivots[i] = -1;
+    }
     
     while (i_pivot < k && j < m-1){
         j++;
@@ -53,7 +56,7 @@ void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C, bool verbose=f
         std::cout << "middle of pivoting" << std::endl;
         std::cout << M << std::endl;
     }
-    if (Pivots[k-1] == 0){
+    if (Pivots[k-1] == -1){
         throw std::runtime_error("Matrice non inversible");
     }
     
@@ -189,18 +192,15 @@ int iteration_on_k(std::vector<Matrix<2>>& Origin_Mats, int k, bool verbose=fals
     Matrix<2> D(k, m);
     for (int i=0; i<k-s+1; i++){
         Origin_to_M[i] = i;
-        // T.push_back(Origin_Mats[0][i]);
-        // D.push_back(Row(k, 1 << i));
         T[i] = Row(Origin_Mats[0][i]);
-        D[i] = Row(k, 1 << i);
-
     }
     for (int i=1; i<s; i++){
         Origin_to_M[i*m] = i;
         T[k-s+i] = Row(Origin_Mats[i][0]);
-        D[k-s+i] = Row(k, 1 << (k-s+i));
-        // T.push_back(Origin_Mats[i][0]);
-        // D.push_back(Row(k, 1 << (k-s+i)));
+    }
+    for (int i=0; i<k; i++){
+        D[i] = Row(k, 0);
+        D[i][i] = 1;
     }
     std::vector<int> C;
     for (int j=0; j<m; j++){

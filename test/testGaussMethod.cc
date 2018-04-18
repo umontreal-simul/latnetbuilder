@@ -14,16 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/DigitalUtil.h"
 #include "latbuilder/DigitalNet/SchmidMethod.h"
 #include "latbuilder/DigitalNet/GaussMethod.h"
-#include "latbuilder/DigitalNet/DigitalNet.h"
 #include "latbuilder/DigitalNet/SobolNet.h"
 #include <iostream>
 #include <vector>
-#include <fstream>
 #include <time.h>
-#include <stdlib.h>
 
 
 using namespace LatBuilder::DigitalNet;
@@ -32,64 +28,77 @@ typedef LatBuilder::uInteger uInteger;
 
 int main(int argc, const char *argv[])
 {
-    std::cout << "constructing matrices" << std::endl;
+    int m = 0;
+    for (int k=0; k < 3; k++){
+        m *= 10;
+        m += (int) (argv[1][k] - '0');
+    }
 
-    // std::vector<std::string> S1 = {"10000", "01000", "00100", "00010", "00001"};
-    // std::vector<std::string> S2 = {"00001", "00010", "00100", "01000", "10000"};
-    // Matrix<2> M1(5, 5, S1);
-    // Matrix<2> M2(5, 5, S2);
-    // std::vector<Matrix<2>> foo = {M2, M1};
-    // int m = 6;
+    int s = (int) (argv[2][0] - '0');
+
+    int n_test = 0;
+    for (int k=0; k < 3; k++){
+        n_test *= 10;
+        n_test += (int) (argv[3][k] - '0');
+    }
+
+    int random = (int) (argv[4][0] - '0');
+
+    std::cout << m << std::endl;
+    std::cout << s << std::endl;
+    std::cout << n_test << std::endl;
+    std::cout << random << std::endl;
+
+    float total_schmidt = 0;
+    float total_gauss = 0;
+    int res_schmidt = 0;
+    int res_gauss = 0;
+    int n_diff = 0;
     
-    // std::vector<std::string*> S1;
-    // std::string* str;
-    // for (int i=0; i<m; i++){
-    //     str = new std::string[m];
-    //     // str = "";
-    //     for (int j=0; j<m; j++){
-    //         *(str + j) = (char) rand() % 2;
-    //     }
-    //     // int v1 = 
-    //     S1.push_back(str);
-    // }
-    // std::cout<< *(S1[0]) <<std::endl;
-    // Matrix<2> M1(m, m, S1);
-    // std::cout<<M1<<std::endl;
+    for (int k=0; k<n_test; k++){
+        std::vector<Matrix<2>> foo;
 
-    // std::vector<std::string> S1 = {"111001", "010011", "001010", "000110", "100010", "010100"};
-    // std::vector<std::string> S2 = {"101011", "011101", "001000", "000101", "010100", "010001"};
-    // std::vector<std::string> S3 = {"100100", "010000", "001000", "000100", "111001", "010011"};
-    // Matrix<2> M1(6, 6, S1);
-    // Matrix<2> M2(6, 6, S2);
-    // Matrix<2> M3(6, 6, S3);  
-    // std::vector<Matrix<2>> foo = {M1, M2, M3};  
+        if (random == 1){
+            for (int j=0; j<s; j++){
+                auto M = Matrix<2>(m, m, true);
+                foo.push_back(M);
+            }    
+        }
+        else{
+            std::vector<std::vector<uInteger>> directionNumbersInit = {{}, {1},{1,3},{1,3,1}, 
+                                                            {1,1,1},{1,1,3,3}, {1, 3, 5, 13}, {1, 1, 5, 5, 17}};
+            std::vector<std::vector<uInteger>> directionNumbers;
+            for (int i=0; i<s; i++){
+                directionNumbers.push_back(directionNumbersInit[i]);
+            }
+            foo = SobolNet(m,s,directionNumbers).generatingMatrices();
+        }
 
-    // std::vector<std::vector<uInteger>> directionNumbers = {{}, {1},{1,3},{1,3,1}, 
-    //                                                 {1,1,1},{1,1,3,3}, {1, 3, 5, 13}, {1, 1, 5, 5, 17}, {1, 1, 5, 5, 5}};
-    std::vector<std::vector<uInteger>> directionNumbers = {{}, {1},{1,3},{1,3,1}};
+        clock_t t1,t2, t3, t4;     
 
-    int m = 400;
-    int s = 4;
-    std::vector<Matrix<2>> foo = SobolNet(m,s,directionNumbers).generatingMatrices();
-    foo.erase(foo.begin());
+        if (m <30){
+            t1=clock();
+            res_schmidt = SchmidMethod::computeTValue(foo,0);
+            t2=clock();
+            float diff ((float)t2-(float)t1);
+            total_schmidt += diff;
+        }
+        
+        t3=clock();
+        bool verbose = false;
+        res_gauss = GaussMethod::computeTValue(foo,0, verbose);
+        t4=clock();
+        float diff2 ((float)t4-(float)t3);
+        total_gauss += diff2;
 
-    clock_t t1,t2, t3, t4;   
-    // clock_t t3, t4;    
-
-    // t1=clock();
-    // std::cout << "Schmid method" << std::endl;
-    // std::cout << SchmidMethod::computeTValue(foo,0) << std::endl;
-    // t2=clock();
-    // float diff ((float)t2-(float)t1);
-    // cout<<diff<<endl;
-
-    t3=clock();
-    std::cout << "Gauss method" << std::endl;
-    bool verbose = false;
-    std::cout << GaussMethod::computeTValue(foo,0, verbose) << std::endl;
-    t4=clock();
-    float diff2 ((float)t4-(float)t3);
-    cout<<diff2<<endl;
+        if (m<30 && res_gauss != res_schmidt){
+            n_diff++;
+        }
+    }
+    std::cout << "n diff " << n_diff << std::endl;
+    std::cout << "total schmid " << total_schmidt << std::endl;
+    std::cout << "total gauss " << total_gauss << std::endl;
+    
 
     return 0;
 }
