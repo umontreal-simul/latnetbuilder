@@ -41,240 +41,142 @@ class ComputationScheme
 
         typedef typename LatBuilder::uInteger uInteger; /**< type alia for unsigned */
 
-        /** Constructs of a computation scheme for a figure of merits based on the t-value of subjprojections.
-         * @param lastDimension is the last dimension added to the net
-         * @param maximalCardinality is the maximum cardinality of subprojections to consider
-         * @param weights is TO CLARIFY
-         */  
-        ComputationScheme(int lastDimension, int maximalCardinality, WEIGHTS weights):
-        m_lastDimension(lastDimension),
-        m_maximalCardinality(maximalCardinality),
-        m_weights(weights)
-        {
-            //assertions that we do not intend to create an empty network
-            assert(lastDimension >= 2);
-            assert(maximalCardinality >= 2);
-
-            // creating the 2D projections
-            std::vector<Node*> projections;
-            for(int i = 0; i < lastDimension - 1; ++i){
-                projection tmp = projection(lastDimension).flip(i).flip(lastDimension-1);
-                double weight = weights(tmp);
-                projections.push_back(new Node(std::move(tmp),lastDimension,weight));
-            }
-
-            // sorting the 2D projections by decreasing weights
-            std::sort(projections.begin(),projections.end(),compareNodePointers);
-            
-            for(int i = 0; i < projections.size() - 1; ++i){
-                projections[i]->setNextNode(projections[i+1]);
-            }
-
-            m_root = projections.front();
-
-            int card = 2;
-            std::map<projection,std::set<int>> seen;
-            std::vector<Node*> newProjections;
-            //creating the bigger projections
-            while (card<maximalCardinality)
-            {
-                newProjections.clear();
-                seen.clear();
-                for(int i = 0; i < projections.size(); ++i)
-                {
-                    for(int j = i + 1; j < projections.size(); ++j)
-                    {
-                        projection newProjRep = projections[i]->getProjectionRepresentation() | projections[j]->getProjectionRepresentation();
-                        int new_card = newProjRep.count();
-                        if (new_card == card+1)
-                        {
-                            auto it = seen.find(newProjRep);
-                            if (it != seen.end()){
-                                it->second.insert(i);
-                                it->second.insert(j);
-                            }
-                            else
-                            {
-                                std::set<int> tmp;
-                                tmp.insert(i);
-                                tmp.insert(j);
-                                seen[newProjRep] = std::move(tmp);
-                                double weight = weights(newProjRep);
-                                newProjections.push_back(new Node(std::move(newProjRep),lastDimension,weight));
-                            }
-                        }
-                    }
-                }
-                std::sort(newProjections.begin(), newProjections.end(), compareNodePointers);
-                for (auto* proj : newProjections)
-                {
-                    std::vector<Node*> mothers;
-                    for(const auto& idx : seen[proj->getProjectionRepresentation()])
-                    {
-                        mothers.push_back(projections[idx]);
-                    }
-                    proj->setMotherNodes(std::move(mothers));
-                }
-                for(int i = 0; i < newProjections.size()-1; ++i){
-                    newProjections[i]->setNextNode(newProjections[i+1]);
-                }
-                projections.back()->setNextNode(newProjections.front());
-                projections = std::move(newProjections);
-                ++card;
-            }
-        };
-
-        /** Constructs of a computation scheme for a figure of merits based on the t-value of subjprojections.
-         * This constructor use a computation scheme whose last dimension is one less to get the t-values of the subprojections
-         * which are not is the current computation scheme.
-         * @param lastDimension is the last dimension added to the net
+        /** Constructs of a computation scheme for a figure of merits based on the t-value of subprojections.
+         * The computation scheme visits the subprojections in a specific order to reduce computations.
          * @param maximalCardinality is the maximum cardinality of subprojections to consider
          * @param weights is TO CLARIFY
          */ 
-        ComputationScheme(int lastDimension, int maximalCardinality, WEIGHTS weights, const ComputationScheme& previousProjections):
-        m_lastDimension(lastDimension),
+
+        ComputationScheme(unsigned int maximalCardinality, WEIGHTS weights):
         m_maximalCardinality(maximalCardinality),
-        m_weights(weights)
+        m_weights(weights),
+        m_dimension(1)
         {
-            //assertions that we do not intend to create an empty network
-            assert(lastDimension >= 2);
-            assert(maximalCardinality >= 2);
-
-            //recover the lower bound for t-value from previous projections
-            std::map<projection,int> lowerBoundspreviousProjections;
-            previousProjections.getAllTValues(lowerBoundspreviousProjections);
-
-            // creating the 2D projections
-            std::vector<Node*> projections;
-            for(int i = 0; i < lastDimension - 1; ++i){
-                projection tmp = projection(lastDimension).flip(i).flip(lastDimension-1);
-                double weight = weights(tmp);
-                projections.push_back(new Node(std::move(tmp),lastDimension,weight));
-            }
-
-            // sorting the 2D projections by decreasing weights
-            std::sort(projections.begin(),projections.end(),compareNodePointers);
+            assert(maximalCardinality>=1);
+            mapsToNodes.push_back(std::map<projection,Node*>());
             
-            for(int i = 0; i < projections.size() - 1; ++i){
-                projections[i]->setNextNode(projections[i+1]);
-            }
+            projection tmp = projection(m_dimension).flip(0);
+            double weight = m_weights(tmp);
+            Node* root = new Node(tmp,m_dimension,weight);
+            mapsToNodes[0].insert(std::pair<projection,Node*>(tmp,root));
+            m_roots.push_back(root);
+        }
 
-            m_root = projections.front();
+        void extend(){
+            mapsToNodes.push_back(std::map<projection,Node*>());
+            ++m_dimension;
+            std::vector<Node*> newNodes;
 
-            int card = 2;
-            std::map<projection,std::set<int>> seen;
-            std::vector<Node*> newProjections;
-            //creating the bigger projections
-            while (card<maximalCardinality)
+            projection proj1DRep(m_dimension);
+            proj1DRep.flip(m_dimension-1);
+            double weight = m_weights(proj1DRep);
+            Node* proj1D = new Node(proj1DRep,m_dimension,weight);
+            newNodes.push_back(proj1D);
+            mapsToNodes[m_dimension-1].insert(std::pair<projection,Node*>(proj1DRep,proj1D));
+
+            for(int i = 0; i < m_dimension-1; ++i)
             {
-                newProjections.clear();
-                seen.clear();
-                for(int i = 0; i < projections.size(); ++i)
+                for (auto& kv : mapsToNodes[i])
                 {
-                    for(int j = i + 1; j < projections.size(); ++j)
+                    projection projectionRep = kv.first;
+                    if (projectionRep.count() <= m_maximalCardinality-1)
                     {
-                        projection newProjRep = projections[i]->getProjectionRepresentation() | projections[j]->getProjectionRepresentation();
-                        int new_card = newProjRep.count();
-                        if (new_card == card+1)
-                        {
-                            auto it = seen.find(newProjRep);
-                            if (it != seen.end()){
-                                it->second.insert(i);
-                                it->second.insert(j);
-                            }
-                            else
-                            {
-                                std::set<int> tmp;
-                                tmp.insert(i);
-                                tmp.insert(j);
-                                seen[newProjRep] = std::move(tmp);
-                                double weight = weights(newProjRep);
-                                
-                                int lowerBound = 0;
-                                projection resizedNewProjRep = newProjRep;
-                                resizedNewProjRep.resize(lastDimension-1);
-                                for( auto& kv : lowerBoundspreviousProjections)
-                                {
-                                    auto k = kv.first;
-                                    if ((resizedNewProjRep - kv.first).empty())
-                                    {
-                                        lowerBound = std::min(kv.second,lowerBound);
-                                    }
-                                }
-
-                                newProjections.push_back(new Node(std::move(newProjRep),lastDimension,weight,lowerBound));
-                            }
-                        }
+                        
+                        projectionRep.resize(m_dimension);
+                        projectionRep.flip(m_dimension-1);
+                        double weight = m_weights(projectionRep);
+                        Node* newNode = new Node(projectionRep,m_dimension,weight);
+                        newNode->addMother(kv.second);
+                        mapsToNodes[m_dimension-1].insert(std::pair<projection,Node*>(projectionRep,newNode));
+                        newNodes.push_back(newNode);
                     }
-                }
-                std::sort(newProjections.begin(), newProjections.end(), compareNodePointers);
-                for (auto* proj : newProjections)
-                {
-                    std::vector<Node*> mothers;
-                    for(const auto& idx : seen[proj->getProjectionRepresentation()])
-                    {
-                        mothers.push_back(projections[idx]);
-                    }
-                    proj->setMotherNodes(std::move(mothers));
-                }
-                for(int i = 0; i < newProjections.size()-1; ++i){
-                    newProjections[i]->setNextNode(newProjections[i+1]);
-                }
-                projections.back()->setNextNode(newProjections.front());
-                projections = std::move(newProjections);
-                ++card;
+                } 
             }
-        };
+            std::sort(newNodes.begin(),newNodes.end(),compareNodePointers);
+            m_roots.push_back(newNodes[0]);
+            for(int i = 0; i < newNodes.size()-1; ++i)
+            {
+                newNodes[i]->setNextNode(newNodes[i+1]);
+            }
+            for (auto& kv : mapsToNodes[m_dimension-1])
+            {   
+                projection tmp = kv.first;
+                for(int i = 0; i < m_dimension-1; ++i)
+                {
+                    if (tmp[i])
+                    {
+                        tmp.flip(i);
+                        kv.second->addMother(mapsToNodes[m_dimension-1].find(tmp)->second);
+                        tmp.flip(i);
+                    }
+                }
+            }
+        }
 
+        void extend(unsigned int times)
+        {
+            for(int i = 0; i < times; ++i)
+            {
+                extend();
+            }
+        }
         /** Destructs the computation scheme/
          */ 
         ~ComputationScheme()
         {
-            delete m_root;
+            for (auto* root : m_roots)
+            {
+                delete root;
+            }
         }
 
         /** Add to the map passed by reference the t-value of all the projections in the scheme for the best network so far.
          * The keys are bitset representation of the projections.
          * @param tValuesMap is a map to contain the tvalues.
          */ 
-        void getAllTValues(std::map<projection,int>& tValuesMap) const{
-            const Node* it = m_root;
+        std::map<projection,int> getAllTValues(unsigned int dimension) const{
+            std::map<projection,int> tValuesMap;
+            const Node* it = m_roots[dimension-1];
             do
             {
-                tValuesMap.insert(std::pair<projection,int>(it->getProjectionRepresentation(),it->getTValueBestNet()));
+                tValuesMap.insert(std::pair<projection,int>(it->getProjectionRepresentation(),it->getTValueMem()));
                 it = it->getNextNode();
             }
             while(it != NULL);
+            return tValuesMap;
         }
 
         /** Compute a figure of merit on the given net, update the pointer to the best net and the optimal figure of merit
          * if required.
          * @param net is a reference to the net to consider.
+         * @param dimension is the last dimension (highest dimension in in all the subprojections)
          * @param bestNet is a reference to a pointer to the best net so far.
          * @param optimalFigureOfMerit is a reference to the best figure of merit so far.
          */ 
-        template <typename DERIVED, uInteger BASE>
-        void computeFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, DigitalNet<DERIVED,BASE>*& bestNet, double& optimalFigureOfMerit)
+/*         template <typename DERIVED, uInteger BASE>
+        void computeFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, unsigned int dimension, DigitalNet<DERIVED,BASE>*& bestNet, double& optimalFigureOfMerit)
         {
             typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
-            double acc = 0; // accumulatof for the figure of merit
-            Node* it = m_root; // iterator over the nodes
+            double acc = 0; // accumulator for the figure of merit
+            Node* it = m_roots[dimension-1]; // iterator over the nodes
             do
             {   
                 double weight = it->getWeight();
+                it->computeMaxTValuesSubProj();
+    
                 std::vector<GeneratingMatrix> genMatrices;
-                for(int i = 0; i < m_lastDimension-1; ++i)
+                for(int i = 0; i < it->getMaxDimension()-1; ++i)
                 {
                     if (it->getProjectionRepresentation()[i]){
                         genMatrices.push_back(net.generatingMatrix(i+1)); // compute the generating matrices
                     }
                 }
-                genMatrices.push_back(net.generatingMatrix(m_lastDimension));
+                genMatrices.push_back(net.generatingMatrix(it->getMaxDimension()));
 
-                int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getLowerBound()); // compute the t-value of the projection
-                std::cout << *it << " - t-value: " << tValue << std::endl;
+                int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj()); // compute the t-value of the projection
+                std::cout << *it << "- t-value sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
                 FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
-                it->setTValueCurrentNet(tValue); // update the t-value of the node
+                it->setTValueTmp(tValue); // update the t-value of the node
                 it = it->getNextNode(); // skip to next node
             }
             while(it != NULL);
@@ -283,36 +185,77 @@ class ComputationScheme
                 // update the references and the t-values for the best net if required.
                 *bestNet = net;
                 optimalFigureOfMerit = acc;
-                setTValuesBestNet();
+                saveTValues();
+            }
+        } */
+
+        template <typename DERIVED, uInteger BASE>
+        void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc)
+        {
+            typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
+            for (int dim = 1; dim <= m_dimension; ++dim)
+            {
+                Node* it = m_roots[dim-1]; // iterator over the nodes
+                do
+                {   
+                    double weight = it->getWeight();
+                    std::vector<GeneratingMatrix> genMatrices;
+                    for(int i = 0; i < it->getMaxDimension()-1; ++i)
+                    {
+                        if (it->getProjectionRepresentation()[i]){
+                            genMatrices.push_back(net.generatingMatrix(i+1)); // compute the generating matrices
+                        }
+                    }
+                    genMatrices.push_back(net.generatingMatrix(it->getMaxDimension()));
+                    it->computeMaxTValuesSubProj();
+                    int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj()); // compute the t-value of the projection
+                    std::cout << *it << " - max t-values sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                    FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
+                    it->setTValueTmp(tValue); // update the t-value of the node
+                    it = it->getNextNode(); // skip to next node
+                }
+                while(it != NULL);
+                saveTValues(dim);
             }
         }
 
-        /** Set the t-values for the best net of all the nodes to be the t-values of the current net.
+        /** Save the t-values of all the nodes for the current net.
          */  
-        void setTValuesBestNet()
+        void saveTValues(unsigned int dimension)
         {
-            Node* it = m_root;
+            Node* it = m_roots[dimension-1];
             do
             {
-                it->setTValueBestNet();
+                it->saveTValue();
                 it = it->getNextNode();
             }
             while(it != NULL);
         }
 
-        /** Overloads the << operator to print computation scheme.
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const ComputationScheme& dt)
+        void saveTValues()
+        {
+            for(int i = 0; i< m_dimension; ++i)
             {
-                Node* it = dt.m_root;
+                Node* it = m_roots[i];
                 do
                 {
-                    std::cout << *it << std::endl;
+                    it->saveTValue();
                     it = it->getNextNode();
-                }
+                }                 
                 while(it != NULL);
-                return os;
-            }   
+            }
+        }
+
+        void print(unsigned int dimension)
+        {
+            Node* it = m_roots[dimension-1];
+            do
+            {
+                std::cout << *it << std::endl;
+                it = it->getNextNode();
+            }
+            while(it != NULL);
+        }
 
     private:
 
@@ -324,18 +267,17 @@ class ComputationScheme
             public:
                 /** Constructor for class Node.
                  * @param projRep is the bitset representation of the projection
-                 * @param lastDimension is the equivalent of \fd\f
+                 * @param dimension is the equivalent of \fd\f
                  * @param weight is the importance of the projection in the figure of merit
                  * @param lowerBoundPreviousProjections is a lower bound on the t-value of the projection. 
                  * Most often it is the maximum of the t-values of the subprojections.
                  */ 
-                Node(const projection& projRep, int lastDimension, double weight, int lowerBoundPreviousProjections = 0):
+                Node(const projection& projRep, int dimension, double weight):
                     m_weight(weight),
                     m_projRep(projRep),
-                    m_lastDimension(lastDimension),
-                    m_lowerBoundPreviousProjections(lowerBoundPreviousProjections)
+                    m_dimension(dimension)
                 {
-                    assert(projRep.size()==lastDimension);
+                    assert(projRep.size()==dimension);
                     m_cardinal = projRep.count();
                 }
 
@@ -348,21 +290,23 @@ class ComputationScheme
                  */ 
                 int getCardinal() const { return m_cardinal; }
 
+                int getMaxDimension() const { return m_dimension; }
+
                 /** Returns the weight of the projection represented by the node.
                  */ 
                 int getWeight() const { return m_weight; }
 
                 /** Returns a lower bound on the t-value of the projection represented by the node.
                  */ 
-                int getLowerBound() const { return m_lowerBound; }
+                int getMaxTValuesSubProj() const { return m_maxTValuesSubProj; }
 
                 /** Returns the t-value of the projection represented by the node for the best net so far.
                  */ 
-                int getTValueBestNet() const {return m_tValueBestNet; }
+                int getTValueMem() const {return m_tValueMem; }
 
                 /** Returns the t-value of the projection represented by the node for the current net.
                  */ 
-                int getTValueCurrentNet() const {return m_tValueCurrentNet; }
+                int getTValueTmp() const {return m_tValueTmp; }
 
                 /** Returns a pointer to the next projection to evaluate.
                  */ 
@@ -380,7 +324,7 @@ class ComputationScheme
                 /** Set the t-value of the node to be the given t-value
                  * @param tValue is the t-value to assign to the node.
                  */ 
-                void setTValueCurrentNet(int tValue) {m_tValueCurrentNet = tValue; }
+                void setTValueTmp(int tValue) {m_tValueTmp = tValue; }
 
                 /** Set the next node of the current node.
                  * @param node is a pointer to the next node.
@@ -392,21 +336,30 @@ class ComputationScheme
                  */ 
                 void setMotherNodes(std::vector<Node*> mothers) { m_mothersNodes = mothers; }
 
+                void addMother(Node* mother) { m_mothersNodes.push_back(mother); }
+
                 /** Set the t-value of the current projection for the best net so far to be the t-value for the current net.
                  * This should be used when a better net is found.
                  */ 
-                void setTValueBestNet() {m_tValueBestNet = m_tValueCurrentNet; }
+                void saveTValue() {m_tValueMem = m_tValueTmp; }
 
                 /** Compute a lower bound on the t-value of the projection represented by the node. 
                  * Notice that this bound is based on the t-values of the mothers and on a private member variable which 
                  * represents an the maximum of the t-values of the subprojections of the current projection which are not in
                  * the computation scheme.
                  */ 
-                void updateLowerBound(){
-                    m_lowerBound = m_lowerBoundPreviousProjections;
+                void computeMaxTValuesSubProj()
+                {
+                    m_maxTValuesSubProj=0;
                     for (auto const* m : m_mothersNodes)
                     {
-                        m_lowerBound = std::min(m->getTValueCurrentNet(),m_lowerBound);
+                        if (m->getProjectionRepresentation()[m_dimension-1])
+                        {
+                            m_maxTValuesSubProj = std::max(m->getTValueTmp(),m_maxTValuesSubProj);
+                        }
+                        else{
+                            m_maxTValuesSubProj = std::max(m->getTValueMem(),m_maxTValuesSubProj);
+                        } 
                     }
                 }
 
@@ -426,31 +379,48 @@ class ComputationScheme
                 friend std::ostream& operator<<(std::ostream& os, const Node& dt)
                 {
                     os << "projection: " << "{";
-                    for (projection::size_type n = 0; n < dt.m_lastDimension-1; ++n){
+                    for (projection::size_type n = 0; n < dt.m_dimension-1; ++n){
                         if (dt.m_projRep.test(n)){
                             os << n+1 << ", ";
                         }
                     }
-                    if (dt.m_projRep.test(dt.m_lastDimension-1))
+                    if (dt.m_projRep.test(dt.m_dimension-1))
                     {
-                        os << dt.m_lastDimension;
+                        os << dt.m_dimension;
                     }
                     os << "} - weight: " << dt.getWeight();
+                    /* os << std::endl << "    mothers: " << std::endl;
+                    for(const auto& m: dt.getMotherNodes())
+                    {
+                        os << "      {";
+                        for(projection::size_type n = 0; n < m->getMaxDimension()-1; ++n)
+                        {
+                            if (m->getProjectionRepresentation().test(n))
+                            {
+                                os << n+1 << ", ";
+                            }  
+                        }
+                        if (m->getProjectionRepresentation().test(m->getMaxDimension()-1))
+                        {
+                            os << m->getMaxDimension();
+                        }
+                        os << "}" << std::endl; 
+                    } */
                     return os;
                 }
 
             private:
                 double m_weight; // weight of the projection
                 projection m_projRep; // bitset representation of the projection
-                int m_lastDimension; // last dimension of J_d
+                int m_dimension; // last dimension of J_d
                 int m_cardinal; // cardinal of the projection
 
                 Node* m_nextNode = NULL; // pointer to the next projection to evaluate
                 std::vector<Node*> m_mothersNodes; // pointers to the subprojections which are is the scheme
-                int m_lowerBound = 0; // lower bound on the t-value of the projection
-                int m_tValueBestNet = 0; // t-value of the projection for the best net so far
-                int m_tValueCurrentNet = 0; // t-value of the projection for the current net
-                int m_lowerBoundPreviousProjections; // maximum of the t-values of the projections no in the scheme 
+                int m_maxTValuesSubProj = 0; // lower bound on the t-value of the projection
+                int m_tValueMem = 0; // t-value of the projection for the best net so far
+                int m_tValueTmp = 0; // t-value of the projection for the current net
+                int m_maxTValuesSubProjPreviousProjections; // maximum of the t-values of the projections no in the scheme 
                                                      // which where previously evaluated.
         };
 
@@ -460,13 +430,11 @@ class ComputationScheme
             return !(*a < * b);
         }
 
-        int m_lastDimension; // last dimension of J_d
+        int m_dimension; // last dimension of J_d
         int m_maximalCardinality; // maximal cardinality of projections to consider (alpha)
         WEIGHTS m_weights; // TO CLARIFY represent a way to compute weights for projections
-        Node* m_root = NULL; // pointer to the first node to evaluate
-
-         
-
+        std::vector<Node*> m_roots; // pointer to the first node to evaluate
+        std::vector<std::map<projection, Node*>> mapsToNodes;
 };
 
 }}

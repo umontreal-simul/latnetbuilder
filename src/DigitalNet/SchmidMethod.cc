@@ -37,6 +37,8 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowe
     unsigned int s = (unsigned int)matrices.size();
     //std::cout << "s: " << s << std::endl;
 
+    if (s==1){ return 0; } 
+
     size_type upperLimit = (1<<(m-lowerBound))-1;
     std::vector<unsigned int> flipingOrder(upperLimit);
     for(uInteger r = 0; r < upperLimit; ++r)
