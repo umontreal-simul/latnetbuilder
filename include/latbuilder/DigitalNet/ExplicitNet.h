@@ -35,10 +35,17 @@ class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
 
     typedef typename DigitalNet<ExplicitNet<BASE>,BASE>::GeneratingMatrix GeneratingMatrix;
 
+    ExplicitNet(unsigned int nRows, unsigned int nCols):
+    m_base(BASE),
+    m_dimension(0),
+    m_rows(nRows),
+    m_cols(nCols)
+    {};
+
     /** Constructs a digital net in any base from arbitrary generating matrices. Perfoms a sanity check to ensure the matrices
      * have the right size. Other parameters are deduced from the given generating matrices.
      * @param generatingMatrices is the vector of generating matrices
-     */
+     */    
     ExplicitNet(std::vector<GeneratingMatrix> generatingMatrices):
     m_generatingMatrices(generatingMatrices),
     m_base(BASE)
@@ -52,6 +59,33 @@ class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
         assert(mat.nRows()==m_rows);
         assert(mat.nCols()==m_cols);
       }
+    };
+
+    template <typename RAND>
+    ExplicitNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, RAND& randomGen):
+    m_dimension(dimension),
+    m_rows(nRows),
+    m_cols(nCols),
+    m_generatingMatrices(dimension,GeneratingMatrix(m_rows,m_cols))
+    {
+      for (unsigned int dim = 0; dim < m_dimension; ++dim)
+      {
+        m_generatingMatrices[dim] = GeneratingMatrix::randomMatrix(m_rows,m_cols,randomGen);
+      }
+    };
+
+    void extendDimension(GeneratingMatrix genMatrix)
+    {
+      assert(genMatrix.nRows() == m_rows);
+      assert(genMatrix.nCols() == m_cols);
+      ++m_dimension;
+      m_generatingMatrices.push_back(genMatrix);
+    };
+
+    void shrinkDimension()
+    {
+      --m_dimension;
+      m_generatingMatrices.pop_back();
     };
       
       /** Returns the base of the net.  */

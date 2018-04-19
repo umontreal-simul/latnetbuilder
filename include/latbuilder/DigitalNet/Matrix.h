@@ -56,7 +56,7 @@ class Matrix {
     {
         for(unsigned int i = 0; i < mat.m_rows; ++i)
         {
-            for(unsigned int j = 0; j < mat.n_columns; ++j)
+            for(unsigned int j = 0; j < mat.m_cols; ++j)
             {
                 os << mat(i,j) << " ";
             }
@@ -64,6 +64,40 @@ class Matrix {
         }
         return os; 
     }
+
+    template<typename RAND>
+    static Matrix<BASE> randomMatrix(unsigned int n_rows, unsigned int n_cols, RAND& randomGen, bool uniTriangular = true)
+    {
+        Matrix res(n_rows,n_cols);
+
+        if (uniTriangular)
+        {
+            for(unsigned int i = 0; i < n_rows; ++i)
+            {
+                if (i < n_cols)
+                {
+                    res(i,i) = 1;
+                }
+
+                for(unsigned int j = i+1; j < n_cols; ++j)
+                {
+                    res(i,j) = randomGen() % BASE;
+                }
+            }
+        }
+        else
+        {
+            for(unsigned int i = 0; i < n_rows; ++i)
+           {
+                for(unsigned int j = 0; j < n_cols; ++j)
+                {
+                    res(i,j) = randomGen() % BASE;
+                }
+            }
+        }
+
+        return res;
+   };
 
     private:
         std::vector<uInteger> m_data;
@@ -192,6 +226,40 @@ class Matrix<2> {
             }
             return os; 
         }
+
+        
+        template<typename RAND>
+        static Matrix<2> randomMatrix(unsigned int n_rows, unsigned int n_cols, RAND& randomGen, bool uniTriangular = true)
+        {
+            Matrix res(n_rows,n_cols);
+
+            if (uniTriangular)
+            {
+                for(unsigned int i = 0; i < n_rows; ++i)
+                {
+                    if (i < n_cols)
+                    {
+                        res(i,i) = 1;
+                    }
+                    for(unsigned int j = i+1; j < n_cols; ++j)
+                    {
+                        res(i,j) = randomGen() % 2;
+                    }
+                }
+            }
+            else
+            {
+                for(unsigned int i = 0; i < n_rows; ++i)
+                {
+                    for(unsigned int j = 0; j < n_cols; ++j)
+                    {
+                        res(i,j) = randomGen() % 2;
+                    }
+                }
+            }
+
+            return res;
+        };
 
     private:
         std::vector<boost::dynamic_bitset<>> m_data;

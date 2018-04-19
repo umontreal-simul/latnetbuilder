@@ -33,8 +33,6 @@ int main(int argc, const char *argv[])
 
     auto test = ExplicitNet<2>(foo.generatingMatrices());
 
-    typedef  ExplicitNet<2>::GeneratingMatrix GeneratingMatrix;
-
     std::cout << test.generatingMatrix(1) << std::endl;
     std::cout << test.generatingMatrix(2) << std::endl;
     std::cout << test.generatingMatrix(3) << std::endl;
@@ -42,8 +40,12 @@ int main(int argc, const char *argv[])
     std::cout << test.generatingMatrix(5) << std::endl;
     std::cout << test.generatingMatrix(6) << std::endl;
 
-    test.generatingMatrix(1).flip(0,0);
-    std::cout << test.generatingMatrix(1) << std::endl;
+    auto test2 = ExplicitNet<2>(s,m,m);
+
+    auto test3 = ExplicitNet<11>(s,m,m);
+
+    std::cout << test2.generatingMatrix(1) << std::endl;
+    std::cout << test3.generatingMatrix(1) << std::endl;
 
     return 0;
 }

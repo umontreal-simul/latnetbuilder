@@ -14,16 +14,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/DigitalUtil.h"
 #include "latbuilder/DigitalNet/SchmidMethod.h"
 #include "latbuilder/DigitalNet/GaussMethod.h"
-#include "latbuilder/DigitalNet/DigitalNet.h"
-#include "latbuilder/DigitalNet/SobolNet.h"
+#include "latbuilder/DigitalNet/ExplicitNet.h"
 #include "latbuilder/DigitalNet/ComputationScheme.h"
+#include "latbuilder/LFSR258.h"
 #include <iostream>
 #include <vector>
-#include <map>
-#include <limits>
+#include <time.h>
+
 
 using namespace LatBuilder::DigitalNet;
 
@@ -45,7 +44,7 @@ class tValueWeights{
 struct MaxFigure{
 
     static void updateFigure(double& acc, int tValue, double weight){
-        acc = std::max(acc,tValue*weight);
+        acc = std::max(acc,tValue*weight) ;
     }
 
     static double combine(double partialFigureDim, double figurePreviousDim){
@@ -55,35 +54,53 @@ struct MaxFigure{
 
 int main(int argc, const char *argv[])
 {
-    int m = 20;
-    int s = 5;
+    assert(argc == 5);
 
-    auto test = SobolNet(m,s);
+    int m_max = atol(argv[1]);
+    assert(m_max >=1 && m_max <=30);
 
-    int maximalCardinality = s;
+    int s_min = atol(argv[2]);
 
-    auto compSchmid = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
-    compSchmid.extend(s-1);
+    int s_max = atol(argv[3]);
+    assert(s_min >= 1 && s_max <= 20 && s_min <= s_max);
 
-    auto compReversedSchmid = ComputationScheme<tValueWeights,ReversedSchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
-    compReversedSchmid.extend(s-1);
+    int n_test = atol(argv[4]);
+    assert(n_test >= 1);
 
-    auto compGauss = ComputationScheme<tValueWeights,GaussMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
-    compGauss.extend(s-1);
+    auto randomGen = LatBuilder::LFSR258();
 
+    std::cout << "s" << "\t" << "m" << "\t" << "gauss" << std::endl;
 
-    double tValueSchmid = 0;
-    double tValueReversedSchmid = 0; 
-    double tValueGauss = 0;
+    for(int s = s_min; s <= s_max; ++s)
+    {
+            
+        auto compGauss = ComputationScheme<tValueWeights,GaussMethod,MaxFigure>(s,tValueWeights(s));
+        compGauss.extendUpToDimension(s);
 
-    compSchmid.evaluateFigureOfMerit(test,tValueSchmid);
-    std::cout << "t-value Schmid: " << tValueSchmid << std::endl;
+        for(int m = 1; m <= m_max; ++m)
+        {
 
-    compReversedSchmid.evaluateFigureOfMerit(test,tValueReversedSchmid);
-    std::cout << "t-value Reversed Schmid: " << tValueSchmid << std::endl;
+                float total_gauss = 0;
 
-    compGauss.evaluateFigureOfMerit(test,tValueGauss);
-    std::cout << "t-value Gauss: " << tValueGauss << std::endl;
-    
+            for (int k=0; k<n_test; k++){
+
+                double tValueGauss = 0;
+
+                auto net = ExplicitNet<2>(s, m, m, randomGen);
+
+                clock_t t1,t2; 
+                bool verbose = false;   
+                
+                t1=clock();
+                compGauss.evaluateFigureOfMerit(net,tValueGauss);
+                t2=clock();
+                float diff2 ((float)t2-(float)t1);
+                total_gauss += diff2;
+            }
+            double m_gauss = total_gauss/ n_test;
+
+            std::cout << s << "\t" << m << "\t" << m_gauss << std::endl;
+        }
+    }
     return 0;
 }

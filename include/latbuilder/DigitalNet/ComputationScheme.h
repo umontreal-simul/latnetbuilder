@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef PROJECTION_NETWORK_H
-#define PROJECTION_NETWORK_H
+#ifndef DIGITAL_NET_COMPUTATION_SCHEME_H
+#define DIGITAL_NET_COMPUTATION_SCHEME_H
 
 #include <vector>
 #include <map>
@@ -52,12 +52,14 @@ class ComputationScheme
         m_dimension(1)
         {
             assert(maxCardinal>=1); // otherwise we consider no projections
-            
+
             // create projection {1}
             projection tmp = projection(m_dimension).flip(0); 
             double weight = m_weights(tmp);
             Node* root = new Node(tmp,m_dimension,weight); // set the first root to be the first node
             m_roots.push_back(root);
+
+            m_validFlags.push_back(false);
         }
 
         /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
@@ -120,6 +122,8 @@ class ComputationScheme
                     }
                 }
             }
+
+            m_validFlags.push_back(false);
         }
 
         /** Extend several times the ComputationSchemme. 
@@ -129,6 +133,18 @@ class ComputationScheme
         void extend(unsigned int times)
         {
             for(int i = 0; i < times; ++i)
+            {
+                extend();
+            }
+        }
+
+        /** Extend the ComputationSchemme up to the given last dimension. 
+         * @param dimension is the highest dimension in the projections
+         * @see extend
+         */ 
+        void extendUpToDimension(unsigned int dimension)
+        {
+            for(unsigned int i = m_dimension; i < dimension; ++i)
             {
                 extend();
             }
@@ -159,6 +175,9 @@ class ComputationScheme
          */ 
         std::map<projection,int> getAllTValues(unsigned int dimension) const{
             std::map<projection,int> tValuesMap;
+
+            assert(m_validFlags[dimension-1]);
+
             const Node* it = m_roots[dimension-1];
             do
             {
@@ -173,19 +192,34 @@ class ComputationScheme
          * if required.
          * @param net is a reference to the net to consider.
          * @param dimension is the last dimension (highest dimension in in all the subprojections)
-         * @param bestNet is a reference to a pointer to the best net so far.
-         * @param optimalFigureOfMerit is a reference to the best figure of merit so far.
+         * @param bestPartialFigureCurDim is a reference the best partial figure of merit for the current dimension so far
+         * @param bestFigurePreviousDimension is the best figure in lower dimension
          */ 
-/*         template <typename DERIVED, uInteger BASE>
-        void computeFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, unsigned int dimension, DigitalNet<DERIVED,BASE>*& bestNet, double& optimalFigureOfMerit)
+        template <typename DERIVED, uInteger BASE>
+        bool computePartialFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, unsigned int dimension, double& bestPartialFigureCurDim, double bestFigurePrevDim, bool verbose = false)
         {
+            
+            assert(dimension <= m_dimension);
+
+            assert(isValid(dimension-1)); // check that the previous dimensions were correctly computed
+            invalidate(dimension + 1); // declare invalid the t-values stored for upper dimensions
+
+            double optFigure = FIGURE_OF_MERIT::combine(bestPartialFigureCurDim,bestFigurePrevDim);
+
             typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
             double acc = 0; // accumulator for the figure of merit
+
+            std::vector<GeneratingMatrix> allGeneratingMatrices;
+
+            for (int dim = 1; dim <= m_dimension; ++dim) // for each dimension
+            {
+                allGeneratingMatrices.push_back(net.generatingMatrix(dim));
+            }    
+
             Node* it = m_roots[dimension-1]; // iterator over the nodes
             do
             {   
                 double weight = it->getWeight();
-                it->updateMaxTValuesSubProj();
     
                 std::vector<GeneratingMatrix> genMatrices;
                 for(int i = 0; i < it->getMaxDimension()-1; ++i)
@@ -196,22 +230,31 @@ class ComputationScheme
                 }
                 genMatrices.push_back(net.generatingMatrix(it->getMaxDimension()));
 
-                int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj()); // compute the t-value of the projection
-                std::cout << *it << "- t-value sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                it->updateMaxTValuesSubProj();
+                int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj(), verbose); // compute the t-value of the projection
+                
+                if(verbose)
+                {
+                    std::cout << *it << " - t-value sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                }
+
                 FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
                 it->setTValueTmp(tValue); // update the t-value of the node
                 it = it->getNextNode(); // skip to next node
             }
             while(it != nullptr);
-            if (acc < optimalFigureOfMerit)
+
+            validate(dimension);
+
+            double currentFigure = FIGURE_OF_MERIT::combine(acc,bestFigurePrevDim);
+            if ( currentFigure < optFigure)
             {
-                // update the references and the t-values for the best net if required.
-                *bestNet = net;
-                optimalFigureOfMerit = acc;
+                bestPartialFigureCurDim = acc;
                 saveTValues();
+                return true;
             }
+            return false;
         } 
-        */
 
         /** Evaluate the figure of merit on the given net, storing the result in the accumulator. This method consider all
          * the subprojections which are in the scheme.
@@ -221,6 +264,10 @@ class ComputationScheme
         template <typename DERIVED, uInteger BASE>
         void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc, bool verbose=false)
         {
+
+            assert(m_dimension==net.dimension());
+            invalidate(1); // all the t-values stored in the scheme are declared invalid
+
             typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
 
             std::vector<GeneratingMatrix> allGeneratingMatrices;
@@ -257,6 +304,8 @@ class ComputationScheme
                     it = it->getNextNode(); // skip to next node
                 }
                 while(it != nullptr);
+
+                validate(dim); // declare valid the stored t-values for the projections we just computed
             }
         }
 
@@ -303,6 +352,54 @@ class ComputationScheme
             while(it != nullptr);
         }
 
+        /** Returns true if the figure of merit is fully computed for dimensions lower than maxDimension. Returns false 
+         * otherwise.
+         * @param maxDimension is the maximal dimension to consider
+         */ 
+        bool isValid(unsigned int maxDimension) const
+        {
+            if(maxDimension > m_dimension)
+            {
+                return false;
+            }
+
+            for(unsigned int i = 0; i < maxDimension; ++i)
+            {
+                if(!m_validFlags[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
+         * @param dimension is the dimension to set valid
+         */ 
+        void validate(unsigned int dimension)
+        {
+            assert(dimension <= m_dimension);
+            assert(isValid(dimension-1));
+            m_validFlags[dimension-1] = true;
+        }
+
+        /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
+         * @param dimension is the dimension to consider
+         */
+        void invalidate(unsigned int dimension)
+        {
+            assert(dimension >= 1);
+            for(unsigned int i = dimension-1; i < m_dimension; ++i)
+            {
+                if (!m_validFlags[i])
+                {
+                    return ;
+                }
+                m_validFlags[i] = false;
+            }
+        } 
+
     private:
 
         /** Private class to represent each element of \fJ_d\f. 
@@ -335,7 +432,7 @@ class ComputationScheme
 
                 /** Returns the weight of the projection represented by the node.
                  */ 
-                int getWeight() const { return m_weight; }
+                double getWeight() const { return m_weight; }
 
                 /** Returns the maximum of the t-values of the subprojections.
                  */ 
@@ -468,6 +565,7 @@ class ComputationScheme
         int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         WEIGHTS m_weights; // TO CLARIFY represent a way to compute weights for projections
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
+        std::vector<bool> m_validFlags;
 };
 
 }}
