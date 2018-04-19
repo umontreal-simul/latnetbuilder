@@ -16,23 +16,29 @@
 
 #include "latbuilder/DigitalNet/SobolNet.h"
 #include <boost/dynamic_bitset.hpp>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <assert.h>
+#include <boost/algorithm/string.hpp>
 
 using namespace LatBuilder::DigitalNet;
 
 using LatBuilder::uInteger; 
 typedef typename SobolNet::GeneratingMatrix GeneratingMatrix;
 
+static const std::array<unsigned int,21200> degrees =
+{{
+    #include "latbuilder/DigitalNet/data/primitive_polynomials_degrees.csv"
+}};
+
+static const std::array<unsigned long,21200> representations =
+{{
+    #include "latbuilder/DigitalNet/data/primitive_polynomials_representations.csv"
+}};
+
 SobolNet::PrimitivePolynomial SobolNet::nthPrimitivePolynomial(unsigned int n){
     // primitive polynomials are hard-coded because their computation is really complex.
-    constexpr unsigned int degrees[] =
-    {
-        #include "data/primitive_polynomials_degrees.csv"
-    };
-
-    constexpr unsigned long representations[] =
-    {
-        #include "data/primitive_polynomials_representations.csv"
-    };
     if (n>0 && n <= 21200)
     return std::pair<unsigned int,uInteger>(degrees[n-1],representations[n-1]);
     else{
@@ -130,3 +136,29 @@ std::vector<GeneratingMatrix> SobolNet::generatingMatrices() const {
     return res;
 }
 
+std::vector<std::vector<uInteger>> SobolNet::readJoeKuoDirectionNumbers(unsigned int dimension)
+{
+    assert(dimension >= 1 && dimension <= 21201);
+    std::ifstream file("../data/JoeKuoSobolNets.csv");
+    std::vector<std::vector<uInteger>> res(dimension);
+    res[0] = {};
+    std::string sent;
+    for(int i = 2; i <= dimension; ++i)
+    {
+        if(getline(file,sent))
+        {
+            std::vector<std::string> fields;
+            boost::split( fields, sent, boost::is_any_of( ";" ) );
+            for( const auto& token : fields)
+            {
+                res[i-1].push_back(std::stol(token));
+            }
+        }
+        else
+        {
+            std::cout << "Aie" << std::endl;
+            break;
+        }
+    }
+    return res;
+}

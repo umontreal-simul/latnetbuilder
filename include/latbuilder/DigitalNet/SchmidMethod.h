@@ -22,8 +22,13 @@
 namespace LatBuilder { namespace DigitalNet {
 
     struct SchmidMethod{
-    static int computeTValue(std::vector<Matrix<2>> matrices, int lowerBound);
-};
+    static int computeTValue(std::vector<Matrix<2>> matrices, unsigned int maxTValuesSubProj);
+    };
+
+    struct ReversedSchmidMethod{
+    static int computeTValue(std::vector<Matrix<2>> matrices, unsigned int maxTValuesSubProj);
+    };
+    
 }}
 
 #endif

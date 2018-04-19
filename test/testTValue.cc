@@ -16,6 +16,7 @@
 
 #include "latbuilder/DigitalNet/DigitalUtil.h"
 #include "latbuilder/DigitalNet/SchmidMethod.h"
+#include "latbuilder/DigitalNet/GaussMethod.h"
 #include "latbuilder/DigitalNet/DigitalNet.h"
 #include "latbuilder/DigitalNet/SobolNet.h"
 #include "latbuilder/DigitalNet/ComputationScheme.h"
@@ -41,11 +42,6 @@ class tValueWeights{
         unsigned int m_dimension;
 };
 
-class dummyWeights{
-    public:
-        float operator()(const projection& projRep){ return rand() % 1000;; }
-};
-
 struct MaxFigure{
     static void updateFigure(double& acc, int tValue, double weight){
         acc = std::max(acc,tValue*weight);
@@ -54,14 +50,15 @@ struct MaxFigure{
 
 int main(int argc, const char *argv[])
 {
-    std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};
-    int m = 10;
-    int s = 6;
-    auto test = SobolNet(m,s,directionNumbers);
+
+    int m = 20;
+    int s = 15;
+
+    auto test = SobolNet(m,s);
 
     int maximalCardinality = s;
 
-    auto comp = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    auto comp = ComputationScheme<tValueWeights,ReversedSchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
     comp.extend(s-1);
 
     double tValue = 0;

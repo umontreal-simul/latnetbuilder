@@ -107,6 +107,7 @@ def build(ctx):
     ctx.recurse('latcommon')
     ctx.recurse('src')
     ctx.recurse('progs')
+    ctx.recurse('data')
     if ctx.env.BUILD_DOCS:
         ctx.recurse('doc')
     if ctx.env.BUILD_EXAMPLES:

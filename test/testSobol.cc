@@ -22,24 +22,17 @@ using namespace LatBuilder::DigitalNet;
 
 typedef LatBuilder::uInteger uInteger;
 
-class dummyWeights{
-    public:
-        float operator()(const projection& projRep){ return rand() % 1000;; }
-};
 
 int main(int argc, const char *argv[])
 {
-    std::vector<std::vector<uInteger>> directionNumbers = {{},{1},{1,3},{1,3,1},{1,1,1},{1,1,3,3}};
     int m = 10;
-    int s = 6;
-    auto test = SobolNet(m,s,directionNumbers);
+    int s = 20;
+    auto test = SobolNet(m,s);
 
-    std::cout << test.generatingMatrix(1) << std::endl;
-    std::cout << test.generatingMatrix(2) << std::endl;
-    std::cout << test.generatingMatrix(3) << std::endl;
-    std::cout << test.generatingMatrix(4) << std::endl;
-    std::cout << test.generatingMatrix(5) << std::endl;
-    std::cout << test.generatingMatrix(6) << std::endl;
-    return 0;
+    for (const auto& mat : test.generatingMatrices())
+    {
+        std::cout << mat << std::endl;
+    }
 }
+
 

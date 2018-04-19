@@ -30,29 +30,24 @@ getmsb (unsigned long long x)
 
 typedef Matrix<2> GeneratingMatrix;
 
-int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowerBound)
+int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj)
 {
     unsigned int m = matrices[0].nCols();
-    //std::cout << "m: " << m << std::endl;
     unsigned int s = (unsigned int)matrices.size();
-    //std::cout << "s: " << s << std::endl;
 
     if (s==1){ return 0; } 
 
-    size_type upperLimit = (1<<(m-lowerBound))-1;
+    size_type upperLimit = (1<<(m-maxTValuesSubProj))-1;
     std::vector<unsigned int> flipingOrder(upperLimit);
     for(uInteger r = 0; r < upperLimit; ++r)
     {
         flipingOrder[r] = getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1)));
-        //std::cout << flipingOrder[r] << " ";
     }
-    //std::cout << std::endl << "Done." << std::endl;
 
     unsigned int k;
-    for(k = s ; k <= m-lowerBound; ++k)
+    for(k = s ; k <= m-maxTValuesSubProj; ++k)
     {
         std::vector<std::vector<int>> comps  = compositions(k,s);
-        //std::cout << "Here." << std::endl;
         for (const auto& comp : comps)
         {   
             std::vector<GeneratingMatrix::Row*> tmp(k);
@@ -66,20 +61,73 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowe
                 }
             }
 
-            //std::cout << "Here: " << idx << std::endl;
             boost::dynamic_bitset<> v(m);
             for(uInteger r = 0; r < ((1 << k) - 1); ++r)
             {
-                //std::cout << flipingOrder[r] << " " << std::endl;
                 v ^= *tmp[flipingOrder[r]];
                 if (v.none())
                 {
-                    //std::cout << "Hello." << std::endl;
                     return m-k+1;
                 }
             }
         }
     }
-    return m-k+1;
+    return maxTValuesSubProj;
 }
 
+int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj)
+{
+    unsigned int m = matrices[0].nCols();
+    unsigned int s = (unsigned int)matrices.size();
+
+    if (s==1){ return 0; } 
+
+    size_type upperLimit = (1<<(m-maxTValuesSubProj))-1;
+    std::vector<unsigned int> flipingOrder(upperLimit);
+    for(uInteger r = 0; r < upperLimit; ++r)
+    {
+        flipingOrder[r] = getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1)));
+    }
+
+    unsigned int k = m-maxTValuesSubProj;
+    bool isFullRank = false;
+    while(k>=s && !isFullRank)
+    {
+        std::vector<std::vector<int>> comps  = compositions(k,s);
+        bool isFullRankSubSystem = true;
+        int idxComp = 0;
+
+        do
+        {
+            std::vector<GeneratingMatrix::Row*> tmp(k);
+            unsigned int idx = 0;
+            for(unsigned int coord = 0; coord < s; ++coord)
+            {
+                for(unsigned int j = 0; j < comps[idxComp][coord]; ++j)
+                {
+                    tmp[idx] = &(matrices[coord][j]);
+                    ++idx;
+                }
+            }
+
+            boost::dynamic_bitset<> v(m);
+            
+            for(uInteger r = 0; r < ((1 << k) - 1); ++r)
+            {
+                v ^= *tmp[flipingOrder.at(r)];
+                if (v.none())
+                {
+                    isFullRankSubSystem = false;
+                    break;
+                }
+            }
+            idxComp++;
+        }
+        while(isFullRankSubSystem && idxComp < comps.size());
+        isFullRank = isFullRankSubSystem;
+        --k;
+    }
+    //assert(isFullRank);
+    //std::cout << k << std::endl;
+    return std::max(m-(k+1),maxTValuesSubProj);
+}

@@ -36,14 +36,15 @@ class SobolNet : public DigitalNet<SobolNet,2>{
      * @param dimension is the dimension of the net
      * @param directionNumbers are the initialization numbers for the recurrence accross the columns of the generating matrices. 
      */
-      SobolNet(int modulus, int dimension, std::vector<std::vector<uInteger>> directionNumbers):
+      SobolNet(unsigned int modulus, unsigned int dimension, std::vector<std::vector<uInteger>> directionNumbers):
         m_base(2),
         m_dimension(dimension),
         m_modulus(modulus),
         m_numPoints(intPow(2,modulus)),
-        m_directionNumbers(std::move(directionNumbers))
+        m_directionNumbers(directionNumbers)
       {
         // performs a sanity check on directionNumbers
+
         assert(m_directionNumbers.size()==m_dimension); // assert there is a set of direction numbers by coordinate
         for(int i = 0; i < m_dimension ; ++i)
         {
@@ -56,6 +57,10 @@ class SobolNet : public DigitalNet<SobolNet,2>{
           }
         } 
       };
+
+      SobolNet(unsigned int modulus, unsigned int dimension):
+      SobolNet(modulus,dimension,readJoeKuoDirectionNumbers(dimension))
+      {};
       
       /** Returns the base of the net.  */
       unsigned int base() const { return m_base; } 
@@ -109,8 +114,9 @@ class SobolNet : public DigitalNet<SobolNet,2>{
       /** Returns a binary presentation of the nth primitive polynomial over F^2.
        * @param n rank of the primitie polynomial to return
        */ 
-      static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n); // returns a representation of the nt
+      static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n); // returns a representation of the nth primitive polynomial
 
+      static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
       };
 }}
 #endif

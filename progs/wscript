@@ -6,6 +6,7 @@ def build(ctx):
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
+
     ctx(features='cxx cxxprogram',
             source=ctx.path.ant_glob('*.cc'),
             includes=[inc_dir, lc_inc_dir],
