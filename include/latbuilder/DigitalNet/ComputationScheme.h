@@ -219,7 +219,7 @@ class ComputationScheme
          * @param is a reference to the double in which we want to store the result
          */ 
         template <typename DERIVED, uInteger BASE>
-        void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc)
+        void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc, bool verbose=false)
         {
             typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
 
@@ -244,8 +244,13 @@ class ComputationScheme
                     }
 
                     it->updateMaxTValuesSubProj(); // compute the maximum of the t-values of the subprojections
-                    int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj()); // compute the t-value of the projection
-                    std::cout << *it << " - max t-values sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                    int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj(),verbose); // compute the t-value of the projection
+                    
+                    if(verbose)
+                    {
+                        std::cout << *it << " - max t-values sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                    }  
+                    
                     FIGURE_OF_MERIT::updateFigure(acc,tValue,weight); // update the accumulator according to the figure of merit
                     it->setTValueTmp(tValue); // update the t-value of the node
                     it->saveTValue(); // store the computed tValue

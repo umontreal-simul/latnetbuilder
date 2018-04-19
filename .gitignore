@@ -9,3 +9,7 @@ VERSION
 .Rhistory
 .vscode/
 *.txt
+
+
+test/*
+!test/*.cc

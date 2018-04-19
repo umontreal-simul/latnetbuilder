@@ -98,33 +98,43 @@ class Matrix<2> {
             }
         };
 
-        Matrix(unsigned int n_rows, unsigned int n_cols, std::vector<string> init):
+        Matrix(unsigned int n_rows, unsigned int n_cols, bool random):
         m_data(n_rows),
         m_rows(n_rows),
         m_cols(n_cols)
         {
-            assert(init.size() == m_rows);
-            for(unsigned int i = 0; i < m_rows; ++i)
-            {
-                assert(init[i].length() == m_cols);
-                std::reverse(init[i].begin(), init[i].end());
-                m_data[i] = boost::dynamic_bitset<>(init[i]);
+            std::string str;
+            for (int i=0; i<m_cols; i++){
+                str = "";
+                for (int j=0; j<m_cols; j++){
+                    if (rand() % 2 == 0){
+                        str.append("0");
+                    }
+                    else{
+                        str.append("1");
+                    }
+                }
+                m_data[i] = boost::dynamic_bitset<>(str);
             }
         };
 
-        Matrix(unsigned int n_rows, unsigned int n_cols, std::vector<string*> init):
-            m_data(n_rows),
-            m_rows(n_rows),
-            m_cols(n_cols)
-            {
-                assert(init.size() == m_rows);
-                for(unsigned int i = 0; i < m_rows; ++i)
-                {
-                    assert((*(init[i])).length() == m_cols);
-                    std::reverse((*(init[i])).begin(), (*(init[i])).end());
-                    m_data[i] = boost::dynamic_bitset<>((*(init[i])));
-                }
-        };
+        // Matrix(unsigned int n_rows, unsigned int n_cols, std::vector<string*> init):
+        //     m_data(n_rows),
+        //     m_rows(n_rows),
+        //     m_cols(n_cols)
+        //     {
+        //         assert(init.size() == m_rows);
+        //         for(unsigned int i = 0; i < m_rows; ++i)
+        //         {
+        //             // assert((*(init[i])).length() == m_cols);
+        //             std::string* str = new std::string[m_cols];
+        //             for (int j=0; j<m_cols; j++){
+        //                 *(str + j) = *(init)[m_cols - 1 - j];
+        //             }
+        //             // std::reverse((*(init[i])).begin(), (*(init[i])).end());
+        //             m_data[i] = boost::dynamic_bitset<>(*str);
+        //         }
+        // };
 
         unsigned int nCols() const { return m_cols; }
 
@@ -188,6 +198,8 @@ class Matrix<2> {
         unsigned int m_rows;
         unsigned int m_cols;
 };
+
+
 
 }}
 #endif

@@ -30,7 +30,7 @@ getmsb (unsigned long long x)
 
 typedef Matrix<2> GeneratingMatrix;
 
-int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj)
+int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose=false)
 {
     unsigned int m = matrices[0].nCols();
     unsigned int s = (unsigned int)matrices.size();
@@ -75,7 +75,7 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned
     return maxTValuesSubProj;
 }
 
-int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj)
+int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose = false)
 {
     unsigned int m = matrices[0].nCols();
     unsigned int s = (unsigned int)matrices.size();

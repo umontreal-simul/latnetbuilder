@@ -51,19 +51,35 @@ struct MaxFigure{
 int main(int argc, const char *argv[])
 {
 
-    int m = 20;
-    int s = 15;
+    int m = 10;
+    int s = 20;
 
     auto test = SobolNet(m,s);
 
     int maximalCardinality = s;
 
-    auto comp = ComputationScheme<tValueWeights,ReversedSchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
-    comp.extend(s-1);
+    auto compSchmid = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    compSchmid.extend(s-1);
 
-    double tValue = 0;
-    comp.evaluateFigureOfMerit(test,tValue);
+    auto compReversedSchmid = ComputationScheme<tValueWeights,ReversedSchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    compReversedSchmid.extend(s-1);
 
-    std::cout << "t-value: " << tValue << std::endl;
+    auto compGauss = ComputationScheme<tValueWeights,GaussMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    compGauss.extend(s-1);
+
+
+    double tValueSchmid = 0;
+    double tValueReversedSchmid = 0; 
+    double tValueGauss = 0;
+
+    compSchmid.evaluateFigureOfMerit(test,tValueSchmid);
+    std::cout << "t-value Schmid: " << tValueSchmid << std::endl;
+
+    compReversedSchmid.evaluateFigureOfMerit(test,tValueReversedSchmid);
+    std::cout << "t-value Reversed Schmid: " << tValueSchmid << std::endl;
+
+    compGauss.evaluateFigureOfMerit(test,tValueGauss);
+    std::cout << "t-value Gauss: " << tValueGauss << std::endl;
+    
     return 0;
 }
