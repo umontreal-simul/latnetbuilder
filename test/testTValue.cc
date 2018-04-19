@@ -16,6 +16,7 @@
 
 #include "latbuilder/DigitalNet/DigitalUtil.h"
 #include "latbuilder/DigitalNet/SchmidMethod.h"
+#include "latbuilder/DigitalNet/GaussMethod.h"
 #include "latbuilder/DigitalNet/DigitalNet.h"
 #include "latbuilder/DigitalNet/SobolNet.h"
 #include "latbuilder/DigitalNet/ComputationScheme.h"
@@ -58,15 +59,22 @@ int main(int argc, const char *argv[])
     int m = 10;
     int s = 6;
     auto test = SobolNet(m,s,directionNumbers);
+    auto test2 = SobolNet(m,s,directionNumbers);
 
     int maximalCardinality = s;
 
-    auto comp = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
-    comp.extend(s-1);
+    auto compSchmid = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    compSchmid.extend(s-1);
+    auto compGauss = ComputationScheme<tValueWeights,GaussMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+    compGauss.extend(s-1);
 
-    double tValue = 0;
-    comp.evaluateFigureOfMerit(test,tValue);
 
-    std::cout << "t-value: " << tValue << std::endl;
+    double tValueSchmid = 0;
+    double tValueGauss = 0;
+    compSchmid.evaluateFigureOfMerit(test,tValueSchmid);
+    compGauss.evaluateFigureOfMerit(test2,tValueGauss);
+
+    std::cout << "t-value Schmid: " << tValueSchmid << std::endl;
+    std::cout << "t-value Gauss: " << tValueGauss << std::endl;
     return 0;
 }

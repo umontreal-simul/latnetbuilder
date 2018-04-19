@@ -22,7 +22,7 @@
 namespace LatBuilder { namespace DigitalNet {
 
     struct SchmidMethod{
-    static int computeTValue(std::vector<Matrix<2>> matrices, int lowerBound);
+    static int computeTValue(std::vector<Matrix<2>> matrices, int lowerBound, bool verbose);
 };
 }}
 

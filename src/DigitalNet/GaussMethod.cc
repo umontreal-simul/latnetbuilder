@@ -258,10 +258,13 @@ int iteration_on_k(std::vector<Matrix<2>>& Origin_Mats, int k, bool verbose=fals
     return 0;
 }
 
-int GaussMethod::computeTValue(std::vector<Matrix<2>>& Origin_Mats, int maxSubProj, bool verbose=false)
+int GaussMethod::computeTValue(std::vector<Matrix<2>> Origin_Mats, int maxSubProj, bool verbose=false)
 {
     int m = Origin_Mats[0].nRows();
     int s = Origin_Mats.size();
+    if (s == 1){    // to be modified!
+        return 0;
+    }
     for (int k=m-maxSubProj; k >= s; k--){
         int status = iteration_on_k(Origin_Mats, k, verbose);
         if (verbose){

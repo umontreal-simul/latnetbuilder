@@ -30,7 +30,7 @@ getmsb (unsigned long long x)
 
 typedef Matrix<2> GeneratingMatrix;
 
-int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowerBound)
+int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, int lowerBound, bool verbose=false)
 {
     unsigned int m = matrices[0].nCols();
     //std::cout << "m: " << m << std::endl;

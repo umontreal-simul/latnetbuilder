@@ -190,7 +190,7 @@ class ComputationScheme
         } */
 
         template <typename DERIVED, uInteger BASE>
-        void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc)
+        void evaluateFigureOfMerit(const DigitalNet<DERIVED,BASE>& net, double& acc, bool verbose=false)
         {
             typedef typename DigitalNet<DERIVED,BASE>::GeneratingMatrix GeneratingMatrix;
             for (int dim = 1; dim <= m_dimension; ++dim)
@@ -208,8 +208,10 @@ class ComputationScheme
                     }
                     genMatrices.push_back(net.generatingMatrix(it->getMaxDimension()));
                     it->computeMaxTValuesSubProj();
-                    int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj()); // compute the t-value of the projection
-                    std::cout << *it << " - max t-values sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                    int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj(), verbose); // compute the t-value of the projection
+                    if (verbose){
+                        std::cout << *it << " - max t-values sub: " << it->getMaxTValuesSubProj() << " - t-value: " << tValue << std::endl;
+                    }
                     FIGURE_OF_MERIT::updateFigure(acc,tValue,weight);
                     it->setTValueTmp(tValue); // update the t-value of the node
                     it = it->getNextNode(); // skip to next node

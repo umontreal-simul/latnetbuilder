@@ -17,6 +17,7 @@
 #include "latbuilder/DigitalNet/SchmidMethod.h"
 #include "latbuilder/DigitalNet/GaussMethod.h"
 #include "latbuilder/DigitalNet/SobolNet.h"
+#include "latbuilder/DigitalNet/ComputationScheme.h"
 #include <iostream>
 #include <vector>
 #include <time.h>
@@ -25,6 +26,25 @@
 using namespace LatBuilder::DigitalNet;
 
 typedef LatBuilder::uInteger uInteger;
+typedef boost::dynamic_bitset<> projection;
+
+class tValueWeights{
+    public:
+        tValueWeights(unsigned int dimension):
+        m_dimension(dimension)
+        {};
+        float operator()(const projection& projRep)
+        { return projRep.size()==m_dimension && projRep.all();; 
+        }
+    private:
+        unsigned int m_dimension;
+};
+
+struct MaxFigure{
+    static void updateFigure(double& acc, int tValue, double weight){
+        acc = std::max(acc,tValue*weight);
+    }
+};
 
 int main(int argc, const char *argv[])
 {
@@ -51,47 +71,53 @@ int main(int argc, const char *argv[])
 
     float total_schmidt = 0;
     float total_gauss = 0;
-    int res_schmidt = 0;
-    int res_gauss = 0;
+    double tValueSchmid = 0;
+    double tValueGauss = 0;
     int n_diff = 0;
     
     for (int k=0; k<n_test; k++){
-        std::vector<Matrix<2>> foo;
+        // std::vector<Matrix<2>> foo;
 
-        if (random == 1){
-            for (int j=0; j<s; j++){
-                auto M = Matrix<2>(m, m, true);
-                foo.push_back(M);
-            }    
-        }
-        else{
+        // if (random == 1){
+        //     for (int j=0; j<s; j++){
+        //         auto M = Matrix<2>(m, m, true);
+        //         foo.push_back(M);
+        //     }    
+        // }
+        // else{
             std::vector<std::vector<uInteger>> directionNumbersInit = {{}, {1},{1,3},{1,3,1}, 
                                                             {1,1,1},{1,1,3,3}, {1, 3, 5, 13}, {1, 1, 5, 5, 17}};
             std::vector<std::vector<uInteger>> directionNumbers;
             for (int i=0; i<s; i++){
                 directionNumbers.push_back(directionNumbersInit[i]);
             }
-            foo = SobolNet(m,s,directionNumbers).generatingMatrices();
-        }
+            auto foo = SobolNet(m,s,directionNumbers);
+        // }
 
-        clock_t t1,t2, t3, t4;     
+        int maximalCardinality = s;
+        auto compSchmid = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+        compSchmid.extend(s-1);
+        auto compGauss = ComputationScheme<tValueWeights,GaussMethod,MaxFigure>(maximalCardinality,tValueWeights(s));
+        compGauss.extend(s-1);
+
+        clock_t t1,t2, t3, t4;  
+        bool verbose = false;   
 
         if (m <30){
             t1=clock();
-            res_schmidt = SchmidMethod::computeTValue(foo,0);
+            compSchmid.evaluateFigureOfMerit(foo,tValueSchmid);
             t2=clock();
             float diff ((float)t2-(float)t1);
             total_schmidt += diff;
         }
         
         t3=clock();
-        bool verbose = false;
-        res_gauss = GaussMethod::computeTValue(foo,0, verbose);
+        compGauss.evaluateFigureOfMerit(foo,tValueGauss);
         t4=clock();
         float diff2 ((float)t4-(float)t3);
         total_gauss += diff2;
 
-        if (m<30 && res_gauss != res_schmidt){
+        if (m<30 && tValueGauss != tValueSchmid){
             n_diff++;
         }
     }
