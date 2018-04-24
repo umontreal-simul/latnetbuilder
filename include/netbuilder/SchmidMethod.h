@@ -17,7 +17,7 @@
 #ifndef NET_BUILDER__SCHMID_METHOD_H
 #define NET_BUILDER__SCHMID_METHOD_H
 
-#include "netbuilder/DigitalNet.h"
+#include "netbuilder/GeneratingMatrix.h"
 
 namespace NetBuilder {
 

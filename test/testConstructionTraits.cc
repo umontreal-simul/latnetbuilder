@@ -14,26 +14,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__GAUSS_METHOD_H
-#define NET_BUILDER__GAUSS_METHOD_H
-
-#include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/Types.h"
+#include "netbuilder/DigitalNet.h"
 
-namespace NetBuilder{
+#include <iostream>
 
-    struct GaussMethod{
-    // compute the t-value of the set of matrices Origin_Mats with `maxSubProj' the maximum of
-    // the t-value of all strict subprojections
-    static int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose);
+using namespace NetBuilder;
 
-    int operator()(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose) const
+int main(int argc, const char *argv[])
+{
+    unsigned int s = 10;
+    unsigned int m = 5;
+
+    /*DigitalNet* test = new DigitalNetBase<NetConstruction::SOBOL>(s,m,m);
+
+    for(unsigned int j = 1; j <=s; ++j)
     {
-        return computeTValue(Origin_Mats, maxSubProj, verbose);
+        std::cout << test->generatingMatrix(j) << std::endl;
     }
-};
+
+    delete test ; */
+
+    auto test = DigitalNetBase<NetConstruction::UNIRANDOM>(s,m,m);
+
+    for(unsigned int j = 1; j <=s; ++j)
+    {
+        std::cout << test.generatingMatrix(j) << std::endl;
+    }
+
+    test = test.extendSize(m);
+
+    for(unsigned int j = 1; j <=s; ++j)
+    {
+        std::cout << test.generatingMatrix(j) << std::endl;
+    }
+
+    return 0;
 }
-
-#endif
-
-

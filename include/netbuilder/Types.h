@@ -48,6 +48,12 @@ typedef RealVector::size_type Level;
 /// Scalar integer type for dimension.
 typedef size_t Dimension;
 
+typedef size_t size_type;
+
+enum class NetEmbedded {SIMPLE, EMBEDDED};
+
+enum class NetConstruction {SOBOL, EXPLICIT, UNIRANDOM};
+
 }
 
 #endif

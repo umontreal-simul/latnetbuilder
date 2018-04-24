@@ -18,7 +18,7 @@
 #define NET_BUILDER__WEIGHTED_EQUIDISTRIBUTION_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/ExplicitNet.h"
+#include "netbuilder/DigitalNet.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/Coordinates.h"
@@ -88,7 +88,7 @@ class EquidistributionFigureOfMeritEvaluator {
         typedef typename FIGURE::MeritValue MeritValue;
 
         typedef boost::signals2::signal<bool (const MeritValue&), LatBuilder::Functor::AllOf> OnProgress;
-        typedef boost::signals2::signal<void (const ExplicitNet)> OnAbort;
+        typedef boost::signals2::signal<void (const DigitalNet)> OnAbort;
 
         /**
         * Constructor.
@@ -325,7 +325,7 @@ class EquidistributionFigureOfMeritEvaluator {
         } 
 
 
-        MeritValue operator() (const ExplicitNet & net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
+        MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
         {
             extendUpToDimension(dimension);
 

@@ -50,6 +50,7 @@ class GeneratingMatrix {
             }
         };
 
+        /*
         GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, bool random):
         m_data(n_rows),
         m_rows(n_rows),
@@ -68,7 +69,36 @@ class GeneratingMatrix {
                 }
                 m_data[i] = boost::dynamic_bitset<>(str);
             }
-        };
+        };*/
+
+        GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, bool uniTriangular):
+            GeneratingMatrix(n_rows,n_cols)
+        {
+            if (uniTriangular)
+            {
+                for(unsigned int i = 0; i < n_rows; ++i)
+                {
+                    if (i < n_cols)
+                    {
+                        (*this)(i,i) = 1;
+                    }
+                    for(unsigned int j = i+1; j < n_cols; ++j)
+                    {
+                        (*this)(i,j) = rand() % 2;
+                    }
+                }
+            }
+            else
+            {
+                for(unsigned int i = 0; i < n_rows; ++i)
+                {
+                    for(unsigned int j = 0; j < n_cols; ++j)
+                    {
+                        (*this)(i,j) = rand() % 2;
+                    }
+                }
+            }
+        }
 
         unsigned int nCols() const { return m_cols; }
 
@@ -112,6 +142,34 @@ class GeneratingMatrix {
                 m_data[i][col1] = m_data[i][col2];
                 m_data[i][col2] = tmp;
             }
+        };
+
+        GeneratingMatrix subMatrix(unsigned int nRows, unsigned int nCols) const
+        {
+            GeneratingMatrix res(nRows, nCols);
+            for(unsigned int i = 0; i < nRows; ++i)
+            {
+                auto tmp = (*this)[i];
+                tmp.resize(nCols);
+                res[i] = std::move(tmp);
+            }
+            return res;
+        }
+
+        void resize(unsigned int nRows, unsigned int nCols){
+            for(unsigned int i = 0; i < std::min(nRows, m_rows); ++i)
+            {
+                (*this)[i].resize(nCols);
+            }
+            for(unsigned int i = m_rows; i < nRows; ++i){
+                m_data.push_back(Row(nCols));
+            }
+            if (nRows < m_rows)
+            {
+                m_data.erase(m_data.begin()+nRows, m_data.begin()+m_rows);
+            }
+            m_rows = nRows;
+            m_cols = nCols;
         }
 
         friend std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat)
@@ -126,40 +184,6 @@ class GeneratingMatrix {
             }
             return os; 
         }
-
-        
-        template<typename RAND>
-        static GeneratingMatrix randomMatrix(unsigned int n_rows, unsigned int n_cols, RAND& randomGen, bool uniTriangular = true)
-        {
-            GeneratingMatrix res(n_rows,n_cols);
-
-            if (uniTriangular)
-            {
-                for(unsigned int i = 0; i < n_rows; ++i)
-                {
-                    if (i < n_cols)
-                    {
-                        res(i,i) = 1;
-                    }
-                    for(unsigned int j = i+1; j < n_cols; ++j)
-                    {
-                        res(i,j) = randomGen() % 2;
-                    }
-                }
-            }
-            else
-            {
-                for(unsigned int i = 0; i < n_rows; ++i)
-                {
-                    for(unsigned int j = 0; j < n_cols; ++j)
-                    {
-                        res(i,j) = randomGen() % 2;
-                    }
-                }
-            }
-
-            return res;
-        };
 
     private:
         std::vector<boost::dynamic_bitset<>> m_data;

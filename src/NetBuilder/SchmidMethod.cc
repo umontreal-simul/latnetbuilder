@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "netbuilder/SchmidMethod.h"
+#include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 
 namespace NetBuilder {
