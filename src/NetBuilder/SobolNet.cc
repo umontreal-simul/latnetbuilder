@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/SobolNet.h"
+#include "netbuilder/SobolNet.h"
 #include <boost/dynamic_bitset.hpp>
 #include <string>
 #include <fstream>
@@ -22,19 +22,16 @@
 #include <assert.h>
 #include <boost/algorithm/string.hpp>
 
-using namespace LatBuilder::DigitalNet;
-
-using LatBuilder::uInteger; 
-typedef typename SobolNet::GeneratingMatrix GeneratingMatrix;
+namespace NetBuilder {
 
 static const std::array<unsigned int,21200> degrees =
 {{
-    #include "latbuilder/DigitalNet/data/primitive_polynomials_degrees.csv"
+    #include "netbuilder/data/primitive_polynomials_degrees.csv"
 }};
 
 static const std::array<unsigned long,21200> representations =
 {{
-    #include "latbuilder/DigitalNet/data/primitive_polynomials_representations.csv"
+    #include "netbuilder/data/primitive_polynomials_representations.csv"
 }};
 
 SobolNet::PrimitivePolynomial SobolNet::nthPrimitivePolynomial(unsigned int n){
@@ -161,4 +158,6 @@ std::vector<std::vector<uInteger>> SobolNet::readJoeKuoDirectionNumbers(unsigned
         }
     }
     return res;
+}
+
 }

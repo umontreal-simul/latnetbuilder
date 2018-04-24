@@ -16,23 +16,22 @@
 
 #ifndef DIGITAL_NET_DIGITAL_NET_H
 #define DIGITAL_NET_DIGITAL_NET_H
-#include "latbuilder/Types.h"
-#include "latbuilder/Util.h"
-#include "latbuilder/DigitalNet/Matrix.h"
 
-namespace LatBuilder { namespace DigitalNet {
+#include "netbuilder/Types.h"
+#include "netbuilder/Util.h"
+#include "netbuilder/GeneratingMatrix.h"
+
+namespace NetBuilder {
 
 typedef size_t size_type;
 
 /** Generic class to represent a digital net in any base. The integral template parameter BASE represents the base of the net. 
  * This class implements the CRTP through the template 
  * parameter DERIVED for static polymorphism purpose. */
-template <typename DERIVED, uInteger BASE>
+template <typename DERIVED>
 class DigitalNet {
     
    public:
-
-    typedef Matrix<BASE> GeneratingMatrix; // type alias for generating matrices
 
     // Accessors
 
@@ -79,6 +78,6 @@ class DigitalNet {
 }
 ;
 
-}}
+}
 
 #endif

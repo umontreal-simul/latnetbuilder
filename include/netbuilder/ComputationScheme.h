@@ -14,17 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_NET_COMPUTATION_SCHEME_H
-#define DIGITAL_NET_COMPUTATION_SCHEME_H
+#ifndef NET_BUILDER__COMPUTATION_SCHEME_H
+#define NET_BUILDER__COMPUTATION_SCHEME_H
 
 #include <vector>
 #include <map>
 #include <set>
-#include <boost/dynamic_bitset.hpp> 
-#include "latbuilder/Util.h"
-#include "latbuilder/DigitalNet/DigitalNet.h"
 
-namespace LatBuilder { namespace DigitalNet {
+#include "netbuilder/Types.h"
+#include "netbuilder/DigitalNet.h"
+#include "latcommon/Coordinates.h"
+
+namespace NetBuilder{
 
 /** Class organizing the computation of figure of merits base on the t-value of a subset \fJ_d\f of projections
  * where \f \left{ u \subset \{1,...,d\} : d \in u, |u| \leq \alpha \right} \f.
@@ -35,11 +36,7 @@ class ComputationScheme
     public:
 
 
-        typedef typename boost::dynamic_bitset<> projection; /**< type alias for boost::dynamic_bitset. 
-        Represents subprojections of a given projections. A given projection of \fJ_d\f is represented by a bitset of size \fd-1\f. 
-         * For instance, \f1 \in u\f iff the first bit  of the bitset is true.  */
-
-        typedef typename LatBuilder::uInteger uInteger; /**< type alia for unsigned */
+        typedef LatCommon::Coordinates Coordinates;
 
         /** Constructs of a computation scheme for a figure of merits based on the t-value of subprojections.
          * The computation scheme visits the subprojections in a specific order to reduce computations.
@@ -54,12 +51,18 @@ class ComputationScheme
             assert(maxCardinal>=1); // otherwise we consider no projections
 
             // create projection {1}
-            projection tmp = projection(m_dimension).flip(0); 
+            Coordinates tmp;
+            tmp.insert(0);
             double weight = m_weights(tmp);
             Node* root = new Node(tmp,m_dimension,weight); // set the first root to be the first node
             m_roots.push_back(root);
-
             m_validFlags.push_back(false);
+        }
+
+        ComputationScheme(unsigned int maxCardinal, WEIGHTS weights, unsigned int dimension):
+            ComputationScheme(maxCardinal,weights)
+        {
+            extendUpToDimension(dimension);
         }
 
         /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
@@ -69,31 +72,30 @@ class ComputationScheme
             ++m_dimension; // increase maximal dimension
             std::vector<Node*> newNodes; // to store new nodes
 
-            std::map<projection,Node*> mapsToNodes; // map between new projections and new nodes
+            std::map<Coordinates,Node*> mapsToNodes; // map between new projections and new nodes
 
             // create projection {m_dimension} 
-            projection proj1DRep(m_dimension);
-            proj1DRep.flip(m_dimension-1);
+            Coordinates proj1DRep;
+            proj1DRep.insert(m_dimension-1);
             double weight = m_weights(proj1DRep);
             Node* proj1D = new Node(proj1DRep,m_dimension,weight);
             newNodes.push_back(proj1D);
 
-            mapsToNodes.insert(std::pair<projection,Node*>(proj1DRep,proj1D));
+            mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
 
 
             for(int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
             {
                 Node* it = m_roots[i];
                 do
-                {   if (it->getProjectionRepresentation().count() <=m_maxCardinal-1)
+                {   if (it->getProjectionRepresentation().size() <= m_maxCardinal-1)
                     {
-                        projection projectionRep = it->getProjectionRepresentation(); // consider the projection
-                        projectionRep.resize(m_dimension); // increase the size
-                        projectionRep.flip(m_dimension-1); // add m_dimension to the set
+                        Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
+                        projectionRep.insert(m_dimension-1);
                         double weight = m_weights(projectionRep);
                         Node* newNode = new Node(projectionRep,m_dimension,weight); // create the node
                         newNode->addMother(it);
-                        mapsToNodes.insert(std::pair<projection,Node*>(projectionRep,newNode));
+                        mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
                         newNodes.push_back(newNode);
                     }
                     it = it->getNextNode();
@@ -111,14 +113,14 @@ class ComputationScheme
             }
             for (auto& kv : mapsToNodes) // for each new nodes
             {   
-                projection tmp = kv.first;
+                Coordinates tmp = kv.first;
                 for(int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
                 {
-                    if (tmp[i])
+                    if (tmp.find(i) != tmp.end())
                     {
-                        tmp.flip(i);
+                        tmp.erase(i);
                         kv.second->addMother(mapsToNodes.find(tmp)->second);
-                        tmp.flip(i);
+                        tmp.insert(i);
                     }
                 }
             }
@@ -173,15 +175,16 @@ class ComputationScheme
          * @param dimension is the dimension to consider
          * @return a map between projections and t-values
          */ 
-        std::map<projection,int> getAllTValues(unsigned int dimension) const{
-            std::map<projection,int> tValuesMap;
+        std::map<Coordinates,int> getAllTValues(unsigned int dimension) const
+        {
+            std::map<Coordinates,int> tValuesMap;
 
             assert(m_validFlags[dimension-1]);
 
             const Node* it = m_roots[dimension-1];
             do
             {
-                tValuesMap.insert(std::pair<projection,int>(it->getProjectionRepresentation(),it->getTValueMem()));
+                tValuesMap.insert(std::pair<Coordinates,int>(it->getProjectionRepresentation(),it->getTValueMem()));
                 it = it->getNextNode();
             }
             while(it != nullptr);
@@ -222,13 +225,10 @@ class ComputationScheme
                 double weight = it->getWeight();
     
                 std::vector<GeneratingMatrix> genMatrices;
-                for(int i = 0; i < it->getMaxDimension()-1; ++i)
+                for(const auto& coord : it->getProjectionRepresentation())
                 {
-                    if (it->getProjectionRepresentation()[i]){
-                        genMatrices.push_back(net.generatingMatrix(i+1)); // compute the generating matrices
-                    }
+                    genMatrices.push_back(allGeneratingMatrices[coord]);
                 }
-                genMatrices.push_back(net.generatingMatrix(it->getMaxDimension()));
 
                 it->updateMaxTValuesSubProj();
                 int tValue = COMPUTATION_METHOD::computeTValue(std::move(genMatrices),it->getMaxTValuesSubProj(), verbose); // compute the t-value of the projection
@@ -283,11 +283,9 @@ class ComputationScheme
 
                     // store the generating matrices corresponding to the projection
                     std::vector<GeneratingMatrix> genMatrices;
-                    for(int i = 0; i < it->getMaxDimension(); ++i)
+                    for(const auto& coord : it->getProjectionRepresentation())
                     {
-                        if (it->getProjectionRepresentation()[i]){ // is coordinate i+1 is in the projection
-                            genMatrices.push_back(allGeneratingMatrices[i]); // add the corresponding matrix
-                        }
+                        genMatrices.push_back(allGeneratingMatrices[coord]);
                     }
 
                     it->updateMaxTValuesSubProj(); // compute the maximum of the t-values of the subprojections
@@ -413,13 +411,12 @@ class ComputationScheme
                  * @param dimension is the equivalent of \fd\f
                  * @param weight is the importance of the projection in the figure of merit
                  */ 
-                Node(const projection& projRep, int dimension, double weight):
+                Node(const Coordinates& projRep, int dimension, double weight):
                     m_weight(weight),
                     m_projRep(projRep),
                     m_dimension(dimension)
                 {
-                    assert(projRep.size()==dimension); // check that bitset representation of the projection has the correct size
-                    m_cardinal = projRep.count(); // compute the cardinal
+                    m_cardinal = projRep.size(); // compute the cardinal
                 }
 
                 /** Returns the cardinal of the projection represented by the node.
@@ -457,7 +454,7 @@ class ComputationScheme
 
                 /** Returns the bitset representation of the projection represented by the node.
                  */ 
-                projection getProjectionRepresentation() const { return m_projRep; }
+                const Coordinates& getProjectionRepresentation() const { return m_projRep; }
 
                 /** Set the temporary t-value of the node to be the given t-value
                  * @param tValue is the t-value to assign to the node.
@@ -485,7 +482,7 @@ class ComputationScheme
                     m_maxTValuesSubProj=0;
                     for (auto const* m : m_mothersNodes)
                     {
-                        if (m->getProjectionRepresentation()[m_dimension-1])
+                        if (m->getProjectionRepresentation().find(m_dimension) != m->getProjectionRepresentation().end())
                         {
                             m_maxTValuesSubProj = std::max(m->getTValueTmp(),m_maxTValuesSubProj);
                         }
@@ -509,42 +506,13 @@ class ComputationScheme
                  */
                 friend std::ostream& operator<<(std::ostream& os, const Node& dt)
                 {
-                    os << "projection: " << "{";
-                    for (projection::size_type n = 0; n < dt.m_dimension-1; ++n){
-                        if (dt.m_projRep.test(n)){
-                            os << n+1 << ", ";
-                        }
-                    }
-                    if (dt.m_projRep.test(dt.m_dimension-1))
-                    {
-                        os << dt.m_dimension;
-                    }
-                    os << "} - weight: " << dt.getWeight();
-
-                    // block to also print mothers
-                    /* os << std::endl << "    mothers: " << std::endl;
-                    for(const auto& m: dt.getMotherNodes())
-                    {
-                        os << "      {";
-                        for(projection::size_type n = 0; n < m->getMaxDimension()-1; ++n)
-                        {
-                            if (m->getProjectionRepresentation().test(n))
-                            {
-                                os << n+1 << ", ";
-                            }  
-                        }
-                        if (m->getProjectionRepresentation().test(m->getMaxDimension()-1))
-                        {
-                            os << m->getMaxDimension();
-                        }
-                        os << "}" << std::endl; 
-                    } */
+                    os << "projection: " << dt.getProjectionRepresentation() << " - weight: " << dt.getWeight();
                     return os;
                 }
 
             private:
                 double m_weight; // weight of the projection
-                projection m_projRep; // bitset representation of the projection
+                Coordinates m_projRep; // bitset representation of the projection
                 int m_dimension; // last dimension (highest coordinate in the projection)
                 int m_cardinal; // cardinal of the projection
 
@@ -568,7 +536,7 @@ class ComputationScheme
         std::vector<bool> m_validFlags;
 };
 
-}}
+}
 
 #endif 
 

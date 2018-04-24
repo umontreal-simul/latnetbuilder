@@ -14,10 +14,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/SchmidMethod.h"
-#include "latbuilder/DigitalNet/DigitalUtil.h"
+#include "netbuilder/SchmidMethod.h"
+#include "netbuilder/Util.h"
 
-using namespace LatBuilder::DigitalNet;
+namespace NetBuilder {
 
 int
 getmsb (unsigned long long x)
@@ -28,7 +28,7 @@ getmsb (unsigned long long x)
     return r;
 }
 
-typedef Matrix<2> GeneratingMatrix;
+typedef GeneratingMatrix GeneratingMatrix;
 
 int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose=false)
 {
@@ -130,4 +130,5 @@ int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, 
     //assert(isFullRank);
     //std::cout << k << std::endl;
     return std::max(m-(k+1),maxTValuesSubProj);
+}
 }

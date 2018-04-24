@@ -14,19 +14,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_NET_GAUSS_METHOD_H
-#define DIGITAL_NET_GAUSS_METHOD_H
+#ifndef NET_BUILDER__GAUSS_METHOD_H
+#define NET_BUILDER__GAUSS_METHOD_H
 
-#include "latbuilder/DigitalNet/DigitalNet.h"
+#include "netbuilder/DigitalNet.h"
 
-namespace LatBuilder { namespace DigitalNet {
+namespace NetBuilder{
 
     struct GaussMethod{
     // compute the t-value of the set of matrices Origin_Mats with `maxSubProj' the maximum of
     // the t-value of all strict subprojections
-    static int computeTValue(std::vector<Matrix<2>> Origin_Mats, int maxSubProj, bool verbose);
+    static int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose);
+
+    int operator()(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose) const
+    {
+        return computeTValue(Origin_Mats, maxSubProj, verbose);
+    }
 };
-}}
+}
 
 #endif
 

@@ -14,46 +14,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/SchmidMethod.h"
-#include "latbuilder/DigitalNet/GaussMethod.h"
-#include "latbuilder/DigitalNet/ExplicitNet.h"
-#include "latbuilder/DigitalNet/ComputationScheme.h"
+#include "netbuilder/Types.h"
+#include "netbuilder/EquidistributionFigureOfMerit.h"
+#include "netbuilder/GaussMethod.h"
+#include "netbuilder/SchmidMethod.h"
+#include "netbuilder/ExplicitNet.h"
+
+#include "latbuilder/Functor/binary.h"
 #include "latbuilder/LFSR258.h"
+
+#include "latcommon/Weights.h"
+#include "latcommon/UniformWeights.h"
+#include "latcommon/OrderDependentWeights.h"
+
+#include <boost/signals2.hpp>
 #include <iostream>
-#include <vector>
-#include <time.h>
 
 
-using namespace LatBuilder::DigitalNet;
+using namespace NetBuilder;
+using Coordinates = LatCommon::Coordinates;
+using Weights = LatCommon::Weights;
 
-typedef LatBuilder::uInteger uInteger;
-typedef boost::dynamic_bitset<> projection;
 
-class tValueWeights{
-    public:
-        tValueWeights(unsigned int dimension):
-        m_dimension(dimension)
-        {};
-        float operator()(const projection& projRep)
-        { return projRep.size()==m_dimension && projRep.all();; 
-        }
-    private:
-        unsigned int m_dimension;
-};
-
-struct MaxFigure{
-
-    static void updateFigure(double& acc, int tValue, double weight){
-        acc = std::max(acc,tValue*weight) ;
-    }
-
-    static double combine(double partialFigureDim, double figurePreviousDim){
-        return std::max(partialFigureDim,figurePreviousDim);
-    }
-};
-
+typedef LatCommon::Coordinates Coordinates;
 int main(int argc, const char *argv[])
 {
+
+    auto randomGen = LatBuilder::LFSR258();
+
     assert(argc == 5);
 
     int m_max = atol(argv[1]);
@@ -67,20 +55,18 @@ int main(int argc, const char *argv[])
     int n_test = atol(argv[4]);
     assert(n_test >= 1);
 
-    auto randomGen = LatBuilder::LFSR258();
-
-    std::cout << "s" << "\t" << "m" << "\t" << "schmid" << "\t" << "reversed schmid" << "\t" << "gauss" << std::endl;
+    std::cout << "s" << "\t" << "m" << "\t" << "schmid" << "\t" << "reversed_schmid" << "\t" << "gauss" << std::endl;
 
     for(int s = s_min; s <= s_max; ++s)
     {
-        auto compSchmid = ComputationScheme<tValueWeights,SchmidMethod,MaxFigure>(s,tValueWeights(s));
-        compSchmid.extendUpToDimension(s);
+        EquidistributionFigureOfMerit<GaussMethod, LatBuilder::Functor::Max> figGauss(std::unique_ptr<Weights>(new LatCommon::OrderDependentWeights(1)), s);
+        auto gaussEval = figGauss.evaluator();
 
-        auto compReversedSchmid = ComputationScheme<tValueWeights,ReversedSchmidMethod,MaxFigure>(s,tValueWeights(s));
-        compReversedSchmid.extendUpToDimension(s);
-            
-        auto compGauss = ComputationScheme<tValueWeights,GaussMethod,MaxFigure>(s,tValueWeights(s));
-        compGauss.extendUpToDimension(s);
+        EquidistributionFigureOfMerit<SchmidMethod, LatBuilder::Functor::Max> figSchmid(std::unique_ptr<Weights>(new LatCommon::OrderDependentWeights(1)), s);
+        auto schmidEval = figSchmid.evaluator();
+
+        EquidistributionFigureOfMerit<ReversedSchmidMethod, LatBuilder::Functor::Max> figReversedSchmid(std::unique_ptr<Weights>(new LatCommon::OrderDependentWeights(1)), s);
+        auto reversedSchmidEval = figReversedSchmid.evaluator();
 
         for(int m = 1; m <= m_max; ++m)
         {
@@ -95,29 +81,39 @@ int main(int argc, const char *argv[])
                 double tValueGauss = 0;
                 double tValueReversedSchmid = 0;
 
-                auto net = ExplicitNet<2>(s, m, m, randomGen);
+                ExplicitNet net = ExplicitNet(s, m, m, randomGen);
 
                 clock_t t1,t2, t3, t4, t5, t6;  
-                bool verbose = false;   
+                bool verbose = false;  
 
                 t1=clock();
-                compSchmid.evaluateFigureOfMerit(net,tValueSchmid);
+                for (unsigned int dim = 1; dim <= s; ++dim)
+                {
+                    tValueSchmid = schmidEval(net, dim, tValueSchmid, false);
+                }
                 t2=clock();
                 float diff ((float)t2-(float)t1);
                 total_schmid += diff;
-                
+
                 t3=clock();
-                compGauss.evaluateFigureOfMerit(net,tValueGauss);
+                for (unsigned int dim = 1; dim <= s; ++dim)
+                {
+                    tValueGauss = gaussEval(net,dim,tValueGauss, false);
+                }
                 t4=clock();
                 float diff2 ((float)t4-(float)t3);
                 total_gauss += diff2;
 
                 t5=clock();
-                compReversedSchmid.evaluateFigureOfMerit(net,tValueReversedSchmid);
+                for (unsigned int dim = 1; dim <= s; ++dim)
+                {
+                    tValueReversedSchmid = reversedSchmidEval(net,dim,tValueReversedSchmid, false);
+                }
                 t6=clock();
                 float diff3 ((float)t6-(float)t5);
                 total_reversed_schmid += diff3;
             }
+
             double m_schmid =  total_schmid/n_test;
             double m_reversed_schmid = total_reversed_schmid/n_test;
             double m_gauss = total_gauss/ n_test;
@@ -125,5 +121,6 @@ int main(int argc, const char *argv[])
             std::cout << s << "\t" << m << "\t" << m_schmid << "\t" << m_reversed_schmid << "\t" << m_gauss << std::endl;
         }
     }
+
     return 0;
 }

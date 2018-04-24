@@ -14,21 +14,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_NET_SOBOL_NET_H
-#define DIGITAL_NET_SOBOL_NET_H
+#ifndef NET_BUILDER__SOBOL_NET_H
+#define NET_BUILDER__SOBOL_NET_H
 
-#include "latbuilder/Types.h"
-#include "latbuilder/Util.h"
-#include "latbuilder/DigitalNet/DigitalNet.h"
+#include "netbuilder/Types.h"
+#include "netbuilder/Util.h"
+#include "netbuilder/DigitalNet.h"
 
-namespace LatBuilder { namespace DigitalNet {
+namespace NetBuilder {
 
 /** Class which represents Sobol' net in base 2. This class inherits from DigitalNet which is a generic class 
  * to represent digital nets. DigitalNet implements the CRTP pattern and is also templated by an integral template parameter 
  * corresponding to the base.
  */
 
-class SobolNet : public DigitalNet<SobolNet,2>{
+class SobolNet : public DigitalNet<SobolNet>{
 
     public:
     /** Constructs a Sobol' net in base 2. Performs sanity checks to ensure the net is not ill-formed.
@@ -118,5 +118,5 @@ class SobolNet : public DigitalNet<SobolNet,2>{
 
       static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
       };
-}}
+}
 #endif

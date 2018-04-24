@@ -14,29 +14,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_NET_EXPLICIT_NET_H
-#define DIGITAL_NET_EXPLICIT_NET_H
+#ifndef NET_BUILDER__EXPLICIT_NET_H
+#define NET_BUILDER__EXPLICIT_NET_H
 
-#include "latbuilder/Types.h"
-#include "latbuilder/Util.h"
-#include "latbuilder/DigitalNet/DigitalNet.h"
+#include "netbuilder/Types.h"
+#include "netbuilder/Util.h"
+#include "netbuilder/DigitalNet.h"
 
-namespace LatBuilder { namespace DigitalNet {
+namespace NetBuilder {
 
 /** Class which represents digital net in any base. This class inherits from DigitalNet which is a generic class 
  * to represent digital nets. DigitalNet implements the CRTP pattern and is also templated by an integral template parameter 
  * corresponding to the base. ExplicitNet enables to use any generating matrices to define the digital net.
  */
 
-template <uInteger BASE>
-class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
+class ExplicitNet : public DigitalNet<ExplicitNet>{
 
     public:
 
-    typedef typename DigitalNet<ExplicitNet<BASE>,BASE>::GeneratingMatrix GeneratingMatrix;
-
     ExplicitNet(unsigned int nRows, unsigned int nCols):
-    m_base(BASE),
     m_dimension(0),
     m_rows(nRows),
     m_cols(nCols)
@@ -47,13 +43,12 @@ class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
      * @param generatingMatrices is the vector of generating matrices
      */    
     ExplicitNet(std::vector<GeneratingMatrix> generatingMatrices):
-    m_generatingMatrices(generatingMatrices),
-    m_base(BASE)
+    m_generatingMatrices(generatingMatrices)
     {
       m_dimension = m_generatingMatrices.size();
       m_rows = m_generatingMatrices[0].nRows();
       m_cols = m_generatingMatrices[0].nCols();
-      m_numPoints = intPow(m_base,m_cols);
+      m_numPoints = intPow(2,m_cols);
       for(const auto& mat : m_generatingMatrices)
       {
         assert(mat.nRows()==m_rows);
@@ -88,8 +83,6 @@ class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
       m_generatingMatrices.pop_back();
     };
       
-      /** Returns the base of the net.  */
-      unsigned int base() const { return m_base; } 
 
       /** Return the number of columns of the generating matrices of the net. */
       unsigned int numColumns() const { return m_cols; }
@@ -118,7 +111,6 @@ class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
       }
 
     private:
-      unsigned int m_base; // base of the net
       unsigned int m_dimension; // dimension of the net
       uInteger m_numPoints; // size of the net
       unsigned int m_rows; // number of rows of generating matrices 
@@ -126,5 +118,5 @@ class ExplicitNet : public DigitalNet<ExplicitNet<BASE>,BASE>{
       std::vector<GeneratingMatrix> m_generatingMatrices; // set of direction numbers
 
       };
-}}
+}
 #endif

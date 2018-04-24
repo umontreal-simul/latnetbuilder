@@ -16,12 +16,12 @@
 
 #include <map>
 #include <fstream>
-#include "latbuilder/DigitalNet/GaussMethod.h"
-#include "latbuilder/DigitalNet/DigitalUtil.h"
+#include "netbuilder/GaussMethod.h"
+#include "netbuilder/Util.h"
 
-using namespace LatBuilder::DigitalNet;
+namespace NetBuilder {
 
-void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C, bool verbose=false){
+void first_pivot(GeneratingMatrix& M, GeneratingMatrix& D, std::vector<int>& C, bool verbose=false){
     int k = M.nRows();
     int m = M.nCols();
     
@@ -83,7 +83,7 @@ void first_pivot(Matrix<2>& M, Matrix<2>& D, std::vector<int>& C, bool verbose=f
     // delete Pivots;
 }
 
-void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::vector<int>& C, Row& newLine, int i_new_in_Origin[2], int i_old_in_Origin[2], bool verbose=false){
+void add_line(GeneratingMatrix& T, GeneratingMatrix& D, std::map<int, int>& Origin_to_M, std::vector<int>& C, Row& newLine, int i_new_in_Origin[2], int i_old_in_Origin[2], bool verbose=false){
     int k = T.nRows();
     int m = T.nCols();
     
@@ -180,7 +180,7 @@ void add_line(Matrix<2>& T, Matrix<2>& D, std::map<int, int>& Origin_to_M, std::
     }
 }
 
-int iteration_on_k(std::vector<Matrix<2>>& Origin_Mats, int k, bool verbose=false){
+int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, int k, bool verbose=false){
     int s = Origin_Mats.size();
     int m = Origin_Mats[0].nCols();
 
@@ -188,8 +188,8 @@ int iteration_on_k(std::vector<Matrix<2>>& Origin_Mats, int k, bool verbose=fals
     
     // Initialization of data structures
     std::map<int, int> Origin_to_M;
-    Matrix<2> T(k, m);
-    Matrix<2> D(k, m);
+    GeneratingMatrix T(k, m);
+    GeneratingMatrix D(k, m);
     for (int i=0; i<k-s+1; i++){
         Origin_to_M[i] = i;
         T[i] = Row(Origin_Mats[0][i]);
@@ -258,7 +258,7 @@ int iteration_on_k(std::vector<Matrix<2>>& Origin_Mats, int k, bool verbose=fals
     return 0;
 }
 
-int GaussMethod::computeTValue(std::vector<Matrix<2>> Origin_Mats, int maxSubProj, bool verbose=false)
+int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose=false)
 {
     int m = Origin_Mats[0].nRows();
     int s = Origin_Mats.size();
@@ -275,5 +275,7 @@ int GaussMethod::computeTValue(std::vector<Matrix<2>> Origin_Mats, int maxSubPro
         }
     }
     return std::max(m-s+1, maxSubProj);
+}
+
 }
 

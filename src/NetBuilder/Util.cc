@@ -14,11 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/DigitalNet/DigitalUtil.h"
+#include "netbuilder/Util.h"
 #include <assert.h>
 
-namespace LatBuilder { namespace DigitalNet
-{
+namespace NetBuilder {
+
+
 std::vector<std::vector<int>> compositions(int n, int nb_parts){
     assert(nb_parts>= 2 && n>= nb_parts);
     if (nb_parts == 2){
@@ -54,4 +55,4 @@ Row permutation(Row& row, std::vector<int>& C){
     }
     return new_row;
 }
-}}
+}

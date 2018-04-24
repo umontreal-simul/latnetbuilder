@@ -14,23 +14,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DIGITAL_NET_SCHMID_METHOD_H
-#define DIGITAL_NET_SCHMID_METHOD_H
+#ifndef NETBUILDER__TYPES_H
+#define NETBUILDER__TYPES_H
 
-#include "latbuilder/DigitalNet/DigitalNet.h"
+/** \file
+ * Basic type definitions.
+ */
 
-namespace LatBuilder { namespace DigitalNet {
+#include <vector>
+#include <cstdint>
+#include <boost/numeric/ublas/vector.hpp>
 
-    struct SchmidMethod{
-    static int computeTValue(std::vector<Matrix<2>> matrices, unsigned int maxTValuesSubProj, bool verbose);
-    };
 
-    struct ReversedSchmidMethod{
-    static int computeTValue(std::vector<Matrix<2>> matrices, unsigned int maxTValuesSubProj, bool verbose);
-    };
-    
-}}
+namespace NetBuilder
+{
+
+/// \defgroup typedefs Type Definitions
+
+//@{
+
+/// Scalar unsigned integer .
+typedef unsigned long uInteger;
+
+/// Scalar floating-point type.
+typedef double Real;
+
+/// Vector of floating-point values.
+typedef boost::numeric::ublas::vector<Real> RealVector;
+
+/// Scalar integer type for level of embedding.
+typedef RealVector::size_type Level;
+
+/// Scalar integer type for dimension.
+typedef size_t Dimension;
+
+}
 
 #endif
-
-

@@ -19,16 +19,28 @@
  * Tools for streaming and poor man's factorization.
  */
 
-#ifndef DIGITAL__UTIL_H
-#define DIGITAL__UTIL_H
+#ifndef NET_BUILDER__UTIL_H
+#define NET_BUILDER__UTIL_H
 
 #include <vector>
 #include <boost/dynamic_bitset.hpp> 
 
 //================================================================================
 
-namespace LatBuilder { namespace DigitalNet
+namespace NetBuilder {
+
+template <typename T>
+T intPow(T base, unsigned long exponent)
 {
+   T result = (T) (1);
+   while (exponent) {
+      if (exponent % 2 == 1)
+         result *= base;
+      base *= base;
+      exponent /= 2;
+   }
+   return result;
+}
 
 typedef boost::dynamic_bitset<> Row;
 
@@ -40,6 +52,6 @@ std::vector<std::vector<int>> compositions(int n, int nb_parts);
 
 // returns a new row with row permuted by according to the permutation defined by C
 Row permutation(Row& row, std::vector<int>& C);
-}}
+}
 
 #endif
