@@ -87,7 +87,7 @@ int main(int argc, const char *argv[])
                 t1=clock();
                 for (unsigned int dim = 1; dim <= s; ++dim)
                 {
-                    tValueSchmid = schmidEval(net, dim, tValueSchmid, true);
+                    tValueSchmid = schmidEval(net, dim, tValueSchmid, false);
                 }
                 t2=clock();
                 float diff ((float)t2-(float)t1);
