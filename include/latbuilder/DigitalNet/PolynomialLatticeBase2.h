@@ -71,19 +71,15 @@ protected :
     *
     */
    void expandSeries(const Modulus& h, const Modulus& P, std::vector<uInteger>& expansion, const uInteger& expansion_limit){
-    
-      
-      uInteger m = deg(P); 
-      for(uInteger l = 1; l<= expansion_limit ; l++){
-          uInteger res =  (m-l >=0 )? IsOne(coeff(h, m-l)) : 0;
-          uInteger start = (l-m > 1) ? (l-m) : 1;
-          for( uInteger p = start; p < l; p++){
-              res = ( res + expansion[p-1] * (((m-(l-p)) >= 0) && (((m-(l-p)) <= m))? IsOne(coeff(P, m-(l-p))) : 0)) %2;
+      int m = deg(P); 
+      for(int l = 1; l<= expansion_limit ; l++){
+          int res =  (m-l >=0 && IsOne(coeff(h, m-l)))? 1 : 0;
+          int start = (l-m > 1) ? (l-m) : 1;
+          for( int p = start; p < l; p++){
+              res = ( res + expansion[p-1] * IsOne(coeff(P, m-(l-p)))) %2;        
           }
           expansion[l-1] = res;
       }
-      
-
    }
    /**
     * computes the generator matrices given the modulus and the generator vector.

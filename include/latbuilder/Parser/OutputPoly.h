@@ -69,6 +69,9 @@ LatBuilder::DigitalNet::OutputFormat OutputFormat::parse(const std::string& str)
    if (str == "ssj" || str == "SSJ"){
       return LatBuilder::DigitalNet::OutputFormat::SSJ;
    }
+   if (str == "web"){
+      return LatBuilder::DigitalNet::OutputFormat::web_interface;
+   }
    throw ParserError("cannot interpret \"" + str + "\" as an output format for polynomial lattices" );
 }
 

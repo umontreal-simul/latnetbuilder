@@ -23,7 +23,7 @@
 namespace LatBuilder { namespace DigitalNet {
 
 //available output formats for digital nets
-enum class OutputFormat {SSJ};
+enum class OutputFormat {SSJ, web_interface};
 /**
  * Definition of a Digital net in base 2
  * Defining parameters:
@@ -134,12 +134,32 @@ std::ostream& DigitalNetBase2::format<OutputFormat::SSJ>(std::ostream& os) const
 
 }
 
+
+template <>
+std::ostream& DigitalNetBase2::format<OutputFormat::web_interface>(std::ostream& os) const
+{
+   std::ostream& out = os;
+   for(uInteger j=0; j<dimension(); j++){
+      out << "//dim = " << j+1 << std::endl;
+      for(uInteger c=0; c<numColumns(); c++){
+          uInteger x = m_genratorMatrices[j][c];
+          out << x << std::endl;
+      }
+      out << std::endl;
+   }
+   return out;
+
+
+}
+
 // outputs the matrices in the format required by m_outputFormat
    std::ostream& operator<<(std::ostream& os, DigitalNetBase2 net) 
    {
     OutputFormat out = net.getOutputFormat();
     if(out == OutputFormat::SSJ)
       return net.format<OutputFormat::SSJ>(os);
+    if(out == OutputFormat::web_interface)
+      return net.format<OutputFormat::web_interface>(os);
     return os;
    }
 

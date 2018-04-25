@@ -283,6 +283,9 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, LAT>& 
            PolLat.setOutputFormat(outPoly.outputFormat());
            
            outPolyFile << PolLat ;
+           std::cout << std::endl;
+           std::cout << "BEST MATRICES" << std::endl;
+           std::cout << PolLat ;
          }
        outPolyFile.close();
 
