@@ -18,16 +18,14 @@
 #include "netbuilder/EquidistributionFigureOfMerit.h"
 #include "netbuilder/GaussMethod.h"
 #include "netbuilder/SchmidMethod.h"
-#include "netbuilder/ExplicitNet.h"
+#include "netbuilder/DigitalNet.h"
 
 #include "latbuilder/Functor/binary.h"
-#include "latbuilder/LFSR258.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/UniformWeights.h"
 #include "latcommon/OrderDependentWeights.h"
 
-#include <boost/signals2.hpp>
 #include <iostream>
 
 using namespace NetBuilder;
@@ -39,20 +37,16 @@ int main(int argc, const char *argv[])
     unsigned int s = 10;
     unsigned int m = 15;
 
-    auto randomGen = LatBuilder::LFSR258();
-
-    std::unique_ptr<LatCommon::OrderDependentWeights> weights( new LatCommon::OrderDependentWeights(1));
+    std::unique_ptr<LatCommon::OrderDependentWeights> weights( new LatCommon::OrderDependentWeights(0));
     weights->setWeightForOrder(s,1);
     EquidistributionFigureOfMerit<GaussMethod, LatBuilder::Functor::Max> fig(std::move(weights), s);
-
     auto figEval = fig.evaluator();
 
-    auto net = ExplicitNet(s, m, m, randomGen);
+    const DigitalNet& net = DigitalNetBase<NetConstruction::SOBOL>(s, m, m);
 
     Real acc = 0;
     for (unsigned int dim = 1; dim <= s; ++dim){
         acc = figEval(net,dim,acc);
-        figEval.saveMerits();
     }
 
     std::cout << "Figure of merit: " << acc << std::endl;

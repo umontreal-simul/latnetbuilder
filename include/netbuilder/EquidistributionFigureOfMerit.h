@@ -88,7 +88,7 @@ class EquidistributionFigureOfMeritEvaluator {
         typedef typename FIGURE::MeritValue MeritValue;
 
         typedef boost::signals2::signal<bool (const MeritValue&), LatBuilder::Functor::AllOf> OnProgress;
-        typedef boost::signals2::signal<void (const DigitalNet)> OnAbort;
+        typedef boost::signals2::signal<void (const DigitalNet&)> OnAbort;
 
         /**
         * Constructor.
@@ -182,15 +182,19 @@ class EquidistributionFigureOfMeritEvaluator {
             {
                 newNodes[i]->setNextNode(newNodes[i+1]); // link the new nodes
             }
-            for (auto& kv : mapsToNodes) // for each new nodes
+
+            for (Node* node : newNodes) // for each new nodes
             {   
-                Coordinates tmp = kv.first;
+                Coordinates tmp = node->getProjectionRepresentation();
                 for(int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
                 {
                     if (tmp.find(i) != tmp.end())
                     {
+                        //std::cout << tmp << " contains ";
                         tmp.erase(i);
-                        kv.second->addMother(mapsToNodes.find(tmp)->second);
+                        auto foo = mapsToNodes.find(tmp)->second;
+                        //std::cout << foo->getProjectionRepresentation() << std::endl;
+                        node->addMother(foo);
                         tmp.insert(i);
                     }
                 }
@@ -264,15 +268,9 @@ class EquidistributionFigureOfMeritEvaluator {
          */ 
         void saveMerits()
         {
-            for(int i = 0; i< m_dimension; ++i)
+            for(int i = 1; i <= m_dimension; ++i)
             {
-                Node* it = m_roots[i];
-                do
-                {
-                    it->saveMerit();
-                    it = it->getNextNode();
-                }                 
-                while(it != nullptr);
+                saveMerits(i);
             }
         }
 
@@ -377,10 +375,8 @@ class EquidistributionFigureOfMeritEvaluator {
             while(it != nullptr);
 
             validate(dimension);
-            saveMerits();
+            saveMerits(dimension);
             return acc.value();
-
-            
     }
 
     private:
@@ -467,15 +463,15 @@ class EquidistributionFigureOfMeritEvaluator {
                  */ 
                 void updateMaxMeritsSubProj()
                 {
-                    m_maxMeritsSubProj=0;
+                    m_maxMeritsSubProj = 0;
                     for (auto const* m : m_mothersNodes)
                     {
-                        if (m->getProjectionRepresentation().find(m_dimension) != m->getProjectionRepresentation().end())
+                        if (m->getMaxDimension() < m_dimension)
                         {
-                            m_maxMeritsSubProj = std::max(m->getMeritTmp(),m_maxMeritsSubProj);
+                            m_maxMeritsSubProj = std::max(m->getMeritMem(),m_maxMeritsSubProj);
                         }
                         else{
-                            m_maxMeritsSubProj = std::max(m->getMeritMem(),m_maxMeritsSubProj);
+                            m_maxMeritsSubProj = std::max(m->getMeritTmp(),m_maxMeritsSubProj);
                         } 
                     }
                 }

@@ -72,7 +72,6 @@ namespace NetBuilder {
                 const std::vector<std::shared_ptr<GenValue>>& genValues);
     };*/
 
-
     template<>
     struct NetConstructionTraits<NetConstruction::UNIRANDOM>
     {

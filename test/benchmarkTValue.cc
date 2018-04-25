@@ -18,10 +18,9 @@
 #include "netbuilder/EquidistributionFigureOfMerit.h"
 #include "netbuilder/GaussMethod.h"
 #include "netbuilder/SchmidMethod.h"
-#include "netbuilder/ExplicitNet.h"
+#include "netbuilder/DigitalNet.h"
 
 #include "latbuilder/Functor/binary.h"
-#include "latbuilder/LFSR258.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/UniformWeights.h"
@@ -39,8 +38,6 @@ using Weights = LatCommon::Weights;
 typedef LatCommon::Coordinates Coordinates;
 int main(int argc, const char *argv[])
 {
-
-    auto randomGen = LatBuilder::LFSR258();
 
     assert(argc == 5);
 
@@ -81,7 +78,8 @@ int main(int argc, const char *argv[])
                 double tValueGauss = 0;
                 double tValueReversedSchmid = 0;
 
-                ExplicitNet net = ExplicitNet(s, m, m, randomGen);
+
+                const DigitalNet& net = DigitalNetBase<NetConstruction::UNIRANDOM>(s, m, m);
 
                 clock_t t1,t2, t3, t4, t5, t6;  
                 bool verbose = false;  
@@ -89,7 +87,7 @@ int main(int argc, const char *argv[])
                 t1=clock();
                 for (unsigned int dim = 1; dim <= s; ++dim)
                 {
-                    tValueSchmid = schmidEval(net, dim, tValueSchmid, false);
+                    tValueSchmid = schmidEval(net, dim, tValueSchmid, true);
                 }
                 t2=clock();
                 float diff ((float)t2-(float)t1);

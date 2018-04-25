@@ -52,7 +52,7 @@ typedef size_t size_type;
 
 enum class NetEmbedded {SIMPLE, EMBEDDED};
 
-enum class NetConstruction {SOBOL, EXPLICIT, UNIRANDOM};
+enum class NetConstruction {SOBOL, UNIRANDOM};
 
 }
 
