@@ -77,12 +77,6 @@ class Result:
         return int(np.log2(self.lattice.size.points))
 
     def matrix(self, coord):
-        # n_cols = len(self.lattice.size.base)
-        # matrice = np.zeros((n_cols, n_cols))
-        # for i in range(n_cols):
-        #     for j in range(n_cols):
-        #         matrice[i][j] = 0
-        # return matrice
         return self.matrices[coord]
 
     def getNet(self, coord, level=None):
@@ -99,15 +93,12 @@ class Result:
 
         else:
             points = []
-            # gen_poly = self.lattice.gen[coord]
             matrice = self.matrix(coord)
-            # nb_points = self.lattice.size.points
             width = matrice.shape[0]
             for x in range(nb_points):
                 binary_repr = np.array([((x>>i)&1) for i in range(width)])
                 prod = np.mod(matrice.dot(binary_repr), 2)
                 points.append(float(sum([prod[width-1-i] << i for i in range(width)]))/nb_points)
-            # print(len(points))
             return points
 
 
@@ -129,7 +120,6 @@ def parse_output(s, polynomial):
         new = False
 
     for line in s.split('\n'):
-        # print(line)
         m = pat_latdef.match(line)
         if m:
             size = SizeParam(m.group('size'), polynomial)
@@ -160,7 +150,6 @@ def parse_output(s, polynomial):
                     matrices.append(np.array(M))
                     new = False
 
-    # print(matrices)
     ret.append(Result(latmerit, seconds, polynomial, matrices))
 
     return ret
