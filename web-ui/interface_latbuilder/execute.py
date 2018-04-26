@@ -224,7 +224,7 @@ def execute_search(b):
     abort.observe(lambda b: abort_process(b, process))
     stdout_file = open('testfile.txt', 'w')
     stderr_file = open('errfile.txt', 'w')
-    process = subprocess.Popen(command, stdout=stdout_file, stderr=stderr_file)
+    process = subprocess.Popen(["export LD_LIBRARY_PATH=$HOME/dependencies/lib:$LD_LIBRARY_PATH && " + ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
     thread = threading.Thread(target=work, args=(process, result, result2, result3, abort, display_button, polynomial))
     thread.start()
     
