@@ -8,3 +8,5 @@ VERSION
 .directory
 .Rhistory
 .vscode/
+*.txt
+*checkpoint.ipynb
