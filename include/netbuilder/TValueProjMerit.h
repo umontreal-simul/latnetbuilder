@@ -340,23 +340,10 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
 
             auto acc = m_figure->accumulator(std::move(initialValue));
 
-            std::vector<GeneratingMatrix> allGeneratingMatrices;
-
-            for (int dim = 1; dim <= dimension ; ++dim) // for each dimension
-            {
-                allGeneratingMatrices.push_back(net.generatingMatrix(dim));
-            }
-
             Node* it = m_roots[dimension-1]; // iterator over the nodes
             do
             {   
                 Real weight = it->getWeight();
-    
-                std::vector<GeneratingMatrix> genMatrices;
-                for(const auto& coord : it->getProjectionRepresentation())
-                {
-                    genMatrices.push_back(allGeneratingMatrices[coord]);
-                }
 
                 it->updateMaxMeritsSubProj();
                 Real merit = m_figure->projDepMerit()(net,it->getProjectionRepresentation(),it->getMaxMeritsSubProj()); // compute the merit of the projection
@@ -732,23 +719,10 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
 
             auto acc = m_figure->accumulator(std::move(initialValue));
 
-            std::vector<GeneratingMatrix> allGeneratingMatrices;
-
-            for (int dim = 1; dim <= dimension ; ++dim) // for each dimension
-            {
-                allGeneratingMatrices.push_back(net.generatingMatrix(dim));
-            }
-
             Node* it = m_roots[dimension-1]; // iterator over the nodes
             do
             {   
                 Real weight = it->getWeight();
-    
-                std::vector<GeneratingMatrix> genMatrices;
-                for(const auto& coord : it->getProjectionRepresentation())
-                {
-                    genMatrices.push_back(allGeneratingMatrices[coord]);
-                }
 
                 it->updateMaxMeritsSubProj()
                 ;

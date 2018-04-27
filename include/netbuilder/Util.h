@@ -83,9 +83,17 @@ class Accumulator
 
         Accumulator(Accumulator&) = default;
 
+        Accumulator(Accumulator&&) = default;
+
         void accumulate(Real weight, Real value, Real power){
             m_data = m_op(weight*std::pow(value,power), m_data);
         }
+
+        Real tryAccumulate(Real weight, Real value, Real power) const {
+            return m_op(weight*std::pow(value,power), m_data);
+        }
+
+        void set(Real value) { m_data = value; }
 
         Real value()
         {

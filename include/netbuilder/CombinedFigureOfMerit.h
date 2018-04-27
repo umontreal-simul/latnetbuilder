@@ -88,9 +88,34 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                 {
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
+                    Real weight;
+
+                    auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->normType())) ;} ;
+
+                    auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
+
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
-                        acc.accumulate(m_figure->weights()[i],(*m_evaluators[i])(net, dimension, 0, verbose), m_figure->normType()) ;
+                        weight = m_figure->weights()[i];
+
+                        if (weight != 0.0)
+                        {
+                            auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn);
+                            auto abortConnection = m_evaluators[i]->onAbort().connect(abort);
+
+                            MeritValue merit = (*m_evaluators[i])(net, dimension, 0, verbose);
+
+                            acc.accumulate(m_figure->weights()[i], merit, m_figure->normType()) ;
+
+                            goOnConnection.disconnect();
+                            abortConnection.disconnect();
+
+                            if (!onProgress()(acc.value())) { // if the current merit is too high
+                                acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->normType()); // set the merit to infinity
+                                onAbort()(net); // abort the computation
+                                break;
+                            }
+                        }
                     }
                     return acc.value();
                 }

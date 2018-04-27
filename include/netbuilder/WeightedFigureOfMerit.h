@@ -195,6 +195,8 @@ class WeightedFigureOfMerit : public FigureOfMerit
             {
                 using namespace LatCommon;
 
+
+                // TO DO : more explciit name and document interface for type of projections
                 auto projections = m_figure->projDepMerit().projections(dimension);
 
                 auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
