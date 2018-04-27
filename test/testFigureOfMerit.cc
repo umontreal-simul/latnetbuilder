@@ -1,0 +1,90 @@
+// This file is part of Lattice Builder.
+//
+// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include "netbuilder/Types.h"
+#include "netbuilder/Util.h"
+#include "netbuilder/DigitalNet.h"
+
+#include "netbuilder/FigureOfMerit.h"
+#include "netbuilder/WeightedFigureOfMerit.h"
+#include "netbuilder/TValueProjMerit.h"
+#include "netbuilder/CombinedFigureOfMerit.h"
+
+#include "latcommon/Weights.h"
+#include "latcommon/UniformWeights.h"
+#include "latcommon/CoordinateSets.h"
+
+#include <iostream>
+
+using namespace NetBuilder;
+
+int main(int argc, const char *argv[])
+{
+    unsigned int s = 10;
+    unsigned int m = 20;
+
+    const DigitalNet& net = DigitalNetBase<NetConstruction::SOBOL>(s, m, m);
+
+
+    std::unique_ptr<LatCommon::Weights> weights1 = std::make_unique<LatCommon::UniformWeights>(1);
+
+    std::unique_ptr<SimpleProjDepMerit<NetEmbed::SIMPLE>> projDep1 = std::make_unique<SimpleProjDepMerit<NetEmbed::SIMPLE>>();
+
+    std::unique_ptr<FigureOfMerit>  fig1 = std::make_unique<WeightedFigureOfMerit<SimpleProjDepMerit<NetEmbed::SIMPLE>>>(1, std::move(weights1), std::move(projDep1), OpMax());
+
+
+    std::unique_ptr<LatCommon::Weights> weights2 = std::make_unique<LatCommon::UniformWeights>(1);
+
+    std::unique_ptr<TValueProjMerit<NetEmbed::SIMPLE>> projDep2 = std::make_unique<TValueProjMerit<NetEmbed::SIMPLE>>(5);
+
+    std::unique_ptr<FigureOfMerit>  fig2 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights2), std::move(projDep2), OpMax());
+
+    std::vector<std::unique_ptr<FigureOfMerit>> figs;
+    figs.push_back(std::move(fig1));
+    figs.push_back(std::move(fig2));
+
+    std::vector<Real> weights = {1,1};
+
+    std::unique_ptr<FigureOfMerit> figComb = std::make_unique<CombinedFigureOfMerit>(1, std::move(figs), std::move(weights), OpMax());
+
+    auto eval = figComb->evaluator();
+
+    double acc = 0;
+    for(unsigned int dim = 1; dim  <=s; ++dim)
+    {
+        acc = (*eval)(net,dim,acc,true);
+    }
+
+
+    // ==========================================
+
+
+    /*std::unique_ptr<LatCommon::UniformWeights> weights2( new LatCommon::UniformWeights(1));
+
+    std::unique_ptr<TValueProjMerit<NetEmbed::SIMPLE>> projDep2 = std::make_unique<TValueProjMerit<NetEmbed::SIMPLE>>(s);
+
+    WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>> fig2(1, std::move(weights2), std::move(projDep2), OpMax());
+
+    auto eval2 = fig2.evaluator();
+
+    double acc = 0;
+    for(unsigned int dim = 1; dim  <=s; ++dim)
+    {
+        acc = (*eval2)(net,dim,acc,true);
+    }*/
+
+    return 0;
+}

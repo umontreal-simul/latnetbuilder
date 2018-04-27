@@ -22,8 +22,11 @@
 #ifndef NET_BUILDER__UTIL_H
 #define NET_BUILDER__UTIL_H
 
+#include "netbuilder/Types.h"
+
 #include <vector>
 #include <boost/dynamic_bitset.hpp> 
+#include <boost/function.hpp>
 
 //================================================================================
 
@@ -52,6 +55,48 @@ std::vector<std::vector<int>> compositions(int n, int nb_parts);
 
 // returns a new row with row permuted by according to the permutation defined by C
 Row permutation(Row& row, std::vector<int>& C);
+
+struct nullCombiner
+{
+    Real operator()(const RealVector& x){ return 0;}
+
+    Real operator()(const std::vector<unsigned int>& x){ return 0;}
+};
+
+
+struct OpAdd{
+    Real operator()(Real x, Real y){return x+y;}
+};
+
+struct OpMax{
+    Real operator()(Real x, Real y){ return (x < y) ? y : x;}
+};
+
+class Accumulator
+{
+    public:
+
+        Accumulator(Real initialValue, BinOp acc):
+            m_data(initialValue),
+            m_op(acc)
+            {}
+
+        Accumulator(Accumulator&) = default;
+
+        void accumulate(Real weight, Real value, Real power){
+            m_data = m_op(weight*std::pow(value,power), m_data);
+        }
+
+        Real value()
+        {
+            return m_data;
+        }
+
+    private:
+        Real m_data;
+        boost::function<Real (Real, Real)> m_op;
+};
+
 }
 
 #endif

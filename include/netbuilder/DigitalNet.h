@@ -62,11 +62,16 @@ class DigitalNet
             return m_generatingMatrices[coord-1]->subMatrix(m_nRows, m_nCols);
         }
 
+        GeneratingMatrix generatingMatrix(unsigned int coord, unsigned int nRows, unsigned int nCols)
+        {
+            return m_generatingMatrices[coord-1]->subMatrix(nRows, nCols);
+        }
+
     protected:
         std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices;
+        unsigned int m_dimension;
         unsigned int m_nRows;
         unsigned int m_nCols;
-        unsigned int m_dimension;
 
         DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
             m_dimension(dimension),
