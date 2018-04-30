@@ -47,7 +47,7 @@ def work(process, result, result2, result3, abort, display_button, polynomial):
         result.value = "<p> <b> Lattice Size </b>: %s </p> \
         <p> <b> Generating Vector </b>: %s </p>\
         <p> <b> Merit value </b>: %s </p>\
-        <p> <b> CPU Time </b>: %s s </p>" % (str(ret[0].lattice.size), str(ret[0].lattice.gen), str(ret[0].lattice.merit), str(ret[0].seconds))
+        <p> <b> CPU Time </b>: %s s </p>" % (str(ret[0].lattice.modulus), str(ret[0].lattice.gen), str(ret[0].lattice.merit), str(ret[0].seconds))
         display_button.disabled = False
         display_button.button_style = 'success'
         display_button.value = False

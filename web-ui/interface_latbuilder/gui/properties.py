@@ -1,47 +1,31 @@
 import ipywidgets as widgets
 import numpy as np
 
-from .common import style_default
+from .common import style_default, parse_polynomial, INITIAL_DIM
 
-size = widgets.Text(placeholder='e.g. 2^10 or 1024', description='Modulus n=',
-                    layout=widgets.Layout(width='30%'), style=style_default)
+modulus = widgets.Text(placeholder='e.g. 2^10 or 1024', description='Modulus n=', 
+                    style=style_default, layout=widgets.Layout(width='95%'))
 
 lattice_type = widgets.Checkbox(value=False, description='Embedded')
 
-dimension = widgets.BoundedIntText(value=3, min=1, description='Dimension s:',
+dimension = widgets.BoundedIntText(value=INITIAL_DIM, min=1, description='Dimension s:',
                                    layout=widgets.Layout(width='20%'), style=style_default)
 
-properties_wrapper = widgets.Accordion([widgets.HBox([size, lattice_type, dimension])])
+modulus_pretty = widgets.Label('', layout=widgets.Layout(display='none'))
+
+properties_wrapper = widgets.Accordion(
+    [widgets.HBox(
+        [widgets.VBox([modulus, modulus_pretty], layout=widgets.Layout(width='50%')), 
+        lattice_type, 
+        dimension])])
 properties_wrapper.set_title(0, 'Basic Lattice properties')
 
-# callback for size change
+
 def change_modulus(b, gui):
     if b['name'] != 'value' or gui.main_tab.selected_index != 1:
         return
-
-    poly_str = ''
-    try:
-        p = b['new'].split('^')
-        if len(p) == 2:
-            base = np.array([int(y) for y in p[0]])
-            power = int(p[1])
-            modulus = ((np.poly1d(np.flip(base, axis=0)))**power).c % 2
-        else:
-            base = np.array([int(y) for y in b['new']])
-            modulus = np.poly1d(np.flip(base, axis=0)).c
-        poly_str = ' '
-        for k in range(len(modulus)):
-            if modulus[k] == 1:
-                if poly_str != ' ':
-                    poly_str += '+'
-                poly_str += ' z^' + str(len(modulus)-k-1)
-    except:
-        pass
-    if poly_str == ' ':
-        poly_str = '0'
-    gui.properties.size.description = "Mod n=" + poly_str + '='
-    size_width = str(10 + len(gui.properties.size.description)) + '%'
-    gui.properties.size.layout = widgets.Layout(width=size_width)
+    poly_str = parse_polynomial(b['new'])
+    gui.properties.modulus_pretty.value = '\\(' + poly_str + '\\)'
 
 
 def update(form, dim, defaut_value):

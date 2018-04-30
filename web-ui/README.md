@@ -52,6 +52,9 @@ activate latbuilder  # on Windows
 jupyter notebook
 ```
 
+The `conda env create` command creates a new conda environment. You only need to do it the first time. Afterwards, just activate the environment, and run the Jupyter notebook.
+Fore more information, see the [conda documentation about environments](https://conda.io/docs/user-guide/tasks/manage-environments.html).
+
 ## More technical details
 
 The application is based on the following stack of technologies:

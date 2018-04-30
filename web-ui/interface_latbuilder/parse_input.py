@@ -25,8 +25,8 @@ def parse_input(gui):
 
     s.embedded_lattice = gui.properties.lattice_type.value
 
-    if gui.properties.size.value != '':
-        s.modulus = gui.properties.size.value
+    if gui.properties.modulus.value != '':
+        s.modulus = gui.properties.modulus.value
     else:   # to be changed
         if s.lattice_type == 'ordinary':
             s.modulus = '1024'
@@ -34,20 +34,20 @@ def parse_input(gui):
             s.modulus = '01^8'
 
     merit = ''
-    if gui.figure_of_merit.evaluation_method.value:
+    if gui.figure_of_merit.coord_unif.value:
         merit += 'CU:'
     figtype = gui.figure_of_merit.figure_type.value
     if figtype == 'Spectral':
         merit += 'spectral'
     elif figtype == 'Palpha':
-        merit += 'P' + str(gui.figure_of_merit.alpha.value)
+        merit += 'P' + str(gui.figure_of_merit.figure_alpha.value)
     elif figtype == 'Ralpha':
-        merit += 'R' + str(gui.figure_of_merit.alpha.value)
+        merit += 'R' + str(gui.figure_of_merit.figure_alpha.value)
     else:
         merit += 'R'
     s.figure_of_merit = merit
 
-    s.norm_type = gui.figure_of_merit.norm_type.value
+    s.figure_power = gui.figure_of_merit.figure_power.value
 
     s.dimension = gui.properties.dimension.value
 
@@ -62,7 +62,7 @@ def parse_input(gui):
             construction = 'random:'
         else:   # construction = 'Korobov' or 'CBC'
             construction = 'random-' + construction + ':'
-        construction += gui.construction_method.number_samples.children[1].value
+        construction += gui.construction_method.number_samples.value
     if construction == 'explicit:':
         modulus = gui.construction_method.generating_vector.children[1].value
         if modulus != '':
@@ -75,15 +75,15 @@ def parse_input(gui):
 
     s.weights_power = int(gui.weights.weight_power.value)
 
-    if gui.filters.normalization.value:
-        s.filters.append("norm:P" + gui.figure_of_merit.alpha.value + '-' +
+    if gui.filters.is_normalization.value:
+        s.filters.append("norm:P" + gui.figure_of_merit.figure_alpha.value + '-' +
                          gui.filters.normalization_type.value.split(' ')[0])
     if gui.filters.low_pass_filter.value:
         s.filters.append("low-pass:" + gui.filters.low_pass_filter_options.value)
 
     if gui.properties.lattice_type.value:
         if gui.multi_level.mult_normalization.value:
-            norm = "norm:P" + gui.figure_of_merit.alpha.value + '-' + \
+            norm = "norm:P" + gui.figure_of_merit.figure_alpha.value + '-' + \
                 gui.multi_level.mult_normalization_options.value.split(' ')[0]
             if gui.multi_level.minimum_level.value != '' and gui.multi_level.maximum_level.value != '':
                 norm += ':even:' + gui.multi_level.minimum_level.value + ',' + gui.multi_level.maximum_level.value

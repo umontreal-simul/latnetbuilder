@@ -12,7 +12,7 @@ mult_combiner = widgets.Checkbox(
 multilevel_wrapper = widgets.HBox(
     [mult_normalization, mult_low_pass_filter, mult_combiner])
 
-# Definition of mult normalization options VBox
+# Definition of mult is_normalization options VBox
 minimum_level = widgets.Text(placeholder='1', description='Min Level (optional):',
                              layout=widgets.Layout(width='22%', margin='0px 10px 0px 0px'), style=style_default)
 

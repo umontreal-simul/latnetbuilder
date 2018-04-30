@@ -6,7 +6,7 @@ class Search():
         self.embedded_lattice = False
         self.modulus = ''
         self.figure_of_merit = ''
-        self.norm_type = '2'
+        self.figure_power = '2'
         self.construction = ''
         self.dimension = 0
         self.filters = []
@@ -22,7 +22,7 @@ class Search():
                    '--embedded-lattice', str(self.embedded_lattice).lower(),
                    '--modulus', self.modulus,
                    '--figure-of-merit', self.figure_of_merit,
-                   '--norm-type', self.norm_type,
+                   '--norm-type', self.figure_power,
                    '--construction', self.construction,
                    '--weights-power', str(self.weights_power),
                    '--dimension', str(self.dimension),
