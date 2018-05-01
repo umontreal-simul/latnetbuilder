@@ -18,10 +18,9 @@
 #define NETBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
-
-#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/Coordinates.h"
@@ -32,7 +31,7 @@
 #include <string>
 #include <functional>
 
-namespace NetBuilder{ namespace FigureOfMerit { 
+namespace NetBuilder{
 
 /** Base class for projection-dependent merits which only require the net and the projection.
  */ 
@@ -185,10 +184,9 @@ class WeightedFigureOfMerit : public FigureOfMerit
                     m_figure(figure)
                 {};
 
-            /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
-             * starting from the initial value \c initialValue.
+            /** Computes the weighted figure of merit for the given \c net for the given \c projections, starting from the initial value \c initialValue.
              * @param net is the net for which we compute the merit
-             * @param dimension is the dimension for which we want to compute the merit
+             * @param projections are the projections to consider in the merit computation
              * @param initialValue is the value from which to start
              * @param verbose controls the level of verbosity of the computation
              */ 
@@ -235,7 +233,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         };
 };
 
-}}
+}
 
 #endif 
 

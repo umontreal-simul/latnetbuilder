@@ -92,7 +92,7 @@ class FigureOfMeritEvaluator
         /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
          * starting from the initial value \c initialValue.
          * @param net is the net for which we compute the merit
-         * &param dimension is the dimension for which we want to compute the merit
+         * @param dimension is the dimension for which we want to compute the merit
          * @param initialValue is the value from which to start
          * @param verbose controls the level of verbosity of the computation
          */ 

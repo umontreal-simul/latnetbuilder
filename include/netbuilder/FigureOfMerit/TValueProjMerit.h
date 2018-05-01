@@ -128,7 +128,10 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
          * @param projection is the projection to consider
          * @param maxMeritsSubProj is the maximal merit of the subprojections
          */ 
-        std::vector<unsigned int> operator()(const DigitalNet& net, const LatCommon::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const {return maxMeritsSubProj ; }
+        std::vector<unsigned int> operator()(const DigitalNet& net, const LatCommon::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
+        {
+            return maxMeritsSubProj ; // TO IMPLEMENT
+        }
 
         /** Combines the projection-dependent merits (embedded) into a single value merit.
          * @param merits are the embedded merits
@@ -148,12 +151,16 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
 {
     public:
 
+        /** Constructor.
+         * @param figure is a pointer to the figure of merit
+         */ 
         WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit* figure):
                     m_figure(figure),
                     m_dimension(0),
                     m_maxCardinal(m_figure->projDepMerit().maxCardinal())
         {};
 
+        /** Destructor. */
         ~WeightedFigureOfMeritEvaluator()
         {
             for(unsigned int dim = 0; dim < m_dimension; ++dim)
@@ -170,6 +177,13 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
             }
         }
 
+        /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+          * starting from the initial value \c initialValue.
+          * @param net is the net for which we compute the merit
+          * @param dimension is the dimension for which we want to compute the merit
+          * @param initialValue is the value from which to start
+          * @param verbose controls the level of verbosity of the computation
+          */ 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
         {
 
@@ -356,7 +370,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
             return (*a > * b);
         }
 
-                /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
+        /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
          * while evaluating figures of merits.
          */ 
         void extend(){

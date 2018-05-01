@@ -37,10 +37,18 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
+/** Class to describe an aggregation of figures of merit computed in a specific order.
+ */ 
 class CombinedFigureOfMerit : public FigureOfMerit{
 
     public:
 
+        /** Constructor.
+         * @param normType is the power to which to raise the aggregated merits
+         * @param figures is a vector of std::unique_ptr to the figures of merit to aggregate
+         * @param weights is a vector of weights to use to aggregate the figures of merit
+         * @param binOp is the binary operation to use to aggregate the figures of merit
+         */ 
         CombinedFigureOfMerit(Real normType, std::vector<std::unique_ptr<FigureOfMerit>> figures, std::vector<Real> weights, BinOp binOp):
             m_normType(normType),
             m_figures(std::move(figures)),
@@ -54,17 +62,21 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
         /**
          * Creates a new accumulator.
-         * @param initialValue Initial accumulator value.
+         * @param initialValue is the initial accumulator value.
          */
         Accumulator accumulator(Real initialValue) const
         { return Accumulator(std::move(initialValue), m_binOp); }
 
+        /** Returns the vector of weights. */
         std::vector<Real> weights() const { return m_weights; }
 
+        /** Returns the number of figures. */
         unsigned int size() const {return m_size ; }
 
+        /** Returns the figure in position \c num. */
         FigureOfMerit* figure(unsigned int num) const { return m_figures[num].get() ; }
 
+        /** Instantiates an evaluator and returns a std::unique_ptr to it. */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
         {
             return std::make_unique<CombinedFigureOfMeritEvaluator>(this);
@@ -72,9 +84,13 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
     private:
 
+        /** Evaluator class for CombinedFigureOfMerit. */
         class CombinedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
         {
             public:
+                /**Constructor. 
+                 * @param figure is a pointer to the figure of merit.
+                */
                 CombinedFigureOfMeritEvaluator(CombinedFigureOfMerit* figure):
                     m_figure(figure)
                 {
@@ -84,6 +100,13 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                     }
                 };
 
+                /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+                 *  starting from the initial value \c initialValue.
+                 *  @param net is the net for which we compute the merit
+                 *  @param dimension is the dimension for which we want to compute the merit
+                 *  @param initialValue is the value from which to start
+                 *  @param verbose controls the level of verbosity of the computation
+                 */ 
                 virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
                 {
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value

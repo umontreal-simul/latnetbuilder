@@ -33,14 +33,6 @@ class Eval : public Task
 {
     public:
 
-        /**
-        * Observer of the best figure of merit
-        *
-        * It allows for truncating the figure over projections if, 
-        * during its term-by-term evaluation, the partial figure 
-        * reaches a value superior to the current minimum value.
-        */
-
         Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure):
             m_net(std::move(net)),
             m_figure(std::move(figure)),

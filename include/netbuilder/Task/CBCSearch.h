@@ -84,13 +84,14 @@ class CBCSearch : public Task
                         if (merit < m_bestMerit) {
                             m_bestMerit = merit;
                             m_foundBestNet = true;
+                            m_bestNet = std::move(net);
+
                             if (m_verbose)
                             {
                                 std::cout << *net << "\t:\t" << merit;
                                 std::cout << " <-- best";
                                 std::cout << std::endl;
                             }
-                            m_bestNet = std::move(net);
                         }
                 }
 
@@ -109,7 +110,7 @@ class CBCSearch : public Task
                     std::unique_ptr<DigitalNetConstruction<NC>> m_bestNet;
                     bool m_foundBestNet;
                     Real m_bestMerit;
-                    unsigned m_verbose;
+                    unsigned int m_verbose;
         };
 
         /** Constructor.
@@ -123,7 +124,8 @@ class CBCSearch : public Task
                     unsigned int nRows, 
                     unsigned int nCols, 
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-                    std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>()):
+                    std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
+                    unsigned int verbose = 0 ):
             m_onNetSelected(new OnNetSelected),
             m_onFailedSearch(new OnFailedSearch),
             m_dimension(dimension),
@@ -133,7 +135,8 @@ class CBCSearch : public Task
             m_bestNet(nRows,nCols),
             m_bestMerit(std::numeric_limits<Real>::infinity()),
             m_minObserver(new MinObserver(nRows,nCols)),
-            m_explorer(std::move(explorer))
+            m_explorer(std::move(explorer)),
+            m_verbose(verbose)
         {};
 
         /** Constructor.
@@ -270,7 +273,7 @@ class CBCSearch : public Task
         unsigned int m_nRows;
         unsigned int m_nCols;
         std::unique_ptr<Explorer> m_explorer;
-        unsigned int m_verbose = 1;
+        unsigned int m_verbose;
 };
 
 }}
