@@ -4,7 +4,7 @@ INITIAL_DIM = 3
 
 style_default = {'description_width': 'initial'}
 
-trigger_display_dic = {'lattice_type': ['multi_level', 'main'], 
+trigger_display_dic = {'is_embedded': ['multi_level', 'main'], 
                     'is_normalization': ['filters', 'normalization_box'],
                     'low_pass_filter': ['filters', 'low_pass_filter_options'],
                     'mult_normalization': ['multi_level', 'mult_normalization_options'],

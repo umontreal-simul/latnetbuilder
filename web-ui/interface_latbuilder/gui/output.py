@@ -6,18 +6,19 @@ from .common import style_default
 from ..parse_output import Result
 
 result = widgets.HTML(description='<b> Result: </b>', value='', layout=widgets.Layout(width='900px'), disabled=False)
-result2 = widgets.Textarea(description='Result2', value='', layout=widgets.Layout(width='900px'), disabled=False)
+# result2 = widgets.Textarea(description='Result2', value='', layout=widgets.Layout(width='900px'), disabled=False)
 
 command_line_out = widgets.HTML(description='<b> Command line: </b>', layout=widgets.Layout(width='900px'), disabled=False, style=style_default)
-result3 = Result()
+result_obj = Result()
+output = widgets.Tab(layout=widgets.Layout(display='none'))
 
-
-def create_output(result3):
+def create_output(gui):
+    result_obj = gui.output.result_obj
     sc_x = LinearScale(min=0., max=1.)
     sc_y = LinearScale(min=0., max=1.)
 
-    scatt = Scatter(x=result3.getNet(0), 
-                    y=result3.getNet(1), 
+    scatt = Scatter(x=result_obj.getNet(0), 
+                    y=result_obj.getNet(1), 
                     scales={'x': sc_x, 'y': sc_y},
                     default_size=20)
     ax_x = Axis(scale=sc_x, label='Coordinate 1')
@@ -25,22 +26,22 @@ def create_output(result3):
 
     fig = Figure(marks=[scatt], axes=[ax_x, ax_y], layout=widgets.Layout(width='650px', height='650px'))
 
-    b1 = widgets.BoundedIntText(max=result3.getDim(), min=1, value=1, layout=widgets.Layout(width='150px'), description='x-axis')
-    b2 = widgets.BoundedIntText(max=result3.getDim(), min=1, value=2, layout=widgets.Layout(width='150px'), description='y-axis')
-    b3 = widgets.BoundedIntText(max=result3.getMaxLevel(), min=1, value=result3.getMaxLevel(), layout=widgets.Layout(width='150px'), description='Level')
-    if result3.polynomial:
+    b1 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=1, layout=widgets.Layout(width='150px'), description='x-axis')
+    b2 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=2, layout=widgets.Layout(width='150px'), description='y-axis')
+    b3 = widgets.BoundedIntText(max=result_obj.getMaxLevel(), min=1, value=result_obj.getMaxLevel(), layout=widgets.Layout(width='150px'), description='Level')
+    if result_obj.polynomial:
         b3.disabled = True
     def change_graph(b):
         if b['name'] == 'value':
             if b['owner'] == b1:
-                scatt.x = result3.getNet(b['new']-1, b3.value)
+                scatt.x = result_obj.getNet(b['new']-1, b3.value)
                 ax_x.label = 'Coordinate ' + str(b['new'])
             if b['owner'] == b2:
-                scatt.y = result3.getNet(b['new']-1, b3.value)
+                scatt.y = result_obj.getNet(b['new']-1, b3.value)
                 ax_y.label = 'Coordinate ' + str(b['new'])
             if b['owner'] == b3:
-                scatt.x = result3.getNet(b1.value-1, b['new'])
-                scatt.y = result3.getNet(b2.value-1, b['new'])
+                scatt.x = result_obj.getNet(b1.value-1, b['new'])
+                scatt.y = result_obj.getNet(b2.value-1, b['new'])
     b1.observe(change_graph)
     b2.observe(change_graph)
     b3.observe(change_graph)
@@ -48,9 +49,9 @@ def create_output(result3):
     plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3])], 
                         layout=widgets.Layout(align_items='center'))
 
-    output = widgets.Tab()
+    # output = widgets.Tab()
 
-    if not result3.polynomial:
+    if not result_obj.polynomial:
         code_C = widgets.Textarea(value='\
     int n = %i;\n\
     int s = %i;\n\
@@ -60,14 +61,14 @@ def create_output(result3):
     for (i = 0; i < n; i++)\n\
         for (j = 0; j < s; j++)\n\
             points[i][j] = ((long long)i * a[j]) %% n / (double)n;' \
-    % (result3.lattice.size.points, result3.getDim(), str(result3.lattice.gen).replace('[', '{').replace(']', '}')),
+    % (result_obj.lattice.size.points, result_obj.getDim(), str(result_obj.lattice.gen).replace('[', '{').replace(']', '}')),
             layout=widgets.Layout(width='600px', height='200px'))
 
         code_python = widgets.Textarea(value='\
     n = %i;\n\
     a = %s;\n\
     points = [[(i * aj %% n) / float(n) for aj in a] for i in range(n)]' \
-    % (result3.lattice.size.points, str(result3.lattice.gen)),
+    % (result_obj.lattice.size.points, str(result_obj.lattice.gen)),
             layout=widgets.Layout(width='600px', height='100px'))
 
         code_matlab = widgets.Textarea(value='\
@@ -77,21 +78,21 @@ def create_output(result3):
     for i = 1:n\n\
         points(i,:) = mod((i - 1) * a, n) / n;\n\
     end' \
-    % (result3.lattice.size.points, str(result3.lattice.gen)),
+    % (result_obj.lattice.size.points, str(result_obj.lattice.gen)),
             layout=widgets.Layout(width='600px', height='150px'))
 
     
-        output.children = [plot, code_C, code_python, code_matlab]
-        output.set_title(0, 'Plot')
-        output.set_title(1, 'C code')
-        output.set_title(2, 'Python code')
-        output.set_title(3, 'Matlab code')
+        gui.output.output.children = [plot, code_C, code_python, code_matlab]
+        gui.output.output.set_title(0, 'Plot')
+        gui.output.output.set_title(1, 'C code')
+        gui.output.output.set_title(2, 'Python code')
+        gui.output.output.set_title(3, 'Matlab code')
     
     else:
-        if result3.lattice.size.power == 1:
-            modulus = result3.lattice.size.base
+        if result_obj.lattice.size.power == 1:
+            modulus = result_obj.lattice.size.base
         else:
-            modulus = np.flip((np.poly1d(np.array(np.flip(result3.lattice.size.base, axis=0)))**result3.lattice.size.power).c % 2, axis=0)
+            modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.lattice.size.base, axis=0)))**result_obj.lattice.size.power).c % 2, axis=0)
         code_python = widgets.Textarea(value='\
 import numpy as np\n\
 \n\
@@ -133,11 +134,11 @@ for matrice in matrices:\n\
         binary_repr = np.array([((x>>i)&1) for i in range(width)])\n\
         prod = np.mod(matrice.dot(binary_repr), 2)\n\
         list_in_coord.append(prod.dot(mult))\n\
-    points.append(list_in_coord)' % (str(modulus), str(result3.lattice.gen)),
+    points.append(list_in_coord)' % (str(modulus), str(result_obj.lattice.gen)),
             layout=widgets.Layout(width='600px', height='700px'))
         
-        output.children = [plot, code_python]
-        output.set_title(0, 'Plot')
-        output.set_title(1, 'Python code')
-
-    return output
+        gui.output.output.children = [plot, code_python]
+        gui.output.output.set_title(0, 'Plot')
+        gui.output.output.set_title(1, 'Python code')
+    
+    gui.output.output.layout.display = 'flex'

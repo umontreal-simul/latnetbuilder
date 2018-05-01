@@ -1,5 +1,5 @@
 
 # path to the latbuilder executable
-LATBUILDER = 'latbuilder'
+LATBUILDER = '/home/jovyan/latsoft/bin/latbuilder'
 
 from .gui import gui

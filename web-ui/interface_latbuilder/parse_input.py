@@ -23,7 +23,7 @@ def parse_input(gui):
     else:
         s.lattice_type = 'polynomial'
 
-    s.embedded_lattice = gui.properties.lattice_type.value
+    s.embedded_lattice = gui.properties.is_embedded.value
 
     if gui.properties.modulus.value != '':
         s.modulus = gui.properties.modulus.value
@@ -77,14 +77,14 @@ def parse_input(gui):
 
     if gui.filters.is_normalization.value:
         s.filters.append("norm:P" + gui.figure_of_merit.figure_alpha.value + '-' +
-                         gui.filters.normalization_type.value.split(' ')[0])
+                         gui.filters.normalization_options.value.split(' ')[0])
     if gui.filters.low_pass_filter.value:
         s.filters.append("low-pass:" + gui.filters.low_pass_filter_options.value)
 
-    if gui.properties.lattice_type.value:
+    if gui.properties.is_embedded.value:
         if gui.multi_level.mult_normalization.value:
             norm = "norm:P" + gui.figure_of_merit.figure_alpha.value + '-' + \
-                gui.multi_level.mult_normalization_options.value.split(' ')[0]
+                gui.multi_level.mult_normalization_options.children[0].children[0].value.split(' ')[0]
             if gui.multi_level.minimum_level.value != '' and gui.multi_level.maximum_level.value != '':
                 norm += ':even:' + gui.multi_level.minimum_level.value + ',' + gui.multi_level.maximum_level.value
             s.multilevel_filters.append(norm)
@@ -96,7 +96,7 @@ def parse_input(gui):
             if s.combiner == 'level:':
                 s.combiner += str(gui.multi_level.combiner_level.value)
 
-    VBOX_of_weights = gui.weights.main.children[0].children[2]
+    VBOX_of_weights = gui.weights.VBOX_of_weights
     for k in range(len(VBOX_of_weights.children)):
         string = ''
         weight = VBOX_of_weights.children[k]
@@ -104,16 +104,16 @@ def parse_input(gui):
             1]]
         string += weight_type
         if weight_type == 'order-dependent:' or weight_type == 'product:':
-            form = VBOX_of_weights.children[k].children[1].children[0].children[1]
+            form = weight.children[1].children[0].children[1]
             string = update(string, form, s)
         elif weight_type == 'POD:':
-            form = VBOX_of_weights.children[k].children[1].children[0].children[1]
+            form = weight.children[1].children[0].children[1]
             string = update(string, form, s)
-            form = VBOX_of_weights.children[k].children[1].children[2].children[1]
+            form = weight.children[2].children[0].children[1]
             string += ':'
             string = update(string, form, s)
         else:
-            proj_dep_string = VBOX_of_weights.children[k].children[1].value
+            proj_dep_string = weight.children[1].value
             string += proj_dep_string.replace('\n', ':')
         s.weights.append(string)
 

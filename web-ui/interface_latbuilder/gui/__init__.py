@@ -2,16 +2,16 @@ import inspect
 import ipywidgets as widgets
 from IPython.display import display
 
-from .properties import (modulus, lattice_type, properties_wrapper,
+from .properties import (modulus, is_embedded, properties_wrapper,
                          dimension, change_modulus, change_dimension, modulus_pretty)
 from .filters import is_normalization, low_pass_filter, normalization_options, normalization_box, low_pass_filter_options, filters_wrapper, trigger_normalization_warning, normalization_warning
 from .figure_of_merit import figure_type, figure_alpha, coord_unif, figure_power, figure_of_merit_expl, figure_of_merit_wrapper, change_figure_type, change_evaluation_method
 from .multilevel import mult_normalization, mult_low_pass_filter, mult_combiner, multilevel_wrapper, minimum_level, maximum_level, mult_normalization_options, mult_low_pass_filter_options, combiner_level, combiner_dropdown, combiner_options, embedding, change_combiner_options
 from .construction_method import constr_info, construction_choice, is_random, number_samples, generating_vector, construction, change_constr_choice, random_box
-from .weights import add_weight, weight_power, widget_weight, weights_wrapper, func_add_weights
-from .button_box import go, abort, command_line, button_box_wrapper, build_command_line, abort_process, execute_search, display_button, display_output
-from .output import result, result2, result3, command_line_out
-from .main_tab import build_tabs
+from .weights import add_weight, weight_power, create_full_weight, weights_wrapper, func_add_weights, weights_button_id, weights_set_all_id, VBOX_of_weights
+from .button_box import go, abort, command_line, button_box_wrapper, build_command_line, abort_process, on_click_search, display_output
+from .output import result, result_obj, command_line_out, output 
+from .main_tab import change_lattype
 from .common import trigger_display
 
 
@@ -56,7 +56,8 @@ class BaseGUIElement():
         for (key, value) in kwargs.items():
             if key != '_callbacks' and key != '_on_click_callbacks':
                 setattr(self, key, value)
-                self._name[value] = key
+                if type(value) != dict:
+                    self._name[value] = key
         if '_callbacks' in kwargs.keys():
             self._callbacks = {}  
             for (key, value) in kwargs['_callbacks'].items():
@@ -80,13 +81,13 @@ class BaseGUIElement():
 
 
 properties = BaseGUIElement(modulus=modulus,
-                            lattice_type=lattice_type,
+                            is_embedded=is_embedded,
                             dimension=dimension,
                             main=properties_wrapper,
                             modulus_pretty=modulus_pretty,
                             _callbacks={'modulus': change_modulus,
                                         'dimension': change_dimension,
-                                        'lattice_type': trigger_display})
+                                        'is_embedded': trigger_display})
 
 filters = BaseGUIElement(is_normalization=is_normalization,
                          low_pass_filter=low_pass_filter,
@@ -111,7 +112,10 @@ figure_of_merit = BaseGUIElement(figure_type=figure_type,
 
 weights = BaseGUIElement(add_weight=add_weight,
                          weight_power=weight_power,
-                         widget_weight=widget_weight,
+                         create_full_weight=create_full_weight,
+                         weights_button_id=weights_button_id,
+                         weights_set_all_id=weights_set_all_id,
+                         VBOX_of_weights=VBOX_of_weights,
                          main=weights_wrapper,
                          _callbacks={'add_weight': func_add_weights})
 
@@ -145,19 +149,36 @@ multi_level = BaseGUIElement(mult_normalization=mult_normalization,
 button_box = BaseGUIElement(go=go,
                             abort=abort,
                             command_line=command_line,
-                            display_button=display_button,
                             main=button_box_wrapper,
-                            _callbacks={'display_button': display_output},
-                            _on_click_callbacks={'go': execute_search,
+                            _callbacks={},
+                            _on_click_callbacks={'go': on_click_search,
                                                  'command_line': build_command_line})
 
 output = BaseGUIElement(result=result,
-                        result2=result2,
-                        result3=result3,
-                        command_line_out=command_line_out,
-                        my_output=widgets.Label(''))
+                        # result2=result2,
+                        result_obj=result_obj,
+                        output=output,
+                        command_line_out=command_line_out)
 
 
 gui = GUI(properties, filters, figure_of_merit, weights,
           construction_method, multi_level, button_box, output)
-(gui.inside_tab, gui.main_tab) = build_tabs(gui)
+
+inside_tab = widgets.VBox([gui.properties.main, 
+                gui.multi_level.main,
+                gui.figure_of_merit.main, 
+                gui.weights.main, 
+                gui.construction_method.main, 
+                gui.filters.main,
+                gui.button_box.main,
+                gui.output.command_line_out,
+                gui.output.result, 
+                gui.output.output
+                ])
+
+gui.main_tab = widgets.Tab([inside_tab, inside_tab])
+gui.main_tab.set_title(0, 'Ordinary Lattice')
+gui.main_tab.set_title(1, 'Polynomial Lattice')
+gui.main_tab.observe(lambda b: change_lattype(b, gui))
+
+# gui.main = widgets.VBox([gui.main_tab, gui.output.output])

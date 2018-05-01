@@ -15,9 +15,6 @@ command_line = widgets.Button(description='Construct command line',
 button_box_wrapper = widgets.HBox([go, abort, command_line],
                           layout=widgets.Layout(margin='30px 0px 0px 0px'))
 
-display_button = widgets.ToggleButton(value=False, description='Display plot + code to generate points', 
-disabled=True, tooltip='Description', layout=widgets.Layout(width='300px'))
-
 def build_command_line(b, gui):
     s = parse_input(gui)
     command = s.construct_command_line()
@@ -28,29 +25,31 @@ def abort_process(b, process):
     if b['name'] == 'value' and b['new'] == True:
         process.kill()
 
-def work(process, result, result2, result3, abort, display_button, polynomial):
+def work(process, gui, polynomial):
+    result = gui.output.result
+    result_obj = gui.output.result_obj
+    abort = gui.button_box.abort
+    
     while process.poll() is None:
         time.sleep(0.2)
-        stdout_read = open('testfile.txt','r')
-        data = stdout_read.read()
-        result2.value = data
-        stdout_read.close()
+        # stdout_read = open('testfile.txt','r')
+        # data = stdout_read.read()
+        # # result2.value = data
+        # stdout_read.close()
     if process.poll() == 0:
         abort.button_style = ''
         with open('testfile.txt') as f:
             output = f.read()
         ret = parse_output(output, polynomial)
-        result3.lattice = ret[0].lattice
-        result3.seconds = ret[0].seconds
-        result3.polynomial = polynomial
-        result3.matrices = ret[0].matrices
+        result_obj.lattice = ret[0].lattice
+        result_obj.seconds = ret[0].seconds
+        result_obj.polynomial = polynomial
+        result_obj.matrices = ret[0].matrices
         result.value = "<p> <b> Lattice Size </b>: %s </p> \
         <p> <b> Generating Vector </b>: %s </p>\
         <p> <b> Merit value </b>: %s </p>\
-        <p> <b> CPU Time </b>: %s s </p>" % (str(ret[0].lattice.modulus), str(ret[0].lattice.gen), str(ret[0].lattice.merit), str(ret[0].seconds))
-        display_button.disabled = False
-        display_button.button_style = 'success'
-        display_button.value = False
+        <p> <b> CPU Time </b>: %s s </p>" % (str(ret[0].lattice.size), str(ret[0].lattice.gen), str(ret[0].lattice.merit), str(ret[0].seconds))
+        create_output(gui)
     else:
         abort.button_style = ''
         with open('errfile.txt') as f:
@@ -60,7 +59,7 @@ def work(process, result, result2, result3, abort, display_button, polynomial):
             result.value = 'You aborted the search.'
     abort.disabled = True
 
-def execute_search(b, gui):
+def on_click_search(b, gui):
     try:
         s = parse_input(gui)
         command = s.construct_command_line()
@@ -69,6 +68,7 @@ def execute_search(b, gui):
         return
 
     gui.output.result.value = ''
+    gui.output.output.layout.display = 'none'
     polynomial = ('polynomial' in command)
     gui.button_box.abort.disabled = False
     gui.button_box.abort.button_style = 'warning'
@@ -77,12 +77,12 @@ def execute_search(b, gui):
     stdout_file = open('testfile.txt', 'w')
     stderr_file = open('errfile.txt', 'w')
     process = s.execute_search(stdout_file, stderr_file)
-    thread = threading.Thread(target=work, args=(process, gui.output.result, gui.output.result2, gui.output.result3, gui.button_box.abort, gui.button_box.display_button, polynomial))
+    thread = threading.Thread(target=work, args=(process, gui, polynomial))
     thread.start()
 
 def display_output(b, gui):
     if b['name'] == 'value' and b['new'] == True:
-        gui.output.my_output = create_output(gui.output.result3)
+        create_output(gui)
         display(gui.output.my_output)
     if b['name'] == 'value' and b['new'] == False:
         gui.output.my_output.layout.display = 'none'

@@ -8,9 +8,9 @@ from .common import style_default
 weight_math = widgets.HTMLMath(value='The weights are of the form: \\(\\gamma_u^p (u \\subseteq \\{1, ... s\\})\\). You can specify below type of weights with their values (the actual weights are the sum of these).',
                                layout=widgets.Layout(height='30px', width='inherit'))
 add_weight = widgets.Dropdown(
-    options=[('Product', 'product:'), ('Order-Dependent', 'order-dependent:'),
-             ('POD', 'POD'), ('Projection-Dependent', 'projection-dependent')],
-    value=None, description='<b> Add new weights: </b>', style=style_default)
+    options=[('Select type of weights', 'None'), ('Product', 'product:'), ('Order-Dependent', 'order-dependent:'),
+            ('POD', 'POD'), ('Projection-Dependent', 'projection-dependent')],
+    value='None', description='<b> Add new weights: </b>', style=style_default)
 
 weight_power = widgets.Text(
     value='2',
@@ -30,7 +30,7 @@ math_label = {'Order-Dependent': '$$\\gamma_u=\\Gamma_{|u|}$$',
 weights_index = {'Order-Dependent': 'k', 'Product': 'j'}
 
 def remove_button_clicked(b, gui):
-    weight_to_remove = weights_button_id[b.model_id]
+    weight_to_remove = gui.weights.weights_button_id[b.model_id]
     gui.weights.VBOX_of_weights.children = [weight for weight in VBOX_of_weights.children if weight != weight_to_remove]
 
 def set_all_weights(b, nb, gui, type_weights):
@@ -45,7 +45,7 @@ def set_all_weights(b, nb, gui, type_weights):
     except:
         valid = False
 
-    weights = weights_set_all_id[b['owner']]
+    weights = gui.weights.weights_set_all_id[b['owner']]
     form = weights.children[0].children[1]
     set_all = weights.children[1]
     if valid:
@@ -59,6 +59,7 @@ def set_all_weights(b, nb, gui, type_weights):
         set_all.description = 'NOT VALID, please change expression: %s =' % (math_strings[type_weights])
 
 def create_elem_weights(type_weights, dimension_int, gui):
+    weights_set_all_id = gui.weights.weights_set_all_id
     i = weights_index[type_weights]
     form = widgets.HBox([widgets.Text(value='0.1', description='', layout=widgets.Layout(width='10%')) 
                         for k in range(dimension_int)])
@@ -70,7 +71,8 @@ def create_elem_weights(type_weights, dimension_int, gui):
     weights_set_all_id[set_all] = weights
     return weights
 
-def widget_weight(type_weights, dimension_int, gui, weights_button_id):
+def create_full_weight(type_weights, dimension_int, gui):
+    weights_button_id = gui.weights.weights_button_id
     title = widgets.HTML('<b> %s Weights </b>' % type_weights)
 
     remove_button = widgets.Button(description='Remove', disabled=False, tooltip='Remove this type of weights')
@@ -101,7 +103,7 @@ def widget_weight(type_weights, dimension_int, gui, weights_button_id):
         main.children = [description, weights]
 
     description.children = [title, math, remove_button]
-    weights_button_id[remove_button] = main
+    weights_button_id[remove_button.model_id] = main
 
     return main
 
@@ -113,13 +115,15 @@ weights_wrapper.set_title(0, 'Weights')
 
 # add weight observe
 def func_add_weights(b, gui):
+    if b['name'] == '_property_lock' and b['new'] == {}:
+        b['owner'].value = 'None'
+        return
     if b['name'] != 'label':
         return
     name = b['new']
-    weights = gui.weights.main
-    new_list = []
-    for k in range(len(VBOX_of_weights.children)):
-        weight = VBOX_of_weights.children[k]
-        new_list.append(weight)
-    new_list.append(widget_weight(name, int(gui.properties.dimension.value), gui))
+    if name == 'Select type of weights':
+        return
+    VBOX_of_weights = gui.weights.VBOX_of_weights
+    new_list = list(VBOX_of_weights.children)
+    new_list.append(gui.weights.create_full_weight(name, int(gui.properties.dimension.value), gui))
     VBOX_of_weights.children = new_list
