@@ -18,10 +18,10 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
 
-#include "netbuilder/FigureOfMerit.h"
-#include "netbuilder/WeightedFigureOfMerit.h"
-#include "netbuilder/TValueProjMerit.h"
-#include "netbuilder/CombinedFigureOfMerit.h"
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+#include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
+#include "netbuilder/FigureOfMerit/TValueProjMerit.h"
+#include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/UniformWeights.h"
@@ -30,27 +30,28 @@
 #include <iostream>
 
 using namespace NetBuilder;
+using namespace FigureOfMerit;
 
 int main(int argc, const char *argv[])
 {
     unsigned int s = 10;
     unsigned int m = 20;
 
-    const DigitalNet& net = DigitalNetBase<NetConstruction::SOBOL>(s, m, m);
+    const DigitalNet& net = DigitalNetConstruction<NetConstruction::SOBOL>(s, m, m);
 
 
-    std::unique_ptr<LatCommon::Weights> weights1 = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights1 = std::make_unique<LatCommon::UniformWeights>(1);
 
-    std::unique_ptr<SimpleProjDepMerit<NetEmbed::SIMPLE>> projDep1 = std::make_unique<SimpleProjDepMerit<NetEmbed::SIMPLE>>();
+    auto projDep1 = std::make_unique<SimpleProjDepMerit<NetEmbed::SIMPLE>>();
 
-    std::unique_ptr<FigureOfMerit>  fig1 = std::make_unique<WeightedFigureOfMerit<SimpleProjDepMerit<NetEmbed::SIMPLE>>>(1, std::move(weights1), std::move(projDep1), OpMax());
+    auto fig1 = std::make_unique<WeightedFigureOfMerit<SimpleProjDepMerit<NetEmbed::SIMPLE>>>(1, std::move(weights1), std::move(projDep1), OpMax());
 
 
-    std::unique_ptr<LatCommon::Weights> weights2 = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights2 = std::make_unique<LatCommon::UniformWeights>(1);
 
-    std::unique_ptr<TValueProjMerit<NetEmbed::SIMPLE>> projDep2 = std::make_unique<TValueProjMerit<NetEmbed::SIMPLE>>(5);
+    auto projDep2 = std::make_unique<TValueProjMerit<NetEmbed::SIMPLE>>(5);
 
-    std::unique_ptr<FigureOfMerit>  fig2 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights2), std::move(projDep2), OpMax());
+    auto  fig2 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights2), std::move(projDep2), OpMax());
 
     std::vector<std::unique_ptr<FigureOfMerit>> figs;
     figs.push_back(std::move(fig1));
@@ -58,7 +59,7 @@ int main(int argc, const char *argv[])
 
     std::vector<Real> weights = {1,1};
 
-    std::unique_ptr<FigureOfMerit> figComb = std::make_unique<CombinedFigureOfMerit>(1, std::move(figs), std::move(weights), OpMax());
+    auto figComb = std::make_unique<CombinedFigureOfMerit>(1, std::move(figs), std::move(weights), OpMax());
 
     auto eval = figComb->evaluator();
 

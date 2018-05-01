@@ -18,7 +18,7 @@
 #define NET_BUILDER_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/FigureOfMerit.h"
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
 
@@ -32,11 +32,11 @@
 #include <algorithm>
 #include <string>
 
-#include <boost/function.hpp>
+#include <functional>
 #include <boost/signals2.hpp>
 
 
-namespace NetBuilder {
+namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
@@ -71,9 +71,9 @@ class FigureOfMeritEvaluator
         /**
         * Progress signal.
         *
-        * Emitted after each projection-dependent contribution to the weighted
+        * Emitted after a contribution to the
         * figure of merit is processed.
-        * The signal argument is the cumulative value of the weighted figure of
+        * The signal argument is the cumulative value of the figure of
         * merit.  If any of the signal slots returns \c false, the computation of
         * the figure of merit will be aborted.
         */
@@ -82,35 +82,61 @@ class FigureOfMeritEvaluator
         /**
         * Abort signal.
         *
-        * Emitted if the computation of the weighted figure of merit is aborted.
-        * The signal argument is the lattice definition for which the computation
+        * Emitted if the computation of the figure of merit is aborted.
+        * The signal argument is the net for which the computation
         * was aborted.
         */
         OnAbort& onAbort() const { return *m_onAbort; }
         //@}
 
-        /** Computes the weighted figure of merit for the given \c net for the given dimension, starting from the initial value \c initialValue.
+        /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+         * starting from the initial value \c initialValue.
          * @param net is the net for which we compute the merit
-         * &param dimension is the last dimension to consider TO CLARIFY
+         * &param dimension is the dimension for which we want to compute the merit
          * @param initialValue is the value from which to start
          * @param verbose controls the level of verbosity of the computation
          */ 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false) = 0;
 
+        /** Computes the figure of merit for the given \c net for all the dimensions (full computation).
+         * @param net is the net for which we compute the merit
+         * @param verbose controls the level of verbosity of the computation
+         */ 
+        MeritValue operator() (const DigitalNet& net, bool verbose = false)
+        {
+            MeritValue merit = 0;
+            for(unsigned int dim = 1; dim <= net.dimension(); ++dim)
+            {
+                merit = operator()(net, dim, merit);
+            }
+            reset();
+            return merit;
+        }
+
+        /** Reset the evaluator, enabling the full computation for a new net
+         */ 
+        virtual void reset() { return;}
+
 
     private:
-        std::unique_ptr<OnProgress> m_onProgress;
+        std::unique_ptr<OnProgress> m_onProgress; 
         std::unique_ptr<OnAbort> m_onAbort;
 };
 
+/** Virtual class to represent any figure of merit. Derived classes should implement
+ * the evaluator() member function and a concrete evaluator class which derives from FigureOfMeritEvaluator.
+ */ 
 class FigureOfMerit{
 
     public:
+
+        /** Virtual default destructor. */
         virtual ~FigureOfMerit() = default;
 
+        /* Returns a std::unique_ptr to an evaluator for the figure of merit. */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() = 0  ;
 };
 
-}
+}}
 
 #endif

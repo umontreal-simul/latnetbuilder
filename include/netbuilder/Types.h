@@ -24,7 +24,7 @@
 #include <vector>
 #include <cstdint>
 #include <boost/numeric/ublas/vector.hpp>
-#include <boost/function.hpp>
+#include <functional>
 
 
 namespace NetBuilder
@@ -47,15 +47,19 @@ typedef std::vector<double> RealVector;
 typedef Real MeritValue;
 
 /// Scalar integer type for dimension.
-typedef size_t Dimension;
+typedef unsigned int Dimension;
 
+/// Type for the size of nets
 typedef size_t size_type;
 
+/// Type of nets
 enum class NetEmbed {SIMPLE, EMBEDDED};
 
-enum class NetConstruction {SOBOL, UNIRANDOM};
+/// Net construction methods
+enum class NetConstruction {SOBOL};
 
-typedef boost::function<MeritValue (MeritValue, MeritValue)> BinOp;
+/// Binary real operator type
+typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
 
 //@}
 }

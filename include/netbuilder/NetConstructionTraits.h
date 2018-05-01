@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__NET_CONSTRUCTION_TRAITS_H
-#define NET_BUILDER__NET_CONSTRUCTION_TRAITS_H
+#ifndef NETBUILDER__NET_CONSTRUCTION_TRAITS_H
+#define NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -25,8 +25,27 @@
 
 namespace NetBuilder {
 
+/** Digital net construction traits.
+ *  Specialization of this class must define the type:
+ *  - GenValue: type of the generating value required to construct a generating matrix
+ * \n the following static functions:
+ *  - static bool checkGenValue(const GenValue& genValue): checks whether a generating value is correct
+ *  - static GeneratingMatrix createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols): 
+ * create a generating matrix of the given shape from the generating value
+ *  - static std::vector<GenValue> defaultGenValues(unsigned int dimension): returns a vector of default generating values
+ *  (one for each coordinates lower than dimension)
+ *  - static std::vector<GenValue> genValueSpace(unsigned int dimension): returns a vector of all the possible generating values
+ *  for the given dimension
+ * \n and the following class template:
+ *  - template<typename RAND> class RandomGenValueGenerator: a class template where template parameter RAND implements
+ *  a C++11 type PRNG. This is a random generator of generating values. This class template must define a constructor 
+ *  RandomGenValueGenerator(RAND randomGen = RAND()) and an the member function GenValue operator()(unsigned int dimenion) returning
+ *  a generating value for the given dimension.
+ */ 
     template <NetConstruction NC>
     struct NetConstructionTraits;
+
+
 
     template<>
     struct NetConstructionTraits<NetConstruction::SOBOL>
@@ -38,12 +57,47 @@ namespace NetBuilder {
 
             static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
 
+            /*
             static void extendGeneratingMatrices( 
                 unsigned int inc,
                 const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
                 const std::vector<std::shared_ptr<GenValue>>& genValues);
+            */    
 
             static std::vector<GenValue> defaultGenValues(unsigned int dimension);
+
+            static std::vector<GenValue> genValueSpace(unsigned int dimension);
+
+            template<typename RAND>
+            class RandomGenValueGenerator
+            {
+                public:
+                    RandomGenValueGenerator(RAND randomGen = RAND()):
+                        m_randomGen(std::move(randomGen))
+                    {};
+                    
+                    GenValue operator()(unsigned int dimension)
+                    {
+                        unsigned int size;
+                        if (dimension==1)
+                        {
+                            size = 1;
+                        }
+                        else
+                        {
+                            size = nthPrimitivePolynomialDegree(dimension-1);
+                        }
+                        std::vector<unsigned long> res(size);
+                        for(unsigned int k = 0; k < size; ++k)
+                        {
+                            res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
+                        }
+                        return GenValue(dimension,std::move(res));
+                    }
+
+                private:
+                    RAND m_randomGen;
+            };
 
         private:
             typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
@@ -56,39 +110,26 @@ namespace NetBuilder {
 
 
     };
+   
 
-/*    template<>
-    struct NetConstructionTraits<NetConstruction::EXPLICIT>
-    {
-        public:
-            typedef GeneratingMatrix GenValue ;
+//    template<>
+//     struct NetConstructionTraits<NetConstruction::UNIRANDOM>
+//     {
+//         public:
+//             typedef unsigned int GenValue ;
 
-            static bool checkGenValue(const GenValue& genValue);
+//             static bool checkGenValue(const GenValue& genValue);
 
-            static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue);
+//             static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
 
-            static std::vector<std::shared_ptr<GeneratingMatrices>> extendGeneratingMatrices( 
-                const std::vector<std::shared_ptr<GeneratingMatrices>>& genMats, 
-                const std::vector<std::shared_ptr<GenValue>>& genValues);
-    };*/
-
-    template<>
-    struct NetConstructionTraits<NetConstruction::UNIRANDOM>
-    {
-        public:
-            typedef unsigned int GenValue ;
-
-            static bool checkGenValue(const GenValue& genValue);
-
-            static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
-
-            static void extendGeneratingMatrices( 
-                unsigned int inc,
-                const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-                const std::vector<std::shared_ptr<GenValue>>& genValues);
+//             static void extendGeneratingMatrices( 
+//                 unsigned int inc,
+//                 const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+//                 const std::vector<std::shared_ptr<GenValue>>& genValues);
             
-            static std::vector<GenValue> defaultGenValues(unsigned int dimension);
-    };
+//             static std::vector<GenValue> defaultGenValues(unsigned int dimension);
+//     };
+
 }
 
 #endif

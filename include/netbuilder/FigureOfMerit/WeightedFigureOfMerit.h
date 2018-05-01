@@ -14,13 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__WEIGHTED_FIGURE_OF_MERIT_H
-#define NET_BUILDER__WEIGHTED_FIGURE_OF_MERIT_H
+#ifndef NETBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
+#define NETBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/FigureOfMerit.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
+
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/Coordinates.h"
@@ -29,10 +30,9 @@
 #include <memory>
 #include <algorithm>
 #include <string>
+#include <functional>
 
-#include <boost/function.hpp>
-
-namespace NetBuilder{
+namespace NetBuilder{ namespace FigureOfMerit { 
 
 /** Base class for projection-dependent merits which only require the net and the projection.
  */ 
@@ -122,7 +122,7 @@ class SimpleProjDepMerit<NetEmbed::EMBEDDED>
 
     protected:
         std::string m_name =  "Null figure (EMBEDDED)."; // name of the projection-dependent merit
-        boost::function<Real (const RealVector&)> m_combiner = nullCombiner() ; // combiner for the merits of each level
+        std::function<Real (const RealVector&)> m_combiner = nullCombiner() ; // combiner for the merits of each level
 };
 
 /** Class which represents a weighted figure of merit based on a projection dependent merit whose type is the template
@@ -234,7 +234,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         };
 };
 
-}
+}}
 
 #endif 
 

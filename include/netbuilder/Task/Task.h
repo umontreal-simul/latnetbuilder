@@ -14,26 +14,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__GAUSS_METHOD_H
-#define NET_BUILDER__GAUSS_METHOD_H
+#ifndef NETBUILDER__TASK__TASK_H
+#define NETBUILDER__TASK__TASK_H
 
-#include "netbuilder/GeneratingMatrix.h"
-#include "netbuilder/Types.h"
+#include <ostream>
+#include <memory>
 
-namespace NetBuilder{
+namespace NetBuilder { namespace Task {
 
-    struct GaussMethod{
-    // compute the t-value of the set of matrices Origin_Mats with `maxSubProj' the maximum of
-    // the t-value of all strict subprojections
-    static int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose);
+/**
+ * Base base class for all tasks.
+ */
+class Task {
+public:
+   virtual ~Task() {}
 
-    int operator()(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose) const
-    {
-        return computeTValue(Origin_Mats, maxSubProj, verbose);
-    }
+   /**
+    * Executes the task.
+    */
+   virtual void execute() = 0;
+
+protected:
+   //virtual void format(std::ostream& os) const = 0;
+   //friend std::ostream& operator<<(std::ostream&, const Task&);
 };
-}
+
+/**
+ * Formats and outputs \c task to \c os.
+ */
+//inline std::ostream& operator<<(std::ostream& os, const Task& task)
+//{ task.format(os); return os; }
+//
+
+}}
 
 #endif
-
-

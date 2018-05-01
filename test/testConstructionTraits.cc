@@ -26,7 +26,7 @@ int main(int argc, const char *argv[])
     unsigned int s = 10;
     unsigned int m = 5;
 
-    /*DigitalNet* test = new DigitalNetBase<NetConstruction::SOBOL>(s,m,m);
+    /*DigitalNet* test = new DigitalNetConstruction<NetConstruction::SOBOL>(s,m,m);
 
     for(unsigned int j = 1; j <=s; ++j)
     {
@@ -35,7 +35,7 @@ int main(int argc, const char *argv[])
 
     delete test ; */
 
-    auto test = DigitalNetBase<NetConstruction::UNIRANDOM>(s,m,m);
+    /*auto test = DigitalNetConstruction<NetConstruction::UNIRANDOM>(s,m,m);
 
     for(unsigned int j = 1; j <=s; ++j)
     {
@@ -47,6 +47,13 @@ int main(int argc, const char *argv[])
     for(unsigned int j = 1; j <=s; ++j)
     {
         std::cout << test.generatingMatrix(j) << std::endl;
+    }*/
+
+    for(unsigned int dim = 1; dim < 10; ++dim)
+    {
+        auto foo = DigitalNetConstruction<NetConstruction::SOBOL>::ConstructionMethod::genValueSpace(dim);
+
+        std::cout << foo.size() << std::endl; 
     }
 
     return 0;

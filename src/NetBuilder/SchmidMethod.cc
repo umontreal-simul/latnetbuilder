@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/SchmidMethod.h"
+#include "netbuilder/TValueComputation.h"
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 

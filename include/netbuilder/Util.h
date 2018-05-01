@@ -19,16 +19,18 @@
  * Tools for streaming and poor man's factorization.
  */
 
-#ifndef NET_BUILDER__UTIL_H
-#define NET_BUILDER__UTIL_H
+#ifndef NETBUILDER__UTIL_H
+#define NETBUILDER__UTIL_H
 
 #include "netbuilder/Types.h"
 
 #include <vector>
 #include <boost/dynamic_bitset.hpp> 
-#include <boost/function.hpp>
+#include <functional>
 
 //================================================================================
+
+// TO DOCUMENT
 
 namespace NetBuilder {
 
@@ -102,7 +104,7 @@ class Accumulator
 
     private:
         Real m_data;
-        boost::function<Real (Real, Real)> m_op;
+        std::function<Real (Real, Real)> m_op;
 };
 
 }

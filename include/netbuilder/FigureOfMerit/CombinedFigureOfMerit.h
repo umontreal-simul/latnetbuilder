@@ -18,7 +18,7 @@
 #define NET_BUILDER_COMBINED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/FigureOfMerit.h"
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include "latcommon/Weights.h"
 
@@ -29,11 +29,11 @@
 #include <algorithm>
 #include <string>
 
-#include <boost/function.hpp>
+#include <functional>
 #include <boost/signals2.hpp>
 
 
-namespace NetBuilder {
+namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
@@ -92,7 +92,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
                     auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->normType())) ;} ;
 
-                    auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
+                    //auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
 
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
@@ -101,14 +101,14 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                         if (weight != 0.0)
                         {
                             auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn);
-                            auto abortConnection = m_evaluators[i]->onAbort().connect(abort);
+                            // auto abortConnection = m_evaluators[i]->onAbort().connect(abort);
 
                             MeritValue merit = (*m_evaluators[i])(net, dimension, 0, verbose);
 
                             acc.accumulate(m_figure->weights()[i], merit, m_figure->normType()) ;
 
                             goOnConnection.disconnect();
-                            abortConnection.disconnect();
+                            //abortConnection.disconnect();
 
                             if (!onProgress()(acc.value())) { // if the current merit is too high
                                 acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->normType()); // set the merit to infinity
@@ -133,6 +133,6 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         BinOp m_binOp;
 };
 
-}
+}}
 
 #endif

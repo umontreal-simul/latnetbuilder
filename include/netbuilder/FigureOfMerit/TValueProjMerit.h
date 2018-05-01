@@ -14,14 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__TVALUE_PROJ_MERIT
-#define NET_BUILDER__TVALUE_PROJ_MERIT
+#ifndef NETBUILDER__TVALUE_PROJ_MERIT
+#define NETBUILDER__TVALUE_PROJ_MERIT
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
-#include "netbuilder/GaussMethod.h"
-#include "netbuilder/WeightedFigureOfMerit.h"
+#include "netbuilder/TValueComputation.h"
+#include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/Coordinates.h"
@@ -31,9 +31,9 @@
 #include <algorithm>
 #include <string>
 
-#include <boost/function.hpp>
+#include <functional>
 
-namespace NetBuilder{
+namespace NetBuilder { namespace FigureOfMerit {
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection
  */ 
@@ -102,7 +102,7 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
         /** Construct an projection-dependent merit based on the t-values of the projections.
          * @param maxCardinal is the maximum order of the subprojections to take into account
          */  
-        TValueProjMerit(unsigned int maxCardinal, boost::function<Real (const std::vector<unsigned int>&)> combiner):
+        TValueProjMerit(unsigned int maxCardinal, std::function<Real (const std::vector<unsigned int>&)> combiner):
             m_maxCardinal(maxCardinal),
             m_combiner(std::move(combiner))
         {};
@@ -139,7 +139,7 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
         std::string m_name = "Projection-dependent merit: t-value (embedded nets)";// name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 
-        boost::function<Real (const std::vector<unsigned int>&)> m_combiner; 
+        std::function<Real (const std::vector<unsigned int>&)> m_combiner; 
         // function wrapper which combines embedded merits in a single value merit
 };
 
@@ -153,92 +153,6 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
                     m_dimension(0),
                     m_maxCardinal(m_figure->projDepMerit().maxCardinal())
         {};
-
-        /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
-         * while evaluating figures of merits.
-         */ 
-        void extend(){
-            ++m_dimension; // increase maximal dimension
-            std::vector<Node*> newNodes; // to store new nodes
-
-            std::map<Coordinates,Node*> mapsToNodes; // map between new projections and new nodes
-
-
-            m_validFlags.push_back(false);
-
-            // create projection {m_dimension} 
-            Coordinates proj1DRep;
-            proj1DRep.insert(m_dimension-1);
-            double weight = m_figure->weights().getWeight(proj1DRep);
-            Node* proj1D = new Node(m_dimension, proj1DRep.size(), weight);
-
-            if(m_dimension==1){
-                m_roots.push_back(proj1D);
-                return;
-            }
-
-            newNodes.push_back(proj1D);
-
-            mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
-
-
-            for(int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
-            {
-                Node* it = m_roots[i];
-                do
-                {   if (it->getCardinal() <= m_maxCardinal-1)
-                    {
-                        Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
-                        projectionRep.insert(m_dimension-1);
-                        double weight =  m_figure->weights().getWeight(projectionRep);
-                        Node* newNode = new Node(m_dimension, projectionRep.size() , weight); // create the node
-                        newNode->addMother(it);
-                        mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
-                        newNodes.push_back(newNode);
-                    }
-                    it = it->getNextNode();
-                }
-                while(it != nullptr);
-            }
-
-            std::sort(newNodes.begin(),newNodes.end(),compareNodePointers); // sort the nodes by increasing cardinal and decreasing weights
-
-            m_roots.push_back(newNodes[0]); // add the root corresponding to the dimension
-
-            for(size_t i = 0; i < newNodes.size()-1; ++i)
-            {
-                newNodes[i]->setNextNode(newNodes[i+1]); // link the new nodes
-            }
-
-            for (Node* node : newNodes) // for each new nodes
-            {   
-                Coordinates tmp = node->getProjectionRepresentation();
-                for(int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
-                {
-                    if (tmp.find(i) != tmp.end())
-                    {
-                        //std::cout << tmp << " contains ";
-                        tmp.erase(i);
-                        auto foo = mapsToNodes.find(tmp)->second;
-                        //std::cout << foo->getProjectionRepresentation() << std::endl;
-                        node->addMother(foo);
-                        tmp.insert(i);
-                    }
-                }
-            }
-        }
-
-        /** Extend the ComputationSchemme up to the given last dimension. 
-         * @param dimension is the highest dimension in the projections
-         * @see extend
-         */ 
-        void extendUpToDimension(unsigned int dimension)
-        {
-            for(unsigned int i = m_dimension; i < dimension; ++i)
-            {
-                extend();
-            }
-        }
 
         ~WeightedFigureOfMeritEvaluator()
         {
@@ -255,79 +169,6 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
                 while(it != nullptr);
             }
         }
-
-        /** Save the merits of all the nodes corresponding to the given dimension.
-         * @param dimension is the dimension to consider
-         */  
-        void saveMerits(unsigned int dimension)
-        {
-            Node* it = m_roots[dimension-1];
-            do
-            {
-                it->saveMerit();
-                it = it->getNextNode();
-            }
-            while(it != nullptr);
-        }
-
-        /** Save the merits of all the nodes in the scheme.
-         */ 
-        void saveMerits()
-        {
-            for(int i = 1; i <= m_dimension; ++i)
-            {
-                saveMerits(i);
-            }
-        }
-
-        /** Returns true if the figure of merit is fully computed for dimensions lower than maxDimension. Returns false 
-         * otherwise.
-         * @param maxDimension is the maximal dimension to consider
-         */ 
-        bool isValid(unsigned int maxDimension) const
-        {
-            if(maxDimension > m_dimension)
-            {
-                return false;
-            }
-
-            for(unsigned int i = 0; i < maxDimension; ++i)
-            {
-                if(!m_validFlags[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
-         * @param dimension is the dimension to set valid
-         */ 
-        void validate(unsigned int dimension)
-        {
-            assert(dimension <= m_dimension);
-            assert(isValid(dimension-1));
-            m_validFlags[dimension-1] = true;
-        }
-
-        /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
-         * @param dimension is the dimension to consider
-         */
-        void invalidate(unsigned int dimension)
-        {
-            assert(dimension >= 1);
-            for(unsigned int i = dimension-1; i < m_dimension; ++i)
-            {
-                if (!m_validFlags[i])
-                {
-                    return ;
-                }
-                m_validFlags[i] = false;
-            }
-        } 
-
 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
         {
@@ -515,25 +356,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
             return (*a > * b);
         }
 
-        int m_dimension; // last dimension of J_d
-        int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
-        std::vector<Node*> m_roots; // pointer to the first node to evaluate
-        std::vector<bool> m_validFlags;
-
-};
-
-template<>
-class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
-{
-    public:
-
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit* figure):
-                    m_figure(figure),
-                    m_dimension(0),
-                    m_maxCardinal(m_figure->projDepMerit().maxCardinal())
-        {};
-
-        /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
+                /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
          * while evaluating figures of merits.
          */ 
         void extend(){
@@ -619,22 +442,6 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
             }
         }
 
-        ~WeightedFigureOfMeritEvaluator()
-        {
-            for(unsigned int dim = 0; dim < m_dimension; ++dim)
-            {
-                Node* it = m_roots[dim];
-                Node* nextIt = nullptr;
-                do
-                {
-                    nextIt = it->getNextNode();
-                    delete it;
-                    it = nextIt;
-                }
-                while(it != nullptr);
-            }
-        }
-
         /** Save the merits of all the nodes corresponding to the given dimension.
          * @param dimension is the dimension to consider
          */  
@@ -707,6 +514,41 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
             }
         } 
 
+        virtual void reset() { invalidate(1); }
+
+        int m_dimension; // last dimension of J_d
+        int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
+        std::vector<Node*> m_roots; // pointer to the first node to evaluate
+        std::vector<bool> m_validFlags;
+
+};
+
+template<>
+class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+{
+    public:
+
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit* figure):
+                    m_figure(figure),
+                    m_dimension(0),
+                    m_maxCardinal(m_figure->projDepMerit().maxCardinal())
+        {};
+
+        ~WeightedFigureOfMeritEvaluator()
+        {
+            for(unsigned int dim = 0; dim < m_dimension; ++dim)
+            {
+                Node* it = m_roots[dim];
+                Node* nextIt = nullptr;
+                do
+                {
+                    nextIt = it->getNextNode();
+                    delete it;
+                    it = nextIt;
+                }
+                while(it != nullptr);
+            }
+        }
 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
         {
@@ -901,6 +743,167 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
             return (*a > * b);
         }
 
+                /** Extend by one dimension the ComputationScheme. This creates new nodes corresponding to the new projections to consider
+         * while evaluating figures of merits.
+         */ 
+        void extend(){
+            ++m_dimension; // increase maximal dimension
+            std::vector<Node*> newNodes; // to store new nodes
+
+            std::map<Coordinates,Node*> mapsToNodes; // map between new projections and new nodes
+
+
+            m_validFlags.push_back(false);
+
+            // create projection {m_dimension} 
+            Coordinates proj1DRep;
+            proj1DRep.insert(m_dimension-1);
+            double weight = m_figure->weights().getWeight(proj1DRep);
+            Node* proj1D = new Node(m_dimension, proj1DRep.size(), weight);
+
+            if(m_dimension==1){
+                m_roots.push_back(proj1D);
+                return;
+            }
+
+            newNodes.push_back(proj1D);
+
+            mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
+
+
+            for(int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
+            {
+                Node* it = m_roots[i];
+                do
+                {   if (it->getCardinal() <= m_maxCardinal-1)
+                    {
+                        Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
+                        projectionRep.insert(m_dimension-1);
+                        double weight =  m_figure->weights().getWeight(projectionRep);
+                        Node* newNode = new Node(m_dimension, projectionRep.size() , weight); // create the node
+                        newNode->addMother(it);
+                        mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
+                        newNodes.push_back(newNode);
+                    }
+                    it = it->getNextNode();
+                }
+                while(it != nullptr);
+            }
+
+            std::sort(newNodes.begin(),newNodes.end(),compareNodePointers); // sort the nodes by increasing cardinal and decreasing weights
+
+            m_roots.push_back(newNodes[0]); // add the root corresponding to the dimension
+
+            for(size_t i = 0; i < newNodes.size()-1; ++i)
+            {
+                newNodes[i]->setNextNode(newNodes[i+1]); // link the new nodes
+            }
+
+            for (Node* node : newNodes) // for each new nodes
+            {   
+                Coordinates tmp = node->getProjectionRepresentation();
+                for(int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
+                {
+                    if (tmp.find(i) != tmp.end())
+                    {
+                        //std::cout << tmp << " contains ";
+                        tmp.erase(i);
+                        auto foo = mapsToNodes.find(tmp)->second;
+                        //std::cout << foo->getProjectionRepresentation() << std::endl;
+                        node->addMother(foo);
+                        tmp.insert(i);
+                    }
+                }
+            }
+        }
+
+        /** Extend the ComputationSchemme up to the given last dimension. 
+         * @param dimension is the highest dimension in the projections
+         * @see extend
+         */ 
+        void extendUpToDimension(unsigned int dimension)
+        {
+            for(unsigned int i = m_dimension; i < dimension; ++i)
+            {
+                extend();
+            }
+        }
+
+        /** Save the merits of all the nodes corresponding to the given dimension.
+         * @param dimension is the dimension to consider
+         */  
+        void saveMerits(unsigned int dimension)
+        {
+            Node* it = m_roots[dimension-1];
+            do
+            {
+                it->saveMerit();
+                it = it->getNextNode();
+            }
+            while(it != nullptr);
+        }
+
+        /** Save the merits of all the nodes in the scheme.
+         */ 
+        void saveMerits()
+        {
+            for(int i = 1; i <= m_dimension; ++i)
+            {
+                saveMerits(i);
+            }
+        }
+
+        /** Returns true if the figure of merit is fully computed for dimensions lower than maxDimension. Returns false 
+         * otherwise.
+         * @param maxDimension is the maximal dimension to consider
+         */ 
+        bool isValid(unsigned int maxDimension) const
+        {
+            if(maxDimension > m_dimension)
+            {
+                return false;
+            }
+
+            for(unsigned int i = 0; i < maxDimension; ++i)
+            {
+                if(!m_validFlags[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
+         * @param dimension is the dimension to set valid
+         */ 
+        void validate(unsigned int dimension)
+        {
+            assert(dimension <= m_dimension);
+            assert(isValid(dimension-1));
+            m_validFlags[dimension-1] = true;
+        }
+
+        /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
+         * @param dimension is the dimension to consider
+         */
+        void invalidate(unsigned int dimension)
+        {
+            assert(dimension >= 1);
+            for(unsigned int i = dimension-1; i < m_dimension; ++i)
+            {
+                if (!m_validFlags[i])
+                {
+                    return ;
+                }
+                m_validFlags[i] = false;
+            }
+        } 
+
+        virtual void reset() { invalidate(1); }
+
+
         int m_dimension; // last dimension of J_d
         int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
@@ -908,7 +911,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
 
 };
 
-}
+}}
 
 #endif 
 

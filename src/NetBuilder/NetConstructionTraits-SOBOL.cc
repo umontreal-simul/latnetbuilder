@@ -14,10 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include "netbuilder/Types.h"
 #include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
+#include "netbuilder/SobolDirectionNumbers.h"
+
+#include "latbuilder/SeqCombiner.h"
 
 #include <string>
 #include <fstream>
@@ -27,6 +29,7 @@
 
 namespace NetBuilder {
 
+    
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
     bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue)
@@ -205,32 +208,58 @@ namespace NetBuilder {
         return res;
     }
 
-    void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
-        unsigned int inc,
-        const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-        const std::vector<std::shared_ptr<GenValue>>& genValues)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int dimension)
     {
-        unsigned int s = genMats.size();
-        for(unsigned int k = 0; k < s; ++k)
+        unsigned int size;
+        if (dimension==1)
         {
-            unsigned int nCols = genMats[k]->nCols();
-            unsigned int nRows = genMats[k]->nRows();
-
-            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),nRows+inc,nCols+inc);
-
-            genMats[k]->resize(nRows+inc,nCols+inc);
-            for(unsigned int i = nRows; i < nRows+inc; ++i)
-            {
-                for(unsigned int j = nCols; j < nCols+inc; ++j )
-                {
-                    (*genMats[k])(i,j) = (*newMat)(i,j);
-                }
-            }
-
-            delete newMat;
+            size = 1;
         }
-    }
-}
+        else
+        {
+            size = nthPrimitivePolynomialDegree(dimension-1);
+        }
+        std::vector<SobolDirectionNumbers<>> seqs;
+        seqs.reserve(size);
+        for(unsigned int i = 0; i < size; ++i)
+        {
+            seqs.push_back(SobolDirectionNumbers<>(i+1));
+        }
+        LatBuilder::SeqCombiner<SobolDirectionNumbers<>,LatBuilder::CartesianProduct> tmp(seqs);
 
+        std::vector<GenValue> res;
+        for(const auto& x : tmp)
+        {
+            res.push_back(GenValue(dimension,x));
+        }
+        return res;
+    }
+
+    // void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
+    //     unsigned int inc,
+    //     const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+    //     const std::vector<std::shared_ptr<GenValue>>& genValues)
+    // {
+    //     unsigned int s = genMats.size();
+    //     for(unsigned int k = 0; k < s; ++k)
+    //     {
+    //         unsigned int nCols = genMats[k]->nCols();
+    //         unsigned int nRows = genMats[k]->nRows();
+
+    //         GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),nRows+inc,nCols+inc);
+
+    //         genMats[k]->resize(nRows+inc,nCols+inc);
+    //         for(unsigned int i = nRows; i < nRows+inc; ++i)
+    //         {
+    //             for(unsigned int j = nCols; j < nCols+inc; ++j )
+    //             {
+    //                 (*genMats[k])(i,j) = (*newMat)(i,j);
+    //             }
+    //         }
+
+    //         delete newMat;
+    //     }
+    // }
+}
 
 

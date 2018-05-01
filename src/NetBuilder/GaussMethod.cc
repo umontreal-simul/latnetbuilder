@@ -16,7 +16,7 @@
 
 #include <map>
 #include <fstream>
-#include "netbuilder/GaussMethod.h"
+#include "netbuilder/TValueComputation.h"
 #include "netbuilder/Util.h"
 
 namespace NetBuilder {

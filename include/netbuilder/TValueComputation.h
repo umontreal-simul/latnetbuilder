@@ -14,29 +14,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__SCHMID_METHOD_H
-#define NET_BUILDER__SCHMID_METHOD_H
+#ifndef NETBUILDER__TVALUE_COMPUTATION_H
+#define NETBUILDER__TVALUE_COMPUTATION_H
 
 #include "netbuilder/GeneratingMatrix.h"
 
 namespace NetBuilder {
 
-    struct SchmidMethod{
-        static int computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose);
+    struct GaussMethod
+    {
+    static int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, bool verbose);
 
-        int operator()(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose) const
-        {
-            return computeTValue(matrices, maxTValuesSubProj, verbose);
-        }
     };
 
-    struct ReversedSchmidMethod{
+    struct SchmidMethod
+    {
         static int computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose);
+    };
 
-        int operator()(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose) const
-        {
-            return computeTValue(matrices, maxTValuesSubProj, verbose);
-        }
+    struct ReversedSchmidMethod
+    {
+        static int computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, bool verbose);   
     };
 }
 
