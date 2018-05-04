@@ -127,6 +127,19 @@ class GeneratingMatrix {
         /** Returns the number of rows of the matrix. */
         unsigned int nRows() const { return m_rows; }
 
+        std::vector<unsigned long> getColsReverse() const{
+            std::vector<unsigned long> res(nCols(), 0);
+            for (unsigned int j=0; j<nCols(); j++){
+                unsigned long s = 0;
+                for (unsigned int i=0; i<nRows(); i++){
+                    s += (*this)(i, j) << (nRows() - i -1);
+                }
+                res[j] = s;
+            }
+            return res;
+            
+        }
+
         /** Returns the row at position \c i of the matrix
          * @param i is the position of the row
          */ 

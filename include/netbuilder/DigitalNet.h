@@ -87,13 +87,6 @@ class DigitalNet
             return net.print(out);
         }
 
-    protected:
-
-        std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
-        unsigned int m_dimension; // dimension of the net
-        unsigned int m_nRows; // number of rows in generating matrices
-        unsigned int m_nCols; // number of columns in generating matrices
-
         /** Most general constructor. Designed to be used by derived classes. */
         DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
             m_dimension(dimension),
@@ -101,6 +94,15 @@ class DigitalNet
             m_nCols(nCols),
             m_generatingMatrices(genMatrices)
         {};
+
+    protected:
+
+        std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
+        unsigned int m_dimension; // dimension of the net
+        unsigned int m_nRows; // number of rows in generating matrices
+        unsigned int m_nCols; // number of columns in generating matrices
+
+        
 
         /** Helper function to print digital nets*/
         virtual std::ostream& print(std::ostream& out) const

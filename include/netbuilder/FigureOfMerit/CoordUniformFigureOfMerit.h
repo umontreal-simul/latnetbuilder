@@ -104,7 +104,7 @@ public:
     }
 
 
-private:
+   private:
    std::unique_ptr<LatCommon::Weights> m_weights;
    KERNEL m_kernel;
    unsigned int m_nbCols;
@@ -112,6 +112,8 @@ private:
    /** Class which describes how the figure of merit is computed. */
     class CoordUniformFigureOfMeritEvaluator : public FigureOfMeritEvaluator
     {
+        template <LatBuilder::LatticeType LR, LatBuilder::LatEmbed LAT, LatBuilder::Compress COMPRESS >
+using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSeq::CoordUniformState<LR, LAT, COMPRESS, LatBuilder::defaultPerLevelOrder<LR, LAT>::Order>>>;
         // using namespace LatBuilder::MeritSeq;
 
         public:
@@ -120,8 +122,38 @@ private:
                 m_figure(figure),
                 m_storage(LatBuilder::SizeParam<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE> {(typename LatBuilder::LatticeTraits<LatBuilder::LatticeType::ORDINARY>::Modulus)(intPow(2, m_figure->nbCols()))}),
                 m_innerProd(m_storage, m_figure->kernel()),
-                m_states(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights()))
+                m_memStates(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights())),
+                m_tmpStates(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights()))
             {};
+
+
+           /**
+            * Returns the states.
+            */
+        const CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression()>& states() const
+        { return m_memStates; }
+
+        /**
+            * Returns the total weighted state.
+            */
+        RealVector weightedState() const
+        {
+            auto it = states().begin();
+            if (it == states().end())
+                throw std::runtime_error("CoordUniformCBC: empty list of states");
+            auto out = (*it)->weightedState();
+            while (++it != states().end())
+                out += (*it)->weightedState();
+            return out;
+        }
+
+        virtual void reset(){
+            m_currentDim = 0;
+            m_memStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
+            m_tmpStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
+
+        }
+
 
         /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
          * starting from the initial value \c initialValue.
@@ -134,8 +166,33 @@ private:
         {
             using namespace LatCommon;
 
+            assert(dimension == m_currentDim || dimension == m_currentDim+1);
+            if (dimension == m_currentDim+1){
+                m_currentDim++;
+                m_memStates = m_tmpStates;
+            }
 
-            return initialValue + 1;
+            auto acc = initialValue; // create the accumulator from the initial value
+
+            GeneratingMatrix M = net.generatingMatrix(dimension);
+            // std::cout << M << std::endl;
+            std::vector<GeneratingMatrix> genSeq {M};
+            auto prodSeq = m_innerProd.prodSeq(genSeq, weightedState());
+            MeritValue merit = *(prodSeq.begin());
+            merit /= intPow(2, M.nCols());
+            // std::cout << merit << std::endl;
+            acc += merit;
+            if (! onProgress()(acc)){
+                acc = std::numeric_limits<Real>::infinity(); // set the merit to infinity
+                onAbort()(net); // abort the computation
+                return acc;
+            }
+            
+            m_tmpStates = m_memStates;
+            for (auto& state : m_tmpStates){
+                state->update(m_innerProd.kernelValues(), M);
+            }
+            return acc;
         } 
 
         CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMeritEvaluator&&) = default;
@@ -149,17 +206,22 @@ private:
         }
 
         private:
-            template <LatBuilder::LatticeType LR, LatBuilder::LatEmbed LAT, LatBuilder::Compress COMPRESS >
-using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSeq::CoordUniformState<LR, LAT, COMPRESS, LatBuilder::defaultPerLevelOrder<LR, LAT>::Order>>>;
-
             CoordUniformFigureOfMerit* m_figure;
 
-            CoordUniformStateList<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression()> m_states;
-
-            LatBuilder::Storage<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression()> m_storage;            
+            LatBuilder::Storage<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression()> m_storage;            
             
-            LatBuilder::MeritSeq::CoordUniformInnerProd<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression(), LatBuilder::defaultPerLevelOrder<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>::Order > m_innerProd;
+            LatBuilder::MeritSeq::CoordUniformInnerProd<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression(), LatBuilder::defaultPerLevelOrder<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE>::Order > m_innerProd;
+
+            CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression()> m_memStates;
+            CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE,  KERNEL::suggestedCompression()> m_tmpStates;
+
+            unsigned int m_currentDim=0;
     };
+
+    virtual std::unique_ptr<CoordUniformFigureOfMeritEvaluator> evaluator(int n)
+    {
+        return std::make_unique<CoordUniformFigureOfMeritEvaluator>(this);
+    }
 };
 
 }
