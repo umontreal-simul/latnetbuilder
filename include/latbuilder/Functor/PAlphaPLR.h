@@ -66,6 +66,9 @@ public:
    result_type operator()(const value_type& x, Polynomial n = Polynomial(0)) const
    { return m_mu - std::pow(  (Real)(2), (1+ std::floor(std::log2(x)))*(m_alpha-1)  )*( 1 + m_mu) ;}
 
+   result_type operator()(const value_type& x, unsigned long) const
+   { return m_mu - std::pow(  (Real)(2), (1+ std::floor(std::log2(x)))*(m_alpha-1)  )*( 1 + m_mu) ;}
+
    std::string name() const
    { std::ostringstream os; os << "P" << alpha() << "_PLR"; return os.str(); }
 

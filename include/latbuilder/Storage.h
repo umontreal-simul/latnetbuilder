@@ -54,6 +54,11 @@ struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
+template <>
+struct defaultPerLevelOrder<LatticeType::DIGITAL, LatEmbed::SIMPLE>{
+   static const PerLevelOrder Order = PerLevelOrder::BASIC;
+};
+
 
 /**
  * Storage policy.
@@ -272,5 +277,6 @@ private:
 
 #include "latbuilder/Storage-SIMPLE.h"
 #include "latbuilder/Storage-EMBEDDED.h"
+#include "latbuilder/Storage-SIMPLE-DIGITAL.h"
 
 #endif

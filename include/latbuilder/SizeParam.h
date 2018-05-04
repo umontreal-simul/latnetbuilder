@@ -58,6 +58,21 @@ struct SizeParamTraits<SizeParam<LatticeType::ORDINARY,LAT>>{
 };
 
 /**
+ * SizeParam traits for digital lattice rule.
+ *
+ */
+template<LatEmbed LAT>
+struct SizeParamTraits<SizeParam<LatticeType::DIGITAL,LAT>>{
+  ///  type for modulus (= number of points) values.
+  typedef typename LatticeTraits<LatticeType::DIGITAL>::Modulus Modulus;
+  typedef uInteger size_type;
+
+  static size_type ComputeNumPoints(const Modulus& modulus){
+    return LatticeTraits<LatticeType::DIGITAL>::NumPoints(modulus);
+  }
+  
+};
+/**
  * SizeParam traits for polynomial lattice rule.
  *
  */
