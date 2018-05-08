@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 
-#include "netbuilder/Task/Task.h"
+#include "netbuilder/Task/BaseTask.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include <boost/signals2.hpp>
@@ -34,7 +34,7 @@ namespace NetBuilder { namespace Task {
  * 
  */ 
 template < NetConstruction NC, template <NetConstruction> class EXPLORER>
-class CBCSearch : public Task 
+class CBCSearch : public BaseTask 
 {
     public:
         typedef EXPLORER<NC> Explorer;
@@ -176,6 +176,18 @@ class CBCSearch : public Task
         /** Returns the best merit found by the search. */
         Real bestMeritValue() const
         { return m_bestMerit; }
+
+        /**
+        * Returns the best net found by the search task.
+        */
+        virtual const DigitalNet& netOutput() const
+        { return bestNet(); }
+
+        /**
+        * Returns the best merit value found by the search task.
+        */
+        virtual Real meritValueOutput() const
+        { return bestMeritValue(); }
 
         /** Returns a reference to the minimum-element observer. */
         MinObserver& minObserver()

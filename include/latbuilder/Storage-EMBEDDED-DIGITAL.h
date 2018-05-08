@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__STORAGE_SIMPLE_DIGITAL_H
-#define LATBUILDER__STORAGE_SIMPLE_DIGITAL_H
+#ifndef LATBUILDER__STORAGE_EMBEDDED_DIGITAL_H
+#define LATBUILDER__STORAGE_EMBEDDED_DIGITAL_H
 
 #include "latbuilder/Storage.h"
 #include "latbuilder/CompressTraits.h"
@@ -27,13 +27,14 @@ namespace LatBuilder {
 
 
 template <Compress COMPRESS>
-struct StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS>> {
+struct StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, COMPRESS>> {
    typedef uInteger            size_type;
    typedef typename LatticeTraits<LatticeType::DIGITAL>::GenValue  value_type;
    typedef CompressTraits<COMPRESS> Compress;
-   typedef Real               MeritValue;
-   typedef LatBuilder::SizeParam<LatticeType::ORDINARY, LatEmbed::SIMPLE> SizeParam;    // TODO
-
+   typedef RealVector          MeritValue;
+   typedef LatBuilder::SizeParam<LatticeType::ORDINARY, LatEmbed::EMBEDDED> SizeParam;    // TODO
+    typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, COMPRESS, Traversal::Forward> GroupType; 
+    typedef GroupType GenGroupType;
    /**
     * Unpermuted permutation.
     */
@@ -41,11 +42,11 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS>> 
    public:
       typedef StorageTraits::size_type size_type;
 
-      Unpermute(Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS> storage): m_storage(std::move(storage)) {}
+      Unpermute(Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, COMPRESS> storage): m_storage(std::move(storage)) {}
       size_type operator() (size_type i) const { return Compress::compressIndex(i, m_storage.virtualSize()); }
       size_type size() const { return m_storage.virtualSize(); }
    private:
-      Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS> m_storage;
+      Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, COMPRESS> m_storage;
    };
 
    /**
@@ -55,15 +56,14 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS>> 
     *
     * 
     *
-    * For digital nets: the permutation is computed using the Gray code, and the formula:
-    *  \f$n\f$
+    * For digital nets: TODO
     */
    class Stride {
    public:
       typedef StorageTraits::size_type size_type;
       typedef StorageTraits::value_type value_type;
 
-      Stride(Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS> storage, value_type stride):
+      Stride(Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, COMPRESS> storage, value_type stride):
          m_storage(std::move(storage)),
          m_stride(stride),
          m_permutation(m_storage.virtualSize(), 0)
@@ -86,7 +86,7 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS>> 
       { return m_storage.size(); }
 
    private:
-      Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS> m_storage;
+      Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, COMPRESS> m_storage;
       value_type m_stride;
       std::vector<size_type> m_permutation;
 
@@ -106,11 +106,11 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS>> 
 
 // template
 
-template <Compress COMPRESS> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, COMPRESS>>::Stride::m_graycode = std::vector<uInteger>();
+template <Compress COMPRESS> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, COMPRESS>>::Stride::m_graycode = std::vector<uInteger>();
 // StorageTraits< = std::vector<size_type>()
 
-// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::NONE>>::Stride::m_graycode = std::vector<uInteger>();
-// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::SYMMETRIC>>::Stride::m_graycode = std::vector<uInteger>();
+// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, Compress::NONE>>::Stride::m_graycode = std::vector<uInteger>();
+// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, LatEmbed::EMBEDDED, Compress::SYMMETRIC>>::Stride::m_graycode = std::vector<uInteger>();
 
 }
 

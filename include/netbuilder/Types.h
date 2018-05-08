@@ -26,6 +26,8 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <functional>
 
+#include "latbuilder/Types.h"
+
 
 namespace NetBuilder
 {
@@ -54,13 +56,24 @@ typedef unsigned int Dimension;
 typedef size_t size_type;
 
 /// Type of nets
-enum class NetEmbed {SIMPLE, EMBEDDED};
+// enum class PointSetType {NET= LatBuilder::LatEmbed::SIMPLE,
+//              SEQUENCE= LatBuilder::LatEmbed::EMBEDDED};
+
+typedef enum {NET= LatBuilder::LatEmbed::SIMPLE,
+             SEQUENCE= LatBuilder::LatEmbed::EMBEDDED} PointSetType;
 
 /// Net construction methods
-enum class NetConstruction {SOBOL};
+enum class NetConstruction {
+    SOBOL, POLYNOMIAL};
 
 /// Binary real operator type
 typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
+
+// Level combiner for embedded nets
+typedef std::function<Real (const std::vector<unsigned int>&)> Combiner;
+
+// PointSetType::NET = LatBuilder::LatEmbed::SIMPLE;
+// using NetSequence = LatBuilder::LatEmbed;
 
 //@}
 }

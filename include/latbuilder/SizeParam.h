@@ -133,6 +133,17 @@ public:
    void normalize(RealVector& merit) const
    { derived().normalize(merit); }
 
+   unsigned int log2NumPoints() const
+   { 
+     size_type n = numPoints();
+     unsigned int res=0;
+     while (n>1){
+       n = n >> 1;
+       res ++;
+     }
+     return res;
+   }
+
 private:
    Modulus m_modulus;
    size_type m_numPoints;

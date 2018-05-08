@@ -21,7 +21,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include "netbuilder/Types.h"
+// #include "netbuilder/Types.h"
 
 
 namespace NetBuilder {
@@ -36,6 +36,7 @@ class GeneratingMatrix {
 
         typedef boost::dynamic_bitset<> Row; 
         typedef Row::reference reference;
+        typedef unsigned long uInteger;
 
         /** Constructs a generating matrix with all entries set to zero.
          * @param n_rows is the number of rows of the matrix

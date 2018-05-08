@@ -87,7 +87,7 @@ void add_line(GeneratingMatrix& T, GeneratingMatrix& D, std::map<int, int>& Orig
     int k = T.nRows();
     int m = T.nCols();
     
-    int i_old;
+    int i_old=-1;
     int i_old_inM = Origin_to_M[i_old_in_Origin[0]*m + i_old_in_Origin[1]];
     if (verbose){
         std::cout << T << std::endl;

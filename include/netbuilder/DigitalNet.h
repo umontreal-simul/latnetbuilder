@@ -97,10 +97,11 @@ class DigitalNet
 
     protected:
 
-        std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
         unsigned int m_dimension; // dimension of the net
         unsigned int m_nRows; // number of rows in generating matrices
         unsigned int m_nCols; // number of columns in generating matrices
+        std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
+
 
         
 
@@ -205,7 +206,7 @@ class DigitalNetConstruction : public DigitalNet
             genVals.push_back(std::shared_ptr<GenValue>(new GenValue(newGenValue)));
 
             // instantiate the new net and return the unique pointer to it
-            return std::move(std::make_unique<DigitalNetConstruction<NC>>(std::move(genMats), std::move(genVals), m_dimension+1, m_nRows, m_nCols));
+            return std::make_unique<DigitalNetConstruction<NC>>(std::move(genMats), std::move(genVals), m_dimension+1, m_nRows, m_nCols);
         }
 
 

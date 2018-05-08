@@ -41,12 +41,12 @@ namespace NetBuilder {
             return false;
         }
 
-        for(int j = 0; j < degree; ++j)
+        for(unsigned int j = 0; j < degree; ++j)
         {
               if (genValue.second[j] % 2 == 1){ //each direction number is odd
                   return false;
               }
-              if (genValue.second[j]< (2<<j)){ // each direction number is small enough
+              if (genValue.second[j]< (unsigned int) (2<<j)){ // each direction number is small enough
                   return false;
               }
         }
@@ -179,7 +179,7 @@ namespace NetBuilder {
         std::vector<std::vector<uInteger>> res(dimension);
         res[0] = {};
         std::string sent;
-        for(int i = 2; i <= dimension; ++i)
+        for(unsigned int i = 2; i <= dimension; ++i)
         {
             if(getline(file,sent))
             {

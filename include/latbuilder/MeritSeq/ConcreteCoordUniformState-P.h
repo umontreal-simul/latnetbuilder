@@ -123,7 +123,7 @@ extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbe
 extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
 
 extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC, LatCommon::ProductWeights>;
 
 }}
 

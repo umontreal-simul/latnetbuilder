@@ -126,6 +126,8 @@ public:
    {
       if(PLO == PerLevelOrder::CYCLIC) 
         throw std::invalid_argument("Storage(): Trying to instantiate Storage<LatEmbed::SIMPLE, PerLevelOrder::Cyclic>");
+      if(COMPRESS == Compress::SYMMETRIC && (LR == LatticeType::POLYNOMIAL || LR == LatticeType::DIGITAL))
+        throw std::invalid_argument("Storage(): No symmetric kernel implemented for polynomial");
    }
 
    size_type virtualSize() const

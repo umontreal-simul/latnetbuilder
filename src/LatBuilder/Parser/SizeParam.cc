@@ -18,6 +18,8 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Util.h"
 
+#include "netbuilder/Types.h"
+
 namespace LatBuilder { namespace Parser {
 
 template <>
@@ -87,23 +89,28 @@ SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>::parse(const 
    }
 }
 
-/*
-template LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE> 
-         LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str);
+template <>
+LatBuilder::SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE>
+SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str)
+{
+   // try b^p form first
+   auto n = splitPair<uInteger, Level>(str, '^', 0);
+   if (n.second == 0)
+      return LatBuilder::SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE>(n.first);
+   else
+      return LatBuilder::SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE>(intPow(n.first, n.second));
+}
 
-template LatBuilder::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED> 
-         LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str);
+template <>
+LatBuilder::SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::EMBEDDED>
+SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str)
+{
+   // try b^p form first
+   auto n = splitPair<uInteger, Level>(str, '^', 0);
+   if (n.second == 0)
+      return LatBuilder::SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::EMBEDDED>(n.first);
+   else
+      return LatBuilder::SizeParam<LatticeType::DIGITAL, LatBuilder::LatEmbed::EMBEDDED>(n.first, n.second);
+}
 
-template LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE> 
-         LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>::parse(const std::string& str);
-
-template LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED> 
-         LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>::parse(const std::string& str);
-
-template struct LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>;
-template struct LatBuilder::Parser::SizeParam<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>;
-
-template struct LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>;
-template struct LatBuilder::Parser::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>;
-*/
 }}

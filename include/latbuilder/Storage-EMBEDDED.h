@@ -61,6 +61,23 @@ struct PerLevelOrderTraits<PerLevelOrder::BASIC, LR, COMPRESS>{
   
 };
 
+template <Compress COMPRESS>
+struct PerLevelOrderTraits<PerLevelOrder::BASIC, LatticeType::DIGITAL, COMPRESS>{
+  typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, COMPRESS, Traversal::Forward> GroupType; 
+  typedef GroupType GenGroupType; 
+  typedef typename GroupType::value_type  value_type;
+  static void initializeGroups(const value_type& base, const Level& maxLevel, std::vector<GroupType>& groups, GenGroupType& genGroup){
+      
+      genGroup = GenGroupType(intPow(base, maxLevel)) ;
+      auto mult = typename LatticeTraits<LatticeType::DIGITAL>::Modulus(1);
+      for (Level level = 0; level <= maxLevel; level++){
+          groups[level] = GroupType(mult);
+          mult *=  base ;
+       }
+  }
+  
+};
+
 
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
 struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
@@ -376,6 +393,9 @@ public:
       m_groups(this->sizeParam().maxLevel() + 1)
       
    {
+      if(COMPRESS == LatBuilder::Compress::SYMMETRIC && (LR == LatticeType::POLYNOMIAL || LR == LatticeType::DIGITAL))
+        throw std::invalid_argument("Storage(): No symmetric kernel implemented for polynomial");
+
     
       PerLevelOrderTraits<PLO, LR, COMPRESS>::initializeGroups(this->sizeParam().base(), this->sizeParam().maxLevel(),m_groups, m_genGroup);
       

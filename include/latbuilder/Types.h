@@ -57,7 +57,7 @@ typedef NTL::GF2X Polynomial;
 enum class LatticeType { ORDINARY , POLYNOMIAL, DIGITAL };
 
 /// Simple lattice / a sequence of embedded lattices 
-enum class LatEmbed { SIMPLE, EMBEDDED };
+enum class PointSetType { UNILEVEL, MULTILEVEL };
 
 /// Types of compression.
 enum class Compress { NONE, SYMMETRIC };
