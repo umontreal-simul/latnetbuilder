@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 
-#include "netbuilder/Task/Task.h"
+#include "netbuilder/Task/BaseTask.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include <boost/signals2.hpp>
@@ -34,7 +34,7 @@ namespace NetBuilder { namespace Task {
  * 
  */ 
 template < NetConstruction NC, template <NetConstruction> class EXPLORER>
-class CBCSearch : public Task 
+class CBCSearch : public BaseTask 
 {
     public:
         typedef EXPLORER<NC> Explorer;
@@ -177,6 +177,18 @@ class CBCSearch : public Task
         Real bestMeritValue() const
         { return m_bestMerit; }
 
+        /**
+        * Returns the best net found by the search task.
+        */
+        virtual const DigitalNet& netOutput() const
+        { return bestNet(); }
+
+        /**
+        * Returns the best merit value found by the search task.
+        */
+        virtual Real meritValueOutput() const
+        { return bestMeritValue(); }
+
         /** Returns a reference to the minimum-element observer. */
         MinObserver& minObserver()
         { return *m_minObserver; }
@@ -246,7 +258,9 @@ class CBCSearch : public Task
                     return;
                 }
                 merit = m_minObserver->bestMerit();
-                m_minObserver->reset();
+                if (dim < m_dimension){
+                    m_minObserver->reset();
+                }
             }
             selectBestNet(m_minObserver->bestNet(), m_minObserver->bestMerit());
         }
@@ -266,16 +280,17 @@ class CBCSearch : public Task
         std::unique_ptr<OnNetSelected> m_onNetSelected;
         std::unique_ptr<OnFailedSearch> m_onFailedSearch;
         Dimension m_dimension;
+        unsigned int m_nRows;
+        unsigned int m_nCols;
+        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
         DigitalNetConstruction<NC> m_bestNet;
         Real m_bestMerit;
         std::unique_ptr<MinObserver> m_minObserver;
-        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
-        unsigned int m_nRows;
-        unsigned int m_nCols;
         std::unique_ptr<Explorer> m_explorer;
         unsigned int m_verbose;
 };
 
 }}
+
 
 #endif

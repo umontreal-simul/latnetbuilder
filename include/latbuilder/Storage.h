@@ -32,30 +32,35 @@ namespace LatBuilder {
  *  default per level value depending on the lattice (ordinary/polynomial) and the lattice type (ordinary/embedded).
  *
  */
-template <LatticeType LR, LatEmbed LAT>
+template <LatticeType LR, PointSetType PST>
 struct defaultPerLevelOrder;
 
 template <>
-struct defaultPerLevelOrder<LatticeType::ORDINARY, LatEmbed::SIMPLE>{
+struct defaultPerLevelOrder<LatticeType::ORDINARY, PointSetType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 template <>
-struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>{
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::ORDINARY, LatEmbed::EMBEDDED>{
+struct defaultPerLevelOrder<LatticeType::ORDINARY, PointSetType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::CYCLIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>{
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::DIGITAL, LatEmbed::SIMPLE>{
+struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::UNILEVEL>{
+   static const PerLevelOrder Order = PerLevelOrder::BASIC;
+};
+
+template <>
+struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
@@ -109,7 +114,7 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, LatEmbed::SIMPLE>{
  * The output from \ref Storage.cc gives an intuition of how this works for
  * different combination of lattice type and of compression.
  */
-template <LatticeType LR, LatEmbed LAT, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, LAT>::Order > class Storage;
+template <LatticeType LR, PointSetType PST, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, PST>::Order > class Storage;
 
 /**
  * Storage traits.
@@ -278,5 +283,6 @@ private:
 #include "latbuilder/Storage-SIMPLE.h"
 #include "latbuilder/Storage-EMBEDDED.h"
 #include "latbuilder/Storage-SIMPLE-DIGITAL.h"
+#include "latbuilder/Storage-EMBEDDED-DIGITAL.h"
 
 #endif

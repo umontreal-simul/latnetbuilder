@@ -25,10 +25,10 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for size parameters.
  */
-	template <LatticeType LR, LatBuilder::LatEmbed LAT>
+	template <LatticeType LR, LatBuilder::PointSetType PST>
 struct SizeParam {
    
-   static LatBuilder::SizeParam<LR, LAT> parse(const std::string& str);
+   static LatBuilder::SizeParam<LR, PST> parse(const std::string& str);
 };
 
 

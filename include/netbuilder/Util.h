@@ -28,6 +28,7 @@
 #include <vector>
 #include <boost/dynamic_bitset.hpp> 
 #include <functional>
+#include <limits>
 
 //================================================================================
 
@@ -67,14 +68,6 @@ struct nullCombiner
 };
 
 
-struct OpAdd{
-    Real operator()(Real x, Real y){return x+y;}
-};
-
-struct OpMax{
-    Real operator()(Real x, Real y){ return (x < y) ? y : x;}
-};
-
 class Accumulator
 {
     public:
@@ -107,6 +100,13 @@ class Accumulator
         Real m_data;
         std::function<Real (Real, Real)> m_op;
 };
+
+
+
+BinOp realToBinOp(Real normType);
+
+
+
 
 }
 

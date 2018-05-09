@@ -41,16 +41,16 @@ int main(int argc, const char *argv[])
 
     auto weights1 = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto projDep1 = std::make_unique<FigureOfMerit::SimpleProjDepMerit<NetEmbed::SIMPLE>>();
+    auto projDep1 = std::make_unique<FigureOfMerit::SimpleProjDepMerit<PointSetType::UNILEVEL>>();
 
-    auto fig1 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::SimpleProjDepMerit<NetEmbed::SIMPLE>>>(1, std::move(weights1), std::move(projDep1), OpMax());
+    auto fig1 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::SimpleProjDepMerit<PointSetType::UNILEVEL>>>(1, std::move(weights1), std::move(projDep1));
 
 
     auto weights2 = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>(5);
+    auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(5);
 
-    auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights2), std::move(projDep2), OpMax());
+    auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
 
     std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figs;
     figs.push_back(std::move(fig1));
@@ -58,7 +58,7 @@ int main(int argc, const char *argv[])
 
     std::vector<Real> weights = {1,1};
 
-    auto figComb = std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(1, std::move(figs), std::move(weights), OpMax());
+    auto figComb = std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(1, std::move(figs), std::move(weights));
 
     auto eval = figComb->evaluator();
 
@@ -74,9 +74,9 @@ int main(int argc, const char *argv[])
 
     /*std::unique_ptr<LatCommon::UniformWeights> weights2( new LatCommon::UniformWeights(1));
 
-    std::unique_ptr<TValueProjMerit<NetEmbed::SIMPLE>> projDep2 = std::make_unique<TValueProjMerit<NetEmbed::SIMPLE>>(s);
+    std::unique_ptr<TValueProjMerit<PointSetType::UNILEVEL>> projDep2 = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(s);
 
-    WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>> fig2(1, std::move(weights2), std::move(projDep2), OpMax());
+    WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>> fig2(1, std::move(weights2), std::move(projDep2));
 
     auto eval2 = fig2.evaluator();
 

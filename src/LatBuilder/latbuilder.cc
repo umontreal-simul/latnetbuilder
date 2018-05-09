@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/Parser/LatEmbed.h"
+#include "latbuilder/Parser/PointSetType.h"
 #include "latbuilder/Parser/Lattice.h"
 #include "latbuilder/Parser/CommandLine.h"  
 #include "latbuilder/Parser/OutputPoly.h" 
@@ -24,17 +24,13 @@
 #include <fstream>
 #include <chrono>
 
-#ifndef LATBUILDER_VERSION
-#define LATBUILDER_VERSION "(unkown version)"  
-#endif
-
-using namespace LatBuilder;
+namespace LatBuilder{
 using TextStream::operator<<;
 
 static unsigned int merit_digits_displayed = 0; 
 
-template <LatticeType LR, LatEmbed LAT>
-void onLatticeSelected(const Task::Search<LR, LAT>& s)
+template <LatticeType LR, PointSetType PST>
+void onLatticeSelected(const Task::Search<LR, PST>& s)
    {
    unsigned int old_precision = std::cout.precision();
    if (merit_digits_displayed)
@@ -56,6 +52,10 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
+   ("main-construction,C", po::value<std::string>(),
+    "(required) main construction type; possible values:\n"
+    "  lattice\n"
+    "  net\n")
    ("help,h", "produce help message")
    ("version,V", "show version")
    ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
@@ -161,10 +161,10 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-   if (opt.count("version")) {
-      std::cout << "Lattice Builder " << LATBUILDER_VERSION << std::endl;
-      std::exit (0);
-   }
+  //  if (opt.count("version")) {
+  //     std::cout << "Lattice Builder " << LATBUILDER_VERSION << std::endl;
+  //     std::exit (0);
+  //  }
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
@@ -177,8 +177,8 @@ parse(int argc, const char* argv[])
 }
 
 
-template <LatEmbed LAT>
-void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, LAT>& cmd, bool quiet, unsigned int repeat)
+template <PointSetType PST>
+void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd, bool quiet, unsigned int repeat)
 {
    const LatticeType LR = LatticeType::ORDINARY ;
    using namespace std::chrono;
@@ -188,7 +188,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, LAT>& cmd,
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
    if (not quiet) {
-      search->onLatticeSelected().connect(onLatticeSelected<LR,LAT>);
+      search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
       std::cout << *search << std::endl;
    }
 
@@ -231,8 +231,8 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, LAT>& cmd,
 }
 
 
-template <LatEmbed LAT>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, LAT>& cmd, bool quiet, unsigned int repeat, const Parser::OutputPolyParameters& outPoly)
+template <PointSetType PST>
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& cmd, bool quiet, unsigned int repeat, const Parser::OutputPolyParameters& outPoly)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -242,7 +242,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, LAT>& 
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
    if (not quiet) {
-      search->onLatticeSelected().connect(onLatticeSelected<LR,LAT>);
+      search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
       std::cout << *search << std::endl;
    }
    ofstream outPolyFile;
@@ -322,7 +322,7 @@ int main(int argc, const char *argv[])
 
        if(lattice == LatticeType::ORDINARY){
 
-            Parser::CommandLine<LatticeType::ORDINARY, LatEmbed::EMBEDDED> cmd;
+            Parser::CommandLine<LatticeType::ORDINARY, PointSetType::MULTILEVEL> cmd;
 
             
 
@@ -354,22 +354,22 @@ int main(int argc, const char *argv[])
             if (opt.count("multilevel-filters") >= 1)
                cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
-            LatEmbed latType = Parser::LatEmbed::parse(opt["embedded-lattice"].as<std::string>());
+            PointSetType latType = Parser::PointSetType::parse(opt["embedded-lattice"].as<std::string>());
 
-            if (latType == LatEmbed::SIMPLE){
+            if (latType == PointSetType::UNILEVEL){
 
-               executeOrdinary<LatEmbed::SIMPLE> (cmd, quiet, repeat);
+               executeOrdinary<PointSetType::UNILEVEL> (cmd, quiet, repeat);
                
              }
             else{
-               executeOrdinary<LatEmbed::EMBEDDED> (cmd, quiet, repeat);
+               executeOrdinary<PointSetType::MULTILEVEL> (cmd, quiet, repeat);
                
              }
       }
 
       else if(lattice == LatticeType::POLYNOMIAL){
 
-            Parser::CommandLine<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED> cmd;
+            Parser::CommandLine<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL> cmd;
 
             
 
@@ -401,16 +401,16 @@ int main(int argc, const char *argv[])
             if (opt.count("multilevel-filters") >= 1)
                cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
-            LatEmbed latType = Parser::LatEmbed::parse(opt["embedded-lattice"].as<std::string>());
+            PointSetType latType = Parser::PointSetType::parse(opt["embedded-lattice"].as<std::string>());
 
             Parser::OutputPolyParameters outPoly = Parser::OutputPoly::parse(opt["output-poly"].as<std::string>());
 
-            if (latType == LatEmbed::SIMPLE){
-               executePolynomial< LatEmbed::SIMPLE> (cmd, quiet, repeat, outPoly);
+            if (latType == PointSetType::UNILEVEL){
+               executePolynomial< PointSetType::UNILEVEL> (cmd, quiet, repeat, outPoly);
                
              }
             else{
-               executePolynomial<LatEmbed::EMBEDDED> (cmd, quiet, repeat, outPoly);
+               executePolynomial<PointSetType::MULTILEVEL> (cmd, quiet, repeat, outPoly);
                
              }
       }
@@ -425,4 +425,6 @@ int main(int argc, const char *argv[])
    }
 
    return 0;
+}
+
 }

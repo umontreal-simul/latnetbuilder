@@ -55,7 +55,7 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned
             unsigned int idx = 0;
             for(unsigned int coord = 0; coord < s; ++coord)
             {
-                for(unsigned int j = 0; j < comp[coord]; ++j)
+                for(int j = 0; j < comp[coord]; ++j)
                 {
                     tmp[idx] = &(matrices[coord][j]);
                     ++idx;
@@ -63,7 +63,7 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned
             }
 
             boost::dynamic_bitset<> v(m);
-            for(uInteger r = 0; r < ((1 << k) - 1); ++r)
+            for(uInteger r = 0; r < (unsigned int) ((1 << k) - 1); ++r)
             {
                 v ^= *tmp[flipingOrder[r]];
                 if (v.none())
@@ -96,7 +96,7 @@ int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, 
     {
         std::vector<std::vector<int>> comps  = compositions(k,s);
         bool isFullRankSubSystem = true;
-        int idxComp = 0;
+        unsigned int idxComp = 0;
 
         do
         {
@@ -104,7 +104,7 @@ int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, 
             unsigned int idx = 0;
             for(unsigned int coord = 0; coord < s; ++coord)
             {
-                for(unsigned int j = 0; j < comps[idxComp][coord]; ++j)
+                for(int j = 0; j < comps[idxComp][coord]; ++j)
                 {
                     tmp[idx] = &(matrices[coord][j]);
                     ++idx;
@@ -113,7 +113,7 @@ int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, 
 
             boost::dynamic_bitset<> v(m);
             
-            for(uInteger r = 0; r < ((1 << k) - 1); ++r)
+            for(uInteger r = 0; r < (unsigned int) ((1 << k) - 1); ++r)
             {
                 v ^= *tmp[flipingOrder.at(r)];
                 if (v.none())

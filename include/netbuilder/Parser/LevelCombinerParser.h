@@ -14,37 +14,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__PARSER__LAT_TYPE_H
-#define LATBUILDER__PARSER__LAT_TYPE_H
+#ifndef NETBUILDER__PARSER__LEVEL_COMBINER_PARSER_H
+#define NETBUILDER__PARSER__LEVEL_COMBINER_PARSER_H
 
 #include "latbuilder/Parser/Common.h"
-#include "latbuilder/Types.h"
+#include "netbuilder/Types.h"
 
-namespace LatBuilder { namespace Parser {
-
+namespace NetBuilder { namespace Parser {
+namespace lbp = LatBuilder::Parser;
 /**
  * Exception thrown when trying to parse an invalid size parameter.
  */
-class BadLatEmbed : public ParserError {
+class BadLevelCombiner : public lbp::ParserError {
 public:
-   BadLatEmbed(const std::string& message):
-      ParserError("cannot parse size parameter string: " + message)
+   BadLevelCombiner(const std::string& message):
+      lbp::ParserError("cannot parse construction parameter string: " + message)
    {}
 };
 
 /**
- * Parser for size parameters.
+ * Parser for construction parameters.
  */
-struct LatEmbed {
-   typedef LatBuilder::LatEmbed result_type;
+struct LevelCombinerParser {
+   typedef Combiner result_type;
 
-   static result_type parse(const std::string& str)
+   static result_type parse(const std::string& str) // TODO
    {
-      if (str == "false")
-         return LatBuilder::LatEmbed::SIMPLE;
-      else if (str == "true")
-         return LatBuilder::LatEmbed::EMBEDDED;
-      throw BadLatEmbed(str);
+      return result_type();
    }
 };
 

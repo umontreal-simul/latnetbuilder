@@ -29,32 +29,32 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomCBCTag {};
 
 
 /// Random CBC construction.
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomCBC =
-   CBCBasedSearch<RandomCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomCBC =
+   CBCBasedSearch<RandomCBCTag<LR, PST, COMPRESS, PLO, FIGURE>>;
 
 
 /// Random CBC construction.
-template <class FIGURE,LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
-RandomCBC<LR, LAT, COMPRESS, PLO, FIGURE> randomCBC(
-      Storage<LR, LAT, COMPRESS, PLO> storage,
+template <class FIGURE,LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+RandomCBC<LR, PST, COMPRESS, PLO, FIGURE> randomCBC(
+      Storage<LR, PST, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure,
       unsigned int numRand
       )
-{ return RandomCBC<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
+{ return RandomCBC<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-struct CBCBasedSearchTraits<RandomCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
-   typedef LatBuilder::Task::Search<LR, LAT> Search;
-   typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;
-   typedef typename LatBuilder::Storage<LR, LAT, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef typename CBCSelector<LR, LAT, COMPRESS, PLO, FIGURE>::CBC CBC;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<RandomCBCTag<LR, PST, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, PST> Search;
+   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef LFSR113 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
    typedef GenSeq::GeneratingValues<LR, COMPRESS, Traversal> GenSeqType;
@@ -85,7 +85,7 @@ struct CBCBasedSearchTraits<RandomCBCTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    std::string name() const
    { return FIGURE::evaluationName() + " random CBC (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
 
-   void init(LatBuilder::Task::RandomCBC<LR, LAT, COMPRESS, PLO, FIGURE>& search) const
+   void init(LatBuilder::Task::RandomCBC<LR, PST, COMPRESS, PLO, FIGURE>& search) const
    {
       connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty());
       search.minObserver().setMaxAcceptedCount(numRand);

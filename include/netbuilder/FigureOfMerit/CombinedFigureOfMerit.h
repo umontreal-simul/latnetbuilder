@@ -18,6 +18,7 @@
 #define NET_BUILDER_COMBINED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
+#include "netbuilder/Util.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include "latcommon/Weights.h"
@@ -47,13 +48,12 @@ class CombinedFigureOfMerit : public FigureOfMerit{
          * @param normType is the power to which to raise the aggregated merits
          * @param figures is a vector of std::unique_ptr to the figures of merit to aggregate
          * @param weights is a vector of weights to use to aggregate the figures of merit
-         * @param binOp is the binary operation to use to aggregate the figures of merit
          */ 
-        CombinedFigureOfMerit(Real normType, std::vector<std::unique_ptr<FigureOfMerit>> figures, std::vector<Real> weights, BinOp binOp):
+        CombinedFigureOfMerit(Real normType, std::vector<std::unique_ptr<FigureOfMerit>> figures, std::vector<Real> weights):
             m_normType(normType),
             m_figures(std::move(figures)),
             m_size(m_figures.size()),
-            m_binOp(binOp),
+            m_binOp(realToBinOp(normType)),
             m_weights(std::move(weights))
         {};
 
@@ -157,11 +157,11 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
         };
 
+        Real m_normType;
         std::vector<std::unique_ptr<FigureOfMerit>> m_figures;
         unsigned int m_size;
-        std::vector<Real> m_weights;
-        Real m_normType;
         BinOp m_binOp;
+        std::vector<Real> m_weights;
 };
 
 }}

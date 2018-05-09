@@ -22,12 +22,12 @@ namespace LatBuilder { namespace MeritSeq {
 // ProjectionDependentWeights
 //========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
 reset()
 {
-   CoordUniformState<LR, LAT, COMPRESS, PLO>::reset();
+   CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
    m_state.clear();
    // empty set
    m_state[LatCommon::Coordinates()] =
@@ -37,9 +37,9 @@ reset()
 
 //===========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 const RealVector&
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
 createStateVector(const LatCommon::Coordinates& projection, const RealVector& kernelValues)
 {
    auto it = m_state.find(projection);
@@ -68,12 +68,12 @@ createStateVector(const LatCommon::Coordinates& projection, const RealVector& ke
 
 //===========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 {
-   CoordUniformState<LR, LAT, COMPRESS, PLO>::update(kernelValues, gen);
+   CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
    m_gen.push_back(gen);
 
    // Create a new state vector for each projection $\mathfrak u$ such that
@@ -91,9 +91,9 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 
 //===========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
 weightedState() const
 {
    using LatCommon::Coordinates;
@@ -120,18 +120,18 @@ weightedState() const
 
 //===========================================================================
 
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProjectionDependentWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
 
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
 
 }}

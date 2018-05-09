@@ -50,7 +50,7 @@ struct LevelWeights {
     */
    static result_type parse(
          const std::string& arg,
-         const SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
+         const SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam
          );
 };
 

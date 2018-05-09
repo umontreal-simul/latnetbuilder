@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Task/ExhaustiveCBCExplorer.h"
+#include "netbuilder/Task/FullCBCExplorer.h"
 #include "netbuilder/Task/RandomCBCExplorer.h"
 
 namespace NetBuilder { namespace Task {
@@ -31,20 +31,20 @@ class MixedCBCExplorer
 
     public:
 
-        MixedCBCExplorer(unsigned int dimension, unsigned int maxExhaustiveDimension, unsigned int nbTries):
+        MixedCBCExplorer(unsigned int dimension, unsigned int maxFullDimension, unsigned int nbTries):
             m_dimension(dimension),
-            m_maxExhaustiveDimension(maxExhaustiveDimension),
+            m_maxFullDimension(maxFullDimension),
             m_randExplorer(new RandomCBCExplorer<NC>(dimension, nbTries)),
-            m_exhaustiveExplorer(new ExhaustiveCBCExplorer<NC>(dimension))
+            m_fullExplorer(new FullCBCExplorer<NC>(dimension))
         {};
 
         ~MixedCBCExplorer() = default;
 
         bool isOver(unsigned int dim)
         {
-            if (dim <= m_maxExhaustiveDimension)
+            if (dim <= m_maxFullDimension)
             {
-                return m_exhaustiveExplorer->isOver(dim);
+                return m_fullExplorer->isOver(dim);
             }
             else
             {
@@ -54,9 +54,9 @@ class MixedCBCExplorer
 
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
-            if (dim <= m_maxExhaustiveDimension)
+            if (dim <= m_maxFullDimension)
             {
-                return m_exhaustiveExplorer->nextGenValue(dim);
+                return m_fullExplorer->nextGenValue(dim);
             }
             else
             {
@@ -66,9 +66,9 @@ class MixedCBCExplorer
 
     private:
         unsigned int m_dimension;
-        unsigned int m_maxExhaustiveDimension;
+        unsigned int m_maxFullDimension;
         std::unique_ptr<RandomCBCExplorer<NC>> m_randExplorer;
-        std::unique_ptr<ExhaustiveCBCExplorer<NC>> m_exhaustiveExplorer;
+        std::unique_ptr<FullCBCExplorer<NC>> m_fullExplorer;
 };
 
 }}

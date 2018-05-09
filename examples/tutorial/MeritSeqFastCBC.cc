@@ -42,14 +42,14 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 template<LatticeType LR>
-void setCombiner(MeritFilterList<LR, LatEmbed::SIMPLE>&, const SizeParam<LR, LatEmbed::SIMPLE>&) {}
+void setCombiner(MeritFilterList<LR, PointSetType::UNILEVEL>&, const SizeParam<LR, PointSetType::UNILEVEL>&) {}
 
 template<LatticeType LR>
-void setCombiner(MeritFilterList<LR, LatEmbed::EMBEDDED>& filters, const SizeParam<LR, LatEmbed::EMBEDDED>& size) 
+void setCombiner(MeritFilterList<LR, PointSetType::MULTILEVEL>& filters, const SizeParam<LR, PointSetType::MULTILEVEL>& size) 
 { filters.add(unique<MeritCombiner::SelectLevel<LR>>(size.maxLevel())); }
 
 
-template <LatticeType LA, LatEmbed L, Compress C>
+template <LatticeType LA, PointSetType L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
@@ -123,14 +123,14 @@ int main()
    Dimension dim = 3;
    
    //! [storage]
-   test(Storage<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(256), dim);
-   test(Storage<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(256), dim);
    //! [storage]
    
    /*
    //! [pstorage]
-   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(PolynomialFromInt(115)), dim);
-   test(Storage<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
    //! [pstorage]
    */
    

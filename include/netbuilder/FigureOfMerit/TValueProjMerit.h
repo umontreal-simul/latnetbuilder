@@ -37,21 +37,21 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection
  */ 
-template <NetEmbed NE>
+template <PointSetType PST>
 class TValueProjMerit
 {};
 
 /** Template specialization in the case of simple nets.
  */ 
 template <>
-class TValueProjMerit<NetEmbed::SIMPLE>
+class TValueProjMerit<PointSetType::UNILEVEL>
 {
     public:
 
         /** Construct a projection-dependent merit based on the t-value of projections.
          * @param maxCardinal is the maximum order of the subprojections to take into account
          */  
-        TValueProjMerit(unsigned int maxCardinal):
+        TValueProjMerit(unsigned int maxCardinal, Combiner combiner=Combiner()):
             m_maxCardinal(maxCardinal)
         {};
 
@@ -95,14 +95,14 @@ class TValueProjMerit<NetEmbed::SIMPLE>
 /** Template specialization in the case of embedded nets.
  */ 
 template <>
-class TValueProjMerit<NetEmbed::EMBEDDED>
+class TValueProjMerit<PointSetType::MULTILEVEL>
 {
     public:
 
         /** Construct an projection-dependent merit based on the t-values of the projections.
          * @param maxCardinal is the maximum order of the subprojections to take into account
          */  
-        TValueProjMerit(unsigned int maxCardinal, std::function<Real (const std::vector<unsigned int>&)> combiner):
+        TValueProjMerit(unsigned int maxCardinal, Combiner combiner):
             m_maxCardinal(maxCardinal),
             m_combiner(std::move(combiner))
         {};
@@ -146,18 +146,24 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
         /** Combines the projection-dependent merits (embedded) into a single value merit.
          * @param merits are the embedded merits
          */ 
-        Real combine(const std::vector<unsigned int>& merits) const { return m_combiner(merits) ; }
+        Real combine(const std::vector<unsigned int>& merits) const {
+            RealVector tmp(merits.size());
+            for (unsigned int i=0; i<merits.size(); i++){
+                tmp[i] = (Real) merits[i];
+            } 
+            return m_combiner(std::move(tmp)) ; 
+        }
 
     private:
         std::string m_name = "t-value (embedded nets)";// name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 
-        std::function<Real (const std::vector<unsigned int>&)> m_combiner; 
+        Combiner m_combiner; 
         // function wrapper which combines embedded merits in a single value merit
 };
 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
 {
     public:
 
@@ -254,8 +260,8 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
                  */ 
                 Node(unsigned int dimension, unsigned int cardinal, double weight):
                     m_weight(weight),
-                    m_cardinal(cardinal),
-                    m_dimension(dimension)
+                    m_dimension(dimension),
+                    m_cardinal(cardinal)
                 {};
 
                 /** Returns the cardinal of the projection represented by the node.
@@ -408,7 +414,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
             mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
 
 
-            for(int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
+            for(unsigned int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
             {
                 Node* it = m_roots[i];
                 do
@@ -439,7 +445,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
             for (Node* node : newNodes) // for each new nodes
             {   
                 Coordinates tmp = node->getProjectionRepresentation();
-                for(int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
+                for(unsigned int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
                 {
                     if (tmp.find(i) != tmp.end())
                     {
@@ -484,7 +490,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
          */ 
         void saveMerits()
         {
-            for(int i = 1; i <= m_dimension; ++i)
+            for(unsigned int i = 1; i <= m_dimension; ++i)
             {
                 saveMerits(i);
             }
@@ -540,15 +546,15 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::SIMPLE>>::WeightedFigureOf
 
         virtual void reset() { invalidate(1); }
 
-        int m_dimension; // last dimension of J_d
-        int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
+        unsigned int m_dimension; // last dimension of J_d
+        unsigned int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
         std::vector<bool> m_validFlags;
 
 };
 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
 {
     public:
 
@@ -641,8 +647,8 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
                  */ 
                 Node(unsigned int dimension, unsigned int cardinal, double weight):
                     m_weight(weight),
-                    m_cardinal(cardinal),
-                    m_dimension(dimension)
+                    m_dimension(dimension),
+                    m_cardinal(cardinal)
                 {};
 
                 /** Returns the cardinal of the projection represented by the node.
@@ -808,7 +814,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
             mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
 
 
-            for(int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
+            for(unsigned int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
             {
                 Node* it = m_roots[i];
                 do
@@ -839,7 +845,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
             for (Node* node : newNodes) // for each new nodes
             {   
                 Coordinates tmp = node->getProjectionRepresentation();
-                for(int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
+                for(unsigned int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
                 {
                     if (tmp.find(i) != tmp.end())
                     {
@@ -884,7 +890,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
          */ 
         void saveMerits()
         {
-            for(int i = 1; i <= m_dimension; ++i)
+            for(unsigned int i = 1; i <= m_dimension; ++i)
             {
                 saveMerits(i);
             }
@@ -941,8 +947,8 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
         virtual void reset() { invalidate(1); }
 
 
-        int m_dimension; // last dimension of J_d
-        int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
+        unsigned int m_dimension; // last dimension of J_d
+        unsigned int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
         std::vector<bool> m_validFlags;
 

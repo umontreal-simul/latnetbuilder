@@ -46,7 +46,7 @@ public:
     */
    PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights, Real normType);
 
-   template <LatticeType LR, LatEmbed L>
+   template <LatticeType LR, PointSetType L>
    Real value(
          Real lambda,
          const SizeParam<LR, L>& sizeParam,

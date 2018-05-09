@@ -24,8 +24,8 @@ namespace LatBuilder {
 
 //===============================================================================================================
 template<>
-SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::SizeParam(uInteger primeBase, Level maxLevel):
-   BasicSizeParam<SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
+SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>::SizeParam(uInteger primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
@@ -34,8 +34,8 @@ SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::SizeParam(uInteger primeBas
 }
 
 template<>
-SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::SizeParam(Polynomial primeBase, Level maxLevel):
-   BasicSizeParam<SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>>(IsZero(primeBase) ? Polynomial(0) : intPow(primeBase, maxLevel)),
+SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>::SizeParam(Polynomial primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>>(IsZero(primeBase) ? Polynomial(0) : intPow(primeBase, maxLevel)),
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
@@ -44,11 +44,21 @@ SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::SizeParam(Polynomial prim
 
 }
 
+template<>
+SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>::SizeParam(uInteger primeBase, Level maxLevel):
+   BasicSizeParam<SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>>(primeBase == 0 ? 0 : intPow(primeBase, maxLevel)),
+   m_base(primeBase),
+   m_maxLevel(maxLevel)
+{
+   if (primeBase >= 2 and LatCommon::IntFactor::isPrime(primeBase, 0) == LatCommon::COMPOSITE)
+      throw std::invalid_argument("SizeParam: primeBase is not prime");
+}
+
 //===================================================================================================================
 
 template<>
-SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::SizeParam(uInteger numPoints):
-   BasicSizeParam<SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>>(numPoints)
+SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>::SizeParam(uInteger numPoints):
+   BasicSizeParam<SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>>(numPoints)
 {
    if (numPoints == 0) {
       m_base = 0;
@@ -69,8 +79,8 @@ SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::SizeParam(uInteger numPoint
 }
 
 template<>
-SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::SizeParam(Polynomial modulus):
-   BasicSizeParam<SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>>(modulus)
+SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>::SizeParam(Polynomial modulus):
+   BasicSizeParam<SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>>(modulus)
 {
    if (IsZero(modulus)) {
       m_base = Polynomial(0);
@@ -86,11 +96,34 @@ SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::SizeParam(Polynomial modu
       m_maxLevel = factor.b; // = factor.second
    }
 }
+
+template<>
+SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>::SizeParam(uInteger numPoints):
+   BasicSizeParam<SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>>(numPoints)
+{
+   if (numPoints == 0) {
+      m_base = 0;
+      m_maxLevel = 0;
+   }
+   else if (numPoints == 1) {
+      m_base = 1;
+      m_maxLevel = 0;
+   }
+   else {
+      const auto factors = primeFactorsMap(numPoints);
+      if (factors.size() != 1)
+         throw std::runtime_error("not an integer power of a prime base");
+      const auto& factor = *factors.begin();
+      m_base = factor.first;
+      m_maxLevel = factor.second;
+   }
+}
+
 //=======================================================================================================================
 
 template<>
-SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::size_type
-SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::numPointsOnLevel(Level level) const
+SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>::size_type
+SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>::numPointsOnLevel(Level level) const
 {
    if (level > maxLevel())
       throw std::invalid_argument("level > maxLevel");
@@ -98,35 +131,44 @@ SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::numPointsOnLevel(Level leve
 }
 
 template<>
-SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::size_type
-SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::numPointsOnLevel(Level level) const
+SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>::size_type
+SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>::numPointsOnLevel(Level level) const
 {
    if (level > maxLevel())
       throw std::invalid_argument("level > maxLevel");
    return IsZero(base())  ? 0 : intPow( 2, deg(base())*level );
 }
+
+template<>
+SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>::size_type
+SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>::numPointsOnLevel(Level level) const
+{
+   if (level > maxLevel())
+      throw std::invalid_argument("level > maxLevel");
+   return base() == 0 ? 0 : intPow(base(), level);
+}
 //========================================================================================================================
 
 template<>
 size_t
-SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>::totient() const
+SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>::totient() const
 { return base() == 0 ? 0 : (base() - 1) * this->numPoints() / base(); }
 
 template<>
 size_t
-SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>::totient() const
+SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>::totient() const
 { return IsZero(base()) == 0 ? 0 : (intPow(2,deg(base())) - 1) * this->numPoints() / intPow(2,deg(base())); }
 
 //=========================================================================================================================
 
 template<LatticeType LR>
 void
-SizeParam<LR,LatEmbed::EMBEDDED>::normalize(Real& merit) const
+SizeParam<LR,PointSetType::MULTILEVEL>::normalize(Real& merit) const
 { merit /= this->numPoints(); }
 
 template<LatticeType LR>
 void
-SizeParam<LR,LatEmbed::EMBEDDED>::normalize(RealVector& merit) const
+SizeParam<LR,PointSetType::MULTILEVEL>::normalize(RealVector& merit) const
 {
    if (merit.size() != maxLevel() + 1)
       throw std::logic_error("merit vector size and maximum level do not match");
@@ -136,12 +178,13 @@ SizeParam<LR,LatEmbed::EMBEDDED>::normalize(RealVector& merit) const
 //===========================================================================================================================
 template<LatticeType LR>
 std::ostream&
-SizeParam<LR,LatEmbed::EMBEDDED>::format(std::ostream& os) const
+SizeParam<LR,PointSetType::MULTILEVEL>::format(std::ostream& os) const
 { os << base(); if (maxLevel() != 1) os << "^" << maxLevel(); return os; }
 //===========================================================================================================================
 
-template class SizeParam<LatticeType::ORDINARY,LatEmbed::EMBEDDED>;
-template class SizeParam<LatticeType::POLYNOMIAL,LatEmbed::EMBEDDED>;
+template class SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>;
+template class SizeParam<LatticeType::POLYNOMIAL,PointSetType::MULTILEVEL>;
+template class SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>;
 
 }
 

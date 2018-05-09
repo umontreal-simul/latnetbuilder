@@ -76,16 +76,16 @@ outputs
 Lattice Builder supports two lattice: ordinary lattices and polynomial lattices. For each, two types of lattices are supported: simple and embedded.
 Their representation in Lattice Builder differs by the type of their size
 parameter.
-The size of a simple ordinary lattice (of type SizeParam<LatticeType::ORDINARY, LatEmbed::SIMPLE>) is specified by
+The size of a simple ordinary lattice (of type SizeParam<LatticeType::ORDINARY, PointSetType::UNILEVEL>) is specified by
 a single integer: the number of points in the lattice \f$n\f$.
-The size of an embedded ordinary lattice (of type SizeParam<LatticeType::ORDINARY, LatEmbed::EMBEDDED>) is
+The size of an embedded ordinary lattice (of type SizeParam<LatticeType::ORDINARY, PointSetType::MULTILEVEL>) is
 specified by two integers: a prime base \f$b\f$ and a maximum level \f$m\f$,
 such that, for the embedded lattice at the maximum level, \f$n = b^m\f$.
 
-The size of a simple polynomial lattice (of type SizeParam<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>) is specified by
+The size of a simple polynomial lattice (of type SizeParam<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>) is specified by
 a single polynomial: the modulus of the lattice \f$P\f$.
 
-The size of an embedded polynomial lattice (of type SizeParam<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>) is
+The size of an embedded polynomial lattice (of type SizeParam<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>) is
 specified by a polynomial and an integer: a polynomial base \f$b\f$ and a maximum level \f$m\f$,
 such that, for the embedded lattice at the maximum level, \f$P = b^m\f$.
 
@@ -151,15 +151,15 @@ polynomial - embedded lattice:
 
 Note that the size parameter for the embedded lattice:
 \code
-SizeParam<LatticeType::ORDINARY, LatEmbed::EMBEDDED>(2, 5)
+SizeParam<LatticeType::ORDINARY, PointSetType::MULTILEVEL>(2, 5)
 \endcode
 could also have been instantiated directly with the number of points
 (\f$2^5=32\f$):
 \code
-SizeParam<LatticeType::ORDINARY, LatEmbed::EMBEDDED>(32)
+SizeParam<LatticeType::ORDINARY, PointSetType::MULTILEVEL>(32)
 \endcode
 
-\sa LatEmbed LatDef
+\sa PointSetType LatDef
 */
 
 /** \example tutorial/LatDef.cc
@@ -585,10 +585,10 @@ For example, to evaluate a coordinate-uniform figure of merit, the values
 \f$i=0,\dots,n-1\f$ (\f$n = 2^{\deg(P(z))}\f$ for polynomial lattices) are
 precomputed and stored in a vector for subsequent use.
 For simple lattices, the elements of the vector are stored in a natural order
-(see Storage<LatticeType, LatEmbed::SIMPLE>), by increasing value of \f$i\f$.
+(see Storage<LatticeType, PointSetType::UNILEVEL>), by increasing value of \f$i\f$.
 For embedded lattices in basis \f$b \in \mathbb{N}\f$ (respectively \f$b \in \mathbb{Z}_2[z]) 
 \f$, the internal representation of the vector
-is different (see Storage<LatticeType, LatEmbed::EMBEDDED>): it uses a permutation such that, for
+is different (see Storage<LatticeType, PointSetType::MULTILEVEL>): it uses a permutation such that, for
 \f$k=0,\dots,m\f$ where the highest-level lattice has \f$n=b^m\f$, the
 values necessary to describe the level with \f$b^k\f$ points (respectively \f$2^{k \deg(b)}\f$ points) can be found in the
 first \f$b^k\f$ elements (respectively \f$2^{k \deg(b)}\f$ elements) stored in the permuted vector.
@@ -617,7 +617,7 @@ A detailed description can be found in Storage.
 
 Consider the following example from \ref tutorial/Storage.cc :
 \snippet tutorial/Storage.cc all
-The \c StorageType traits class maps a LatEmbed value to a type of storage
+The \c StorageType traits class maps a PointSetType value to a type of storage
 through template specialization.
 
 \sa Storage
@@ -1178,7 +1178,7 @@ merit, which we all set to the inverse of the number of levels (<code>power +
 Next, we configure the combiner as a sum of the normalized values across all
 levels:
 \snippet tutorial/FilteredCBC.cc combiner
-We also need change the storage type to Storage<LatEmbed::EMBEDDED>:
+We also need change the storage type to Storage<PointSetType::MULTILEVEL>:
 \snippet tutorial/FilteredCBC.cc Storage
 This example outputs:
 \verbatim

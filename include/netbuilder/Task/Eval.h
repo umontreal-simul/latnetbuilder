@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 
-#include "netbuilder/Task/Task.h"
+#include "netbuilder/Task/BaseTask.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include <boost/signals2.hpp>
@@ -29,14 +29,14 @@
 
 namespace NetBuilder { namespace Task {
 
-class Eval : public Task 
+class Eval : public BaseTask 
 {
     public:
 
         Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure):
             m_net(std::move(net)),
-            m_figure(std::move(figure)),
-            m_merit(0)
+            m_merit(0),
+            m_figure(std::move(figure))
         {};
 
         Eval(Eval&&) = default;
@@ -60,10 +60,22 @@ class Eval : public Task
         { return *m_net; }
 
         /**
+        * Returns the best net found by the search task.
+        */
+        virtual const DigitalNet& netOutput() const
+        { return net(); }
+
+        /**
         * Returns the best merit value found by the search task.
         */
         Real meritValue() const
         { return m_merit; }
+
+        /**
+        * Returns the best merit value found by the search task.
+        */
+        virtual Real meritValueOutput() const
+        { return meritValue(); }
 
         const FigureOfMerit::FigureOfMerit& figureOfMerit() const 
         {

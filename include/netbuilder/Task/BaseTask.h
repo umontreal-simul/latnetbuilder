@@ -14,25 +14,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__TASK__TASK_H
-#define NETBUILDER__TASK__TASK_H
+#ifndef NETBUILDER__TASK__BASE_TASK_H
+#define NETBUILDER__TASK__BASE_TASK_H
 
 #include <ostream>
 #include <memory>
+
+#include "netbuilder/DigitalNet.h"
 
 namespace NetBuilder { namespace Task {
 
 /**
  * Base base class for all tasks.
  */
-class Task {
+class BaseTask {
 public:
-   virtual ~Task() {}
+   virtual ~BaseTask() {}
 
    /**
     * Executes the task.
     */
-   virtual void execute() = 0;
+    virtual void execute() = 0;
+
+    virtual const DigitalNet& netOutput() const = 0;
+
+    virtual Real meritValueOutput() const = 0;
 
 protected:
    //virtual void format(std::ostream& os) const = 0;

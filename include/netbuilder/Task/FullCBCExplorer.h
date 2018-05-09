@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__TASK__EXHAUSTIVE_CBC_EXPLORER_H
-#define NETBUILDER__TASK__EXHAUSTIVE_CBC_EXPLORER_H
+#ifndef NETBUILDER__TASK__FULL_CBC_EXPLORER_H
+#define NETBUILDER__TASK__FULL_CBC_EXPLORER_H
 
 #include "netbuilder/Types.h"
 #include "netbuilder/NetConstructionTraits.h"
@@ -25,14 +25,14 @@
 namespace NetBuilder { namespace Task {
 
 template <NetConstruction NC>
-class ExhaustiveCBCExplorer
+class FullCBCExplorer
 {
     typedef NetConstructionTraits<NC> ConstructionMethod;
 
     public:
 
 
-        ExhaustiveCBCExplorer(unsigned int dimension):
+        FullCBCExplorer(unsigned int dimension):
             m_dimension(dimension),
             m_currentDim(1),
             m_data(ConstructionMethod::genValueSpace(1)),
@@ -62,8 +62,8 @@ class ExhaustiveCBCExplorer
 
     private:
         unsigned int m_dimension;
-        std::vector<typename ConstructionMethod::GenValue> m_data;
         unsigned int m_currentDim;
+        std::vector<typename ConstructionMethod::GenValue> m_data;
         size_t m_state;
 };
 

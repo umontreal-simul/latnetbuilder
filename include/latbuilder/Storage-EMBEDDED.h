@@ -61,13 +61,30 @@ struct PerLevelOrderTraits<PerLevelOrder::BASIC, LR, COMPRESS>{
   
 };
 
+template <Compress COMPRESS>
+struct PerLevelOrderTraits<PerLevelOrder::BASIC, LatticeType::DIGITAL, COMPRESS>{
+  typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, COMPRESS, Traversal::Forward> GroupType; 
+  typedef GroupType GenGroupType; 
+  typedef typename GroupType::value_type  value_type;
+  static void initializeGroups(const value_type& base, const Level& maxLevel, std::vector<GroupType>& groups, GenGroupType& genGroup){
+      
+      genGroup = GenGroupType(intPow(base, maxLevel)) ;
+      auto mult = typename LatticeTraits<LatticeType::DIGITAL>::Modulus(1);
+      for (Level level = 0; level <= maxLevel; level++){
+          groups[level] = GroupType(mult);
+          mult *=  base ;
+       }
+  }
+  
+};
+
 
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
-struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
+struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
    typedef uInteger               size_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef RealVector            MeritValue;
-   typedef LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED> SizeParam;
+   typedef LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL> SizeParam;
 
    typedef typename PerLevelOrderTraits<PLO, LR, COMPRESS>::GroupType GroupType; 
    typedef typename PerLevelOrderTraits<PLO, LR, COMPRESS>::GenGroupType GenGroupType; 
@@ -82,7 +99,7 @@ struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
       typedef StorageTraits::size_type size_type;
       typedef std::pair<boost::numeric::ublas::range, size_type> AddressType;
       typedef StorageTraits::value_type value_type;
-      Unpermute(Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> storage):
+      Unpermute(Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> storage):
          m_storage(std::move(storage))
       {
          // initialize addresses
@@ -112,7 +129,7 @@ struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
    private:
       typedef std::map< value_type, AddressType> MapType;
 
-      Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO > m_storage;
+      Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO > m_storage;
       MapType m_indexToAddress;
 
       /**
@@ -210,7 +227,7 @@ struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
       typedef StorageTraits::size_type size_type;
       typedef StorageTraits::value_type value_type;
 
-      Stride(Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> storage, value_type stride):
+      Stride(Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> storage, value_type stride):
          m_storage(std::move(storage)),
          m_stride(stride),
          m_row(findRow(stride))
@@ -282,7 +299,7 @@ struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
       { return m_storage.size(); }
 
    private:
-      Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> m_storage;
+      Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> m_storage;
       value_type m_stride;
       size_type m_row;
 
@@ -340,10 +357,10 @@ struct StorageTraits<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
  * See the output of \ref Storage.cc for an illustration of this.
  */
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
-class Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> :
-   public BasicStorage<Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO>> {
+class Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> :
+   public BasicStorage<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
 
-   typedef Storage<LR, LatEmbed::EMBEDDED, COMPRESS, PLO> self_type;
+   typedef Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> self_type;
 
 private:
    typedef typename StorageTraits<self_type>::GroupType    GroupType;
@@ -376,6 +393,9 @@ public:
       m_groups(this->sizeParam().maxLevel() + 1)
       
    {
+      if(COMPRESS == LatBuilder::Compress::SYMMETRIC && (LR == LatticeType::POLYNOMIAL || LR == LatticeType::DIGITAL))
+        throw std::invalid_argument("Storage(): No symmetric kernel implemented for polynomial");
+
     
       PerLevelOrderTraits<PLO, LR, COMPRESS>::initializeGroups(this->sizeParam().base(), this->sizeParam().maxLevel(),m_groups, m_genGroup);
       

@@ -222,7 +222,7 @@ PAlphaSL10::PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Re
    m_weights(weights)
 {}
 
-template <LatticeType LR, LatEmbed L>
+template <LatticeType LR, PointSetType L>
 Real PAlphaSL10::value(
       Real lambda,
       const SizeParam<LR, L>& sizeParam,
@@ -243,10 +243,10 @@ Real PAlphaSL10::value(
    return std::pow(norm * val, 1.0 / lambda);
 }
 
-template Real PAlphaSL10::value<LatticeType::ORDINARY, LatEmbed::SIMPLE>(Real, const SizeParam<LatticeType::ORDINARY, LatEmbed::SIMPLE>&, Dimension, Real) const;
-template Real PAlphaSL10::value<LatticeType::ORDINARY, LatEmbed::EMBEDDED>(Real, const SizeParam<LatticeType::ORDINARY, LatEmbed::EMBEDDED>&, Dimension, Real) const;
+template Real PAlphaSL10::value<LatticeType::ORDINARY, PointSetType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, PointSetType::UNILEVEL>&, Dimension, Real) const;
+template Real PAlphaSL10::value<LatticeType::ORDINARY, PointSetType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, PointSetType::MULTILEVEL>&, Dimension, Real) const;
 
-template Real PAlphaSL10::value<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>(Real, const SizeParam<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE>&, Dimension, Real) const;
-template Real PAlphaSL10::value<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>(Real, const SizeParam<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED>&, Dimension, Real) const;
+template Real PAlphaSL10::value<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>&, Dimension, Real) const;
+template Real PAlphaSL10::value<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>&, Dimension, Real) const;
 
 }}

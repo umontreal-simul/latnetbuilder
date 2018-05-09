@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
     //unsigned int r = 100;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto combiner = [] (std::vector<unsigned int> merits) -> Real 
+    auto combiner = [] (RealVector merits) -> Real 
     { 
         unsigned int m = merits.size();
         Real res;

@@ -27,7 +27,7 @@ using TextStream::operator<<;
 //! [main]
 template<LatticeType LA>
 void test(typename LatticeTraits<LA>::Modulus modulus){
-   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
+   SizeParam<LA, PointSetType::UNILEVEL> size(modulus);
    Dimension dim = 3;
 
    typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;

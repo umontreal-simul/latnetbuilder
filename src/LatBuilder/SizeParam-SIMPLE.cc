@@ -22,15 +22,15 @@ namespace LatBuilder {
 
 //===========================================================================================
 template <LatticeType LR>
-SizeParam<LR,LatEmbed::SIMPLE>::SizeParam(SizeParam<LR,LatEmbed::SIMPLE>::Modulus modulus):
-   BasicSizeParam<SizeParam<LR,LatEmbed::SIMPLE>>(modulus)
+SizeParam<LR,PointSetType::UNILEVEL>::SizeParam(SizeParam<LR,PointSetType::UNILEVEL>::Modulus modulus):
+   BasicSizeParam<SizeParam<LR,PointSetType::UNILEVEL>>(modulus)
 {}
 
 //===========================================================================================
 
 template<>
 size_t
-SizeParam<LatticeType::ORDINARY,LatEmbed::SIMPLE>::totient() const
+SizeParam<LatticeType::ORDINARY,PointSetType::UNILEVEL>::totient() const
 {
    auto n = numPoints();
    for (const auto& p : LatBuilder::primeFactors(n))
@@ -40,7 +40,7 @@ SizeParam<LatticeType::ORDINARY,LatEmbed::SIMPLE>::totient() const
 
 template<>
 size_t
-SizeParam<LatticeType::POLYNOMIAL,LatEmbed::SIMPLE>::totient() const
+SizeParam<LatticeType::POLYNOMIAL,PointSetType::UNILEVEL>::totient() const
 {
    auto polynomial = modulus();
    auto n = intPow(2,deg(polynomial));
@@ -55,23 +55,24 @@ SizeParam<LatticeType::POLYNOMIAL,LatEmbed::SIMPLE>::totient() const
 
 template <LatticeType LR>
 void
-SizeParam<LR,LatEmbed::SIMPLE>::normalize(Real& merit) const
+SizeParam<LR,PointSetType::UNILEVEL>::normalize(Real& merit) const
 { merit /= this->numPoints(); }
 
 template <LatticeType LR>
 void
-SizeParam<LR,LatEmbed::SIMPLE>::normalize(RealVector& merit) const
+SizeParam<LR,PointSetType::UNILEVEL>::normalize(RealVector& merit) const
 { merit /= this->numPoints(); }
 
 template <LatticeType LR>
 std::ostream&
-SizeParam<LR,LatEmbed::SIMPLE>::format(std::ostream& os) const
+SizeParam<LR,PointSetType::UNILEVEL>::format(std::ostream& os) const
 { return os << this->modulus(); }
 
 //==================================================================================================
 
-template class SizeParam<LatticeType::ORDINARY,LatEmbed::SIMPLE>;
-template class SizeParam<LatticeType::POLYNOMIAL,LatEmbed::SIMPLE>;
+template class SizeParam<LatticeType::ORDINARY,PointSetType::UNILEVEL>;
+template class SizeParam<LatticeType::POLYNOMIAL,PointSetType::UNILEVEL>;
+template class SizeParam<LatticeType::DIGITAL,PointSetType::UNILEVEL>;
 
 }
 

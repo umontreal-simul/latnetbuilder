@@ -37,20 +37,20 @@ public:
 };
 
 
-template <LatticeType LR, LatEmbed LAT>
+template <LatticeType LR, PointSetType PST>
 struct MeritFilter {
    
-   static std::unique_ptr<BasicMeritFilter<LR, LAT>> parse(
+   static std::unique_ptr<BasicMeritFilter<LR, PST>> parse(
          const std::string& str,
-         const LatBuilder::SizeParam<LR, LAT>& sizeParam,
+         const LatBuilder::SizeParam<LR, PST>& sizeParam,
          const LatCommon::Weights& weights,
          Real normType);
 };
 
-extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, LatEmbed::SIMPLE> ;
-extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, LatEmbed::EMBEDDED> ;
-extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, LatEmbed::SIMPLE> ;
-extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, PointSetType::UNILEVEL> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, PointSetType::MULTILEVEL> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, PointSetType::UNILEVEL> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL> ;
 
 
 

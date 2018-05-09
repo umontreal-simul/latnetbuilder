@@ -36,14 +36,14 @@ namespace NetBuilder{ namespace FigureOfMerit {
 
 /** Base class for projection-dependent merits which only require the net and the projection.
  */ 
-template <NetEmbed NE>
+template <PointSetType PST>
 class SimpleProjDepMerit;
 
 /** Template specialization for projection-dependent merits which only require the net 
  * and the projection in the case of simple nets.
  */ 
 template<>
-class SimpleProjDepMerit<NetEmbed::SIMPLE>
+class SimpleProjDepMerit<PointSetType::UNILEVEL>
 {
     public:
     
@@ -85,7 +85,7 @@ class SimpleProjDepMerit<NetEmbed::SIMPLE>
  * embedded nets.
  */ 
 template<>
-class SimpleProjDepMerit<NetEmbed::EMBEDDED>
+class SimpleProjDepMerit<PointSetType::MULTILEVEL>
 {
     public:
 
@@ -137,13 +137,12 @@ class WeightedFigureOfMerit : public FigureOfMerit
          * @param normType is the power to which the projection-dependent merit should be raised
          * @param weights is a smart pointer to a Weights instance
          * @param projDepMerit is a smart pointer to the projection-dependent merit
-         * @param binOp is a function wrapper which denotes the aggregation function of the figure of merit.
          */  
-        WeightedFigureOfMerit(Real normType, std::unique_ptr<LatCommon::Weights> weights, std::unique_ptr<PROJDEP> projDepMerit, BinOp binOp):
+        WeightedFigureOfMerit(Real normType, std::unique_ptr<LatCommon::Weights> weights, std::unique_ptr<PROJDEP> projDepMerit):
             m_normType(normType),
             m_weights(std::move(weights)),
             m_projDepMerit(std::move(projDepMerit)),
-            m_binOp(binOp)
+            m_binOp(realToBinOp(normType))
         {};
 
         /** Returns the weights of the figure */
@@ -171,9 +170,9 @@ class WeightedFigureOfMerit : public FigureOfMerit
 
     private:
 
+        Real m_normType;
         std::unique_ptr<LatCommon::Weights> m_weights;
         std::unique_ptr<PROJDEP> m_projDepMerit;
-        Real m_normType;
         BinOp m_binOp;
 
         /** Class which describes how the figure of merit is computed. */

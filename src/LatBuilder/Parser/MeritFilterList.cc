@@ -26,33 +26,33 @@ namespace LatBuilder { namespace Parser {
 
 template <LatticeType LR>
 void MeritFilterList<LR>::parse(
-      LatBuilder::MeritFilterList<LR, LatEmbed::SIMPLE>& list,
+      LatBuilder::MeritFilterList<LR, PointSetType::UNILEVEL>& list,
       const std::vector<std::string>& filters,
-      const LatBuilder::SizeParam<LR, LatEmbed::SIMPLE>& sizeParam,
+      const LatBuilder::SizeParam<LR, PointSetType::UNILEVEL>& sizeParam,
       const LatCommon::Weights& weights,
       Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, LatEmbed::SIMPLE>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, PointSetType::UNILEVEL>::parse(arg, sizeParam, weights, normType));
 }
 
 template <LatticeType LR>
 void MeritFilterList<LR>::parse(
-      LatBuilder::MeritFilterList<LR, LatEmbed::EMBEDDED>& list,
+      LatBuilder::MeritFilterList<LR, PointSetType::MULTILEVEL>& list,
       const std::vector<std::string>& filters,
       const std::vector<std::string>& multilevelFilters,
       const std::string& combiner,
-      const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam,
+      const LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam,
       const LatCommon::Weights& weights,
       Real normType
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, LatEmbed::EMBEDDED>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, PointSetType::MULTILEVEL>::parse(arg, sizeParam, weights, normType));
 
    for (const auto& arg : multilevelFilters)
-      list.add(MeritFilter<LR, LatEmbed::EMBEDDED>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, PointSetType::MULTILEVEL>::parse(arg, sizeParam, weights, normType));
 
    list.add(MeritCombiner<LR>::parse(combiner, sizeParam));
 }

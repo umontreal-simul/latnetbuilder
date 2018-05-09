@@ -27,33 +27,33 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct ExhaustiveTag {};
 
 
 /// Exhaustive search.
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Exhaustive =
-   LatSeqBasedSearch<ExhaustiveTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Exhaustive =
+   LatSeqBasedSearch<ExhaustiveTag<LR, PST, COMPRESS, PLO, FIGURE>>;
 
 
 /// Exhaustive search.
-template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
-Exhaustive<LR, LAT, COMPRESS, PLO, FIGURE> exhaustive(
-      Storage<LR, LAT, COMPRESS, PLO> storage,
+template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+Exhaustive<LR, PST, COMPRESS, PLO, FIGURE> exhaustive(
+      Storage<LR, PST, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return Exhaustive<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return Exhaustive<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-struct LatSeqBasedSearchTraits<ExhaustiveTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
-   typedef LatBuilder::Task::Search<LR, LAT> Search;
-   typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;
-   typedef typename LatBuilder::Storage<LR, LAT, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef typename CBCSelector<LR, LAT, COMPRESS, PLO, FIGURE>::CBC CBC;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct LatSeqBasedSearchTraits<ExhaustiveTag<LR, PST, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, PST> Search;
+   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef GenSeq::GeneratingValues<LR, COMPRESS> GenSeqType;
-   typedef LatSeq::Combiner<LR, LAT, GenSeqType, CartesianProduct> LatSeqType;
+   typedef LatSeq::Combiner<LR, PST, GenSeqType, CartesianProduct> LatSeqType;
 
    virtual ~LatSeqBasedSearchTraits() {}
 
@@ -67,7 +67,7 @@ struct LatSeqBasedSearchTraits<ExhaustiveTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
    std::string name() const
    { return FIGURE::evaluationName() + " exhaustive search"; }
 
-   void init(LatBuilder::Task::Exhaustive<LR, LAT, COMPRESS, PLO, FIGURE>& search) const
+   void init(LatBuilder::Task::Exhaustive<LR, PST, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 

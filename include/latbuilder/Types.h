@@ -57,7 +57,7 @@ typedef NTL::GF2X Polynomial;
 enum class LatticeType { ORDINARY , POLYNOMIAL, DIGITAL };
 
 /// Simple lattice / a sequence of embedded lattices 
-enum class LatEmbed { SIMPLE, EMBEDDED };
+enum class PointSetType { UNILEVEL, MULTILEVEL };
 
 /// Types of compression.
 enum class Compress { NONE, SYMMETRIC };
@@ -111,6 +111,27 @@ struct LatticeTraits<LatticeType::ORDINARY>{
 };
 
 /**
+ * Lattice traits for digital lattice rule.
+ *
+ */
+template<>
+struct LatticeTraits<LatticeType::DIGITAL>{
+	/// Scalar integer type for modulus (= number of points) values.
+	typedef uInteger Modulus;
+	/// Scalar integer type for genarating values.
+	typedef NetBuilder::GeneratingMatrix GenValue;
+	/// Generating vector type.
+	typedef std::vector<GenValue> GeneratingVector;
+	
+
+	static const Modulus TrivialModulus = 2; 
+	// static uInteger ToIndex(const GenValue& value);
+	// static GenValue ToGenValue(const uInteger& index);
+	static uInteger NumPoints(const Modulus& modulus){ return modulus;}
+	static uInteger ToKernelIndex(const size_t& index, const Modulus& modulus) { return index;}
+};
+
+/**
  * Lattice traits for polynomial lattice rule.
  *
  */
@@ -132,30 +153,11 @@ struct LatticeTraits<LatticeType::POLYNOMIAL>{
 	static uInteger ToKernelIndex(const size_t& index, const Modulus& modulus);
 };
 
-/**
- * Lattice traits for digital lattice rule.
- *
- */
-template<>
-struct LatticeTraits<LatticeType::DIGITAL>{
-	/// Scalar integer type for modulus (= number of points) values.
-	typedef uInteger Modulus;
-	/// Scalar integer type for genarating values.
-	typedef NetBuilder::GeneratingMatrix GenValue;
-	/// Generating vector type.
-	typedef std::vector<GenValue> GeneratingVector;
-	
 
-	static const Modulus TrivialModulus = 2; 
-	// static uInteger ToIndex(const GenValue& value);
-	// static GenValue ToGenValue(const uInteger& index);
-	static uInteger NumPoints(const Modulus& modulus){ return modulus;}
-	static uInteger ToKernelIndex(const size_t& index, const Modulus& modulus) { return index;}
-};
 
 
 //@}
-std::ostream& operator<<(std::ostream& os, LatEmbed latType);
+std::ostream& operator<<(std::ostream& os, PointSetType latType);
 
 
 }

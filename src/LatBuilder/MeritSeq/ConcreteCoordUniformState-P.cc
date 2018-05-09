@@ -22,24 +22,24 @@ namespace LatBuilder { namespace MeritSeq {
 // ProductWeights
 //========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProductWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProductWeights>::
 reset()
 {
-   CoordUniformState<LR, LAT, COMPRESS, PLO>::reset();
+   CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
    m_state.clear();
    m_state = boost::numeric::ublas::scalar_vector<Real>(this->storage().size(), 1.0);
 }
 
 //===========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProductWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProductWeights>::
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 {
-   CoordUniformState<LR, LAT, COMPRESS, PLO>::update(kernelValues, gen);
+   CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
 
    auto stridedKernelValues = this->storage().strided(kernelValues, gen);
 
@@ -57,9 +57,9 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 
 //===========================================================================
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
-ConcreteCoordUniformState<LR, LAT, COMPRESS, PLO, LatCommon::ProductWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProductWeights>::
 weightedState() const
 {
    const auto nextCoordinate = this->dimension();
@@ -69,18 +69,18 @@ weightedState() const
    return weight * m_state;
 }
 
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProductWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProductWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProductWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProductWeights>;
 
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, LatEmbed::SIMPLE, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProductWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatCommon::ProductWeights>;
 
 }}

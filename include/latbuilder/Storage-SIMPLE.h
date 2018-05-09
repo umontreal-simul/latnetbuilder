@@ -26,12 +26,12 @@ namespace LatBuilder {
 
 
 template <LatticeType LR, Compress COMPRESS>
-struct StorageTraits<Storage<LR, LatEmbed::SIMPLE, COMPRESS>> {
+struct StorageTraits<Storage<LR, PointSetType::UNILEVEL, COMPRESS>> {
    typedef uInteger            size_type;
    typedef typename LatticeTraits<LR>::GenValue  value_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef Real               MeritValue;
-   typedef LatBuilder::SizeParam<LR, LatEmbed::SIMPLE> SizeParam;
+   typedef LatBuilder::SizeParam<LR, PointSetType::UNILEVEL> SizeParam;
 
    /**
     * Unpermuted permutation.
@@ -40,11 +40,11 @@ struct StorageTraits<Storage<LR, LatEmbed::SIMPLE, COMPRESS>> {
    public:
       typedef StorageTraits::size_type size_type;
 
-      Unpermute(Storage<LR, LatEmbed::SIMPLE, COMPRESS> storage): m_storage(std::move(storage)) {}
+      Unpermute(Storage<LR, PointSetType::UNILEVEL, COMPRESS> storage): m_storage(std::move(storage)) {}
       size_type operator() (size_type i) const { return Compress::compressIndex(i, m_storage.virtualSize()); }
       size_type size() const { return m_storage.virtualSize(); }
    private:
-      Storage<LR, LatEmbed::SIMPLE, COMPRESS> m_storage;
+      Storage<LR, PointSetType::UNILEVEL, COMPRESS> m_storage;
    };
 
    /**
@@ -75,7 +75,7 @@ struct StorageTraits<Storage<LR, LatEmbed::SIMPLE, COMPRESS>> {
       typedef StorageTraits::size_type size_type;
       typedef StorageTraits::value_type value_type;
 
-      Stride(Storage<LR, LatEmbed::SIMPLE, COMPRESS> storage, value_type stride):
+      Stride(Storage<LR, PointSetType::UNILEVEL, COMPRESS> storage, value_type stride):
          m_storage(std::move(storage)),
          m_stride(stride)
       {}
@@ -91,7 +91,7 @@ struct StorageTraits<Storage<LR, LatEmbed::SIMPLE, COMPRESS>> {
       { return m_storage.size(); }
 
    private:
-      Storage<LR, LatEmbed::SIMPLE, COMPRESS> m_storage;
+      Storage<LR, PointSetType::UNILEVEL, COMPRESS> m_storage;
       value_type m_stride;
    };
 
@@ -106,10 +106,10 @@ struct StorageTraits<Storage<LR, LatEmbed::SIMPLE, COMPRESS>> {
  * \tparam COMPRESS     Compression type (either None or Symmetric).
  */
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
-class Storage<LR, LatEmbed::SIMPLE, COMPRESS, PLO> :
-   public BasicStorage<Storage<LR, LatEmbed::SIMPLE, COMPRESS, PLO>> {
+class Storage<LR, PointSetType::UNILEVEL, COMPRESS, PLO> :
+   public BasicStorage<Storage<LR, PointSetType::UNILEVEL, COMPRESS, PLO>> {
 
-   typedef Storage<LR, LatEmbed::SIMPLE, COMPRESS, PLO> self_type;
+   typedef Storage<LR, PointSetType::UNILEVEL, COMPRESS, PLO> self_type;
 
 public:
 
@@ -125,7 +125,9 @@ public:
       BasicStorage<Storage>(std::move(sizeParam))
    {
       if(PLO == PerLevelOrder::CYCLIC) 
-        throw std::invalid_argument("Storage(): Trying to instantiate Storage<LatEmbed::SIMPLE, PerLevelOrder::Cyclic>");
+        throw std::invalid_argument("Storage(): Trying to instantiate Storage<PointSetType::UNILEVEL, PerLevelOrder::Cyclic>");
+      if(COMPRESS == Compress::SYMMETRIC && (LR == LatticeType::POLYNOMIAL || LR == LatticeType::DIGITAL))
+        throw std::invalid_argument("Storage(): No symmetric kernel implemented for polynomial");
    }
 
    size_type virtualSize() const
