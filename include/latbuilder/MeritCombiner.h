@@ -47,10 +47,10 @@ namespace MeritCombiner {
  * merit value.
  *
  */
-template <template <typename> class ACC>
-class Accumulator : public MeritFilterList<LatType::EMBEDDED>::Combiner {
+template <LatticeType LR, template <typename> class ACC>
+class Accumulator : public MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner {
 public:
-   typedef typename MeritFilterList<LatType::EMBEDDED>::Combiner Combiner;
+   typedef typename MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner Combiner;
    typedef typename Combiner::LatDef LatDef;
 
    /**
@@ -59,8 +59,9 @@ public:
    Real operator() (const RealVector& merit, const LatDef& lat) const
    {
       LatBuilder::Accumulator<ACC, Real> acc(0.0);
-      for (const auto x : merit)
+      for (const auto x : merit){
          acc.accumulate(x);
+       }
       return acc.value();
    }
 
@@ -73,7 +74,8 @@ public:
  * Functor that selects a the merit value of a specific embedded level as a
  * single merit value.
  */
-class SelectLevel : public MeritFilterList<LatType::EMBEDDED>::Combiner {
+template <LatticeType LR>
+class SelectLevel : public MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner {
 public:
    /**
     * Constructor.
@@ -84,7 +86,7 @@ public:
    /**
     * Calls the functor.
     */
-   Real operator() (const RealVector& merit, const LatDef&) const
+   Real operator() (const RealVector& merit, const LatDef<LR, PointSetType::MULTILEVEL>&) const
    { return merit[m_level]; }
 
    std::string name() const

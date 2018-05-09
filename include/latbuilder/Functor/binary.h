@@ -20,7 +20,7 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-
+#include "latbuilder/Types.h"
 namespace LatBuilder { namespace Functor {
 
 /**

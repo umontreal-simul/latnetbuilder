@@ -17,6 +17,7 @@
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latcommon/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
+#include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Storage.h"
 
@@ -25,7 +26,7 @@
 
 #include "latbuilder/MeritSeq/CoordUniformCBC.h"
 #include "latbuilder/MeritSeq/CoordUniformInnerProd.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/Creator.h"
 
 #include "latbuilder/TextStream.h"
@@ -40,14 +41,16 @@ template <typename T, typename... ARGS>
 std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
-void setCombiner(MeritFilterList<LatType::ORDINARY>&, const SizeParam<LatType::ORDINARY>&) {}
+template<LatticeType LR>
+void setCombiner(MeritFilterList<LR, PointSetType::UNILEVEL>&, const SizeParam<LR, PointSetType::UNILEVEL>&) {}
 
-void setCombiner(MeritFilterList<LatType::EMBEDDED>& filters, const SizeParam<LatType::EMBEDDED>& size)
-{ filters.add(unique<MeritCombiner::SelectLevel>(size.maxLevel())); }
+template<LatticeType LR>
+void setCombiner(MeritFilterList<LR, PointSetType::MULTILEVEL>& filters, const SizeParam<LR, PointSetType::MULTILEVEL>& size) 
+{ filters.add(unique<MeritCombiner::SelectLevel<LR>>(size.maxLevel())); }
 
 
-template <LatType L, Compress C>
-void test(const Storage<L, C>& storage, Dimension dimension)
+template <LatticeType LA, PointSetType L, Compress C>
+void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
    auto weights = unique<LatCommon::ProductWeights>();
@@ -57,18 +60,29 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
+   /*
+   // The P_{\alpha,PLR} figure of merit for polynomial lattices
+   //! [pfigure]
+   auto weights = unique<LatCommon::ProductWeights>();
+   weights->setDefaultWeight(0.7);
+
+   CoordUniformFigureOfMerit<Kernel::PAlphaPLR> figure(std::move(weights), 2);
+   std::cout << "figure of merit: " << figure << std::endl;
+   //! [pfigure]
+   */
+
    //! [Coprime]
-   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
+   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression()> Coprime;
    //! [Coprime]
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
-   auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));
+   auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<LA, L>(LatticeTraits<LA>::TrivialModulus));
 
    //! [cbc]
    auto cbc = MeritSeq::cbc<MeritSeq::CoordUniformInnerProd>(storage, figure);
    //! [cbc]
 
    //! [filters]
-   MeritFilterList<L> filters;
+   MeritFilterList<LA, L> filters;
    setCombiner(filters, storage.sizeParam());
    //! [filters]
 
@@ -106,9 +120,16 @@ int main()
    Dimension dim = 3;
 
    //! [storage]
-   test(Storage<LatType::ORDINARY, Compress::SYMMETRIC>(256), dim);
-   test(Storage<LatType::EMBEDDED, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(256), dim);
    //! [storage]
+
+   /*
+   //! [pstorage]
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   //! [pstorage]
+   */
 
    return 0;
 }

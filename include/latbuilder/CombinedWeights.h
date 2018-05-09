@@ -49,6 +49,8 @@ public:
     */
    virtual LatCommon::Weight getWeight (const LatCommon::Coordinates & projection) const;
 
+   virtual std::string name() const { return "combined"; }
+
    /**
     * Adds a weight specification to the set of combined weights.
     */

@@ -37,11 +37,15 @@ public:
     * The intervals are of size \c 1/sizeParam.numPoints() and the first point is
     * at 0.
     *
+    * the \f$i^{\text{th}}\f$ element  \f$\omega_i\f$ is:
+    *- \f$\omega(i/n)\f$ in the case of an ordinary lattice with modulus \f$n\f$.
+    *-  \f$\omega((\nu_m(\frac{i(z)}{P(z)}))\f$ in the case of a polynomial lattice of modulus \f$P(z)\f$ (\f$ i(z) = \sum a_iz^i\f$ where \f$i =\sum a_i2^i\f$).
+    *
     * \return The newly created vector.
     */
-   template <LatType L, Compress C> 
+   template <LatticeType LR, PointSetType L, Compress C, PerLevelOrder P > 
    RealVector valuesVector(
-         const Storage<L, C>& storage
+         const Storage<LR, L, C, P>& storage
          ) const
    { return derived().valuesVector(storage); }
 

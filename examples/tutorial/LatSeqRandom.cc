@@ -16,7 +16,7 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatSeq/Combiner.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/Traversal.h"
 #include "latbuilder/LFSR113.h"
@@ -27,27 +27,39 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-int main()
-{
-   //! [genSeqs]
-   SizeParam<LatType::ORDINARY> size(31);
-   SizeParam<LatType::ORDINARY> size0(2);
+
+
+//! [genSeqs]
+template <LatticeType LA>
+void test(typename LatticeTraits<LA>::Modulus modulus){
+   SizeParam<LA, PointSetType::UNILEVEL> size(modulus);      
+   SizeParam<LA, PointSetType::UNILEVEL> size0(LatticeTraits<LA>::TrivialModulus);   
    Dimension dim = 3;
    size_t r = 4; // 4 random samples
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR113>> Coprime;
-   auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dim, r);
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR113>> Coprime;
+   auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dim,r);
    // consider only 1 for 1st coordinate
    genSeqs[0] = GenSeq::Creator<Coprime>::create(size0);
    //! [genSeqs]
-
    //! [latSeq]
    auto latSeq = LatSeq::combine<Zip>(size, genSeqs);
-   //! [latSeq]
+
+   std::cout << latSeq << std::endl;
+   
+}
+//! [latSeq]
+
+int main()
+{
+   
 
    //! [output]
-   std::cout << latSeq << std::endl;
+   test<LatticeType::ORDINARY>(31);
    //! [output]
+   //! [poutput]
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(31));
+   //! [poutput]
 
    return 0;
 }

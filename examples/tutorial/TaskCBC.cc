@@ -43,10 +43,12 @@ template <typename T, typename... ARGS>
 std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
-void setFilters(MeritFilterList<LatType::ORDINARY>& filters, const SizeParam<LatType::ORDINARY>& sizeParam)
+template<LatticeType LA>
+void setFilters(MeritFilterList<LA, PointSetType::UNILEVEL>& filters, const SizeParam<LA, PointSetType::UNILEVEL>& sizeParam)
 {}
 
-void setFilters(MeritFilterList<LatType::EMBEDDED>& filters, const SizeParam<LatType::EMBEDDED>& sizeParam)
+template<LatticeType LA>
+void setFilters(MeritFilterList<LA, PointSetType::MULTILEVEL>& filters, const SizeParam<LA, PointSetType::MULTILEVEL>& sizeParam)
 { filters.add(unique<MeritCombiner::SelectLevel>(sizeParam.maxLevel())); }
 
 template <class SEARCH>
@@ -79,14 +81,14 @@ WeightedFigureOfMerit<ProjDepMerit::CoordUniform<Kernel::PAlpha>, Functor::Sum> 
 int main()
 {
    Dimension dim = 3;
-   Storage<LatType::ORDINARY, Compress::SYMMETRIC> storage(256);
-   Storage<LatType::EMBEDDED, Compress::SYMMETRIC> estorage(storage.sizeParam().numPoints());
+   Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC> storage(256);
+   Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC> estorage(storage.sizeParam().numPoints());
 
    execute(Task::cbc(storage, dim, figureCS()));
    execute(Task::cbc(estorage, dim, figureCS()));
    execute(Task::fastCBC(storage, dim, figureCS()));
    execute(Task::randomCBC(storage, dim, figureCS(), 5));
-   execute(Task::eval(storage, dim, figureCS(), GeneratingVector{1, 99, 27}));
+   execute(Task::eval(storage, dim, figureCS(), {1, 99, 27}));
 
    execute(Task::cbc(storage, dim, figure()));
    execute(Task::cbc(estorage, dim, figure()));

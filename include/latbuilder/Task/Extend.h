@@ -30,40 +30,40 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 class Extend;
 
 
 /// Exhaustive search.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-Extend<LAT, COMPRESS, FIGURE> extend(
-      Storage<LAT, COMPRESS> storage,
-      LatDef<LAT> baseLat,
+template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+Extend<LR, PST, COMPRESS, PLO, FIGURE> extend(
+      Storage<LR, PST, COMPRESS, PLO> storage,
+      LatDef<LR, PST> baseLat,
       FIGURE figure
       )
-{ return Extend<LAT, COMPRESS, FIGURE>(std::move(storage), std::move(baseLat), std::move(figure)); }
+{ return Extend<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), std::move(baseLat), std::move(figure)); }
 
 
 /**
  * Search task that extends the number of points of a lattice.
  *
- * \tparam LAT, COMPRESS Type of storage.
+ * \tparam PST, COMPRESS Type of storage.
  * \tparam FIGURE Type of figure of merit.
  */
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-class Extend : public Search<LAT> {
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+class Extend : public Search<LR, PST> {
 public:
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
+   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
+   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef typename CBC::FigureOfMerit FigureOfMerit;
    typedef typename Storage::SizeParam SizeParam;
 
    Extend(
          Storage storage,
-         LatDef<LAT> baseLat,
+         LatDef<LR, PST> baseLat,
          FigureOfMerit figure
          ):
-      Search<LAT>(baseLat.dimension()),
+      Search<LR, PST>(baseLat.dimension()),
       m_storage(std::move(storage)),
       m_figure(new FigureOfMerit(std::move(figure))),
       m_latSeqOverCBC(new MeritSeq::LatSeqOverCBC<CBC>(CBC(this->storage(), this->figureOfMerit()))),
@@ -71,7 +71,7 @@ public:
    { connectCBCProgress(this->cbc(), this->minObserver(), this->filters().empty()); }
 
    Extend(Extend&& other):
-      Search<LAT>(std::move(other)),
+      Search<LR, PST>(std::move(other)),
       m_storage(std::move(other.m_storage)),
       m_figure(other.m_figure.release()),
       m_latSeqOverCBC(other.m_latSeqOverCBC.release()),
@@ -82,15 +82,15 @@ public:
 
    virtual void execute()
    {
-      typedef GenSeq::Extend<> GenSeqType;
-      typedef LatSeq::Combiner<LAT, GenSeqType, CartesianProduct> LatSeqType;
+      typedef GenSeq::Extend<LR> GenSeqType;
+      typedef LatSeq::Combiner<LR, PST, GenSeqType, CartesianProduct> LatSeqType;
 
       std::vector<GenSeqType> gens(this->dimension());
-      gens[0] = GenSeqType(2, 2, 1);
+      gens[0] = GenSeqType(LatticeTraits<LR>::TrivialModulus, LatticeTraits<LR>::TrivialModulus, typename LatticeTraits<LR>::GenValue(1));
       for (size_t j = 1; j < gens.size(); j++)
          gens[j] = GenSeqType(
-               storage().sizeParam().numPoints(),
-               baseLat().sizeParam().numPoints(),
+               storage().sizeParam().modulus(),
+               baseLat().sizeParam().modulus(),
                baseLat().gen()[j]
                );
 
@@ -116,7 +116,7 @@ public:
    /**
     * Returns the base lattice on which to extend.
     */
-   const LatDef<LAT>& baseLat() const
+   const LatDef<LR, PST>& baseLat() const
    { return m_baseLat; }
 
    /**
@@ -139,14 +139,14 @@ protected:
       os << "figure of merit: " << figureOfMerit() << std::endl;
       os << "base lattice: " << baseLat() << std::endl;
       os << "size parameter: " << storage().sizeParam() << std::endl;
-      Search<LAT>::format(os);
+      Search<LR, PST>::format(os);
    }
 
 private:
    Storage m_storage;
    std::unique_ptr<FigureOfMerit> m_figure;
    std::unique_ptr<MeritSeq::LatSeqOverCBC<CBC>> m_latSeqOverCBC;
-   LatDef<LAT> m_baseLat;
+   LatDef<LR, PST> m_baseLat;
 };
 
 TASK_FOR_ALL(TASK_EXTERN_TEMPLATE1, Extend, NOTAG);

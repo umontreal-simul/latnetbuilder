@@ -6,11 +6,12 @@ def build(ctx):
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
+
     ctx(features='cxx cxxprogram',
             source=ctx.path.ant_glob('*.cc'),
             includes=[inc_dir, lc_inc_dir],
-            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT,
+            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT + ctx.env.LIB_NTL,
             stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
-            target='bin/latbuilder',
-            use=['latbuilder', 'latcommon'],
+            target='bin/latnet',
+            use=['latbuilder', 'netbuilder', 'latcommon'],
             install_path='${BINDIR}')

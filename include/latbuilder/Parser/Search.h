@@ -38,7 +38,7 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for coordinate-uniform figures of merit.
  */
-template <LatBuilder::LatType LAT>
+template <LatticeType LR, LatBuilder::PointSetType PST>
 class Search {
 public:
 
@@ -50,9 +50,9 @@ public:
     * \return A pointer to a Search instance.
     */
    template <class FIGURE>
-   static std::unique_ptr<LatBuilder::Task::Search<LAT>> parse(
+   static std::unique_ptr<LatBuilder::Task::Search<LR, PST>> parse(
          const std::string& construction,
-         LatBuilder::SizeParam<LAT> size,
+         LatBuilder::SizeParam<LR, PST> size,
          LatBuilder::Dimension dimension,
          FIGURE figure
          )
@@ -65,7 +65,7 @@ public:
             std::move(figure),
             ptr
            );
-      return std::unique_ptr<LatBuilder::Task::Search<LAT>>(ptr());
+      return std::unique_ptr<LatBuilder::Task::Search<LR, PST>>(ptr());
    }
 
    /**
@@ -77,13 +77,15 @@ public:
    template <class FIGURE, class FUNC, typename... ARGS>
    static void parse(
          const std::string& str,
-         LatBuilder::SizeParam<LAT> size,
+         LatBuilder::SizeParam<LR, PST> size,
          LatBuilder::Dimension dimension,
          FIGURE figure,
          FUNC&& func, ARGS&&... args
          )
    {
-      auto storage = createStorage<FIGURE::suggestedCompression()>(std::move(size));
+      const LatBuilder::PerLevelOrder P = defaultPerLevelOrder<LR, PST>::Order;
+
+      auto storage = createStorage< FIGURE::suggestedCompression(), P>(std::move(size));
 
       auto strSplit = splitPair<std::string, std::string>(str, ':');
 
@@ -122,15 +124,15 @@ public:
       catch (boost::bad_lexical_cast&) {}
 
       if (strSplit.first == "explicit") {
-         auto genVec = splitCSV<Modulus>(strSplit.second);
+         auto genVec = LatticeParametersParseHelper<LR>::ParseGeneratingVector(strSplit.second);
          func(Task::eval(std::move(storage), dimension, std::move(figure), genVec), std::forward<ARGS>(args)...);
          return;
       }
 
       if (strSplit.first == "extend") {
          auto strSplit2 = splitPair<std::string, std::string>(strSplit.second, ':');
-         auto sizeParam = Parser::SizeParam::parse<LAT>(strSplit2.first);
-         auto genVec = splitCSV<Modulus>(strSplit2.second);
+         auto sizeParam = Parser::SizeParam<LR, PST>::parse(strSplit2.first);
+         auto genVec =  LatticeParametersParseHelper<LR>::ParseGeneratingVector(strSplit2.second);
          auto lat = createLatDef(std::move(sizeParam), std::move(genVec));
          func(Task::extend(std::move(storage), std::move(lat), std::move(figure)), std::forward<ARGS>(args)...);
          return;
@@ -140,21 +142,23 @@ public:
    }
 
 private:
-   template <Compress COMPRESS>
-   static Storage<LAT, COMPRESS> createStorage(LatBuilder::SizeParam<LAT> size)
-   { return Storage<LAT, COMPRESS>(std::move(size)); }
+   template <Compress COMPRESS, PerLevelOrder PLO>
+   static Storage<LR, PST, COMPRESS, PLO> createStorage(LatBuilder::SizeParam<LR, PST> size)
+   { return Storage<LR, PST, COMPRESS, PLO>(std::move(size)); }
 
    struct ToPtr {
-      LatBuilder::Task::Search<LAT>* ptr;
-      LatBuilder::Task::Search<LAT>* operator()() const
+      LatBuilder::Task::Search<LR, PST>* ptr;
+      LatBuilder::Task::Search<LR, PST>* operator()() const
       { return ptr; }
       template <class TASK> void operator()(TASK task)
       { ptr = new TASK(std::move(task)); }
    };
 };
 
-extern template class Search<LatBuilder::LatType::ORDINARY>;
-extern template class Search<LatBuilder::LatType::EMBEDDED>;
+extern template class Search<LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>;
+extern template class Search<LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>;
+extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>;
+extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>;
 
 }}
 

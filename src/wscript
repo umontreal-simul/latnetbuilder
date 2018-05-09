@@ -15,3 +15,6 @@ def build(ctx):
     # header files
     for inc in inc_dir.ant_glob('**/*.h'):
         ctx.install_files('${INCLUDEDIR}/' + inc.parent.path_from(inc_dir), inc)
+
+    for csv in inc_dir.ant_glob('**/*.csv'):
+        ctx.install_files('${INCLUDEDIR}/' + csv.parent.path_from(inc_dir), csv)

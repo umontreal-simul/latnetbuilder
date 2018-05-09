@@ -34,11 +34,26 @@ enum class GroupOrder : bool { DIRECT = false, INVERSE = true };
 constexpr GroupOrder operator!(GroupOrder order) { return order == GroupOrder::DIRECT ? GroupOrder::INVERSE : GroupOrder::DIRECT; }
 
 /**
+ * Cyclic group traits.
+ *
+ * Specializations of this class template must define the types:
+ * - size_type: an Integer size type;
+ * - Modulus: Modulus type;
+ * - value_type: type of the elements of the group ;
+ * - and the static function void increment(const value_type& currentValue, const value_type& generator, const Modulus& modulus)
+ */
+  template <class DERIVED>
+    struct CyclicGroupTraversalTraits;
+/**
  * Default traversal policy for cyclic groups.
  */
+template<LatticeType LR>
 class CyclicGroupTraversal {
 public:
-   typedef size_t size_type;
+   typedef CyclicGroupTraversal<LR> self_type;
+   typedef typename CyclicGroupTraversalTraits<self_type>::size_type size_type;
+   typedef typename CyclicGroupTraversalTraits<self_type>::value_type value_type;
+   typedef typename CyclicGroupTraversalTraits<self_type>::Modulus Modulus;
 
    static std::string name()
    { return "cyclic group traversal"; }
@@ -58,326 +73,75 @@ public:
     */
    void resize(size_type size)
    { m_size = size; }
+   /**
+    * increments to  next value.
+    */
+   static void increment(value_type& currentValue, size_type& index, const value_type& generator, const Modulus& modulus, const size_type& size){
+     CyclicGroupTraversalTraits<self_type>::increment(currentValue,index,generator,modulus,size);
+   }
 
 private:
    size_type m_size;
 };
 
 /**
+ * Cyclic group traits.
+ *
+ * Specializations of this class template must define the types:
+ * - size_type: an Integer size type;
+ * - Modulus: Modulus type;
+ * - value_type: type of the elements of the group ;
+ */
+  template <class DERIVED>
+    struct CyclicGroupTraits;
+
+/**
  * Cyclic group.
  *
  * Cyclic group \f$\{ 1, g, g^2, \dots, g^{\varphi(b^m) - 1} \}\f$ of integers
- * modulo \f$b^m\f$, where \f$b\f$ is a prime base, \f$g\f$ is the generator of
+ * modulo \f$b^m\f$ (respectively polynomials modulo \f$b^m\f$), where \f$b\f$ is a prime base (respectively an irreductible polynomial), \f$g\f$ is the generator of
  * the group, and \f$\varphi\f$ is Euler's totient function.
  * 
  * The generator of the group is computed by the class constructor.
  *
  * \tparam COMPRESS  Compression type.  If Compress::SYMMETRIC, only the first
  *                   half of the group is considered and an element value of
- *                   \f$a\f$ is mapped to \f$\min(a, b^m - a)\f$.
+ *                   \f$a\f$ is mapped to \f$\min(a, b^m - a)\f$. (available only in the integer case)
  *
- * \remark In base 2, the group is the union of two cyclic groups rather than a
- * single cyclic group.
+ * \remark 
+ * -For the integer case, and in base 2, the group is the union of two cyclic groups rather than a
+ *      single cyclic group.
+ * - In the polynomial case, the power must be set to 1 otherwise the group does not have a cyclic stucture
  */
-template <Compress COMPRESS = Compress::NONE,
-         class TRAV = CyclicGroupTraversal,
+template <LatticeType LR, 
+         Compress COMPRESS = Compress::NONE,
+         class TRAV = CyclicGroupTraversal<LR>,
          GroupOrder ORDER = GroupOrder::DIRECT>
-class CyclicGroup :
-   public Traversal::Policy<CyclicGroup<COMPRESS, TRAV, ORDER>, TRAV> {
-
-   typedef CyclicGroup<COMPRESS, TRAV, ORDER> self_type;
-   typedef Traversal::Policy<self_type, TRAV> TraversalPolicy;
-   typedef CompressTraits<COMPRESS> Compress;
-
-public:
-   typedef size_t size_type;
-   typedef Modulus value_type;
-
-   static constexpr LatBuilder::Compress compress() { return COMPRESS; }
-
-   /**
-    * Traversal type.
-    */
-   typedef TRAV Traversal;
-
-   static std::string name()
-   { return std::string("cyclic group / ") + Compress::name() + " / " + Traversal::name(); }
-
-   /**
-    * Constructor for an empty group.
-    */
-   CyclicGroup(Traversal trav = Traversal()):
-      TraversalPolicy(std::move(trav)),
-      m_base(0), m_power(0), m_modulus(0), m_gen(0) {}
-
-   /**
-    * Constructor for the cyclic group of integers modulo \f$b^m\f$, where
-    * \f$b\f$ is a prime base.
-    * \param base       Prime base \f$b\f$.
-    * \param power      Power \f$m\f$ of the base.
-    * \param trav       Traversal instance.
-    */
-   CyclicGroup(Modulus base, Level power, Traversal trav = Traversal());
-
-   /**
-    * Cross-traversal copy-constructor.
-    */
-   template <class TRAV2>
-   CyclicGroup(
-         const CyclicGroup<COMPRESS, TRAV2, ORDER>& other,
-         Traversal trav = Traversal()):
-      TraversalPolicy(std::move(trav)),
-      m_base(other.m_base),
-      m_power(other.m_power),
-      m_modulus(other.m_modulus),
-      m_gen(other.m_gen)
-   {}
-
-   /**
-    * Rebinds the traversal type.
-    */
-   template <class TRAV2>
-   struct RebindTraversal {
-      typedef CyclicGroup<COMPRESS, TRAV2, ORDER> Type;
-   };
-
-   /**
-    * Returns a copy of this object, but using a different traversal policy.
-    */
-   template <class TRAV2>
-   typename RebindTraversal<TRAV2>::Type rebind(TRAV2 trav) const
-   { return typename RebindTraversal<TRAV2>::Type{*this, std::move(trav)}; }
-
-   /**
-    * Returns the base of the group modulus.
-    */
-   Modulus base() const
-   { return m_base; }
-
-   /**
-    * Returns the power of the base of the group modulus.
-    */
-   Modulus power() const
-   { return m_power; }
-
-   /**
-    * Returns the cardinality of the full group.
-    * \remark If \c COMPRESS is Compress::NONE, this is the same as #size().
-    */
-   Modulus fullSize() const
-   { return base() == 0 ? 0 : (base() - 1) * modulus() / base(); }
-
-   /**
-    * Returns the cardinality of the group part specified by \c COMPRESS.
-    */
-   Modulus size() const
-   { return modulus() == 0 ? 0 : modulus() == 1 ? 1 : Compress::size(modulus()) - Compress::size(modulus() / base()); }
-
-   /**
-    * Returns the modulus \f$b^m\f$ of the cyclic group.
-    */
-   Modulus modulus() const
-   { return m_modulus; }
-
-   /**
-    * Returns the generator \f$g\f$ for the group.
-    */
-   Modulus generator() const
-   { return m_gen; }
-
-   /**
-    * Returns the element at index \c i.
-    */
-   value_type operator[](size_type i) const;
-
-   /**
-    * Returns the group generated by the inverse generator.
-    */
-   CyclicGroup<COMPRESS, TRAV, !ORDER> inverse() const
-   { return CyclicGroup<COMPRESS, TRAV, !ORDER>(*this); }
-
-   /**
-    * Returns the subgroup at level \c level.
-    */
-   CyclicGroup subgroup(Level level) const
-   { return CyclicGroup(*this, level); }
-
-   /**
-    * Returns the smallest generator for the group of cyclic integers modulo
-    * \f$b^m\f$.
-    * \param base    \f$b\f$
-    * \param power   \f$m\f$
-    * \param checkPrime    If \c true, checks if the base is actually prime.
-    *
-    * The algorithm is described in \cite mCOH93a .
-    */
-   static Modulus smallestGenerator(Modulus base, Level power, bool checkPrime = true);
+class CyclicGroup ;
 
 
-private:
-   template <LatBuilder::Compress, class, GroupOrder> friend class CyclicGroup;
 
-   /**
-    * Constructs a subgroup of \c group for level \c level, using the same generator.
-    */
-   CyclicGroup(const CyclicGroup& group, Level level);
-
-   /**
-    * Constructs the inverse group of \c group, using its generator to find the
-    * inverse generator.
-    */
-   CyclicGroup(const CyclicGroup<COMPRESS, TRAV, !ORDER>& group);
-   friend class CyclicGroup<COMPRESS, TRAV, !ORDER>;
-
-
-   Modulus m_base;
-   Level m_power;
-   Modulus m_modulus;
-   Modulus m_gen;
-};
 
 }} // namespace
 
-//================================================================================
-// Implementation
-//================================================================================
-
-#include "latbuilder/Util.h"
-#include "latcommon/IntFactor.h"
-
-namespace LatBuilder { namespace GenSeq {
-
-//================================================================================
-
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-Modulus CyclicGroup<COMPRESS, TRAV, ORDER>::smallestGenerator(Modulus base, Level power, bool checkPrime)
-{
-   if (base == 2) {
-      return 5;
-   }
-
-   if (base < 2)
-      throw std::invalid_argument("smallestGenerator(): base must be >= 2");
-
-   if (checkPrime and LatCommon::IntFactor::isPrime(base, 0) == LatCommon::COMPOSITE)
-      throw std::invalid_argument("smallestGenerator(): n must be prime");
-
-   auto factors = primeFactors(base - 1);
-
-   Modulus g = 1;
-   while (++g <= base) {
-      auto factor = factors.begin();
-      while (factor != factors.end() and
-            modularPow(g, (base - 1) / *factor, base) != 1)
-         ++factor;
-      if (factor == factors.end())
-         break;
-   }
-   if (g > base)
-      throw std::logic_error("cannot find primitive root");
-
-   if (power == 1)
-      return g;
-
-   if (base * base < base)
-      // detected overflow
-      throw std::runtime_error("smallestGenerator: base too large");
-
-   if (modularPow(g, base - 1, base * base) == 1)
-      g += base;
-
-   return g;
-}
-
-//================================================================================
-
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-CyclicGroup<COMPRESS, TRAV, ORDER>::CyclicGroup(const CyclicGroup<COMPRESS, TRAV, ORDER>& other, Level level):
-   TraversalPolicy(static_cast<const TraversalPolicy&>(other)),
-   m_base(other.m_base),
-   m_power(level)
-{
-   if (m_power > other.m_power)
-      throw std::invalid_argument("subgroup level is higher than group level");
-
-   m_modulus = intPow(m_base, m_power);
-   m_gen = other.m_gen;
-}
-
-//================================================================================
-
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-CyclicGroup<COMPRESS, TRAV, ORDER>::CyclicGroup(const CyclicGroup<COMPRESS, TRAV, !ORDER>& other):
-   TraversalPolicy(static_cast<const TraversalPolicy&>(other)),
-   m_base(other.m_base),
-   m_power(other.m_power),
-   m_modulus(other.m_modulus),
-   m_gen(other.m_gen)
-{
-   if (m_base >= 2)
-      m_gen = modularPow(m_gen, fullSize() - 1, modulus());
-}
-
-//================================================================================
-
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-CyclicGroup<COMPRESS, TRAV, ORDER>::CyclicGroup(Modulus base, Level power, Traversal trav):
-   TraversalPolicy(std::move(trav)),
-   m_base(base),
-   m_power(power)
-{
-   m_modulus = intPow(m_base, m_power);
-   if (m_base >= 2) {
-      m_gen = smallestGenerator(m_base, m_power);
-      if (ORDER == GroupOrder::INVERSE)
-         m_gen = modularPow(m_gen, fullSize() - 1, modulus());
-   }
-   else
-      m_gen = 0;
-}
-
-//================================================================================
-
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-auto CyclicGroup<COMPRESS, TRAV, ORDER>::operator[](size_type i) const -> value_type
-{
-   if (i == 0)
-      return 1;
-
-   const auto m = modulus();
-   auto k = modularPow(generator(), i, m);
-
-   // In base 2, the whole group cannot be generated at once, we must
-   // mulitiply by -1 = m_modulus - 1 to generate the second half of the
-   // group.
-   //
-   // Reference:
-   // J. A. Gallian. Contemporary Base Algebra. Houghton Mifflin, 4th edition,
-   // 1998. Page 104.
-
-   if (base() == 2 and i >= size() / 2)
-      k = k * (m - 1) % m;
-
-   return Compress::compressIndex(k, m);
-}
-
-}} // namespace
+#include "latbuilder/GenSeq/CyclicGroup-OLR.h"
+#include "latbuilder/GenSeq/CyclicGroup-PLR.h"
 
 namespace LatBuilder { namespace Traversal {
-   template <typename SEQ>
-   class Policy<SEQ, GenSeq::CyclicGroupTraversal> :
-      public GenSeq::CyclicGroupTraversal {
+   template <typename SEQ, LatticeType LR>
+   class Policy<SEQ, GenSeq::CyclicGroupTraversal<LR>> :
+      public GenSeq::CyclicGroupTraversal<LR> {
 
    public:
       typedef SEQ Seq;
-      typedef size_t size_type;
-      typedef Modulus value_type;
+      typedef typename GenSeq::CyclicGroupTraversal<LR>::value_type value_type;
+      typedef typename GenSeq::CyclicGroupTraversal<LR>::size_type size_type;
 
       /**
        * Constructor.
        */
-      Policy(GenSeq::CyclicGroupTraversal trav):
-         GenSeq::CyclicGroupTraversal(std::move(trav))
+      Policy(GenSeq::CyclicGroupTraversal<LR> trav):
+         GenSeq::CyclicGroupTraversal<LR>(std::move(trav))
       {}
 
       /**
@@ -418,16 +182,14 @@ namespace LatBuilder { namespace Traversal {
          friend class boost::iterators::iterator_core_access;
 
          value_type dereference() const   
-         { return m_value == 1 ? 1 : CompressTraits<Seq::compress()>::compressIndex(m_value, m_seq->modulus()); }
+         { return m_value == (value_type)(1) ?  (value_type)(1) : CompressTraits<Seq::compress()>::compressIndex(m_value, m_seq->modulus()); }
 
          void increment()
          {
-            m_index++;
-            m_value = (m_value * m_seq->generator()) % m_seq->modulus();
+            
+            GenSeq::CyclicGroupTraversal<LR>::increment(m_value, m_index, m_seq->generator(), m_seq->modulus(),m_seq->size());
+           
 
-            // Generate the second half of the base-2 group (see note in operator[])
-            if (m_value == 1 and m_index < m_seq->size())
-               m_value = m_seq->modulus() - 1;
          }
 
          bool equal(const const_iterator& other) const
@@ -439,7 +201,7 @@ namespace LatBuilder { namespace Traversal {
       private:
          const Seq* m_seq;
          size_type m_index;
-         Modulus m_value;
+         value_type m_value;
       };
 
       /**
@@ -452,7 +214,7 @@ namespace LatBuilder { namespace Traversal {
        * Returns an iterator pointing past the last element in \c seq.
        */
       const_iterator end() const
-      { return const_iterator(seq(), std::min(size(), (size_type)seq().size())); }
+      { return const_iterator(seq(), std::min(this->size(), (size_type)seq().size())); }
 
    private:
       const Seq& seq() const

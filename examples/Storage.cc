@@ -13,39 +13,50 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#include "latbuilder/Storage.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
+#include "latbuilder/GenSeq/VectorCreator.h"
+#include "latbuilder/GenSeq/Creator.h"
+#include "latbuilder/SizeParam.h"
+#include "latbuilder/Traversal.h"
+#include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
-
+#include "latbuilder/Storage.h"
+#include "latbuilder/LatSeq/Combiner.h"   
+#include "latbuilder/LatSeq/Korobov.h"
+#include "latbuilder/LatSeq/CBC.h"
+#include <iostream>
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-template <LatType L, Compress C>
-void test(const Storage<L, C>& storage)
+
+
+
+template <LatticeType LA, PointSetType L, Compress C, PerLevelOrder PLO>
+void test(const Storage<LA, L, C, PLO>& storage, typename LatticeTraits<LA>::GenValue stride_param)
 {
-   std::cout << "==> storage / compression: " << Storage<L, C>::name() << std::endl;
+   std::cout << "==> storage / compression: " << Storage<LA, L, C, PLO>::name() << std::endl;
    std::cout << "    virtual / actual sizes: " << storage.virtualSize() << " / " << storage.size() << std::endl;
-
    RealVector original(storage.size());
-
    auto unpermuted = storage.unpermuted(original);
-
    for (RealVector::size_type j = unpermuted.size(); j > 0; j--)
       unpermuted[j - 1] = j - 1;
-
-   auto strided = storage.strided(original, 3);
-
+   auto strided = storage.strided(original, stride_param);
    std::cout << "    original:   " << original << std::endl;
    std::cout << "    unpermuted: " << unpermuted << std::endl;
    std::cout << "    strided(3): " << strided << std::endl;
 }
-
 int main(int argc, const char *argv[])
 {
-   test(Storage<LatType::ORDINARY, Compress::NONE     >(12));
-   test(Storage<LatType::ORDINARY, Compress::SYMMETRIC>(12));
-   test(Storage<LatType::EMBEDDED, Compress::NONE     >(16));
-   test(Storage<LatType::EMBEDDED, Compress::SYMMETRIC>(16));
 
+   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE     >(12), 3);
+   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(12), 3);
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE     >(16), 3);
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(16), 3); 
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE     ,PerLevelOrder::BASIC>(16), 3);
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC,PerLevelOrder::BASIC>(16), 3); 
+
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC>(PolynomialFromInt(13)), PolynomialFromInt(3)); //irreductible modulus
    return 0;
 }

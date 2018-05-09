@@ -39,12 +39,16 @@ public:
 /**
  * Parser for filters combiners for use with embedded lattices.
  */
+template <LatticeType LR>
 struct MeritCombiner {
-   static std::unique_ptr<typename LatBuilder::MeritFilterList<LatType::EMBEDDED>::Combiner> parse(
+   static std::unique_ptr<typename LatBuilder::MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner> parse(
          const std::string& str,
-         const LatBuilder::SizeParam<LatType::EMBEDDED>& sizeParam
+         const LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam
          );
 };
+
+extern template struct MeritCombiner<LatticeType::ORDINARY>;
+extern template struct MeritCombiner<LatticeType::POLYNOMIAL>;
 
 }}
 

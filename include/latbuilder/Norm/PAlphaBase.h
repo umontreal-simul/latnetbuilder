@@ -74,10 +74,10 @@ public:
     * \param dimension  Dimension.
     * \param norm       Additional normalization \f$ c \f$.
     */
-   template <LatType L>
+   template <LatticeType LR, PointSetType L>
    Real value(
          Real lambda,
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
          Real norm = 1.0
          ) const
@@ -90,9 +90,9 @@ public:
     * \param dimension  Dimension.
     * \param norm       Additional normalization \f$ c \f$.
     */
-   template <LatType L>
+   template <LatticeType LR, PointSetType L>
    Real operator()(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
          Real norm = 1.0
          ) const
@@ -103,9 +103,9 @@ public:
     * Uses BrentMinimizer to minimize the bound function.  The value of
     * \f$\lambda\f$ at which the minimum is reached is not returned.
     */
-   template <LatType L>
+   template <LatticeType LR, PointSetType L>
    Real minimum(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
          Real norm
          ) const
@@ -113,7 +113,7 @@ public:
       boost::uintmax_t iter = MINIMIZER_MAX_ITER;
 
       std::pair<Real, Real> result = boost::math::tools::brent_find_minima(
-            std::bind(&PAlphaBase::value<L>, this,
+            std::bind(&PAlphaBase::value<LR, L>, this,
                std::placeholders::_1, sizeParam, dimension, norm),
             minExp(),
             maxExp(),
