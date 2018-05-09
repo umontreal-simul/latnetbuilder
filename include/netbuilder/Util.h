@@ -23,6 +23,7 @@
 #define NETBUILDER__UTIL_H
 
 #include "netbuilder/Types.h"
+#include "netbuilder/GeneratingMatrix.h"
 
 #include <vector>
 #include <boost/dynamic_bitset.hpp> 

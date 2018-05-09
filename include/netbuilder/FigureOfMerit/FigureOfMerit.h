@@ -107,7 +107,15 @@ class FigureOfMeritEvaluator
             MeritValue merit = 0;
             for(unsigned int dim = 1; dim <= net.dimension(); ++dim)
             {
-                merit = operator()(net, dim, merit);
+                if (verbose)
+                {
+                    std::cout << "Computing for dimension: " << dim << "..." <<std::endl;
+                }
+                merit = operator()(net, dim, merit, verbose);
+                if (verbose)
+                {
+                    std::cout << "Partial merit value: " << merit <<std::endl;
+                }
             }
             reset();
             return merit;

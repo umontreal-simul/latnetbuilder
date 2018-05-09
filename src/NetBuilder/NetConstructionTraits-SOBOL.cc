@@ -235,31 +235,31 @@ namespace NetBuilder {
         return res;
     }
 
-    // void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
-    //     unsigned int inc,
-    //     const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-    //     const std::vector<std::shared_ptr<GenValue>>& genValues)
-    // {
-    //     unsigned int s = genMats.size();
-    //     for(unsigned int k = 0; k < s; ++k)
-    //     {
-    //         unsigned int nCols = genMats[k]->nCols();
-    //         unsigned int nRows = genMats[k]->nRows();
+    void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
+        unsigned int inc,
+        const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+        const std::vector<std::shared_ptr<GenValue>>& genValues)
+    {
+        unsigned int s = genMats.size();
+        for(unsigned int k = 0; k < s; ++k)
+        {
+            unsigned int nCols = genMats[k]->nCols();
+            unsigned int nRows = genMats[k]->nRows();
 
-    //         GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),nRows+inc,nCols+inc);
+            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),nRows+inc,nCols+inc);
 
-    //         genMats[k]->resize(nRows+inc,nCols+inc);
-    //         for(unsigned int i = nRows; i < nRows+inc; ++i)
-    //         {
-    //             for(unsigned int j = nCols; j < nCols+inc; ++j )
-    //             {
-    //                 (*genMats[k])(i,j) = (*newMat)(i,j);
-    //             }
-    //         }
+            genMats[k]->resize(nRows+inc,nCols+inc);
+            for(unsigned int i = nRows; i < nRows+inc; ++i)
+            {
+                for(unsigned int j = nCols; j < nCols+inc; ++j )
+                {
+                    (*genMats[k])(i,j) = (*newMat)(i,j);
+                }
+            }
 
-    //         delete newMat;
-    //     }
-    // }
+            delete newMat;
+        }
+    }
 }
 
 

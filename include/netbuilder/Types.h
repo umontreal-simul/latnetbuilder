@@ -62,6 +62,7 @@ enum class NetConstruction {SOBOL};
 /// Binary real operator type
 typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
 
+typedef std::function<Real (const RealVector&)> Combiner;
 //@}
 }
 

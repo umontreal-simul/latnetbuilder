@@ -143,6 +143,14 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                     return acc.value();
                 }
 
+                virtual void reset()
+                {
+                    for(auto& eval : m_evaluators)
+                    {
+                        eval.reset();
+                    }
+                }
+
             private:
                 CombinedFigureOfMerit* m_figure;
                 std::vector<std::unique_ptr<FigureOfMeritEvaluator>> m_evaluators;

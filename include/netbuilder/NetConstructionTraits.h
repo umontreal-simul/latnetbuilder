@@ -57,12 +57,12 @@ namespace NetBuilder {
 
             static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
 
-            /*
+            
             static void extendGeneratingMatrices( 
                 unsigned int inc,
                 const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
                 const std::vector<std::shared_ptr<GenValue>>& genValues);
-            */    
+             
 
             static std::vector<GenValue> defaultGenValues(unsigned int dimension);
 
@@ -107,8 +107,6 @@ namespace NetBuilder {
             static unsigned int  nthPrimitivePolynomialDegree(unsigned int n);
 
             static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
-
-
     };
    
 

@@ -72,6 +72,13 @@ class DigitalNet
             return m_generatingMatrices[coord-1]->subMatrix(m_nRows, m_nCols);
         }
 
+        GeneratingMatrix* pointerToGeneratingMatrix(unsigned int coord) const 
+        {
+            return m_generatingMatrices[coord-1].get();
+        }
+
+        virtual std::unique_ptr<DigitalNet> extendSize(unsigned int m) const = 0;
+
         /** Returns the upper-left submatrix of the generating matrix corresponding to the given coordinate,
          *  @param coord an integer constant refering to the coordinate (ranges in 1 -> dimension)
          *  @param nRows is the number of rows of the submatrix (ranges in 1 -> numRows() )
@@ -224,13 +231,21 @@ class DigitalNetConstruction : public DigitalNet
         }
         */
 
-        /*
-        std::unique_ptr<DigitalNetConstruction<NC>> extendSize(unsigned int inc)
+        
+        std::unique_ptr<DigitalNet> extendSize(unsigned int m) const
         {
-            ConstructionMethod::extendGeneratingMatrices(inc, m_generatingMatrices, m_genValues);
-            return std::move(std::make_unique<DigitalNetConstruction<NC>>((m_generatingMatrices, m_genValues, m_dimension, m_nRows + inc, m_nCols+inc)));
+            unsigned int inc = (m>numColumns()) ? (m-numColumns()) : 0;
+            if (inc>0)
+            {
+                ConstructionMethod::extendGeneratingMatrices(inc, m_generatingMatrices, m_genValues);
+            }
+            return std::move(std::make_unique<DigitalNetConstruction<NC>>(m_generatingMatrices, m_genValues, m_dimension, m, m));
         }
-        */
+
+        virtual std::unique_ptr<DigitalNet> extendSize()
+        {
+            return std::move(extendSize(1));
+        }
 
     private:
 

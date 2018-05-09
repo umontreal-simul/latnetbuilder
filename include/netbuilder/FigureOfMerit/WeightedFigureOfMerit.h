@@ -57,7 +57,7 @@ class SimpleProjDepMerit<NetEmbed::SIMPLE>
          */ 
         friend std::ostream& operator<<(std::ostream& os, const SimpleProjDepMerit& dt)
         {
-            os << "Proj dep merit: " << dt.name();
+            os << "Projection-dependent merit: " << dt.name();
             return os;
         } 
 
@@ -78,7 +78,7 @@ class SimpleProjDepMerit<NetEmbed::SIMPLE>
         }
 
     protected:
-        std::string m_name = "Null figure (SIMPLE)."; // name of the projection-dependent merit
+        std::string m_name = "dummy"; // name of the projection-dependent merit
 };
 
 /** Template specialization for projection-dependent merits which only require the net and the projection in the case of 
@@ -99,7 +99,7 @@ class SimpleProjDepMerit<NetEmbed::EMBEDDED>
          */ 
         friend std::ostream& operator<<(std::ostream& os, const SimpleProjDepMerit& dt)
         {
-            os << "Proj dep merit: " << dt.name();
+            os << "Projection-dependent merit: " << dt.name();
             return os;
         } 
 
@@ -121,7 +121,7 @@ class SimpleProjDepMerit<NetEmbed::EMBEDDED>
         }
 
     protected:
-        std::string m_name =  "Null figure (EMBEDDED)."; // name of the projection-dependent merit
+        std::string m_name =  "Dummy"; // name of the projection-dependent merit
         std::function<Real (const RealVector&)> m_combiner = nullCombiner() ; // combiner for the merits of each level
 };
 
@@ -150,7 +150,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         const LatCommon::Weights& weights() const { return *m_weights; }
 
         /** Returns the projection-dependent merit of the figure */
-        const PROJDEP& projDepMerit() const { return *m_projDepMerit; }
+        PROJDEP& projDepMerit() const { return *m_projDepMerit; }
 
         /** Returns the norm type of the figure */
         Real normType() const{ return m_normType; }

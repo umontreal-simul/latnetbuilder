@@ -67,7 +67,7 @@ class TValueProjMerit<NetEmbed::SIMPLE>
          */ 
         friend std::ostream& operator<<(std::ostream& os, const TValueProjMerit& dt)
         {
-            os << "Proj dep merit: " << dt.name();
+            os << "Projection-dependent merit: " << dt.name();
             return os;
         } 
 
@@ -88,7 +88,7 @@ class TValueProjMerit<NetEmbed::SIMPLE>
         }
 
     private:
-        std::string m_name = "Projection-dependent merit: t-value (simple nets)"; // name of the projection-dependent merit
+        std::string m_name = "t-value (simple nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 };
 
@@ -119,7 +119,7 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
          */ 
         friend std::ostream& operator<<(std::ostream& os, const TValueProjMerit& dt)
         {
-            os << "Proj dep merit: " << dt.name();
+            os << "Projection-dependent merit: " << dt.name();
             return os;
         } 
 
@@ -130,7 +130,17 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
          */ 
         std::vector<unsigned int> operator()(const DigitalNet& net, const LatCommon::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
         {
-            return maxMeritsSubProj ; // TO IMPLEMENT
+            std::vector<unsigned int> res(std::min(net.numRows(),net.numColumns()));
+            for(unsigned int m = 1; m <= res.size(); ++m)
+            {
+                std::vector<GeneratingMatrix> mats;
+                for(unsigned int dim : projection)
+                {
+                    mats.push_back(net.pointerToGeneratingMatrix(dim+1)->subMatrix(m,m));
+                }
+                res[m-1] = GaussMethod::computeTValue(std::move(mats),maxMeritsSubProj[m-1], false);
+            }
+            return res ;
         }
 
         /** Combines the projection-dependent merits (embedded) into a single value merit.
@@ -139,7 +149,7 @@ class TValueProjMerit<NetEmbed::EMBEDDED>
         Real combine(const std::vector<unsigned int>& merits) const { return m_combiner(merits) ; }
 
     private:
-        std::string m_name = "Projection-dependent merit: t-value (embedded nets)";// name of the projection-dependent merit
+        std::string m_name = "t-value (embedded nets)";// name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 
         std::function<Real (const std::vector<unsigned int>&)> m_combiner; 
@@ -566,7 +576,6 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
         {
-
             extendUpToDimension(dimension);
 
             assert(isValid(dimension-1)); // check that the previous dimensions were correctly computed
@@ -578,6 +587,11 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
             Node* it = m_roots[dimension-1]; // iterator over the nodes
             do
             {   
+                unsigned int numLevels = std::min(net.numRows(),net.numColumns());
+                if (it->numLevels()<numLevels)
+                {
+                    it->resizeLevels(numLevels);
+                }
                 Real weight = it->getWeight();
 
                 it->updateMaxMeritsSubProj()
@@ -712,6 +726,14 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
                     }
                 }
 
+                unsigned int numLevels() const { return m_numLevels; }
+
+                void resizeLevels(unsigned int numLevels)
+                {
+                    m_maxMeritsSubProj.resize(numLevels,0);
+                    m_numLevels = numLevels; 
+                }
+
                 /** Overloading of the < operator to compare projections. A projection is smaller (less important) than another one if they have the same cardinal and its weight is smaller
                  * of if it has a strictly bigger cardinal.
                  */ 
@@ -734,6 +756,7 @@ class WeightedFigureOfMerit<TValueProjMerit<NetEmbed::EMBEDDED>>::WeightedFigure
                 double m_weight; // weight of the projection
                 unsigned int m_dimension; // last dimension (highest coordinate in the projection)
                 unsigned int m_cardinal; // cardinal of the projection
+                unsigned int m_numLevels = 0;
 
                 Node* m_nextNode = nullptr; // pointer to the next projection to evaluate
                 std::vector<Node*> m_mothersNodes; // pointers to the subprojections whose cardinal is one less

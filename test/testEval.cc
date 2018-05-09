@@ -35,15 +35,30 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 10;
-    unsigned int m = 20;
+    unsigned int s = 20;
+    unsigned int m = 30;
 
-    unsigned int r = 100;
+    //unsigned int r = 100;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>(3);
+    auto combiner = [] (std::vector<unsigned int> merits) -> Real 
+    { 
+        unsigned int m = merits.size();
+        Real res;
+        for(double t : merits)
+        {
+            res = std::max(res, intPow(t,6)/(m-t+1));
+        }
+        return res;
+    };
 
-    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights), std::move(projDep), OpMax());
+    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<NetEmbed::EMBEDDED>>(2,combiner);
+
+    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<NetEmbed::EMBEDDED>>>(1, std::move(weights), std::move(projDep), OpMax());
+
+    // auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>(3);
+
+    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights), std::move(projDep), OpMax());
 
     auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m,m);
 
