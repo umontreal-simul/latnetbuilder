@@ -41,9 +41,9 @@ public:
  */
 template <LatticeType LR>
 struct MeritCombiner {
-   static std::unique_ptr<typename LatBuilder::MeritFilterList<LR, LatEmbed::EMBEDDED>::Combiner> parse(
+   static std::unique_ptr<typename LatBuilder::MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner> parse(
          const std::string& str,
-         const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
+         const LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam
          );
 };
 

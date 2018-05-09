@@ -15,7 +15,7 @@
 // limitations under the License.
 
 #ifndef LATBUILDER__GENSEQ__GENERATING_VALUES_OLR_H
-#define LATBUILDER__GENSEQ__CENERATING_VALUES_OLR_H
+#define LATBUILDER__GENSEQ__GENERATING_VALUES_OLR_H
 
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/Util.h"

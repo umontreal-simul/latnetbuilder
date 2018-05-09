@@ -35,7 +35,7 @@
 namespace LatBuilder
 {
 
-template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LR, LAT>::Order>
+template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LR, PST>::Order>
 class WeightedFigureOfMeritEvaluator;
 
 /**
@@ -130,10 +130,10 @@ public:
    /**
     * Creates an evaluator for the figure of merit.
     */
-   template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
-   WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, LAT, COMPRESS, PLO>
-   evaluator(Storage<LR, LAT, COMPRESS, PLO> storage) const
-   { return WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, LAT, COMPRESS, PLO>(*this, std::move(storage)); }
+   template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+   WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, PST, COMPRESS, PLO>
+   evaluator(Storage<LR, PST, COMPRESS, PLO> storage) const
+   { return WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, PST, COMPRESS, PLO>(*this, std::move(storage)); }
 
    std::string name() const
    { return Accumulator<ACC, Real>::name() + ":" + projDepMerit().name(); }
@@ -175,21 +175,21 @@ private:
  * instantiated without prior knowledge of the storage class to be used during
  * the evaluation.
  */
-template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
+template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
 class WeightedFigureOfMeritEvaluator
 {
 public:
-   typedef typename Storage<LR, LAT, COMPRESS, PLO>::MeritValue MeritValue;
+   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
 
    typedef boost::signals2::signal<bool (const MeritValue&), Functor::AllOf> OnProgress;
-   typedef boost::signals2::signal<void (const LatDef<LR, LAT>&)> OnAbort;
+   typedef boost::signals2::signal<void (const LatDef<LR, PST>&)> OnAbort;
 
    /**
     * Constructor.
     */
    WeightedFigureOfMeritEvaluator(
          const FIGURE& figure,
-         Storage<LR, LAT, COMPRESS, PLO> storage
+         Storage<LR, PST, COMPRESS, PLO> storage
          ):
       m_onProgress(new OnProgress),
       m_onAbort(new OnAbort),
@@ -235,7 +235,7 @@ public:
     */
    template <class CSETS>
    MeritValue operator() (
-         const LatDef<LR, LAT>& lat,
+         const LatDef<LR, PST>& lat,
          const CSETS& projections,
          MeritValue initialValue
          ) const
@@ -307,7 +307,7 @@ private:
    std::unique_ptr<OnAbort> m_onAbort;
 
    const FIGURE& m_figure;
-   Storage<LR, LAT, COMPRESS, PLO> m_storage;
+   Storage<LR, PST, COMPRESS, PLO> m_storage;
    decltype(m_figure.projDepMerit().evaluator(m_storage)) m_eval;
 };
 

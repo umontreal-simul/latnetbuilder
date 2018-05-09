@@ -9,4 +9,7 @@ VERSION
 .Rhistory
 .vscode/
 *.txt
-*checkpoint.ipynb
+*-checkpoint.ipynb
+
+test/*
+!test/*.cc

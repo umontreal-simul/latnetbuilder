@@ -31,8 +31,8 @@ using TextStream::operator<<;
 template <LatticeType LA>
 void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
    typedef GenSeq::GeneratingValues<LA, Compress::NONE> Seq;
-   SizeParam<LA, LatEmbed::SIMPLE> n(modulus);      // lattice size
-   SizeParam<LA, LatEmbed::SIMPLE> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   SizeParam<LA, PointSetType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, PointSetType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
    Dimension dim = 3;
    //! [VectorCreator]
    auto vec = GenSeq::VectorCreator<Seq>::create(n, dim);
@@ -50,8 +50,8 @@ void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
 template <LatticeType LA>
 void RandomSeqVector(typename LatticeTraits<LA>::Modulus modulus){
    typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR113>> RandomSeq;
-   SizeParam<LA, LatEmbed::SIMPLE> n(modulus);      // lattice size
-   SizeParam<LA, LatEmbed::SIMPLE> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   SizeParam<LA, PointSetType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, PointSetType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
    Dimension dim = 3;
   
    auto randVec = GenSeq::VectorCreator<RandomSeq>::create(n, dim, 5);

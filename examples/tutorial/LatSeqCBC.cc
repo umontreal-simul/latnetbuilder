@@ -38,7 +38,7 @@ typename SEQ::const_iterator findBest(const SEQ& seq)
 
 template<LatticeType LA>
 void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
-   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
+   SizeParam<LA, PointSetType::UNILEVEL> size(modulus);
    Dimension dim = 4;
 
    auto baseLat = createLatDef(size, typename LatticeTraits<LA>::GeneratingVector{typename LatticeTraits<LA>::GenValue(1)});

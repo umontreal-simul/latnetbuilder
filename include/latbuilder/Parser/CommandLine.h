@@ -25,14 +25,14 @@ namespace LatBuilder { namespace Parser {
 /**
  * Collection of arguments required to construct a Search instance.
  */
-template <LatBuilder::LatticeType , LatBuilder::LatEmbed>
+template <LatBuilder::LatticeType , LatBuilder::PointSetType>
 struct CommandLine;
 
 /**
  * Specialization of CommandLine for ordinary lattices.
  */
 template <LatBuilder::LatticeType LR>
-struct CommandLine<LR, LatBuilder::LatEmbed::SIMPLE> {
+struct CommandLine<LR, LatBuilder::PointSetType::UNILEVEL> {
    std::string construction;
    std::string size;
    std::string dimension;
@@ -42,25 +42,25 @@ struct CommandLine<LR, LatBuilder::LatEmbed::SIMPLE> {
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
 
-   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::LatEmbed::SIMPLE>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::PointSetType::UNILEVEL>> parse() const;
 };
 
 /**
  * Specialization of CommandLine for embedded lattices.
  */
 template <LatBuilder::LatticeType LR>
-struct CommandLine<LR, LatBuilder::LatEmbed::EMBEDDED> : CommandLine<LR, LatBuilder::LatEmbed::SIMPLE> {
+struct CommandLine<LR, LatBuilder::PointSetType::MULTILEVEL> : CommandLine<LR, LatBuilder::PointSetType::UNILEVEL> {
    std::vector<std::string> multilevelFilters;
    std::string combiner;
 
-   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::LatEmbed::EMBEDDED>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::PointSetType::MULTILEVEL>> parse() const;
 };
 
 /*
-extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>;
-extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>;
-extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>;
-extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>;
+extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>;
 */
 }}
 

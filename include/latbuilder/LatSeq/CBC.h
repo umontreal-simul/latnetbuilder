@@ -28,16 +28,16 @@ namespace LatBuilder { namespace LatSeq {
  * Sequence of lattice definitions obtained by appending a variable component to
  * a base genrating vector.
  *
- * \tparam LAT       Type of lattice.
+ * \tparam PST       Type of lattice.
  * \tparam GENSEQ    Type of sequences of generator values.
  * 
  */
-template <LatticeType LR, LatEmbed LAT, class GENSEQ>
+template <LatticeType LR, PointSetType PST, class GENSEQ>
 class CBC {
 public:
 
    typedef GENSEQ GenSeq;
-   typedef LatDef<LR, LAT> value_type;
+   typedef LatDef<LR, PST> value_type;
    typedef size_t size_type;
 
    /**
@@ -46,7 +46,7 @@ public:
     * \param baseLat    Base lattice.
     * \param genSeq     Sequence of generator sequences.
     */
-   CBC(LatDef<LR, LAT> baseLat, GenSeq genSeq):
+   CBC(LatDef<LR, PST> baseLat, GenSeq genSeq):
       m_baseLat(std::move(baseLat)), m_genSeq(std::move(genSeq))
    {}
 
@@ -60,11 +60,11 @@ public:
    /**
     * Returns the base lattice definition.
     */
-   const LatDef<LR, LAT>& baseLat() const
+   const LatDef<LR, PST>& baseLat() const
    { return m_baseLat; }
 
 private:
-   LatDef<LR, LAT> m_baseLat;
+   LatDef<LR, PST> m_baseLat;
    GenSeq m_genSeq;
 
 public:
@@ -143,10 +143,10 @@ public:
 };
 
 /// Creates a CBC lattice sequence.
-template <LatticeType LR, LatEmbed LAT, class GENSEQ>
-CBC<LR, LAT, GENSEQ>
-cbc(LatDef<LR, LAT> baseLat, GENSEQ genSeq)
-{ return CBC<LR, LAT, GENSEQ>(std::move(baseLat), std::move(genSeq)); }
+template <LatticeType LR, PointSetType PST, class GENSEQ>
+CBC<LR, PST, GENSEQ>
+cbc(LatDef<LR, PST> baseLat, GENSEQ genSeq)
+{ return CBC<LR, PST, GENSEQ>(std::move(baseLat), std::move(genSeq)); }
 
 }}
 

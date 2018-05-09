@@ -54,9 +54,9 @@ namespace LatBuilder { namespace MeritSeq {
  * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO , class WEIGHTS>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO , class WEIGHTS>
 class ConcreteCoordUniformState :
-   public CoordUniformState<LR, LAT, COMPRESS, PLO> {
+   public CoordUniformState<LR, PST, COMPRESS, PLO> {
 public:
    /**
     * Constructor.
@@ -68,16 +68,16 @@ public:
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
    ConcreteCoordUniformState(
-         Storage<LR, LAT, COMPRESS, PLO> storage,
+         Storage<LR, PST, COMPRESS, PLO> storage,
          const WEIGHTS& weights
          ):
-      CoordUniformState<LR, LAT, COMPRESS, PLO>(std::move(storage)),
+      CoordUniformState<LR, PST, COMPRESS, PLO>(std::move(storage)),
       m_weights(weights)
    { reset(); }
 
    void reset()
    {
-	  CoordUniformState<LR, LAT, COMPRESS, PLO>::reset();
+	  CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
 	  m_state.clear();
 	  // empty set
 	  m_state[LatCommon::Coordinates()] =
@@ -96,7 +96,7 @@ public:
     */
    void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
    {
-      CoordUniformState<LR, LAT, COMPRESS, PLO>::update(kernelValues, gen);
+      CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
 
       using LatCommon::Coordinates;
 
@@ -159,8 +159,8 @@ public:
 	  return weightedState;
    }
 
-   std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>> clone() const
-   { return std::unique_ptr<CoordUniformState<LR, LAT, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
+   std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const WEIGHTS& m_weights;

@@ -331,7 +331,7 @@ under `$HOME/latsoft`, `/opt/boost` and `/opt/FFTW`, a C++ source file called
 `myprog.cc` can be compiled and linked into an executable called `myprog` by
 using the following command line with GCC:
 
-	g++ -std=c++11 -I$HOME/latsoft/include -I/opt/boost/include -I/opt/fftw/include -O2 -o myprog myprog.cc -L$HOME/latsoft/lib -l latbuilder -l latcommon -L/opt/fftw/lib -l fftw3
+	g++ -std=c++14 -I$HOME/latsoft/include -I/opt/boost/include -I/opt/fftw/include -O2 -o myprog myprog.cc -L$HOME/latsoft/lib -l latbuilder -l latcommon -L/opt/fftw/lib -l fftw3
 
 With clang, just replace `g++` with `clang++`.
 

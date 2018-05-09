@@ -61,7 +61,7 @@ public:
     * \remark Checks that the functor and the compression are compatible, or
     * throws a std::logic_error.
     */
-   template <LatticeType LR, LatEmbed L, Compress C, PerLevelOrder P >
+   template <LatticeType LR, PointSetType L, Compress C, PerLevelOrder P >
    RealVector valuesVector(
          const Storage<LR, L, C, P>& storage
          ) const

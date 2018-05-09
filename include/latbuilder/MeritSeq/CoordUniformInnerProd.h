@@ -33,12 +33,12 @@ namespace LatBuilder { namespace MeritSeq {
  * Standard implementation of the inner product for a sequence of vector with a
  * single vector.
  */
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformInnerProd {
 public:
-   typedef Storage<LR, LAT, COMPRESS, PLO> InternalStorage;
-   typedef CoordUniformStateList<LR, LAT, COMPRESS, PLO> StateList;
-   typedef typename Storage<LR, LAT, COMPRESS, PLO>::MeritValue MeritValue;
+   typedef Storage<LR, PST, COMPRESS, PLO> InternalStorage;
+   typedef CoordUniformStateList<LR, PST, COMPRESS, PLO> StateList;
+   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
 
    /**
     * Constructor.
@@ -50,7 +50,7 @@ public:
     */
    template <class K>
    CoordUniformInnerProd(
-         Storage<LR, LAT, COMPRESS, PLO> storage,
+         Storage<LR, PST, COMPRESS, PLO> storage,
          const Kernel::Base<K>& kernel
          ):
       m_storage(std::move(storage)),
@@ -60,13 +60,13 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LR, LAT, COMPRESS, PLO>& storage() const
+   const Storage<LR, PST, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LR, LAT, COMPRESS, PLO>& internalStorage() const
+   const Storage<LR, PST, COMPRESS, PLO>& internalStorage() const
    { return m_storage; }
 
    /**
@@ -162,7 +162,7 @@ private:
    template <class> friend class Seq;
 
 private:
-   Storage<LR, LAT, COMPRESS, PLO> m_storage;
+   Storage<LR, PST, COMPRESS, PLO> m_storage;
    RealVector m_kernelValues;
 };
 

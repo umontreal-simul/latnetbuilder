@@ -28,7 +28,7 @@ using TextStream::operator<<;
 //! [main]
 template<LatticeType LA>
 void test(typename LatticeTraits<LA>::Modulus modulus, typename LatticeTraits<LA>::GeneratingVector genv){
-   SizeParam<LA, LatEmbed::SIMPLE> size(modulus);
+   SizeParam<LA, PointSetType::UNILEVEL> size(modulus);
    
    //! [baseLat]
    auto baseLat = createLatDef(size, genv);
