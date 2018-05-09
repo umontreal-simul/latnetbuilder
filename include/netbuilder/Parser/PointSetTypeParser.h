@@ -41,9 +41,9 @@ struct PointSetTypeParser {
    static result_type parse(const std::string& str)
    {
       if (str == "net")
-         return NetBuilder::PointSetType::NET;
+         return NetBuilder::PointSetType::UNILEVEL;
       else if (str == "sequence")
-         return NetBuilder::PointSetType::SEQUENCE;
+         return NetBuilder::PointSetType::MULTILEVEL;
       throw BadPointSetType(str);
    }
 };

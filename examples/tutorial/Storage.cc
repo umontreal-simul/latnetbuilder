@@ -22,11 +22,11 @@
 using namespace LatBuilder;
 
 //! [all]
-template <LatticeType LA, LatEmbed LAT, Compress COMP>
+template <LatticeType LA, PointSetType PST, Compress COMP>
 void test(typename LatticeTraits<LA>::Modulus modulus)
 {
-   SizeParam<LA, LAT> size(modulus);
-   Storage<LA, LAT, COMP> storage(size);
+   SizeParam<LA, PST> size(modulus);
+   Storage<LA, PST, COMP> storage(size);
    std::cout << "storage name: " << storage.name() << std::endl;
    std::cout << "  size parameter: " << storage.sizeParam() << std::endl;
    std::cout << "  virtual size:   " << storage.virtualSize() << std::endl;
@@ -38,13 +38,13 @@ int main()
 
    uInteger n = 16;
    Polynomial P = PolynomialFromInt(7);
-   test<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::NONE>(n);
-   test<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::NONE>(n);
-   test<LatticeType::ORDINARY, LatEmbed::SIMPLE, Compress::SYMMETRIC>(n);
-   test<LatticeType::ORDINARY, LatEmbed::EMBEDDED, Compress::SYMMETRIC>(n);
+   test<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE>(n);
+   test<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE>(n);
+   test<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(n);
+   test<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(n);
 
-   test<LatticeType::POLYNOMIAL, LatEmbed::SIMPLE, Compress::NONE>(P);
-   test<LatticeType::POLYNOMIAL, LatEmbed::EMBEDDED, Compress::NONE>(P);
+   test<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(P);
+   test<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(P);
 
    return 0;
 }

@@ -14,12 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// #include "latbuilder/Parser/LatEmbed.h"
-// #include "latbuilder/Parser/Lattice.h"
-// #include "latbuilder/Parser/CommandLine.h"  
-// #include "latbuilder/Parser/OutputPoly.h" 
-// #include "latbuilder/TextStream.h"
-// #include "latbuilder/Types.h"
 
 #include <fstream>
 #include <chrono>
@@ -32,15 +26,12 @@
 #include "netbuilder/Task/BaseTask.h"
 
 #include <latbuilder/Parser/Common.h>
-
-
-#ifndef LATBUILDER_VERSION
-#define LATBUILDER_VERSION "(unkown version)"  
-#endif
+#include "latbuilder/SizeParam.h"
 
 // using namespace LatBuilder;
 // using TextStream::operator<<;
 
+namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0; 
 
 void TaskOutput(const NetBuilder::Task::BaseTask& task)
@@ -60,6 +51,10 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
+    ("main-construction,C", po::value<std::string>(),
+    "(required) main construction type; possible values:\n"
+    "  lattice\n"
+    "  net\n")
    ("help,h", "produce help message")
    ("version,V", "show version")
    ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
@@ -157,10 +152,10 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-   if (opt.count("version")) {
-      std::cout << "Net Builder " << LATBUILDER_VERSION << std::endl;
-      std::exit (0);
-   }
+  //  if (opt.count("version")) {
+  //     std::cout << "Net Builder " << LATBUILDER_VERSION << std::endl;
+  //     std::exit (0);
+  //  }
 
    if (opt.count("add-figure") < 1)
       throw std::runtime_error("--add-figure must be specified (try --help)");
@@ -211,7 +206,7 @@ int main(int argc, const char *argv[])
 
         auto opt = parse(argc, argv);
 
-        bool quiet = opt.count("quiet");
+        // bool quiet = opt.count("quiet");
 
         auto repeat = opt["repeat"].as<unsigned int>();
 
@@ -223,21 +218,21 @@ int main(int argc, const char *argv[])
         NetBuilder::PointSetType setType = NetBuilder::Parser::PointSetTypeParser::parse(s_setType);
         NetBuilder::NetConstruction netConstruction = NetBuilder::Parser::NetConstructionParser::parse(s_construction);
 
-      std::chrono::time_point t0, t1;
+      std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
       for (unsigned i=0; i<repeat; i++){
-        if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::NET){
-          BUILD_AND_EXECUTE_TASK(SOBOL, NET)
+        if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::UNILEVEL){
+          BUILD_AND_EXECUTE_TASK(SOBOL, UNILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::SEQUENCE){
-          BUILD_AND_EXECUTE_TASK(SOBOL, SEQUENCE)
+       if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::MULTILEVEL){
+          BUILD_AND_EXECUTE_TASK(SOBOL, MULTILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::NET){
-          BUILD_AND_EXECUTE_TASK(POLYNOMIAL, NET)
-       }
-       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::SEQUENCE){
-          BUILD_AND_EXECUTE_TASK(POLYNOMIAL, SEQUENCE)
-       }
+      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::UNILEVEL){
+      //     BUILD_AND_EXECUTE_TASK(POLYNOMIAL, UNILEVEL)
+      //  }
+      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::MULTILEVEL){
+      //     BUILD_AND_EXECUTE_TASK(POLYNOMIAL, MULTILEVEL)
+      //  }
 
       //  if (not quiet) {
           auto dt = duration_cast<duration<double>>(t1 - t0);
@@ -246,7 +241,7 @@ int main(int argc, const char *argv[])
       // }
       }
    }
-   catch (NetBuilder::Parser::ParserError& e) {
+   catch (LatBuilder::Parser::ParserError& e) {
       std::cerr << "COMMAND LINE ERROR: " << e.what() << std::endl;
       std::exit(1);
    }
@@ -259,3 +254,4 @@ int main(int argc, const char *argv[])
 }
 
 #undef BUILD_AND_EXECUTE_TASK
+}

@@ -19,8 +19,8 @@
 
 namespace LatBuilder {
 
-std::ostream& operator<<(std::ostream& os, LatEmbed latType)
-{ return os << (latType == LatEmbed::EMBEDDED ? "embedded" : "ordinary"); }
+std::ostream& operator<<(std::ostream& os, PointSetType latType)
+{ return os << (latType == PointSetType::MULTILEVEL ? "embedded" : "ordinary"); }
 //============================================================================================================================================
 
 uInteger LatticeTraits<LatticeType::ORDINARY>::ToIndex(const LatticeTraits<LatticeType::ORDINARY>::GenValue& value) {return value;}

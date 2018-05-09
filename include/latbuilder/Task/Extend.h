@@ -30,40 +30,40 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 class Extend;
 
 
 /// Exhaustive search.
-template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
-Extend<LR, LAT, COMPRESS, PLO, FIGURE> extend(
-      Storage<LR, LAT, COMPRESS, PLO> storage,
-      LatDef<LR, LAT> baseLat,
+template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+Extend<LR, PST, COMPRESS, PLO, FIGURE> extend(
+      Storage<LR, PST, COMPRESS, PLO> storage,
+      LatDef<LR, PST> baseLat,
       FIGURE figure
       )
-{ return Extend<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), std::move(baseLat), std::move(figure)); }
+{ return Extend<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), std::move(baseLat), std::move(figure)); }
 
 
 /**
  * Search task that extends the number of points of a lattice.
  *
- * \tparam LAT, COMPRESS Type of storage.
+ * \tparam PST, COMPRESS Type of storage.
  * \tparam FIGURE Type of figure of merit.
  */
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-class Extend : public Search<LR, LAT> {
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+class Extend : public Search<LR, PST> {
 public:
-   typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;
-   typedef typename CBCSelector<LR, LAT, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
+   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef typename CBC::FigureOfMerit FigureOfMerit;
    typedef typename Storage::SizeParam SizeParam;
 
    Extend(
          Storage storage,
-         LatDef<LR, LAT> baseLat,
+         LatDef<LR, PST> baseLat,
          FigureOfMerit figure
          ):
-      Search<LR, LAT>(baseLat.dimension()),
+      Search<LR, PST>(baseLat.dimension()),
       m_storage(std::move(storage)),
       m_figure(new FigureOfMerit(std::move(figure))),
       m_latSeqOverCBC(new MeritSeq::LatSeqOverCBC<CBC>(CBC(this->storage(), this->figureOfMerit()))),
@@ -71,7 +71,7 @@ public:
    { connectCBCProgress(this->cbc(), this->minObserver(), this->filters().empty()); }
 
    Extend(Extend&& other):
-      Search<LR, LAT>(std::move(other)),
+      Search<LR, PST>(std::move(other)),
       m_storage(std::move(other.m_storage)),
       m_figure(other.m_figure.release()),
       m_latSeqOverCBC(other.m_latSeqOverCBC.release()),
@@ -83,7 +83,7 @@ public:
    virtual void execute()
    {
       typedef GenSeq::Extend<LR> GenSeqType;
-      typedef LatSeq::Combiner<LR, LAT, GenSeqType, CartesianProduct> LatSeqType;
+      typedef LatSeq::Combiner<LR, PST, GenSeqType, CartesianProduct> LatSeqType;
 
       std::vector<GenSeqType> gens(this->dimension());
       gens[0] = GenSeqType(LatticeTraits<LR>::TrivialModulus, LatticeTraits<LR>::TrivialModulus, typename LatticeTraits<LR>::GenValue(1));
@@ -116,7 +116,7 @@ public:
    /**
     * Returns the base lattice on which to extend.
     */
-   const LatDef<LR, LAT>& baseLat() const
+   const LatDef<LR, PST>& baseLat() const
    { return m_baseLat; }
 
    /**
@@ -139,14 +139,14 @@ protected:
       os << "figure of merit: " << figureOfMerit() << std::endl;
       os << "base lattice: " << baseLat() << std::endl;
       os << "size parameter: " << storage().sizeParam() << std::endl;
-      Search<LR, LAT>::format(os);
+      Search<LR, PST>::format(os);
    }
 
 private:
    Storage m_storage;
    std::unique_ptr<FigureOfMerit> m_figure;
    std::unique_ptr<MeritSeq::LatSeqOverCBC<CBC>> m_latSeqOverCBC;
-   LatDef<LR, LAT> m_baseLat;
+   LatDef<LR, PST> m_baseLat;
 };
 
 TASK_FOR_ALL(TASK_EXTERN_TEMPLATE1, Extend, NOTAG);

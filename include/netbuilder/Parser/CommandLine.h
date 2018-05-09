@@ -48,7 +48,7 @@ struct CommandLine {
    Dimension m_dimension;
    std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
 
-   std::unique_ptr<Task::BaseTask> parse() const;
+   std::unique_ptr<Task::BaseTask> parse();
 };
 
 }
@@ -65,7 +65,7 @@ struct CommandLine {
 namespace NetBuilder { namespace Parser {
 template <NetConstruction NC, PointSetType PST>
 std::unique_ptr<NetBuilder::Task::BaseTask>
-CommandLine<NC, PST>::parse() const
+CommandLine<NC, PST>::parse()
 {
       namespace lbp = LatBuilder::Parser;
       m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, PST>::parse(s_size);
@@ -74,22 +74,7 @@ CommandLine<NC, PST>::parse() const
       return ExplorationMethodParser<NC, PST>::parse(*this); // as a side effect, m_figure has been moved to task
 }
 
-/**
- * Specialization of CommandLine for embedded nets.
- */
-// template <NetConstruction NC, PointSetType PST>
-// struct CommandLine<PointSetType::SEQUENCE> : CommandLine<PointSetType::NET> {
-//    std::string combiner;
 
-//    std::unique_ptr<Task::BaseTask> parse() const;
-// };
-
-/*
-extern template struct CommandLine<NetBuilder::NetticeType::DIGITAL, NetBuilder::PointSetType::NET>;
-extern template struct CommandLine<NetBuilder::NetticeType::DIGITAL, NetBuilder::PointSetType::SEQUENCE>;
-extern template struct CommandLine<NetBuilder::NetticeType::POLYNOMIAL, NetBuilder::PointSetType::NET>;
-extern template struct CommandLine<NetBuilder::NetticeType::POLYNOMIAL, NetBuilder::PointSetType::SEQUENCE>;
-*/
 }}
 
 #endif

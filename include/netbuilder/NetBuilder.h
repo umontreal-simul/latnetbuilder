@@ -14,24 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__PARSER__SIZE_PARAM_H
-#define LATBUILDER__PARSER__SIZE_PARAM_H
+#ifndef NETBUILDER_H
+#define NETBUILDER_H
 
-#include "latbuilder/Types.h"
-#include "latbuilder/SizeParam.h"
-
-namespace LatBuilder { namespace Parser {
-
-/**
- * Parser for size parameters.
- */
-	template <LatticeType LR, LatBuilder::PointSetType PST>
-struct SizeParam {
-   
-   static LatBuilder::SizeParam<LR, PST> parse(const std::string& str);
-};
-
-
-}}
+namespace NetBuilder{
+    int main(int argc, const char *argv[]);
+}
 
 #endif

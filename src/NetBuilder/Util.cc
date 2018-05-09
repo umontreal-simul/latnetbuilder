@@ -19,6 +19,20 @@
 
 namespace NetBuilder {
 
+struct OpAdd{
+    Real operator()(Real x, Real y){return x+y;}
+};
+
+struct OpMax{
+    Real operator()(Real x, Real y){ return (x < y) ? y : x;}
+};
+
+BinOp realToBinOp(Real normType){
+if (normType < std::numeric_limits<Real>::max())
+    return BinOp(OpAdd());
+return BinOp(OpMax());
+}
+
 
 std::vector<std::vector<int>> compositions(int n, int nb_parts){
     assert(nb_parts>= 2 && n>= nb_parts);
@@ -55,4 +69,8 @@ Row permutation(Row& row, std::vector<int>& C){
     }
     return new_row;
 }
+
+
+
 }
+

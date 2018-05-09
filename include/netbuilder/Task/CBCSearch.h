@@ -278,16 +278,17 @@ class CBCSearch : public BaseTask
         std::unique_ptr<OnNetSelected> m_onNetSelected;
         std::unique_ptr<OnFailedSearch> m_onFailedSearch;
         Dimension m_dimension;
+        unsigned int m_nRows;
+        unsigned int m_nCols;
+        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
         DigitalNetConstruction<NC> m_bestNet;
         Real m_bestMerit;
         std::unique_ptr<MinObserver> m_minObserver;
-        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
-        unsigned int m_nRows;
-        unsigned int m_nCols;
         std::unique_ptr<Explorer> m_explorer;
         unsigned int m_verbose;
 };
 
 }}
+
 
 #endif

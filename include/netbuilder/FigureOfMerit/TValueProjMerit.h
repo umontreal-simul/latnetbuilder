@@ -44,7 +44,7 @@ class TValueProjMerit
 /** Template specialization in the case of simple nets.
  */ 
 template <>
-class TValueProjMerit<PointSetType::NET>
+class TValueProjMerit<PointSetType::UNILEVEL>
 {
     public:
 
@@ -95,7 +95,7 @@ class TValueProjMerit<PointSetType::NET>
 /** Template specialization in the case of embedded nets.
  */ 
 template <>
-class TValueProjMerit<PointSetType::SEQUENCE>
+class TValueProjMerit<PointSetType::MULTILEVEL>
 {
     public:
 
@@ -136,18 +136,24 @@ class TValueProjMerit<PointSetType::SEQUENCE>
         /** Combines the projection-dependent merits (embedded) into a single value merit.
          * @param merits are the embedded merits
          */ 
-        Real combine(const std::vector<unsigned int>& merits) const { return m_combiner(merits) ; }
+        Real combine(const std::vector<unsigned int>& merits) const {
+            RealVector tmp(merits.size());
+            for (unsigned int i=0; i<merits.size(); i++){
+                tmp[i] = (Real) merits[i];
+            } 
+            return m_combiner(std::move(tmp)) ; 
+        }
 
     private:
         std::string m_name = "Projection-dependent merit: t-value (embedded nets)";// name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 
-        std::function<Real (const std::vector<unsigned int>&)> m_combiner; 
+        Combiner m_combiner; 
         // function wrapper which combines embedded merits in a single value merit
 };
 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::NET>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
 {
     public:
 
@@ -538,7 +544,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::NET>>::WeightedFigureO
 };
 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::SEQUENCE>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
 {
     public:
 

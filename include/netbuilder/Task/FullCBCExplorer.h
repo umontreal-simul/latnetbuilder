@@ -62,8 +62,8 @@ class FullCBCExplorer
 
     private:
         unsigned int m_dimension;
-        std::vector<typename ConstructionMethod::GenValue> m_data;
         unsigned int m_currentDim;
+        std::vector<typename ConstructionMethod::GenValue> m_data;
         size_t m_state;
 };
 

@@ -43,7 +43,7 @@ class SimpleProjDepMerit;
  * and the projection in the case of simple nets.
  */ 
 template<>
-class SimpleProjDepMerit<PointSetType::NET>
+class SimpleProjDepMerit<PointSetType::UNILEVEL>
 {
     public:
     
@@ -85,7 +85,7 @@ class SimpleProjDepMerit<PointSetType::NET>
  * embedded nets.
  */ 
 template<>
-class SimpleProjDepMerit<PointSetType::SEQUENCE>
+class SimpleProjDepMerit<PointSetType::MULTILEVEL>
 {
     public:
 
@@ -170,9 +170,9 @@ class WeightedFigureOfMerit : public FigureOfMerit
 
     private:
 
+        Real m_normType;
         std::unique_ptr<LatCommon::Weights> m_weights;
         std::unique_ptr<PROJDEP> m_projDepMerit;
-        Real m_normType;
         BinOp m_binOp;
 
         /** Class which describes how the figure of merit is computed. */

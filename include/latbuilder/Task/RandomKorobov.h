@@ -31,36 +31,36 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomKorobovTag {};
 
 
 /// Random Korobov search.
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomKorobov =
-   LatSeqBasedSearch<RandomKorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>>;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomKorobov =
+   LatSeqBasedSearch<RandomKorobovTag<LR, PST, COMPRESS, PLO, FIGURE>>;
 
 
 /// Random Korobov search.
-template <class FIGURE, LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO>
-RandomKorobov<LR, LAT, COMPRESS, PLO, FIGURE> randomKorobov(
-      Storage<LR, LAT, COMPRESS, PLO> storage,
+template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+RandomKorobov<LR, PST, COMPRESS, PLO, FIGURE> randomKorobov(
+      Storage<LR, PST, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure,
       unsigned int numRand
       )
-{ return RandomKorobov<LR, LAT, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
+{ return RandomKorobov<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-struct LatSeqBasedSearchTraits<RandomKorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>> {
-   typedef LatBuilder::Task::Search<LR, LAT> Search;
-   typedef LatBuilder::Storage<LR, LAT, COMPRESS, PLO> Storage;
-   typedef typename LatBuilder::Storage<LR, LAT, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef typename CBCSelector<LR, LAT, COMPRESS, PLO, FIGURE>::CBC CBC;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct LatSeqBasedSearchTraits<RandomKorobovTag<LR, PST, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, PST> Search;
+   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef LFSR113 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
    typedef GenSeq::GeneratingValues<LR, COMPRESS, Traversal> GenSeqType;
-   typedef LatSeq::Korobov<LR, LAT, GenSeqType> LatSeqType;
+   typedef LatSeq::Korobov<LR, PST, GenSeqType> LatSeqType;
 
    LatSeqBasedSearchTraits(unsigned int numRand_):
       numRand(numRand_)
@@ -83,7 +83,7 @@ struct LatSeqBasedSearchTraits<RandomKorobovTag<LR, LAT, COMPRESS, PLO, FIGURE>>
    std::string name() const
    { return FIGURE::evaluationName() + " random Korobov search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
 
-   void init(LatBuilder::Task::RandomKorobov<LR, LAT, COMPRESS, PLO, FIGURE>& search) const
+   void init(LatBuilder::Task::RandomKorobov<LR, PST, COMPRESS, PLO, FIGURE>& search) const
    {
       connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty());
       search.minObserver().setMaxAcceptedCount(numRand);

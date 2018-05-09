@@ -28,6 +28,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
+#include "netbuilder/ComputeMaxCardFromWeights.h"
 #include "netbuilder/Parser/LevelCombinerParser.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
@@ -126,14 +127,14 @@ struct FigureParser
         // TODO: compute maxCard
         if (name == "t-value"){
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<PST>>(2, commandLine.m_combiner);
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<PST>>(maxCard, commandLine.m_combiner);
             auto weightedFigureOfMerit = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PST>>>(normType, std::move(weights), std::move(projDepMerit));
             vecFigures.push_back(std::move(weightedFigureOfMerit));
         }
         else if (name == "resolution-gap"){
             throw BadFigure("not yet implemented");
             // unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            // auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionProjMerit<PST>>(2, commandLine.m_combiner);
+            // auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionProjMerit<PST>>(maxCard, commandLine.m_combiner);
             // auto weightedFigureOfMerit = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionProjMerit<PST>>>(normType, std::move(weights), std::move(projDepMerit));
             // vecFigures.push_back(std::move(weightedFigureOfMerit));
         }

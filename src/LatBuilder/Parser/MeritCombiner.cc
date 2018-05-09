@@ -23,13 +23,13 @@
 namespace LatBuilder { namespace Parser {
 
 template<LatticeType LR>
-std::unique_ptr<typename LatBuilder::MeritFilterList<LR, LatEmbed::EMBEDDED>::Combiner>
+std::unique_ptr<typename LatBuilder::MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner>
 MeritCombiner<LR>::parse(
       const std::string& str,
-      const LatBuilder::SizeParam<LR, LatEmbed::EMBEDDED>& sizeParam
+      const LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam
       )
 {
-   typedef std::unique_ptr<typename MeritFilterList<LR, LatEmbed::EMBEDDED>::Combiner> Ptr;
+   typedef std::unique_ptr<typename MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner> Ptr;
    const auto strSplit = splitPair<>(str, ':');
    if (strSplit.first == "level") {
       if (strSplit.second == "max")

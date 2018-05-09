@@ -72,12 +72,12 @@ int main(int argc, const char *argv[])
 
     auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
 
-    // LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::SIMPLE> param(intPow(2, m));
-    // auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::LatEmbed::SIMPLE>>(std::move(weights1), m, param, kernel);
+    // LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::UNILEVEL> param(intPow(2, m));
+    // auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::UNILEVEL>>(std::move(weights1), m, param, kernel);
 
-    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::LatEmbed::EMBEDDED> param(2, m);
+    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::MULTILEVEL> param(2, m);
     std::function<Real (const RealVector&)> f_combine = combine;
-    auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::LatEmbed::EMBEDDED>>(std::move(weights1), m, param, kernel, f_combine);
+    auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::MULTILEVEL>>(std::move(weights1), m, param, kernel, f_combine);
     auto eval = fig1->evaluator();
 
     auto task = Task::Eval(std::move(net),std::move(fig1));

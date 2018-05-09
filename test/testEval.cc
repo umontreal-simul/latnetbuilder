@@ -41,9 +41,9 @@ int main(int argc, const char *argv[])
     unsigned int r = 100;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::NET>>(3);
+    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(3);
 
-    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::NET>>>(1, std::move(weights), std::move(projDep));
+    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m,m);
 

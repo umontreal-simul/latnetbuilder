@@ -45,9 +45,9 @@ int main(int argc, const char *argv[])
     unsigned int r = 100;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto projDep = std::make_unique<TValueProjMerit<PointSetType::NET>>(3);
+    auto projDep = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(3);
 
-    auto fig = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::NET>>>(1, std::move(weights), std::move(projDep));
+    auto fig = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     //auto explorer = std::make_unique<Task::RandomCBCExplorer<NetConstruction::SOBOL>>(s,r);
     //auto search = Task::CBCSearch<NetConstruction::SOBOL,Task::RandomCBCExplorer>(s,m,std::move(fig),std::move(explorer));

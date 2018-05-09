@@ -43,7 +43,7 @@ public:
     *
     * \return The newly created vector.
     */
-   template <LatticeType LR, LatEmbed L, Compress C, PerLevelOrder P > 
+   template <LatticeType LR, PointSetType L, Compress C, PerLevelOrder P > 
    RealVector valuesVector(
          const Storage<LR, L, C, P>& storage
          ) const

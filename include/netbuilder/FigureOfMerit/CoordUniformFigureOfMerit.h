@@ -44,7 +44,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
 /** Class which represents a coordinate uniform figure of merit based on a kernel which is the template
  * parameter. 
  */  
-template <class KERNEL, LatBuilder::LatEmbed LAT>
+template <class KERNEL, LatBuilder::PointSetType PST>
 class CoordUniformFigureOfMerit : public FigureOfMerit
 {
 public:
@@ -58,7 +58,7 @@ public:
     */
    CoordUniformFigureOfMerit(
          std::unique_ptr<LatCommon::Weights> weights,
-         LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LAT> sizeparam,
+         LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> sizeparam,
         KERNEL kernel = KERNEL(),
          std::function<Real (const RealVector&)> combiner = std::function<Real (const RealVector&)>()
          ):
@@ -82,7 +82,7 @@ public:
    const KERNEL& kernel() const
    { return m_kernel; }
 
-   const LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LAT> sizeParam() const 
+   const LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> sizeParam() const 
    { return m_sizeParam; }
 
    std::string name() const
@@ -114,22 +114,22 @@ public:
    std::unique_ptr<LatCommon::Weights> m_weights;
    KERNEL m_kernel;
 //    unsigned int m_nbCols;
-   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LAT> m_sizeParam;
+   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> m_sizeParam;
    std::function<Real (const RealVector&)> m_combiner;
 
    /** Class which describes how the figure of merit is computed. */
     class CoordUniformFigureOfMeritEvaluator : public FigureOfMeritEvaluator
     {
         template <LatBuilder::LatticeType LR, LatBuilder::Compress COMPRESS >
-using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSeq::CoordUniformState<LR, LAT, COMPRESS, LatBuilder::defaultPerLevelOrder<LR, LAT>::Order>>>;
+using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSeq::CoordUniformState<LR, PST, COMPRESS, LatBuilder::defaultPerLevelOrder<LR, PST>::Order>>>;
         // using namespace LatBuilder::MeritSeq;
 
         public:
             /** Constructs the evaluator */
             CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMerit* figure):
                 m_figure(figure),
-                // m_storage(LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LAT> {(typename LatBuilder::LatticeTraits<LatBuilder::LatticeType::DIGITAL>::Modulus)(intPow(2, m_figure->nbCols()))}),
-                m_storage(LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LAT> {m_figure->sizeParam()}),
+                // m_storage(LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> {(typename LatBuilder::LatticeTraits<LatBuilder::LatticeType::DIGITAL>::Modulus)(intPow(2, m_figure->nbCols()))}),
+                m_storage(LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> {m_figure->sizeParam()}),
                 m_innerProd(m_storage, m_figure->kernel()),
                 m_memStates(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights())),
                 m_tmpStates(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights()))
@@ -227,9 +227,9 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
         private:
             CoordUniformFigureOfMerit* m_figure;
 
-            LatBuilder::Storage<LatBuilder::LatticeType::DIGITAL, LAT,  KERNEL::suggestedCompression()> m_storage;            
+            LatBuilder::Storage<LatBuilder::LatticeType::DIGITAL, PST,  KERNEL::suggestedCompression()> m_storage;            
             
-            LatBuilder::MeritSeq::CoordUniformInnerProd<LatBuilder::LatticeType::DIGITAL, LAT,  KERNEL::suggestedCompression(), LatBuilder::PerLevelOrder::BASIC > m_innerProd;
+            LatBuilder::MeritSeq::CoordUniformInnerProd<LatBuilder::LatticeType::DIGITAL, PST,  KERNEL::suggestedCompression(), LatBuilder::PerLevelOrder::BASIC > m_innerProd;
 
             CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_memStates;
             CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_tmpStates;

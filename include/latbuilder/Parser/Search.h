@@ -38,7 +38,7 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for coordinate-uniform figures of merit.
  */
-template <LatticeType LR, LatBuilder::LatEmbed LAT>
+template <LatticeType LR, LatBuilder::PointSetType PST>
 class Search {
 public:
 
@@ -50,9 +50,9 @@ public:
     * \return A pointer to a Search instance.
     */
    template <class FIGURE>
-   static std::unique_ptr<LatBuilder::Task::Search<LR, LAT>> parse(
+   static std::unique_ptr<LatBuilder::Task::Search<LR, PST>> parse(
          const std::string& construction,
-         LatBuilder::SizeParam<LR, LAT> size,
+         LatBuilder::SizeParam<LR, PST> size,
          LatBuilder::Dimension dimension,
          FIGURE figure
          )
@@ -65,7 +65,7 @@ public:
             std::move(figure),
             ptr
            );
-      return std::unique_ptr<LatBuilder::Task::Search<LR, LAT>>(ptr());
+      return std::unique_ptr<LatBuilder::Task::Search<LR, PST>>(ptr());
    }
 
    /**
@@ -77,13 +77,13 @@ public:
    template <class FIGURE, class FUNC, typename... ARGS>
    static void parse(
          const std::string& str,
-         LatBuilder::SizeParam<LR, LAT> size,
+         LatBuilder::SizeParam<LR, PST> size,
          LatBuilder::Dimension dimension,
          FIGURE figure,
          FUNC&& func, ARGS&&... args
          )
    {
-      const LatBuilder::PerLevelOrder P = defaultPerLevelOrder<LR, LAT>::Order;
+      const LatBuilder::PerLevelOrder P = defaultPerLevelOrder<LR, PST>::Order;
 
       auto storage = createStorage< FIGURE::suggestedCompression(), P>(std::move(size));
 
@@ -131,7 +131,7 @@ public:
 
       if (strSplit.first == "extend") {
          auto strSplit2 = splitPair<std::string, std::string>(strSplit.second, ':');
-         auto sizeParam = Parser::SizeParam<LR, LAT>::parse(strSplit2.first);
+         auto sizeParam = Parser::SizeParam<LR, PST>::parse(strSplit2.first);
          auto genVec =  LatticeParametersParseHelper<LR>::ParseGeneratingVector(strSplit2.second);
          auto lat = createLatDef(std::move(sizeParam), std::move(genVec));
          func(Task::extend(std::move(storage), std::move(lat), std::move(figure)), std::forward<ARGS>(args)...);
@@ -143,22 +143,22 @@ public:
 
 private:
    template <Compress COMPRESS, PerLevelOrder PLO>
-   static Storage<LR, LAT, COMPRESS, PLO> createStorage(LatBuilder::SizeParam<LR, LAT> size)
-   { return Storage<LR, LAT, COMPRESS, PLO>(std::move(size)); }
+   static Storage<LR, PST, COMPRESS, PLO> createStorage(LatBuilder::SizeParam<LR, PST> size)
+   { return Storage<LR, PST, COMPRESS, PLO>(std::move(size)); }
 
    struct ToPtr {
-      LatBuilder::Task::Search<LR, LAT>* ptr;
-      LatBuilder::Task::Search<LR, LAT>* operator()() const
+      LatBuilder::Task::Search<LR, PST>* ptr;
+      LatBuilder::Task::Search<LR, PST>* operator()() const
       { return ptr; }
       template <class TASK> void operator()(TASK task)
       { ptr = new TASK(std::move(task)); }
    };
 };
 
-extern template class Search<LatticeType::ORDINARY, LatBuilder::LatEmbed::SIMPLE>;
-extern template class Search<LatticeType::ORDINARY, LatBuilder::LatEmbed::EMBEDDED>;
-extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::SIMPLE>;
-extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::LatEmbed::EMBEDDED>;
+extern template class Search<LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>;
+extern template class Search<LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>;
+extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>;
+extern template class Search<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>;
 
 }}
 

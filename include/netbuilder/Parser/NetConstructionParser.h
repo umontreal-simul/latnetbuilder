@@ -42,8 +42,8 @@ struct NetConstructionParser {
    {
       if (str == "sobol")
          return NetBuilder::NetConstruction::SOBOL;
-      else if (str == "polynomial")
-         return NetBuilder::NetConstruction::POLYNOMIAL;
+    //   else if (str == "polynomial")
+    //      return NetBuilder::NetConstruction::POLYNOMIAL;
       throw BadNetConstruction(str);
    }
 };

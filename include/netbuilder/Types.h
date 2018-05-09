@@ -56,24 +56,26 @@ typedef unsigned int Dimension;
 typedef size_t size_type;
 
 /// Type of nets
-// enum class PointSetType {NET= LatBuilder::LatEmbed::SIMPLE,
-//              SEQUENCE= LatBuilder::LatEmbed::EMBEDDED};
+// enum class PointSetType {NET= LatBuilder::PointSetType::UNILEVEL,
+//              SEQUENCE= LatBuilder::PointSetType::MULTILEVEL};
 
-typedef enum {NET= LatBuilder::LatEmbed::SIMPLE,
-             SEQUENCE= LatBuilder::LatEmbed::EMBEDDED} PointSetType;
+// typedef enum {NET= LatBuilder::PointSetType::UNILEVEL,
+//              SEQUENCE= LatBuilder::PointSetType::MULTILEVEL} PointSetType;
+using PointSetType = LatBuilder::PointSetType;
 
 /// Net construction methods
 enum class NetConstruction {
-    SOBOL, POLYNOMIAL};
+    // SOBOL, POLYNOMIAL};
+    SOBOL};
 
 /// Binary real operator type
 typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
 
 // Level combiner for embedded nets
-typedef std::function<Real (const std::vector<unsigned int>&)> Combiner;
+typedef std::function<Real (const RealVector&)> Combiner;
 
-// PointSetType::NET = LatBuilder::LatEmbed::SIMPLE;
-// using NetSequence = LatBuilder::LatEmbed;
+// PointSetType::UNILEVEL = LatBuilder::PointSetType::UNILEVEL;
+// using NetSequence = LatBuilder::PointSetType;
 
 //@}
 }

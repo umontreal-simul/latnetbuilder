@@ -17,7 +17,7 @@
 #include "latbuilder/capi.h"
 
 #include "latbuilder/Types.h"
-#include "latbuilder/Parser/LatEmbed.h"
+#include "latbuilder/Parser/PointSetType.h"
 #include "latbuilder/Parser/CommandLine.h"
 #include "latbuilder/TextStream.h"
 
@@ -30,17 +30,17 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-#define FOR_TYPE(type, ord, emb, member) (type == LatEmbed::SIMPLE ? ord.member : emb.member)
+#define FOR_TYPE(type, ord, emb, member) (type == PointSetType::UNILEVEL ? ord.member : emb.member)
 #define LR LatticeType::ORDINARY
 
 struct latbuilder_result_ {
 
   typedef LatticeTraits<LR>::Modulus Modulus;
 
-  latbuilder_result_(const LatDef<LR, LatEmbed::SIMPLE>& lat, double merit = 0.0, double seconds = 0.0) :
-    m_type(LatEmbed::SIMPLE), m_ord(lat), m_emb(), m_merit(merit), m_seconds(seconds) {}
-  latbuilder_result_(const LatDef<LR, LatEmbed::EMBEDDED>& lat, double merit = 0.0, double seconds = 0.0) :
-    m_type(LatEmbed::EMBEDDED), m_ord(), m_emb(lat), m_merit(merit), m_seconds(seconds) {}
+  latbuilder_result_(const LatDef<LR, PointSetType::UNILEVEL>& lat, double merit = 0.0, double seconds = 0.0) :
+    m_type(PointSetType::UNILEVEL), m_ord(lat), m_emb(), m_merit(merit), m_seconds(seconds) {}
+  latbuilder_result_(const LatDef<LR, PointSetType::MULTILEVEL>& lat, double merit = 0.0, double seconds = 0.0) :
+    m_type(PointSetType::MULTILEVEL), m_ord(), m_emb(lat), m_merit(merit), m_seconds(seconds) {}
 
   uInteger num_points() const { return FOR_TYPE(m_type, m_ord, m_emb, sizeParam().numPoints()); }
   Modulus modulus() const { return FOR_TYPE(m_type, m_ord, m_emb, sizeParam().modulus()); }
@@ -49,9 +49,9 @@ struct latbuilder_result_ {
   double merit()       const { return m_merit; }
   double cpu_seconds() const { return m_seconds; }
 
-  LatEmbed m_type;
-  LatDef<LR, LatEmbed::SIMPLE> m_ord;
-  LatDef<LR, LatEmbed::EMBEDDED> m_emb;
+  PointSetType m_type;
+  LatDef<LR, PointSetType::UNILEVEL> m_ord;
+  LatDef<LR, PointSetType::MULTILEVEL> m_emb;
   double m_merit;
   double m_seconds;
 };
@@ -97,24 +97,24 @@ double latbuilder_result_get_cpu_seconds(const latbuilder_result* result) {
   return result->cpu_seconds();
 }
 
-template <LatEmbed LAT>
+template <PointSetType PST>
 void latbuilder_search_str_init_cmd_extra(
-  Parser::CommandLine<LR, LAT>& cmd,
+  Parser::CommandLine<LR, PST>& cmd,
   size_t multilevel_filter_count,
   const char** multilevel_filters,
   const char* combiner);
 
 template <>
-void latbuilder_search_str_init_cmd_extra<LatEmbed::SIMPLE>(
-  Parser::CommandLine<LR, LatEmbed::SIMPLE>& cmd,
+void latbuilder_search_str_init_cmd_extra<PointSetType::UNILEVEL>(
+  Parser::CommandLine<LR, PointSetType::UNILEVEL>& cmd,
   size_t multilevel_filter_count,
   const char** multilevel_filters,
   const char* combiner) {
 }
 
 template <>
-void latbuilder_search_str_init_cmd_extra<LatEmbed::EMBEDDED>(
-  Parser::CommandLine<LR, LatEmbed::EMBEDDED>& cmd,
+void latbuilder_search_str_init_cmd_extra<PointSetType::MULTILEVEL>(
+  Parser::CommandLine<LR, PointSetType::MULTILEVEL>& cmd,
   size_t multilevel_filter_count,
   const char** multilevel_filters,
   const char* combiner) {
@@ -125,7 +125,7 @@ void latbuilder_search_str_init_cmd_extra<LatEmbed::EMBEDDED>(
     cmd.combiner = combiner;
 }
 
-template <LatEmbed LAT>
+template <PointSetType PST>
 static
 latbuilder_status search_str(
   const char* construction,
@@ -145,7 +145,7 @@ latbuilder_status search_str(
 
     try {
 
-      Parser::CommandLine<LR, LAT> cmd;
+      Parser::CommandLine<LR, PST> cmd;
 
       cmd.construction = construction;
       cmd.size         = size;
@@ -210,7 +210,7 @@ latbuilder_status latbuilder_search_ordinary_str(
   const char** filters,
   latbuilder_result** result) {
 
-    return search_str<LatEmbed::SIMPLE>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, 0, NULL, NULL, result);
+    return search_str<PointSetType::UNILEVEL>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, 0, NULL, NULL, result);
 }
 
 
@@ -230,16 +230,16 @@ latbuilder_status latbuilder_search_embedded_str(
   const char* combiner,
   latbuilder_result** result) {
 
-    return search_str<LatEmbed::EMBEDDED>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, multilevel_filter_count, multilevel_filters, combiner, result);
+    return search_str<PointSetType::MULTILEVEL>(construction, size, dimension, norm_type, figure, weight_count, weights, weights_power, filter_count, filters, multilevel_filter_count, multilevel_filters, combiner, result);
 }
 
-// template <LatEmbed LAT>
+// template <PointSetType PST>
 // struct latbuilder_search_str_base;
 //
 // template <>
-// struct latbuilder_search_str_base<LatEmbed::SIMPLE> {
+// struct latbuilder_search_str_base<PointSetType::UNILEVEL> {
 //   void init_cmd_extra(
-//     Parser::CommandLine<LatEmbed::SIMPLE>& cmd,
+//     Parser::CommandLine<PointSetType::UNILEVEL>& cmd,
 //     size_t multilevel_filter_count,
 //     const char** multilevel_filters,
 //     const char* combiner) {
@@ -247,9 +247,9 @@ latbuilder_status latbuilder_search_embedded_str(
 // };
 //
 // template <>
-// struct latbuilder_search_str_base<LatEmbed::EMBEDDED> {
+// struct latbuilder_search_str_base<PointSetType::MULTILEVEL> {
 //   void init_cmd_extra(
-//     Parser::CommandLine<LatEmbed::EMBEDDED>& cmd,
+//     Parser::CommandLine<PointSetType::MULTILEVEL>& cmd,
 //     size_t multilevel_filter_count,
 //     const char** multilevel_filters,
 //     const char* combiner) {

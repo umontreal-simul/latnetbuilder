@@ -38,13 +38,13 @@ namespace LatBuilder { namespace MeritSeq {
  * of RealVector.  This is the cost for making update() a virtual function: it
  * cannot be a template.
  */
-template <LatticeType LR, LatEmbed LAT, Compress COMPRESS, PerLevelOrder PLO >
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformState {
 public:
 
   
 
-   CoordUniformState(Storage<LR, LAT, COMPRESS, PLO> storage):
+   CoordUniformState(Storage<LR, PST, COMPRESS, PLO> storage):
       m_storage(std::move(storage)),
       m_dimension(0)
    {}
@@ -80,7 +80,7 @@ public:
    /**
     * Returns a pointer to the storage configuration.
     */
-   const Storage<LR, LAT, COMPRESS, PLO>& storage() const
+   const Storage<LR, PST, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -95,7 +95,7 @@ public:
    virtual std::unique_ptr<CoordUniformState> clone() const = 0;
 
 private:
-   Storage<LR, LAT, COMPRESS, PLO> m_storage;
+   Storage<LR, PST, COMPRESS, PLO> m_storage;
    Dimension m_dimension;
 };
 
