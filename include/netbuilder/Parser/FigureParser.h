@@ -65,7 +65,6 @@ struct FigureParser
         std::vector<std::string> vecStrFigures = commandLine.s_figures;
         std::string &strFigureCombiner = commandLine.s_figureCombiner;
         std::string &strLevelCombiner = commandLine.s_combiner;
-        Real normType = boost::lexical_cast<Real>(strFigureCombiner);
 
         Combiner combiner = Parser::LevelCombinerParser::parse(strLevelCombiner);
         commandLine.m_combiner = combiner;
@@ -86,6 +85,7 @@ struct FigureParser
         }
         else
         {
+            Real normType = boost::lexical_cast<Real>(strFigureCombiner);
             return std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(normType, std::move(vecFigures), std::move(vecWeights));
         }
     }
@@ -97,12 +97,23 @@ struct FigureParser
         boost::algorithm::erase_all(str, " ");
 
         std::vector<std::string> figureCharacteristicStrings;
-        boost::split(figureCharacteristicStrings, str, boost::is_any_of("|"));
+        boost::split(figureCharacteristicStrings, str, boost::is_any_of("/"));
+
+        int nbParam = figureCharacteristicStrings.size();
+        for (int i=0; i<nbParam; i++){
+            std::vector<std::string> split;
+            boost::split(split, figureCharacteristicStrings[i], boost::is_any_of("="));
+            if (split.size() == 2){
+                figureCharacteristicStrings[i] = split[1];
+            }
+            // std::cout << figureCharacteristicStrings[i] << std::endl;
+        }
+
         std::string name = figureCharacteristicStrings[0];
         Real importance = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
 
         if (name == "A-Property"){
-            if (figureCharacteristicStrings.size() != 2){
+            if (nbParam != 2){
                 throw BadFigure("Bad number of characteristics for A-Property (see doc)");
             }
             throw BadFigure("not yet implemented");
@@ -113,7 +124,7 @@ struct FigureParser
         
         // TODO: comment
         Real weightsPowerScale = 1.0;
-        if (figureCharacteristicStrings.size() == 4) {
+        if (nbParam == 5) {
             Real weightPower = boost::lexical_cast<Real>(figureCharacteristicStrings[4]);
 
             if (normType < std::numeric_limits<Real>::max())

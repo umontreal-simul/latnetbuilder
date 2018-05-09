@@ -258,7 +258,9 @@ class CBCSearch : public BaseTask
                     return;
                 }
                 merit = m_minObserver->bestMerit();
-                m_minObserver->reset();
+                if (dim < m_dimension){
+                    m_minObserver->reset();
+                }
             }
             selectBestNet(m_minObserver->bestNet(), m_minObserver->bestMerit());
         }

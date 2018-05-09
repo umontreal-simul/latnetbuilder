@@ -50,7 +50,8 @@ int main(int argc, const char *argv[])
         auto desc = makeOptionsDescription();
 
         po::variables_map opt;
-        po::store(po::parse_command_line(argc, argv, desc), opt);
+        // po::store(po::parse_command_line(argc, argv, desc), opt);
+        po::store(po::command_line_parser(argc, argv).options(desc).allow_unregistered().run(), opt);
         po::notify(opt);
 
         if (opt.count("main-construction") < 1 && opt.count("help"))
