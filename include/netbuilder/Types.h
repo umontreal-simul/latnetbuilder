@@ -59,8 +59,7 @@ using PointSetType = LatBuilder::PointSetType;
 
 /// Net construction methods
 enum class NetConstruction {
-    // SOBOL, POLYNOMIAL};
-    SOBOL};
+    SOBOL, POLYNOMIAL};
 
 /// Binary real operator type
 typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;

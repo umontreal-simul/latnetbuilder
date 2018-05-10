@@ -44,32 +44,37 @@ using namespace FigureOfMerit;
 int main(int argc, const char *argv[])
 {
     unsigned int s = 5;
-    unsigned int m = 20;
+    unsigned int m = 5;
 
-    unsigned int r = 1000;
+    typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter designParam(1);
+    SetCoeff(designParam,m);
+
+    // typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter designParam(m);
+
+    unsigned int r = 5;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
     auto projDep = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(2);
 
     auto fig = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
 
-    // auto explorer = std::make_unique<Task::RandomCBCExplorer<NetConstruction::SOBOL>>(s,m,r);
-    // auto search = Task::CBCSearch<NetConstruction::SOBOL,Task::RandomCBCExplorer>(s,m,std::move(fig),std::move(explorer));
+    // auto explorer = std::make_unique<Task::RandomCBCExplorer<NetConstruction::POLYNOMIAL>>(s,designParam,r);
+    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::RandomCBCExplorer>(s,designParam,std::move(fig),std::move(explorer));
 
-    // auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::SOBOL>>(s,m);
-    // auto search = Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>(s,m,std::move(fig),std::move(explorer));
+    // auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::POLYNOMIAL>>(s,designParam);
+    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::FullCBCExplorer>(s,designParam,std::move(fig),std::move(explorer));
 
-    // auto explorer = std::make_unique<Task::MixedCBCExplorer<NetConstruction::SOBOL>>(s, m, 5, r);
-    // auto search = Task::CBCSearch<NetConstruction::SOBOL,Task::MixedCBCExplorer>(s,m,std::move(fig),std::move(explorer));
+    // auto explorer = std::make_unique<Task::MixedCBCExplorer<NetConstruction::POLYNOMIAL>>(s, designParam, s/2, r);
+    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::MixedCBCExplorer>(s,designParam,std::move(fig),std::move(explorer));
 
-    // auto search = Task::ExhaustiveSearch<NetConstruction::SOBOL>(s,m,std::move(fig));
+    auto search = Task::ExhaustiveSearch<NetConstruction::POLYNOMIAL>(s,designParam,std::move(fig));
 
-    auto search = Task::RandomSearch<NetConstruction::SOBOL>(s,m,std::move(fig),r*s);
+    // auto search = Task::RandomSearch<NetConstruction::POLYNOMIAL>(s,designParam,std::move(fig),r*s);
     
-    std::cout << search.designParameter() << std::endl;
+    std::cout << "Search design parameter: " << search.designParameter() << std::endl;
 
-    search.onNetSelected().connect( [] (const Task::Search<NetConstruction::SOBOL>& s) { std::cout << "Finished." << std::endl;} );
-    search.onFailedSearch().connect( [] (const Task::Search<NetConstruction::SOBOL>& s) { std::cout << "Search failed." <<  std::endl;} );
+    search.onNetSelected().connect( [] (const Task::Search<NetConstruction::POLYNOMIAL>& s) { std::cout << "Finished." << std::endl;} );
+    search.onFailedSearch().connect( [] (const Task::Search<NetConstruction::POLYNOMIAL>& s) { std::cout << "Search failed." <<  std::endl;} );
     search.execute();
     std::cout << search.netOutput() << std::endl;
     for( unsigned int dim = 1; dim <=s; ++dim)

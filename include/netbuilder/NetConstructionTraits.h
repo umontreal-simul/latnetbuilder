@@ -45,8 +45,6 @@ namespace NetBuilder {
 template <NetConstruction NC>
 struct NetConstructionTraits;
 
-
-
 template<>
 struct NetConstructionTraits<NetConstruction::SOBOL>
 {
@@ -127,63 +125,72 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
         static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
 };
 
-#if 0
 template<>
 struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 {
     public:
         typedef Polynomial GenValue ;
-        typedef Polynomial Modulus ;
 
-        static bool checkGenValue(const GenValue& genValue);
+        typedef Polynomial DesignParameter;
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
+        static DesignParameter defaultDesignParameter;
 
-        
-        static void extendGeneratingMatrices( 
-            unsigned int inc,
-            const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            const std::vector<std::shared_ptr<GenValue>>& genValues);
-            
+        static constexpr bool isDigitalSequenceViewable = false;
 
-        static std::vector<GenValue> defaultGenValues(unsigned int dimension);
+        // typedef unsigned int DesignParameterIncrement;
 
-        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension);
+        // static DesignParameterIncrement defaultDesignParameterIncrementator;
 
-        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension);
+        static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+
+        static unsigned int nRows(const DesignParameter& param);
+
+        static unsigned int nCols(const DesignParameter& param);
+
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+
+        // static void extendGeneratingMatrices( 
+        //     const DesignParameter& designParameter,
+        //     const DesignParameterIncrement& inc,
+        //     std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+        //     const std::vector<std::shared_ptr<GenValue>>& genValues);
+    
+        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
+
+        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
+
+        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator
         {
             public:
-                RandomGenValueGenerator(RAND randomGen = RAND()):
+                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                    m_designParameter(std::move(designParameter)),
                     m_randomGen(std::move(randomGen))
-                {};
+                {
+                    m_primes = genValueSpaceDim(2, m_designParameter);
+                    m_totient = m_primes.size();
+                };
                 
                 GenValue operator()(unsigned int dimension)
                 {
-                    unsigned int size;
                     if (dimension==1)
                     {
-                        size = 1;
+                        return GenValue(1);
                     }
                     else
                     {
-                        size = nthPrimitivePolynomialDegree(dimension-1);
+                        return m_primes[m_randomGen() % m_totient];
                     }
-                    std::vector<unsigned long> res(size);
-                    for(unsigned int k = 0; k < size; ++k)
-                    {
-                        res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
-                    }
-                    return GenValue(dimension,std::move(res));
                 }
-
             private:
+                DesignParameter m_designParameter;
                 RAND m_randomGen;
+                std::vector<GenValue> m_primes;
+                uInteger m_totient;
         };
 };
-#endif
 
 }
 

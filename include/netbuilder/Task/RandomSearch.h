@@ -45,7 +45,7 @@ class RandomSearch : public Search<NC>
                         unsigned int verbose = 0 ):
             Search<NC>(dimension, std::move(designParameter), std::move(figure), verbose),
             m_nbTries(nbTries),
-            m_randomGenValueGenerator()
+            m_randomGenValueGenerator(this->m_designParameter)
         {};
 
         /** Default move constructor. */
@@ -68,9 +68,9 @@ class RandomSearch : public Search<NC>
                 genVal.reserve(this->dimension());
                 for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
                 {
-                    genVal.push_back(m_randomGenValueGenerator(dim));
+                    auto tmp = m_randomGenValueGenerator(dim);
+                    genVal.push_back(std::move(tmp));
                 }
-
                 auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, genVal);
                 double merit = (*evaluator)(*net);
                 this->m_minObserver->observe(std::move(net),merit);

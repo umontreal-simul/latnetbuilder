@@ -14,13 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#if 0
-
 #include "netbuilder/Types.h"
 #include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
 
-#include "latbuilder/GeneratingValues-PLR.h"
+#include "latbuilder/GenSeq/GeneratingValues-PLR.h"
 #include "latbuilder/SeqCombiner.h"
 
 #include <NTL/GF2X.h>
@@ -30,77 +28,102 @@ namespace NetBuilder {
     
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValue GenValue;
 
-    bool NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(const GenValue& genValue)
+    typedef NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter DesignParameter;
+
+    DesignParameter NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameter(1);
+
+
+    bool NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
-        return isOne(GCD(genValue.first,genValue.second));
+        return IsOne(GCD(genValue,designParameter));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols) 
-    {
+    unsigned int NetConstructionTraits<NetConstruction::POLYNOMIAL>::nRows(const DesignParameter& designParameter) {return (unsigned int) deg(designParameter); }
+
+    unsigned int NetConstructionTraits<NetConstruction::POLYNOMIAL>::nCols(const DesignParameter& designParameter) {return (unsigned int) deg(designParameter); }
+
+
+    void expandSeries(const GenValue& genValue, const DesignParameter& designParameter, std::vector<unsigned int>& expansion, unsigned int expansion_limit){
+        int m = (int) deg(designParameter); 
+        for(int l = 1; l<= expansion_limit ; l++){
+            int res =  (m-l >=0 && IsOne(coeff(genValue, m-l)))? 1 : 0;
+            int start = (l-m > 1) ? (l-m) : 1;
+            for( int p = start; p < l; p++){
+                res = ( res + expansion[p-1] * conv<int>(coeff(designParameter, m-(l-p)))) %2;        
+            }
+            expansion[l-1] = res;
+        }
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultGenValues(unsigned int dimension){
-        std::vector<std::vector<uInteger>> tmp = readJoeKuoDirectionNumbers(dimension);
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParameter)
+    {
+        unsigned int m = (unsigned int) (deg(designParameter));
+        GeneratingMatrix* genMat = new GeneratingMatrix(m,m);
+        std::vector<unsigned int> expansion(2 * m);
+        expandSeries(genValue, designParameter, expansion, 2 * m);
+        for(unsigned int c =0; c<m; c++ )
+        {
+            for(unsigned int row =0; row <m; row++ )
+            {
+                (*genMat)(row,c) = expansion[c + row];
+            }
+        }
+        return genMat;
+    }
+
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter)
+    {
         std::vector<GenValue> res(dimension);
         for(unsigned int j = 0; j < dimension; ++j)
         {
-            res[j] = GenValue(j+1,tmp[j]);
+            res[j] = GenValue(1);
         }
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceDim(unsigned int dimension)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
     {
-        LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL,LatBuilder::Compress:NONE,LatBuilder::Traversal::Forward>
-        unsigned int size;
         if (dimension==1)
         {
-            size = 1;
+            return std::vector<GenValue>(1,GenValue(1));
         }
         else
         {
-            size = nthPrimitivePolynomialDegree(dimension-1);
+            LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL,LatBuilder::Compress::NONE,LatBuilder::Traversal::Forward> tmp(designParameter);
+            std::vector<GenValue>(res);
+            res.reserve(tmp.size());
+            for(const auto& foo : tmp)
+            {
+                res.push_back(std::move(foo));
+            }
+            return res;
         }
-        std::vector<SobolDirectionNumbers<>> seqs;
-        seqs.reserve(size);
-        for(unsigned int i = 0; i < size; ++i)
-        {
-            seqs.push_back(SobolDirectionNumbers<>(i+1));
-        }
-        LatBuilder::SeqCombiner<SobolDirectionNumbers<>,LatBuilder::CartesianProduct> tmp(seqs);
-
-        std::vector<GenValue> res;
-        for(const auto& x : tmp)
-        {
-            res.push_back(GenValue(dimension,x));
-        }
-        return res;
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpace(unsigned int maxDimension)
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
     {
-        std::vector<std::vector<GenValue>> seqs;
-        seqs.reserve(maxDimension);
-        for(unsigned int i = 0; i < maxDimension; ++i)
+        if (maxDimension==1)
         {
-            seqs.push_back(genValueSpaceDim(i+1));
+            return std::vector<std::vector<GenValue>>{genValueSpaceDim(1, designParameter)};
         }
-        LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
-        std::vector<std::vector<GenValue>> res;
-        for(const auto& foo : tmp)
+        else
         {
-            res.push_back(foo);
+            std::vector<std::vector<GenValue>> seqs;
+            seqs.reserve(maxDimension);
+            seqs.push_back(genValueSpaceDim(1,designParameter));
+            std::vector<GenValue> primes = genValueSpaceDim(maxDimension, designParameter);
+            for(unsigned int dim = 2; dim <= maxDimension; ++dim)
+            {
+                seqs.push_back(primes);
+            }
+            LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
+            std::vector<std::vector<GenValue>> res;
+            for(const auto& foo : tmp)
+            {
+                res.push_back(foo);
+            }
+            return res;
         }
-        return res;
     }
 
-    void NetConstructionTraits<NetConstruction::POLYNOMIAL>::extendGeneratingMatrices( 
-        unsigned int inc,
-        const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-        const std::vector<std::shared_ptr<GenValue>>& genValues)
-    {
-        throw std::logic_error("Polynomial lattices cannot be viewed as digital sequences")
-    }
 }
-
-#endif

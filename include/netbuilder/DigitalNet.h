@@ -138,8 +138,6 @@ class DigitalNetConstruction : public DigitalNet
 
         typedef typename ConstructionMethod::DesignParameter DesignParameter;
 
-        typedef typename ConstructionMethod::DesignParameterIncrement DesignParameterIncrement;
-
         /** Basic constructor with default parameter
         */
         DigitalNetConstruction(
@@ -234,7 +232,7 @@ class DigitalNetConstruction : public DigitalNet
         // }
         
 
-        // std::enable_if_t<ConstructionMethod::isSequenceViewable, std::unique_ptr<DigitalNetConstruction<NC>>> extendSize(DesignParameterIncrementator inc)
+        // std::enable_if_t<ConstructionMethod::isSequenceViewable, std::unique_ptr<DigitalNetConstruction<NC>>> extendSize(ConstructionMethod::DesignParameterIncrement inc)
         // {
 
         //     unsigned int inc = (m>numColumns()) ? (m-numColumns()) : 0;
