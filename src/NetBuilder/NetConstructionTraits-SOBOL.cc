@@ -34,7 +34,14 @@ namespace NetBuilder {
     
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
-    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue)
+    typedef NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
+
+    typedef NetConstructionTraits<NetConstruction::SOBOL>::DesignParameterIncrement DesignParameterIncrement;
+
+    DesignParameter NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameter = 0;
+    DesignParameterIncrement NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameterIncrementator = 1;
+
+    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
         auto dimension = genValue.first;
         unsigned int degree = nthPrimitivePolynomialDegree(dimension);
@@ -54,6 +61,10 @@ namespace NetBuilder {
         }
         return true;
     }
+
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nRows(const DesignParameter& param) { return (unsigned int) param; }
+
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nCols(const DesignParameter& param) { return (unsigned int) param; }
 
     static const std::array<unsigned int,21200> degrees =
     {{
@@ -114,10 +125,9 @@ namespace NetBuilder {
         return res;
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols) 
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam)
     {
-        assert(nRows == nCols);
-        unsigned int m  = nCols;
+        unsigned int m  = nCols(designParam);
         unsigned int coord = genValue.first;
 
         GeneratingMatrix* tmp = new GeneratingMatrix(m,m);
@@ -170,7 +180,6 @@ namespace NetBuilder {
                 }
             }
         }
-
         return tmp;
     }
 
@@ -200,7 +209,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(unsigned int dimension){
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter){
         std::vector<std::vector<uInteger>> tmp = readJoeKuoDirectionNumbers(dimension);
         std::vector<GenValue> res(dimension);
         for(unsigned int j = 0; j < dimension; ++j)
@@ -210,7 +219,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
     {
         unsigned int size;
         if (dimension==1)
@@ -237,13 +246,13 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int maxDimension)
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
     {
         std::vector<std::vector<GenValue>> seqs;
         seqs.reserve(maxDimension);
         for(unsigned int i = 0; i < maxDimension; ++i)
         {
-            seqs.push_back(genValueSpaceDim(i+1));
+            seqs.push_back(genValueSpaceDim(i+1,designParameter));
         }
         LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
         std::vector<std::vector<GenValue>> res;
@@ -254,33 +263,18 @@ namespace NetBuilder {
         return res;
     }
 
-
-
-
-
     void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
-        unsigned int inc,
-        const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-        const std::vector<std::shared_ptr<GenValue>>& genValues)
+            const DesignParameter& designParameter,
+            const DesignParameterIncrement& inc,
+            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+            const std::vector<std::shared_ptr<GenValue>>& genValues)
     {
         unsigned int s = genMats.size();
         for(unsigned int k = 0; k < s; ++k)
         {
-            unsigned int nCols = genMats[k]->nCols();
-            unsigned int nRows = genMats[k]->nRows();
+            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),designParameter+inc);
 
-            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),nRows+inc,nCols+inc);
-
-            genMats[k]->resize(nRows+inc,nCols+inc);
-            for(unsigned int i = nRows; i < nRows+inc; ++i)
-            {
-                for(unsigned int j = nCols; j < nCols+inc; ++j )
-                {
-                    (*genMats[k])(i,j) = (*newMat)(i,j);
-                }
-            }
-
-            delete newMat;
+            genMats[k].reset(newMat);
         }
     }
 }

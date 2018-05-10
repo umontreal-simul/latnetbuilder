@@ -34,10 +34,10 @@ class RandomCBCExplorer
 
     public:
 
-        RandomCBCExplorer(unsigned int dimension, unsigned int nbTries):
+        RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries):
             m_dimension(dimension),
             m_nbTries(nbTries),
-            m_randomGenValueGenerator(),
+            m_randomGenValueGenerator(std::move(designParameter)),
             m_countTries(dimension,0)
         {};
 

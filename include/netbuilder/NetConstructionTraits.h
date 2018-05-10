@@ -42,74 +42,148 @@ namespace NetBuilder {
  *  RandomGenValueGenerator(RAND randomGen = RAND()) and an the member function GenValue operator()(unsigned int dimenion) returning
  *  a generating value for the given dimension.
  */ 
-    template <NetConstruction NC>
-    struct NetConstructionTraits;
+template <NetConstruction NC>
+struct NetConstructionTraits;
 
 
 
-    template<>
-    struct NetConstructionTraits<NetConstruction::SOBOL>
-    {
-        public:
-            typedef std::pair<unsigned int, std::vector<uInteger>> GenValue ;
+template<>
+struct NetConstructionTraits<NetConstruction::SOBOL>
+{
+    public:
+        typedef std::pair<unsigned int, std::vector<uInteger>> GenValue ;
 
-            static bool checkGenValue(const GenValue& genValue);
+        typedef unsigned int DesignParameter;
 
-            static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
+        static DesignParameter defaultDesignParameter;
 
+        static constexpr bool isDigitalSequenceViewable = true;
+
+        typedef unsigned int DesignParameterIncrement;
+
+        static DesignParameterIncrement defaultDesignParameterIncrementator;
+
+        static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+
+        static unsigned int nRows(const DesignParameter& param);
+
+        static unsigned int nCols(const DesignParameter& param);
+
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+
+        static void extendGeneratingMatrices( 
+            const DesignParameter& designParameter,
+            const DesignParameterIncrement& inc,
+            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+            const std::vector<std::shared_ptr<GenValue>>& genValues);
             
-            static void extendGeneratingMatrices( 
-                unsigned int inc,
-                const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-                const std::vector<std::shared_ptr<GenValue>>& genValues);
-             
 
-            static std::vector<GenValue> defaultGenValues(unsigned int dimension);
+        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
 
-            static std::vector<GenValue> genValueSpaceDim(unsigned int dimension);
+        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
 
-            static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension);
+        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
 
-            template<typename RAND>
-            class RandomGenValueGenerator
-            {
-                public:
-                    RandomGenValueGenerator(RAND randomGen = RAND()):
-                        m_randomGen(std::move(randomGen))
-                    {};
-                    
-                    GenValue operator()(unsigned int dimension)
+        template<typename RAND>
+        class RandomGenValueGenerator
+        {
+            public:
+                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                    m_designParameter(std::move(designParameter)),
+                    m_randomGen(std::move(randomGen))
+                {};
+                
+                GenValue operator()(unsigned int dimension)
+                {
+                    unsigned int size;
+                    if (dimension==1)
                     {
-                        unsigned int size;
-                        if (dimension==1)
-                        {
-                            size = 1;
-                        }
-                        else
-                        {
-                            size = nthPrimitivePolynomialDegree(dimension-1);
-                        }
-                        std::vector<unsigned long> res(size);
-                        for(unsigned int k = 0; k < size; ++k)
-                        {
-                            res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
-                        }
-                        return GenValue(dimension,std::move(res));
+                        size = 1;
                     }
+                    else
+                    {
+                        size = nthPrimitivePolynomialDegree(dimension-1);
+                    }
+                    std::vector<unsigned long> res(size);
+                    for(unsigned int k = 0; k < size; ++k)
+                    {
+                        res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
+                    }
+                    return GenValue(dimension,std::move(res));
+                }
 
-                private:
-                    RAND m_randomGen;
-            };
+            private:
+                DesignParameter m_designParameter;
+                RAND m_randomGen;
+        };
 
-        private:
-            typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
+    private:
+        typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
-            static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n);
+        static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n);
 
-            static unsigned int  nthPrimitivePolynomialDegree(unsigned int n);
+        static unsigned int  nthPrimitivePolynomialDegree(unsigned int n);
 
-            static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
-    };
+        static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
+};
+
+#if 0
+template<>
+struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
+{
+    public:
+        typedef Polynomial GenValue ;
+        typedef Polynomial Modulus ;
+
+        static bool checkGenValue(const GenValue& genValue);
+
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
+
+        
+        static void extendGeneratingMatrices( 
+            unsigned int inc,
+            const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+            const std::vector<std::shared_ptr<GenValue>>& genValues);
+            
+
+        static std::vector<GenValue> defaultGenValues(unsigned int dimension);
+
+        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension);
+
+        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension);
+
+        template<typename RAND>
+        class RandomGenValueGenerator
+        {
+            public:
+                RandomGenValueGenerator(RAND randomGen = RAND()):
+                    m_randomGen(std::move(randomGen))
+                {};
+                
+                GenValue operator()(unsigned int dimension)
+                {
+                    unsigned int size;
+                    if (dimension==1)
+                    {
+                        size = 1;
+                    }
+                    else
+                    {
+                        size = nthPrimitivePolynomialDegree(dimension-1);
+                    }
+                    std::vector<unsigned long> res(size);
+                    for(unsigned int k = 0; k < size; ++k)
+                    {
+                        res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
+                    }
+                    return GenValue(dimension,std::move(res));
+                }
+
+            private:
+                RAND m_randomGen;
+        };
+};
+#endif
 
 }
 

@@ -25,7 +25,7 @@
 #include <cstdint>
 #include <boost/numeric/ublas/vector.hpp>
 #include <functional>
-
+#include <NTL/GF2X.h>
 #include "latbuilder/Types.h"
 
 
@@ -67,6 +67,9 @@ typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
 
 // Level combiner for embedded nets
 typedef std::function<Real (const RealVector&)> Combiner;
+
+/// polynomial over Z/2Z type 
+typedef NTL::GF2X Polynomial;
 
 //@}
 }

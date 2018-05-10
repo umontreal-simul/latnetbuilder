@@ -39,27 +39,13 @@ class RandomSearch : public Search<NC>
          * @param figure is a std::unique_ptr to the figure of merit to use
          */ 
         RandomSearch(   Dimension dimension, 
-                        unsigned int nRows, 
-                        unsigned int nCols, 
+                        typename NetConstructionTraits<NC>::DesignParameter designParameter,
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                         unsigned nbTries,
                         unsigned int verbose = 0 ):
-            Search<NC>(dimension, nRows, nCols, std::move(figure), verbose),
+            Search<NC>(dimension, std::move(designParameter), std::move(figure), verbose),
             m_nbTries(nbTries),
             m_randomGenValueGenerator()
-        {};
-
-        /** Constructor.
-         * @param dimension is the dimension of the searched net
-         * @param m is the size of the (squared) generating matrices
-         * @param figure is a std::unique_ptr to the figure of merit to use
-         * @param explorer is a std::unique_ptr to the explorer to use in the search
-         */ 
-        RandomSearch(   Dimension dimension, 
-                        unsigned int m,
-                        std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-                        unsigned int nbTries):
-            RandomSearch(dimension,m,m,std::move(figure),nbTries)
         {};
 
         /** Default move constructor. */
@@ -85,7 +71,7 @@ class RandomSearch : public Search<NC>
                     genVal.push_back(m_randomGenValueGenerator(dim));
                 }
 
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(genVal, this->nRows(), this->nCols());
+                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, genVal);
                 double merit = (*evaluator)(*net);
                 this->m_minObserver->observe(std::move(net),merit);
             }

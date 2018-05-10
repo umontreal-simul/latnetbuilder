@@ -39,27 +39,12 @@ class CBCSearch : public Search<NC>
          * @param explorer is a std::unique_ptr to the explorer to use in the search
          */ 
         CBCSearch(  Dimension dimension, 
-                    unsigned int nRows, 
-                    unsigned int nCols, 
+                    typename NetConstructionTraits<NC>::DesignParameter designParameter,
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     unsigned int verbose = 0 ):
-            Search<NC>(dimension, nRows, nCols, std::move(figure)),
+            Search<NC>(dimension, designParameter, std::move(figure)),
             m_explorer(std::move(explorer))
-        {};
-
-        /** Constructor.
-         * @param dimension is the dimension of the searched net
-         * @param m is the size of the (squared) generating matrices
-         * @param figure is a std::unique_ptr to the figure of merit to use
-         * @param explorer is a std::unique_ptr to the explorer to use in the search
-         */ 
-        CBCSearch(  Dimension dimension, 
-                    unsigned int m,
-                    std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-                    std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
-                    unsigned int verbose = 0):
-            CBCSearch(dimension,m,m,std::move(figure),std::move(explorer), verbose)
         {};
 
         /** Default move constructor. */

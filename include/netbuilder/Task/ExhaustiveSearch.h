@@ -37,23 +37,10 @@ class ExhaustiveSearch : public Search<NC>
          * @param figure is a std::unique_ptr to the figure of merit to use
          */ 
         ExhaustiveSearch(   Dimension dimension, 
-                            unsigned int nRows, 
-                            unsigned int nCols, 
+                            typename NetConstructionTraits<NC>::DesignParameter designParameter,
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                             unsigned int verbose = 0 ):
-            Search<NC>(dimension, nRows, nCols, std::move(figure), verbose)
-        {};
-
-        /** Constructor.
-         * @param dimension is the dimension of the searched net
-         * @param m is the size of the (squared) generating matrices
-         * @param figure is a std::unique_ptr to the figure of merit to use
-         * @param explorer is a std::unique_ptr to the explorer to use in the search
-         */ 
-        ExhaustiveSearch(   Dimension dimension, 
-                            unsigned int m,
-                            std::unique_ptr<FigureOfMerit::FigureOfMerit> figure):
-            ExhaustiveSearch(dimension,m,m,std::move(figure))
+            Search<NC>(dimension, designParameter, std::move(figure), verbose)
         {};
 
         /** Default move constructor. */
@@ -71,11 +58,11 @@ class ExhaustiveSearch : public Search<NC>
             evaluator->onProgress().connect(boost::bind(&MinObserver<NC>::onProgress, &this->minObserver(), _1));
             evaluator->onAbort().connect(boost::bind(&MinObserver<NC>::onAbort, &this->minObserver(), _1));
 
-            auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension());
+            auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_designParameter);
 
             for(const auto& genVal : searchSpace)
             {
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(genVal, this->nRows(), this->nCols());
+                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, genVal);
                 double merit = (*evaluator)(*net);
                 this->m_minObserver->observe(std::move(net),merit);
             }

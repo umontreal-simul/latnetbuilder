@@ -43,8 +43,8 @@ class MinObserver
          * @param nCols is the number of columns of the nets
          * @verbose is the level of verbosity of the observer
         */
-        MinObserver(unsigned int nRows, unsigned nCols, unsigned int verbose = 0):
-            m_bestNet( new DigitalNetConstruction<NC>(nRows,nCols)),
+        MinObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, unsigned int verbose = 0):
+            m_bestNet(new DigitalNetConstruction<NC>(0,designParameter)),
             m_verbose(verbose)
         {
             reset();

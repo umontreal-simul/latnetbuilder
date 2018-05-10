@@ -40,7 +40,7 @@ public:
     virtual void reset() override
     {
         m_minObserver.reset();
-        m_bestNet = DigitalNetConstruction<NC>(0,m_nRows,m_nCols);
+        m_bestNet = DigitalNetConstruction<NC>(0,m_designParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
 
@@ -48,28 +48,21 @@ public:
     typedef boost::signals2::signal<void (const Search<NC>&)> OnFailedSearch;
 
     Search( Dimension dimension, 
-            unsigned int nRows, 
-            unsigned int nCols, 
+            typename NetConstructionTraits<NC>::DesignParameter designParameter,
             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
             unsigned int verbose = 0 ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
-        m_nRows(nRows),
-        m_nCols(nCols),
+        m_designParameter(designParameter),
+        m_nRows(NetConstructionTraits<NC>::nRows(m_designParameter)),
+        m_nCols(NetConstructionTraits<NC>::nCols(m_designParameter)),
         m_figure(std::move(figure)),
-        m_bestNet(nRows,nCols),
+        m_bestNet(0, m_designParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
-        m_minObserver(new MinObserver<NC>(nRows,nCols)),
+        m_minObserver(new MinObserver<NC>(designParameter)),
         m_verbose(verbose)
         {};
-
-    Search( Dimension dimension, 
-            unsigned int m,
-            std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-            unsigned int verbose = 0):
-        Search(dimension,m,m,std::move(figure))
-    {};
 
     Search(Search&& ) = default;
 
@@ -138,6 +131,8 @@ public:
             return *m_figure;
     }
 
+    const typename NetConstructionTraits<NC>::DesignParameter& designParameter() const {return m_designParameter;}
+
     protected:
 
         /**
@@ -153,6 +148,7 @@ public:
         std::unique_ptr<OnNetSelected> m_onNetSelected;
         std::unique_ptr<OnFailedSearch> m_onFailedSearch;
         Dimension m_dimension;
+        typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
         unsigned int m_nRows;
         unsigned int m_nCols;
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
