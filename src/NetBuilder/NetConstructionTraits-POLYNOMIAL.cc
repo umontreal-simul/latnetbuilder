@@ -32,6 +32,10 @@ namespace NetBuilder {
 
     DesignParameter NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameter(1);
 
+    typedef NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameterIncrement DesignParameterIncrement;
+
+    DesignParameterIncrement NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameterIncrementator(0);
+
 
     bool NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {

@@ -273,8 +273,7 @@ namespace NetBuilder {
         for(unsigned int k = 0; k < s; ++k)
         {
             GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),designParameter+inc);
-
-            genMats[k].reset(newMat);
+            genMats[k].reset(std::move(newMat));
         }
     }
 }

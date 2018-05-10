@@ -46,7 +46,7 @@ int main(int argc, const char *argv[])
     unsigned int s = 5;
     unsigned int m = 5;
 
-    typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter designParam(1);
+    typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter designParam(0);
     SetCoeff(designParam,m);
 
     // typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter designParam(m);

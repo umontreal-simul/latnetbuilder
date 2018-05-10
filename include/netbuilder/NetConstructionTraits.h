@@ -55,7 +55,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         static DesignParameter defaultDesignParameter;
 
-        static constexpr bool isDigitalSequenceViewable = true;
+        static constexpr bool isSequenceViewable = true;
 
         typedef unsigned int DesignParameterIncrement;
 
@@ -135,11 +135,11 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static DesignParameter defaultDesignParameter;
 
-        static constexpr bool isDigitalSequenceViewable = false;
+        static constexpr bool isSequenceViewable = false;
 
-        // typedef unsigned int DesignParameterIncrement;
+        typedef Polynomial DesignParameterIncrement;
 
-        // static DesignParameterIncrement defaultDesignParameterIncrementator;
+        static DesignParameterIncrement defaultDesignParameterIncrementator;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 

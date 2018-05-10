@@ -35,9 +35,6 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
-/** Class to describe an aggregation of figures of merit computed in a specific order.
- */ 
-template <unsigned int L>
 class EquidistributionProperty : public FigureOfMerit{
 
     public:
@@ -45,7 +42,8 @@ class EquidistributionProperty : public FigureOfMerit{
         /** Constructor.
          * @param weight is weight of the figure of merit;
          */ 
-        EquidistributionProperty(Real weight = std::numeric_limits<Real>::infinity(), BinOp binOp = OpMax()):
+        EquidistributionProperty(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), BinOp binOp = OpMax()):
+            m_nbBits(nbBits),
             m_weight(weight),
             m_binOp(binOp)
         {};    
@@ -60,6 +58,8 @@ class EquidistributionProperty : public FigureOfMerit{
         {
             return std::make_unique<EquidistributionPropertyEvaluator>(this);
         }
+
+        unsigned int nbBits() const {return m_nbBits; }
 
     private:
 
@@ -92,21 +92,21 @@ class EquidistributionProperty : public FigureOfMerit{
 
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-                    auto grownNet = net.extendSize(L*(dimension));
+                    auto grownNet = net.extendSize(m_figure->nbBits()*dimension);
 
                     auto newReducer = m_memReducer;
 
-                    for(unsigned int i = 0; i < L; ++i)
+                    for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                     {
                         GeneratingMatrix newCol(0,1);
                         for(unsigned int dim = 1; dim < dimension; ++dim)
                         {
-                            newCol.vstack(grownNet->pointerToGeneratingMatrix(dim)->subMatrix(0, L*(dimension-1), L, 1));
+                            newCol.vstack(grownNet->pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
                         }
                         newReducer.addColumn(newCol);
                     }
 
-                    GeneratingMatrix block = grownNet->pointerToGeneratingMatrix(dimension)->subMatrix(L, L*dimension);
+                    GeneratingMatrix block = grownNet->pointerToGeneratingMatrix(dimension)->subMatrix(m_figure->nbBits(), m_figure->nbBits()*dimension);
 
                     if(!newReducer.reduceNewBlock(block))
                     {
@@ -139,13 +139,24 @@ class EquidistributionProperty : public FigureOfMerit{
 
         };
 
+        unsigned int m_nbBits;
         Real m_weight;
         BinOp m_binOp;
 };
 
-class AProperty : public EquidistributionProperty<1> {};
+class AProperty : public EquidistributionProperty {
+    public:
+        AProperty():
+            EquidistributionProperty(1)
+        {};
+};
 
-class APrimeProperty : public EquidistributionProperty<2> {};
+class APrimeProperty : public EquidistributionProperty {
+    public:
+        AProperty():
+            EquidistributionProperty(2)
+        {};
+};
 
 }}
 

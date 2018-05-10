@@ -103,6 +103,8 @@ class DigitalNet
             m_generatingMatrices(genMatrices)
         {};
 
+        virtual std::unique_ptr<DigitalNet> extendSize(unsigned int nRows, unsigned int nCols) = 0;
+
     protected:
 
         unsigned int m_dimension; // dimension of the net
@@ -216,6 +218,10 @@ class DigitalNetConstruction : public DigitalNet
             return std::make_unique<DigitalNetConstruction<NC>>(m_dimension+1, m_designParameter, std::move(genVals), std::move(genMats));
         }
 
+        virtual std::unique_ptr<DigitalNet> extendSize(unsigned int nRows, unsigned int nCols)
+        {
+            return std::unique_ptr<DigitalNet>();
+        }
 
         
         // DigitalNetConstruction<NC> extendDimension(){
@@ -230,29 +236,24 @@ class DigitalNetConstruction : public DigitalNet
 
         //     return DigitalNetConstruction(std::move(genMats), std::move(genVals), m_dimension+1, m_nRows, m_nCols);
         // }
-        
-
-        // std::enable_if_t<ConstructionMethod::isSequenceViewable, std::unique_ptr<DigitalNetConstruction<NC>>> extendSize(ConstructionMethod::DesignParameterIncrement inc)
-        // {
-
-        //     unsigned int inc = (m>numColumns()) ? (m-numColumns()) : 0;
-        //     if (inc>0)
-        //     {
-        //         ConstructionMethod::extendGeneratingMatrices(inc, m_generatingMatrices, m_genValues);
-        //     }
-        //     return std::move(std::make_unique<DigitalNetConstruction<NC>>(m_generatingMatrices, m_genValues, m_dimension, m, m));
-        // }
-
-        // virtual std::unique_ptr<DigitalNet> extendSize()
-        // {
-        //     return std::move(extendSize(1));
-        // }
-
+    
     private:
 
         DesignParameter m_designParameter;
         std::vector<std::shared_ptr<GenValue>> m_genValues; // vector of shared pointers to the generating values of the net
 };
+
+template<>
+std::unique_ptr<DigitalNet> DigitalNetConstruction<NetConstruction::SOBOL>::extendSize(unsigned int nRows, unsigned int nCols)
+{
+    assert(nRows == nCols);
+    if (nRows > numRows() || nCols > numColumns() )
+    {
+        ConstructionMethod::extendGeneratingMatrices(m_designParameter, nRows-numRows(), m_generatingMatrices, m_genValues);
+    }
+    return std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(m_dimension, nRows, m_genValues, m_generatingMatrices);
+}
+
 }
 
 #endif
