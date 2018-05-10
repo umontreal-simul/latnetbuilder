@@ -116,6 +116,12 @@ class FigureOfMeritEvaluator
                 {
                     std::cout << "Partial merit value: " << merit <<std::endl;
                 }
+                if (!onProgress()(merit))
+                {
+                    onAbort()(net);
+                    merit = std::numeric_limits<Real>::infinity();
+                    break;
+                }
             }
             reset();
             return merit;

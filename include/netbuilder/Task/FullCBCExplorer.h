@@ -35,7 +35,7 @@ class FullCBCExplorer
         FullCBCExplorer(unsigned int dimension):
             m_dimension(dimension),
             m_currentDim(1),
-            m_data(ConstructionMethod::genValueSpace(1)),
+            m_data(ConstructionMethod::genValueSpaceDim(1)),
             m_state(0)
         {};
 
@@ -46,7 +46,7 @@ class FullCBCExplorer
                 if (m_currentDim < m_dimension)
                 {
                     ++m_currentDim;
-                    m_data = ConstructionMethod::genValueSpace(m_currentDim);
+                    m_data = ConstructionMethod::genValueSpaceDim(m_currentDim);
                     m_state = 0;
                 }
                 return true;
@@ -58,6 +58,13 @@ class FullCBCExplorer
         {
             m_state+=1;
             return m_data[m_state-1];
+        }
+
+        void reset()
+        {
+            m_currentDim = 1;
+            m_data = (ConstructionMethod::genValueSpaceDim(1));
+            m_state = 0;
         }
 
     private:

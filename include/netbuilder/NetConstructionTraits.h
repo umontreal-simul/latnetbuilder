@@ -34,7 +34,7 @@ namespace NetBuilder {
  * create a generating matrix of the given shape from the generating value
  *  - static std::vector<GenValue> defaultGenValues(unsigned int dimension): returns a vector of default generating values
  *  (one for each coordinates lower than dimension)
- *  - static std::vector<GenValue> genValueSpace(unsigned int dimension): returns a vector of all the possible generating values
+ *  - static std::vector<GenValue> genValueSpaceDim(unsigned int dimension): returns a vector of all the possible generating values
  *  for the given dimension
  * \n and the following class template:
  *  - template<typename RAND> class RandomGenValueGenerator: a class template where template parameter RAND implements
@@ -66,7 +66,9 @@ namespace NetBuilder {
 
             static std::vector<GenValue> defaultGenValues(unsigned int dimension);
 
-            static std::vector<GenValue> genValueSpace(unsigned int dimension);
+            static std::vector<GenValue> genValueSpaceDim(unsigned int dimension);
+
+            static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension);
 
             template<typename RAND>
             class RandomGenValueGenerator
@@ -108,25 +110,6 @@ namespace NetBuilder {
 
             static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
     };
-   
-
-//    template<>
-//     struct NetConstructionTraits<NetConstruction::UNIRANDOM>
-//     {
-//         public:
-//             typedef unsigned int GenValue ;
-
-//             static bool checkGenValue(const GenValue& genValue);
-
-//             static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
-
-//             static void extendGeneratingMatrices( 
-//                 unsigned int inc,
-//                 const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-//                 const std::vector<std::shared_ptr<GenValue>>& genValues);
-            
-//             static std::vector<GenValue> defaultGenValues(unsigned int dimension);
-//     };
 
 }
 

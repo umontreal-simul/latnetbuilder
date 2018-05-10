@@ -14,6 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "netbuilder/DigitalNet.h"
+#include "netbuilder/Util.h"
+#include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/SobolDirectionNumbers.h"
 
 #include "latbuilder/TextStream.h"
@@ -29,25 +32,28 @@ using LatBuilder::TextStream::operator<<;
 int main(int argc, const char *argv[])
 {
 
-    auto s1 = SobolDirectionNumbers<>(1);
-    auto s2 = SobolDirectionNumbers<>(2);
-    auto s3 = SobolDirectionNumbers<>(3);
-    auto s4 = SobolDirectionNumbers<>(4);
+    auto foo = DigitalNetConstruction<NetConstruction::SOBOL>::ConstructionMethod::genValueSpace(4);
+    std::cout <<  foo << std::endl;
 
-    std::vector<SobolDirectionNumbers<>> s;
-    s.push_back(s1);
-    s.push_back(s2);
-    s.push_back(s3);
-    s.push_back(s4);
+    // auto s1 = SobolDirectionNumbers<>(1);
+    // auto s2 = SobolDirectionNumbers<>(2);
+    // auto s3 = SobolDirectionNumbers<>(3);
+    // auto s4 = SobolDirectionNumbers<>(4);
 
-    LatBuilder::SeqCombiner<SobolDirectionNumbers<>,LatBuilder::CartesianProduct> foo(s);
-    //std::cout << foo << std::endl;
+    // std::vector<SobolDirectionNumbers<>> s;
+    // s.push_back(s1);
+    // s.push_back(s2);
+    // s.push_back(s3);
+    // s.push_back(s4);
 
-    std::vector<std::vector<unsigned long>> toto;
+    // LatBuilder::SeqCombiner<SobolDirectionNumbers<>,LatBuilder::CartesianProduct> foo(s);
+    // //std::cout << foo << std::endl;
+
+    // std::vector<std::vector<unsigned long>> toto;
     
-    toto.assign(foo.begin(),foo.end());
+    // toto.assign(foo.begin(),foo.end());
 
-    std::cout << toto << std::endl;
+    // std::cout << toto << std::endl;
 
     /*typedef LatBuilder::Traversal::Random<LatBuilder::LFSR258> Trav;
 

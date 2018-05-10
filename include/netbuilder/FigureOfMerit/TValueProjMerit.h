@@ -550,7 +550,6 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
         unsigned int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
         std::vector<bool> m_validFlags;
-
 };
 
 template<>
@@ -613,7 +612,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
                     std::cout << *it << " - merit: " << merit << std::endl;
                 }
 
-                acc.accumulate(weight,merit,1);
+                acc.accumulate(weight,merit,m_figure->expNorm());
 
                 if (!onProgress()(acc.value())) 
                 {
@@ -945,7 +944,6 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
         } 
 
         virtual void reset() { invalidate(1); }
-
 
         unsigned int m_dimension; // last dimension of J_d
         unsigned int m_maxCardinal; // maximal cardinality of projections to consider (alpha)

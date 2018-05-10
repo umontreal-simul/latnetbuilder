@@ -214,7 +214,7 @@ int main(int argc, const char *argv[])
 }
 
 
-    // auto vecGenValues = ConstructionMethod::genValueSpace(s+1);    
+    // auto vecGenValues = ConstructionMethod::genValueSpaceDim(s+1);    
 
     // for (int i=0; i<vecGenValues.size(); i++){
     //     auto weights1 = std::make_unique<LatCommon::OrderDependentWeights>(0.1);

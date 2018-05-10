@@ -127,7 +127,7 @@ struct FigureParser
         if (nbParam == 5) {
             Real weightPower = boost::lexical_cast<Real>(figureCharacteristicStrings[4]);
 
-            if (normType < std::numeric_limits<Real>::max())
+            if (normType < std::numeric_limits<Real>::infinity())
                 weightsPowerScale = normType;
          // then scale down according to interpretation of input
             weightsPowerScale /= weightPower;

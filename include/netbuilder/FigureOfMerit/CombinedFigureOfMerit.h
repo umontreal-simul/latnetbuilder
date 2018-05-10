@@ -54,7 +54,8 @@ class CombinedFigureOfMerit : public FigureOfMerit{
             m_figures(std::move(figures)),
             m_size(m_figures.size()),
             m_binOp(realToBinOp(normType)),
-            m_weights(std::move(weights))
+            m_weights(std::move(weights)),
+            m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
 
         /** Returns the norm type of the figure */
@@ -82,6 +83,8 @@ class CombinedFigureOfMerit : public FigureOfMerit{
             return std::make_unique<CombinedFigureOfMeritEvaluator>(this);
         }
 
+        Real expNorm() const { return m_expNorm; }
+
     private:
 
         /** Evaluator class for CombinedFigureOfMerit. */
@@ -96,7 +99,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                 {
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
-                        m_evaluators.push_back(std::move(m_figure->figure(i)->evaluator()));
+                        m_evaluators.push_back((m_figure->figure(i)->evaluator()));
                     }
                 };
 
@@ -113,7 +116,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
                     Real weight;
 
-                    auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->normType())) ;} ;
+                    auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->expNorm())) ;} ;
 
                     //auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
 
@@ -128,13 +131,13 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
                             MeritValue merit = (*m_evaluators[i])(net, dimension, 0, verbose);
 
-                            acc.accumulate(m_figure->weights()[i], merit, m_figure->normType()) ;
+                            acc.accumulate(m_figure->weights()[i], merit, m_figure->expNorm()) ;
 
                             goOnConnection.disconnect();
                             //abortConnection.disconnect();
 
                             if (!onProgress()(acc.value())) { // if the current merit is too high
-                                acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->normType()); // set the merit to infinity
+                                acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
                                 onAbort()(net); // abort the computation
                                 break;
                             }
@@ -162,6 +165,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         unsigned int m_size;
         BinOp m_binOp;
         std::vector<Real> m_weights;
+        Real m_expNorm;
 };
 
 }}

@@ -94,6 +94,11 @@ class Eval : public BaseTask
             m_merit = evaluator->operator()(*m_net, m_merit);
         }
 
+        virtual void reset()
+        {
+            m_merit = 0;
+        }
+
     private:
 
         std::unique_ptr<DigitalNet> m_net;

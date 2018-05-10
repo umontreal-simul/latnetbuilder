@@ -169,7 +169,7 @@ class DigitalNetConstruction : public DigitalNet
             {
                 // construct the generating matrix and store them and the generating values
                 m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_nRows,m_nCols)));
-                m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(genValue)));
+                m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
             }
         };
 
@@ -189,6 +189,17 @@ class DigitalNetConstruction : public DigitalNet
             DigitalNet(dimension, nRows, nCols, genMatrices),
             m_genValues(genValues)
         {};
+
+        DigitalNetConstruction(std::vector<GenValue> genValues, unsigned nCols, unsigned int nRows):
+            DigitalNet(genValues.size(),nRows,nCols)
+        {
+            for(const auto& genValue : genValues)
+            {
+                // construct the generating matrix and store them and the generating values
+                m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_nRows,m_nCols)));
+                m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
+            }
+        }
 
         /**Default destructor. */
         ~DigitalNetConstruction() = default;

@@ -142,7 +142,8 @@ class WeightedFigureOfMerit : public FigureOfMerit
             m_normType(normType),
             m_weights(std::move(weights)),
             m_projDepMerit(std::move(projDepMerit)),
-            m_binOp(realToBinOp(normType))
+            m_binOp(realToBinOp(normType)),
+            m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
 
         /** Returns the weights of the figure */
@@ -168,12 +169,15 @@ class WeightedFigureOfMerit : public FigureOfMerit
             return std::make_unique<WeightedFigureOfMeritEvaluator>(this);
         }
 
+        Real expNorm() const { return m_expNorm; }
+
     private:
 
         Real m_normType;
         std::unique_ptr<LatCommon::Weights> m_weights;
         std::unique_ptr<PROJDEP> m_projDepMerit;
         BinOp m_binOp;
+        Real m_expNorm;
 
         /** Class which describes how the figure of merit is computed. */
         class WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
@@ -218,10 +222,10 @@ class WeightedFigureOfMerit : public FigureOfMerit
                         std::cout << "projection: " << proj << " - weight: " << weight << " - merit: " << merit << std::endl;
                     }
 
-                    acc.accumulate(weight, merit, m_figure->normType()); // accumulate the merit
+                    acc.accumulate(weight, merit, m_figure->expNorm()); // accumulate the merit
 
                     if (!onProgress()(acc.value())) { // if the current merit is too high
-                        acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->normType()); // set the merit to infinity
+                        acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
                         onAbort()(net); // abort the computation
                         break;
                     }

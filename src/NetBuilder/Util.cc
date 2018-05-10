@@ -28,7 +28,7 @@ struct OpMax{
 };
 
 BinOp realToBinOp(Real normType){
-if (normType < std::numeric_limits<Real>::max())
+if (normType < std::numeric_limits<Real>::infinity())
     return BinOp(OpAdd());
 return BinOp(OpMax());
 }

@@ -27,6 +27,8 @@
 #include <vector>
 #include <assert.h>
 
+#include "latbuilder/TextStream.h"
+
 namespace NetBuilder {
 
     
@@ -175,7 +177,7 @@ namespace NetBuilder {
     std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(unsigned int dimension)
     {
         assert(dimension >= 1 && dimension <= 21201);
-        std::ifstream file("../data/JoeKuoSobolNets.csv");
+        std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
         std::vector<std::vector<uInteger>> res(dimension);
         res[0] = {};
         std::string sent;
@@ -208,7 +210,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int dimension)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension)
     {
         unsigned int size;
         if (dimension==1)
@@ -234,6 +236,27 @@ namespace NetBuilder {
         }
         return res;
     }
+
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int maxDimension)
+    {
+        std::vector<std::vector<GenValue>> seqs;
+        seqs.reserve(maxDimension);
+        for(unsigned int i = 0; i < maxDimension; ++i)
+        {
+            seqs.push_back(genValueSpaceDim(i+1));
+        }
+        LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
+        std::vector<std::vector<GenValue>> res;
+        for(const auto& foo : tmp)
+        {
+            res.push_back(foo);
+        }
+        return res;
+    }
+
+
+
+
 
     void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
         unsigned int inc,

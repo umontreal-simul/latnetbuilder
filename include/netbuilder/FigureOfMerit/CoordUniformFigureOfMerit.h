@@ -160,7 +160,6 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             m_currentDim = 0;
             m_memStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
             m_tmpStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
-
         }
 
         MeritValue combine(Real& merit) const {

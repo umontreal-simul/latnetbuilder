@@ -105,9 +105,6 @@ class Accumulator
 
 BinOp realToBinOp(Real normType);
 
-
-
-
 }
 
 #endif

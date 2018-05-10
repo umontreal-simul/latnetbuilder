@@ -22,6 +22,9 @@
 
 #include "latbuilder/LFSR258.h"
 
+#include <vector>
+#include <algorithm>
+
 namespace NetBuilder { namespace Task {
 
 template <NetConstruction NC>
@@ -47,6 +50,11 @@ class RandomCBCExplorer
         {
             m_countTries[dim-1] += 1;
             return m_randomGenValueGenerator(dim);
+        }
+
+        void reset()
+        {
+            std::fill(m_countTries.begin(),m_countTries.end(), 0);
         }
 
     private:

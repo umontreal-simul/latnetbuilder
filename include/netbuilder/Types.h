@@ -43,7 +43,6 @@ typedef unsigned long uInteger;
 typedef double Real;
 
 /// Vector of floating-point values.
-// typedef std::vector<double> RealVector;
 typedef boost::numeric::ublas::vector<Real> RealVector;
 
 /// Merit value type.

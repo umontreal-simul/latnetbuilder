@@ -17,10 +17,12 @@
 #ifndef NETBUILDER__TASK__BASE_TASK_H
 #define NETBUILDER__TASK__BASE_TASK_H
 
+#include "netbuilder/DigitalNet.h"
+#include "netbuilder/Types.h"
+#include "netbuilder/NetConstructionTraits.h"
+
 #include <ostream>
 #include <memory>
-
-#include "netbuilder/DigitalNet.h"
 
 namespace NetBuilder { namespace Task {
 
@@ -40,17 +42,8 @@ public:
 
     virtual Real meritValueOutput() const = 0;
 
-protected:
-   //virtual void format(std::ostream& os) const = 0;
-   //friend std::ostream& operator<<(std::ostream&, const Task&);
+    virtual void reset() = 0;
 };
-
-/**
- * Formats and outputs \c task to \c os.
- */
-//inline std::ostream& operator<<(std::ostream& os, const Task& task)
-//{ task.format(os); return os; }
-//
 
 }}
 

@@ -64,6 +64,12 @@ class MixedCBCExplorer
             } 
         }
 
+        void reset() 
+        {
+            m_randExplorer.reset();
+            m_fullExplorer.reset();
+        }
+
     private:
         unsigned int m_dimension;
         unsigned int m_maxFullDimension;
