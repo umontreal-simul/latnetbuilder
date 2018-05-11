@@ -96,25 +96,31 @@ class FigureOfMeritEvaluator
          * @param initialValue is the value from which to start
          * @param verbose controls the level of verbosity of the computation
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false) = 0;
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0) = 0;
 
         /** Computes the figure of merit for the given \c net for all the dimensions (full computation).
          * @param net is the net for which we compute the merit
          * @param verbose controls the level of verbosity of the computation
          */ 
-        MeritValue operator() (const DigitalNet& net, bool verbose = false)
+        MeritValue operator() (const DigitalNet& net, unsigned int verbose = 0)
         {
             MeritValue merit = 0;
             for(unsigned int dim = 1; dim <= net.dimension(); ++dim)
             {
-                if (verbose)
+                if (verbose>0)
                 {
                     std::cout << "Computing for dimension: " << dim << "..." <<std::endl;
                 }
-                merit = operator()(net, dim, merit, verbose);
-                if (verbose)
+                merit = operator()(net, dim, merit, verbose-1);
+                if (verbose>0)
                 {
                     std::cout << "Partial merit value: " << merit <<std::endl;
+                }
+                if (!onProgress()(merit))
+                {
+                    onAbort()(net);
+                    merit = std::numeric_limits<Real>::infinity();
+                    break;
                 }
             }
             reset();

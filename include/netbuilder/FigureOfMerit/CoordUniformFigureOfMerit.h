@@ -160,7 +160,6 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             m_currentDim = 0;
             m_memStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
             m_tmpStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
-
         }
 
         MeritValue combine(Real& merit) const {
@@ -179,7 +178,7 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
          * @param initialValue is the value from which to start
          * @param verbose controls the level of verbosity of the computation
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = true)
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0)
         {
             using namespace LatCommon;
 

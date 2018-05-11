@@ -22,6 +22,7 @@
 #include "netbuilder/GeneratingMatrix.h"
 
 #include <memory>
+#include <string>
 
 namespace NetBuilder {
 
@@ -34,7 +35,7 @@ namespace NetBuilder {
  * create a generating matrix of the given shape from the generating value
  *  - static std::vector<GenValue> defaultGenValues(unsigned int dimension): returns a vector of default generating values
  *  (one for each coordinates lower than dimension)
- *  - static std::vector<GenValue> genValueSpace(unsigned int dimension): returns a vector of all the possible generating values
+ *  - static std::vector<GenValue> genValueSpaceDim(unsigned int dimension): returns a vector of all the possible generating values
  *  for the given dimension
  * \n and the following class template:
  *  - template<typename RAND> class RandomGenValueGenerator: a class template where template parameter RAND implements
@@ -42,91 +43,159 @@ namespace NetBuilder {
  *  RandomGenValueGenerator(RAND randomGen = RAND()) and an the member function GenValue operator()(unsigned int dimenion) returning
  *  a generating value for the given dimension.
  */ 
-    template <NetConstruction NC>
-    struct NetConstructionTraits;
+template <NetConstruction NC>
+struct NetConstructionTraits;
 
+template<>
+struct NetConstructionTraits<NetConstruction::SOBOL>
+{
+    public:
+        typedef std::pair<unsigned int, std::vector<uInteger>> GenValue ;
 
+        typedef unsigned int DesignParameter;
 
-    template<>
-    struct NetConstructionTraits<NetConstruction::SOBOL>
-    {
-        public:
-            typedef std::pair<unsigned int, std::vector<uInteger>> GenValue ;
+        static DesignParameter defaultDesignParameter;
 
-            static bool checkGenValue(const GenValue& genValue);
+        static constexpr bool isSequenceViewable = true;
 
-            static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
+        typedef unsigned int DesignParameterIncrement;
 
+        static DesignParameterIncrement defaultDesignParameterIncrementator;
+
+        static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+
+        static unsigned int nRows(const DesignParameter& param);
+
+        static unsigned int nCols(const DesignParameter& param);
+
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+
+        static void extendGeneratingMatrices( 
+            const DesignParameter& designParameter,
+            const DesignParameterIncrement& inc,
+            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+            const std::vector<std::shared_ptr<GenValue>>& genValues);
             
-            static void extendGeneratingMatrices( 
-                unsigned int inc,
-                const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-                const std::vector<std::shared_ptr<GenValue>>& genValues);
-             
 
-            static std::vector<GenValue> defaultGenValues(unsigned int dimension);
+        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
 
-            static std::vector<GenValue> genValueSpace(unsigned int dimension);
+        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
 
-            template<typename RAND>
-            class RandomGenValueGenerator
-            {
-                public:
-                    RandomGenValueGenerator(RAND randomGen = RAND()):
-                        m_randomGen(std::move(randomGen))
-                    {};
-                    
-                    GenValue operator()(unsigned int dimension)
+        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
+
+        template<typename RAND>
+        class RandomGenValueGenerator
+        {
+            public:
+                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                    m_designParameter(std::move(designParameter)),
+                    m_randomGen(std::move(randomGen))
+                {};
+                
+                GenValue operator()(unsigned int dimension)
+                {
+                    unsigned int size;
+                    if (dimension==1)
                     {
-                        unsigned int size;
-                        if (dimension==1)
-                        {
-                            size = 1;
-                        }
-                        else
-                        {
-                            size = nthPrimitivePolynomialDegree(dimension-1);
-                        }
-                        std::vector<unsigned long> res(size);
-                        for(unsigned int k = 0; k < size; ++k)
-                        {
-                            res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
-                        }
-                        return GenValue(dimension,std::move(res));
+                        size = 1;
                     }
+                    else
+                    {
+                        size = nthPrimitivePolynomialDegree(dimension-1);
+                    }
+                    std::vector<unsigned long> res(size);
+                    for(unsigned int k = 0; k < size; ++k)
+                    {
+                        res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
+                    }
+                    return GenValue(dimension,std::move(res));
+                }
 
-                private:
-                    RAND m_randomGen;
-            };
+            private:
+                DesignParameter m_designParameter;
+                RAND m_randomGen;
+        };
 
-        private:
-            typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
+        static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
 
-            static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n);
+    private:
+        typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
-            static unsigned int  nthPrimitivePolynomialDegree(unsigned int n);
+        static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n);
 
-            static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
-    };
-   
+        static unsigned int  nthPrimitivePolynomialDegree(unsigned int n);
 
-//    template<>
-//     struct NetConstructionTraits<NetConstruction::UNIRANDOM>
-//     {
-//         public:
-//             typedef unsigned int GenValue ;
+        static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
+};
 
-//             static bool checkGenValue(const GenValue& genValue);
+template<>
+struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
+{
+    public:
+        typedef Polynomial GenValue ;
 
-//             static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols);
+        typedef Polynomial DesignParameter;
 
-//             static void extendGeneratingMatrices( 
-//                 unsigned int inc,
-//                 const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-//                 const std::vector<std::shared_ptr<GenValue>>& genValues);
-            
-//             static std::vector<GenValue> defaultGenValues(unsigned int dimension);
-//     };
+        static DesignParameter defaultDesignParameter;
+
+        static constexpr bool isSequenceViewable = false;
+
+        // typedef Polynomial DesignParameterIncrement;
+
+        // static DesignParameterIncrement defaultDesignParameterIncrementator;
+
+        static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+
+        static unsigned int nRows(const DesignParameter& param);
+
+        static unsigned int nCols(const DesignParameter& param);
+
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+
+        // static void extendGeneratingMatrices( 
+        //     const DesignParameter& designParameter,
+        //     const DesignParameterIncrement& inc,
+        //     std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+        //     const std::vector<std::shared_ptr<GenValue>>& genValues);
+    
+        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
+
+        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
+
+        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
+
+        template<typename RAND>
+        class RandomGenValueGenerator
+        {
+            public:
+                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                    m_designParameter(std::move(designParameter)),
+                    m_randomGen(std::move(randomGen))
+                {
+                    m_primes = genValueSpaceDim(2, m_designParameter);
+                    m_totient = m_primes.size();
+                };
+                
+                GenValue operator()(unsigned int dimension)
+                {
+                    if (dimension==1)
+                    {
+                        return GenValue(1);
+                    }
+                    else
+                    {
+                        return m_primes[m_randomGen() % m_totient];
+                    }
+                }
+            private:
+                DesignParameter m_designParameter;
+                RAND m_randomGen;
+                std::vector<GenValue> m_primes;
+                uInteger m_totient;
+        };
+
+        static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
+};
 
 }
 

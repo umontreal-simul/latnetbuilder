@@ -33,10 +33,11 @@ class Eval : public BaseTask
 {
     public:
 
-        Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure):
+        Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure, unsigned int verbose = 0):
             m_net(std::move(net)),
             m_merit(0),
-            m_figure(std::move(figure))
+            m_figure(std::move(figure)),
+            m_verbose(verbose)
         {};
 
         Eval(Eval&&) = default;
@@ -62,8 +63,8 @@ class Eval : public BaseTask
         /**
         * Returns the best net found by the search task.
         */
-        virtual const DigitalNet& netOutput() const
-        { return net(); }
+        virtual std::string outputNet(OutputFormat outputFormat) const
+        { return net().format(outputFormat); }
 
         /**
         * Returns the best merit value found by the search task.
@@ -74,7 +75,7 @@ class Eval : public BaseTask
         /**
         * Returns the best merit value found by the search task.
         */
-        virtual Real meritValueOutput() const
+        virtual Real outputMeritValue() const
         { return meritValue(); }
 
         const FigureOfMerit::FigureOfMerit& figureOfMerit() const 
@@ -91,7 +92,12 @@ class Eval : public BaseTask
 
             auto evaluator = m_figure->evaluator();
 
-            m_merit = evaluator->operator()(*m_net, m_merit);
+            m_merit = evaluator->operator()(*m_net, m_merit, m_verbose);
+        }
+
+        virtual void reset()
+        {
+            m_merit = 0;
         }
 
     private:
@@ -99,7 +105,7 @@ class Eval : public BaseTask
         std::unique_ptr<DigitalNet> m_net;
         Real m_merit;
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
-        unsigned int m_verbose = 1;
+        unsigned int m_verbose;
 
 };
 

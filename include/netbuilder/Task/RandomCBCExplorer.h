@@ -22,6 +22,9 @@
 
 #include "latbuilder/LFSR258.h"
 
+#include <vector>
+#include <algorithm>
+
 namespace NetBuilder { namespace Task {
 
 template <NetConstruction NC>
@@ -31,10 +34,10 @@ class RandomCBCExplorer
 
     public:
 
-        RandomCBCExplorer(unsigned int dimension, unsigned int nbTries):
+        RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries):
             m_dimension(dimension),
             m_nbTries(nbTries),
-            m_randomGenValueGenerator(),
+            m_randomGenValueGenerator(std::move(designParameter)),
             m_countTries(dimension,0)
         {};
 
@@ -47,6 +50,11 @@ class RandomCBCExplorer
         {
             m_countTries[dim-1] += 1;
             return m_randomGenValueGenerator(dim);
+        }
+
+        void reset()
+        {
+            std::fill(m_countTries.begin(),m_countTries.end(), 0);
         }
 
     private:

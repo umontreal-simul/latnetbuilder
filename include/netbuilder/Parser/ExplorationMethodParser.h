@@ -81,9 +81,8 @@ struct ExplorationMethodParser
             if (name == "random-CBC"){
                 return std::make_unique<Task::CBCSearch<NC, Task::RandomCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_sizeParam.log2NumPoints(),
-                                                                commandLine.m_sizeParam.log2NumPoints(),
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::RandomCBCExplorer<NC>>(commandLine.m_dimension, r));
+                                                                std::make_unique<Task::RandomCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_sizeParam.log2NumPoints(), r)); // TODO
             }
 
             if (name == "mixed-CBC"){
@@ -94,17 +93,15 @@ struct ExplorationMethodParser
 
                 return std::make_unique<Task::CBCSearch<NC, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_sizeParam.log2NumPoints(),
-                                                                commandLine.m_sizeParam.log2NumPoints(),
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::MixedCBCExplorer<NC>>(commandLine.m_dimension, maxDim, r));
+                                                                std::make_unique<Task::MixedCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_sizeParam.log2NumPoints(), maxDim, r)) ; // TODO
             }
         }
         else if (name == "full-CBC"){
             return std::make_unique<Task::CBCSearch<NC, Task::FullCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_sizeParam.log2NumPoints(),
-                                                                commandLine.m_sizeParam.log2NumPoints(),
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::FullCBCExplorer<NC>>(commandLine.m_dimension));
+                                                                std::make_unique<Task::FullCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_sizeParam.log2NumPoints())); // TODO
 
         }
         else{

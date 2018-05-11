@@ -27,12 +27,21 @@
 #include <vector>
 #include <assert.h>
 
+#include "latbuilder/TextStream.h"
+
 namespace NetBuilder {
 
     
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
-    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue)
+    typedef NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
+
+    typedef NetConstructionTraits<NetConstruction::SOBOL>::DesignParameterIncrement DesignParameterIncrement;
+
+    DesignParameter NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameter = 0;
+    DesignParameterIncrement NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameterIncrementator = 1;
+
+    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
         auto dimension = genValue.first;
         unsigned int degree = nthPrimitivePolynomialDegree(dimension);
@@ -52,6 +61,10 @@ namespace NetBuilder {
         }
         return true;
     }
+
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nRows(const DesignParameter& param) { return (unsigned int) param; }
+
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nCols(const DesignParameter& param) { return (unsigned int) param; }
 
     static const std::array<unsigned int,21200> degrees =
     {{
@@ -112,10 +125,9 @@ namespace NetBuilder {
         return res;
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, unsigned int nRows, unsigned int nCols) 
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam)
     {
-        assert(nRows == nCols);
-        unsigned int m  = nCols;
+        unsigned int m  = nCols(designParam);
         unsigned int coord = genValue.first;
 
         GeneratingMatrix* tmp = new GeneratingMatrix(m,m);
@@ -168,14 +180,13 @@ namespace NetBuilder {
                 }
             }
         }
-
         return tmp;
     }
 
     std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(unsigned int dimension)
     {
         assert(dimension >= 1 && dimension <= 21201);
-        std::ifstream file("../data/JoeKuoSobolNets.csv");
+        std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
         std::vector<std::vector<uInteger>> res(dimension);
         res[0] = {};
         std::string sent;
@@ -198,7 +209,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(unsigned int dimension){
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter){
         std::vector<std::vector<uInteger>> tmp = readJoeKuoDirectionNumbers(dimension);
         std::vector<GenValue> res(dimension);
         for(unsigned int j = 0; j < dimension; ++j)
@@ -208,7 +219,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int dimension)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
     {
         unsigned int size;
         if (dimension==1)
@@ -235,31 +246,55 @@ namespace NetBuilder {
         return res;
     }
 
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
+    {
+        std::vector<std::vector<GenValue>> seqs;
+        seqs.reserve(maxDimension);
+        for(unsigned int i = 0; i < maxDimension; ++i)
+        {
+            seqs.push_back(genValueSpaceDim(i+1,designParameter));
+        }
+        LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
+        std::vector<std::vector<GenValue>> res;
+        for(const auto& foo : tmp)
+        {
+            res.push_back(foo);
+        }
+        return res;
+    }
+
     void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
-        unsigned int inc,
-        const std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-        const std::vector<std::shared_ptr<GenValue>>& genValues)
+            const DesignParameter& designParameter,
+            const DesignParameterIncrement& inc,
+            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
+            const std::vector<std::shared_ptr<GenValue>>& genValues)
     {
         unsigned int s = genMats.size();
         for(unsigned int k = 0; k < s; ++k)
         {
-            unsigned int nCols = genMats[k]->nCols();
-            unsigned int nRows = genMats[k]->nRows();
-
-            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),nRows+inc,nCols+inc);
-
-            genMats[k]->resize(nRows+inc,nCols+inc);
-            for(unsigned int i = nRows; i < nRows+inc; ++i)
-            {
-                for(unsigned int j = nCols; j < nCols+inc; ++j )
-                {
-                    (*genMats[k])(i,j) = (*newMat)(i,j);
-                }
-            }
-
-            delete newMat;
+            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),designParameter+inc);
+            genMats[k].reset(std::move(newMat));
         }
     }
+
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
+    {
+        std::string res;
+        res += "SobolDigitalNet(\n  Direction numbers = \n";
+        for(const auto& genVal : genVals)
+        {
+            res+="  ";
+            for(const auto& dirNum : genVal->second)
+            {
+                res+= std::to_string(dirNum);
+                res+= " ";
+            }
+            res.pop_back();
+            res+="\n";
+        }
+        res+=")";
+        return res;
+    }  
 }
 
 
