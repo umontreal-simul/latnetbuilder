@@ -200,7 +200,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
           * @param initialValue is the value from which to start
           * @param verbose controls the level of verbosity of the computation
           */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0)
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
         {
 
             extendUpToDimension(dimension);
@@ -219,7 +219,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
                 it->updateMaxMeritsSubProj();
                 Real merit = m_figure->projDepMerit()(net,it->getProjectionRepresentation(),it->getMaxMeritsSubProj()); // compute the merit of the projection
                 
-                if(verbose)
+                if(verbose>0)
                 {
                     std::cout << *it << " - merit sub: " << it->getMaxMeritsSubProj() << " - merit: " << merit << std::endl;
                 }
@@ -579,7 +579,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             }
         }
 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0)
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
         {
             extendUpToDimension(dimension);
 
@@ -607,7 +607,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
 
                 it->setMeritTmp(std::move(meritEmbedded)); // update the merit of the node
                 
-                if(verbose)
+                if(verbose>0)
                 {
                     std::cout << *it << " - merit: " << merit << std::endl;
                 }

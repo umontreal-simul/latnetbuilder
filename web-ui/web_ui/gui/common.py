@@ -2,7 +2,7 @@ import os
 import csv
 import numpy as np
 
-dev_mod = not os.path.exists('../share/data/JoeKuoSobolNets.csv')
+dev_mod = not os.path.exists('../share/latbuilder/data/JoeKuoSobolNets.csv')
 
 # joe and kuo sobol nets - necessary for digital net evaluation
 JoeKuoSobolNets = []
@@ -10,7 +10,7 @@ JoeKuoSobolNets = []
 if dev_mod:
     _JoeKuoSobolNetsPath = '../../data/JoeKuoSobolNets.csv'
 else:
-    _JoeKuoSobolNetsPath = '../share/data/JoeKuoSobolNets.csv'
+    _JoeKuoSobolNetsPath = '../share/latbuilder/data/JoeKuoSobolNets.csv'
 
 with open(_JoeKuoSobolNetsPath, newline='') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=';')

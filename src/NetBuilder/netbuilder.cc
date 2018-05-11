@@ -58,7 +58,8 @@ makeOptionsDescription()
     "  net\n")
    ("help,h", "produce help message")
    ("version,V", "show version")
-   ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
+   ("verbose,v", po::value<std::string>()->default_value("0"),
+   "specify the verbosity of the program\n")
    ("construction,c", po::value<std::string>()->default_value("sobol"),
    "digital-net; possible constructions:\n"
    "  sobol (default)\n"
@@ -174,9 +175,11 @@ parse(int argc, const char* argv[])
 }
 
 
-#define BUILD_AND_EXECUTE_TASK(net_construction, point_set_type)\
+#define BUILD_TASK(net_construction, point_set_type)\
 NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, NetBuilder::PointSetType::point_set_type> cmd;\
 \
+cmd.s_designParameter = designParameterString;\
+cmd.s_verbose = opt["verbose"].as<std::string>();\
 cmd.s_explorationMethod = opt["exploration-method"].as<std::string>();\
 cmd.s_size = opt["size"].as<std::string>();\
 cmd.s_dimension = opt["dimension"].as<std::string>();\
@@ -188,11 +191,7 @@ if (opt.count("combiner") < 1){\
 else{\
   cmd.s_combiner = opt["combiner"].as<std::string>();\
 }\
-auto task = cmd.parse();\
-t0 = high_resolution_clock::now();\
-task->execute();\
-t1 = high_resolution_clock::now();\
-TaskOutput(*task);
+task = cmd.parse();
 
 
 
@@ -207,8 +206,6 @@ int main(int argc, const char *argv[])
 
         auto opt = parse(argc, argv);
 
-        // bool quiet = opt.count("quiet");
-
         auto repeat = opt["repeat"].as<unsigned int>();
 
         // global variable
@@ -217,29 +214,41 @@ int main(int argc, const char *argv[])
         std::string s_setType = opt["set-type"].as<std::string>();
         std::string s_construction = opt["construction"].as<std::string>();
         NetBuilder::PointSetType setType = NetBuilder::Parser::PointSetTypeParser::parse(s_setType);
-        NetBuilder::NetConstruction netConstruction = NetBuilder::Parser::NetConstructionParser::parse(s_construction);
+
+        auto netConstructionPair = NetBuilder::Parser::NetConstructionParser::parse(s_construction);
+
+        NetBuilder::NetConstruction netConstruction = netConstructionPair.first;
+
+        std::string designParameterString = netConstructionPair.second;
 
       std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
-      for (unsigned i=0; i<repeat; i++){
+      std::unique_ptr<NetBuilder::Task::BaseTask> task;
+
         if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::UNILEVEL){
-          BUILD_AND_EXECUTE_TASK(SOBOL, UNILEVEL)
+          BUILD_TASK(SOBOL, UNILEVEL)
        }
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::MULTILEVEL){
-          BUILD_AND_EXECUTE_TASK(SOBOL, MULTILEVEL)
+          BUILD_TASK(SOBOL, MULTILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::UNILEVEL){
-      //     BUILD_AND_EXECUTE_TASK(POLYNOMIAL, UNILEVEL)
-      //  }
+       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::UNILEVEL){
+         std::cout << "i'm here" << std::endl;
+          BUILD_TASK(POLYNOMIAL, UNILEVEL)
+          std::cout << "i'm done" << std::endl;
+       }
       //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::MULTILEVEL){
       //     BUILD_AND_EXECUTE_TASK(POLYNOMIAL, MULTILEVEL)
       //  }
 
-      //  if (not quiet) {
-          auto dt = duration_cast<duration<double>>(t1 - t0);
-         std::cout << std::endl;
-         std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-      // }
+      for (unsigned i=0; i<repeat; i++){
+      t0 = high_resolution_clock::now();\
+      task->execute();\
+      t1 = high_resolution_clock::now();\
+      TaskOutput(*task);
+      auto dt = duration_cast<duration<double>>(t1 - t0);
+      std::cout << std::endl;
+      std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
+      task.reset();
       }
    }
    catch (LatBuilder::Parser::ParserError& e) {
@@ -254,5 +263,5 @@ int main(int argc, const char *argv[])
    return 0;
 }
 
-#undef BUILD_AND_EXECUTE_TASK
+#undef BUILD_TASK
 }

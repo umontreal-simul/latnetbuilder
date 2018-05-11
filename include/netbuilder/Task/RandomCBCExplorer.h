@@ -34,11 +34,12 @@ class RandomCBCExplorer
 
     public:
 
-        RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries):
+        RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries, int verbose = 0):
             m_dimension(dimension),
             m_nbTries(nbTries),
             m_randomGenValueGenerator(std::move(designParameter)),
-            m_countTries(dimension,0)
+            m_countTries(dimension,0),
+            m_verbose(verbose)
         {};
 
         bool isOver(unsigned int dim) 
@@ -49,6 +50,11 @@ class RandomCBCExplorer
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
             m_countTries[dim-1] += 1;
+            if(this->m_verbose>0)
+            {
+                std::cout << "Dimension: " << dim << "/" << m_dimension <<  " - ";
+                std::cout << "net " << m_countTries[dim-1] << "/" << m_nbTries << std::endl;
+            }
             return m_randomGenValueGenerator(dim);
         }
 
@@ -57,11 +63,17 @@ class RandomCBCExplorer
             std::fill(m_countTries.begin(),m_countTries.end(), 0);
         }
 
+        void setVerbose(int verbose)
+        {
+            m_verbose = verbose;
+        }
+
     private:
         unsigned int m_dimension;
         unsigned int m_nbTries;
         typename ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> m_randomGenValueGenerator;
         std::vector<unsigned int> m_countTries;
+        int m_verbose;
 
 };
 

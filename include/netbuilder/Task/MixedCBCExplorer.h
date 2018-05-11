@@ -31,11 +31,11 @@ class MixedCBCExplorer
 
     public:
 
-        MixedCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries):
+        MixedCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries, int verbose = 0):
             m_dimension(dimension),
             m_maxFullDimension(maxFullDimension),
-            m_randExplorer(new RandomCBCExplorer<NC>(dimension,designParameter, nbTries)),
-            m_fullExplorer(new FullCBCExplorer<NC>(dimension,designParameter))
+            m_randExplorer(new RandomCBCExplorer<NC>(dimension,designParameter, nbTries, verbose)),
+            m_fullExplorer(new FullCBCExplorer<NC>(dimension,designParameter, verbose))
         {};
 
         ~MixedCBCExplorer() = default;
@@ -68,6 +68,12 @@ class MixedCBCExplorer
         {
             m_randExplorer.reset();
             m_fullExplorer.reset();
+        }
+
+        void setVerbose(int verbose)
+        {
+            m_randExplorer->setVerbose(verbose);
+            m_fullExplorer->setVerbose(verbose);
         }
 
     private:

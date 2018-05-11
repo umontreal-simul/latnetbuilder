@@ -46,12 +46,14 @@ int main(int argc, const char *argv[])
     unsigned int s = 5;
     unsigned int m = 5;
 
+    int verbose = 4;
+
     typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter designParam(0);
     SetCoeff(designParam,m);
 
     // typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter designParam(m);
 
-    unsigned int r = 5;
+    unsigned int r = 50;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
     auto projDep = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(2);
@@ -59,17 +61,17 @@ int main(int argc, const char *argv[])
     auto fig = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     // auto explorer = std::make_unique<Task::RandomCBCExplorer<NetConstruction::POLYNOMIAL>>(s,designParam,r);
-    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::RandomCBCExplorer>(s,designParam,std::move(fig),std::move(explorer));
+    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::RandomCBCExplorer>(s,designParam,std::move(fig),std::move(explorer), verbose);
 
     // auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::POLYNOMIAL>>(s,designParam);
-    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::FullCBCExplorer>(s,designParam,std::move(fig),std::move(explorer));
+    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::FullCBCExplorer>(s,designParam,std::move(fig),std::move(explorer), verbose);
 
-    // auto explorer = std::make_unique<Task::MixedCBCExplorer<NetConstruction::POLYNOMIAL>>(s, designParam, s/2, r);
-    // auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::MixedCBCExplorer>(s,designParam,std::move(fig),std::move(explorer));
+    auto explorer = std::make_unique<Task::MixedCBCExplorer<NetConstruction::POLYNOMIAL>>(s, designParam, s/2, r);
+    auto search = Task::CBCSearch<NetConstruction::POLYNOMIAL,Task::MixedCBCExplorer>(s,designParam,std::move(fig),std::move(explorer), verbose);
 
     //auto search = Task::ExhaustiveSearch<NetConstruction::POLYNOMIAL>(s,designParam,std::move(fig));
 
-     auto search = Task::RandomSearch<NetConstruction::POLYNOMIAL>(s,designParam,std::move(fig),r*s);
+    // auto search = Task::RandomSearch<NetConstruction::POLYNOMIAL>(s,designParam,std::move(fig),r*s, verbose);
     
     std::cout << "Search design parameter: " << search.designParameter() << std::endl;
 

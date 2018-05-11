@@ -43,7 +43,7 @@ class MinObserver
          * @param nCols is the number of columns of the nets
          * @verbose is the level of verbosity of the observer
         */
-        MinObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, unsigned int verbose = 0):
+        MinObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, int verbose = 0):
             m_bestNet(new DigitalNetConstruction<NC>(0,designParameter)),
             m_verbose(verbose)
         {
@@ -74,12 +74,21 @@ class MinObserver
                     m_foundBestNet = true;
                     m_bestNet = std::move(net);
 
-                    // if (m_verbose)
-                    // {
-                    //     std::cout << *net << "\t:\t" << merit;
-                    //     std::cout << " <-- best";
-                    //     std::cout << std::endl;
-                    // }
+                    if (m_verbose>0)
+                    {
+                        std::cout << m_bestNet->format(OutputFormat::CLI);
+                        std::cout << " <-- merit: "<< m_bestMerit << " (best)";
+                        std::cout << std::endl;
+                    }
+                }
+                else
+                {
+                    if (m_verbose>1)
+                    {
+                        std::cout << net->format(OutputFormat::CLI);
+                        std::cout << " <-- rejected";
+                        std::cout << std::endl;
+                    }
                 }
         }
 
@@ -98,7 +107,7 @@ class MinObserver
             std::unique_ptr<DigitalNetConstruction<NC>> m_bestNet;
             bool m_foundBestNet;
             Real m_bestMerit;
-            unsigned int m_verbose;
+            int m_verbose;
 };
 
 }}

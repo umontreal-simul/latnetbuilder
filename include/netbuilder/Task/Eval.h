@@ -33,7 +33,7 @@ class Eval : public BaseTask
 {
     public:
 
-        Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure, unsigned int verbose = 0):
+        Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure, int verbose = 0):
             m_net(std::move(net)),
             m_merit(0),
             m_figure(std::move(figure)),
@@ -105,7 +105,7 @@ class Eval : public BaseTask
         std::unique_ptr<DigitalNet> m_net;
         Real m_merit;
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
-        unsigned int m_verbose;
+        int m_verbose;
 
 };
 

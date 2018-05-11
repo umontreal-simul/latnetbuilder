@@ -19,6 +19,8 @@
 
 #include "latbuilder/Parser/Common.h"
 #include "netbuilder/Types.h"
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
@@ -36,14 +38,23 @@ public:
  * Parser for construction parameters.
  */
 struct NetConstructionParser {
-   typedef NetBuilder::NetConstruction result_type;
+   typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
 
    static result_type parse(const std::string& str)
    {
       if (str == "sobol")
-         return NetBuilder::NetConstruction::SOBOL;
-    //   else if (str == "polynomial")
-    //      return NetBuilder::NetConstruction::POLYNOMIAL;
+         return result_type(NetBuilder::NetConstruction::SOBOL,std::string());
+      else if (str == "explicit")
+      {
+        throw BadNetConstruction(str+ " not implemented");
+        // return result_type(NetBuilder::NetConstruction::EXPLCIT,std::string());
+      }
+      std::vector<std::string> constructionStrings;
+      boost::split(constructionStrings, str, boost::is_any_of(":"));
+      if (constructionStrings.size()==2 && constructionStrings[0] == "polynomial")
+      {
+        return result_type(NetBuilder::NetConstruction::POLYNOMIAL,constructionStrings[1]);
+      }
       throw BadNetConstruction(str);
    }
 };

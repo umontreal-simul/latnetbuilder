@@ -15,6 +15,8 @@
 // limitations under the License.
 
 #include "netbuilder/Util.h"
+#include "latbuilder/Parser/SizeParam.h"
+#include "latbuilder/Parser/Common.h"
 #include <assert.h>
 
 namespace NetBuilder {
@@ -68,6 +70,22 @@ Row permutation(Row& row, std::vector<int>& C){
         new_row[i] = row[C[i]];
     }
     return new_row;
+}
+
+Polynomial polynomialParserHelper(const std::string& str)
+{
+   auto n = LatBuilder::Parser::splitPair<std::string, unsigned int>(str, '^', 0);
+   std::string str_NTLInput = LatBuilder::Parser::LatticeParametersParseHelper<LatBuilder::LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
+   try {
+      Polynomial base = boost::lexical_cast<Polynomial>(str_NTLInput);      
+      if (n.second == 0)
+         return base;
+      else
+         return intPow(base, n.second);
+   }
+   catch (boost::bad_lexical_cast&) {
+      throw LatBuilder::Parser::ParserError("cannot interpret \"" + n.first + "\" as a polynomial");
+   }
 }
 
 

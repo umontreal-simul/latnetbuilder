@@ -26,6 +26,8 @@
 #include "netbuilder/Task/BaseTask.h"
 #include "netbuilder/Task/CBCSearch.h"
 #include "netbuilder/Task/Eval.h"
+#include "netbuilder/Task/ExhaustiveSearch.h"
+#include "netbuilder/Task/RandomSearch.h"
 #include "netbuilder/Task/FullCBCExplorer.h"
 #include "netbuilder/Task/MixedCBCExplorer.h"
 #include "netbuilder/Task/RandomCBCExplorer.h"
@@ -68,21 +70,28 @@ struct ExplorationMethodParser
             throw BadExplorationMethod("not yet implemented");
         }
         else if (name == "exhaustive"){
-            throw BadExplorationMethod("not yet implemented");
+            return std::make_unique<Task::ExhaustiveSearch<NC>>(commandLine.m_dimension,
+                                                        commandLine.m_designParameter,
+                                                        std::move(commandLine.m_figure),
+                                                        commandLine.m_verbose); // TODO
         }
         else if (name == "random" || name == "random-CBC" || name == "mixed-CBC"){
             if (explorationCharacteristicStrings.size() < 2){
-                throw BadExplorationMethod("nb of random points required; see --help");
+                throw BadExplorationMethod("nb of random tries required; see --help");
             }
             unsigned int r = boost::lexical_cast<unsigned int>(explorationCharacteristicStrings[1]);
             if (name == "random")
-                throw BadExplorationMethod("not yet implemented");
+                return std::make_unique<Task::RandomSearch<NC>>(commandLine.m_dimension,
+                                                        commandLine.m_designParameter,
+                                                        std::move(commandLine.m_figure),
+                                                        r,
+                                                        commandLine.m_verbose); // TODO
             
             if (name == "random-CBC"){
                 return std::make_unique<Task::CBCSearch<NC, Task::RandomCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_sizeParam.log2NumPoints(),
+                                                                commandLine.m_designParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::RandomCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_sizeParam.log2NumPoints(), r)); // TODO
+                                                                std::make_unique<Task::RandomCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter, r),commandLine.m_verbose); // TODO
             }
 
             if (name == "mixed-CBC"){
@@ -92,16 +101,16 @@ struct ExplorationMethodParser
                 unsigned int maxDim = boost::lexical_cast<unsigned int>(explorationCharacteristicStrings[2]);
 
                 return std::make_unique<Task::CBCSearch<NC, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_sizeParam.log2NumPoints(),
+                                                                commandLine.m_designParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::MixedCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_sizeParam.log2NumPoints(), maxDim, r)) ; // TODO
+                                                                std::make_unique<Task::MixedCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter, maxDim, r), commandLine.m_verbose); // TODO
             }
         }
         else if (name == "full-CBC"){
             return std::make_unique<Task::CBCSearch<NC, Task::FullCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_sizeParam.log2NumPoints(),
+                                                                commandLine.m_designParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::FullCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_sizeParam.log2NumPoints())); // TODO
+                                                                std::make_unique<Task::FullCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter),commandLine.m_verbose);  // TODO
 
         }
         else{
