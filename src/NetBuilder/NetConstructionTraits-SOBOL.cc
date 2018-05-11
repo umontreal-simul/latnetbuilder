@@ -280,29 +280,19 @@ namespace NetBuilder {
     std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
     {
         std::string res;
-        res += "SobolDigitalNet(\n  Direction numbers = \n  [";
-        bool flag = false;
+        res += "SobolDigitalNet(\n  Direction numbers = \n";
         for(const auto& genVal : genVals)
         {
-            if (flag)
-            {
-                res+="   ";
-            }
-            else{
-                flag=true;
-            }
-            res+= "[";
+            res+="  ";
             for(const auto& dirNum : genVal->second)
             {
                 res+= std::to_string(dirNum);
-                res+= ",";
+                res+= " ";
             }
             res.pop_back();
-            res+="],\n";
+            res+="\n";
         }
-        res.pop_back();
-        res.pop_back();
-        res+="])";
+        res+=")";
         return res;
     }  
 }

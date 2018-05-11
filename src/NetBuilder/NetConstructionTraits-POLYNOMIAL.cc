@@ -23,8 +23,7 @@
 
 #include <NTL/GF2X.h>
 #include <sstream>
-#include<boost/algorithm/string.hpp>
-#include<boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/erase.hpp>
 
 namespace NetBuilder {
 
@@ -136,32 +135,25 @@ namespace NetBuilder {
     std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
     {
         std::string res;
+        
         std::ostringstream stream;
         res += "PolynomialDigitalNet(\n  Modulus = \n";
         stream << designParameter;
         res+="  ";
-        res += boost::algorithm::replace_all_copy(stream.str()," ", ",");
+        res += stream.str();
         stream.str(std::string());
-        res += "\n  GeneratingVector = \n  [";
-        bool flag = false;
+        res += "\n  GeneratingVector = \n";
         for(const auto& genVal : genVals)
         {
+            res+="  ";
             stream << *genVal;
-            if (flag)
-            {
-                res+="   ";
-            }
-            else{
-                flag=true;
-            }
-            
-            res+= boost::algorithm::replace_all_copy(stream.str()," ", ",");
+            res+= stream.str();
             stream.str(std::string());
-            res+= ",\n";
+            res+= "\n";
         }
-        res.pop_back();
-        res.pop_back();
-        res+="]\n)";
+        res+=")";
+        boost::algorithm::erase_all(res, "[");
+        boost::algorithm::erase_all(res, "]");
         return res;
     }  
 }

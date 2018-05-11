@@ -195,7 +195,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
              * @param initialValue is the value from which to start
              * @param verbose controls the level of verbosity of the computation
              */ 
-            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = true)
+            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0)
             {
                 using namespace LatCommon;
 

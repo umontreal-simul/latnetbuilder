@@ -110,7 +110,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  *  @param initialValue is the value from which to start
                  *  @param verbose controls the level of verbosity of the computation
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, bool verbose = false)
+                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0)
                 {
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 

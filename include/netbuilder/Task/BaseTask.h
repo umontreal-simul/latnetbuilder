@@ -38,9 +38,9 @@ public:
     */
     virtual void execute() = 0;
 
-    virtual const DigitalNet& netOutput() const = 0;
+    virtual std::string outputNet(OutputFormat outputFormat) const = 0;
 
-    virtual Real meritValueOutput() const = 0;
+    virtual Real outputMeritValue() const = 0;
 
     virtual void reset() = 0;
 };

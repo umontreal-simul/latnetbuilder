@@ -88,13 +88,13 @@ public:
     /**
     * Returns the best net found by the search task.
     */
-    virtual const DigitalNet& netOutput() const override
-    { return bestNet(); }
+    virtual std::string outputNet(OutputFormat outputFormat) const override
+    { return bestNet().format(outputFormat); }
 
     /**
     * Returns the best merit value found by the search task.
     */
-    virtual Real meritValueOutput() const override
+    virtual Real outputMeritValue() const override
     { return bestMeritValue(); }
 
     /** Returns a reference to the minimum-element observer. */

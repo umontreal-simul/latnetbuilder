@@ -74,12 +74,12 @@ class MinObserver
                     m_foundBestNet = true;
                     m_bestNet = std::move(net);
 
-                    if (m_verbose)
-                    {
-                        std::cout << *net << "\t:\t" << merit;
-                        std::cout << " <-- best";
-                        std::cout << std::endl;
-                    }
+                    // if (m_verbose)
+                    // {
+                    //     std::cout << *net << "\t:\t" << merit;
+                    //     std::cout << " <-- best";
+                    //     std::cout << std::endl;
+                    // }
                 }
         }
 

@@ -24,6 +24,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <sstream>
 
 namespace NetBuilder {
 
@@ -90,11 +91,6 @@ class DigitalNet
             return m_generatingMatrices[coord-1]->subMatrix(nRows, nCols);
         }
 
-        /** Overload of the << operator to print digital net */
-        friend std::ostream& operator<<(std::ostream& out, const DigitalNet& net) {
-            return net.print(out);
-        }
-
         /** Most general constructor. Designed to be used by derived classes. */
         DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
             m_dimension(dimension),
@@ -115,16 +111,6 @@ class DigitalNet
         unsigned int m_nRows; // number of rows in generating matrices
         unsigned int m_nCols; // number of columns in generating matrices
         std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
-
-
-        
-
-        /** Helper function to print digital nets*/
-        virtual std::ostream& print(std::ostream& out) const
-        {
-            out << "Digital net";
-            return out;
-        }
 
 };
 
@@ -229,7 +215,18 @@ class DigitalNetConstruction : public DigitalNet
 
         virtual std::string format(OutputFormat outputFormat) const
         {
-            return ConstructionMethod::format(m_genValues,m_designParameter,outputFormat);
+            std::string res = ConstructionMethod::format(m_genValues,m_designParameter,outputFormat);
+            if (outputFormat==OutputFormat::GUI)
+            {
+                std::ostringstream stream;
+                for(unsigned int dim = 1; dim < m_dimension; ++dim)
+                {
+                    stream << generatingMatrix(dim) << std::endl;
+                }
+                res+="\n\n";
+                res+=stream.str();
+            }
+            return res;
         }
 
         virtual bool isSequenceViewabe() const 
