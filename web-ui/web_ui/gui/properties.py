@@ -1,12 +1,12 @@
 import ipywidgets as widgets
 import numpy as np
 
-from .common import style_default, parse_polynomial, INITIAL_DIM
+from .common import style_default, parse_polynomial, INITIAL_DIM, JoeKuoSobolNets
 
 modulus = widgets.Text(placeholder='e.g. 2^10 or 1024', description='Modulus n=', 
                     style=style_default, layout=widgets.Layout(width='95%'))
 
-is_embedded = widgets.Checkbox(value=False, description='Embedded')
+is_multilevel = widgets.Checkbox(value=False, description='Embedded')
 
 dimension = widgets.BoundedIntText(value=INITIAL_DIM, min=1, description='Dimension s:',
                                    layout=widgets.Layout(width='20%'), style=style_default)
@@ -16,7 +16,7 @@ modulus_pretty = widgets.Label('', layout=widgets.Layout(display='none'))
 properties_wrapper = widgets.Accordion(
     [widgets.HBox(
         [widgets.VBox([modulus, modulus_pretty], layout=widgets.Layout(width='50%')), 
-        is_embedded, 
+        is_multilevel, 
         dimension])])
 properties_wrapper.set_title(0, 'Basic Lattice properties')
 
@@ -58,4 +58,8 @@ def change_dimension(b, gui):
             update(form, dim, '0.1')
         except:
             continue
-    update(gui.construction_method.generating_vector.children[0], dim+1, '1')
+    update(gui.exploration_method.generating_vector.children[0], dim+1, '1')
+    update(gui.exploration_method.generating_vector_simple, dim+1, '1')
+    if gui.exploration_method.mixed_CBC_level.value == b['old']:
+        gui.exploration_method.mixed_CBC_level.value = b['new']
+    gui.exploration_method.mixed_CBC_level.max = b['new']

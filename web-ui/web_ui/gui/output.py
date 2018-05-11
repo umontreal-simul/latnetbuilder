@@ -1,9 +1,18 @@
 import ipywidgets as widgets
 from bqplot import Axis, LinearScale, Scatter, Figure
 import numpy as np
+from jinja2 import Environment, PackageLoader
 
 from .common import style_default
 from ..parse_output import Result
+
+env = Environment(
+    loader=PackageLoader('web_ui', 'code_output'),
+    autoescape=True
+)
+
+def transform_to_c(List):
+    return str(List).replace('[', ' { ').replace(']', ' } ')
 
 result = widgets.HTML(description='<b> Result: </b>', value='', layout=widgets.Layout(width='900px'), disabled=False)
 # result2 = widgets.Textarea(description='Result2', value='', layout=widgets.Layout(width='900px'), disabled=False)
@@ -29,7 +38,7 @@ def create_output(gui):
     b1 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=1, layout=widgets.Layout(width='150px'), description='x-axis')
     b2 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=2, layout=widgets.Layout(width='150px'), description='y-axis')
     b3 = widgets.BoundedIntText(max=result_obj.getMaxLevel(), min=1, value=result_obj.getMaxLevel(), layout=widgets.Layout(width='150px'), description='Level')
-    if result_obj.polynomial:
+    if result_obj.search_type == 'polynomial':
         b3.disabled = True
     def change_graph(b):
         if b['name'] == 'value':
@@ -49,37 +58,21 @@ def create_output(gui):
     plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3])], 
                         layout=widgets.Layout(align_items='center'))
 
-    # output = widgets.Tab()
-
-    if not result_obj.polynomial:
-        code_C = widgets.Textarea(value='\
-    int n = %i;\n\
-    int s = %i;\n\
-    int a[] = %s;\n\
-    double points[n][s];\n\
-    int i, j;\n\
-    for (i = 0; i < n; i++)\n\
-        for (j = 0; j < s; j++)\n\
-            points[i][j] = ((long long)i * a[j]) %% n / (double)n;' \
-    % (result_obj.lattice.size.points, result_obj.getDim(), str(result_obj.lattice.gen).replace('[', '{').replace(']', '}')),
+    if result_obj.search_type == 'ordinary':
+        template = env.get_template('ordinary_C.txt')
+        code_C = widgets.Textarea(value= 
+            template.render(n=result_obj.lattice.size.nb_points, s=result_obj.getDim(), a=transform_to_c(result_obj.lattice.gen)),
             layout=widgets.Layout(width='600px', height='200px'))
 
-        code_python = widgets.Textarea(value='\
-    n = %i;\n\
-    a = %s;\n\
-    points = [[(i * aj %% n) / float(n) for aj in a] for i in range(n)]' \
-    % (result_obj.lattice.size.points, str(result_obj.lattice.gen)),
+        template = env.get_template('ordinary_py.txt')
+        code_python = widgets.Textarea(value= 
+            template.render(n=result_obj.lattice.size.nb_points, a=result_obj.lattice.gen),
             layout=widgets.Layout(width='600px', height='100px'))
 
-        code_matlab = widgets.Textarea(value='\
-    n = %i;\n\
-    a = %s;\n\
-    points = zeros(n,length(a));\n\
-    for i = 1:n\n\
-        points(i,:) = mod((i - 1) * a, n) / n;\n\
-    end' \
-    % (result_obj.lattice.size.points, str(result_obj.lattice.gen)),
-            layout=widgets.Layout(width='600px', height='150px'))
+        template = env.get_template('ordinary_matlab.txt')
+        code_matlab = widgets.Textarea(value= 
+            template.render(n=result_obj.lattice.size.nb_points, a=result_obj.lattice.gen),
+            layout=widgets.Layout(width='600px', height='130px'))
 
     
         gui.output.output.children = [plot, code_C, code_python, code_matlab]
@@ -87,58 +80,35 @@ def create_output(gui):
         gui.output.output.set_title(1, 'C code')
         gui.output.output.set_title(2, 'Python code')
         gui.output.output.set_title(3, 'Matlab code')
+
+    # prim_polys = np.zeros((s,2),dtype=np.int)
+    # with open("primitive_polynomials.csv") as poly_file:
+    # reader = csv.DictReader(poly_file, fieldnames=["degree","representation"])
+    # for i,row in enumerate(reader):
+    #     prim_polys[i,0] = row["degree"]
+    #     prim_polys[i, 1] = row["representation"]
+    #     if i == s-1:
+    #         break
     
     else:
         if result_obj.lattice.size.power == 1:
             modulus = result_obj.lattice.size.base
         else:
             modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.lattice.size.base, axis=0)))**result_obj.lattice.size.power).c % 2, axis=0)
-        code_python = widgets.Textarea(value='\
-import numpy as np\n\
-\n\
-modulus = %s\n\
-genVector = %s\n\
-\n\
-def expandSeries(P, h):\n\
-    expansion = []\n\
-    m = len(P)-1\n\
-    for l in range(1, 2*m):\n\
-        res = 1 if (m-l >=0 and m-l < len(h) and h[m-l]) else 0\n\
-        start = l-m if (l-m > 1) else 1\n\
-        for p in range(start, l):\n\
-            res = (res + expansion[p-1]*P[m-l+p]) %% 2\n\
-        expansion.append(res)\n\
-    return expansion\n\
-\n\
-def generatingMatrices(modulus, genVector):\n\
-    matrices = []\n\
-    m = len(modulus)-1\n\
-    for j in range(len(genVector)):\n\
-        matrix = np.zeros((m, m), dtype=np.int32)\n\
-        expansion = expandSeries(modulus, genVector[j])\n\
-        for i in range(m):\n\
-            for j in range(m):\n\
-                matrix[i][j] = expansion[i+j]\n\
-        matrices.append(matrix)\n\
-    return matrices\n\
-\n\
-points = []\n\
-matrices = generatingMatrices(modulus, genVector)\n\
-width = matrices[0].shape[0]\n\
-nb_points = 2**width\n\
-mult = np.array([2**(-k) for k in range(1, width+1)])\n\
-\n\
-for matrice in matrices:\n\
-    list_in_coord = []\n\
-    for x in range(nb_points):\n\
-        binary_repr = np.array([((x>>i)&1) for i in range(width)])\n\
-        prod = np.mod(matrice.dot(binary_repr), 2)\n\
-        list_in_coord.append(prod.dot(mult))\n\
-    points.append(list_in_coord)' % (str(modulus), str(result_obj.lattice.gen)),
+
+        template = env.get_template('polynomial_py.txt')
+        code_python = widgets.Textarea(value= 
+            template.render(mod=modulus, genvec=result_obj.lattice.gen.gen_vector),
+            layout=widgets.Layout(width='600px', height='700px'))
+
+        template = env.get_template('polynomial_Cpp.txt')
+        code_cpp = widgets.Textarea(value= 
+            template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.lattice.gen.gen_vector)),
             layout=widgets.Layout(width='600px', height='700px'))
         
-        gui.output.output.children = [plot, code_python]
+        gui.output.output.children = [plot, code_cpp, code_python]
         gui.output.output.set_title(0, 'Plot')
-        gui.output.output.set_title(1, 'Python code')
+        gui.output.output.set_title(1, 'C++ code')
+        gui.output.output.set_title(2, 'Python code')
     
     gui.output.output.layout.display = 'flex'

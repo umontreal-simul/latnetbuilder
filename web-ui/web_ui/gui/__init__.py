@@ -2,12 +2,13 @@ import inspect
 import ipywidgets as widgets
 from IPython.display import display
 
-from .properties import (modulus, is_embedded, properties_wrapper,
+from .properties import (modulus, is_multilevel, properties_wrapper,
                          dimension, change_modulus, change_dimension, modulus_pretty)
-from .filters import is_normalization, low_pass_filter, normalization_options, normalization_box, low_pass_filter_options, filters_wrapper, trigger_normalization_warning, normalization_warning
+from .filters import is_normalization, low_pass_filter, normalization_options, normalization_box, low_pass_filter_options, filters_wrapper, trigger_normalization_warning, normalization_warning, equidistribution_options, equidistribution_level, equidistribution_box, equidistribution_filter, trigger_equidistribution_level
 from .figure_of_merit import figure_type, figure_alpha, coord_unif, figure_power, figure_of_merit_expl, figure_of_merit_wrapper, change_figure_type, change_evaluation_method
 from .multilevel import mult_normalization, mult_low_pass_filter, mult_combiner, multilevel_wrapper, minimum_level, maximum_level, mult_normalization_options, mult_low_pass_filter_options, combiner_level, combiner_dropdown, combiner_options, embedding, change_combiner_options
-from .construction_method import constr_info, construction_choice, is_random, number_samples, generating_vector, construction, change_constr_choice, random_box
+from .exploration_method import explr_info, exploration_choice, is_random, number_samples, generating_vector, exploration, change_explr_choice, random_box, mixed_CBC_level, trigger_is_random, generating_numbers_sobol, generating_vector_simple, generating_matrices, generating_numbers_sobol_box, generating_numbers_sobol_button, automatic_generating_numbers_sobol
+from .construction_method import constr_info, construction_choice, construction, change_constr_choice, construction_modulus, construction_modulus_pretty, construction_modulus_box, change_constr_modulus
 from .weights import add_weight, weight_power, create_full_weight, weights_wrapper, func_add_weights, weights_button_id, weights_set_all_id, VBOX_of_weights
 from .button_box import go, abort, command_line, button_box_wrapper, build_command_line, abort_process, on_click_search, display_output
 from .output import result, result_obj, command_line_out, output 
@@ -22,6 +23,7 @@ class GUI():
                  figure_of_merit,
                  weights,
                  construction_method,
+                 exploration_method,
                  multi_level,
                  button_box,
                  output):
@@ -30,6 +32,7 @@ class GUI():
         self.figure_of_merit = figure_of_merit
         self.weights = weights
         self.construction_method = construction_method
+        self.exploration_method = exploration_method
         self.multi_level = multi_level
         self.button_box = button_box
         self.output = output
@@ -42,6 +45,8 @@ class GUI():
         self.figure_of_merit.link_callbacks(self)
         self.weights.link_callbacks(self)
         self.construction_method.link_callbacks(self)
+        self.exploration_method.link_callbacks(self)
+        self.exploration_method.link_on_click_callbacks(self)
         self.multi_level.link_callbacks(self)
         self.button_box.link_callbacks(self)
         self.button_box.link_on_click_callbacks(self)
@@ -81,24 +86,30 @@ class BaseGUIElement():
 
 
 properties = BaseGUIElement(modulus=modulus,
-                            is_embedded=is_embedded,
+                            is_multilevel=is_multilevel,
                             dimension=dimension,
                             main=properties_wrapper,
                             modulus_pretty=modulus_pretty,
                             _callbacks={'modulus': change_modulus,
                                         'dimension': change_dimension,
-                                        'is_embedded': trigger_display})
+                                        'is_multilevel': trigger_display})
 
 filters = BaseGUIElement(is_normalization=is_normalization,
                          low_pass_filter=low_pass_filter,
+                         equidistribution_filter=equidistribution_filter,
                          normalization_options=normalization_options,
                          normalization_warning=normalization_warning,
                          normalization_box=normalization_box,
                          low_pass_filter_options=low_pass_filter_options,
+                         equidistribution_box=equidistribution_box,
+                         equidistribution_level=equidistribution_level,
+                         equidistribution_options=equidistribution_options,
                          main=filters_wrapper,
                          _callbacks={'is_normalization': trigger_display,
                                      'low_pass_filter': trigger_display,
-                                     'normalization_options': trigger_normalization_warning})
+                                     'equidistribution_filter': trigger_display,
+                                     'normalization_options': trigger_normalization_warning,
+                                     'equidistribution_options': trigger_equidistribution_level})
 
 figure_of_merit = BaseGUIElement(figure_type=figure_type,
                                  figure_alpha=figure_alpha,
@@ -120,14 +131,30 @@ weights = BaseGUIElement(add_weight=add_weight,
                          _callbacks={'add_weight': func_add_weights})
 
 construction_method = BaseGUIElement(constr_info=constr_info,
-                                     construction_choice=construction_choice,
+                                    construction_choice=construction_choice,
+                                    construction_modulus=construction_modulus,
+                                    construction_modulus_pretty=construction_modulus_pretty,
+                                    construction_modulus_box=construction_modulus_box,
+                                    main=construction,
+                                    _callbacks={'construction_choice': change_constr_choice,
+                                                'construction_modulus': change_constr_modulus})
+
+exploration_method = BaseGUIElement(explr_info=explr_info,
+                                     exploration_choice=exploration_choice,
                                      is_random=is_random,
                                      number_samples=number_samples,
                                      generating_vector=generating_vector,
+                                     generating_vector_simple=generating_vector_simple,
+                                     generating_matrices=generating_matrices,
                                      random_box=random_box,
-                                     main=construction,
-                                     _callbacks={'construction_choice': change_constr_choice,
-                                                 'is_random': trigger_display})
+                                     mixed_CBC_level=mixed_CBC_level,
+                                     generating_numbers_sobol=generating_numbers_sobol,
+                                     generating_numbers_sobol_box=generating_numbers_sobol_box,
+                                     generating_numbers_sobol_button=generating_numbers_sobol_button,
+                                     main=exploration,
+                                     _callbacks={'exploration_choice': change_explr_choice,
+                                                 'is_random': trigger_is_random},
+                                     _on_click_callbacks={'generating_numbers_sobol_button':automatic_generating_numbers_sobol})
 
 multi_level = BaseGUIElement(mult_normalization=mult_normalization,
                              mult_low_pass_filter=mult_low_pass_filter,
@@ -162,13 +189,14 @@ output = BaseGUIElement(result=result,
 
 
 gui = GUI(properties, filters, figure_of_merit, weights,
-          construction_method, multi_level, button_box, output)
+          construction_method, exploration_method, multi_level, button_box, output)
 
 inside_tab = widgets.VBox([gui.properties.main, 
                 gui.multi_level.main,
+                gui.construction_method.main,
+                gui.exploration_method.main,
                 gui.figure_of_merit.main, 
-                gui.weights.main, 
-                gui.construction_method.main, 
+                gui.weights.main,  
                 gui.filters.main,
                 gui.button_box.main,
                 gui.output.command_line_out,
@@ -176,9 +204,11 @@ inside_tab = widgets.VBox([gui.properties.main,
                 gui.output.output
                 ])
 
-gui.main_tab = widgets.Tab([inside_tab, inside_tab])
+gui.main_tab = widgets.Tab([inside_tab, inside_tab, inside_tab])
 gui.main_tab.set_title(0, 'Ordinary Lattice')
 gui.main_tab.set_title(1, 'Polynomial Lattice')
-gui.main_tab.observe(lambda b: change_lattype(b, gui))
+gui.main_tab.set_title(2, 'Digital Net')
+gui.main_tab.observe(lambda b: change_lattype(b, gui), 'selected_index')
 
-# gui.main = widgets.VBox([gui.main_tab, gui.output.output])
+# for debug
+gui._display_output = display_output

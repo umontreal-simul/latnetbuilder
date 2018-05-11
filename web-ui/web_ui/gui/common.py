@@ -1,23 +1,47 @@
+import os
+import csv
 import numpy as np
+
+dev_mod = not os.path.exists('../share/data/JoeKuoSobolNets.csv')
+
+# joe and kuo sobol nets - necessary for digital net evaluation
+JoeKuoSobolNets = []
+
+if dev_mod:
+    _JoeKuoSobolNetsPath = '../../data/JoeKuoSobolNets.csv'
+else:
+    _JoeKuoSobolNetsPath = '../share/data/JoeKuoSobolNets.csv'
+
+with open(_JoeKuoSobolNetsPath, newline='') as csvfile:
+    csvreader = csv.reader(csvfile, delimiter=';')
+    i=0
+    for row in csvreader:
+        JoeKuoSobolNets.append(";".join(row))
+        i += 1
+        if i == 100:
+            break
+
 
 INITIAL_DIM = 3
 
 style_default = {'description_width': 'initial'}
 
-trigger_display_dic = {'is_embedded': ['multi_level', 'main'], 
+trigger_display_dic = {'is_multilevel': ['multi_level', 'main'], 
                     'is_normalization': ['filters', 'normalization_box'],
                     'low_pass_filter': ['filters', 'low_pass_filter_options'],
                     'mult_normalization': ['multi_level', 'mult_normalization_options'],
                     'mult_low_pass_filter': ['multi_level', 'mult_low_pass_filter_options'],
                     'mult_combiner': ['multi_level', 'combiner_options'],
-                    'is_random': ['construction_method', 'number_samples']}
+                    'equidistribution_filter': ['filters', 'equidistribution_box']}
 
 def trigger_display(b, gui, owner):
+    if b['name'] != 'value':
+        return
     obj_id = trigger_display_dic[owner]
     obj = getattr(getattr(gui, obj_id[0]), obj_id[1])
-    if b['new'] == False:
+    if not b['new']:
         obj.layout.display = 'none'
-    elif b['new'] == True:
+    elif b['new']:
         obj.layout.display = 'flex'
 
 def parse_polynomial(s):

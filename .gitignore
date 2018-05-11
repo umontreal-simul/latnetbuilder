@@ -9,6 +9,7 @@ VERSION
 .Rhistory
 .vscode/
 *.txt
+!web-ui/web_ui/**/*.txt
 *-checkpoint.ipynb
 
 test/*

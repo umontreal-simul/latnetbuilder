@@ -5,7 +5,7 @@ from .common import style_default
 figure_type = widgets.Dropdown(
     options=['Palpha', 'Ralpha', 'Spectral'],
     value='Palpha', description='Figure:',
-    layout=widgets.Layout(width='15%'), style=style_default)
+    layout=widgets.Layout(width='20%'), style=style_default)
 
 figure_alpha = widgets.Text(value='2', description=r'Value of \(\alpha\):',
                      layout=widgets.Layout(width='15%'), style=style_default)
@@ -38,12 +38,19 @@ def change_figure_type(b, gui):
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
         gui.figure_of_merit.coord_unif.disabled = True
         gui.figure_of_merit.coord_unif.value = False
+        gui.figure_of_merit.coord_unif.layout.display = 'flex'
     elif b['new'] in ['Ralpha', 'Palpha']:
         gui.figure_of_merit.figure_alpha.layout.display = 'flex'
         gui.figure_of_merit.coord_unif.disabled = False
+        gui.figure_of_merit.coord_unif.layout.display = 'flex'
     elif b['new'] == 'R':
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
         gui.figure_of_merit.coord_unif.disabled = False
+        gui.figure_of_merit.coord_unif.layout.display = 'flex'
+    elif b['new'] in ['t-value', 'resolution-gap']:
+        gui.figure_of_merit.figure_alpha.layout.display = 'none'
+        gui.figure_of_merit.coord_unif.value = False
+        gui.figure_of_merit.coord_unif.layout.display = 'none'
 
 def change_evaluation_method(b, gui):
     if b['new'] == True:

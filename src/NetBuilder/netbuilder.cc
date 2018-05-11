@@ -61,7 +61,7 @@ makeOptionsDescription()
    ("construction,c", po::value<std::string>()->default_value("sobol"),
    "digital-net; possible constructions:\n"
    "  sobol (default)\n"
-   "  polynomial\n")
+   "  polynomial:<polynomial_description>\n")
    ("set-type,t", po::value<std::string>()->default_value("net"),
     "type of point set; possible values:\n"
    "  net (default)\n"
@@ -114,7 +114,7 @@ makeOptionsDescription()
     ("add-figure,a", po::value< std::vector<std::string> >()->composing(),
     "(at least one required) add one type of figure of merits. If several, specify a figure combiner.\n"
     "Syntax pattern:\n"
-    "name=<name>| importance=<importance> | norm-type=<norm-type> | weights=<weights-description> | weight-power=<weight-power> \n"
+    "name=<name>/ importance=<importance> / norm-type=<norm-type> / weights=<weights-description> / weight-power=<weight-power> \n"
     "where name can take the following values:\n"
     "resolution-gap, t-value, A-Property, A'-Property and \n"
     "P<alpha> with the optional \"CU:\" prefix to switch to the coordinate-uniform evaluation algorithm\n")

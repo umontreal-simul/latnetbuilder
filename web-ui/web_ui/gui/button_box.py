@@ -18,15 +18,15 @@ button_box_wrapper = widgets.HBox([go, abort, command_line],
 def build_command_line(b, gui):
     s = parse_input(gui)
     command = s.construct_command_line()
-    gui.output.command_line_out.value = ' '.join(command)
+    gui.output.command_line_out.value = ' '.join([s if s is not None else '' for s in command])
     return command
 
 def abort_process(b, process):
     if b['name'] == 'value' and b['new'] == True:
         process.kill()
 
-def work(process, gui, polynomial):
-    result = gui.output.result
+def work(process, gui, search_type):
+    result_widget = gui.output.result
     result_obj = gui.output.result_obj
     abort = gui.button_box.abort
     
@@ -40,36 +40,31 @@ def work(process, gui, polynomial):
         abort.button_style = ''
         with open('testfile.txt') as f:
             output = f.read()
-        ret = parse_output(output, polynomial)
-        result_obj.lattice = ret[0].lattice
-        result_obj.seconds = ret[0].seconds
-        result_obj.polynomial = polynomial
-        result_obj.matrices = ret[0].matrices
-        result.value = "<p> <b> Lattice Size </b>: %s </p> \
+        parse_output(output, gui, search_type)
+        result_widget.value = "<p> <b> Lattice Size </b>: %s </p> \
         <p> <b> Generating Vector </b>: %s </p>\
         <p> <b> Merit value </b>: %s </p>\
-        <p> <b> CPU Time </b>: %s s </p>" % (str(ret[0].lattice.size), str(ret[0].lattice.gen), str(ret[0].lattice.merit), str(ret[0].seconds))
+        <p> <b> CPU Time </b>: %s s </p>" % (str(result_obj.lattice.size), str(result_obj.lattice.gen), str(result_obj.merit), str(result_obj.seconds))
         create_output(gui)
     else:
         abort.button_style = ''
         with open('errfile.txt') as f:
             output = f.read()
-        result.value = '<p style="color:red"> %s </p>' % (output)
+        result_widget.value = '<p style="color:red"> %s </p>' % (output)
         if output == '':
-            result.value = 'You aborted the search.'
+            result_widget.value = 'You aborted the search.'
     abort.disabled = True
 
 def on_click_search(b, gui):
     try:
         s = parse_input(gui)
-        command = s.construct_command_line()
     except:
         gui.output.result.value = '<p style="color:red"> Something went wrong in the parsing of the input. Please double-check. </p>'
         return
 
+    gui.output.command_line_out.value = ''
     gui.output.result.value = ''
-    gui.output.output.layout.display = 'none'
-    polynomial = ('polynomial' in command)
+    gui.output.output.layout.display = 'none' 
     gui.button_box.abort.disabled = False
     gui.button_box.abort.button_style = 'warning'
     gui.button_box.abort.value = False
@@ -77,9 +72,10 @@ def on_click_search(b, gui):
     stdout_file = open('testfile.txt', 'w')
     stderr_file = open('errfile.txt', 'w')
     process = s.execute_search(stdout_file, stderr_file)
-    thread = threading.Thread(target=work, args=(process, gui, polynomial))
+    thread = threading.Thread(target=work, args=(process, gui, s.search_type()))
     thread.start()
 
+# for debug
 def display_output(b, gui):
     if b['name'] == 'value' and b['new'] == True:
         create_output(gui)

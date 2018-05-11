@@ -94,7 +94,7 @@ struct FigureParser
     {
         std::pair<result_type, Real> p;
 
-        boost::algorithm::erase_all(str, " ");
+        // boost::algorithm::erase_all(str, " ");
 
         std::vector<std::string> figureCharacteristicStrings;
         boost::split(figureCharacteristicStrings, str, boost::is_any_of("/"));
