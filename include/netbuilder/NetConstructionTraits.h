@@ -22,6 +22,7 @@
 #include "netbuilder/GeneratingMatrix.h"
 
 #include <memory>
+#include <string>
 
 namespace NetBuilder {
 
@@ -115,6 +116,8 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                 RAND m_randomGen;
         };
 
+        static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
+
     private:
         typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
@@ -137,9 +140,9 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static constexpr bool isSequenceViewable = false;
 
-        typedef Polynomial DesignParameterIncrement;
+        // typedef Polynomial DesignParameterIncrement;
 
-        static DesignParameterIncrement defaultDesignParameterIncrementator;
+        // static DesignParameterIncrement defaultDesignParameterIncrementator;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 
@@ -190,6 +193,8 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
                 std::vector<GenValue> m_primes;
                 uInteger m_totient;
         };
+
+        static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
 };
 
 }

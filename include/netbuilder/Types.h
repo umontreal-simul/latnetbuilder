@@ -70,6 +70,8 @@ typedef std::function<Real (const RealVector&)> Combiner;
 /// polynomial over Z/2Z type 
 typedef NTL::GF2X Polynomial;
 
+enum class OutputFormat { GUI, CLI};
+
 //@}
 }
 

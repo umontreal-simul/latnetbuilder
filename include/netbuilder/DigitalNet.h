@@ -105,6 +105,10 @@ class DigitalNet
 
         virtual std::unique_ptr<DigitalNet> extendSize(unsigned int nRows, unsigned int nCols) = 0;
 
+        virtual std::string format(OutputFormat outputFormat) const = 0;
+
+        virtual bool isSequenceViewabe() const = 0;
+
     protected:
 
         unsigned int m_dimension; // dimension of the net
@@ -223,6 +227,15 @@ class DigitalNetConstruction : public DigitalNet
             return std::unique_ptr<DigitalNet>();
         }
 
+        virtual std::string format(OutputFormat outputFormat) const
+        {
+            return ConstructionMethod::format(m_genValues,m_designParameter,outputFormat);
+        }
+
+        virtual bool isSequenceViewabe() const 
+        {
+            return ConstructionMethod::isSequenceViewable;
+        }
         
         // DigitalNetConstruction<NC> extendDimension(){
         //     std::vector<GenValue> genValues = ConstructionMethod::defaultGenValues(m_dimension+1);
@@ -251,7 +264,7 @@ std::unique_ptr<DigitalNet> DigitalNetConstruction<NetConstruction::SOBOL>::exte
     {
         ConstructionMethod::extendGeneratingMatrices(m_designParameter, nRows-numRows(), m_generatingMatrices, m_genValues);
     }
-    return std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(m_dimension, nRows, m_genValues, m_generatingMatrices);
+    return std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(m_dimension, m_designParameter+nRows, m_genValues, m_generatingMatrices);
 }
 
 }

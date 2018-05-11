@@ -22,6 +22,9 @@
 #include "latbuilder/SeqCombiner.h"
 
 #include <NTL/GF2X.h>
+#include <sstream>
+#include<boost/algorithm/string.hpp>
+#include<boost/algorithm/string/replace.hpp>
 
 namespace NetBuilder {
 
@@ -32,9 +35,9 @@ namespace NetBuilder {
 
     DesignParameter NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameter(1);
 
-    typedef NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameterIncrement DesignParameterIncrement;
+    // typedef NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameterIncrement DesignParameterIncrement;
 
-    DesignParameterIncrement NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameterIncrementator(0);
+    // DesignParameterIncrement NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameterIncrementator(0);
 
 
     bool NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
@@ -130,4 +133,35 @@ namespace NetBuilder {
         }
     }
 
+    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
+    {
+        std::string res;
+        std::ostringstream stream;
+        res += "PolynomialDigitalNet(\n  Modulus = \n";
+        stream << designParameter;
+        res+="  ";
+        res += boost::algorithm::replace_all_copy(stream.str()," ", ",");
+        stream.str(std::string());
+        res += "\n  GeneratingVector = \n  [";
+        bool flag = false;
+        for(const auto& genVal : genVals)
+        {
+            stream << *genVal;
+            if (flag)
+            {
+                res+="   ";
+            }
+            else{
+                flag=true;
+            }
+            
+            res+= boost::algorithm::replace_all_copy(stream.str()," ", ",");
+            stream.str(std::string());
+            res+= ",\n";
+        }
+        res.pop_back();
+        res.pop_back();
+        res+="]\n)";
+        return res;
+    }  
 }

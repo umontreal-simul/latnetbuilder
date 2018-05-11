@@ -276,6 +276,35 @@ namespace NetBuilder {
             genMats[k].reset(std::move(newMat));
         }
     }
+
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
+    {
+        std::string res;
+        res += "SobolDigitalNet(\n  Direction numbers = \n  [";
+        bool flag = false;
+        for(const auto& genVal : genVals)
+        {
+            if (flag)
+            {
+                res+="   ";
+            }
+            else{
+                flag=true;
+            }
+            res+= "[";
+            for(const auto& dirNum : genVal->second)
+            {
+                res+= std::to_string(dirNum);
+                res+= ",";
+            }
+            res.pop_back();
+            res+="],\n";
+        }
+        res.pop_back();
+        res.pop_back();
+        res+="])";
+        return res;
+    }  
 }
 
 
