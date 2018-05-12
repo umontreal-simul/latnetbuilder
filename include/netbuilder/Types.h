@@ -58,8 +58,7 @@ typedef size_t size_type;
 using PointSetType = LatBuilder::PointSetType;
 
 /// Net construction methods
-enum class NetConstruction {
-    SOBOL, POLYNOMIAL};
+enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};
 
 /// Binary real operator type
 typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;

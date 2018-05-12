@@ -68,7 +68,7 @@ struct ExplorationMethodParser
         boost::split(explorationCharacteristicStrings, str, boost::is_any_of(":"));
 
         std::string name = explorationCharacteristicStrings[0];
-        if (name == "explicit"){
+        if (name == "evaluation"){
             if (explorationCharacteristicStrings.size() < 2)
             {
                 throw BadExplorationMethod("net description must be specified; see --help");

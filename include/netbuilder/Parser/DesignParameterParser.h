@@ -21,6 +21,9 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
 /**
@@ -64,6 +67,37 @@ struct DesignParameterParser<NetConstruction::POLYNOMIAL, PST>
          }
          return tmp;
    }
+};
+
+template<PointSetType PST>
+struct DesignParameterParser<NetConstruction::EXPLICIT, PST>
+{
+      typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::DesignParameter result_type;
+
+      static result_type parse(Parser::CommandLine<NetConstruction::EXPLICIT, PST>& commandLine)
+      {
+            std::vector<std::string> designParameterStrings;
+            result_type tmp;
+            boost::split(designParameterStrings, commandLine.s_designParameter, boost::is_any_of(","));
+            if (designParameterStrings.size() == 1 )
+            {
+                  unsigned int m = boost::lexical_cast<unsigned int>(designParameterStrings[0]);
+                  tmp = result_type(m,m);
+            }
+            else if (designParameterStrings.size() == 2)
+            {
+                  tmp = result_type(boost::lexical_cast<unsigned int>(designParameterStrings[0]), boost::lexical_cast<unsigned int>(designParameterStrings[0]));
+            }
+            else
+            {
+                  throw BadDesignParameter(commandLine.s_designParameter);
+            }
+            if (NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(tmp) != commandLine.m_sizeParam.log2NumPoints())
+            {
+                  throw BadDesignParameter("incompatible size and design parameter.");
+            }
+            return tmp;
+      }
 };
 
 

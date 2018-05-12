@@ -74,7 +74,9 @@ CommandLine<NC, PST>::parse()
 {
       namespace lbp = LatBuilder::Parser;
       m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, PST>::parse(s_size);
+      std::cout << "Size param has been parsed."<< std::endl;
       m_designParameter = DesignParameterParser<NC,PST>::parse(*this);
+      std::cout << "Design param has been parsed."<< std::endl;
       m_dimension = boost::lexical_cast<Dimension>(s_dimension);
       m_verbose = boost::lexical_cast<Dimension>(s_verbose);
       m_figure = FigureParser<NC, PST>::parse(*this); // m_combiner initialized as a side effect

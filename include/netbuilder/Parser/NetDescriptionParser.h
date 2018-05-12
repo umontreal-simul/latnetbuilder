@@ -112,6 +112,53 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
    }
 };
 
+template<PointSetType PST>
+struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
+{
+    typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::GenValue GenValue;
+    typedef std::vector<GenValue> result_type;
+
+   static result_type parse(CommandLine<NetConstruction::EXPLICIT, PST>& commandLine, const std::string& str)
+   {
+       std::vector<std::string> netDescriptionStrings;
+       boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
+       result_type genValues;
+       genValues.reserve(commandLine.m_dimension);
+       for(const auto& matrixString : netDescriptionStrings)
+       {
+           std::vector<std::string> rowsStrings;
+           boost::split(rowsStrings, matrixString, boost::is_any_of(","));
+           if (rowsStrings.size()==0)
+           {
+               throw BadNetDescription("Bad matrix.");
+           }
+           for(const auto& rowString : rowsStrings)
+           {
+               if (rowString.size() != rowsStrings.front().size())
+               {
+                   throw BadNetDescription("Bad matrix (different row lengths).");
+               }
+           }
+           GenValue genVal(rowsStrings.size(),rowsStrings.front().size());
+           for(unsigned int i = 0; i < rowsStrings.size(); ++i)
+           {
+               std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
+               genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);
+           }
+           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_designParameter))
+           {
+               throw BadNetDescription("Bad generating matrix size.");
+           }
+           genValues.push_back(std::move(genVal));
+       }
+        if (genValues.size() != commandLine.m_dimension )
+        {
+           throw BadNetDescription("Missing generating vector.");
+        }
+        return genValues;
+   }
+};
+
 }}
 
 #endif

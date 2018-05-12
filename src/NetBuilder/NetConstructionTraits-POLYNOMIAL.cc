@@ -30,7 +30,7 @@ namespace NetBuilder {
     
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValue GenValue;
 
-    typedef NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter DesignParameter;
+    typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter DesignParameter;
 
     DesignParameter NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameter(1);
 

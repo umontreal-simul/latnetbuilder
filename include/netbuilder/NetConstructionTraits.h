@@ -197,6 +197,61 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
         static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
 };
 
+template<>
+struct NetConstructionTraits<NetConstruction::EXPLICIT>
+{
+    public:
+        typedef GeneratingMatrix GenValue ;
+
+        typedef std::pair<unsigned int, unsigned int> DesignParameter;
+
+        static DesignParameter defaultDesignParameter;
+
+        static constexpr bool isSequenceViewable = false;
+
+        static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+
+        static unsigned int nRows(const DesignParameter& param);
+
+        static unsigned int nCols(const DesignParameter& param);
+
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+    
+        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
+
+        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
+
+        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
+
+        template<typename RAND>
+        class RandomGenValueGenerator
+        {
+            public:
+                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                    m_designParameter(std::move(designParameter)),
+                    m_randomGen(std::move(randomGen))
+                {};
+                
+                GenValue operator()(unsigned int dimension)
+                {
+                    std::vector<uInteger> init;
+                    init.reserve(m_designParameter.first);
+                    for(unsigned int i = 0; i < m_designParameter.second; ++i)
+                    {
+                        init.push_back(m_randomGen() % (1<<m_designParameter.second));
+                    }
+                    return GeneratingMatrix(m_designParameter.first, m_designParameter.second, std::move(init));
+                }
+            private:
+                DesignParameter m_designParameter;
+                RAND m_randomGen;
+                std::vector<GenValue> m_primes;
+                uInteger m_totient;
+        };
+
+        static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
+};
+
 }
 
 #endif

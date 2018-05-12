@@ -43,17 +43,18 @@ struct NetConstructionParser {
    static result_type parse(const std::string& str)
    {
       if (str == "sobol")
-         return result_type(NetBuilder::NetConstruction::SOBOL,std::string());
-      else if (str == "explicit")
       {
-        throw BadNetConstruction(str+ " not implemented");
-        // return result_type(NetBuilder::NetConstruction::EXPLCIT,std::string());
+        return result_type(NetBuilder::NetConstruction::SOBOL,std::string());
       }
       std::vector<std::string> constructionStrings;
       boost::split(constructionStrings, str, boost::is_any_of(":"));
       if (constructionStrings.size()==2 && constructionStrings[0] == "polynomial")
       {
         return result_type(NetBuilder::NetConstruction::POLYNOMIAL,constructionStrings[1]);
+      }
+      if (constructionStrings.size()==2 && constructionStrings[0] == "explicit")
+      {
+        return result_type(NetBuilder::NetConstruction::EXPLICIT,constructionStrings[1]);
       }
       throw BadNetConstruction(str);
    }

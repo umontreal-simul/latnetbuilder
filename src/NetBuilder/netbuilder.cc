@@ -35,12 +35,12 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0; 
 
-void TaskOutput(const NetBuilder::Task::BaseTask& task)
+void TaskOutput(const NetBuilder::Task::BaseTask& task, NetBuilder::OutputFormat outputFormat = OutputFormat::CLI)
    {
    unsigned int old_precision = std::cout.precision();
    if (merit_digits_displayed)
       std::cout.precision(merit_digits_displayed);
-   std::cout << task.outputNet(OutputFormat::CLI) << ": " << task.outputMeritValue() << std::endl;
+   std::cout << task.outputNet(outputFormat) << ": " << task.outputMeritValue() << std::endl;
    if (merit_digits_displayed)
       std::cout.precision(old_precision);
    }
@@ -63,7 +63,8 @@ makeOptionsDescription()
    ("construction,c", po::value<std::string>()->default_value("sobol"),
    "digital-net; possible constructions:\n"
    "  sobol (default)\n"
-   "  polynomial:<polynomial_description>\n")
+   "  polynomial:<modulus>\n"
+   "  explicit:<matrix-size>\n")
    ("set-type,t", po::value<std::string>()->default_value("net"),
     "type of point set; possible values:\n"
    "  net (default)\n"
@@ -74,7 +75,7 @@ makeOptionsDescription()
    "  2^<max-power>\n")
    ("exploration-method,e", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
-    "  explicit:<net_description>\n" 
+    "  evaluation:<net_description>\n" 
     "  exhaustive\n"
     "  random:<r>\n"
     "  full-CBC\n"
@@ -130,6 +131,7 @@ makeOptionsDescription()
   //   "  low-pass:<threshold>\n"
   //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
   //   "  even[:<min-level>[:<max-level>]] (default)\n")
+   ("GUI,g","(optional) output format for the GUI")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
    "(can be useful to obtain different results from random constructions)\n");
@@ -208,6 +210,15 @@ int main(int argc, const char *argv[])
 
         auto repeat = opt["repeat"].as<unsigned int>();
 
+        NetBuilder::OutputFormat outputFormat;
+        if (opt.count("GUI")) {
+          outputFormat = NetBuilder::OutputFormat::GUI;
+        }
+        else
+        {
+          outputFormat = NetBuilder::OutputFormat::CLI;
+        }
+
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
@@ -235,14 +246,20 @@ int main(int argc, const char *argv[])
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
        }
       //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::MULTILEVEL){
-      //     BUILD_AND_EXECUTE_TASK(POLYNOMIAL, MULTILEVEL)
+      //     BUILD_TASK(POLYNOMIAL, MULTILEVEL)
+      //  }
+        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::UNILEVEL){
+          BUILD_TASK(EXPLICIT, UNILEVEL)
+       }
+      //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::MULTILEVEL){
+      //     BUILD_TASK(EXPLICIT, MULTILEVEL)
       //  }
 
       for (unsigned i=0; i<repeat; i++){
       t0 = high_resolution_clock::now();\
       task->execute();\
       t1 = high_resolution_clock::now();\
-      TaskOutput(*task);
+      TaskOutput(*task, outputFormat);
       auto dt = duration_cast<duration<double>>(t1 - t0);
       std::cout << std::endl;
       std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;

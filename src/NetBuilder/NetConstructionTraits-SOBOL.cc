@@ -34,9 +34,9 @@ namespace NetBuilder {
     
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
-    typedef NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
+    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
 
-    typedef NetConstructionTraits<NetConstruction::SOBOL>::DesignParameterIncrement DesignParameterIncrement;
+    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameterIncrement DesignParameterIncrement;
 
     DesignParameter NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameter = 0;
     DesignParameterIncrement NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameterIncrementator = 1;
