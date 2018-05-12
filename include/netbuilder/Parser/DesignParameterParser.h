@@ -57,9 +57,16 @@ struct DesignParameterParser<NetConstruction::POLYNOMIAL, PST>
 
    static result_type parse(Parser::CommandLine<NetConstruction::POLYNOMIAL, PST>& commandLine)
    {
-         return polynomialParserHelper(commandLine.s_designParameter);
+         result_type tmp = polynomialParserHelper(commandLine.s_designParameter);
+         if (NetConstructionTraits<NetConstruction::POLYNOMIAL>::nCols(tmp) != commandLine.m_sizeParam.log2NumPoints())
+         {
+            throw BadDesignParameter("incompatible size and design parameter.");
+         }
+         return tmp;
    }
 };
+
+
 
 }}
 

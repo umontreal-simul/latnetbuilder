@@ -140,11 +140,12 @@ class DigitalNetConstruction : public DigitalNet
             if(dimension>0)
             {
                 std::vector<GenValue> genValues = ConstructionMethod::defaultGenValues(dimension, m_designParameter); // get the default generating values
+                m_genValues.reserve(m_dimension);
                 for(const auto& genValue : genValues)
                 {
                     // construct the generating matrix and store them and the generating values
                     m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue, m_designParameter)));
-                    m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
+                    m_genValues.push_back(std::make_shared<GenValue>(std::move(genValue)));
                 }
             }
         };
@@ -174,6 +175,7 @@ class DigitalNetConstruction : public DigitalNet
                 DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
                 m_designParameter(std::move(designParameter))
         {
+            m_genValues.reserve(m_dimension);
             for(const auto& genValue : genValues)
             {
                 // construct the generating matrix and store them and the generating values
@@ -219,7 +221,7 @@ class DigitalNetConstruction : public DigitalNet
             if (outputFormat==OutputFormat::GUI)
             {
                 std::ostringstream stream;
-                for(unsigned int dim = 1; dim < m_dimension; ++dim)
+                for(unsigned int dim = 1; dim <= m_dimension; ++dim)
                 {
                     stream << generatingMatrix(dim) << std::endl;
                 }

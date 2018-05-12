@@ -90,9 +90,8 @@ class Eval : public BaseTask
         */
         virtual void execute() {
 
-            auto evaluator = m_figure->evaluator();
-
-            m_merit = evaluator->operator()(*m_net, m_merit, m_verbose);
+            auto evaluator = m_figure->evaluator(); 
+            m_merit = evaluator->operator()(*m_net, m_verbose);
         }
 
         virtual void reset()

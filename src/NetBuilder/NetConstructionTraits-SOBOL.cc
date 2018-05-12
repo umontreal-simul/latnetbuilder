@@ -44,7 +44,13 @@ namespace NetBuilder {
     bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
         auto dimension = genValue.first;
-        unsigned int degree = nthPrimitivePolynomialDegree(dimension);
+
+        if (dimension==1)
+        {
+            return (genValue.second.size()==1 && genValue.second.front()==1);
+        }
+
+        unsigned int degree = nthPrimitivePolynomialDegree(dimension-1);
 
         if (genValue.second.size() != degree){
             return false;
@@ -52,10 +58,10 @@ namespace NetBuilder {
 
         for(unsigned int j = 0; j < degree; ++j)
         {
-              if (genValue.second[j] % 2 == 1){ //each direction number is odd
+              if (!(genValue.second[j] % 2 == 1)){ //each direction number is odd
                   return false;
               }
-              if (genValue.second[j]< (unsigned int) (2<<j)){ // each direction number is small enough
+              if (!(genValue.second[j]< (unsigned int) (2<<j))){ // each direction number is small enough
                   return false;
               }
         }

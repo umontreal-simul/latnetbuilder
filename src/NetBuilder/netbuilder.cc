@@ -40,7 +40,7 @@ void TaskOutput(const NetBuilder::Task::BaseTask& task)
    unsigned int old_precision = std::cout.precision();
    if (merit_digits_displayed)
       std::cout.precision(merit_digits_displayed);
-   std::cout << "==> " << task.outputNet(OutputFormat::CLI) << ": " << task.outputMeritValue() << std::endl;
+   std::cout << task.outputNet(OutputFormat::CLI) << ": " << task.outputMeritValue() << std::endl;
    if (merit_digits_displayed)
       std::cout.precision(old_precision);
    }
@@ -232,9 +232,7 @@ int main(int argc, const char *argv[])
           BUILD_TASK(SOBOL, MULTILEVEL)
        }
        if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::UNILEVEL){
-         std::cout << "i'm here" << std::endl;
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
-          std::cout << "i'm done" << std::endl;
        }
       //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::MULTILEVEL){
       //     BUILD_AND_EXECUTE_TASK(POLYNOMIAL, MULTILEVEL)
