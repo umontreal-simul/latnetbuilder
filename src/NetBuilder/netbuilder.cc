@@ -109,7 +109,8 @@ makeOptionsDescription()
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
-    "  level:{<level>|max}\n")
+    "  level:{<level>|max}\n"
+    "  JoeKuoD6\n")
     ("figure-combiner,f", po::value<std::string>()->default_value("max"),
     "combiner for combined figure of merit; possible values: \n"
     "  sum\n"
@@ -232,9 +233,9 @@ int main(int argc, const char *argv[])
 
         std::string designParameterString = netConstructionPair.second;
 
-      std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
+        std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
-      std::unique_ptr<NetBuilder::Task::BaseTask> task;
+        std::unique_ptr<NetBuilder::Task::BaseTask> task;
 
         if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)
@@ -254,7 +255,6 @@ int main(int argc, const char *argv[])
       //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::MULTILEVEL){
       //     BUILD_TASK(EXPLICIT, MULTILEVEL)
       //  }
-
       for (unsigned i=0; i<repeat; i++){
       t0 = high_resolution_clock::now();\
       task->execute();\

@@ -46,8 +46,8 @@ class CBCCoordinateSet
         }
 
     private:
-        unsigned int m_maxOrder;
         unsigned int m_dimension;
+        unsigned int m_maxOrder;
         LatCommon::CoordinateSets::FromRanges m_base;
         LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges> m_addCoordinate;
 };

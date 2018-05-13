@@ -19,6 +19,10 @@
 
 #include "latbuilder/Parser/Common.h"
 #include "netbuilder/Types.h"
+#include "netbuilder/LevelCombiner.h"
+
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
@@ -28,19 +32,73 @@ namespace lbp = LatBuilder::Parser;
 class BadLevelCombiner : public lbp::ParserError {
 public:
    BadLevelCombiner(const std::string& message):
-      lbp::ParserError("cannot parse construction parameter string: " + message)
+      lbp::ParserError("cannot parse combiner string: " + message)
    {}
 };
 
 /**
  * Parser for construction parameters.
  */
-struct LevelCombinerParser {
+template <NetConstruction NC, NetBuilder::PointSetType PST>
+struct LevelCombinerParser {};
+
+template <NetConstruction NC>
+struct LevelCombinerParser<NC, NetBuilder::PointSetType::UNILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const std::string& str) // TODO
+   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::UNILEVEL>& commandLine) // TODO
    {
-      return result_type();
+       return result_type();
+   }
+};
+
+template <NetConstruction NC>
+struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
+   typedef Combiner result_type;
+
+   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::MULTILEVEL>& commandLine) // TODO
+   {
+       std::string str = commandLine.s_combiner;
+       if (str=="sum")
+       {
+           return result_type(SumCombiner());
+       }
+       else if (str=="max")
+       {
+           return result_type(MaxCombiner());
+       }
+       else if (str=="JoeKuoD6")
+       {
+           return result_type(JoeKuoD6Combiner());
+       }
+       else
+       {
+            std::vector<std::string> combinerStrings;
+            boost::split(combinerStrings, str, boost::is_any_of(":"));
+            if (combinerStrings.size()!=2 || combinerStrings[0] != "level")
+            {
+                throw BadLevelCombiner(str);
+            }
+            else
+            {
+                unsigned int level;
+                if (combinerStrings[1] == "max")
+                {
+                    level = commandLine.m_sizeParam.log2NumPoints();
+                }
+                else
+                {
+                    level = boost::lexical_cast<unsigned int>(combinerStrings[1]);
+                    if (level > commandLine.m_sizeParam.log2NumPoints() || level == 0)
+                    {
+                       throw BadLevelCombiner("incompatible combiner level and size.");
+                    }  
+                }
+                return LevelSelectorCombiner(level);
+            }
+       }
+       throw BadLevelCombiner(str);
+       return result_type();
    }
 };
 

@@ -38,14 +38,14 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection
  */ 
-template <NetEmbed NE>
+template <PointSetType PST>
 class ResolutionGapProjMerit
 {};
 
 /** Template specialization in the case of simple nets.
  */ 
 template <>
-class ResolutionGapProjMerit<NetEmbed::SIMPLE>
+class ResolutionGapProjMerit<PointSetType::UNILEVEL>
 {
     public:
 
@@ -80,8 +80,6 @@ class ResolutionGapProjMerit<NetEmbed::SIMPLE>
         Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
         {
             unsigned int dimension = projection.size();
-
-            unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
 
             m_rowReducer.reset(numCols);
@@ -121,7 +119,7 @@ class ResolutionGapProjMerit<NetEmbed::SIMPLE>
 /** Template specialization in the case of simple nets.
  */ 
 template <>
-class ResolutionGapProjMerit<NetEmbed::EMBEDDED>
+class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
 {
     public:
 
