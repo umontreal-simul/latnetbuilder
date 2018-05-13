@@ -37,7 +37,7 @@ static unsigned int merit_digits_displayed = 0;
 
 void TaskOutput(const NetBuilder::Task::BaseTask& task, NetBuilder::OutputFormat outputFormat = OutputFormat::CLI)
    {
-   unsigned int old_precision = std::cout.precision();
+   unsigned int old_precision = (unsigned int) std::cout.precision();
    if (merit_digits_displayed)
       std::cout.precision(merit_digits_displayed);
    std::cout << task.outputNet(outputFormat) << ": " << task.outputMeritValue() << std::endl;

@@ -80,9 +80,9 @@ class TValueProjMerit<PointSetType::UNILEVEL>
         Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection, unsigned int maxMeritsSubProj) const 
         {
             std::vector<GeneratingMatrix> mats;
-            for(unsigned int dim : projection)
+            for(auto dim : projection)
             {
-                mats.push_back(net.generatingMatrix(dim+1));
+                mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
             }
             return GaussMethod::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
@@ -134,9 +134,9 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
             for(unsigned int m = 1; m <= res.size(); ++m)
             {
                 std::vector<GeneratingMatrix> mats;
-                for(unsigned int dim : projection)
+                for(auto dim : projection)
                 {
-                    mats.push_back(net.pointerToGeneratingMatrix(dim+1)->subMatrix(m,m));
+                    mats.push_back(net.pointerToGeneratingMatrix((unsigned int) (dim+1))->subMatrix(m,m));
                 }
                 res[m-1] = GaussMethod::computeTValue(std::move(mats),maxMeritsSubProj[m-1], false);
             }
@@ -402,7 +402,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             Coordinates proj1DRep;
             proj1DRep.insert(m_dimension-1);
             double weight = m_figure->weights().getWeight(proj1DRep);
-            Node* proj1D = new Node(m_dimension, proj1DRep.size(), weight);
+            Node* proj1D = new Node(m_dimension, (unsigned int) proj1DRep.size(), weight);
 
             if(m_dimension==1){
                 m_roots.push_back(proj1D);
@@ -423,7 +423,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
                         Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
                         projectionRep.insert(m_dimension-1);
                         double weight =  m_figure->weights().getWeight(projectionRep);
-                        Node* newNode = new Node(m_dimension, projectionRep.size() , weight); // create the node
+                        Node* newNode = new Node(m_dimension, (unsigned int) projectionRep.size() , weight); // create the node
                         newNode->addMother(it);
                         mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
                         newNodes.push_back(newNode);
@@ -801,7 +801,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             Coordinates proj1DRep;
             proj1DRep.insert(m_dimension-1);
             double weight = m_figure->weights().getWeight(proj1DRep);
-            Node* proj1D = new Node(m_dimension, proj1DRep.size(), weight);
+            Node* proj1D = new Node(m_dimension, (unsigned int) proj1DRep.size(), weight);
 
             if(m_dimension==1){
                 m_roots.push_back(proj1D);
@@ -822,7 +822,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
                         Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
                         projectionRep.insert(m_dimension-1);
                         double weight =  m_figure->weights().getWeight(projectionRep);
-                        Node* newNode = new Node(m_dimension, projectionRep.size() , weight); // create the node
+                        Node* newNode = new Node(m_dimension, (unsigned int) projectionRep.size() , weight); // create the node
                         newNode->addMother(it);
                         mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
                         newNodes.push_back(newNode);

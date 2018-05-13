@@ -79,7 +79,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
          */ 
         Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
         {
-            unsigned int dimension = projection.size();
+            unsigned int dimension = (unsigned int) projection.size();
             unsigned int numCols = net.numColumns();
 
             m_rowReducer.reset(numCols);
@@ -89,9 +89,9 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
             for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
             {
                 GeneratingMatrix block(0,numCols);
-                for(const auto& coord : projection)
+                for(auto coord : projection)
                 {
-                    block.vstack(net.pointerToGeneratingMatrix(coord+1)->subMatrix(resolution,1,numCols));
+                    block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
                 }
                 if (m_rowReducer.reduceNewBlock(std::move(block)))
                 {
@@ -154,7 +154,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
          */ 
         Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
         {
-            unsigned int dimension = projection.size();
+            unsigned int dimension = (unsigned int) projection.size();
 
             unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
@@ -169,9 +169,9 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
                 for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
                 {
                     GeneratingMatrix block(0,m);
-                    for(const auto& coord : projection)
+                    for(auto coord : projection)
                     {
-                    block.vstack(net.pointerToGeneratingMatrix(coord+1)->subMatrix(resolution,1,m));
+                    block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,m));
                     }
                     if (m_rowReducer.reduceNewBlock(std::move(block)))
                     {

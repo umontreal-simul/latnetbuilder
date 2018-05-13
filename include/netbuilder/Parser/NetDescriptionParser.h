@@ -139,8 +139,8 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
                    throw BadNetDescription("Bad matrix (different row lengths).");
                }
            }
-           GenValue genVal(rowsStrings.size(),rowsStrings.front().size());
-           for(unsigned int i = 0; i < rowsStrings.size(); ++i)
+           GenValue genVal((unsigned int) rowsStrings.size(),(unsigned int) rowsStrings.front().size());
+           for(unsigned int i = 0; i < (unsigned int) rowsStrings.size(); ++i)
            {
                std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
                genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);

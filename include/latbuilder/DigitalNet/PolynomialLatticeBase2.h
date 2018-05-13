@@ -15,7 +15,7 @@
 // limitations under the License.
 
 #ifndef DIGITAL_NET_POLYNOMIAL_LATTICE_BASE2_H
-#define DIGITAL_NET_POLYNOMIAL_LATTICE__BASE2_H
+#define DIGITAL_NET_POLYNOMIAL_LATTICE_BASE2_H
 #include "latbuilder/DigitalNet/DigitalNetBase2.h"
 #include "latbuilder/Types.h"
 #include "latbuilder/Util.h"
@@ -71,7 +71,7 @@ protected :
     *
     */
    void expandSeries(const Modulus& h, const Modulus& P, std::vector<uInteger>& expansion, const uInteger& expansion_limit){
-      int m = deg(P); 
+      int m = (int) deg(P); 
       for(int l = 1; l<= expansion_limit ; l++){
           int res =  (m-l >=0 && IsOne(coeff(h, m-l)))? 1 : 0;
           int start = (l-m > 1) ? (l-m) : 1;

@@ -68,7 +68,7 @@ struct FigureParser
 
         commandLine.m_combiner = Parser::LevelCombinerParser<NC,PST>::parse(commandLine);
 
-        int nbFigures = vecStrFigures.size();
+        unsigned int nbFigures = (unsigned int) vecStrFigures.size();
         std::vector<result_type> vecFigures;
         vecFigures.reserve(nbFigures);
         std::vector<Real> vecWeights(nbFigures, 0);
@@ -110,8 +110,8 @@ struct FigureParser
         std::vector<std::string> figureCharacteristicStrings;
         boost::split(figureCharacteristicStrings, str, boost::is_any_of("/"));
 
-        int nbParam = figureCharacteristicStrings.size();
-        for (int i=0; i<nbParam; i++){
+        unsigned int nbParam = (unsigned int) figureCharacteristicStrings.size();
+        for (unsigned int i=0; i<nbParam; i++){
             std::vector<std::string> split;
             boost::split(split, figureCharacteristicStrings[i], boost::is_any_of("="));
             if (split.size() == 2){
