@@ -38,14 +38,14 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection
  */ 
-template <NetEmbed NE>
+template <PointSetType PST>
 class ResolutionGapProjMerit
 {};
 
 /** Template specialization in the case of simple nets.
  */ 
 template <>
-class ResolutionGapProjMerit<NetEmbed::SIMPLE>
+class ResolutionGapProjMerit<PointSetType::UNILEVEL>
 {
     public:
 
@@ -79,9 +79,7 @@ class ResolutionGapProjMerit<NetEmbed::SIMPLE>
          */ 
         Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
         {
-            unsigned int dimension = projection.size();
-
-            unsigned int numRows = net.numRows();
+            unsigned int dimension = (unsigned int) projection.size();
             unsigned int numCols = net.numColumns();
 
             m_rowReducer.reset(numCols);
@@ -91,9 +89,9 @@ class ResolutionGapProjMerit<NetEmbed::SIMPLE>
             for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
             {
                 GeneratingMatrix block(0,numCols);
-                for(const auto& coord : projection)
+                for(auto coord : projection)
                 {
-                    block.vstack(net.pointerToGeneratingMatrix(coord+1)->subMatrix(resolution,1,numCols));
+                    block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
                 }
                 if (m_rowReducer.reduceNewBlock(std::move(block)))
                 {
@@ -121,7 +119,7 @@ class ResolutionGapProjMerit<NetEmbed::SIMPLE>
 /** Template specialization in the case of simple nets.
  */ 
 template <>
-class ResolutionGapProjMerit<NetEmbed::EMBEDDED>
+class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
 {
     public:
 
@@ -156,7 +154,7 @@ class ResolutionGapProjMerit<NetEmbed::EMBEDDED>
          */ 
         Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
         {
-            unsigned int dimension = projection.size();
+            unsigned int dimension = (unsigned int) projection.size();
 
             unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
@@ -171,9 +169,9 @@ class ResolutionGapProjMerit<NetEmbed::EMBEDDED>
                 for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
                 {
                     GeneratingMatrix block(0,m);
-                    for(const auto& coord : projection)
+                    for(auto coord : projection)
                     {
-                    block.vstack(net.pointerToGeneratingMatrix(coord+1)->subMatrix(resolution,1,m));
+                    block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,m));
                     }
                     if (m_rowReducer.reduceNewBlock(std::move(block)))
                     {

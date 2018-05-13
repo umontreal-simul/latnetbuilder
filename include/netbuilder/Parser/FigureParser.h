@@ -33,6 +33,7 @@
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
+#include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 
@@ -64,12 +65,10 @@ struct FigureParser
     {
         std::vector<std::string> vecStrFigures = commandLine.s_figures;
         std::string &strFigureCombiner = commandLine.s_figureCombiner;
-        std::string &strLevelCombiner = commandLine.s_combiner;
 
-        Combiner combiner = Parser::LevelCombinerParser::parse(strLevelCombiner);
-        commandLine.m_combiner = combiner;
+        commandLine.m_combiner = Parser::LevelCombinerParser<NC,PST>::parse(commandLine);
 
-        int nbFigures = vecStrFigures.size();
+        unsigned int nbFigures = (unsigned int) vecStrFigures.size();
         std::vector<result_type> vecFigures;
         vecFigures.reserve(nbFigures);
         std::vector<Real> vecWeights(nbFigures, 0);
@@ -85,7 +84,19 @@ struct FigureParser
         }
         else
         {
-            Real normType = boost::lexical_cast<Real>(strFigureCombiner);
+            Real normType = -1;
+            if (strFigureCombiner=="max")
+            {
+                normType = std::numeric_limits<Real>::infinity();
+            }
+            else if (strFigureCombiner=="sum")
+            {
+                normType = 1;
+            }
+            else
+            {
+                throw BadFigure("unrecognized figure combiner; see --help.");
+            }
             return std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(normType, std::move(vecFigures), std::move(vecWeights));
         }
     }
@@ -99,8 +110,8 @@ struct FigureParser
         std::vector<std::string> figureCharacteristicStrings;
         boost::split(figureCharacteristicStrings, str, boost::is_any_of("/"));
 
-        int nbParam = figureCharacteristicStrings.size();
-        for (int i=0; i<nbParam; i++){
+        unsigned int nbParam = (unsigned int) figureCharacteristicStrings.size();
+        for (unsigned int i=0; i<nbParam; i++){
             std::vector<std::string> split;
             boost::split(split, figureCharacteristicStrings[i], boost::is_any_of("="));
             if (split.size() == 2){
@@ -143,11 +154,10 @@ struct FigureParser
             vecFigures.push_back(std::move(weightedFigureOfMerit));
         }
         else if (name == "resolution-gap"){
-            throw BadFigure("not yet implemented");
-            // unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            // auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionProjMerit<PST>>(maxCard, commandLine.m_combiner);
-            // auto weightedFigureOfMerit = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionProjMerit<PST>>>(normType, std::move(weights), std::move(projDepMerit));
-            // vecFigures.push_back(std::move(weightedFigureOfMerit));
+            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
+            auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PST>>(maxCard, commandLine.m_combiner);
+            auto weightedFigureOfMerit = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PST>>>(normType, std::move(weights), std::move(projDepMerit));
+            vecFigures.push_back(std::move(weightedFigureOfMerit));
         }
         else if (name == "CU:P2"){
             auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
@@ -155,7 +165,7 @@ struct FigureParser
             vecFigures.push_back(std::move(coordUnifFigure));
         }
         else{
-            throw BadFigure("figure name " + name + " does not exist");
+            throw BadFigure("figure name " + name + " does not exist.");
         }
         
         vecWeights.push_back(importance);

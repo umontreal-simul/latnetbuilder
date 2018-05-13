@@ -32,7 +32,7 @@ static unsigned int merit_digits_displayed = 0;
 template <LatticeType LR, PointSetType PST>
 void onLatticeSelected(const Task::Search<LR, PST>& s)
    {
-   unsigned int old_precision = std::cout.precision();
+   unsigned int old_precision = (unsigned int) std::cout.precision();
    if (merit_digits_displayed)
       std::cout.precision(merit_digits_displayed);
    std::cout << "==> " << s.bestLattice() << ": " << s.bestMeritValue() << std::endl;
@@ -201,7 +201,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
       search->execute();
       auto t1 = high_resolution_clock::now();
 
-      unsigned int old_precision = std::cout.precision();
+      unsigned int old_precision = (unsigned int) std::cout.precision();
       if (merit_digits_displayed)
    std::cout.precision(merit_digits_displayed);
      const auto lat = search->bestLattice();
@@ -260,7 +260,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
         search->execute();
         auto t1 = high_resolution_clock::now();
 
-        unsigned int old_precision = std::cout.precision();
+        unsigned int old_precision = (unsigned int) std::cout.precision();
         if (merit_digits_displayed)
             std::cout.precision(merit_digits_displayed);
        const auto lat = search->bestLattice();

@@ -23,6 +23,7 @@
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
+#include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 
 #include "latcommon/Weights.h"
@@ -38,29 +39,21 @@ int main(int argc, const char *argv[])
     unsigned int s = 20;
     unsigned int m = 30;
 
-    //unsigned int r = 100;
     auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
-    auto combiner = [] (RealVector merits) -> Real 
-    { 
-        unsigned int m = merits.size();
-        Real res;
-        for(double t : merits)
-        {
-            res = std::max(res, intPow(t,6)/(m-t+1));
-        }
-        return res;
-    };
+    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2,combiner);
 
-    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<NetEmbed::EMBEDDED>>(2,combiner);
+    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
 
-    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<NetEmbed::EMBEDDED>>>(1, std::move(weights), std::move(projDep), OpMax());
+    // auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2,combiner);
 
-    // auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>(3);
+    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
 
-    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights), std::move(projDep), OpMax());
+    // auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(3);
 
-    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m,m);
+    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
+
+    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
 
     auto task = Task::Eval(std::move(net),std::move(fig));
 

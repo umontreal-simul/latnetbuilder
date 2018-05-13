@@ -275,7 +275,7 @@ namespace NetBuilder {
             std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
             const std::vector<std::shared_ptr<GenValue>>& genValues)
     {
-        unsigned int s = genMats.size();
+        unsigned int s = (unsigned int) genMats.size();
         for(unsigned int k = 0; k < s; ++k)
         {
             GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),designParameter+inc);
