@@ -3,14 +3,17 @@ import math
 import numpy as np
 
 class LatNet:
-    def __init__(self, size, gen, self_type):
+    def __init__(self, size, self_type, gen=None):
         self.size = size
         self.gen = gen
         self.self_type = self_type
-    def getDim(self):
+    def _getDim(self):
         return len(self.gen.gen_vector)
     def __str__(self):
-        return '{}({}, {})'.format(self.self_type, self.size, self.gen)
+        if self.gen is not None:
+            return '{}({}, {})'.format(self.self_type, self.size, self.gen)
+        else:
+            return '{}({})'.format(self.self_type, self.size)
     def __repr__(self):
         return str(self)
 
@@ -20,7 +23,7 @@ class GenParam:
             self.gen_vector = [int(x) for x in s.split(',')]
         elif search_type == 'polynomial':
             self.gen_vector = [[int(y) for y in x.strip('[ ,]').split(' ')] for x in s.split(',')]
-        elif search_type == 'digital-sobol':
+        elif 'digital' in search_type:
             self.gen_vector = s
     def __str__(self):
         return str(self.gen_vector)
@@ -29,7 +32,7 @@ class GenParam:
 
 class SizeParam:
     def __init__(self, s, search_type):
-        if search_type in ['ordinary', 'digital-sobol']:
+        if search_type in ['ordinary', 'digital-sobol'] or 'digital-explicit' in search_type:
             # try:
             p = s.split('^')
             if len(p) == 2:
@@ -42,7 +45,7 @@ class SizeParam:
             #     else:
             #         self._set_simple(int(s))
 
-        elif search_type == 'polynomial':
+        elif 'polynomial' in search_type:
             p = s.split('^')
             if len(p) == 2:
                 self.base = [int(y) for y in p[0].strip('[]').split(' ')]
@@ -52,7 +55,7 @@ class SizeParam:
                 self.base = [int(y) for y in s.strip('[]').split(' ')]
                 self.power = 1
                 self.width = len(self.base)-1
-            self.points = 2**self.width
+            self.nb_points = 2**self.width
 
     def _set_embedded(self, base, power):
         self.base = base
@@ -89,8 +92,10 @@ class Result:
     def getDim(self):
         if self.latnet is None:
             return 0
+        elif self.latnet.gen is not None:
+            return self.latnet._getDim()
         else:
-            return self.latnet.getDim()
+            return len(self.matrices)
 
     def getMaxLevel(self):
         return int(math.log2(self.latnet.size.nb_points))
@@ -110,19 +115,22 @@ class Result:
         if self.search_type == 'ordinary':
             return np.array([self.latnet.gen.gen_vector[coord]*i/nb_points % 1 for i in range(nb_points)])
 
-        elif self.search_type in ['polynomial', 'digital-sobol']:
+        else:
             points = []
             matrice = self.matrix(coord)
             width = matrice.shape[0]
+            if level is None:
+                level = width
             for x in range(nb_points):
                 binary_repr = np.array([((x>>i)&1) for i in range(width)])
                 prod = np.mod(matrice.dot(binary_repr), 2)
-                points.append(float(sum([prod[width-1-i] << i for i in range(width)]))/nb_points)
+                points.append(float(sum([prod[i] << (level-1-i) for i in range(level)]))/nb_points)
             return points
 
 
 
 def parse_output(s, gui, search_type):
+    # print(search_type)
 
     if search_type == 'ordinary':
         pat_latdef = re.compile(r'^BEST LATTICE:\s*lattice\((?P<size>[^,]*),\s*\[(?P<gen>[^\]]*)\]\s*\)\s*:\s*(?P<merit>.*)')
@@ -144,7 +152,7 @@ def parse_output(s, gui, search_type):
                 size = SizeParam(match.group('size'), search_type)
                 gen = GenParam(match.group('gen'), search_type)
                 merit = float(match.group('merit'))
-                latnet = LatNet(size, gen, self_type='lattice')
+                latnet = LatNet(size, self_type='lattice', gen=gen)
                 continue
 
     matrices = []
@@ -185,11 +193,33 @@ def parse_output(s, gui, search_type):
                     direction_numbers.append([int(x) for x in lines[k+i].strip(' \t\n').split(' ')])
                     i += 1
 
-            if 'merit' in lines[k]:
+            if 'merit:' in lines[k]:
                 merit = float(lines[k].split(':')[1].strip(' \n'))
         gen = GenParam(direction_numbers, search_type)
         size = SizeParam(str(2**len(matrices[0])), search_type)
-        latnet = LatNet(size, gen, self_type='net')
+        latnet = LatNet(size, self_type='net', gen=gen)
+
+    if 'digital-polynomial' in search_type:
+        lines = s.split('\n')
+        for k in range(len(lines)):
+            if 'Modulus' in lines[k]:
+                size = SizeParam(lines[k+1].strip(' '), search_type)
+            elif 'GeneratingVector' in lines[k]:
+                gen = []
+                for i in range(len(matrices)):
+                    gen.append([int(x) for x in lines[k+i+1].strip(' \n\t').split(' ')])
+            elif 'merit:' in lines[k]:
+                merit = float(lines[k].split(':')[1].strip(' \n'))
+        
+        latnet = LatNet(size, self_type='net', gen=GenParam(gen, search_type))
+
+    if 'digital-explicit' in search_type:
+        lines = s.split('\n')
+        size = SizeParam('2^' + str(len(matrices[0])), search_type)
+        latnet = LatNet(size, self_type='net')
+        for k in range(len(lines)):
+            if 'merit:' in lines[k]:
+                merit = float(lines[k].split(':')[1].strip(' \n'))
         
 
     gui.output.result_obj.latnet = latnet

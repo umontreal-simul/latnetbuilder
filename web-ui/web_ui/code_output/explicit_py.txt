@@ -1,0 +1,17 @@
+import numpy as np
+
+matrices = {{matrices}}
+m = len(matrices[0])
+
+points = []
+width = matrices[0].shape[0]
+nb_points = 2**width
+mult = np.array([2**(-k) for k in range(1, width+1)])
+
+for x in range(nb_points):
+    x_coord = []
+    for matrice in matrices:
+        binary_repr = np.array([((x>>i)&1) for i in range(m)])
+        prod = np.mod(matrice.dot(binary_repr), 2)
+        x_coord.append(prod.dot(mult))
+    points.append(x_coord)
