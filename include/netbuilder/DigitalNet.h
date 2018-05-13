@@ -223,6 +223,7 @@ class DigitalNetConstruction : public DigitalNet
                 std::ostringstream stream;
                 for(unsigned int dim = 1; dim <= m_dimension; ++dim)
                 {
+                    stream << "//dim = " << dim << std::endl;
                     stream << generatingMatrix(dim) << std::endl;
                 }
                 res+="\n\n";

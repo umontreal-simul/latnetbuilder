@@ -50,7 +50,7 @@ def set_all_weights(b, nb, gui, type_weights):
     set_all = weights.children[1]
     if valid:
         for k in range(len(form.children)):
-            try:
+            try:    # TODO: clean?
                 form.children[k].value = str(expr_evaluated[k])
             except:
                 form.children[k].value = str(expr_evaluated)

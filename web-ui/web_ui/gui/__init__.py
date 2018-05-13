@@ -12,6 +12,7 @@ from .construction_method import constr_info, construction_choice, construction,
 from .weights import add_weight, weight_power, create_full_weight, weights_wrapper, func_add_weights, weights_button_id, weights_set_all_id, VBOX_of_weights
 from .button_box import go, abort, command_line, button_box_wrapper, build_command_line, abort_process, on_click_search, display_output
 from .output import result, result_obj, command_line_out, output 
+from .progress_bars import progress_bar_dim, progress_bar_nets
 from .main_tab import change_lattype
 from .common import trigger_display
 
@@ -26,7 +27,8 @@ class GUI():
                  exploration_method,
                  multi_level,
                  button_box,
-                 output):
+                 output,
+                 progress_bars):
         self.properties = properties
         self.filters = filters
         self.figure_of_merit = figure_of_merit
@@ -36,6 +38,7 @@ class GUI():
         self.multi_level = multi_level
         self.button_box = button_box
         self.output = output
+        self.progress_bars = progress_bars
 
         self.link_all_callbacks()
 
@@ -187,9 +190,12 @@ output = BaseGUIElement(result=result,
                         output=output,
                         command_line_out=command_line_out)
 
+progress_bars = BaseGUIElement(progress_bar_dim=progress_bar_dim,
+                                progress_bar_nets=progress_bar_nets)
+
 
 gui = GUI(properties, filters, figure_of_merit, weights,
-          construction_method, exploration_method, multi_level, button_box, output)
+          construction_method, exploration_method, multi_level, button_box, output, progress_bars)
 
 inside_tab = widgets.VBox([gui.properties.main, 
                 gui.multi_level.main,
@@ -200,6 +206,8 @@ inside_tab = widgets.VBox([gui.properties.main,
                 gui.filters.main,
                 gui.button_box.main,
                 gui.output.command_line_out,
+                gui.progress_bars.progress_bar_dim,
+                gui.progress_bars.progress_bar_nets,
                 gui.output.result, 
                 gui.output.output
                 ])

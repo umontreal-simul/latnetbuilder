@@ -51,7 +51,7 @@ def change_dimension(b, gui):
     dim = b['new']
     VBOX_of_weights = gui.weights.VBOX_of_weights
     for k in range(len(VBOX_of_weights.children)):
-        try:
+        try:    # TODO: cleaner version?
             form = VBOX_of_weights.children[k].children[1].children[0].children[1]
             update(form, dim, '0.1')
             form = VBOX_of_weights.children[k].children[1].children[2].children[1]

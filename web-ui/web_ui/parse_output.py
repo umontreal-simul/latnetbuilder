@@ -8,13 +8,9 @@ class LatNet:
         self.gen = gen
         self.self_type = self_type
     def getDim(self):
-        if self.self_type == 'lattice':
-            return len(self.gen.gen_vector)
+        return len(self.gen.gen_vector)
     def __str__(self):
-        if self.self_type == 'lattice':
-            return 'lattice({}, {})'.format(self.size, self.gen)
-        else:
-            pass
+        return '{}({}, {})'.format(self.self_type, self.size, self.gen)
     def __repr__(self):
         return str(self)
 
@@ -24,6 +20,8 @@ class GenParam:
             self.gen_vector = [int(x) for x in s.split(',')]
         elif search_type == 'polynomial':
             self.gen_vector = [[int(y) for y in x.strip('[ ,]').split(' ')] for x in s.split(',')]
+        elif search_type == 'digital-sobol':
+            self.gen_vector = s
     def __str__(self):
         return str(self.gen_vector)
     def __repr__(self):
@@ -31,7 +29,7 @@ class GenParam:
 
 class SizeParam:
     def __init__(self, s, search_type):
-        if search_type == 'ordinary':
+        if search_type in ['ordinary', 'digital-sobol']:
             # try:
             p = s.split('^')
             if len(p) == 2:
@@ -112,7 +110,7 @@ class Result:
         if self.search_type == 'ordinary':
             return np.array([self.latnet.gen.gen_vector[coord]*i/nb_points % 1 for i in range(nb_points)])
 
-        elif self.search_type == 'polynomial':
+        elif self.search_type in ['polynomial', 'digital-sobol']:
             points = []
             matrice = self.matrix(coord)
             width = matrice.shape[0]
@@ -133,6 +131,11 @@ def parse_output(s, gui, search_type):
     
     pat_time = re.compile(r'^ELAPSED CPU TIME:\s*(?P<seconds>\S*)\s*seconds') 
     # seconds = None  
+    for line in s.split('\n'):
+        match = pat_time.match(line)
+        if match:
+            seconds = float(match.group('seconds'))
+            continue
 
     if search_type in ['ordinary', 'polynomial']:
         for line in s.split('\n'):
@@ -144,31 +147,50 @@ def parse_output(s, gui, search_type):
                 latnet = LatNet(size, gen, self_type='lattice')
                 continue
 
-            match = pat_time.match(line)
-            if match:
-                seconds = float(match.group('seconds'))
-                continue
-    else:   # to be modified
-        pass
-
     matrices = []
     if search_type == 'polynomial' or 'digital' in search_type:
         afterOldMatrix = False
         for line in s.split('\n'):
-            if search_type == 'polynomial' or search_type == 'digital':
-                if '//dim' in line:
-                    width = size.width
-                    M = []
-                    afterOldMatrix = True
+            if '//dim' in line:
+                M = []
+                afterOldMatrix = True
+                continue
+            try:
+                if line == '' and afterOldMatrix:
+                    matrices.append(np.array(M))
+                    afterOldMatrix = False
                     continue
-                try:
+                if search_type == 'polynomial' and afterOldMatrix:
+                    width = size.width
                     L = int(line)
                     M.append(np.array([((L>>i)&1) for i in range(width)]))
                     continue
-                except:
-                    if line == '' and afterOldMatrix:
-                        matrices.append(np.array(M))
-                        afterOldMatrix = False
+                elif 'digital' in search_type and afterOldMatrix:
+                    M.append(np.array([int(x) for x in line.split(' ')[:-1]]))
+                    continue
+
+            except Exception as e:
+                # print(e)
+                pass
+                
+    # print(matrices)
+
+    if search_type == 'digital-sobol':
+        direction_numbers = []
+        lines = s.split('\n')
+        for k in range(len(lines)):
+            if 'Direction numbers' in lines[k]:
+                i = 1
+                while ')' not in lines[k+i]:
+                    direction_numbers.append([int(x) for x in lines[k+i].strip(' \t\n').split(' ')])
+                    i += 1
+
+            if 'merit' in lines[k]:
+                merit = float(lines[k].split(':')[1].strip(' \n'))
+        gen = GenParam(direction_numbers, search_type)
+        size = SizeParam(str(2**len(matrices[0])), search_type)
+        latnet = LatNet(size, gen, self_type='net')
+        
 
     gui.output.result_obj.latnet = latnet
     gui.output.result_obj.merit = merit
