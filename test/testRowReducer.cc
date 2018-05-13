@@ -27,10 +27,10 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 100;
+    unsigned int s = 1112;
     unsigned int m = s;
 
-    const auto& net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m,m);
+    const auto& net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
     
     // auto rowReducer = ProgressiveRowReducer();

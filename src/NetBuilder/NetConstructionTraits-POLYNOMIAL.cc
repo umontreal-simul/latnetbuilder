@@ -61,7 +61,7 @@ namespace NetBuilder {
         }
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParameter)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParameter,std::shared_ptr<GeneratingMatrixComputationData>& computationData)
     {
         unsigned int m = (unsigned int) (deg(designParameter));
         GeneratingMatrix* genMat = new GeneratingMatrix(m,m);

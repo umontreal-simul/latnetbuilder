@@ -20,11 +20,12 @@
 #include "netbuilder/SobolDirectionNumbers.h"
 
 #include "latbuilder/SeqCombiner.h"
-
 #include <string>
 #include <fstream>
 #include <boost/algorithm/string.hpp>
+#include <boost/dynamic_bitset.hpp>
 #include <vector>
+#include <list>
 #include <assert.h>
 
 #include "latbuilder/TextStream.h"
@@ -102,48 +103,40 @@ namespace NetBuilder {
         }
     }
 
-    /** Compute the m-bit binary representation of the given integer. The most significant bit is the leftest non zero
-     * bit in the returned vector.
-     * @param num non-negative integer
-     * @param size_type size of the binary representation
-     */
-    std::vector<uInteger> bin_vector(uInteger num, size_type m)
+    void makeIteration(GeneratingMatrix& mat, std::list<boost::dynamic_bitset<>>& reg, const boost::dynamic_bitset<>& mask, unsigned int k)
     {
-        std::vector<uInteger> res(m);
-        for(unsigned int i = 0; i<m; ++i){
-            res[m-i-1] = num % 2;
-            num = num >> 1;
+        boost::dynamic_bitset<> newDirNum = reg.front();
+        newDirNum.resize(k);
+        unsigned j = 0;
+        for(boost::dynamic_bitset<> tmp : reg)
+        {
+            if (mask[j])
+            {
+                tmp.resize(k);
+                tmp = tmp << (reg.size()-j);
+                newDirNum ^= tmp;
+            }
+            ++j;
         }
-        return res;
+        reg.pop_front();
+        for(unsigned int i = 0; i < k; ++i)
+        {
+            mat(i, k-1) = newDirNum[k-i-1];
+        }
+        reg.push_back(std::move(newDirNum));
     }
 
-    /** Compute the element-wise product of two vector and reduce the resulting vector using the exclusive or operator.
-     * @param a first vector
-     * @param b second vector 
-     */ 
-    uInteger xor_prod_reduce(const std::vector<uInteger>& a, const std::vector<uInteger>& b)
-    {
-        uInteger res = 0;
-        size_type n = a.size();
-        for (unsigned int i = 0; i<n; ++i){
-            res ^= a[i]*b[i];
-        }
-        return res;
-    }
-
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData)
     {
         unsigned int m  = nCols(designParam);
         unsigned int coord = genValue.first;
 
-        GeneratingMatrix* tmp = new GeneratingMatrix(m,m);
-
-        for(unsigned int k = 0; k<m; ++k){
-            (*tmp)(k,k) = 1; // start with identity
-        }
-
         if (coord==1) // special case for the first dimension
         {
+            GeneratingMatrix* tmp = new GeneratingMatrix(m,m);
+            for(unsigned int k = 0; k<m; ++k){
+            (*tmp)(k,k) = 1; // start with identity
+            }
             return tmp;
         }
 
@@ -152,40 +145,29 @@ namespace NetBuilder {
         PrimitivePolynomial p = nthPrimitivePolynomial(coord-1);
         auto degree = p.first;
         auto poly_rep = p.second;
+        boost::dynamic_bitset<> mask(degree,(poly_rep << 1) + 1);
 
-        std::vector<uInteger> a = bin_vector(poly_rep,degree-1);
-        a.push_back(1);
+        unsigned int matrixSize = std::max(degree,m);
+        GeneratingMatrix* tmp = new GeneratingMatrix(matrixSize, matrixSize);
 
-        for(unsigned int i = 0; i<degree; ++i){
-            a[i] *= 2 << i;
-        }
-
-        // initialization of the first columns
-
-        for(unsigned int k = 0; k < std::min(degree,m); ++k){
-            auto dirNum = bin_vector(genValue.second[k],k+1);
-
-            for(unsigned int i = 0; i<k; ++i){
-                (*tmp)(i,k) = dirNum[i];
-            }
-        }
-
-        if (m > degree)
+        std::list<boost::dynamic_bitset<>> reg;
+        unsigned int k = 1;
+        for(auto dirNum : genValue.second)
         {
-            std::vector<uInteger> reg(degree); // register for the linear reccurence
-            std::reverse_copy(genValue.second.begin(),genValue.second.end(), reg.begin()); // should be reversed
-
-            // computation of the recurrence
-            for(unsigned int k = degree; k<m; ++k){
-                uInteger new_num = xor_prod_reduce(a,reg) ^ reg[degree-1];
-                reg.pop_back();
-                reg.insert(reg.begin(),new_num);
-                auto dirNum = bin_vector(new_num,k+1);
-                for(unsigned int i = 0; i<k; ++i){
-                    (*tmp)(i,k) = dirNum[i];
-                }
+            reg.push_back(boost::dynamic_bitset<>(k,dirNum));
+            for(unsigned int i = 0; i < k; ++i)
+            {
+                (*tmp)(i,k-1) = reg.back()[k-i-1];
             }
+            ++k;
         }
+
+        while (k<=m)
+        {
+            makeIteration(*tmp,reg, mask, k);
+            ++k;
+        }
+        computationData = std::make_unique<GeneratingMatrixComputationData>(k, std::move(mask), std::move(reg));
         return tmp;
     }
 
@@ -273,13 +255,31 @@ namespace NetBuilder {
             const DesignParameter& designParameter,
             const DesignParameterIncrement& inc,
             std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            const std::vector<std::shared_ptr<GenValue>>& genValues)
+            std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData)
     {
         unsigned int s = (unsigned int) genMats.size();
         for(unsigned int k = 0; k < s; ++k)
         {
-            GeneratingMatrix* newMat = createGeneratingMatrix(*(genValues[k]),designParameter+inc);
-            genMats[k].reset(std::move(newMat));
+            genMats[k]->resize(designParameter+inc,designParameter+inc);
+            if(k==0)
+            {
+                {
+                    for(unsigned int i = designParameter; i < designParameter+inc; ++i)
+                    {
+                        genMats[k]->flip(i,i);
+                    }
+                }
+            }
+            else
+            {
+                unsigned int col = std::get<0>(*computationData[k]);
+                for(unsigned i = 0; i < inc; ++i)
+                {
+                    makeIteration(*genMats[k],std::get<2>(*computationData[k]),std::get<1>(*computationData[k]),k);
+                    ++col;
+                }
+                std::get<0>(*computationData[k]) = col;
+            }
         }
     }
 

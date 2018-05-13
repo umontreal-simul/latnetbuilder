@@ -26,6 +26,7 @@
 #include <memory>
 #include <algorithm>
 #include <string>
+#include <limits>
 
 #include <functional>
 #include <boost/signals2.hpp>
@@ -42,10 +43,11 @@ class EquidistributionProperty : public FigureOfMerit{
         /** Constructor.
          * @param weight is weight of the figure of merit;
          */ 
-        EquidistributionProperty(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), BinOp binOp = OpMax()):
+        EquidistributionProperty(unsigned int nbBits, Real normType = std::numeric_limits<Real>::infinity() , Real weight = std::numeric_limits<Real>::infinity()):
             m_nbBits(nbBits),
             m_weight(weight),
-            m_binOp(binOp)
+            m_binOp(realToBinOp(normType)),
+            m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};    
 
         Real weight() const {return m_weight; }
@@ -94,7 +96,8 @@ class EquidistributionProperty : public FigureOfMerit{
 
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-                    auto grownNet = net.extendSize(m_figure->nbBits()*dimension);
+                    unsigned int size = m_figure->nbBits()*dimension;
+                    net.extendSize(size,size);
 
                     auto newReducer = m_memReducer;
 
@@ -103,16 +106,16 @@ class EquidistributionProperty : public FigureOfMerit{
                         GeneratingMatrix newCol(0,1);
                         for(unsigned int dim = 1; dim < dimension; ++dim)
                         {
-                            newCol.vstack(grownNet->pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
+                            newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
                         }
                         newReducer.addColumn(newCol);
                     }
 
-                    GeneratingMatrix block = grownNet->pointerToGeneratingMatrix(dimension)->subMatrix(m_figure->nbBits(), m_figure->nbBits()*dimension);
+                    GeneratingMatrix block = net.pointerToGeneratingMatrix(dimension)->subMatrix(m_figure->nbBits(), m_figure->nbBits()*dimension);
 
                     if(!newReducer.reduceNewBlock(block))
                     {
-                        acc.accumulate(m_figure->weight(),1,1);
+                        acc.accumulate(1,m_figure->weight(),m_figure->m_expNorm);
                     }
 
                     if(!onProgress()(acc.value()))
@@ -144,6 +147,8 @@ class EquidistributionProperty : public FigureOfMerit{
         unsigned int m_nbBits;
         Real m_weight;
         BinOp m_binOp;
+        Real m_normType;
+        Real m_expNorm;
 };
 
 class AProperty : public EquidistributionProperty {
@@ -155,7 +160,7 @@ class AProperty : public EquidistributionProperty {
 
 class APrimeProperty : public EquidistributionProperty {
     public:
-        AProperty():
+        APrimeProperty():
             EquidistributionProperty(2)
         {};
 };

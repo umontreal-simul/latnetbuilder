@@ -24,6 +24,11 @@
 #include <memory>
 #include <string>
 
+#include <vector>
+#include <boost/dynamic_bitset.hpp>
+#include <list>
+#include <tuple>
+
 namespace NetBuilder {
 
 /** Digital net construction traits.
@@ -60,6 +65,8 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         typedef unsigned int DesignParameterIncrement;
 
+        typedef std::tuple<unsigned int, boost::dynamic_bitset<>, std::list<boost::dynamic_bitset<>>> GeneratingMatrixComputationData;
+
         static DesignParameterIncrement defaultDesignParameterIncrementator;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
@@ -68,13 +75,13 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         static unsigned int nCols(const DesignParameter& param);
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
 
         static void extendGeneratingMatrices( 
             const DesignParameter& designParameter,
             const DesignParameterIncrement& inc,
             std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            const std::vector<std::shared_ptr<GenValue>>& genValues);
+            std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData);
             
 
         static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
@@ -138,6 +145,8 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static DesignParameter defaultDesignParameter;
 
+        typedef short GeneratingMatrixComputationData;
+
         static constexpr bool isSequenceViewable = false;
 
         // typedef Polynomial DesignParameterIncrement;
@@ -150,13 +159,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static unsigned int nCols(const DesignParameter& param);
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
-
-        // static void extendGeneratingMatrices( 
-        //     const DesignParameter& designParameter,
-        //     const DesignParameterIncrement& inc,
-        //     std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-        //     const std::vector<std::shared_ptr<GenValue>>& genValues);
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
     
         static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
 
@@ -207,6 +210,8 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
         static DesignParameter defaultDesignParameter;
 
+        typedef short GeneratingMatrixComputationData;
+
         static constexpr bool isSequenceViewable = false;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
@@ -215,7 +220,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
         static unsigned int nCols(const DesignParameter& param);
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
     
         static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
 
