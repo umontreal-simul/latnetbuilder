@@ -21,7 +21,7 @@
 
 namespace NetBuilder {
 
-void first_pivot(GeneratingMatrix& M, GeneratingMatrix& D, std::vector<int>& C, unsigned int verbose= 0){
+void first_pivot(GeneratingMatrix& M, GeneratingMatrix& D, std::vector<int>& C, int verbose= 0){
     int k = M.nRows();
     int m = M.nCols();
     
@@ -258,7 +258,7 @@ int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, int k, bool verbo
     return 0;
 }
 
-int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, unsigned int verbose=0)
+int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, int verbose=0)
 {
     int m = Origin_Mats[0].nRows();
     int s = Origin_Mats.size();

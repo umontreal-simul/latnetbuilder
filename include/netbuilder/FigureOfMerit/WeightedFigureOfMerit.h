@@ -195,7 +195,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
              * @param initialValue is the value from which to start
              * @param verbose controls the level of verbosity of the computation
              */ 
-            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, unsigned int verbose = 0)
+            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
             {
                 using namespace LatCommon;
 
@@ -217,7 +217,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
 
                     MeritValue merit = m_figure->projDepMerit()(net, proj); // compute the proj-dep merit
 
-                    if(verbose)
+                    if(verbose>0)
                     {
                         std::cout << "projection: " << proj << " - weight: " << weight << " - merit: " << merit << std::endl;
                     }

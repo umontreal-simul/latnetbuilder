@@ -18,6 +18,7 @@
 #define NETBUILDER__TASK__RANDOM_SEARCH_H
 
 #include "netbuilder/Task/Search.h"
+#include "latbuilder/LFSR258.h"
 
 namespace NetBuilder { namespace Task {
 
@@ -42,7 +43,7 @@ class RandomSearch : public Search<NC>
                         typename NetConstructionTraits<NC>::DesignParameter designParameter,
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                         unsigned nbTries,
-                        unsigned int verbose = 0 ):
+                        int verbose = 0 ):
             Search<NC>(dimension, std::move(designParameter), std::move(figure), verbose),
             m_nbTries(nbTries),
             m_randomGenValueGenerator(this->m_designParameter)
@@ -62,8 +63,12 @@ class RandomSearch : public Search<NC>
 
             evaluator->onProgress().connect(boost::bind(&MinObserver<NC>::onProgress, &this->minObserver(), _1));
             evaluator->onAbort().connect(boost::bind(&MinObserver<NC>::onAbort, &this->minObserver(), _1));
-            for(unsigned int attempt = 0; attempt < m_nbTries; ++attempt)
+            for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {
+                if(this->m_verbose>0)
+                {
+                    std::cout << "Net " << attempt << "/" << m_nbTries << std::endl;
+                }
                 std::vector<typename ConstructionMethod::GenValue> genVal;
                 genVal.reserve(this->dimension());
                 for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
@@ -71,8 +76,8 @@ class RandomSearch : public Search<NC>
                     auto tmp = m_randomGenValueGenerator(dim);
                     genVal.push_back(std::move(tmp));
                 }
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, genVal);
-                double merit = (*evaluator)(*net);
+                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, std::move(genVal));
+                double merit = (*evaluator)(*net,this->m_verbose-3);
                 this->m_minObserver->observe(std::move(net),merit);
             }
             this->selectBestNet(this->m_minObserver->bestNet(), this->m_minObserver->bestMerit());

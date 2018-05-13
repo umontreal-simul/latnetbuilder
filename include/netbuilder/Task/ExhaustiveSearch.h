@@ -39,7 +39,7 @@ class ExhaustiveSearch : public Search<NC>
         ExhaustiveSearch(   Dimension dimension, 
                             typename NetConstructionTraits<NC>::DesignParameter designParameter,
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-                            unsigned int verbose = 0 ):
+                            int verbose = 0 ):
             Search<NC>(dimension, designParameter, std::move(figure), verbose)
         {};
 
@@ -59,11 +59,17 @@ class ExhaustiveSearch : public Search<NC>
             evaluator->onAbort().connect(boost::bind(&MinObserver<NC>::onAbort, &this->minObserver(), _1));
 
             auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_designParameter);
-
+            
+            uInteger nbNets = 1;
             for(const auto& genVal : searchSpace)
             {
+                if(this->m_verbose>0)
+                {
+                    std::cout << "Net " << nbNets << "/" << searchSpace.size() << std::endl;
+                }
+                nbNets++;
                 auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, genVal);
-                double merit = (*evaluator)(*net);
+                double merit = (*evaluator)(*net, this->m_verbose-3);
                 this->m_minObserver->observe(std::move(net),merit);
             }
             this->selectBestNet(this->m_minObserver->bestNet(), this->m_minObserver->bestMerit());

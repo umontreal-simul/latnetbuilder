@@ -18,6 +18,7 @@
 #define NETBUILDER__PARSER__COMMAND_LINE_H
 
 #include "netbuilder/Types.h"
+#include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Task/BaseTask.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
@@ -37,16 +38,20 @@ namespace NetBuilder { namespace Parser {
 template <NetConstruction NC, PointSetType PST>
 struct CommandLine {
    std::string s_explorationMethod;
+   std::string s_designParameter;
    std::string s_size;
    std::string s_dimension;
    std::vector<std::string> s_figures;
    std::string s_figureCombiner;
    std::string s_combiner;
+   std::string s_verbose;
    
    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> m_sizeParam;
+   typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
    Combiner m_combiner;
    Dimension m_dimension;
    std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
+   int m_verbose;
 
    std::unique_ptr<Task::BaseTask> parse();
 };
@@ -55,7 +60,7 @@ struct CommandLine {
 }
 #include "latbuilder/Parser/SizeParam.h"
 
-#include "netbuilder/Parser/CommandLine.h"
+#include "netbuilder/Parser/DesignParameterParser.h"
 #include "netbuilder/Parser/FigureParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
 #include "netbuilder/Parser/LevelCombinerParser.h"
@@ -69,7 +74,11 @@ CommandLine<NC, PST>::parse()
 {
       namespace lbp = LatBuilder::Parser;
       m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, PST>::parse(s_size);
+      std::cout << "Size param has been parsed."<< std::endl;
+      m_designParameter = DesignParameterParser<NC,PST>::parse(*this);
+      std::cout << "Design param has been parsed."<< std::endl;
       m_dimension = boost::lexical_cast<Dimension>(s_dimension);
+      m_verbose = boost::lexical_cast<Dimension>(s_verbose);
       m_figure = FigureParser<NC, PST>::parse(*this); // m_combiner initialized as a side effect
       return ExplorationMethodParser<NC, PST>::parse(*this); // as a side effect, m_figure has been moved to task
 }

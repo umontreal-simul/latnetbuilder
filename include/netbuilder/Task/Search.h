@@ -50,7 +50,7 @@ public:
     Search( Dimension dimension, 
             typename NetConstructionTraits<NC>::DesignParameter designParameter,
             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-            unsigned int verbose = 0 ):
+            int verbose = 0 ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
@@ -60,7 +60,7 @@ public:
         m_figure(std::move(figure)),
         m_bestNet(0, m_designParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
-        m_minObserver(new MinObserver<NC>(designParameter)),
+        m_minObserver(new MinObserver<NC>(designParameter, verbose-2)),
         m_verbose(verbose)
         {};
 
@@ -155,7 +155,7 @@ public:
         DigitalNetConstruction<NC> m_bestNet;
         Real m_bestMerit;
         std::unique_ptr<MinObserver<NC>> m_minObserver;
-        unsigned int m_verbose;
+        int m_verbose;
 };
 
 }}

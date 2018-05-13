@@ -67,8 +67,5 @@ dependencies:
   - zeromq=4.2.5=1
   - zlib=1.2.11=0
   - intel-openmp=2018.0.0=8
-  - libgcc-ng=7.2.0=hdf63c60_3
-  - libgfortran-ng=7.2.0=hdf63c60_3
   - mkl=2018.0.2=1
-  - numpy=1.14.2=py36hdbf6ddf_1
 

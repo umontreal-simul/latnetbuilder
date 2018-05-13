@@ -42,10 +42,12 @@ class CBCSearch : public Search<NC>
                     typename NetConstructionTraits<NC>::DesignParameter designParameter,
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
-                    unsigned int verbose = 0 ):
-            Search<NC>(dimension, designParameter, std::move(figure)),
+                    int verbose = 0 ):
+            Search<NC>(dimension, designParameter, std::move(figure), verbose),
             m_explorer(std::move(explorer))
-        {};
+        {
+            m_explorer->setVerbose(this->m_verbose-1);
+        };
 
         /** Default move constructor. */
         CBCSearch(CBCSearch&&) = default;
@@ -69,18 +71,16 @@ class CBCSearch : public Search<NC>
 
             for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
             {
-                if(this->m_verbose)
+                if(this->m_verbose==1)
                 {
-                    std::cout << "======================" << std::endl;
-                    std::cout << "Dimension: " << dim << std::endl;
-                    std::cout << "----------------------" << std::endl;
+                    std::cout << "CBC dimension: " << dim << "/" << this->dimension() << std::endl;
                 }
 
                 auto net = this->m_minObserver->bestNet();
                 while(!m_explorer->isOver(dim))
                 {
                     auto newNet = net.extendDimension(m_explorer->nextGenValue(dim));
-                    double newMerit = (*evaluator)(*newNet,dim,merit);
+                    double newMerit = (*evaluator)(*newNet,dim,merit, this->m_verbose-3);
                     this->m_minObserver->observe(std::move(newNet),newMerit);
                 }
                 if (!this->m_minObserver->hasFoundNet())

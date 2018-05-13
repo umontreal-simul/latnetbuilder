@@ -54,17 +54,21 @@ Real combine(const RealVector& vec){
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 4;
-    unsigned int m = 4;
+    unsigned int s = 5;
+    unsigned int m = 5;
 
-    auto matrices = std::vector<std::shared_ptr<GeneratingMatrix>>(s);
-    matrices[1] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({8, 12, 14, 7}));
-    matrices[0] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({10, 5, 2, 9}));
-    matrices[2] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({6, 11, 5, 2}));
-    matrices[3] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({15, 7, 11, 5}));
-    auto net = std::make_unique<DigitalNet>(s, m, m, matrices);
+    // auto matrices = std::vector<std::shared_ptr<GeneratingMatrix>>(s);
+    // matrices[1] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({8, 12, 14, 7}));
+    // matrices[0] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({10, 5, 2, 9}));
+    // matrices[2] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({6, 11, 5, 2}));
+    // matrices[3] = std::make_shared<GeneratingMatrix>(m, m, std::vector<uInteger>({15, 7, 11, 5}));
+    // auto net = std::make_unique<DigitalNet>(s, m, m, matrices);
 
     // auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s, m, m);
+
+    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s, m);
+
+    std::cout << "Constructing..." << std::endl;
 
     unsigned int modulus = intPow(2, m);
 
@@ -72,13 +76,18 @@ int main(int argc, const char *argv[])
 
     auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
 
-    // LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::UNILEVEL> param(intPow(2, m));
-    // auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::UNILEVEL>>(std::move(weights1), m, param, kernel);
+    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::UNILEVEL> param(intPow(2, m));
+    auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::UNILEVEL>>(std::move(weights1), param, kernel);
 
-    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::MULTILEVEL> param(2, m);
-    std::function<Real (const RealVector&)> f_combine = combine;
-    auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::MULTILEVEL>>(std::move(weights1), m, param, kernel, f_combine);
+    // LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::MULTILEVEL> param(2, m);
+    // std::function<Real (const RealVector&)> f_combine = combine;
+    // auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::MULTILEVEL>>(std::move(weights1), m, param, kernel, f_combine);
+    
     auto eval = fig1->evaluator();
+
+    std::cout << "Executing..." << std::endl;
+
+    // std::cout << (*eval)(*net) << std::endl;
 
     auto task = Task::Eval(std::move(net),std::move(fig1));
 

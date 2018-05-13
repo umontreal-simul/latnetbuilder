@@ -101,9 +101,10 @@ class Accumulator
         std::function<Real (Real, Real)> m_op;
 };
 
-
-
 BinOp realToBinOp(Real normType);
+
+
+Polynomial polynomialParserHelper(const std::string& str);
 
 }
 
