@@ -1,3 +1,4 @@
+import csv
 import ipywidgets as widgets
 from bqplot import Axis, LinearScale, Scatter, Figure
 import numpy as np
@@ -61,17 +62,17 @@ def create_output(gui):
     if result_obj.search_type == 'ordinary':
         template = env.get_template('ordinary_C.txt')
         code_C = widgets.Textarea(value= 
-            template.render(n=result_obj.lattice.size.nb_points, s=result_obj.getDim(), a=transform_to_c(result_obj.lattice.gen)),
+            template.render(n=result_obj.latnet.size.nb_points, s=result_obj.getDim(), a=transform_to_c(result_obj.latnet.gen)),
             layout=widgets.Layout(width='600px', height='200px'))
 
         template = env.get_template('ordinary_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(n=result_obj.lattice.size.nb_points, a=result_obj.lattice.gen),
+            template.render(n=result_obj.latnet.size.nb_points, a=result_obj.latnet.gen),
             layout=widgets.Layout(width='600px', height='100px'))
 
         template = env.get_template('ordinary_matlab.txt')
         code_matlab = widgets.Textarea(value= 
-            template.render(n=result_obj.lattice.size.nb_points, a=result_obj.lattice.gen),
+            template.render(n=result_obj.latnet.size.nb_points, a=result_obj.latnet.gen),
             layout=widgets.Layout(width='600px', height='130px'))
 
     
@@ -81,34 +82,60 @@ def create_output(gui):
         gui.output.output.set_title(2, 'Python code')
         gui.output.output.set_title(3, 'Matlab code')
 
-    # prim_polys = np.zeros((s,2),dtype=np.int)
-    # with open("primitive_polynomials.csv") as poly_file:
-    # reader = csv.DictReader(poly_file, fieldnames=["degree","representation"])
-    # for i,row in enumerate(reader):
-    #     prim_polys[i,0] = row["degree"]
-    #     prim_polys[i, 1] = row["representation"]
-    #     if i == s-1:
-    #         break
     
-    else:
-        if result_obj.lattice.size.power == 1:
-            modulus = result_obj.lattice.size.base
+    elif result_obj.search_type == 'polynomial':
+        if result_obj.latnet.size.power == 1:
+            modulus = result_obj.latnet.size.base
         else:
-            modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.lattice.size.base, axis=0)))**result_obj.lattice.size.power).c % 2, axis=0)
+            modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.latnet.size.base, axis=0)))**result_obj.latnet.size.power).c % 2, axis=0)
 
         template = env.get_template('polynomial_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(mod=modulus, genvec=result_obj.lattice.gen.gen_vector),
+            template.render(mod=modulus, genvec=result_obj.latnet.gen.gen_vector),
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('polynomial_Cpp.txt')
         code_cpp = widgets.Textarea(value= 
-            template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.lattice.gen.gen_vector)),
+            template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.latnet.gen.gen_vector)),
             layout=widgets.Layout(width='600px', height='700px'))
         
         gui.output.output.children = [plot, code_cpp, code_python]
         gui.output.output.set_title(0, 'Plot')
         gui.output.output.set_title(1, 'C++ code')
         gui.output.output.set_title(2, 'Python code')
+
+    elif result_obj.search_type == 'digital-sobol':
+        
+        prim_polys = np.zeros((result_obj.getDim(),2),dtype=np.int)
+        with open("../web_ui/data/primitive_polynomials.csv") as poly_file:
+            reader = csv.DictReader(poly_file, fieldnames=["degree","representation"])
+            for i,row in enumerate(reader):
+                prim_polys[i,0] = row["degree"]
+                prim_polys[i, 1] = row["representation"]
+                if i == result_obj.getDim()-1:
+                    break
+
+        template = env.get_template('sobol_py.txt')
+        code_python = widgets.Textarea(value= 
+            template.render(s=result_obj.getDim(), 
+                            m=len(result_obj.matrix(0)), 
+                            init_numbers=result_obj.latnet.gen_vector,
+                            prim_polys=prim_polys.tolist()),   
+            layout=widgets.Layout(width='600px', height='700px'))
+
+        template = env.get_template('sobol_Cpp.txt')
+        code_cpp = widgets.Textarea(value= 
+            template.render(s=result_obj.getDim(), 
+                            m=len(result_obj.matrix(0)),
+                            genvec=transform_to_c(result_obj.latnet.gen.gen_vector),
+                            degrees=str(prim_polys[:, 0].tolist()).strip('[]'),
+                            representations=str(prim_polys[:, 1].tolist()).strip('[]')),
+            layout=widgets.Layout(width='600px', height='700px'))
+        
+        gui.output.output.children = [plot, code_cpp, code_python]
+        gui.output.output.set_title(0, 'Plot')
+        gui.output.output.set_title(1, 'C++ code')
+        gui.output.output.set_title(2, 'Python code')
+
     
     gui.output.output.layout.display = 'flex'

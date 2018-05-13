@@ -8,19 +8,21 @@ typedef std::vector<unsigned int> GenValue ;
 typedef std::pair<unsigned int, unsigned int> PrimitivePolynomial; 
 typedef std::vector<std::vector<bool>> Matrix;
 
-const unsigned int dim = 3; 
-unsigned int m = 8;
-std::vector<GenValue> genValues { {1}, {1, 3}, {1, 3, 1} };
+const unsigned int dim = {{s}}; 
+unsigned int m = {{m}};
+std::vector<GenValue> genValues {{ genvec }};
 
 
 // primitive polynomials are hard-coded because their computation is really complex.
 static const std::array<unsigned int, dim> degrees =
 {
+    {{degrees}}
     1, 2, 3
 };
 
 static const std::array<unsigned long, dim> representations =
 {
+    {{representations}}
     0, 1, 1
 };
 

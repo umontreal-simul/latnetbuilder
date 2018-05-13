@@ -4,7 +4,7 @@ import numpy as np
 s = {{s}}
 m = {{m}}
 init_numbers = {{init_numbers}}
-prim_polys = {{prim_polys}}
+prim_polys = np.array({{prim_polys}})
 
 def bin_array(num, m):
     """Convert a positive integer num into an m-bit bit vector"""

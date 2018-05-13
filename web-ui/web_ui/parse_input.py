@@ -120,7 +120,7 @@ def parse_input_net(gui):
         if s.construction == 'sobol':
             s.exploration_method += gui.exploration_method.generating_numbers_sobol.value
 
-        elif s.construction == 'polynomial':
+        elif 'polynomial' in s.construction:
             for k in range(1, int(s.dimension)+1):
                 s.exploration_method += gui.exploration_method.generating_vector_simple.children[k].value
                 if k != int(s.dimension):
