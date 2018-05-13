@@ -9,14 +9,16 @@ JoeKuoSobolNets = []
 
 if dev_mod:
     _JoeKuoSobolNetsPath = '../../data/JoeKuoSobolNets.csv'
+    _primPolyPath = '../../data/primitive_polynomials.csv'
 else:
     _JoeKuoSobolNetsPath = '../share/latbuilder/data/JoeKuoSobolNets.csv'
+    _primPolyPath = '../share/latbuilder/data/primitive_polynomials.csv'
 
 with open(_JoeKuoSobolNetsPath, newline='') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=';')
     i=0
     for row in csvreader:
-        JoeKuoSobolNets.append(";".join(row))
+        JoeKuoSobolNets.append(",".join(row))
         i += 1
         if i == 100:
             break
@@ -66,3 +68,6 @@ def parse_polynomial(s):
     if poly_str == '':
         poly_str = '0'
     return poly_str
+
+class ParsingException(Exception):
+    pass

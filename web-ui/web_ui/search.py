@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 class Search():
     def __init__(self):
@@ -18,7 +19,7 @@ class Search():
 
     def execute_search(self, stdout_file, stderr_file):
         command = self.construct_command_line()
-        process = subprocess.Popen(["export LD_LIBRARY_PATH=$HOME/dependencies/lib:$LD_LIBRARY_PATH && " +
+        process = subprocess.Popen(["export LD_LIBRARY_PATH=$HOME/dependencies/lib:$LD_LIBRARY_PATH && exec " +
                                     ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
         return process
 
@@ -77,6 +78,8 @@ class SearchNet(Search):
                    '--size', self.modulus,
                    '--exploration-method', self.exploration_method,
                    '--dimension', str(self.dimension),
+                   '--verbose', '2',
+                   '--GUI'
                    ]
 
         if len(self.filters) > 0:

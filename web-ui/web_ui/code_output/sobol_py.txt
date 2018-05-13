@@ -34,7 +34,7 @@ def sobol_generating_matrix(coord,init_numbers,m):
     return C
 
 points = []
-matrices = [sobol_generating_matrix(j, init_numbers, m) for j in range(s)]
+matrices = [sobol_generating_matrix(j, init_numbers[j-1], m) for j in range(1, s+1)]
 nb_points = 2**m
 mult = np.array([2**(-k) for k in range(1, m+1)])
 

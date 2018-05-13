@@ -17,13 +17,11 @@ std::vector<GenValue> genValues {{ genvec }};
 static const std::array<unsigned int, dim> degrees =
 {
     {{degrees}}
-    1, 2, 3
 };
 
 static const std::array<unsigned long, dim> representations =
 {
     {{representations}}
-    0, 1, 1
 };
 
 PrimitivePolynomial  nthPrimitivePolynomial(unsigned int n)

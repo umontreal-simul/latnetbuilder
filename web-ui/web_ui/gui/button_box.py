@@ -1,12 +1,14 @@
 import ipywidgets as widgets
 import threading
 import time
+import os
+import signal
 from IPython.display import display
 
 from ..parse_input import parse_input
 from ..parse_output import parse_output
 from .output import create_output
-# from .common import 
+from .common import ParsingException
 
 go = widgets.Button(description='Search', disabled=False)
 abort = widgets.ToggleButton(
@@ -25,14 +27,15 @@ def build_command_line(b, gui):
 def abort_process(b, process):
     if b['name'] == 'value' and b['new'] == True:
         process.kill()
+        # os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
 def parse_progress(line):
-    try_split = line.strip('\n').split('-')
-    if len(try_split == 1):
+    try_split = line.split('-')
+    if len(try_split) == 1:
         current_nb_nets = int(line.split('/')[0].split(' ')[-1])
         total_nb_nets = int(line.split('/')[1])
         return (0, float(current_nb_nets) / total_nb_nets)
-    elif len(try_split == 2):
+    elif len(try_split) == 2:
         current_nb_nets = int(try_split[1].split('/')[0].split(' ')[-1])
         total_nb_nets = int(try_split[1].split('/')[1])
         current_dim = int(try_split[0].split('/')[0].split(' ')[-1])
@@ -45,11 +48,11 @@ def work(process, gui, search_type):
     abort = gui.button_box.abort
     
     while process.poll() is None:
-        time.sleep(0.2)
+        time.sleep(1)
         with open('testfile.txt','r') as f:
             data = f.read()
-        last_line = data.split('\n')[-1]
         try:
+            last_line = data.split('\n')[-2]
             prog_dimension, prog_net = parse_progress(last_line)
             gui.progress_bars.progress_bar_nets.value = prog_net
             gui.progress_bars.progress_bar_dim.value = prog_dimension
@@ -68,15 +71,17 @@ def work(process, gui, search_type):
         <p> <b> Generating Vector </b>: %s </p>\
         <p> <b> Merit value </b>: %s </p>\
         <p> <b> CPU Time </b>: %s s </p>" % (str(result_obj.latnet.size), str(result_obj.latnet.gen), str(result_obj.merit), str(result_obj.seconds))
-        if search_type in ['ordinary', 'polynomial', 'digital-sobol']:
-            create_output(gui)
+        create_output(gui)
     else:
         abort.button_style = ''
         with open('errfile.txt') as f:
             output = f.read()
         result_widget.value = '<p style="color:red"> %s </p>' % (output)
         if output == '':
-            result_widget.value = 'You aborted the search.'
+            if abort.value == True:
+                result_widget.value = 'You aborted the search.'
+            else:
+                result_widget.value = '<p style="color:red"> The process crashed without returning an error message. </p>'
 
     abort.disabled = True
 
@@ -84,16 +89,22 @@ def work(process, gui, search_type):
 def on_click_search(b, gui):
     try:
         s = parse_input(gui)
-    except Exception as e:
+    except ParsingException as e:
+        gui.output.result.value = '<p style="color:red">' + str(e) + '</p>'
+        return
+    except:
         gui.output.result.value = '<p style="color:red"> Something went wrong in the parsing of the input. Please double-check. </p>'
         return
 
     if 'digital' in s.search_type():    # TEMPORARY
         if 'CBC' in s.exploration_method:
+            gui.progress_bars.progress_bar_dim.value = 0
             gui.progress_bars.progress_bar_dim.layout.display = 'flex'
         else:
             gui.progress_bars.progress_bar_dim.layout.display = 'none'
-        gui.progress_bars.progress_bar_nets.layout.display = 'flex'
+        if 'explicit' not in s.exploration_method:
+            gui.progress_bars.progress_bar_nets.value = 0
+            gui.progress_bars.progress_bar_nets.layout.display = 'flex'
 
     gui.output.command_line_out.value = ''
     gui.output.result.value = ''
@@ -112,6 +123,3 @@ def on_click_search(b, gui):
 def display_output(b, gui):
     if b['name'] == 'value' and b['new'] == True:
         create_output(gui)
-        display(gui.output.my_output)
-    if b['name'] == 'value' and b['new'] == False:
-        gui.output.my_output.layout.display = 'none'

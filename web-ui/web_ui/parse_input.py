@@ -45,7 +45,7 @@ def parse_input_common(s, gui):
     if gui.exploration_method.is_random.value and exploration_method in ['exhaustive', 'Korobov', 'CBC', 'full-CBC']:
         if exploration_method == 'exhaustive':
             exploration_method = 'random:'
-        if exploration_method == 'full-CBC':
+        elif exploration_method == 'full-CBC':
             if gui.exploration_method.mixed_CBC_level.value == s.dimension:
                 exploration_method = 'random-CBC:'
             else:
@@ -117,17 +117,21 @@ def parse_input_net(gui):
         s.filters.append(equi_value)
 
     if s.exploration_method == 'net-explicit:':
+        s.exploration_method = 'evaluation:'
         if s.construction == 'sobol':
-            s.exploration_method += gui.exploration_method.generating_numbers_sobol.value
+            s.exploration_method += gui.exploration_method.generating_numbers_sobol.value.replace('\n', '/')
 
         elif 'polynomial' in s.construction:
             for k in range(1, int(s.dimension)+1):
                 s.exploration_method += gui.exploration_method.generating_vector_simple.children[k].value
                 if k != int(s.dimension):
-                    s.exploration_method += ','
+                    s.exploration_method += '/'
 
         elif s.construction == 'explicit':
-            s.exploration_method += gui.exploration_method.generating_matrices.value
+            s_matrices = gui.exploration_method.generating_matrices.value
+            s_matrices = s_matrices.replace('\n', ',').replace(',,', '/').replace(' ', '')
+            s.construction += ':' + str(len(s_matrices.split(',')[0]))
+            s.exploration_method += s_matrices
             
     return s
 
