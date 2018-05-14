@@ -85,6 +85,11 @@ public:
     Real bestMeritValue() const
     { return m_bestMerit; }
 
+    bool hasFoundNet() const
+    {
+        return m_minObserver->hasFoundNet();
+    }
+
     /**
     * Returns the best net found by the search task.
     */

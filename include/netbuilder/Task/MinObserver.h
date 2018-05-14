@@ -93,7 +93,7 @@ class MinObserver
         }
 
         // Returns a bool indicating whether the search has found a net.
-        bool hasFoundNet() { return m_foundBestNet; }
+        bool hasFoundNet() const { return m_foundBestNet; }
 
         // Returns a bool indicating whether the computation should continue.
         bool onProgress(Real merit) const

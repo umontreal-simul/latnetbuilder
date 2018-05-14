@@ -130,7 +130,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
          */ 
         std::vector<unsigned int> operator()(const DigitalNet& net, const LatCommon::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
         {
-            std::vector<unsigned int> res(std::min(net.numRows(),net.numColumns()));
+            std::vector<unsigned int> res(net.numColumns());
             for(unsigned int m = 1; m <= res.size(); ++m)
             {
                 std::vector<GeneratingMatrix> mats;
@@ -592,15 +592,15 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             Node* it = m_roots[dimension-1]; // iterator over the nodes
             do
             {   
-                unsigned int numLevels = std::min(net.numRows(),net.numColumns());
+                unsigned int numLevels = net.numColumns();
                 if (it->numLevels()<numLevels)
                 {
                     it->resizeLevels(numLevels);
                 }
                 Real weight = it->getWeight();
 
-                it->updateMaxMeritsSubProj()
-                ;
+                it->updateMaxMeritsSubProj();
+                
                 std::vector<unsigned int> meritEmbedded = m_figure->projDepMerit()(net,it->getProjectionRepresentation(),it->getMaxMeritsSubProj()); // compute the merit of the projection
                 
                 Real merit = m_figure->projDepMerit().combine(meritEmbedded);
@@ -719,15 +719,20 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
                     std::fill(m_maxMeritsSubProj.begin(), m_maxMeritsSubProj.end(), 0);
                     for (auto const* m : m_mothersNodes)
                     {
+                        std::vector<unsigned int> merits;
                         if (m->getMaxDimension() < m_dimension)
                         {
-                            std::transform(m_maxMeritsSubProj.begin(),m_maxMeritsSubProj.end(),
-                                           m->getMeritMem().begin(), std::back_inserter(m_maxMeritsSubProj), std::greater<unsigned int> {});
+                            merits = m->getMeritMem();
                         }
-                        else{
-                            std::transform(m_maxMeritsSubProj.begin(),m_maxMeritsSubProj.end(),
-                                           m->getMeritTmp().begin(), std::back_inserter(m_maxMeritsSubProj), std::greater<unsigned int> {});
-                        } 
+                        else
+                        {
+                            merits = m->getMeritTmp(); 
+                        }
+
+                        for(unsigned int i = 0; i < m_numLevels; ++i)
+                        {
+                            m_maxMeritsSubProj[i] = std::max(m_maxMeritsSubProj[i], merits[i]);
+                        }
                     }
                 }
 
