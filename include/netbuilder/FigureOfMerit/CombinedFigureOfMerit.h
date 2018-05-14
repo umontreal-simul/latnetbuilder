@@ -55,7 +55,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
             m_size((unsigned int) m_figures.size()),
             m_binOp(realToBinOp(normType)),
             m_weights(std::move(weights)),
-            m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
+            m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
 
         /** Returns the norm type of the figure */

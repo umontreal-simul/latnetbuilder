@@ -18,52 +18,44 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/ProgressiveRowReducer.h"
-
+#include "netbuilder/Task/Eval.h"
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+#include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/EquidistributionProperty.h"
+#include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
+
 #include <iostream>
+#include "latcommon/Weights.h"
+#include "latcommon/UniformWeights.h"
+
 
 using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 1112;
-    unsigned int m = 0;
+    unsigned int s = 10;
+    unsigned int m = 20;
 
     const auto& net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
-    // auto rowReducer = ProgressiveRowReducer();
+    auto weights = std::make_unique<LatCommon::UniformWeights>(1);
 
-    // GeneratingMatrix block(0,s);
+    auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
-    // for(unsigned int dim = 1; dim <= s; ++dim)
-    // {
-    //     block.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(1,s));
-    // }
+    auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>(2);
+    auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
 
-    // rowReducer.reduceNewBlock(block);
+    std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;
+    
+    figures.push_back(std::move(fig1));
+    figures.push_back(std::move(fig2));
 
-    // std::cout << rowReducer.matrix() << std::endl;
+    std::vector<Real> weightsFigure {1,1};
 
-    // std::cout << rowReducer.rowOperations() << std::endl;
-
-    // for(int i: rowReducer.m_permutation)
-    // {
-    //     std::cout << i << " ";
-    // }
-
-    // std::cout << std::endl << std::endl;
-
-    auto fig = FigureOfMerit::AProperty();
-
+    auto fig = FigureOfMerit::CombinedFigureOfMerit(1,std::move(figures),weightsFigure);
     auto eval = fig.evaluator();
 
     (*eval)(net,true);
-   
 
-
-
-
-    
     return 0;
 }

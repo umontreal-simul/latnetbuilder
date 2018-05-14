@@ -63,11 +63,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         static constexpr bool isSequenceViewable = true;
 
-        typedef unsigned int DesignParameterIncrement;
-
         typedef std::tuple<unsigned int, boost::dynamic_bitset<>, std::list<boost::dynamic_bitset<>>> GeneratingMatrixComputationData;
-
-        static DesignParameterIncrement defaultDesignParameterIncrementator;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 
@@ -78,8 +74,8 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
         static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
 
         static void extendGeneratingMatrices( 
-            const DesignParameter& designParameter,
-            const DesignParameterIncrement& inc,
+            unsigned int nRows,
+            unsigned int nCols,
             std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
             std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData);
             
@@ -148,10 +144,6 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
         typedef short GeneratingMatrixComputationData;
 
         static constexpr bool isSequenceViewable = false;
-
-        // typedef Polynomial DesignParameterIncrement;
-
-        // static DesignParameterIncrement defaultDesignParameterIncrementator;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 

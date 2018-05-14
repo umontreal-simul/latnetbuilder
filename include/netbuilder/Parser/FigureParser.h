@@ -34,6 +34,7 @@
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
+#include "netbuilder/FigureOfMerit/EquidistributionProperty.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 
@@ -121,13 +122,15 @@ struct FigureParser
         }
 
         std::string name = figureCharacteristicStrings[0];
+
         Real importance = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
+        vecWeights.push_back(importance);
 
         if (name == "A-Property"){
-            if (nbParam != 2){
-                throw BadFigure("Bad number of characteristics for A-Property (see doc)");
-            }
-            throw BadFigure("not yet implemented");
+            vecFigures.push_back(std::make_unique<FigureOfMerit::AProperty>());
+        }
+        if (name == "A'-Property"){
+            vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>());
         }
 
         Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[2]);
@@ -167,8 +170,6 @@ struct FigureParser
         else{
             throw BadFigure("figure name " + name + " does not exist.");
         }
-        
-        vecWeights.push_back(importance);
     }
 
 

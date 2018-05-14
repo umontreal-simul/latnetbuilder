@@ -47,7 +47,8 @@ class EquidistributionProperty : public FigureOfMerit{
             m_nbBits(nbBits),
             m_weight(weight),
             m_binOp(realToBinOp(normType)),
-            m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
+            m_normType(normType),
+            m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};    
 
         Real weight() const {return m_weight; }

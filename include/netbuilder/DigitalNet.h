@@ -248,16 +248,6 @@ class DigitalNetConstruction : public DigitalNet
         {
             return ConstructionMethod::isSequenceViewable;
         }
-
-        unsigned int realNumColumns() const
-        {
-            return pointerToGeneratingMatrix(1)->nCols();
-        }
-
-        unsigned int realNumRows() const
-        {
-            return pointerToGeneratingMatrix(1)->nRows();
-        }
         
         // DigitalNetConstruction<NC> extendDimension(){
         //     std::vector<GenValue> genValues = ConstructionMethod::defaultGenValues(m_dimension+1);
@@ -283,10 +273,7 @@ template<>
 void DigitalNetConstruction<NetConstruction::SOBOL>::extendSize(unsigned int nRows, unsigned int nCols) const
 {
     assert(nRows == nCols);
-    if (nRows > realNumRows() || nCols > realNumColumns() )
-    {
-        ConstructionMethod::extendGeneratingMatrices(realNumRows(), nRows-realNumRows(), m_generatingMatrices, m_genMatsComputationData);
-    }
+    ConstructionMethod::extendGeneratingMatrices(nRows, nCols, m_generatingMatrices, m_genMatsComputationData);
 }
 
 }
