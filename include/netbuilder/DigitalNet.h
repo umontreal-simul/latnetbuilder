@@ -149,6 +149,7 @@ class DigitalNetConstruction : public DigitalNet
                     // construct the generating matrix and store them and the generating values
                     m_genMatsComputationData.push_back(std::shared_ptr<GeneratingMatrixComputationData>());
                     m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_designParameter,m_genMatsComputationData.back())));
+                    m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
                 }
             }
         };

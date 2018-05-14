@@ -17,6 +17,7 @@
 
 #include "netbuilder/JoeKuoWeights.h"
 #include "netbuilder/Util.h"
+#include <cmath>
 
 using namespace std;
 
@@ -35,7 +36,7 @@ Weight JoeKuoWeights::getWeight (const Coordinates& projection) const
 {
    if (projection.size()==2)
    {
-         return intPow(.9999, *projection.rend());
+         return std::pow((Weight).9999, *projection.rbegin());
    }
    // fall back to zero
    return 0.0;

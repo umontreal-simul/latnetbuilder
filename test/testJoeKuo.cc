@@ -26,6 +26,7 @@
 #include "netbuilder/JoeKuoWeights.h"
 
 #include "netbuilder/Task/CBCSearch.h"
+#include "netbuilder/Task/Eval.h"
 #include "netbuilder/Task/FullCBCExplorer.h"
 
 #include <iostream>
@@ -38,31 +39,35 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 10;
+    unsigned int s = 6;
     unsigned int m = 31;
 
     auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
 
-    // auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
+    auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
     auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, JoeKuoD6Combiner());
     auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
 
-    // std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;
+    std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;
     
-    // figures.push_back(std::move(fig1));
-    // figures.push_back(std::move(fig2));
+    figures.push_back(std::move(fig1));
+    figures.push_back(std::move(fig2));
 
-    // std::vector<Real> weightsFigure {1,1};
+    std::vector<Real> weightsFigure {1,1};
 
-    // auto fig = std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(1,std::move(figures),weightsFigure);
+    auto fig = std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(1,std::move(figures),weightsFigure);
     
     auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::SOBOL>>(s,m);
-    auto task = Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>(s,m, std::move(fig2), std::move(explorer),5);
 
+    // auto task = Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>(s,m, std::move(fig), std::move(explorer),3);
+    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
+    net->format(OutputFormat::CLI);
+    auto task = Task::Eval(std::move(net), std::move(fig),3);
+    
     task.execute();
 
-    if (task.hasFoundNet())
+    // if (task.hasFoundNet())
     {
         std::cout << "Search was successful." << std::endl;
         std::cout << "Selected net: "<< std::endl;
