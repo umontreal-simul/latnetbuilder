@@ -34,7 +34,7 @@
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
-#include "netbuilder/FigureOfMerit/EquidistributionProperty.h"
+#include "netbuilder/FigureOfMerit/UniformityProperties.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 
@@ -49,7 +49,7 @@ namespace lbp = LatBuilder::Parser;
 class BadFigure : public lbp::ParserError
 {
   public:
-    BadFigure(const std::string &message) : lbp::ParserError("cannot parse figure parameter string: " + message)
+    BadFigure(const std::string &message) : lbp::ParserError("cannot parse figure string: " + message)
     {
     }
 };
@@ -72,7 +72,8 @@ struct FigureParser
         unsigned int nbFigures = (unsigned int) vecStrFigures.size();
         std::vector<result_type> vecFigures;
         vecFigures.reserve(nbFigures);
-        std::vector<Real> vecWeights(nbFigures, 0);
+        std::vector<Real> vecWeights;
+        vecWeights.reserve(nbFigures);
 
         for (const auto &str : vecStrFigures)
         {
@@ -121,24 +122,68 @@ struct FigureParser
             // std::cout << figureCharacteristicStrings[i] << std::endl;
         }
 
+        if (figureCharacteristicStrings.size()==0)
+        {
+            throw BadFigure("figure name must be specified; see --help");
+        }
+
         std::string name = figureCharacteristicStrings[0];
 
-        Real importance = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
-        vecWeights.push_back(importance);
+        Real importance = std::numeric_limits<Real>::infinity(); 
+        if(figureCharacteristicStrings.size()>=2)
+        {
+            importance = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
+        }
 
         if (name == "A-Property"){
-            vecFigures.push_back(std::make_unique<FigureOfMerit::AProperty>());
+            if (NetConstructionTraits<NC>::isSequenceViewable)
+            {
+                vecFigures.push_back(std::make_unique<FigureOfMerit::AProperty>(importance));
+                vecWeights.push_back(1);
+                return;
+            }
+            else
+            {
+                throw BadFigure("A-Property not compatible with net construction.");
+            }
         }
         if (name == "A'-Property"){
-            vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>());
+            if (NetConstructionTraits<NC>::isSequenceViewable)
+            {
+                vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>());
+                vecWeights.push_back(1);
+                return;
+            }
+            else
+            {
+                throw BadFigure("A'-Property not compatible with net construction.");
+            }
         }
 
-        Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[2]);
+        if(nbParam <=1)
+        {
+            throw BadFigure("importance must be specified; see -help.");
+        }
+
+        if(nbParam <=2)
+        {
+            throw BadFigure("norm-type must be specified; see -help.");
+        }
+
+        Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
+
+        if (nbParam <=3)
+        {
+            throw BadFigure("weights must be specified; see --help.");
+        }
+
+        vecWeights.push_back(importance);
+
         std::string weightString = figureCharacteristicStrings[3];
         
         // TODO: comment
         Real weightsPowerScale = 1.0;
-        if (nbParam == 5) {
+        if (nbParam >= 5) {
             Real weightPower = boost::lexical_cast<Real>(figureCharacteristicStrings[4]);
 
             if (normType < std::numeric_limits<Real>::infinity())

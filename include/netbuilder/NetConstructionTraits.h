@@ -100,7 +100,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                     unsigned int size;
                     if (dimension==1)
                     {
-                        size = 1;
+                        return GenValue(1, {0});
                     }
                     else
                     {

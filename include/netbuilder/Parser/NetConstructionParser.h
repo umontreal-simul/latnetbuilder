@@ -30,14 +30,19 @@ namespace lbp = LatBuilder::Parser;
 class BadNetConstruction : public lbp::ParserError {
 public:
    BadNetConstruction(const std::string& message):
-      lbp::ParserError("cannot parse construction parameter string: " + message)
+      lbp::ParserError("cannot parse construction string: " + message)
    {}
 };
 
 /**
  * Parser for construction parameters.
  */
-struct NetConstructionParser {
+template <PointSetType PST>
+struct NetConstructionParser {};
+
+template<>
+struct NetConstructionParser<PointSetType::UNILEVEL>
+{
    typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
 
    static result_type parse(const std::string& str)
@@ -56,7 +61,25 @@ struct NetConstructionParser {
       {
         return result_type(NetBuilder::NetConstruction::EXPLICIT,constructionStrings[1]);
       }
-      throw BadNetConstruction(str);
+      throw BadNetConstruction("missing design parameter; see --help.");
+   }
+};
+
+template<>
+struct NetConstructionParser<PointSetType::MULTILEVEL>
+{
+   typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
+
+   static result_type parse(const std::string& str)
+   {
+
+      result_type tmp = NetConstructionParser<PointSetType::UNILEVEL>::parse(str);
+
+      if (tmp.first!=NetConstruction::SOBOL)
+      {
+        throw BadNetConstruction("incompatible point set type and construction.");
+      }
+      return tmp;
    }
 };
 

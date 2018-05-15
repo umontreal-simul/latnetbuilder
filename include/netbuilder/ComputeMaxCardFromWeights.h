@@ -18,6 +18,7 @@
 #define NETBUILDER__COMPUTE_MAX_CARD_FROM_WEIGHTS_H
 
 #include "latcommon/OrderDependentWeights.h"
+#include "latcommon/ProductWeights.h"
 #include "latcommon/PODWeights.h"
 #include "latcommon/ProjectionDependentWeights.h"
 
@@ -41,6 +42,7 @@ struct ComputeMaxCardFromWeights {
     }
 
    DECLARE_COMPUTE_MAX_CARD(LatCommon::OrderDependentWeights);
+   DECLARE_COMPUTE_MAX_CARD(LatCommon::ProductWeights);
    DECLARE_COMPUTE_MAX_CARD(LatCommon::PODWeights);
    DECLARE_COMPUTE_MAX_CARD(LatCommon::ProjectionDependentWeights);
 
@@ -51,7 +53,7 @@ struct ComputeMaxCardFromWeights {
  */ 
 unsigned int ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>::operator()(const LatCommon::OrderDependentWeights& w) const{
     if (w.getDefaultWeight() > 0){
-        throw std::invalid_argument("default weight must be zero" );
+        throw std::invalid_argument("default weight must be zero to use this figure." );
     }
     unsigned int maxCard = 0;
     for (unsigned int i=1; i<w.getSize(); i++){
@@ -63,12 +65,24 @@ unsigned int ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>::operat
 }
 
 /**
+ * Template specialization in the case of OrderDependentWeights
+ */ 
+unsigned int ComputeMaxCardFromWeights<LatCommon::ProductWeights>::operator()(const LatCommon::ProductWeights& w) const{
+    if (w.getDefaultWeight() > 0){
+        throw std::invalid_argument("default weight must be zero to use this figure." );
+    }
+    return (unsigned int) w.getWeights().size();
+}
+
+/**
  * Template specialization in the case of PODWeights.
  */ 
 unsigned int ComputeMaxCardFromWeights<LatCommon::PODWeights>::operator()(const LatCommon::PODWeights& w) const{
-    LatCommon::OrderDependentWeights ordDepWeights = w.getOrderDependentWeights();
-    auto computer = ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>();
-    return computer(ordDepWeights);
+    const LatCommon::OrderDependentWeights& ordDepWeights = w.getOrderDependentWeights();
+    const LatCommon::ProductWeights& prodWeights = w .getProductWeights();
+    auto computer1 = ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>();
+    auto computer2 = ComputeMaxCardFromWeights<LatCommon::ProductWeights>();
+    return std::max(computer1(ordDepWeights),computer2(prodWeights));
 }
 
 /**

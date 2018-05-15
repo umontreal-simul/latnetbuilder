@@ -105,13 +105,13 @@ makeOptionsDescription()
   //   "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
   //   "    <p>: a real number corresponding the l_<p> norm\n"
   //   "    inf: corresponding to the `max' norm\n")
-    ("combiner,b", po::value<std::string>()->default_value("level:max"),
+    ("combiner,b", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
     "  level:{<level>|max}\n"
     "  JoeKuoD6\n")
-    ("figure-combiner,f", po::value<std::string>()->default_value("max"),
+    ("figure-combiner,f", po::value<std::string>(),
     "combiner for combined figure of merit; possible values: \n"
     "  sum\n"
     "  max (default)\n")
@@ -187,7 +187,12 @@ cmd.s_explorationMethod = opt["exploration-method"].as<std::string>();\
 cmd.s_size = opt["size"].as<std::string>();\
 cmd.s_dimension = opt["dimension"].as<std::string>();\
 cmd.s_figures = opt["add-figure"].as<std::vector<std::string>>();\
-cmd.s_figureCombiner = opt["figure-combiner"].as<std::string>();\
+if (opt.count("figure-combiner") < 1){\
+  cmd.s_figureCombiner = "";\
+}\
+else{\
+  cmd.s_figureCombiner = opt["figure_combiner"].as<std::string>();\
+}\
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\
 }\
@@ -227,7 +232,16 @@ int main(int argc, const char *argv[])
         std::string s_construction = opt["construction"].as<std::string>();
         NetBuilder::PointSetType setType = NetBuilder::Parser::PointSetTypeParser::parse(s_setType);
 
-        auto netConstructionPair = NetBuilder::Parser::NetConstructionParser::parse(s_construction);
+        std::pair<NetBuilder::NetConstruction,std::string> netConstructionPair;
+
+        if (setType==NetBuilder::PointSetType::UNILEVEL)
+        {
+          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::PointSetType::UNILEVEL>::parse(s_construction);
+        }
+        else
+        {
+          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::PointSetType::MULTILEVEL>::parse(s_construction);
+        }
 
         NetBuilder::NetConstruction netConstruction = netConstructionPair.first;
 

@@ -43,7 +43,7 @@ namespace NetBuilder {
 
         if (dimension==1)
         {
-            return (genValue.second.size()==1 && genValue.second.front()==1);
+            return (genValue.second.size()==1 && genValue.second.front()==0);
         }
 
         unsigned int degree = nthPrimitivePolynomialDegree(dimension-1);
@@ -173,7 +173,7 @@ namespace NetBuilder {
         assert(dimension >= 1 && dimension <= 21201);
         std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
         std::vector<std::vector<uInteger>> res(dimension);
-        res[0] = {};
+        res[0] = {0};
         std::string sent;
         for(unsigned int i = 2; i <= dimension; ++i)
         {
@@ -209,6 +209,7 @@ namespace NetBuilder {
         unsigned int size;
         if (dimension==1)
         {
+            return std::vector<GenValue>{GenValue(1,{0})};
             size = 1;
         }
         else

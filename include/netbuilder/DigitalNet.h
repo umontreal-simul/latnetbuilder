@@ -118,7 +118,7 @@ class DigitalNet
         /** 
          * Returns a bool indicating whether the net can be viewed as a digital sequence.
          */ 
-        virtual bool isSequenceViewabe() const = 0;
+        virtual bool isSequenceViewable() const = 0;
 
         /** 
          * Extends the size of the underlying generating matrices without changing the external
@@ -244,7 +244,7 @@ class DigitalNetConstruction : public DigitalNet
             computationData.push_back(std::move(newComputationData));
 
             // instantiate the new net and return the unique pointer to it
-            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>>(m_dimension+1, m_designParameter, std::move(genVals), std::move(genMats), std::move(computationData)));
+            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>(m_dimension+1, m_designParameter, std::move(genVals), std::move(genMats), std::move(computationData)));
         }
 
 
@@ -271,7 +271,7 @@ class DigitalNetConstruction : public DigitalNet
         /**
          * {@inheritDoc}
          */ 
-        virtual bool isSequenceViewabe() const 
+        virtual bool isSequenceViewable() const 
         {
             return ConstructionMethod::isSequenceViewable;
         }
@@ -287,7 +287,7 @@ class DigitalNetConstruction : public DigitalNet
             }
             else
             {
-                throw std::domain_error("This net cannot be viewed as a digital sequence.")
+                throw std::domain_error("This net cannot be viewed as a digital sequence.");
             }
         }
     

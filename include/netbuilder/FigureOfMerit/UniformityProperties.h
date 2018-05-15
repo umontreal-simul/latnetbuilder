@@ -36,14 +36,14 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
-class EquidistributionProperty : public FigureOfMerit{
+class UniformityProperty : public FigureOfMerit{
 
     public:
 
         /** Constructor.
          * @param weight is weight of the figure of merit;
          */ 
-        EquidistributionProperty(unsigned int nbBits, Real normType = std::numeric_limits<Real>::infinity() , Real weight = std::numeric_limits<Real>::infinity()):
+        UniformityProperty(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
             m_nbBits(nbBits),
             m_weight(weight),
             m_binOp(realToBinOp(normType)),
@@ -59,21 +59,21 @@ class EquidistributionProperty : public FigureOfMerit{
         /** Instantiates an evaluator and returns a std::unique_ptr to it. */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
         {
-            return std::make_unique<EquidistributionPropertyEvaluator>(this);
+            return std::make_unique<UniformityPropertyEvaluator>(this);
         }
 
         unsigned int nbBits() const {return m_nbBits; }
 
     private:
 
-        /** Evaluator class for EquidistributionProperty. */
-        class EquidistributionPropertyEvaluator : public FigureOfMeritEvaluator
+        /** Evaluator class for UniformityProperty. */
+        class UniformityPropertyEvaluator : public FigureOfMeritEvaluator
         {
             public:
                 /**Constructor. 
                  * @param figure is a pointer to the figure of merit.
                 */
-                EquidistributionPropertyEvaluator(EquidistributionProperty* figure):
+                UniformityPropertyEvaluator(UniformityProperty* figure):
                     m_figure(figure)
                 {};
 
@@ -138,7 +138,7 @@ class EquidistributionProperty : public FigureOfMerit{
                 }
 
             private:
-                EquidistributionProperty* m_figure;
+                UniformityProperty* m_figure;
                 unsigned int m_currentDim = 0;
                 ProgressiveRowReducer m_tmpReducer;
                 ProgressiveRowReducer m_memReducer;
@@ -152,17 +152,17 @@ class EquidistributionProperty : public FigureOfMerit{
         Real m_expNorm;
 };
 
-class AProperty : public EquidistributionProperty {
+class AProperty : public UniformityProperty {
     public:
-        AProperty():
-            EquidistributionProperty(1)
+        AProperty(Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
+            UniformityProperty(1, weight, normType)
         {};
 };
 
-class APrimeProperty : public EquidistributionProperty {
+class APrimeProperty : public UniformityProperty {
     public:
-        APrimeProperty():
-            EquidistributionProperty(2)
+        APrimeProperty(Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
+            UniformityProperty(2, weight, normType)
         {};
 };
 

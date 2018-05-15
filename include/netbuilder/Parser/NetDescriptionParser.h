@@ -70,14 +70,14 @@ struct NetDescriptionParser<NetConstruction::SOBOL, PST>
            GenValue genVal = GenValue(dim,std::move(dirNumbersValues));
            if(!NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(genVal, commandLine.m_designParameter))
            {
-                throw BadNetDescription("Bad Sobol' direction numbers.");
+                throw BadNetDescription("bad Sobol' direction numbers.");
            }
            genValues.push_back(std::move(genVal));
            ++dim;
        }
         if (genValues.size() != commandLine.m_dimension)
         {
-           throw BadNetDescription("Missing Sobol' direction numbers.");
+           throw BadNetDescription("incompatible dimension and Sobol' direction numbers");
         }
         return genValues;
    }
@@ -100,13 +100,13 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
            GenValue genVal = polynomialParserHelper(polyString);
            if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_designParameter))
            {
-               throw BadNetDescription("Bad generating polynomial.");
+               throw BadNetDescription("bad generating polynomial.");
            }
            genValues.push_back(std::move(genVal));
        }
         if (genValues.size() != commandLine.m_dimension )
         {
-           throw BadNetDescription("Missing generating vector.");
+           throw BadNetDescription("incompatible dimension and generating vector.");
         }
         return genValues;
    }
@@ -130,13 +130,13 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
            boost::split(rowsStrings, matrixString, boost::is_any_of(","));
            if (rowsStrings.size()==0)
            {
-               throw BadNetDescription("Bad matrix.");
+               throw BadNetDescription("bad matrix.");
            }
            for(const auto& rowString : rowsStrings)
            {
                if (rowString.size() != rowsStrings.front().size())
                {
-                   throw BadNetDescription("Bad matrix (different row lengths).");
+                   throw BadNetDescription("bad matrix (different row lengths).");
                }
            }
            GenValue genVal((unsigned int) rowsStrings.size(),(unsigned int) rowsStrings.front().size());
@@ -147,13 +147,13 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
            }
            if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_designParameter))
            {
-               throw BadNetDescription("Bad generating matrix size.");
+               throw BadNetDescription("bad generating matrix size.");
            }
            genValues.push_back(std::move(genVal));
        }
         if (genValues.size() != commandLine.m_dimension )
         {
-           throw BadNetDescription("Missing generating vector.");
+           throw BadNetDescription("incompatible dimension and number of matrices.");
         }
         return genValues;
    }
