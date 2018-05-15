@@ -24,22 +24,39 @@
 
 namespace NetBuilder { 
 
+/** 
+ * CBC sequence of coordinate sets.
+ * 
+ * This class implements a sequence of coordinates (@see LatCommon::CoordinateSets) which can be used in the CBC
+ * evaluation of figures of merit.
+ */ 
 class CBCCoordinateSet
 {
     public:
 
-        CBCCoordinateSet(int highestDimension, int maxOrder):
-            m_dimension(highestDimension),
+        /** Constructs a set of all non empty subsets of \f\{0,\dots, \c maxCoordinate\}\f with order lower than \c maxOrder
+         *  containing \c maxCoordinate.
+         * @param maxCoordinate Maximal coordinate of the subsets.
+         * @param maxOrder Maximal order of subsets.
+         */ 
+        CBCCoordinateSet(int maxCoordinate, int maxOrder):
+            m_dimension(maxCoordinate),
             m_maxOrder(maxOrder),
-            m_base(0, std::min(maxOrder-1,highestDimension-1), 0, std::max(highestDimension-2,0)),
-            m_addCoordinate(m_base, highestDimension-1)
+            m_base(0, std::min(maxOrder-1,maxCoordinate-1), 0, std::max(maxCoordinate-2,0)),
+            m_addCoordinate(m_base, maxCoordinate-1)
         {};
 
+        /**
+        * Returns an iterator pointing to the first element in the seq.
+        */
         LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges>::const_iterator begin() const 
         {
             return m_addCoordinate.begin();
         }
 
+        /**
+        * Returns an iterator pointing past the last element in the seq.
+        */
         LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges>::const_iterator end() const 
         {
             return m_addCoordinate.end();

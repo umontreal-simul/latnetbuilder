@@ -69,7 +69,7 @@ class MinObserver
 
         void observe(std::unique_ptr<DigitalNetConstruction<NC>> net, Real merit)
         {
-                if (merit < m_bestMerit) {
+                if (merit < m_bestMerit){
                     m_bestMerit = merit;
                     m_foundBestNet = true;
                     m_bestNet = std::move(net);

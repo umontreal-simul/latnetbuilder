@@ -29,9 +29,12 @@
 #include "netbuilder/Task/Eval.h"
 #include "netbuilder/Task/FullCBCExplorer.h"
 
+#include "latcommon/UniformWeights.h"
+
 #include <iostream>
 #include <memory>
 #include <limits>
+#include <cstdlib>
 
 
 
@@ -39,7 +42,7 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 6;
+    unsigned int s = atol(argv[1]);
     unsigned int m = 31;
 
     auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
@@ -56,25 +59,43 @@ int main(int argc, const char *argv[])
 
     std::vector<Real> weightsFigure {1,1};
 
-    auto fig = std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(1,std::move(figures),weightsFigure);
-    
-    auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::SOBOL>>(s,m);
+    auto fig = std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(std::numeric_limits<Real>::infinity(),std::move(figures),weightsFigure);
 
-    // auto task = Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>(s,m, std::move(fig), std::move(explorer),3);
-    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
-    net->format(OutputFormat::CLI);
-    auto task = Task::Eval(std::move(net), std::move(fig),3);
-    
-    task.execute();
-
-    // if (task.hasFoundNet())
+    if (argv[2][0]=='s')
     {
+        auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::SOBOL>>(s,m);
+        auto task = std::make_unique<Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>>(s,m, std::move(fig), std::move(explorer),3);
+
+        task->execute();
+
         std::cout << "Search was successful." << std::endl;
         std::cout << "Selected net: "<< std::endl;
-        std::cout <<  task.outputNet(OutputFormat::CLI) << std::endl;
-
-        std::cout << "Merit value: " << task.outputMeritValue() << std::endl;
+        std::cout <<  task->outputNet(OutputFormat::CLI) << std::endl;
+        std::cout << "Merit value: " << task->outputMeritValue() << std::endl;
     }
+    else if (argv[2][0]=='e')
+    {
+        auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
+        auto eval = std::make_unique<Task::Eval>(std::move(net), std::move(fig),0);
+
+        eval->execute();
+        std::cout << "Joe Kuo net: "<< std::endl;
+        std::cout <<  eval->outputNet(OutputFormat::CLI) << std::endl;
+        std::cout << "Merit value: " << eval->outputMeritValue() << std::endl;
+    }
+    else if (argv[2][0]=='t')
+    {
+        m = 12;
+        s = 28;
+        auto weights_tValue = std::make_unique<LatCommon::UniformWeights>(1.);
+        auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(2);
+        auto fig3 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights_tValue), std::move(projDep2));
+        auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
+        auto eval = std::make_unique<Task::Eval>(std::move(net), std::move(fig3),4);
+        eval->execute();
+    }
+
+
 
     return 0;
 }

@@ -21,6 +21,10 @@
 #include "latcommon/PODWeights.h"
 #include "latcommon/ProjectionDependentWeights.h"
 
+/**
+ * Helper structure template to compute the maximal order of subprojections
+ * with non zero weights when possible.
+ */ 
 template <typename WEIGHTS>
 struct ComputeMaxCardFromWeights {
     unsigned int operator()(const WEIGHTS& w) const
@@ -42,10 +46,9 @@ struct ComputeMaxCardFromWeights {
 
 #undef DECLARE_COMPUTE_MAX_CARD
 
-// template<> ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>;
-// template<> ComputeMaxCardFromWeights<LatCommon::PODWeights>;
-// template<> ComputeMaxCardFromWeights<LatCommon::ProjectionDependentWeights>;
-
+/**
+ * Template specialization in the case of OrderDependentWeights
+ */ 
 unsigned int ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>::operator()(const LatCommon::OrderDependentWeights& w) const{
     if (w.getDefaultWeight() > 0){
         throw std::invalid_argument("default weight must be zero" );
@@ -59,12 +62,18 @@ unsigned int ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>::operat
     return maxCard;
 }
 
+/**
+ * Template specialization in the case of PODWeights.
+ */ 
 unsigned int ComputeMaxCardFromWeights<LatCommon::PODWeights>::operator()(const LatCommon::PODWeights& w) const{
     LatCommon::OrderDependentWeights ordDepWeights = w.getOrderDependentWeights();
     auto computer = ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>();
     return computer(ordDepWeights);
 }
 
+/**
+ * Template specialization in the case of ProjectionDependentWeights.
+ */ 
 unsigned int ComputeMaxCardFromWeights<LatCommon::ProjectionDependentWeights>::operator()(const LatCommon::ProjectionDependentWeights& w) const{
     unsigned int maxCard = 0;
     for (unsigned int i=0; i<w.getSize(); i++){

@@ -118,7 +118,7 @@ makeOptionsDescription()
     ("add-figure,a", po::value< std::vector<std::string> >()->composing(),
     "(at least one required) add one type of figure of merits. If several, specify a figure combiner.\n"
     "Syntax pattern:\n"
-    "name=<name>/ importance=<importance> / norm-type=<norm-type> / weights=<weights-description> / weight-power=<weight-power> \n"
+    "rt \n"
     "where name can take the following values:\n"
     "resolution-gap, t-value, A-Property, A'-Property and \n"
     "P<alpha> with the optional \"CU:\" prefix to switch to the coordinate-uniform evaluation algorithm\n")

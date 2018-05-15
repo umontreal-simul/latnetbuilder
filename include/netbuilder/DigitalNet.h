@@ -23,8 +23,8 @@
 #include "netbuilder/NetConstructionTraits.h"
 
 #include <memory>
-#include <type_traits>
 #include <sstream>
+#include <stdexcept>
 
 namespace NetBuilder {
 
@@ -37,10 +37,11 @@ class DigitalNet
 {
     public:
 
-        /** Default constructor 
-         * @param dimension is the number of coordinates in the net
-         * @param nRows is the number of rows of the generating matrices
-         * @param nCols is the number of columns of the generating matrices
+        /** 
+         * Default constructor 
+         * @param dimension Number of coordinates in the net.
+         * @param nRows Number of rows of the generating matrices.
+         * @param nCols Number of columns of the generating matrices.
         */
         DigitalNet(unsigned int dimension=0, unsigned int nRows=0, unsigned int nCols=0):
             m_dimension(dimension),
@@ -48,62 +49,85 @@ class DigitalNet
             m_nCols(nCols)
         {};
 
-        /** Default destructor */
+        /** 
+         * Default destructor
+        */
         virtual ~DigitalNet() = default;
 
-        /** Return the number of columns of the generating matrices. */
+        /** 
+         * Return the number of columns of the generating matrices. 
+        */
         unsigned int numColumns() const { return m_nCols; }
 
-        /** Returns the number of rows of the generating matrices. */
+        /** 
+         * Returns the number of rows of the generating matrices. 
+        */
         unsigned int numRows() const { return m_nRows; };
 
-        /** Returns the number of points of the net */
+        /** 
+         * Returns the number of points of the net 
+        */
         uInteger numPoints() const { return intPow(2, m_nCols) ; }
 
-        /** Returns the number of points of the net */
+        /** 
+         * Returns the number of points of the net 
+        */
         uInteger size() const { return intPow(2, m_nCols) ; }
 
-        /** Returns the dimension (number of coordinates) of the net.*/
+        /** 
+         * Returns the dimension (number of coordinates) of the net.
+        */
         unsigned int dimension() const { return m_dimension ; }
 
-        /** Returns the generating matri corresponding to the given coordinate.
-         *  @param coord an integer constant refering to the coordinate (ranges in 1 -> dimension)
+        /** 
+         * Returns the generating matrix corresponding to coordinate \c coord.
+         * @param coord An integer refering to the coordinate (ranges in 1 -> dimension).
         */
         GeneratingMatrix generatingMatrix(unsigned int coord) const 
         {
             return m_generatingMatrices[coord-1]->subMatrix(m_nRows, m_nCols);
         }
 
+        /** 
+         * Returns a raw pointer to the generating matrix corresponding to coordinate \c coord.
+         * @param coord An integer refering to the coordinate (ranges in 1 -> dimension).
+        */
         GeneratingMatrix* pointerToGeneratingMatrix(unsigned int coord) const 
         {
             return m_generatingMatrices[coord-1].get();
         }
 
-        // virtual std::unique_ptr<DigitalNet> extendSize(unsigned int m) const = 0;
+        // /** 
+        //  *  Returns the upper-left submatrix of the generating matrix corresponding coordinate \c coord.
+        //  *  @param coord Coordinate (ranges in 1 -> dimension).
+        //  *  @param nRows Number of rows of the submatrix (ranges in 1 -> numRows() ).
+        //  *  @param nCols Number of columns of the submatrix (ranges in 1 -> numCols() ).
+        //  */ 
+        // GeneratingMatrix generatingMatrix(unsigned int coord, unsigned int nRows, unsigned int nCols)
+        // {
+        //     return m_generatingMatrices[coord-1]->subMatrix(nRows, nCols);
+        // }
 
-        /** Returns the upper-left submatrix of the generating matrix corresponding to the given coordinate,
-         *  @param coord an integer constant refering to the coordinate (ranges in 1 -> dimension)
-         *  @param nRows is the number of rows of the submatrix (ranges in 1 -> numRows() )
-         *  @param nCols is the number of columns of the submatrix (ranges in 1 -> numCols() )
+        /**
+         * Returns a std::string representing the net. The verbosity of the representation
+         * depends on \c outputFormat.
+         * @param outputFormat Format to use to represent the net.
          */ 
-        GeneratingMatrix generatingMatrix(unsigned int coord, unsigned int nRows, unsigned int nCols)
-        {
-            return m_generatingMatrices[coord-1]->subMatrix(nRows, nCols);
-        }
-
-        /** Most general constructor. Designed to be used by derived classes. */
-        DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
-            m_dimension(dimension),
-            m_nRows(nRows),
-            m_nCols(nCols),
-            m_generatingMatrices(genMatrices)
-        {};
-
-        virtual void extendSize(unsigned int nRows, unsigned int nCols) const= 0;
-
         virtual std::string format(OutputFormat outputFormat) const = 0;
 
+        /** 
+         * Returns a bool indicating whether the net can be viewed as a digital sequence.
+         */ 
         virtual bool isSequenceViewabe() const = 0;
+
+        /** 
+         * Extends the size of the underlying generating matrices without changing the external
+         * state of the object. This method will throw a std::domain_error if isSequenceViewable() returns
+         * false.
+         * @param nRows New number of rows.
+         * @param nCols New number of columns.
+         */ 
+        virtual void extendSize(unsigned int nRows, unsigned int nCols) const= 0;
 
     protected:
 
@@ -112,17 +136,26 @@ class DigitalNet
         unsigned int m_nCols; // number of columns in generating matrices
         mutable std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
 
+        /** 
+         * Most general constructor. 
+         * Designed to be used by derived classes. */
+        DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
+            m_dimension(dimension),
+            m_nRows(nRows),
+            m_nCols(nCols),
+            m_generatingMatrices(genMatrices)
+        {};
+
 };
 
 /** Derived class of DigitalNet designed to implement specific construction methods. The available construction methods
  * are described by the NetConstruction enumeration which is a non-type template parameter of the DigitalNetConstruction 
- * class.
+ * class. @see NetBuilder::NetConstructionTraits.
  * */ 
 template <NetConstruction NC>
 class DigitalNetConstruction : public DigitalNet
 {
     public:
-
 
         typedef NetConstructionTraits<NC> ConstructionMethod;
 
@@ -132,8 +165,11 @@ class DigitalNetConstruction : public DigitalNet
 
         typedef typename ConstructionMethod::GeneratingMatrixComputationData GeneratingMatrixComputationData;
 
-        /** Basic constructor with default parameter
-        */
+        /** 
+         * Basic constructor with default parameters
+         * @param dimension Dimension of the net.
+         * @param designParameter Design parameter of the net.
+         */
         DigitalNetConstruction(
             unsigned int dimension = 0, DesignParameter designParameter = ConstructionMethod::defaultDesignParameter):
             DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
@@ -154,26 +190,12 @@ class DigitalNetConstruction : public DigitalNet
             }
         };
 
-        /** Most general constructor. Should not be used directly. Made public only
-         * for the use of std::make_unique in member fuctions.
-         * @param genMatrices is a vector of shared pointers to the generating matrices of each coordinate
-         * @param genValues is a vector of shared pointers to the generating values of each coordinate
-         * @param dimension is the dimension (number of coodinates) of the net
-         * @param nRows is the number of rows of the generating matrices
-         * @param nCols is the number of columns of the generating matrices
-        */ 
-        DigitalNetConstruction(
-            unsigned int dimension,
-            DesignParameter designParameter,
-            std::vector<std::shared_ptr<GenValue>> genValues,
-            std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices,
-            std::vector<std::shared_ptr<GeneratingMatrixComputationData>> computationData):
-                DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter), std::move(genMatrices)),
-                m_designParameter(std::move(designParameter)),
-                m_genValues(std::move(genValues)),
-                m_genMatsComputationData(std::move(computationData))
-        {};
 
+        /** 
+         * Basic constructor with default parameters
+         * @param dimension Dimension of the net.
+         * @param designParameter Design parameter of the net.
+         */
         DigitalNetConstruction(
             unsigned int dimension,
             DesignParameter designParameter, 
@@ -192,14 +214,16 @@ class DigitalNetConstruction : public DigitalNet
             }
         }
 
-        /**Default destructor. */
+        /**
+         * Default destructor
+        */
         ~DigitalNetConstruction() = default;
 
-        /** Instantiates a digital net with a dimension increased by one using the given generating value. 
-         * Note that the generating matices for the lower dimensions are not copied. The net on 
+        /** Instantiates a digital net with a dimension increased by one using the generating value \c newGenValue. 
+         * Note that the generating matrices for the lower dimensions are not copied. The net on 
          * which this method is called and the new net share these ressources.
-         * @param newGenValue is the generating value to use to extend the net
-         * @return a std::unique_ptr to the instantiated net.
+         * @param newGenValue  Generating value used to extend the net.
+         * @return A std::unique_ptr to the instantiated net.
          */ 
         std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue){
 
@@ -220,14 +244,13 @@ class DigitalNetConstruction : public DigitalNet
             computationData.push_back(std::move(newComputationData));
 
             // instantiate the new net and return the unique pointer to it
-            return std::make_unique<DigitalNetConstruction<NC>>(m_dimension+1, m_designParameter, std::move(genVals), std::move(genMats), std::move(computationData));
+            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>>(m_dimension+1, m_designParameter, std::move(genVals), std::move(genMats), std::move(computationData)));
         }
 
-        virtual void extendSize(unsigned int nRows, unsigned int nCols) const 
-        {
-            throw std::logic_error("Not implemented.");
-        }
 
+        /**
+         * {@inheritDoc}
+         */ 
         virtual std::string format(OutputFormat outputFormat) const
         {
             std::string res = ConstructionMethod::format(m_genValues,m_designParameter,outputFormat);
@@ -245,31 +268,58 @@ class DigitalNetConstruction : public DigitalNet
             return res;
         }
 
+        /**
+         * {@inheritDoc}
+         */ 
         virtual bool isSequenceViewabe() const 
         {
             return ConstructionMethod::isSequenceViewable;
         }
-        
-        // DigitalNetConstruction<NC> extendDimension(){
-        //     std::vector<GenValue> genValues = ConstructionMethod::defaultGenValues(m_dimension+1);
-        //     std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(genValues[m_dimension],m_nRows,m_nCols));
 
-        //     auto genMats = m_generatingMatrices; 
-        //     genMats.push_back(std::move(newMat));
-
-        //     auto genVals = m_genValues;
-        //     genVals.push_back(std::shared_ptr<GenValue>(new GenValue(genValues[m_dimension])));
-
-        //     return DigitalNetConstruction(std::move(genMats), std::move(genVals), m_dimension+1, m_nRows, m_nCols);
-        // }
+        /**
+         * {@inheritDoc}
+         */ 
+        virtual void extendSize(unsigned int nRows, unsigned int nCols) const 
+        {
+            if (isSequenceViewable())
+            {
+                throw std::logic_error("extendSize should be overriden but is not.");
+            }
+            else
+            {
+                throw std::domain_error("This net cannot be viewed as a digital sequence.")
+            }
+        }
     
     private:
 
-        DesignParameter m_designParameter;
+        DesignParameter m_designParameter; // design parameter of the net
         mutable std::vector<std::shared_ptr<GenValue>> m_genValues; // vector of shared pointers to the generating values of the net
-        mutable std::vector<std::shared_ptr<GeneratingMatrixComputationData>> m_genMatsComputationData;
+        mutable std::vector<std::shared_ptr<GeneratingMatrixComputationData>> m_genMatsComputationData; // vector of shared pointers to the computation data of the generating matrices of the net
+
+        /** Most general constructor
+         * for the use of std::make_unique in member fuctions.
+         * @param dimension Dimension of the net.
+         * @param designParameter Design parameter of the net.
+         * @param genValues Vector of shared pointers to the generating values of each coordinate.
+         * @param genMatrices Vector of shared pointers to the generating matrices of each coordinate.
+         * @param computationData Vector of shared pointers to the computation data of the matrices of each coordinates.
+        */ 
+        DigitalNetConstruction(
+            unsigned int dimension,
+            DesignParameter designParameter,
+            std::vector<std::shared_ptr<GenValue>> genValues,
+            std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices,
+            std::vector<std::shared_ptr<GeneratingMatrixComputationData>> computationData):
+                DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter), std::move(genMatrices)),
+                m_designParameter(std::move(designParameter)),
+                m_genValues(std::move(genValues)),
+                m_genMatsComputationData(std::move(computationData))
+        {};
 };
 
+
+// Override of extendSize method in the case of Sobol construction.
 template<>
 void DigitalNetConstruction<NetConstruction::SOBOL>::extendSize(unsigned int nRows, unsigned int nCols) const
 {
