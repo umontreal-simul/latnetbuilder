@@ -110,64 +110,72 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  *  @param initialValue is the value from which to start
                  *  @param verbose controls the level of verbosity of the computation
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-                    Real weight;
+                    // Real weight;
 
-                    auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->expNorm())) ;} ;
+                    // auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->expNorm())) ;} ;
 
-                    //auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
+                    // //auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
 
-                    for(unsigned int i = 0; i < m_figure->size(); ++i)
-                    {
-                        if (verbose>0)
-                        {
-                            std::cout << "Computing for figure n°" << i  << "..." << std::endl;
-                        }
-                        weight = m_figure->weights()[i];
+                    // for(unsigned int i = 0; i < m_figure->size(); ++i)
+                    // {
+                    //     if (verbose>0)
+                    //     {
+                    //         std::cout << "Computing for figure n°" << i  << "..." << std::endl;
+                    //     }
+                    //     weight = m_figure->weights()[i];
 
-                        if (weight != 0.0)
-                        {
-                            auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn);
-                            // auto abortConnection = m_evaluators[i]->onAbort().connect(abort);
+                    //     if (weight != 0.0)
+                    //     {
+                    //         auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn);
+                    //         // auto abortConnection = m_evaluators[i]->onAbort().connect(abort);
 
-                            MeritValue merit = (*m_evaluators[i])(net, dimension, 0, verbose-1);
+                    //         MeritValue merit = (*m_evaluators[i])(net, dimension, 0, verbose-1);
 
-                            acc.accumulate(m_figure->weights()[i], merit, m_figure->expNorm()) ;
+                    //         acc.accumulate(m_figure->weights()[i], merit, m_figure->expNorm()) ;
 
-                            goOnConnection.disconnect();
-                            //abortConnection.disconnect();
+                    //         goOnConnection.disconnect();
+                    //         //abortConnection.disconnect();
 
-                            if (verbose>0)
-                            {
-                                std::cout << "Partial merit value: " << acc.value() << std::endl;
-                            }
+                    //         if (verbose>0)
+                    //         {
+                    //             std::cout << "Partial merit value: " << acc.value() << std::endl;
+                    //         }
 
-                            if (!onProgress()(acc.value())) 
-                            { // if the current merit is too high
-                                acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
-                                onAbort()(net); // abort the computation
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            if (verbose>0)
-                            {
-                                std::cout << "Skipping figure (zero weight): " << acc.value() << std::endl;
-                            }
-                        }
-                    }
+                    //         if (!onProgress()(acc.value())) 
+                    //         { // if the current merit is too high
+                    //             acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
+                    //             onAbort()(net); // abort the computation
+                    //             break;
+                    //         }
+                    //     }
+                    //     else
+                    //     {
+                    //         if (verbose>0)
+                    //         {
+                    //             std::cout << "Skipping figure (zero weight): " << acc.value() << std::endl;
+                    //         }
+                    //     }
+                    // }
                     return acc.value();
                 }
 
-                virtual void reset()
+                virtual void reset() override
                 {
                     for(auto& eval : m_evaluators)
                     {
-                        eval.reset();
+                        eval->reset();
+                    }
+                }
+
+                virtual void prepareForNextDimension() override
+                {
+                    for(auto& eval : m_evaluators)
+                    {
+                        eval->prepareForNextDimension();
                     }
                 }
 

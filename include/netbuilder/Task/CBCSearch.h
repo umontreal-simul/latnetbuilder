@@ -64,8 +64,13 @@ class CBCSearch : public Search<NC>
 
             auto evaluator = this->m_figure->evaluator();
 
-            evaluator->onProgress().connect(boost::bind(&MinObserver<NC>::onProgress, &this->minObserver(), _1));
-            evaluator->onAbort().connect(boost::bind(&MinObserver<NC>::onAbort, &this->minObserver(), _1));
+            if (this->m_earlyAbortion)
+            {
+                evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
+                evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
+            }
+
+            evaluator->onComputationDone().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
 
             Real merit = 0;
 
@@ -76,24 +81,26 @@ class CBCSearch : public Search<NC>
                     std::cout << "CBC dimension: " << dim << "/" << this->dimension() << std::endl;
                 }
 
-                auto net = this->m_minObserver->bestNet();
+                auto net = this->m_minimumObserver->bestNet();
                 while(!m_explorer->isOver(dim))
                 {
                     auto newNet = net.extendDimension(m_explorer->nextGenValue(dim));
                     double newMerit = (*evaluator)(*newNet,dim,merit, this->m_verbose-3);
-                    this->m_minObserver->observe(std::move(newNet),newMerit);
+                    this->m_minimumObserver->observe(std::move(newNet),newMerit);
                 }
-                if (!this->m_minObserver->hasFoundNet())
+                if (!this->m_minimumObserver->hasFoundNet())
                 {
                     this->onFailedSearch()(*this);
                     return;
                 }
-                merit = this->m_minObserver->bestMerit();
+                ++m_lastDimension;
+                merit = this->m_minimumObserver->bestMerit();
                 if (dim < this->dimension()){
-                    this->m_minObserver->reset();
+                    this->m_minimumObserver->reset();
+                    evaluator->prepareForNextDimension();
                 }
             }
-            this->selectBestNet(this->m_minObserver->bestNet(), this->m_minObserver->bestMerit());
+            this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
         }
 
         virtual void reset() override
@@ -104,6 +111,7 @@ class CBCSearch : public Search<NC>
 
     private:
         std::unique_ptr<Explorer> m_explorer;
+        unsigned int m_lastDimension = 0;
 };
 
 }}

@@ -225,7 +225,8 @@ class DigitalNetConstruction : public DigitalNet
          * @param newGenValue  Generating value used to extend the net.
          * @return A std::unique_ptr to the instantiated net.
          */ 
-        std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue){
+        std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue) const 
+        {
 
             // create the new generating matrix
             std::shared_ptr<GeneratingMatrixComputationData> newComputationData{};

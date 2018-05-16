@@ -32,7 +32,7 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPR
    typedef typename LatticeTraits<LatticeType::DIGITAL>::GenValue  value_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef Real               MeritValue;
-   typedef LatBuilder::SizeParam<LatticeType::DIGITAL, PointSetType::UNILEVEL> SizeParam;    // TODO
+   typedef LatBuilder::SizeParam<LatticeType::DIGITAL, PointSetType::UNILEVEL> SizeParam;
 
    /**
     * Unpermuted permutation.

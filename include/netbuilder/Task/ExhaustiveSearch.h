@@ -55,9 +55,15 @@ class ExhaustiveSearch : public Search<NC>
 
             auto evaluator = this->m_figure->evaluator();
 
-            evaluator->onProgress().connect(boost::bind(&MinObserver<NC>::onProgress, &this->minObserver(), _1));
-            evaluator->onAbort().connect(boost::bind(&MinObserver<NC>::onAbort, &this->minObserver(), _1));
+            
+            if (this->m_earlyAbortion)
+            {
+                evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
+                evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
+            }
 
+            evaluator->onComputationDone().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
+            
             auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_designParameter);
             
             uInteger nbNets = 1;
@@ -70,9 +76,14 @@ class ExhaustiveSearch : public Search<NC>
                 nbNets++;
                 auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, genVal);
                 double merit = (*evaluator)(*net, this->m_verbose-3);
-                this->m_minObserver->observe(std::move(net),merit);
+                this->m_minimumObserver->observe(std::move(net),merit);
             }
-            this->selectBestNet(this->m_minObserver->bestNet(), this->m_minObserver->bestMerit());
+            if (!this->m_minimumObserver->hasFoundNet())
+            {
+                this->onFailedSearch()(*this);
+                return;
+            }
+            this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
         }
 };
 

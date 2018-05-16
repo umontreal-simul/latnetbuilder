@@ -61,26 +61,38 @@ class RandomSearch : public Search<NC>
 
             auto evaluator = this->m_figure->evaluator();
 
-            evaluator->onProgress().connect(boost::bind(&MinObserver<NC>::onProgress, &this->minObserver(), _1));
-            evaluator->onAbort().connect(boost::bind(&MinObserver<NC>::onAbort, &this->minObserver(), _1));
+
+            if (this->m_earlyAbortion)
+            {
+                evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
+                evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
+            }
+
+            evaluator->onComputationDone().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
+            
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {
                 if(this->m_verbose>0)
                 {
                     std::cout << "Net " << attempt << "/" << m_nbTries << std::endl;
                 }
-                std::vector<typename ConstructionMethod::GenValue> genVal;
-                genVal.reserve(this->dimension());
+                std::vector<typename ConstructionMethod::GenValue> genVals;
+                genVals.reserve(this->dimension());
                 for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
                 {
                     auto tmp = m_randomGenValueGenerator(dim);
-                    genVal.push_back(std::move(tmp));
+                    genVals.push_back(std::move(tmp));
                 }
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, std::move(genVal));
+                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, std::move(genVals));
                 double merit = (*evaluator)(*net,this->m_verbose-3);
-                this->m_minObserver->observe(std::move(net),merit);
+                this->m_minimumObserver->observe(std::move(net),merit);
             }
-            this->selectBestNet(this->m_minObserver->bestNet(), this->m_minObserver->bestMerit());
+            if (!this->m_minimumObserver->hasFoundNet())
+            {
+                this->onFailedSearch()(*this);
+                return;
+            }
+            this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
         }
 
     private:

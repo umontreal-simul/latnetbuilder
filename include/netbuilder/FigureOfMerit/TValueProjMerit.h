@@ -32,6 +32,7 @@
 #include <string>
 
 #include <functional>
+#include <stdexcept>
 
 namespace NetBuilder { namespace FigureOfMerit {
 
@@ -173,13 +174,14 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
         WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit* figure):
                     m_figure(figure),
                     m_dimension(0),
+                    m_maxDimension(0),
                     m_maxCardinal(m_figure->projDepMerit().maxCardinal())
         {};
 
         /** Destructor. */
         ~WeightedFigureOfMeritEvaluator()
         {
-            for(unsigned int dim = 0; dim < m_dimension; ++dim)
+            for(unsigned int dim = 0; dim < m_maxDimension; ++dim)
             {
                 Node* it = m_roots[dim];
                 Node* nextIt = nullptr;
@@ -200,14 +202,14 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
           * @param initialValue is the value from which to start
           * @param verbose controls the level of verbosity of the computation
           */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
         {
 
-            extendUpToDimension(dimension);
+            // extendUpToDimension(dimension);
 
-            assert(isValid(dimension-1)); // check that the previous dimensions were correctly computed
-            assert(net.dimension()>=dimension);
-            invalidate(dimension + 1); // declare invalid the merits stored for upper dimensions
+            // assert(isValid(dimension-1)); // check that the previous dimensions were correctly computed
+            // assert(net.dimension()>=dimension);
+            // invalidate(dimension + 1); // declare invalid the merits stored for upper dimensions
 
             auto acc = m_figure->accumulator(std::move(initialValue));
 
@@ -230,8 +232,9 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
                 {
                     acc.accumulate(std::numeric_limits<Real>::infinity(), merit, 1);
                     onAbort()(net);
-                    validate(dimension);
-                    return acc.value();
+                    break;
+                    // validate(dimension);
+                    // return acc.value();
                 }
 
                 it->setMeritTmp(merit); // update the merit of the node
@@ -239,9 +242,31 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             }
             while(it != nullptr);
 
-            validate(dimension);
-            saveMerits(dimension);
+            // validate(dimension);
+            if (onComputationDone()(acc.value()))
+            {
+                saveMerits(dimension);
+            }
             return acc.value();
+    }
+
+    virtual void reset() override { m_dimension=0; }
+
+    virtual void prepareForNextDimension() override
+    {
+        if (m_dimension<m_maxDimension)
+        {
+            ++m_dimension;
+        }
+        else if (m_dimension==m_maxDimension)
+        {
+            extend();
+            ++m_dimension;
+        }
+        else if (m_dimension > m_maxDimension)
+        {
+            throw std::runtime_error("In t-value figure of merit evaluator: evaluator is ill-formed.");
+        }
     }
 
     private:
@@ -390,7 +415,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
          * while evaluating figures of merits.
          */ 
         void extend(){
-            ++m_dimension; // increase maximal dimension
+            ++m_maxDimension; // increase maximal dimension
             std::vector<Node*> newNodes; // to store new nodes
 
             std::map<Coordinates,Node*> mapsToNodes; // map between new projections and new nodes
@@ -400,11 +425,11 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
 
             // create projection {m_dimension} 
             Coordinates proj1DRep;
-            proj1DRep.insert(m_dimension-1);
+            proj1DRep.insert(m_maxDimension-1);
             double weight = m_figure->weights().getWeight(proj1DRep);
-            Node* proj1D = new Node(m_dimension, (unsigned int) proj1DRep.size(), weight);
+            Node* proj1D = new Node(m_maxDimension, (unsigned int) proj1DRep.size(), weight);
 
-            if(m_dimension==1){
+            if(m_maxDimension==1){
                 m_roots.push_back(proj1D);
                 return;
             }
@@ -414,16 +439,16 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
 
 
-            for(unsigned int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
+            for(unsigned int i = 0; i < m_maxDimension-1; ++i) // for each previous dimensions
             {
                 Node* it = m_roots[i];
                 do
                 {   if (it->getCardinal() <= m_maxCardinal-1)
                     {
                         Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
-                        projectionRep.insert(m_dimension-1);
+                        projectionRep.insert(m_maxDimension-1);
                         double weight =  m_figure->weights().getWeight(projectionRep);
-                        Node* newNode = new Node(m_dimension, (unsigned int) projectionRep.size() , weight); // create the node
+                        Node* newNode = new Node(m_maxDimension, (unsigned int) projectionRep.size() , weight); // create the node
                         newNode->addMother(it);
                         mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
                         newNodes.push_back(newNode);
@@ -445,7 +470,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             for (Node* node : newNodes) // for each new nodes
             {   
                 Coordinates tmp = node->getProjectionRepresentation();
-                for(unsigned int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
+                for(unsigned int i = 0; i < m_maxDimension-1; ++i) // link to mothers which contains m_dimension
                 {
                     if (tmp.find(i) != tmp.end())
                     {
@@ -460,17 +485,17 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             }
         }
 
-        /** Extend the ComputationSchemme up to the given last dimension. 
-         * @param dimension is the highest dimension in the projections
-         * @see extend
-         */ 
-        void extendUpToDimension(unsigned int dimension)
-        {
-            for(unsigned int i = m_dimension; i < dimension; ++i)
-            {
-                extend();
-            }
-        }
+        // /** Extend the ComputationSchemme up to the given last dimension. 
+        //  * @param dimension is the highest dimension in the projections
+        //  * @see extend
+        //  */ 
+        // void extendUpToDimension(unsigned int dimension)
+        // {
+        //     for(unsigned int i = m_dimension; i < dimension; ++i)
+        //     {
+        //         extend();
+        //     }
+        // }
 
         /** Save the merits of all the nodes corresponding to the given dimension.
          * @param dimension is the dimension to consider
@@ -518,35 +543,34 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             return true;
         }
 
-        /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
-         * @param dimension is the dimension to set valid
-         */ 
-        void validate(unsigned int dimension)
-        {
-            assert(dimension <= m_dimension);
-            assert(isValid(dimension-1));
-            m_validFlags[dimension-1] = true;
-        }
+        // /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
+        //  * @param dimension is the dimension to set valid
+        //  */ 
+        // void validate(unsigned int dimension)
+        // {
+        //     assert(dimension <= m_dimension);
+        //     assert(isValid(dimension-1));
+        //     m_validFlags[dimension-1] = true;
+        // }
 
-        /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
-         * @param dimension is the dimension to consider
-         */
-        void invalidate(unsigned int dimension)
-        {
-            assert(dimension >= 1);
-            for(unsigned int i = dimension-1; i < m_dimension; ++i)
-            {
-                if (!m_validFlags[i])
-                {
-                    return ;
-                }
-                m_validFlags[i] = false;
-            }
-        } 
-
-        virtual void reset() { invalidate(1); }
+        // /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
+        //  * @param dimension is the dimension to consider
+        //  */
+        // void invalidate(unsigned int dimension)
+        // {
+        //     assert(dimension >= 1);
+        //     for(unsigned int i = dimension-1; i < m_dimension; ++i)
+        //     {
+        //         if (!m_validFlags[i])
+        //         {
+        //             return ;
+        //         }
+        //         m_validFlags[i] = false;
+        //     }
+        // } 
 
         unsigned int m_dimension; // last dimension of J_d
+        unsigned int m_maxDimension;
         unsigned int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
         std::vector<bool> m_validFlags;
@@ -560,12 +584,13 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
         WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit* figure):
                     m_figure(figure),
                     m_dimension(0),
+                    m_maxDimension(0),
                     m_maxCardinal(m_figure->projDepMerit().maxCardinal())
         {};
 
         ~WeightedFigureOfMeritEvaluator()
         {
-            for(unsigned int dim = 0; dim < m_dimension; ++dim)
+            for(unsigned int dim = 0; dim < m_maxDimension; ++dim)
             {
                 Node* it = m_roots[dim];
                 Node* nextIt = nullptr;
@@ -579,13 +604,13 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             }
         }
 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
         {
-            extendUpToDimension(dimension);
+            // extendUpToDimension(dimension);
 
-            assert(isValid(dimension-1)); // check that the previous dimensions were correctly computed
-            assert(net.dimension()>=dimension);
-            invalidate(dimension + 1); // declare invalid the merits stored for upper dimensions
+            // assert(isValid(dimension-1)); // check that the previous dimensions were correctly computed
+            // assert(net.dimension()>=dimension);
+            // invalidate(dimension + 1); // declare invalid the merits stored for upper dimensions
 
             auto acc = m_figure->accumulator(std::move(initialValue));
 
@@ -618,16 +643,41 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
                 {
                     acc.accumulate(std::numeric_limits<Real>::infinity(), merit, 1);
                     onAbort()(net);
-                    validate(dimension);
-                    return acc.value();
+                    break;
+                    // validate(dimension);
+                    // return acc.value();
                 }
                 it = it->getNextNode(); // skip to next node
             }
             while(it != nullptr);
 
-            validate(dimension);
-            saveMerits(dimension);
+            // validate(dimension);
+            if (onComputationDone()(acc.value()))
+            {
+                saveMerits(dimension);
+            }
             return acc.value();
+    }
+
+    // virtual void reset() override { invalidate(1); }
+
+    virtual void reset() override {m_dimension = 0;}
+
+    virtual void prepareForNextDimension() override
+    {
+        if (m_dimension<m_maxDimension)
+        {
+            ++m_dimension;
+        }
+        else if (m_dimension==m_maxDimension)
+        {
+            extend();
+            ++m_dimension;
+        }
+        else if (m_dimension > m_maxDimension)
+        {
+            throw std::runtime_error("In t-value figure of merit evaluator: evaluator is ill-formed.");
+        }
     }
 
     private:
@@ -794,7 +844,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
          * while evaluating figures of merits.
          */ 
         void extend(){
-            ++m_dimension; // increase maximal dimension
+            ++m_maxDimension; // increase maximal dimension
             std::vector<Node*> newNodes; // to store new nodes
 
             std::map<Coordinates,Node*> mapsToNodes; // map between new projections and new nodes
@@ -802,13 +852,13 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
 
             m_validFlags.push_back(false);
 
-            // create projection {m_dimension} 
+            // create projection {m_maxDimension} 
             Coordinates proj1DRep;
-            proj1DRep.insert(m_dimension-1);
+            proj1DRep.insert(m_maxDimension-1);
             double weight = m_figure->weights().getWeight(proj1DRep);
-            Node* proj1D = new Node(m_dimension, (unsigned int) proj1DRep.size(), weight);
+            Node* proj1D = new Node(m_maxDimension, (unsigned int) proj1DRep.size(), weight);
 
-            if(m_dimension==1){
+            if(m_maxDimension==1){
                 m_roots.push_back(proj1D);
                 return;
             }
@@ -818,16 +868,16 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(proj1DRep),proj1D));
 
 
-            for(unsigned int i = 0; i < m_dimension-1; ++i) // for each previous dimensions
+            for(unsigned int i = 0; i < m_maxDimension-1; ++i) // for each previous dimensions
             {
                 Node* it = m_roots[i];
                 do
                 {   if (it->getCardinal() <= m_maxCardinal-1)
                     {
                         Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
-                        projectionRep.insert(m_dimension-1);
+                        projectionRep.insert(m_maxDimension-1);
                         double weight =  m_figure->weights().getWeight(projectionRep);
-                        Node* newNode = new Node(m_dimension, (unsigned int) projectionRep.size() , weight); // create the node
+                        Node* newNode = new Node(m_maxDimension, (unsigned int) projectionRep.size() , weight); // create the node
                         newNode->addMother(it);
                         mapsToNodes.insert(std::pair<Coordinates,Node*>(std::move(projectionRep),newNode));
                         newNodes.push_back(newNode);
@@ -849,7 +899,7 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             for (Node* node : newNodes) // for each new nodes
             {   
                 Coordinates tmp = node->getProjectionRepresentation();
-                for(unsigned int i = 0; i < m_dimension-1; ++i) // link to mothers which contains m_dimension
+                for(unsigned int i = 0; i < m_maxDimension-1; ++i) // link to mothers which contains m_maxDimension
                 {
                     if (tmp.find(i) != tmp.end())
                     {
@@ -864,17 +914,17 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             }
         }
 
-        /** Extend the ComputationSchemme up to the given last dimension. 
-         * @param dimension is the highest dimension in the projections
-         * @see extend
-         */ 
-        void extendUpToDimension(unsigned int dimension)
-        {
-            for(unsigned int i = m_dimension; i < dimension; ++i)
-            {
-                extend();
-            }
-        }
+        // /** Extend the ComputationSchemme up to the given last dimension. 
+        //  * @param dimension is the highest dimension in the projections
+        //  * @see extend
+        //  */ 
+        // void extendUpToDimension(unsigned int dimension)
+        // {
+        //     for(unsigned int i = m_dimension; i < dimension; ++i)
+        //     {
+        //         extend();
+        //     }
+        // }
 
         /** Save the merits of all the nodes corresponding to the given dimension.
          * @param dimension is the dimension to consider
@@ -900,62 +950,63 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             }
         }
 
-        /** Returns true if the figure of merit is fully computed for dimensions lower than maxDimension. Returns false 
-         * otherwise.
-         * @param maxDimension is the maximal dimension to consider
-         */ 
-        bool isValid(unsigned int maxDimension) const
-        {
-            if(maxDimension > m_dimension)
-            {
-                return false;
-            }
+        // /** Returns true if the figure of merit is fully computed for dimensions lower than maxDimension. Returns false 
+        //  * otherwise.
+        //  * @param maxDimension is the maximal dimension to consider
+        //  */ 
+        // bool isValid(unsigned int maxDimension) const
+        // {
+        //     if(maxDimension > m_dimension)
+        //     {
+        //         return false;
+        //     }
 
-            for(unsigned int i = 0; i < maxDimension; ++i)
-            {
-                if(!m_validFlags[i])
-                {
-                    return false;
-                }
-            }
+        //     for(unsigned int i = 0; i < maxDimension; ++i)
+        //     {
+        //         if(!m_validFlags[i])
+        //         {
+        //             return false;
+        //         }
+        //     }
 
-            return true;
-        }
+        //     return true;
+        // }
 
-        /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
-         * @param dimension is the dimension to set valid
-         */ 
-        void validate(unsigned int dimension)
-        {
-            assert(dimension <= m_dimension);
-            assert(isValid(dimension-1));
-            m_validFlags[dimension-1] = true;
-        }
+        // /** Set the scheme to be valid for the given dimension. This can only be done if the lower dimensions are valid to.
+        //  * @param dimension is the dimension to set valid
+        //  */ 
+        // void validate(unsigned int dimension)
+        // {
+        //     assert(dimension <= m_dimension);
+        //     assert(isValid(dimension-1));
+        //     m_validFlags[dimension-1] = true;
+        // }
 
-        /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
-         * @param dimension is the dimension to consider
-         */
-        void invalidate(unsigned int dimension)
-        {
-            assert(dimension >= 1);
-            for(unsigned int i = dimension-1; i < m_dimension; ++i)
-            {
-                if (!m_validFlags[i])
-                {
-                    return ;
-                }
-                m_validFlags[i] = false;
-            }
-        } 
+        // /** Set the scheme to be unvalid for the given dimension and all the upper dimensions.
+        //  * @param dimension is the dimension to consider
+        //  */
+        // void invalidate(unsigned int dimension)
+        // {
+        //     assert(dimension >= 1);
+        //     for(unsigned int i = dimension-1; i < m_dimension; ++i)
+        //     {
+        //         if (!m_validFlags[i])
+        //         {
+        //             return ;
+        //         }
+        //         m_validFlags[i] = false;
+        //     }
+        // } 
 
-        virtual void reset() { invalidate(1); }
 
         unsigned int m_dimension; // last dimension of J_d
+        unsigned int m_maxDimension;
         unsigned int m_maxCardinal; // maximal cardinality of projections to consider (alpha)
         std::vector<Node*> m_roots; // pointer to the first node to evaluate
         std::vector<bool> m_validFlags;
 
 };
+
 
 }}
 

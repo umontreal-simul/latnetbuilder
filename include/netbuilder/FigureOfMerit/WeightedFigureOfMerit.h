@@ -34,97 +34,6 @@
 
 namespace NetBuilder{ namespace FigureOfMerit { 
 
-/** Base class for projection-dependent merits which only require the net and the projection.
- */ 
-template <PointSetType PST>
-class SimpleProjDepMerit;
-
-/** Template specialization for projection-dependent merits which only require the net 
- * and the projection in the case of simple nets.
- */ 
-template<>
-class SimpleProjDepMerit<PointSetType::UNILEVEL>
-{
-    public:
-    
-        virtual ~SimpleProjDepMerit() = default;
-
-        /** Returns the name of the projection-dependent merit.
-         */ 
-        std::string name() const { return m_name;}
-
-        /**  Overload of << operator to print the name of the the projection-dependent merit on the given output stream
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const SimpleProjDepMerit& dt)
-        {
-            os << "Projection-dependent merit: " << dt.name();
-            return os;
-        } 
-
-        /** Computes the projection-dependent figure of merit of the net for the given projection.
-         * @param net is the digital net for which we want to compute the merit
-         * @param projection is the projection to consider
-         */ 
-        virtual Real operator()(const DigitalNet& net, const LatCommon::Coordinates& projection) const {return 0 ; }
-
-        std::vector<LatCommon::Coordinates> projections(unsigned int dimension) const
-        { 
-            std::vector<LatCommon::Coordinates> res(1);
-            for(unsigned int i = 0; i < dimension; ++i)
-            {
-                res[0].insert(i);
-            }
-            return res;
-        }
-
-    protected:
-        std::string m_name = "dummy"; // name of the projection-dependent merit
-};
-
-/** Template specialization for projection-dependent merits which only require the net and the projection in the case of 
- * embedded nets.
- */ 
-template<>
-class SimpleProjDepMerit<PointSetType::MULTILEVEL>
-{
-    public:
-
-        virtual ~SimpleProjDepMerit() = default;
-
-        /** Returns the name of the projection-dependent merit.
-         */ 
-        std::string name() const { return m_name ;}
-
-        /**  Overload of << operator to print the name of the the projection-dependent merit on the given output stream
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const SimpleProjDepMerit& dt)
-        {
-            os << "Projection-dependent merit: " << dt.name();
-            return os;
-        } 
-
-        /** Computes the projection-dependent figure of merit of the net for the given projection.
-         * @param net is the digital net for which we want to compute the merit
-         * @param projection is the projection to consider
-         */ 
-        virtual Real operator()(const DigitalNet& net, const LatCommon::Coordinates& projection) const {return 0; }
-
-        std::vector<LatCommon::Coordinates> projections(unsigned int dimension) const
-        { 
-            std::vector<LatCommon::Coordinates> res(1);
-            for(unsigned int i = 0; i < dimension; ++i)
-            {
-                res[0].insert(i);
-            }
-
-            return res;
-        }
-
-    protected:
-        std::string m_name =  "Dummy"; // name of the projection-dependent merit
-        std::function<Real (const RealVector&)> m_combiner = nullCombiner() ; // combiner for the merits of each level
-};
-
 /** Class which represents a weighted figure of merit based on a projection dependent merit whose type is the template
  * parameter. 
  */  
@@ -195,12 +104,10 @@ class WeightedFigureOfMerit : public FigureOfMerit
              * @param initialValue is the value from which to start
              * @param verbose controls the level of verbosity of the computation
              */ 
-            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
             {
                 using namespace LatCommon;
 
-
-                // TO DO : more explciit name and document interface for type of projections
                 auto projections = m_figure->projDepMerit().projections(dimension);
 
                 auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
@@ -230,8 +137,13 @@ class WeightedFigureOfMerit : public FigureOfMerit
                         break;
                     }
                 }
+                onComputationDone()(acc.value());
                 return acc.value(); // return the result
-            } 
+            }
+
+            virtual void reset() override {};
+
+            virtual void prepareForNextDimension() override {}; 
 
             private:
                 WeightedFigureOfMerit* m_figure;

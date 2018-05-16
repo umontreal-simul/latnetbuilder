@@ -49,6 +49,7 @@ class FigureOfMeritEvaluator
 
         typedef boost::signals2::signal<bool (const MeritValue&), LatBuilder::Functor::AllOf> OnProgress;
         typedef boost::signals2::signal<void (const DigitalNet&)> OnAbort;
+        typedef boost::signals2::signal<bool (const MeritValue&),  LatBuilder::Functor::AllOf> OnComputationDone;
 
         virtual ~FigureOfMeritEvaluator() = default;
 
@@ -57,7 +58,8 @@ class FigureOfMeritEvaluator
         */
         FigureOfMeritEvaluator():
             m_onProgress(new OnProgress),
-            m_onAbort(new OnAbort)
+            m_onAbort(new OnAbort),
+            m_onComputationDone(new OnComputationDone)
         {};
 
         /**
@@ -87,6 +89,16 @@ class FigureOfMeritEvaluator
         * was aborted.
         */
         OnAbort& onAbort() const { return *m_onAbort; }
+
+        /**
+        * Computation done signal.
+        *
+        * Emitted when the computation of the figure of merit is over.
+        * The signal argument is the net for which the computation has just
+        * terminated and its merit value. If any of the signal slots returns \c false, 
+        * the net will not be considered better than the ones.
+        */
+        OnComputationDone& onComputationDone() const { return *m_onComputationDone; }
         //@}
 
         /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
@@ -122,19 +134,23 @@ class FigureOfMeritEvaluator
                     merit = std::numeric_limits<Real>::infinity();
                     break;
                 }
+                prepareForNextDimension();
             }
             reset();
+            onComputationDone()(merit);
             return merit;
         }
 
         /** Reset the evaluator, enabling the full computation for a new net
          */ 
-        virtual void reset() { return;}
+        virtual void reset() = 0;
 
+        virtual void prepareForNextDimension() = 0;
 
     private:
         std::unique_ptr<OnProgress> m_onProgress; 
         std::unique_ptr<OnAbort> m_onAbort;
+        std::unique_ptr<OnComputationDone> m_onComputationDone;
 };
 
 /** Virtual class to represent any figure of merit. Derived classes should implement

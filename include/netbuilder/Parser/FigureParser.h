@@ -194,7 +194,6 @@ struct FigureParser
 
         std::unique_ptr<LatCommon::Weights> weights = LatBuilder::Parser::Weights::parse(weightString, weightsPowerScale);
         
-        // TODO: compute maxCard
         if (name == "t-value"){
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
             auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<PST>>(maxCard, commandLine.m_combiner);

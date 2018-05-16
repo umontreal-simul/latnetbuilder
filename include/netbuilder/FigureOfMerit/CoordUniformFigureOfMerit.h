@@ -156,8 +156,9 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             return out;
         }
 
-        virtual void reset(){
-            m_currentDim = 0;
+        virtual void reset() override
+        {
+            // m_currentDim = 0;
             m_memStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
             m_tmpStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
         }
@@ -178,15 +179,15 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
          * @param initialValue is the value from which to start
          * @param verbose controls the level of verbosity of the computation
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
         {
             using namespace LatCommon;
 
-            assert(dimension == m_currentDim || dimension == m_currentDim+1);
-            if (dimension == m_currentDim+1){
-                m_currentDim++;
-                m_memStates = m_tmpStates;
-            }
+            // assert(dimension == m_currentDim || dimension == m_currentDim+1);
+            // if (dimension == m_currentDim+1){
+            //     m_currentDim++;
+            //     m_memStates = m_tmpStates;
+            // }
 
             MeritValue acc = initialValue; // create the accumulator from the initial value
             
@@ -203,14 +204,22 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             if (! onProgress()(acc)){
                 acc = std::numeric_limits<Real>::infinity(); // set the merit to infinity
                 onAbort()(net); // abort the computation
-                return acc;
+                // return acc;
             }
-            
-            m_tmpStates = m_memStates;
-            for (auto& state : m_tmpStates){
-                state->update(m_innerProd.kernelValues(), M);
+
+            if (onComputationDone()(acc))
+            {
+                m_tmpStates = m_memStates;
+                for (auto& state : m_tmpStates){
+                    state->update(m_innerProd.kernelValues(), M);
+                }
             }
             return acc;
+        }
+
+        virtual void prepareForNextDimension() override
+        {
+            m_memStates = m_tmpStates;
         } 
 
         CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMeritEvaluator&&) = default;
@@ -233,7 +242,7 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_memStates;
             CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_tmpStates;
 
-            unsigned int m_currentDim=0;
+            // unsigned int m_currentDim=0;
     };
 
     virtual std::unique_ptr<CoordUniformFigureOfMeritEvaluator> evaluator(int n)

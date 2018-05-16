@@ -32,8 +32,6 @@
 
 //================================================================================
 
-// TO DOCUMENT
-
 namespace NetBuilder {
 
 template <typename T>

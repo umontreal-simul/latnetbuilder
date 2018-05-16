@@ -84,16 +84,14 @@ class UniformityProperty : public FigureOfMerit{
                  *  @param initialValue is the value from which to start
                  *  @param verbose controls the level of verbosity of the computation
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
 
-                    assert(dimension == m_currentDim || dimension == m_currentDim+1);
-                    if (dimension == m_currentDim+1){
-                        m_currentDim++;
-                        m_memReducer = m_tmpReducer;
-                    }
-
-                    //TO handle verbosity
+                    // assert(dimension == m_currentDim || dimension == m_currentDim+1);
+                    // if (dimension == m_currentDim+1){
+                    //     m_currentDim++;
+                    //     m_memReducer = m_tmpReducer;
+                    // }
 
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
@@ -126,20 +124,30 @@ class UniformityProperty : public FigureOfMerit{
                         return acc.value();
                     }
 
-                    m_tmpReducer = std::move(newReducer);
+                    // if (onComputationDone()(net,acc.value()))
+                    {
+                        m_tmpReducer = std::move(newReducer);
+                    }
+                    
                     return acc.value();
                 }
 
-                void reset()
+                virtual void reset() override
                 {
-                    m_currentDim = 0;
+                    // m_currentDim = 0;
                     m_tmpReducer.reset(0);
                     m_memReducer.reset(0);
+                }
+                
+                virtual void prepareForNextDimension() override
+                {
+                    // m_currentDim++;
+                    m_memReducer = m_tmpReducer;
                 }
 
             private:
                 UniformityProperty* m_figure;
-                unsigned int m_currentDim = 0;
+                // unsigned int m_currentDim = 0;
                 ProgressiveRowReducer m_tmpReducer;
                 ProgressiveRowReducer m_memReducer;
 
