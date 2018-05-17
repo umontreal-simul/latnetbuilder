@@ -34,7 +34,7 @@ namespace NetBuilder { namespace Task {
 * reaches a value superior to the current minimum value.
 */
 template <NetConstruction NC>
-class MinObserver 
+class MinimumObserver 
 {
     public:
 
@@ -43,7 +43,7 @@ class MinObserver
          * @param nCols is the number of columns of the nets
          * @verbose is the level of verbosity of the observer
         */
-        MinObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, int verbose = 0):
+        MinimumObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, int verbose = 0):
             m_bestNet(new DigitalNetConstruction<NC>(0,designParameter)),
             m_verbose(verbose)
         {
@@ -61,13 +61,12 @@ class MinObserver
         const DigitalNetConstruction<NC>& bestNet() { return *m_bestNet; }
         
         /** Returns the best observed merit value. */
-        const Real bestMerit() { return m_bestMerit; }
+        Real bestMerit() { return m_bestMerit; }
 
         /** Notifies the observer that the merit value of a new candidate net has
          *  been observed, updates the best observed candidate net if necessary.
          */
-
-        void observe(std::unique_ptr<DigitalNetConstruction<NC>> net, Real merit)
+        bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit)
         {
                 if (merit < m_bestMerit){
                     m_bestMerit = merit;
@@ -80,6 +79,7 @@ class MinObserver
                         std::cout << " <-- merit: "<< m_bestMerit << " (best)";
                         std::cout << std::endl;
                     }
+                    return true;
                 }
                 else
                 {
@@ -89,6 +89,7 @@ class MinObserver
                         std::cout << " <-- rejected";
                         std::cout << std::endl;
                     }
+                    return false;
                 }
         }
 

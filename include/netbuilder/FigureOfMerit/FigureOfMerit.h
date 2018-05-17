@@ -107,6 +107,7 @@ class FigureOfMeritEvaluator
             MeritValue merit = 0;
             for(unsigned int dim = 1; dim <= net.dimension(); ++dim)
             {
+                prepareForNextDimension();
                 if (verbose>0)
                 {
                     std::cout << "Computing for dimension: " << dim << "..." <<std::endl;
@@ -122,15 +123,21 @@ class FigureOfMeritEvaluator
                     merit = std::numeric_limits<Real>::infinity();
                     break;
                 }
+                lastNetWasBest();
             }
+            std::cout << "computation done for all dimension..." << std::endl;
             reset();
+            std::cout << "reset was successful" << std::endl;
             return merit;
         }
 
         /** Reset the evaluator, enabling the full computation for a new net
          */ 
-        virtual void reset() { return;}
+        virtual void reset() = 0;
 
+        virtual void prepareForNextDimension() = 0;
+
+        virtual void lastNetWasBest() = 0;
 
     private:
         std::unique_ptr<OnProgress> m_onProgress; 

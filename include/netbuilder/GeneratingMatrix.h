@@ -42,7 +42,7 @@ class GeneratingMatrix {
          * @param n_rows is the number of rows of the matrix
          * @param n_cols is the number of columns of the matrix
          */  
-        GeneratingMatrix(unsigned int n_rows, unsigned int n_cols);
+        GeneratingMatrix(unsigned int n_rows = 0, unsigned int n_cols = 0);
 
         /** Constructs a generating matrix with rows initialized 
          * using the given integers.

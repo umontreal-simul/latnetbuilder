@@ -18,7 +18,7 @@
 #define NETBUILDER__TASK__SEARCH_H
 
 #include "netbuilder/Task/BaseTask.h"
-#include "netbuilder/Task/MinObserver.h"
+#include "netbuilder/Task/MinimumObserver.h"
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
@@ -39,7 +39,7 @@ public:
 
     virtual void reset() override
     {
-        m_minObserver.reset();
+        m_minimumObserver.reset();
         m_bestNet = DigitalNetConstruction<NC>(0,m_designParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
@@ -50,7 +50,8 @@ public:
     Search( Dimension dimension, 
             typename NetConstructionTraits<NC>::DesignParameter designParameter,
             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
-            int verbose = 0 ):
+            int verbose = 0,
+            bool earlyAbortion = true ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
@@ -60,8 +61,9 @@ public:
         m_figure(std::move(figure)),
         m_bestNet(0, m_designParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
-        m_minObserver(new MinObserver<NC>(designParameter, verbose-2)),
-        m_verbose(verbose)
+        m_minimumObserver(new MinimumObserver<NC>(designParameter, verbose-2)),
+        m_verbose(verbose),
+        m_earlyAbortion(earlyAbortion)
         {};
 
     Search(Search&& ) = default;
@@ -87,7 +89,7 @@ public:
 
     bool hasFoundNet() const
     {
-        return m_minObserver->hasFoundNet();
+        return m_minimumObserver->hasFoundNet();
     }
 
     /**
@@ -103,12 +105,12 @@ public:
     { return bestMeritValue(); }
 
     /** Returns a reference to the minimum-element observer. */
-    MinObserver<NC>& minObserver()
-    { return *m_minObserver; }
+    MinimumObserver<NC>& minimumObserver()
+    { return *m_minimumObserver; }
 
     /** Returns a const qualified reference the minimum-element observer. */
-    const MinObserver<NC>& minObserver() const
-    { return *m_minObserver; }
+    const MinimumObserver<NC>& minimumObserver() const
+    { return *m_minimumObserver; }
 
     /**
     * Net-selected signal.
@@ -143,7 +145,7 @@ public:
         /**
         * Selects a new best net and emits an OnNetSelected signal.
         */
-        void selectBestNet(const DigitalNetConstruction<NC> net, Real merit)
+        void selectBestNet(const DigitalNetConstruction<NC>& net, Real merit)
         {
             m_bestNet = net;
             m_bestMerit = merit;
@@ -159,8 +161,10 @@ public:
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
         DigitalNetConstruction<NC> m_bestNet;
         Real m_bestMerit;
-        std::unique_ptr<MinObserver<NC>> m_minObserver;
+        std::unique_ptr<MinimumObserver<NC>> m_minimumObserver;
         int m_verbose;
+        bool m_earlyAbortion;
+        
 };
 
 }}

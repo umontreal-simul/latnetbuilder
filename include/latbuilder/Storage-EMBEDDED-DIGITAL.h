@@ -32,7 +32,7 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::MULTILEVEL, COM
    typedef typename LatticeTraits<LatticeType::DIGITAL>::GenValue  value_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef RealVector          MeritValue;
-   typedef LatBuilder::SizeParam<LatticeType::DIGITAL, PointSetType::MULTILEVEL> SizeParam;    // TODO
+   typedef LatBuilder::SizeParam<LatticeType::DIGITAL, PointSetType::MULTILEVEL> SizeParam;
     typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, COMPRESS, Traversal::Forward> GroupType; 
     typedef GroupType GenGroupType;
    /**
@@ -51,11 +51,6 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::MULTILEVEL, COM
 
    /**
     * Stride permutation.
-    *
-    * Depending on the lattice: 
-    *
-    * 
-    *
     * For digital nets: TODO
     */
    class Stride {

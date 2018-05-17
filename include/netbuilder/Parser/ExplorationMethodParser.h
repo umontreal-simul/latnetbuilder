@@ -93,13 +93,16 @@ struct ExplorationMethodParser
                                                         commandLine.m_designParameter,
                                                         std::move(commandLine.m_figure),
                                                         r,
-                                                        commandLine.m_verbose);
+                                                        commandLine.m_verbose,
+                                                        commandLine.m_earlyAbort);
             
             if (name == "random-CBC"){
                 return std::make_unique<Task::CBCSearch<NC, Task::RandomCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_designParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::RandomCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter, r),commandLine.m_verbose);
+                                                                std::make_unique<Task::RandomCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter, r),
+                                                                commandLine.m_verbose,
+                                                                commandLine.m_earlyAbort);
             }
 
             if (name == "mixed-CBC"){
@@ -111,15 +114,18 @@ struct ExplorationMethodParser
                 return std::make_unique<Task::CBCSearch<NC, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_designParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::MixedCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter, maxDim, r), commandLine.m_verbose);
+                                                                std::make_unique<Task::MixedCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter, maxDim, r), 
+                                                                commandLine.m_verbose,
+                                                                commandLine.m_earlyAbort);
             }
         }
         else if (name == "full-CBC"){
             return std::make_unique<Task::CBCSearch<NC, Task::FullCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_designParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::FullCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter),commandLine.m_verbose); 
-
+                                                                std::make_unique<Task::FullCBCExplorer<NC>>(commandLine.m_dimension, commandLine.m_designParameter),
+                                                                commandLine.m_verbose,
+                                                                commandLine.m_earlyAbort);
         }
         else{
             throw BadExplorationMethod(name + " is not a valid exploration method; see --help");

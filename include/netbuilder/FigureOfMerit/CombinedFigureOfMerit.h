@@ -95,7 +95,9 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  * @param figure is a pointer to the figure of merit.
                 */
                 CombinedFigureOfMeritEvaluator(CombinedFigureOfMerit* figure):
-                    m_figure(figure)
+                    m_figure(figure),
+                    m_oldMerits(figure->size(),0),
+                    m_newMerits(figure->size(),0)
                 {
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
@@ -110,16 +112,13 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  *  @param initialValue is the value from which to start
                  *  @param verbose controls the level of verbosity of the computation
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0)
+                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
-                    auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
+                    auto acc = m_figure->accumulator(std::move(0)); // create the accumulator from the initial value
 
                     Real weight;
 
                     auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->expNorm())) ;} ;
-
-                    //auto abort = [this] (const DigitalNet& net) -> void { this->onAbort()(net) ;} ;
-
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
                         if (verbose>0)
@@ -131,14 +130,12 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                         if (weight != 0.0)
                         {
                             auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn);
-                            // auto abortConnection = m_evaluators[i]->onAbort().connect(abort);
 
-                            MeritValue merit = (*m_evaluators[i])(net, dimension, 0, verbose-1);
+                            m_newMerits[i] = (*m_evaluators[i])(net, dimension, 0, verbose-1);
 
-                            acc.accumulate(m_figure->weights()[i], merit, m_figure->expNorm()) ;
+                            acc.accumulate(m_figure->weights()[i], m_newMerits[i], m_figure->expNorm()) ;
 
                             goOnConnection.disconnect();
-                            //abortConnection.disconnect();
 
                             if (verbose>0)
                             {
@@ -147,7 +144,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
                             if (!onProgress()(acc.value())) 
                             { // if the current merit is too high
-                                acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
+                                acc.accumulate(weight, std::numeric_limits<Real>::infinity(), m_figure->expNorm()); // set the merit to infinity
                                 onAbort()(net); // abort the computation
                                 break;
                             }
@@ -163,17 +160,41 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                     return acc.value();
                 }
 
-                virtual void reset()
+                virtual void reset() override
                 {
                     for(auto& eval : m_evaluators)
                     {
-                        eval.reset();
+                        eval->reset();
+                    }
+                    m_newMerits = std::vector<Real>(m_figure->size(),0);
+                    m_bestNewMerits = std::vector<Real>(m_figure->size(),0);
+                    m_oldMerits = std::vector<Real>(m_figure->size(),0);
+                }
+
+                virtual void prepareForNextDimension() override
+                {
+                    for(auto& eval : m_evaluators)
+                    {
+                        eval->prepareForNextDimension();
+                    }
+                    m_oldMerits = std::move(m_bestNewMerits);
+                }
+
+                virtual void lastNetWasBest() override
+                {
+                    for(auto& eval : m_evaluators)
+                    {
+                        m_bestNewMerits = m_newMerits;
+                        eval->lastNetWasBest();
                     }
                 }
 
             private:
                 CombinedFigureOfMerit* m_figure;
                 std::vector<std::unique_ptr<FigureOfMeritEvaluator>> m_evaluators;
+                std::vector<Real> m_oldMerits;
+                std::vector<Real> m_bestNewMerits;
+                std::vector<Real> m_newMerits;
 
         };
 

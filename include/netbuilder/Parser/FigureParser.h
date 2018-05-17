@@ -171,7 +171,7 @@ struct FigureParser
             throw BadFigure("norm-type must be specified; see -help.");
         }
 
-        Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
+        Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[2]);
 
         if (nbParam <=3)
         {
@@ -195,7 +195,6 @@ struct FigureParser
 
         std::unique_ptr<LatCommon::Weights> weights = LatBuilder::Parser::Weights::parse(weightString, weightsPowerScale);
         
-        // TODO: compute maxCard
         if (name == "t-value"){
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
             auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<PST>>(maxCard, commandLine.m_combiner);

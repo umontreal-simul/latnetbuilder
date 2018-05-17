@@ -46,7 +46,7 @@ template <NetConstruction NC>
 struct LevelCombinerParser<NC, NetBuilder::PointSetType::UNILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::UNILEVEL>& commandLine) // TODO
+   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::UNILEVEL>& commandLine)
    {
        return result_type();
    }
@@ -56,7 +56,7 @@ template <NetConstruction NC>
 struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::MULTILEVEL>& commandLine) // TODO
+   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::MULTILEVEL>& commandLine)
    {
        std::string str = commandLine.s_combiner;
        if (str=="sum")
