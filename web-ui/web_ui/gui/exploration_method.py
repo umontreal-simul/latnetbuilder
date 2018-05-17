@@ -18,8 +18,16 @@ explr_data = {
     'fast-CBC': '<p> All possible values of the components components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined and the best ones are selected, one coordinate at a time. </p>\
     <p> Computation is accelerated by using fast Fourier transforms. </p>\
     <p style="color:red"> Requires the Coordinate-Uniform evaluation method.</p>',
-    'full-CBC': 'TBC',
-    'net-explicit:' : 'TBC'
+    'full-CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined the best ones are selected, one coordinate at a time. </p>\
+    <p> If you tick "random choice \\(r\\) of points", a number \\(r\\) of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.\
+    If the minimal random dimension \\(d\\) equals one, the search is entirely random. Else, the search is exhaustive up to dimension \\(d-1\\), and random from dimension \\(d\\). </p>',
+    'net-explicit:' : '<p> Explicit net evaluation. Enter below the net characteristics:\
+        <ul>\
+            <li> direction numbers for Sobol construction (please respect the format given as example)\
+            <li> generating vector for the polynomial construction \
+            <li> generating matrices for the explicit construction (please respect the format given as example)\
+        </ul>\
+    </p>'
 }
 
 exploration_choice = widgets.ToggleButtons(
@@ -33,17 +41,17 @@ exploration_choice = widgets.ToggleButtons(
 is_random = widgets.Checkbox(description=r'Random choice of \(r\) points', value=False)
 number_samples = widgets.Text(value='10', description=r'Set \(r\):', layout=widgets.Layout(display='none'))
 
-random_box = widgets.HBox([is_random, number_samples], style=style_default, layout=widgets.Layout(display='none'))
+random_box = widgets.HBox([is_random, number_samples], style=style_default)
 
 
-generating_numbers_sobol = widgets.Textarea(placeholder='Please enter the direction numbers here.',
+generating_numbers_sobol = widgets.Textarea(placeholder='0\n1\n1,1\n1,3,5',
                                    layout=widgets.Layout(width='inherit', height='150px'))
 generating_numbers_sobol_button = widgets.Button(description='Joe and Kuo direction numbers', layout=widgets.Layout(width='270px'))
 generating_numbers_sobol_box = widgets.VBox([generating_numbers_sobol_button, generating_numbers_sobol],
                                 layout=widgets.Layout(display='none'))
 
-generating_matrices = widgets.Textarea(placeholder='TBC',
-                                   layout=widgets.Layout(width='inherit', height='100px', display='none'))
+generating_matrices = widgets.Textarea(placeholder='1 0 0\n0 1 0\n0 0 1\n\n1 1 0\n1 0 1\n0 1 1',
+                                   layout=widgets.Layout(width='inherit', height='150px', display='none'))
 
 
 generating_vector_simple = widgets.HBox(
@@ -62,10 +70,10 @@ generating_vector = widgets.VBox([
 ],
     layout=widgets.Layout(display='none'))
 
-mixed_CBC_level = widgets.BoundedIntText(value=INITIAL_DIM, min=1, description='Mixed CBC maximum dimension:',
-                    layout=widgets.Layout(width='30%', display='none', margin='0px 0px 0px 80px'), style=style_default, disabled=True)
+mixed_CBC_level = widgets.BoundedIntText(value=1, min=1, description='Minimal random dimension:',
+                    layout=widgets.Layout(width='250px', display='none', margin='0px 0px 0px 80px'), style=style_default, disabled=True)
 
-explr_info = widgets.HTMLMath('')
+explr_info = widgets.HTMLMath(explr_data[exploration_choice.value])
 exploration = widgets.Accordion([widgets.VBox(
     [exploration_choice, explr_info, generating_vector_simple, generating_vector, generating_matrices, random_box, mixed_CBC_level, generating_numbers_sobol_box])])
 exploration.set_title(0, 'Exploration Method')

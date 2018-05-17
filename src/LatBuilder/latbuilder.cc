@@ -125,8 +125,8 @@ makeOptionsDescription()
     "  low-pass:<threshold>\n"
     "where <multilevel-weights> specifies the per-level weights; possible values:\n"
     "  even[:<min-level>[:<max-level>]] (default)\n")
-   ("combiner,b", po::value<std::string>()->default_value("level:max"),
-    "combiner for (filtered) multilevel merit values; possible values:\n"
+   ("combiner,b", po::value<std::string>(),
+    "(required for embedded) combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
     "  level:{<level>|max}\n")
@@ -165,6 +165,10 @@ parse(int argc, const char* argv[])
   //     std::cout << "Lattice Builder " << LATBUILDER_VERSION << std::endl;
   //     std::exit (0);
   //  }
+
+  if (opt.count("combiner") < 1 && opt["embedded-lattice"].as<std::string>() == "true"){
+    throw std::runtime_error("--combiner must be specified for embedded (try --help)");
+  }
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
@@ -335,7 +339,13 @@ int main(int argc, const char *argv[])
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
             cmd.weights       = opt["weights"].as<std::vector<std::string>>();
-            cmd.combiner      = opt["combiner"].as<std::string>();
+            if (opt.count("combiner") == 1){
+              cmd.combiner      = opt["combiner"].as<std::string>();
+            }
+            else{
+              cmd.combiner = "level:max";
+            }
+            
 
             cmd.weightsPowerScale = 1.0;
             if (opt.count("weights-power") >= 1) {

@@ -21,7 +21,8 @@ maximum_level = widgets.Text(placeholder='10', description='Max Level (optional)
 
 mult_normalization_options = widgets.VBox([
     widgets.HBox([widgets.Dropdown(options=['SL10 Palpha', 'DPW08 Palpha'], description='Normalization Type:', layout=widgets.Layout(width='30%'), style=style_default),
-                  widgets.HTML('<p style="color:red"> Warning: DPW08 Palpha works only with product weights</p>')]),
+                  widgets.HTML('<span style="color:red"> Warning: SL10 Palpha and DPW08 Palpha only work with Palpha figure of merit.</span>\
+                                    <br><span style="color:red"> DPW08 only works for product weights.</span>')]),
     widgets.HBox([minimum_level, maximum_level], layout=widgets.Layout(margin='0px 0px 0px 80px'))],
     layout=widgets.Layout(display='none'))
 
@@ -42,7 +43,7 @@ combiner_dropdown = widgets.Dropdown(
              ('maximum weighted value', 'max'),
              ('weighted value of the highest level', 'level:max'),
              ('weighted value of a specific level', 'level:')],
-    value=None, description='Combiner:', style=style_default)
+    value='sum', description='Combiner:', style=style_default)
 combiner_options = widgets.HBox(
     [combiner_dropdown, combiner_level], layout=widgets.Layout(display='none'))
 
@@ -50,8 +51,7 @@ combiner_options = widgets.HBox(
 embedding = widgets.Accordion([widgets.VBox([multilevel_wrapper, mult_normalization_options, mult_low_pass_filter_options, combiner_options])],
                               layout=widgets.Layout(display='none'))
 embedding.set_title(
-    0, 'For Embedded Lattices: multilevel filters and combiners (optional)')
-embedding.selected_index = None
+    0, 'For Multilevel Point Sets: Multilevel Filters and Combiners')
 
 def change_combiner_options(b, gui):
     # print(b)

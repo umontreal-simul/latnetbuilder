@@ -29,19 +29,22 @@ def create_output(gui):
 
     b1 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=1, layout=widgets.Layout(width='150px'), description='x-axis')
     b2 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=2, layout=widgets.Layout(width='150px'), description='y-axis')
-    b3 = widgets.BoundedIntText(max=13, min=1, value=min(result_obj.getMaxLevel(), 10), layout=widgets.Layout(width='150px'), description='Level')
-
-    scatt = Scatter(x=result_obj.getNet(0, b3.value), 
-                    y=result_obj.getNet(1, b3.value), 
-                    scales={'x': sc_x, 'y': sc_y},
-                    default_size=20)
-    ax_x = Axis(scale=sc_x, label='Coordinate 1')
-    ax_y = Axis(scale=sc_y, label='Coordinate 2', orientation='vertical')
-
-    fig = Figure(marks=[scatt], axes=[ax_x, ax_y], layout=widgets.Layout(width='650px', height='650px'))
-
+    b3 = widgets.BoundedIntText(max=min(result_obj.getMaxLevel(), 12), min=1, value=min(result_obj.getMaxLevel(), 11), layout=widgets.Layout(width='150px'), description='Level')
+    
     if 'polynomial' in result_obj.search_type:
         b3.disabled = True
+    if not ('polynomial' in result_obj.search_type and result_obj.getMaxLevel() >= 11):
+        scatt = Scatter(x=result_obj.getNet(0, b3.value), 
+                        y=result_obj.getNet(1, b3.value), 
+                        scales={'x': sc_x, 'y': sc_y},
+                        default_size=20)
+        ax_x = Axis(scale=sc_x, label='Coordinate 1')
+        ax_y = Axis(scale=sc_y, label='Coordinate 2', orientation='vertical')
+
+        fig = Figure(marks=[scatt], axes=[ax_x, ax_y], layout=widgets.Layout(width='650px', height='650px'))
+        plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3, widgets.HTML('<p>Warning: the plot lags for 2^13 points and more. </p> <p>Level restricted to be less than 13.</p>')])], 
+                layout=widgets.Layout(align_items='center'))
+
     def change_graph(b):
         if b['name'] == 'value':
             if b['owner'] == b1:
@@ -57,8 +60,7 @@ def create_output(gui):
     b2.observe(change_graph)
     b3.observe(change_graph)
 
-    plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3, widgets.HTML('<p>Warning: the plot lags for 2^13 points and more. </p> <p>Level restricted to be less than 13.</p>')])], 
-                        layout=widgets.Layout(align_items='center'))
+
 
     if result_obj.search_type == 'ordinary':
         template = env.get_template('ordinary_C.txt')
@@ -100,10 +102,15 @@ def create_output(gui):
             template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.latnet.gen.gen_vector)),
             layout=widgets.Layout(width='600px', height='700px'))
         
-        gui.output.output.children = [plot, code_cpp, code_python]
-        gui.output.output.set_title(0, 'Plot')
-        gui.output.output.set_title(1, 'C++11 code')
-        gui.output.output.set_title(2, 'Python code')
+        if not result_obj.getMaxLevel() >= 11:
+            gui.output.output.children = [plot, code_cpp, code_python]
+            gui.output.output.set_title(0, 'Plot')
+            gui.output.output.set_title(1, 'C++11 code')
+            gui.output.output.set_title(2, 'Python code')
+        else:
+            gui.output.output.children = [code_cpp, code_python]
+            gui.output.output.set_title(0, 'C++11 code')
+            gui.output.output.set_title(1, 'Python code')
 
     elif result_obj.search_type == 'digital-sobol':
         

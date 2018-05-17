@@ -4,12 +4,12 @@ from IPython.display import display
 
 from .properties import (modulus, is_multilevel, properties_wrapper,
                          dimension, change_modulus, change_dimension, modulus_pretty)
-from .filters import is_normalization, low_pass_filter, normalization_options, normalization_box, low_pass_filter_options, filters_wrapper, trigger_normalization_warning, normalization_warning, equidistribution_options, equidistribution_level, equidistribution_box, equidistribution_filter, trigger_equidistribution_level
+from .filters import is_normalization, low_pass_filter, normalization_options, normalization_box, low_pass_filter_options, filters_wrapper, normalization_warning, equidistribution_options, equidistribution_weight, equidistribution_box, equidistribution_filter
 from .figure_of_merit import figure_type, figure_alpha, coord_unif, figure_power, figure_of_merit_expl, figure_of_merit_wrapper, change_figure_type, change_evaluation_method
 from .multilevel import mult_normalization, mult_low_pass_filter, mult_combiner, multilevel_wrapper, minimum_level, maximum_level, mult_normalization_options, mult_low_pass_filter_options, combiner_level, combiner_dropdown, combiner_options, embedding, change_combiner_options
 from .exploration_method import explr_info, exploration_choice, is_random, number_samples, generating_vector, exploration, change_explr_choice, random_box, mixed_CBC_level, trigger_is_random, generating_numbers_sobol, generating_vector_simple, generating_matrices, generating_numbers_sobol_box, generating_numbers_sobol_button, automatic_generating_numbers_sobol
 from .construction_method import constr_info, construction_choice, construction, change_constr_choice, construction_modulus, construction_modulus_pretty, construction_modulus_box, change_constr_modulus
-from .weights import add_weight, weight_power, create_full_weight, weights_wrapper, func_add_weights, weights_button_id, weights_set_all_id, VBOX_of_weights
+from .weights import add_weight, create_full_weight, weights_wrapper, func_add_weights, weights_button_id, weights_set_all_id, VBOX_of_weights
 from .button_box import go, abort, command_line, button_box_wrapper, build_command_line, abort_process, on_click_search, display_output
 from .output import result, result_obj, command_line_out, output 
 from .progress_bars import progress_bar_dim, progress_bar_nets
@@ -105,14 +105,12 @@ filters = BaseGUIElement(is_normalization=is_normalization,
                          normalization_box=normalization_box,
                          low_pass_filter_options=low_pass_filter_options,
                          equidistribution_box=equidistribution_box,
-                         equidistribution_level=equidistribution_level,
+                         equidistribution_weight=equidistribution_weight,
                          equidistribution_options=equidistribution_options,
                          main=filters_wrapper,
                          _callbacks={'is_normalization': trigger_display,
                                      'low_pass_filter': trigger_display,
-                                     'equidistribution_filter': trigger_display,
-                                     'normalization_options': trigger_normalization_warning,
-                                     'equidistribution_options': trigger_equidistribution_level})
+                                     'equidistribution_filter': trigger_display})
 
 figure_of_merit = BaseGUIElement(figure_type=figure_type,
                                  figure_alpha=figure_alpha,
@@ -125,7 +123,7 @@ figure_of_merit = BaseGUIElement(figure_type=figure_type,
 
 
 weights = BaseGUIElement(add_weight=add_weight,
-                         weight_power=weight_power,
+                        #  weight_power=weight_power,
                          create_full_weight=create_full_weight,
                          weights_button_id=weights_button_id,
                          weights_set_all_id=weights_set_all_id,
@@ -196,6 +194,7 @@ progress_bars = BaseGUIElement(progress_bar_dim=progress_bar_dim,
 
 gui = GUI(properties, filters, figure_of_merit, weights,
           construction_method, exploration_method, multi_level, button_box, output, progress_bars)
+func_add_weights({'name':'label', 'new':'Order-Dependent'}, gui)
 
 inside_tab = widgets.VBox([gui.properties.main, 
                 gui.multi_level.main,

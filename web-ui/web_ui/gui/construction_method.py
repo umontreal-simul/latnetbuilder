@@ -3,9 +3,11 @@ import ipywidgets as widgets
 from .common import style_default, parse_polynomial
 
 constr_data = {
-    'sobol': '<p> Sobol construction method. TBC </p>',
-    'polynomial': '<p> Polynomial construction method. TBC </p>',
-    'explicit': '<p> Explicit construction method. TBC </p>'
+    'sobol': '<p> The nets follow the Sobol construction, and the software optimizes the direction numbers according to the figure of merit. The first matrix is always the same (reversed identity), so the first direction number is arbitrarly set to 0.</p>\
+    <p style="color:red"> Warning: CBC exploration method with a Kernel figure of merit (\\(P_\\alpha\\) or R) does not make sense. </p>',
+    'polynomial': '<p> Polynomial Lattice Rules viewed as digital nets, and evaluated as such. </p>\
+    <p style="color:red"> The modulus below must be coherent with the number of points entered above.</p>',
+    'explicit': '<p> Explicit construction method: this is used to evaluate a net based on explicit matrices you can provide below. </p>'
 }
 
 construction_choice = widgets.ToggleButtons(
@@ -15,12 +17,12 @@ construction_choice = widgets.ToggleButtons(
     style=style_default
 )
 
-construction_modulus = widgets.Text(placeholder='e.g. 01^8 or 000000001', description='Modulus n=', 
-    style=style_default, layout=widgets.Layout(width='50%'))
+construction_modulus = widgets.Text(placeholder='e.g. 01^10 or 00000000001', description='Modulus n=', 
+    style=style_default, layout=widgets.Layout(width='400px'))
 construction_modulus_pretty = widgets.Label('')
 construction_modulus_box = widgets.VBox([construction_modulus, construction_modulus_pretty], layout=widgets.Layout(display='none'))
 
-constr_info = widgets.HTMLMath('')
+constr_info = widgets.HTMLMath(value=constr_data[construction_choice.value])
 construction = widgets.Accordion([widgets.VBox(
     [construction_choice, constr_info, construction_modulus_box])], 
     layout = widgets.Layout(display="none"))

@@ -1,4 +1,5 @@
 from .search import SearchLattice, SearchNet
+from .gui.common import ParsingException
 
 weights_corr = {
     'Product': 'product:',
@@ -23,6 +24,8 @@ def parse_input(gui):
 
 def parse_input_common(s, gui):
     s.modulus = gui.properties.modulus.value
+    if s.modulus == '' :
+        raise ParsingException('Modulus or nb of points must be specified')
 
     s.dimension = gui.properties.dimension.value
 
@@ -46,7 +49,7 @@ def parse_input_common(s, gui):
         if exploration_method == 'exhaustive':
             exploration_method = 'random:'
         elif exploration_method == 'full-CBC':
-            if gui.exploration_method.mixed_CBC_level.value == s.dimension:
+            if gui.exploration_method.mixed_CBC_level.value == 1:
                 exploration_method = 'random-CBC:'
             else:
                 exploration_method = 'mixed-CBC:'
@@ -74,19 +77,21 @@ def parse_input_common(s, gui):
     s.figure_power = gui.figure_of_merit.figure_power.value
 
     VBOX_of_weights = gui.weights.VBOX_of_weights
+    if len(VBOX_of_weights.children) == 0:
+        raise ParsingException('You must specify at least one type of weight.')
     for k in range(len(VBOX_of_weights.children)):
         string = ''
         weight = VBOX_of_weights.children[k]
-        weight_type = weights_corr[weight.children[0].children[0].value.split(' ')[
-            1]]
+        weight_type = weights_corr[weight.children[0].children[0].value.split(' ')[1]]
         string += weight_type
         if weight_type == 'order-dependent:' or weight_type == 'product:':
             form = weight.children[1].children[0].children[1]
             string = update(string, form, s)
         elif weight_type == 'POD:':
-            form = weight.children[1].children[0].children[1]
-            string = update(string, form, s)
+            # Warning: inverse order in the GUI and in the CLI
             form = weight.children[2].children[0].children[1]
+            string = update(string, form, s)
+            form = weight.children[1].children[0].children[1]
             string += ':'
             string = update(string, form, s)
         else:
@@ -94,8 +99,12 @@ def parse_input_common(s, gui):
             string += proj_dep_string.replace('\n', ':')
         s.weights.append(string)
 
-    s.weights_power = int(gui.weights.weight_power.value)
 
+    # s.weights_power = int(gui.weights.weight_power.value)
+    if s.figure_power.isdigit():
+        s.weights_power = int(s.figure_power)
+    else:
+        s.weights_power = 1
 
 def parse_input_net(gui):
     s = SearchNet()
@@ -108,12 +117,13 @@ def parse_input_net(gui):
 
     s.construction = gui.construction_method.construction_choice.value
     if s.construction == 'polynomial':
+        if gui.construction_method.construction_modulus.value == '' :
+            raise ParsingException('Modulus must be specified')
         s.construction += ':' + gui.construction_method.construction_modulus.value
 
     if gui.filters.equidistribution_filter.value:
-        equi_value = gui.filters.equidistribution_options.value
-        if equi_value == 'equidistribution:':
-            equi_value += str(gui.filters.equidistribution_level.value)
+        equi_value = 'equidistribution:' + str(gui.filters.equidistribution_weight.value) + '/'
+        equi_value += str(gui.filters.equidistribution_options.value)
         s.filters.append(equi_value)
 
     if s.exploration_method == 'net-explicit:':
