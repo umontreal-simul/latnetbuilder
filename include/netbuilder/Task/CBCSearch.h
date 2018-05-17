@@ -42,8 +42,9 @@ class CBCSearch : public Search<NC>
                     typename NetConstructionTraits<NC>::DesignParameter designParameter,
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
-                    int verbose = 0 ):
-            Search<NC>(dimension, designParameter, std::move(figure), verbose),
+                    int verbose = 0,
+                    bool earlyAbortion = true):
+            Search<NC>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
             m_explorer(std::move(explorer))
         {
             m_explorer->setVerbose(this->m_verbose-1);

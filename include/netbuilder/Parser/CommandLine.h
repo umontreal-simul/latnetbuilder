@@ -46,6 +46,7 @@ struct CommandLine {
    std::string s_combiner;
    std::string s_verbose;
    
+   bool m_earlyAbort;
    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> m_sizeParam;
    typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
    Combiner m_combiner;

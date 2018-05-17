@@ -43,8 +43,9 @@ class RandomSearch : public Search<NC>
                         typename NetConstructionTraits<NC>::DesignParameter designParameter,
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                         unsigned nbTries,
-                        int verbose = 0 ):
-            Search<NC>(dimension, std::move(designParameter), std::move(figure), verbose),
+                        int verbose = 0,
+                        bool earlyAbortion = true):
+            Search<NC>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
             m_nbTries(nbTries),
             m_randomGenValueGenerator(this->m_designParameter)
         {};
