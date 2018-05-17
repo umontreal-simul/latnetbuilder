@@ -192,9 +192,10 @@ def parse_output(s, gui, search_type):
                 while ')' not in lines[k+i]:
                     direction_numbers.append([int(x) for x in lines[k+i].strip(' \t\n').split(' ')])
                     i += 1
-
+        for k in range(len(lines)-1, -1, -1):
             if 'merit:' in lines[k]:
                 merit = float(lines[k].split(':')[1].strip(' \n'))
+                break
         gen = GenParam(direction_numbers, search_type)
         size = SizeParam(str(2**len(matrices[0])), search_type)
         latnet = LatNet(size, self_type='net', gen=gen)
@@ -208,8 +209,10 @@ def parse_output(s, gui, search_type):
                 gen = []
                 for i in range(len(matrices)):
                     gen.append([int(x) for x in lines[k+i+1].strip(' \n\t').split(' ')])
-            elif 'merit:' in lines[k]:
+        for k in range(len(lines)-1, -1, -1): 
+            if 'merit:' in lines[k]:
                 merit = float(lines[k].split(':')[1].strip(' \n'))
+                break
         
         latnet = LatNet(size, self_type='net', gen=GenParam(gen, search_type))
 
@@ -217,9 +220,10 @@ def parse_output(s, gui, search_type):
         lines = s.split('\n')
         size = SizeParam('2^' + str(len(matrices[0])), search_type)
         latnet = LatNet(size, self_type='net')
-        for k in range(len(lines)):
+        for k in range(len(lines)-1, -1, -1):
             if 'merit:' in lines[k]:
                 merit = float(lines[k].split(':')[1].strip(' \n'))
+                break
         
 
     gui.output.result_obj.latnet = latnet

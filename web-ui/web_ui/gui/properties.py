@@ -38,7 +38,7 @@ def update(form, dim, defaut_value):
             new_children.append(form.children[k])
         for k in range(dim-len(form.children)):
             new_children.append(widgets.Text(
-                value=defaut_value, description='', layout=widgets.Layout(width='10%')))
+                value=defaut_value, description='', layout=widgets.Layout(width='50px')))
     elif len(form.children) > dim:
         for k in range(dim):
             new_children.append(form.children[k])
@@ -51,15 +51,22 @@ def change_dimension(b, gui):
     dim = b['new']
     VBOX_of_weights = gui.weights.VBOX_of_weights
     for k in range(len(VBOX_of_weights.children)):
-        try:    # TODO: cleaner version?
-            form = VBOX_of_weights.children[k].children[1].children[0].children[1]
-            update(form, dim, '0.1')
-            form = VBOX_of_weights.children[k].children[1].children[2].children[1]
-            update(form, dim, '0.1')
-        except:
-            continue
+        weight = VBOX_of_weights.children[k]
+        weight_type = weight.children[0].children[0].value.split(' ')[1]
+        if weight_type == 'Product':
+            form = weight.children[1].children[0].children[1]
+            update(form, dim, '0.8')
+        elif weight_type == 'Order-Dependent':
+            new_value = str(round(0.8**dim * (dim <= 3), 3))
+            form = weight.children[1].children[0].children[1]
+            update(form, dim, new_value)
+        elif weight_type == 'POD':
+            form = weight.children[1].children[0].children[1]
+            update(form, dim, '0.8')
+            new_value = str(round(0.8**dim * (dim <= 3), 3))
+            form = weight.children[2].children[0].children[1]
+            update(form, dim, new_value)
+
     update(gui.exploration_method.generating_vector.children[0], dim+1, '1')
     update(gui.exploration_method.generating_vector_simple, dim+1, '1')
-    if gui.exploration_method.mixed_CBC_level.value == b['old']:
-        gui.exploration_method.mixed_CBC_level.value = b['new']
     gui.exploration_method.mixed_CBC_level.max = b['new']
