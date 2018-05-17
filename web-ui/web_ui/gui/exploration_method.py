@@ -10,16 +10,16 @@ explr_data = {
     <li> extend the lattice defined by this generating vector and a given number of points </li>\
     </ul>',
     'exhaustive': '<p> All generating vectors are examined and the best one is selected. </p>\
-    <p> If you tick "random choice \\(r\\) of points", a number \\(r\\) of randomly selected generating vectors \\(a\\) will be examined instead of all vectors. </p>',
+    <p> If you tick "random choice r of points", a number r of randomly selected generating vectors \\(a\\) will be examined instead of all vectors. </p>',
     'Korobov': '<p> All generating vectors of the form \\(a=(1,a \\text{ mod } n,a^2 \\text{ mod } n,…,a^s \\text{ mod } n)\\) are examined and the best one is selected. </p>\
-    <p> If you tick "random choice \\(r\\) of points a number \\(r\\) of randomly selected generating vectors \\(a\\) will be examined instead of all Korobov vectors. </p>',
+    <p> If you tick "random choice r of points a number r of randomly selected generating vectors \\(a\\) will be examined instead of all Korobov vectors. </p>',
     'CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined the best ones are selected, one coordinate at a time. </p>\
-    <p> If you tick "random choice \\(r\\) of points", a number \\(r\\) of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.</p>',
+    <p> If you tick "random choice r of points", a number r of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.</p>',
     'fast-CBC': '<p> All possible values of the components components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined and the best ones are selected, one coordinate at a time. </p>\
     <p> Computation is accelerated by using fast Fourier transforms. </p>\
     <p style="color:red"> Requires the Coordinate-Uniform evaluation method.</p>',
     'full-CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined the best ones are selected, one coordinate at a time. </p>\
-    <p> If you tick "random choice \\(r\\) of points", a number \\(r\\) of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.\
+    <p> If you tick "random choice r of points", a number r of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.\
     If the minimal random dimension \\(d\\) equals one, the search is entirely random. Else, the search is exhaustive up to dimension \\(d-1\\), and random from dimension \\(d\\). </p>',
     'net-explicit:' : '<p> Explicit net evaluation. Enter below the net characteristics:\
         <ul>\
@@ -38,8 +38,8 @@ exploration_choice = widgets.ToggleButtons(
     style=style_default
 )
 
-is_random = widgets.Checkbox(description=r'Random choice of \(r\) points', value=False)
-number_samples = widgets.Text(value='10', description=r'Set \(r\):', layout=widgets.Layout(display='none'))
+is_random = widgets.Checkbox(description='Random choice of r points', value=False)
+number_samples = widgets.Text(value='10', description='Set r:', layout=widgets.Layout(display='none'))
 
 random_box = widgets.HBox([is_random, number_samples], style=style_default)
 

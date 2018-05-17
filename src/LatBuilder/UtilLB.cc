@@ -144,6 +144,15 @@ uInteger Vm(const Polynomial& h, const Polynomial& P)
    return res;
 
 }
+
+uInteger log2Int(unsigned int n){
+    unsigned int res=0;
+    while (n>1){
+    n = n >> 1;
+    res ++;
+    }
+    return res;
+}
 //================================================================================
 
 } // namespace LatBuilder

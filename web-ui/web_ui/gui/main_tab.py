@@ -62,10 +62,10 @@ def change_lattype(b, gui):
         gui.properties.modulus.placeholder = 'e.g. 2^10 or 1024'
         gui.properties.modulus.description = 'Number of points n='
         gui.properties.is_multilevel.description = 'Sequence'
-        gui.figure_of_merit.figure_type.options = ['Palpha', 't-value', 'resolution-gap']
+        gui.figure_of_merit.figure_type.options = ['Palpha', 'R', 't-value', 'resolution-gap']
         gui.figure_of_merit.figure_of_merit_expl.value = '<p> Please note that: </p> \
                 <ul>\
-                <li> The \\(P_\\alpha \\) figure can be evaluated by the Coordinate-Uniform method, which is generally faster, but requires \\(q = 2\\) </li> \
+                <li> The \\(P_\\alpha \\) and the R figures can be evaluated by the Coordinate-Uniform method, which is generally faster, but requires \\(q = 2\\) </li> \
                 <li> The \\(P_\\alpha \\) method requires \\( \\alpha \\in \\{ 2, 4, 6 \\} \\) </li> \
                 </ul>'
         gui.filters.equidistribution_filter.layout.display = 'flex'

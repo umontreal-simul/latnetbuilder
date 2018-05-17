@@ -25,6 +25,7 @@
 #include "latbuilder/Parser/Weights.h"
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/RPLR.h"
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -210,6 +211,11 @@ struct FigureParser
         else if (name == "CU:P2"){
             auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
             auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, PST>>(std::move(weights), commandLine.m_sizeParam, kernel, commandLine.m_combiner);
+            vecFigures.push_back(std::move(coordUnifFigure));
+        }
+        else if (name == "CU:R"){
+            auto kernel = LatBuilder::Kernel::RPLR();
+            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, PST>>(std::move(weights), commandLine.m_sizeParam, kernel, commandLine.m_combiner);
             vecFigures.push_back(std::move(coordUnifFigure));
         }
         else{
