@@ -67,8 +67,6 @@ class RandomSearch : public Search<NC>
                 evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
                 evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
             }
-
-            evaluator->onComputationDone().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
             
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {

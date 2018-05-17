@@ -243,14 +243,15 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             while(it != nullptr);
 
             // validate(dimension);
-            if (onComputationDone()(acc.value()))
-            {
-                saveMerits(dimension);
-            }
             return acc.value();
     }
 
     virtual void reset() override { m_dimension=0; }
+
+    virtual void lastNetWasBest() override
+    {
+        saveMerits(m_dimension);
+    }
 
     virtual void prepareForNextDimension() override
     {
@@ -652,10 +653,6 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
             while(it != nullptr);
 
             // validate(dimension);
-            if (onComputationDone()(acc.value()))
-            {
-                saveMerits(dimension);
-            }
             return acc.value();
     }
 
@@ -678,6 +675,11 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::Weighted
         {
             throw std::runtime_error("In t-value figure of merit evaluator: evaluator is ill-formed.");
         }
+    }
+
+    virtual void lastNetWasBest() override
+    {
+        saveMerits(m_dimension);
     }
 
     private:

@@ -35,6 +35,7 @@ namespace NetBuilder{
         m_permutation.resize(m_nCols);
         std::iota(std::begin(m_permutation), std::end(m_permutation), 0);
         m_pivots.clear();
+        m_rowOperations.resize(0,0);
         m_nullBlockStartingRow = 0;
     }
 
@@ -44,7 +45,7 @@ namespace NetBuilder{
         {
             reset(block.nCols());
         }
-        
+    
         unsigned int oldNRows = m_nRows;
         m_nRows += block.nRows();
         m_pivots.resize(m_nRows,-1);
@@ -53,11 +54,10 @@ namespace NetBuilder{
         {
             m_rowOperations(i,i) = 1;
         }
-
         block.permuteColumns(m_permutation);
 
         m_mat.vstack(std::move(block));
-        
+
         for(unsigned int pivot = 0; pivot < m_nullBlockStartingRow; ++pivot)
         {
             unsigned int j = m_pivots[pivot];

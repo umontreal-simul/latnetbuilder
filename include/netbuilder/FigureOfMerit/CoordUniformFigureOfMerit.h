@@ -191,9 +191,9 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
 
             MeritValue acc = initialValue; // create the accumulator from the initial value
             
-            GeneratingMatrix M = net.generatingMatrix(dimension);
+            lastMatrix = net.generatingMatrix(dimension);
             // std::cout << M << std::endl;
-            std::vector<GeneratingMatrix> genSeq {M};
+            std::vector<GeneratingMatrix> genSeq {lastMatrix};
             auto prodSeq = m_innerProd.prodSeq(genSeq, weightedState());
             // std::cout << "2" << std::endl;
             auto merit = *(prodSeq.begin());
@@ -201,19 +201,13 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             // merit /= intPow(2, M.nCols());
             m_figure->sizeParam().normalize(merit);
             acc += combine(merit);
+
             if (! onProgress()(acc)){
                 acc = std::numeric_limits<Real>::infinity(); // set the merit to infinity
                 onAbort()(net); // abort the computation
                 // return acc;
             }
 
-            if (onComputationDone()(acc))
-            {
-                m_tmpStates = m_memStates;
-                for (auto& state : m_tmpStates){
-                    state->update(m_innerProd.kernelValues(), M);
-                }
-            }
             return acc;
         }
 
@@ -222,11 +216,15 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
             m_memStates = m_tmpStates;
         } 
 
-        CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMeritEvaluator&&) = default;
+        virtual void lastNetWasBest() override
+        {
+            m_tmpStates = m_memStates;
+            for (auto& state : m_tmpStates){
+                state->update(m_innerProd.kernelValues(), lastMatrix);
+            }
+        }
 
-        // const decltype(m_storage)& storage(){
-        //     return m_storage;
-        // }
+        CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMeritEvaluator&&) = default;
 
         const CoordUniformFigureOfMerit& figure(){
             return *m_figure;
@@ -241,6 +239,8 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
 
             CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_memStates;
             CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_tmpStates;
+
+            GeneratingMatrix lastMatrix;
 
             // unsigned int m_currentDim=0;
     };

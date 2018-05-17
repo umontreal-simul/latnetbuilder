@@ -70,12 +70,11 @@ class CBCSearch : public Search<NC>
                 evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
             }
 
-            evaluator->onComputationDone().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
-
             Real merit = 0;
 
             for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
             {
+                evaluator->prepareForNextDimension();
                 if(this->m_verbose==1)
                 {
                     std::cout << "CBC dimension: " << dim << "/" << this->dimension() << std::endl;
@@ -86,7 +85,10 @@ class CBCSearch : public Search<NC>
                 {
                     auto newNet = net.extendDimension(m_explorer->nextGenValue(dim));
                     double newMerit = (*evaluator)(*newNet,dim,merit, this->m_verbose-3);
-                    this->m_minimumObserver->observe(std::move(newNet),newMerit);
+                    if (this->m_minimumObserver->observe(std::move(newNet),newMerit))
+                    {
+                        evaluator->lastNetWasBest();
+                    }
                 }
                 if (!this->m_minimumObserver->hasFoundNet())
                 {
@@ -97,7 +99,6 @@ class CBCSearch : public Search<NC>
                 merit = this->m_minimumObserver->bestMerit();
                 if (dim < this->dimension()){
                     this->m_minimumObserver->reset();
-                    evaluator->prepareForNextDimension();
                 }
             }
             this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());

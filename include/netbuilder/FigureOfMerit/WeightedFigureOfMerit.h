@@ -137,13 +137,14 @@ class WeightedFigureOfMerit : public FigureOfMerit
                         break;
                     }
                 }
-                onComputationDone()(acc.value());
                 return acc.value(); // return the result
             }
 
             virtual void reset() override {};
 
             virtual void prepareForNextDimension() override {}; 
+
+            virtual void lastNetWasBest() override {};
 
             private:
                 WeightedFigureOfMerit* m_figure;

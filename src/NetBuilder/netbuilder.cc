@@ -191,7 +191,7 @@ if (opt.count("figure-combiner") < 1){\
   cmd.s_figureCombiner = "";\
 }\
 else{\
-  cmd.s_figureCombiner = opt["figure_combiner"].as<std::string>();\
+  cmd.s_figureCombiner = opt["figure-combiner"].as<std::string>();\
 }\
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\

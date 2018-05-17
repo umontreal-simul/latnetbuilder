@@ -64,6 +64,8 @@ class UniformityProperty : public FigureOfMerit{
 
         unsigned int nbBits() const {return m_nbBits; }
 
+        Real expNorm() const {return m_expNorm;}
+
     private:
 
         /** Evaluator class for UniformityProperty. */
@@ -92,13 +94,12 @@ class UniformityProperty : public FigureOfMerit{
                     //     m_currentDim++;
                     //     m_memReducer = m_tmpReducer;
                     // }
-
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
                     unsigned int size = m_figure->nbBits()*dimension;
                     net.extendSize(size,size);
 
-                    auto newReducer = m_memReducer;
+                    m_newReducer = m_memReducer;
 
                     for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                     {
@@ -107,28 +108,21 @@ class UniformityProperty : public FigureOfMerit{
                         {
                             newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
                         }
-                        newReducer.addColumn(newCol);
+                        m_newReducer.addColumn(newCol);
                     }
-
                     GeneratingMatrix block = net.pointerToGeneratingMatrix(dimension)->subMatrix(m_figure->nbBits(), m_figure->nbBits()*dimension);
 
-                    if(!newReducer.reduceNewBlock(block))
+                    bool decision = m_newReducer.reduceNewBlock(std::move(block));
+                    if(!decision)
                     {
-                        acc.accumulate(1,m_figure->weight(),m_figure->m_expNorm);
+                        acc.accumulate(1,m_figure->weight(),m_figure->expNorm());
                     }
 
                     if(!onProgress()(acc.value()))
                     {
                         acc.accumulate(std::numeric_limits<Real>::infinity(), 1, 1); // set the merit to infinity
                         onAbort()(net); // abort the computation
-                        return acc.value();
                     }
-
-                    // if (onComputationDone()(net,acc.value()))
-                    {
-                        m_tmpReducer = std::move(newReducer);
-                    }
-                    
                     return acc.value();
                 }
 
@@ -137,6 +131,13 @@ class UniformityProperty : public FigureOfMerit{
                     // m_currentDim = 0;
                     m_tmpReducer.reset(0);
                     m_memReducer.reset(0);
+                    m_newReducer = m_memReducer;
+                }
+
+                virtual void lastNetWasBest() override
+                {
+                    m_tmpReducer = std::move(m_newReducer);
+
                 }
                 
                 virtual void prepareForNextDimension() override
@@ -145,11 +146,14 @@ class UniformityProperty : public FigureOfMerit{
                     m_memReducer = m_tmpReducer;
                 }
 
+
+
             private:
                 UniformityProperty* m_figure;
                 // unsigned int m_currentDim = 0;
                 ProgressiveRowReducer m_tmpReducer;
                 ProgressiveRowReducer m_memReducer;
+                ProgressiveRowReducer m_newReducer;
 
         };
 

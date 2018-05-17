@@ -61,8 +61,6 @@ class ExhaustiveSearch : public Search<NC>
                 evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
                 evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
             }
-
-            evaluator->onComputationDone().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
             
             auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_designParameter);
             
