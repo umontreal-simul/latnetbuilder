@@ -83,7 +83,7 @@ class SearchNet(Search):
                    ]
 
         if len(self.filters) > 0:
-            command += ['-add-figure', self.filters[-1] + '/1/1']
+            command += ['-add-figure', self.filters[-1]]
         
         command.append('--add-figure')
         command.append('/'.join([self.figure_of_merit, '1', self.figure_power, ' '.join(self.weights), str(self.weights_power)]))

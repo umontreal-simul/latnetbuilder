@@ -127,6 +127,8 @@ std::pair<long long, long long> egcd(uInteger a, uInteger b);
  */
 uInteger Vm(const Polynomial& h, const Polynomial& P);
 
+uInteger log2Int(unsigned int n);
+
 }
 
 #endif

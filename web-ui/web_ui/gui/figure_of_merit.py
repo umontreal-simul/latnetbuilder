@@ -13,12 +13,12 @@ figure_alpha = widgets.Text(value='2', description=r'Value of \(\alpha\):',
 coord_unif = widgets.Checkbox(value=True, description='Coordinate-Uniform evaluation',
                                      style=style_default)
 
-figure_power = widgets.Text(value='2', description=r'Norm type \(q>0\) or \(q\) = "inf":',
+figure_power = widgets.Text(value='2', description='Norm type q > 0 or q = "inf":',
                          layout=widgets.Layout(width='24%'), style=style_default, disabled=True)
 
 figure_of_merit_expl = widgets.HTMLMath(value='<p> Please note that: </p> \
                      <ul>\
-                        <li> The Coordinate-Uniform method is generally faster, but requires \\(q = 2\\) </li> \
+                        <li> The Coordinate-Uniform method is generally faster, but requires q = 2 </li> \
                         <li> The Spectral figure cannot be be evaluated by the Coordinate-Uniform method </li> \
                         <li> The \\(P_\\alpha \\) method requires \\( \\alpha \\in \\{ 2, 4, 6 \\} \\) </li> \
                      </ul>')

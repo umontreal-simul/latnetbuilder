@@ -392,7 +392,12 @@ int main(int argc, const char *argv[])
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
             cmd.weights       = opt["weights"].as<std::vector<std::string>>();
-            cmd.combiner      = opt["combiner"].as<std::string>();
+            if (opt.count("combiner") == 1){
+              cmd.combiner      = opt["combiner"].as<std::string>();
+            }
+            else{
+              cmd.combiner = "level:max";
+            }
 
             cmd.weightsPowerScale = 1.0;
             if (opt.count("weights-power") >= 1) {

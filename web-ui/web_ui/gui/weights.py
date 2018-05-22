@@ -8,7 +8,7 @@ from .common import style_default
 weight_math = widgets.HTMLMath(value='The weights are of the form: \\(\\gamma_u^q (u \\subseteq \\{1, ... s\\})\\). \
 You can specify below type of weights with their values (the actual weights are the sum of these).\
 See <a href="https://github.com/PierreMarion23/latbuilder/tree/dev/web-ui/weights_guidelines.md" target="_blank">this GitHub page</a> for guidelines on the choice of weights.',
-                               layout=widgets.Layout(height='30px', width='inherit'))
+                               layout=widgets.Layout(width='inherit'))
 add_weight = widgets.Dropdown(
     options=[('Select type of weights', 'None'), ('Product', 'product:'), ('Order-Dependent', 'order-dependent:'),
             ('POD', 'POD'), ('Projection-Dependent', 'projection-dependent')],
@@ -102,9 +102,9 @@ def create_full_weight(type_weights, dimension_int, gui):
         math = widgets.Label(value="Most general form of weights",
                              layout=widgets.Layout(width='200px', height='30px'))
         weights = widgets.Textarea(placeholder='Enter the mapping between coordinates and weights. \
-        \n Each line must be comma-separated list of coordinates followed by a colon and a weight value. \
-        \n Spaces are ignored. \
-        \n Example line: 1,2,5: 0.7',
+        \nEach line must be comma-separated list of coordinates followed by a colon and a weight value. \
+        \nSpaces are ignored. \
+        \nExample line: 1,2,5: 0.7',
                                    layout=widgets.Layout(width='inherit', height='100px'))
         main.children = [description, weights]
 
