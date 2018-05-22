@@ -20,50 +20,147 @@
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/ProgressiveRowReducer.h"
 
-#include "netbuilder/FigureOfMerit/EquidistributionProperty.h"
+#include "netbuilder/FigureOfMerit/UniformityProperties.h"
 #include <iostream>
 
 using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 1112;
-    unsigned int m = 0;
+    unsigned int s = 10;
+    unsigned int m = 5;
 
-    const auto& net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
+    auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
-    // auto rowReducer = ProgressiveRowReducer();
+    auto rowReducer = ProgressiveRowReducer();
 
-    // GeneratingMatrix block(0,s);
+    std::cout << "Setting the number of columns." << std::endl;
+    rowReducer.reset(m);
+    std::cout << "Done." << std::endl;
 
-    // for(unsigned int dim = 1; dim <= s; ++dim)
+    // std::vector<unsigned long> seeds(m);
+    // for(unsigned int i = 0; i < m; ++i)
     // {
-    //     block.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(1,s));
+    //     seeds[i] = rand() % (1 << m);
     // }
+    // GeneratingMatrix mat(m, m, seeds);
 
-    // rowReducer.reduceNewBlock(block);
+    // std::cout << mat << std::endl;
 
+    for(unsigned int i = 0; i < m; ++i)
+    {
+        std::cout << "New row: " << std::endl;
+        if ((i % 3) == 2)
+        {
+            auto newRow = GeneratingMatrix(1,m);
+            std::cout << newRow << std::endl;
+            rowReducer.addRow(newRow);
+        }
+        else
+        {
+            auto newRow = net.pointerToGeneratingMatrix( (i % 3) + 1 )->subMatrix(i,1,m);
+            std::cout << newRow << std::endl;
+            rowReducer.addRow(newRow);
+        }
+
+        // rowReducer.addRow(mat.subMatrix(i,1,m));
+
+        std::cout << "Matrix: " << std::endl;
+        std::cout << rowReducer.matrix() << std::endl;
+
+        std::cout << "Row operations: " << std::endl;
+        std::cout << rowReducer.rowOperations() << std::endl;
+
+        std::cout << "Columns without pivot: " << std::endl;
+        for (unsigned int col : rowReducer.m_columnsWithoutPivot)
+        {
+            std::cout << col << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Rows without pivot: " << std::endl;
+        for (unsigned int row : rowReducer.m_rowsWithoutPivot)
+        {
+            std::cout << row << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Pivot positions" << std::endl;
+        for (const auto& colRow : rowReducer.m_pivotsColRowPositions)
+        {
+            std::cout << colRow.second << ", " << colRow.first << " | ";
+        }
+        std::cout << std::endl << std::endl;
+    }
+
+    // std::cout << "Pivoted matrix" << std::endl;
     // std::cout << rowReducer.matrix() << std::endl;
 
-    // std::cout << rowReducer.rowOperations() << std::endl;
+    // std::cout << "Check with row operations" << std::endl;
+    // std::cout << rowReducer.rowOperations() * mat << std::endl;
 
-    // for(int i: rowReducer.m_permutation)
-    // {
-    //     std::cout << i << " ";
-    // }
+    std::cout << "Rank of full matrix: " << rowReducer.computeRank() << std::endl;
 
-    // std::cout << std::endl << std::endl;
+    std::cout << "Rank of sub matrices: " << std::endl;
+    for(unsigned int rank : rowReducer.computeRanks(1,m-1))
+    {
+        std::cout << rank << " ";
+    }
+    std::cout << std::endl;
 
-    auto fig = FigureOfMerit::AProperty();
+    std::vector<unsigned long> newColSeeds(m,0);
+    for(unsigned int i = 0; i < m; ++i)
+    {
+        newColSeeds[i] = 1;
+    }
 
-    auto eval = fig.evaluator();
+    std::cout << std::endl <<  "================" <<  std::endl << std::endl;
 
-    (*eval)(net,true);
-   
+    GeneratingMatrix dummyRow = GeneratingMatrix(1,m);
+    for(unsigned int i = 0; i < m; ++i)
+    {
+        dummyRow(0,i) = 1;
+    }
+    rowReducer.exchangeRow(1,dummyRow);
 
 
+    std::cout << std::endl <<  "================" <<  std::endl << std::endl;
 
+    // GeneratingMatrix newCol(m, 1, newColSeeds);
 
+    // rowReducer.addColumn(newCol);
+
+    std::cout << "Matrix: " << std::endl;
+    std::cout << rowReducer.matrix() << std::endl;
+
+    std::cout << "Row operations: " << std::endl;
+    std::cout << rowReducer.rowOperations() << std::endl;
+
+    std::cout << "Columns without pivot: " << std::endl;
+    for (unsigned int col : rowReducer.m_columnsWithoutPivot)
+    {
+        std::cout << col << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Rows without pivot: " << std::endl;
+    for (unsigned int row : rowReducer.m_rowsWithoutPivot)
+    {
+        std::cout << row << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Pivot positions" << std::endl;
+    for (const auto& colRow : rowReducer.m_pivotsColRowPositions)
+    {
+        std::cout << colRow.second << ", " << colRow.first << " | ";
+    }
+    std::cout << std::endl;
+    for (const auto& colRow : rowReducer.m_pivotsRowColPositions)
+    {
+        std::cout << colRow.first << ", " << colRow.second << " | ";
+    }
+    std::cout << std::endl << std::endl;
     
     return 0;
 }

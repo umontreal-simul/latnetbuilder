@@ -93,14 +93,14 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
                 {
                     block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
                 }
-                if (m_rowReducer.reduceNewBlock(std::move(block)))
-                {
-                    --merit;
-                }
-                else
-                {
-                    break;
-                }
+                // if (m_rowReducer.reduceNewBlock(std::move(block)))
+                // {
+                //     --merit;
+                // }
+                // else
+                // {
+                //     break;
+                // }
             }
             return  merit;
         }
@@ -173,14 +173,14 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
                     {
                     block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,m));
                     }
-                    if (m_rowReducer.reduceNewBlock(std::move(block)))
-                    {
-                        --merits[m-1];
-                    }
-                    else
-                    {
-                        break;
-                    }
+                    // if (m_rowReducer.reduceNewBlock(std::move(block)))
+                    // {
+                    //     --merits[m-1];
+                    // }
+                    // else
+                    // {
+                    //     break;
+                    // }
                 }
             }
             return combine(merits);

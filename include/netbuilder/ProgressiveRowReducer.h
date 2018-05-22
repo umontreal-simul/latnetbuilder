@@ -24,6 +24,10 @@
 
 #include "netbuilder/GeneratingMatrix.h"
 
+#include <map>
+#include <set>
+#include <list>
+
 namespace NetBuilder {
 
 class ProgressiveRowReducer
@@ -33,22 +37,33 @@ class ProgressiveRowReducer
 
         void reset(unsigned int nCols);
         
-        bool reduceNewBlock(GeneratingMatrix block);
+        void addRow(GeneratingMatrix newRow);
 
-        bool addColumn(const GeneratingMatrix &col);
+        void addColumn(GeneratingMatrix newCol);
+
+        void exchangeRow(unsigned int rowIndex, GeneratingMatrix newRow);
+
+        unsigned int computeRank() const;
+
+        std::vector<unsigned int> computeRanks(unsigned int firstCol, unsigned int numCol) const;
 
         const GeneratingMatrix& matrix() const {return m_mat;}
 
         const GeneratingMatrix& rowOperations() const {return m_rowOperations; }
+
 
     public:
         unsigned int m_nRows = 0;
         unsigned int m_nCols;
         GeneratingMatrix m_mat;
         GeneratingMatrix m_rowOperations;
-        std::vector<unsigned int> m_permutation;
-        std::vector<int> m_pivots;
-        unsigned int m_nullBlockStartingRow = 0;
+        // std::list<std::pair<unsigned int, unsigned int>> m_pivotsPositions;
+        std::map<unsigned int, unsigned int> m_pivotsColRowPositions; // columns index are the keys and rows indexes are the values
+        std::map<unsigned int, unsigned int> m_pivotsRowColPositions; // columns index are the keys and rows indexes are the values
+        std::set<unsigned int> m_columnsWithoutPivot;
+        std::list<unsigned int> m_rowsWithoutPivot;
+
+        void pivotRowAndFindNewPivot(unsigned int row);
 
 };
 

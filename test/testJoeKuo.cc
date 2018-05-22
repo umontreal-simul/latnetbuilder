@@ -21,7 +21,7 @@
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
-#include "netbuilder/FigureOfMerit/EquidistributionProperty.h"
+#include "netbuilder/FigureOfMerit/UniformityProperties.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/JoeKuoWeights.h"
 

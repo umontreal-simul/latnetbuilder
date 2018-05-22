@@ -125,9 +125,7 @@ class FigureOfMeritEvaluator
                 }
                 lastNetWasBest();
             }
-            std::cout << "computation done for all dimension..." << std::endl;
             reset();
-            std::cout << "reset was successful" << std::endl;
             return merit;
         }
 

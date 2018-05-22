@@ -101,22 +101,24 @@ class UniformityProperty : public FigureOfMerit{
 
                     m_newReducer = m_memReducer;
 
-                    for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
+                    if (dimension>1)
                     {
-                        GeneratingMatrix newCol(0,1);
-                        for(unsigned int dim = 1; dim < dimension; ++dim)
+                        for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                         {
-                            newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
+                            GeneratingMatrix newCol(0,1);
+                            for(unsigned int dim = 1; dim < dimension; ++dim)
+                            {
+                                newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
+                            }
+                            m_newReducer.addColumn(newCol);
                         }
-                        m_newReducer.addColumn(newCol);
                     }
                     GeneratingMatrix block = net.pointerToGeneratingMatrix(dimension)->subMatrix(m_figure->nbBits(), m_figure->nbBits()*dimension);
 
-                    bool decision = m_newReducer.reduceNewBlock(std::move(block));
-                    if(!decision)
-                    {
-                        acc.accumulate(1,m_figure->weight(),m_figure->expNorm());
-                    }
+                    // if(!m_newReducer.reduceNewBlock(std::move(block)))
+                    // {
+                    //     acc.accumulate(1,m_figure->weight(),m_figure->expNorm());
+                    // }
 
                     if(!onProgress()(acc.value()))
                     {

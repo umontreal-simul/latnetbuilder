@@ -24,7 +24,7 @@
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
-#include "netbuilder/FigureOfMerit/EquidistributionProperty.h"
+#include "netbuilder/FigureOfMerit/UniformityProperties.h"
 
 #include "latcommon/Weights.h"
 #include "latcommon/UniformWeights.h"

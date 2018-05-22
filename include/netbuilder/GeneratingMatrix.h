@@ -123,6 +123,12 @@ class GeneratingMatrix {
          */ 
         void swap_rows(unsigned int i1, unsigned int i2);
 
+        /** Insert the row at position i1 of the matrix at position i2, shifting the other rows.
+         * @param i1 is the position of the first row
+         * @param i2 is the position of the second row
+         */ 
+        void insert_row(unsigned int i1, unsigned int i2);
+
         /** Swap the columns at position j1 and j2 of the matrix.
          * @param j1 is the position of the first row
          * @param j2 is the position of the second row

@@ -16,6 +16,8 @@
 
 #include "netbuilder/GeneratingMatrix.h"
 
+#include <algorithm>
+
 namespace NetBuilder {
 
 GeneratingMatrix::GeneratingMatrix(unsigned int n_rows, unsigned int n_cols):
@@ -109,6 +111,11 @@ void GeneratingMatrix::flip(unsigned int i, unsigned int j)
 
 void GeneratingMatrix::swap_rows(unsigned int i1, unsigned int i2){
     std::swap(m_data[i1], m_data[i2]);
+}
+
+void GeneratingMatrix::insert_row(unsigned int i1, unsigned i2)
+{
+    std::rotate(m_data.begin()+i2,m_data.begin()+i1,m_data.begin()+i1);
 }
 
 void GeneratingMatrix::swap_columns(unsigned int j1, unsigned int j2)
