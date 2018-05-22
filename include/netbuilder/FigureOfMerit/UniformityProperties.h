@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER_EQUIDISTRIBUTION_PROPERTY
-#define NET_BUILDER_EQUIDISTRIBUTION_PROPERTY
+#ifndef NET_BUILDER_UNIFORMITY_PROPERTY
+#define NET_BUILDER_UNIFORMITY_PROPERTY
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -76,7 +76,10 @@ class UniformityProperty : public FigureOfMerit{
                  * @param figure is a pointer to the figure of merit.
                 */
                 UniformityPropertyEvaluator(UniformityProperty* figure):
-                    m_figure(figure)
+                    m_figure(figure),
+                    m_tmpReducer(m_figure->nbBits()),
+                    m_memReducer(m_figure->nbBits()),
+                    m_newReducer(m_figure->nbBits())
                 {};
 
                 /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
@@ -89,11 +92,6 @@ class UniformityProperty : public FigureOfMerit{
                 virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
 
-                    // assert(dimension == m_currentDim || dimension == m_currentDim+1);
-                    // if (dimension == m_currentDim+1){
-                    //     m_currentDim++;
-                    //     m_memReducer = m_tmpReducer;
-                    // }
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
                     unsigned int size = m_figure->nbBits()*dimension;
@@ -110,27 +108,37 @@ class UniformityProperty : public FigureOfMerit{
                             {
                                 newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
                             }
+                            assert(newCol.nCols()==1);
+                            assert(newCol.nRows()==m_newReducer.numRows());
                             m_newReducer.addColumn(newCol);
                         }
                     }
-                    GeneratingMatrix block = net.pointerToGeneratingMatrix(dimension)->subMatrix(m_figure->nbBits(), m_figure->nbBits()*dimension);
 
-                    // if(!m_newReducer.reduceNewBlock(std::move(block)))
-                    // {
-                    //     acc.accumulate(1,m_figure->weight(),m_figure->expNorm());
-                    // }
+                    for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
+                    {
+                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 1, m_figure->nbBits()*dimension);
+
+                        assert(newRow.nRows()==1);
+                        assert(newRow.nCols()==m_newReducer.numCols() || m_newReducer.numRows() == 0);
+                        m_newReducer.addRow(std::move(newRow));
+                    }
+
+                    if (m_newReducer.computeRank() < m_newReducer.numRows())
+                    {
+                        acc.accumulate(1,m_figure->weight(),m_figure->expNorm());
+                    }
 
                     if(!onProgress()(acc.value()))
                     {
                         acc.accumulate(std::numeric_limits<Real>::infinity(), 1, 1); // set the merit to infinity
                         onAbort()(net); // abort the computation
                     }
+
                     return acc.value();
                 }
 
                 virtual void reset() override
                 {
-                    // m_currentDim = 0;
                     m_tmpReducer.reset(0);
                     m_memReducer.reset(0);
                     m_newReducer = m_memReducer;
@@ -139,12 +147,10 @@ class UniformityProperty : public FigureOfMerit{
                 virtual void lastNetWasBest() override
                 {
                     m_tmpReducer = std::move(m_newReducer);
-
                 }
                 
                 virtual void prepareForNextDimension() override
                 {
-                    // m_currentDim++;
                     m_memReducer = m_tmpReducer;
                 }
 
@@ -152,7 +158,6 @@ class UniformityProperty : public FigureOfMerit{
 
             private:
                 UniformityProperty* m_figure;
-                // unsigned int m_currentDim = 0;
                 ProgressiveRowReducer m_tmpReducer;
                 ProgressiveRowReducer m_memReducer;
                 ProgressiveRowReducer m_newReducer;

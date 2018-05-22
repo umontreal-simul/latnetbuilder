@@ -26,12 +26,6 @@
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/UniformityProperties.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
-#include "latcommon/CoordinateSets.h"
-
-#include "latbuilder/LFSR258.h"
-
 #include <iostream>
 #include <algorithm>
 #include <boost/numeric/ublas/blas.hpp>
@@ -40,21 +34,12 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 10;
-    unsigned int m = 30;
+    unsigned int s = 1120;
+    unsigned int m = 1;
 
     auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
-
-    auto weights = std::make_unique<LatCommon::UniformWeights>(1);
-
-    // auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>(s);
-
-    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>>(3, std::move(weights), std::move(projDep));
-    
-    auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(3, Combiner(boost::numeric::ublas::blas_1::amax<RealVector>));
-
-    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
+    auto fig = std::make_unique<FigureOfMerit::AProperty>();
 
     auto eval = fig->evaluator();
 

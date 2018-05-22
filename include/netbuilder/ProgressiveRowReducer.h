@@ -33,7 +33,7 @@ namespace NetBuilder {
 class ProgressiveRowReducer
 {
     public:
-        ProgressiveRowReducer();
+        ProgressiveRowReducer(unsigned int nCols = 0);
 
         void reset(unsigned int nCols);
         
@@ -50,6 +50,10 @@ class ProgressiveRowReducer
         const GeneratingMatrix& matrix() const {return m_mat;}
 
         const GeneratingMatrix& rowOperations() const {return m_rowOperations; }
+
+        unsigned int numRows() const {return m_nRows; }
+
+        unsigned int numCols() const {return m_nCols; }
 
 
     public:
