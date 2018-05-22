@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER_UNIFORMITY_PROPERTY
-#define NET_BUILDER_UNIFORMITY_PROPERTY
+#ifndef NET_BUILDER_BIT_EQUIDISTRIBUTION
+#define NET_BUILDER_BIT_EQUIDISTRIBUTION
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -34,19 +34,21 @@
 
 namespace NetBuilder { namespace FigureOfMerit {
 
-class UniformityProperty : public FigureOfMerit{
+template <PointSetType PST>
+class BitEquidistribution : public FigureOfMerit{
 
     public:
 
         /** Constructor.
          * @param weight is weight of the figure of merit;
          */ 
-        UniformityProperty(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
+        BitEquidistribution(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity(), Combiner combiner = Combiner()):
             m_nbBits(nbBits),
             m_weight(weight),
             m_binOp(realToBinOp(normType)),
             m_normType(normType),
-            m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
+            m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1),
+            m_combiner(std::move(combiner))
         {};    
 
         Real weight() const {return m_weight; }
@@ -57,23 +59,33 @@ class UniformityProperty : public FigureOfMerit{
         /** Instantiates an evaluator and returns a std::unique_ptr to it. */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
         {
-            return std::make_unique<UniformityPropertyEvaluator>(this);
+            return std::make_unique<BitEquidistributionEvaluator>(this);
         }
 
         unsigned int nbBits() const {return m_nbBits; }
 
         Real expNorm() const {return m_expNorm;}
 
+        Real combine(std::vector<unsigned int> merits)
+        {
+            RealVector tmp(merits.size());
+            for(unsigned int i = 0; i < merits.size(); ++i)
+            {
+                tmp[i] = merits[i];
+            }
+            return m_combiner(std::move(tmp));
+        }
+
     private:
 
-        /** Evaluator class for UniformityProperty. */
-        class UniformityPropertyEvaluator : public FigureOfMeritEvaluator
+        /** Evaluator class for BitEquidistribution. */
+        class BitEquidistributionEvaluator : public FigureOfMeritEvaluator
         {
             public:
                 /**Constructor. 
                  * @param figure is a pointer to the figure of merit.
                 */
-                UniformityPropertyEvaluator(UniformityProperty* figure):
+                BitEquidistributionEvaluator(BitEquidistribution* figure):
                     m_figure(figure),
                     m_tmpReducer(m_figure->nbBits()),
                     m_memReducer(m_figure->nbBits()),
@@ -89,46 +101,7 @@ class UniformityProperty : public FigureOfMerit{
                  */ 
                 virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
-
-                    auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
-
-                    unsigned int size = m_figure->nbBits()*dimension;
-                    net.extendSize(size,size);
-
-                    m_newReducer = m_memReducer;
-
-                    if (dimension>1)
-                    {
-                        for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
-                        {
-                            GeneratingMatrix newCol(0,1);
-                            for(unsigned int dim = 1; dim < dimension; ++dim)
-                            {
-                                newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
-                            }
-                            m_newReducer.addColumn(newCol);
-                        }
-                    }
-
-                    for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
-                    {
-                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 1, m_figure->nbBits()*dimension);
-
-                        m_newReducer.addRow(std::move(newRow));
-                    }
-
-                    if (m_newReducer.computeRank() < m_newReducer.numRows())
-                    {
-                        acc.accumulate(m_figure->weight(), 1, m_figure->expNorm());
-                    }
-
-                    if(!onProgress()(acc.value()))
-                    {
-                        acc.accumulate(std::numeric_limits<Real>::infinity(), 1, 1); // set the merit to infinity
-                        onAbort()(net); // abort the computation
-                    }
-
-                    return acc.value();
+                    return initialValue;
                 }
 
                 virtual void reset() override
@@ -148,10 +121,8 @@ class UniformityProperty : public FigureOfMerit{
                     m_memReducer = m_tmpReducer;
                 }
 
-
-
             private:
-                UniformityProperty* m_figure;
+                BitEquidistribution* m_figure;
                 ProgressiveRowReducer m_tmpReducer;
                 ProgressiveRowReducer m_memReducer;
                 ProgressiveRowReducer m_newReducer;
@@ -163,21 +134,88 @@ class UniformityProperty : public FigureOfMerit{
         BinOp m_binOp;
         Real m_normType;
         Real m_expNorm;
+        Combiner m_combiner;
 };
 
-class AProperty : public UniformityProperty {
-    public:
-        AProperty(Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
-            UniformityProperty(1, weight, normType)
-        {};
-};
+template<>
+MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose)
+{
 
-class APrimeProperty : public UniformityProperty {
-    public:
-        APrimeProperty(Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
-            UniformityProperty(2, weight, normType)
-        {};
-};
+    unsigned int nCols = net.numColumns();
+    if (dimension==1)
+    {
+        m_memReducer.reset(nCols);
+    }
+
+    auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
+
+    m_newReducer = m_memReducer;
+
+    for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit)
+    {
+        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 1, nCols ));
+        if (m_newReducer.computeRank() < m_newReducer.numRows())
+        {
+            acc.accumulate(m_figure->weight(), 1, m_figure->expNorm());
+            break;
+        }
+    }
+
+    if(!onProgress()(acc.value()))
+    {
+        acc.accumulate(std::numeric_limits<Real>::infinity(), 1, 1); // set the merit to infinity
+        onAbort()(net); // abort the computation
+    }
+
+    return acc.value();
+}
+
+template<>
+MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose)
+{
+
+    unsigned int nCols = net.numColumns();
+    if (dimension==1)
+    {
+        m_memReducer.reset(nCols);
+    }
+
+    auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
+
+    m_newReducer = m_memReducer;
+
+    std::vector<unsigned int> merits(nCols);
+
+    for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit)
+    {
+        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 1, nCols ));
+        std::vector<unsigned int> ranks = m_newReducer.computeRanks(0,nCols);
+
+        for(unsigned int m = 1; m <= nCols; ++m)
+        {
+            if (ranks[m-1] < m)
+            {
+                merits[m-1] = 1; // TO DO
+            }
+        }
+
+        if (ranks[nCols-1] < nCols)
+        {
+            break;
+        }
+    }
+
+    Real merit = m_figure->combine(merits);
+    acc.accumulate(m_figure->weight(), merit, m_figure->expNorm());
+
+    if(!onProgress()(acc.value()))
+    {
+        acc.accumulate(std::numeric_limits<Real>::infinity(), 1, 1); // set the merit to infinity
+        onAbort()(net); // abort the computation
+    }
+
+    return acc.value();
+}
 
 }}
 
