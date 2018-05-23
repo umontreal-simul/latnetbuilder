@@ -206,8 +206,11 @@ MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEva
     }
 
     Real merit = m_figure->combine(merits);
-    acc.accumulate(m_figure->weight(), merit, m_figure->expNorm());
-
+    if (merit > 0)
+    {
+        acc.accumulate(m_figure->weight(), merit, m_figure->expNorm());
+    }
+    
     if(!onProgress()(acc.value()))
     {
         acc.accumulate(std::numeric_limits<Real>::infinity(), 1, 1); // set the merit to infinity

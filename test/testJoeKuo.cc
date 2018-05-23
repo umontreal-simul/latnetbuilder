@@ -42,6 +42,7 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
+
     unsigned int s = atol(argv[1]);
     unsigned int m = 31;
 

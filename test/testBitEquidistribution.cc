@@ -39,12 +39,12 @@ using namespace NetBuilder;
 int main(int argc, const char *argv[])
 {
     unsigned int s = 10;
-    unsigned int m = s;
+    unsigned int m = 2*s;
 
     auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
 
     // auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<PointSetType::UNILEVEL>>(2);
-    auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<PointSetType::MULTILEVEL>>(1, 1, std::numeric_limits<Real>::infinity(), MaxCombiner());
+    auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<PointSetType::MULTILEVEL>>(1, std::numeric_limits<Real>::infinity(), std::numeric_limits<Real>::infinity(), MaxCombiner());
 
     auto task = Task::Eval(std::move(net),std::move(fig), 5);
 
