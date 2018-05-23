@@ -55,6 +55,8 @@ typedef boost::dynamic_bitset<> Row;
 // Must have s >= 2, n >= s
 std::vector<std::vector<int>> compositions(int n, int nb_parts);
 
+std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> compositionsChanges(int n, int nb_parts);
+
 // returns a new row with row permuted by according to the permutation defined by C
 Row permutation(Row& row, std::vector<int>& C);
 
