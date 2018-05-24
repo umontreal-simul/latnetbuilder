@@ -48,7 +48,7 @@ namespace {
    std::unique_ptr<BasicMeritFilter<LR, PST>> createNormalizer(
          unsigned int alpha,
          const LatBuilder::SizeParam<LR, PST>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType,
          const std::string& levelWeights
          )
@@ -67,7 +67,7 @@ namespace {
    std::unique_ptr<BasicMeritFilter<LR, PST>> parseNormalizer(
          const std::string& str,
          const LatBuilder::SizeParam<LR, PST>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          )
    {
@@ -95,7 +95,7 @@ std::unique_ptr<BasicMeritFilter<LR, PST>>
 MeritFilter<LR,PST>::parse(
       const std::string& str,
       const LatBuilder::SizeParam<LR, PST>& sizeParam,
-      const LatCommon::Weights& weights,
+      const LatticeTester::Weights& weights,
       Real normType
       )
 {
@@ -121,7 +121,7 @@ std::unique_ptr<BasicMeritFilter<PointSetType::UNILEVEL>>
 MeritFilter::parse(
       const std::string&,
       const LatBuilder::SizeParam<PointSetType::UNILEVEL>&,
-      const LatCommon::Weights&,
+      const LatticeTester::Weights&,
       Real);
 
 template
@@ -129,7 +129,7 @@ std::unique_ptr<BasicMeritFilter<PointSetType::MULTILEVEL>>
 MeritFilter::parse(
       const std::string&,
       const LatBuilder::SizeParam<PointSetType::MULTILEVEL>&,
-      const LatCommon::Weights&,
+      const LatticeTester::Weights&,
       Real);
 */
 }}

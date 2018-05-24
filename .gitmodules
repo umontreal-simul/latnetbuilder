@@ -1,4 +1,3 @@
-[submodule "latcommon"]
-	path = latcommon
-	url = https://github.com/PierreMarion23/latcommon/
-	ignore = dirty
+[submodule "latticetester"]
+	path = latticetester
+	url = https://github.com/PierreMarion23/latticetester.git

@@ -33,7 +33,7 @@ namespace {
          LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::UNILEVEL>& filters,
          const CommandLine<LR, LatBuilder::PointSetType::UNILEVEL>& args,
          const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::UNILEVEL>& size,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          )
    {
@@ -51,7 +51,7 @@ namespace {
          LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::MULTILEVEL>& filters,
          const CommandLine<LR, LatBuilder::PointSetType::MULTILEVEL>& args,
          const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::MULTILEVEL>& size,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          )
    {

@@ -31,6 +31,18 @@ namespace NetBuilder{
         m_rowsWithoutPivot()
     {};
 
+    // ProgressiveRowReducer ProgressiveRowReducer::copy(){
+    //     ProgressiveRowReducer newRed = ProgressiveRowReducer();
+    //     newRed.m_nCols = m_nCols;
+    //     newRed.m_mat = m_mat;
+    //     newRed.m_rowOperations = m_rowOperations;
+    //     newRed.m_pivotsColRowPositions = m_pivotsColRowPositions;
+    //     newRed.m_pivotsRowColPositions = m_pivotsRowColPositions;
+    //     newRed.m_columnsWithoutPivot = m_columnsWithoutPivot;
+    //     newRed.m_rowsWithoutPivot = m_rowsWithoutPivot;
+    //     return newRed;
+    // }
+
     void ProgressiveRowReducer::reset(unsigned int nCols)  
     {
         m_nCols = nCols;

@@ -38,7 +38,7 @@ namespace {
       {
          std::cerr << "warning: using default implementation of SumHelper" << std::endl;
          Real val = 0.0;
-         LatCommon::CoordinateSets::FromRanges csets(1, dimension, 0, dimension - 1);
+         LatticeTester::CoordinateSets::FromRanges csets(1, dimension, 0, dimension - 1);
          for (const auto& proj : csets) {
             Real weight = weights.getWeight(proj);
             if (weight)
@@ -64,10 +64,10 @@ namespace {
                ) const; \
       }
 
-   DECLARE_PALPHA_SL10_SUM(LatCommon::ProjectionDependentWeights);
-   DECLARE_PALPHA_SL10_SUM(LatCommon::OrderDependentWeights);
-   DECLARE_PALPHA_SL10_SUM(LatCommon::ProductWeights);
-   DECLARE_PALPHA_SL10_SUM(LatCommon::PODWeights);
+   DECLARE_PALPHA_SL10_SUM(LatticeTester::ProjectionDependentWeights);
+   DECLARE_PALPHA_SL10_SUM(LatticeTester::OrderDependentWeights);
+   DECLARE_PALPHA_SL10_SUM(LatticeTester::ProductWeights);
+   DECLARE_PALPHA_SL10_SUM(LatticeTester::PODWeights);
    DECLARE_PALPHA_SL10_SUM(LatBuilder::CombinedWeights);
 
 #undef DECLARE_PALPHA_SL10_SUM
@@ -109,8 +109,8 @@ namespace {
    // projection-dependent weights
    //===========================================================================
 
-   Real SumHelper<LatCommon::ProjectionDependentWeights>::operator()(
-         const LatCommon::ProjectionDependentWeights& weights,
+   Real SumHelper<LatticeTester::ProjectionDependentWeights>::operator()(
+         const LatticeTester::ProjectionDependentWeights& weights,
          Real normType,
          Real z,
          Real lambda,
@@ -137,8 +137,8 @@ namespace {
    // order-dependent weights
    //===========================================================================
 
-   Real SumHelper<LatCommon::OrderDependentWeights>::operator()(
-         const LatCommon::OrderDependentWeights& weights,
+   Real SumHelper<LatticeTester::OrderDependentWeights>::operator()(
+         const LatticeTester::OrderDependentWeights& weights,
          Real normType,
          Real z,
          Real lambda,
@@ -163,8 +163,8 @@ namespace {
    // product weights
    //===========================================================================
 
-   Real SumHelper<LatCommon::ProductWeights>::operator()(
-         const LatCommon::ProductWeights& weights,
+   Real SumHelper<LatticeTester::ProductWeights>::operator()(
+         const LatticeTester::ProductWeights& weights,
          Real normType,
          Real z,
          Real lambda,
@@ -188,8 +188,8 @@ namespace {
    // POD weights
    //===========================================================================
 
-   Real SumHelper<LatCommon::PODWeights>::operator()(
-         const LatCommon::PODWeights& weights,
+   Real SumHelper<LatticeTester::PODWeights>::operator()(
+         const LatticeTester::PODWeights& weights,
          Real normType,
          Real z,
          Real lambda,
@@ -217,7 +217,7 @@ namespace {
 
 }
 
-PAlphaSL10::PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType):
+PAlphaSL10::PAlphaSL10(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
    PAlphaBase<PAlphaSL10>(alpha, normType),
    m_weights(weights)
 {}

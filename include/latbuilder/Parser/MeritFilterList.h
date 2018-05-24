@@ -21,7 +21,7 @@
 #include "latbuilder/MeritFilterList.h"
 #include "latbuilder/SizeParam.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -37,7 +37,7 @@ struct MeritFilterList {
    static LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::UNILEVEL> parse(
          const std::vector<std::string>& filters,
          const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::UNILEVEL>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          )
    {
@@ -50,7 +50,7 @@ struct MeritFilterList {
          LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::UNILEVEL>& list,
          const std::vector<std::string>& filters,
          const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::UNILEVEL>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          );
 
@@ -59,7 +59,7 @@ struct MeritFilterList {
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::MULTILEVEL>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          )
    {
@@ -74,7 +74,7 @@ struct MeritFilterList {
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::MULTILEVEL>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType
          );
 };

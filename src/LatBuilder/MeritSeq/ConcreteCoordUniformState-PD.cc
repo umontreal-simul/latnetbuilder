@@ -24,13 +24,13 @@ namespace LatBuilder { namespace MeritSeq {
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 reset()
 {
    CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
    m_state.clear();
    // empty set
-   m_state[LatCommon::Coordinates()] =
+   m_state[LatticeTester::Coordinates()] =
       boost::numeric::ublas::scalar_vector<Real>(this->storage().size(), 1.0);
    m_gen.clear();
 }
@@ -39,18 +39,18 @@ reset()
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 const RealVector&
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
-createStateVector(const LatCommon::Coordinates& projection, const RealVector& kernelValues)
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
+createStateVector(const LatticeTester::Coordinates& projection, const RealVector& kernelValues)
 {
    auto it = m_state.find(projection);
    if (it != m_state.end())
       return it->second;
 
    // select largest index
-   const LatCommon::Coordinates::value_type largestCoord = *projection.rbegin();
+   const LatticeTester::Coordinates::value_type largestCoord = *projection.rbegin();
 
    // remove largest coordinate index
-   LatCommon::Coordinates baseProjection = projection;
+   LatticeTester::Coordinates baseProjection = projection;
    baseProjection.erase(largestCoord);
    // create base state vector
    const RealVector& baseState = createStateVector(baseProjection, kernelValues);
@@ -70,7 +70,7 @@ createStateVector(const LatCommon::Coordinates& projection, const RealVector& ke
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 {
    CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
@@ -82,7 +82,7 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
    const auto nextCoordinate = this->dimension();
    for (const auto& pw : m_weights.getWeightsForLargestIndex(nextCoordinate)) {
       // remove largest coordinate index
-      LatCommon::Coordinates proj = pw.first;
+      LatticeTester::Coordinates proj = pw.first;
       proj.erase(*proj.rbegin());
       // create state vector
       createStateVector(proj, kernelValues);
@@ -93,10 +93,10 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 weightedState() const
 {
-   using LatCommon::Coordinates;
+   using LatticeTester::Coordinates;
 
    const auto nextCoordinate = this->dimension();
 
@@ -105,7 +105,7 @@ weightedState() const
 
    for (const auto& pw : m_weights.getWeightsForLargestIndex(nextCoordinate)) {
       // remove largest coordinate index
-      LatCommon::Coordinates proj = pw.first;
+      LatticeTester::Coordinates proj = pw.first;
       proj.erase(*proj.rbegin());
       // find state vector
       auto it = m_state.find(proj);
@@ -120,18 +120,18 @@ weightedState() const
 
 //===========================================================================
 
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatticeTester::ProjectionDependentWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
 
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
 
 }}

@@ -1,6 +1,6 @@
-// This file is part of LatCommon.
+// This file is part of LatticeTester.
 //
-// LatCommon
+// LatticeTester
 // Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,7 +46,7 @@ Weight JoeKuoWeights::getWeight (const Coordinates& projection) const
 
 void JoeKuoWeights::format(ostream& os) const
 {
-   using LatCommon::operator<<;
+   using LatticeTester::operator<<;
    os << "JoeKuoWeights()";
 }
 

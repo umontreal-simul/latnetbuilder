@@ -17,65 +17,65 @@
 #include "latbuilder/Parser/Weights.h"
 #include "latbuilder/Types.h"
 
-#include "latcommon/ProjectionDependentWeights.h"
-#include "latcommon/OrderDependentWeights.h"
-#include "latcommon/PODWeights.h"
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProjectionDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/PODWeights.h"
+#include "latticetester/ProductWeights.h"
 
-#include "latcommon/Coordinates.h"
+#include "latticetester/Coordinates.h"
 
 #include <cmath>
 
 namespace LatBuilder { namespace Parser {
 
-std::unique_ptr<LatCommon::Weights>
+std::unique_ptr<LatticeTester::Weights>
 Weights::parseProjectionDependent(const std::string& arg, Real powerScale)
 {
    auto ka = splitPair<>(arg, ':');
    if (ka.first != "projection-dependent") return nullptr;
-   auto w = new LatCommon::ProjectionDependentWeights;
+   auto w = new LatticeTester::ProjectionDependentWeights;
    std::string rest = ka.second;
    while (!rest.empty()) {
       auto s1 = splitPair<>(rest, ':');
-      auto s2 = splitPair<LatCommon::Weight, std::string>(s1.second, ':');
+      auto s2 = splitPair<LatticeTester::Weight, std::string>(s1.second, ':');
       auto p = splitCSV<uInteger>(s1.first);
       for (auto& pi : p) pi--;
       rest = s2.second;
-      LatCommon::Coordinates proj(p.begin(), p.end());
+      LatticeTester::Coordinates proj(p.begin(), p.end());
       w->setWeight(std::move(proj), std::pow(s2.first, powerScale));
    }
-   return std::unique_ptr<LatCommon::Weights>(w);
+   return std::unique_ptr<LatticeTester::Weights>(w);
 }
 
-std::unique_ptr<LatCommon::Weights>
+std::unique_ptr<LatticeTester::Weights>
 Weights::parseOrderDependent(const std::string& arg, Real powerScale)
 {
    auto ka = splitPair<>(arg, ':');
    if (ka.first != "order-dependent") return nullptr;
    auto s = splitPair<Real, std::string>(ka.second, ':');
    auto x = splitCSV<Real>(s.second);
-   auto w = new LatCommon::OrderDependentWeights;
+   auto w = new LatticeTester::OrderDependentWeights;
    w->setDefaultWeight(std::pow(s.first, powerScale));
    for (size_t i = 0; i < x.size(); i++)
       w->setWeightForOrder(i + 1, std::pow(x[i], powerScale));
-   return std::unique_ptr<LatCommon::Weights>(w);
+   return std::unique_ptr<LatticeTester::Weights>(w);
 }
 
-std::unique_ptr<LatCommon::Weights>
+std::unique_ptr<LatticeTester::Weights>
 Weights::parseProduct(const std::string& arg, Real powerScale)
 {
    auto ka = splitPair<>(arg, ':');
    if (ka.first != "product") return nullptr;
    auto s = splitPair<Real, std::string>(ka.second, ':');
    auto x = splitCSV<Real>(s.second);
-   auto w = new LatCommon::ProductWeights;
+   auto w = new LatticeTester::ProductWeights;
    w->setDefaultWeight(std::pow(s.first, powerScale));
    for (size_t i = 0; i < x.size(); i++)
       w->setWeightForCoordinate(i, std::pow(x[i], powerScale));
-   return std::unique_ptr<LatCommon::Weights>(w);
+   return std::unique_ptr<LatticeTester::Weights>(w);
 }
 
-std::unique_ptr<LatCommon::Weights>
+std::unique_ptr<LatticeTester::Weights>
 Weights::parsePOD(const std::string& arg, Real powerScale)
 {
    auto ka = splitPair<>(arg, ':');
@@ -85,17 +85,17 @@ Weights::parsePOD(const std::string& arg, Real powerScale)
    auto s3 = splitCSV<Real>(s2.first);
    auto s4 = splitPair<Real, std::string>(s2.second, ':');
    auto s5 = splitCSV<Real>(s4.second);
-   auto w = new LatCommon::PODWeights;
+   auto w = new LatticeTester::PODWeights;
    w->getOrderDependentWeights().setDefaultWeight(std::pow(s1.first, powerScale));
    for (size_t i = 0; i < s3.size(); i++)
       w->getOrderDependentWeights().setWeightForOrder(i + 1, std::pow(s3[i], powerScale));
    w->getProductWeights().setDefaultWeight(std::pow(s4.first, powerScale));
    for (size_t i = 0; i < s5.size(); i++)
       w->getProductWeights().setWeightForCoordinate(i, std::pow(s5[i], powerScale));
-   return std::unique_ptr<LatCommon::Weights>(w);
+   return std::unique_ptr<LatticeTester::Weights>(w);
 }
 
-std::unique_ptr<LatCommon::Weights> 
+std::unique_ptr<LatticeTester::Weights> 
 Weights::parse(const std::string& arg, Real powerScale)
 {
    if (auto p = parseProjectionDependent(arg, powerScale))

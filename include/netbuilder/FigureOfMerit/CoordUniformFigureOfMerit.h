@@ -23,8 +23,8 @@
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Weights.h"
+#include "latticetester/Coordinates.h"
 #include "latbuilder/Kernel/Base.h"
 #include "latbuilder/Types.h"
 #include "latbuilder/Storage.h"
@@ -57,7 +57,7 @@ public:
     *                   the Kernel namespace for examples.
     */
    CoordUniformFigureOfMerit(
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> sizeparam,
         KERNEL kernel = KERNEL(),
          std::function<Real (const RealVector&)> combiner = std::function<Real (const RealVector&)>()
@@ -70,7 +70,7 @@ public:
    {}
 
    /// \copydoc FigureOfMerit::weights()
-   const LatCommon::Weights& weights() const
+   const LatticeTester::Weights& weights() const
    { return *m_weights; }
 
 //    unsigned long nbCols() const
@@ -111,7 +111,7 @@ public:
 
 
    private:
-   std::unique_ptr<LatCommon::Weights> m_weights;
+   std::unique_ptr<LatticeTester::Weights> m_weights;
    KERNEL m_kernel;
 //    unsigned int m_nbCols;
    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> m_sizeParam;
@@ -181,7 +181,7 @@ using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSe
          */ 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
         {
-            using namespace LatCommon;
+            using namespace LatticeTester;
 
             // assert(dimension == m_currentDim || dimension == m_currentDim+1);
             // if (dimension == m_currentDim+1){

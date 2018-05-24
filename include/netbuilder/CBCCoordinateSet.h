@@ -17,7 +17,7 @@
 #ifndef NETBUILDER__CBC_COORDINATE_SET_H
 #define NETBUILDER__CBC_COORDINATE_SET_H
 
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/CoordinateSets.h"
 
 #include <iostream>
 #include <algorithm>
@@ -27,7 +27,7 @@ namespace NetBuilder {
 /** 
  * CBC sequence of coordinate sets.
  * 
- * This class implements a sequence of coordinates (@see LatCommon::CoordinateSets) which can be used in the CBC
+ * This class implements a sequence of coordinates (@see LatticeTester::CoordinateSets) which can be used in the CBC
  * evaluation of figures of merit.
  */ 
 class CBCCoordinateSet
@@ -49,7 +49,7 @@ class CBCCoordinateSet
         /**
         * Returns an iterator pointing to the first element in the seq.
         */
-        LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges>::const_iterator begin() const 
+        LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges>::const_iterator begin() const 
         {
             return m_addCoordinate.begin();
         }
@@ -57,7 +57,7 @@ class CBCCoordinateSet
         /**
         * Returns an iterator pointing past the last element in the seq.
         */
-        LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges>::const_iterator end() const 
+        LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges>::const_iterator end() const 
         {
             return m_addCoordinate.end();
         }
@@ -65,8 +65,8 @@ class CBCCoordinateSet
     private:
         unsigned int m_dimension;
         unsigned int m_maxOrder;
-        LatCommon::CoordinateSets::FromRanges m_base;
-        LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges> m_addCoordinate;
+        LatticeTester::CoordinateSets::FromRanges m_base;
+        LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges> m_addCoordinate;
 };
 
 }

@@ -20,7 +20,7 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/BasicMeritFilter.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 #include <memory>
 
@@ -43,7 +43,7 @@ struct MeritFilter {
    static std::unique_ptr<BasicMeritFilter<LR, PST>> parse(
          const std::string& str,
          const LatBuilder::SizeParam<LR, PST>& sizeParam,
-         const LatCommon::Weights& weights,
+         const LatticeTester::Weights& weights,
          Real normType);
 };
 

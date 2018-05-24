@@ -33,9 +33,9 @@ CombinedWeights::CombinedWeights ():
 
 //===========================================================================
 
-LatCommon::Weight CombinedWeights::getWeight (const LatCommon::Coordinates& projection) const
+LatticeTester::Weight CombinedWeights::getWeight (const LatticeTester::Coordinates& projection) const
 {
-   LatCommon::Weight sum = 0.0;
+   LatticeTester::Weight sum = 0.0;
    for (const auto& w : m_weights)
       sum += w->getWeight(projection);
    return sum;
@@ -139,7 +139,7 @@ istream& operator>> (istream& is, CombinedWeights& weights)
       }
 
       // read coordinates
-      LatCommon::Coordinates coords;
+      LatticeTester::Coordinates coords;
       if (!(is_default || is_order))
          is >> coords;
 
@@ -226,7 +226,7 @@ CombinedWeights* CombinedWeights::createFromXML (const pugi::xml_node& root)
             throw pugi::xml_error(pnode, "missing <coordinates> element");
 
          // parse coordinate list as projection
-         LatCommon::Coordinates projection;
+         LatticeTester::Coordinates projection;
          for (node = node.child("coordinate"); node; node = node.next_sibling("coordinate"))
             projection.insert(lexical_cast<int>(node.child_value()));
 

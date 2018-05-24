@@ -20,7 +20,7 @@
 #include "latbuilder/MeritSeq/CoordUniformState.h"
 #include "latbuilder/Storage.h"
 
-#include "latcommon/OrderDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
 
 #include <vector>
 
@@ -60,7 +60,7 @@ template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO
  * \f]
  */
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-class ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::OrderDependentWeights> :
+class ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::OrderDependentWeights> :
    public CoordUniformState<LR, PST, COMPRESS, PLO> {
 public:
    /**
@@ -74,7 +74,7 @@ public:
     */
    ConcreteCoordUniformState(
          const Storage<LR, PST, COMPRESS, PLO>& storage,
-         const LatCommon::OrderDependentWeights& weights
+         const LatticeTester::OrderDependentWeights& weights
          ):
       CoordUniformState<LR, PST, COMPRESS, PLO>(storage),
       m_weights(weights)
@@ -108,25 +108,25 @@ public:
    { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
-   const LatCommon::OrderDependentWeights& m_weights;
+   const LatticeTester::OrderDependentWeights& m_weights;
 
    // m_state[level](i)
    std::vector<RealVector> m_state;
 };
 
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::OrderDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::OrderDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatticeTester::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatticeTester::OrderDependentWeights>;
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::OrderDependentWeights>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::OrderDependentWeights>;
 
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::OrderDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatCommon::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::OrderDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatticeTester::OrderDependentWeights>;
 
 }}
 

@@ -16,8 +16,8 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Util.h"
-#include "latcommon/Util.h"
-#include "latcommon/IntFactor.h"
+#include "latticetester/Util.h"
+#include "latticetester/IntFactor.h"
 #include <NTL/GF2XFactoring.h>
 
 namespace LatBuilder {
@@ -29,7 +29,7 @@ SizeParam<LatticeType::ORDINARY,PointSetType::MULTILEVEL>::SizeParam(uInteger pr
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
-   if (primeBase >= 2 and LatCommon::IntFactor::isPrime(primeBase, 0) == LatCommon::COMPOSITE)
+   if (primeBase >= 2 and LatticeTester::IntFactor::isPrime(primeBase, 0) == LatticeTester::COMPOSITE)
       throw std::invalid_argument("SizeParam: primeBase is not prime");
 }
 
@@ -50,7 +50,7 @@ SizeParam<LatticeType::DIGITAL,PointSetType::MULTILEVEL>::SizeParam(uInteger pri
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
-   if (primeBase >= 2 and LatCommon::IntFactor::isPrime(primeBase, 0) == LatCommon::COMPOSITE)
+   if (primeBase >= 2 and LatticeTester::IntFactor::isPrime(primeBase, 0) == LatticeTester::COMPOSITE)
       throw std::invalid_argument("SizeParam: primeBase is not prime");
 }
 

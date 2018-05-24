@@ -210,7 +210,7 @@ private:
 //================================================================================
 
 #include "latbuilder/Util.h"
-#include "latcommon/IntFactor.h"
+#include "latticetester/IntFactor.h"
 
 namespace LatBuilder { namespace GenSeq {
 
@@ -227,7 +227,7 @@ CyclicGroup<LatticeType::ORDINARY,COMPRESS, TRAV, ORDER>::smallestGenerator(Modu
    if (base < 2)
       throw std::invalid_argument("smallestGenerator(): base must be >= 2");
 
-   if (checkPrime and LatCommon::IntFactor::isPrime(base, 0) == LatCommon::COMPOSITE)
+   if (checkPrime and LatticeTester::IntFactor::isPrime(base, 0) == LatticeTester::COMPOSITE)
       throw std::invalid_argument("smallestGenerator(): n must be prime");
 
    auto factors = primeFactors(base - 1);

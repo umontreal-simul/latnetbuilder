@@ -50,7 +50,7 @@ namespace {
                ) const; \
       }
 
-   DECLARE_PALPHA_DPW08_SUM(LatCommon::ProductWeights);
+   DECLARE_PALPHA_DPW08_SUM(LatticeTester::ProductWeights);
    DECLARE_PALPHA_DPW08_SUM(LatBuilder::CombinedWeights);
 
 #undef DECLARE_PALPHA_DPW08_SUM
@@ -92,8 +92,8 @@ namespace {
    // product weights
    //===========================================================================
 
-   Real SumHelper<LatCommon::ProductWeights>::operator()(
-         const LatCommon::ProductWeights& weights,
+   Real SumHelper<LatticeTester::ProductWeights>::operator()(
+         const LatticeTester::ProductWeights& weights,
          Real normType,
          Real z,
          Real lambda,
@@ -113,7 +113,7 @@ namespace {
    }
 }
 
-PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights, Real normType):
+PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
    PAlphaBase<PAlphaDPW08>(alpha, normType),
    m_weights(weights)
 {}

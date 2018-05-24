@@ -35,6 +35,8 @@ class ProgressiveRowReducer
     public:
         ProgressiveRowReducer();
 
+        ProgressiveRowReducer copy();
+
         void reset(unsigned int nCols);
         
         void addRow(GeneratingMatrix newRow);

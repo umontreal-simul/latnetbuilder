@@ -21,9 +21,9 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/Storage.h"
 
-#include "latcommon/Coordinates.h"
-#include "latcommon/Rank1Lattice.h"
-#include "latcommon/Reducer.h"
+#include "latticetester/Coordinates.h"
+#include "latticetester/Rank1Lattice.h"
+#include "latticetester/Reducer.h"
 
 #include <limits>
 #include <stdexcept>
@@ -95,7 +95,7 @@ namespace detail {
    Real spectralEval(
             const Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, COMPRESS>& storage,
             const LatDef<LatticeType::ORDINARY, PST>& lat,
-            const LatCommon::Coordinates& projection,
+            const LatticeTester::Coordinates& projection,
             Real power
             )
    {
@@ -105,14 +105,15 @@ namespace detail {
       //   P. L'Ecuyer and C. Lemieux.
       //   Variance Reduction via Lattice Rules.
       //   Management Science, 46, 9 (2000), 1214-1235.
+      Real logDensity = log(lat.sizeParam().numPoints());
       Normalizer normalizer(
-            lat.sizeParam().numPoints(),
-            1 /* lattice rank */,
+            logDensity,
+            // 1 /* lattice rank */,
             static_cast<int>(projection.size()));
       // idea: we could cache the normalizer values for each projection size
       // (check in the profiler first if this is worth it)
 
-      if (normalizer.getNorm () != LatCommon::L2NORM)
+      if (normalizer.getNorm () != LatticeTester::L2NORM)
          // this is the L2NORM implementation
          throw std::invalid_argument ("norm of normalizer must be L2NORM");
 
@@ -135,7 +136,7 @@ namespace detail {
 #endif
 
       // prepare lattice and basis reduction
-      LatCommon::Rank1Lattice lattice(
+      LatticeTester::Rank1Lattice lattice(
             lat.sizeParam().numPoints(),
             gen,
             static_cast<int>(projection.size()),
@@ -143,7 +144,7 @@ namespace detail {
       lattice.buildBasis (static_cast<int>(projection.size()));
       lattice.dualize ();
 
-      LatCommon::Reducer reducer(lattice);
+      LatticeTester::Reducer reducer(lattice);
 
       if (not reducer.shortestVector(lattice.getNorm())) {
          // reduction failed
@@ -151,10 +152,12 @@ namespace detail {
       }
 
       // get length of shortest vector under L2NORM
-      lattice.getPrimalBasis ().updateScalL2Norm (1);
+      // lattice.getPrimalBasis ().updateScalL2Norm (1);    # TODO
+      lattice.updateScalL2Norm (1);
 
       // square length
-      Real sqlength = lattice.getPrimalBasis().getVecNorm(1);
+      // Real sqlength = lattice.getPrimalBasis().getVecNorm(1);  # TODO
+      Real sqlength = lattice.getVecNorm(1); 
 
       // normalization
       Real sqlength0 =
@@ -180,7 +183,7 @@ namespace detail {
    RealVector spectralEval(
             const Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, COMPRESS>& storage,
             const LatDef<LatticeType::ORDINARY, PST>& lat,
-            const LatCommon::Coordinates& projection,
+            const LatticeTester::Coordinates& projection,
             Real power
             )
    {
@@ -224,7 +227,7 @@ public:
     */
    MeritValue operator() (
          const LatDef<LatticeType::ORDINARY, PST>& lat,
-         const LatCommon::Coordinates& projection
+         const LatticeTester::Coordinates& projection
          ) const
    {
       if (projection.size() == 0)

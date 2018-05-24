@@ -33,8 +33,8 @@
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
+#include "latticetester/Weights.h"
+#include "latticetester/UniformWeights.h"
 
 #include <iostream>
 #include <limits>
@@ -66,7 +66,7 @@ int main(int argc, const char *argv[])
     typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter designParam(m);
 
     unsigned int r = 50;
-    auto weights = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
     auto projDep = std::make_unique<ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(2,combiner);
 

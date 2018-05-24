@@ -20,7 +20,7 @@
 #include "latbuilder/MeritFilterList.h"
 #include "latbuilder/SizeParam.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -29,7 +29,7 @@ void MeritFilterList<LR>::parse(
       LatBuilder::MeritFilterList<LR, PointSetType::UNILEVEL>& list,
       const std::vector<std::string>& filters,
       const LatBuilder::SizeParam<LR, PointSetType::UNILEVEL>& sizeParam,
-      const LatCommon::Weights& weights,
+      const LatticeTester::Weights& weights,
       Real normType
       )
 {
@@ -44,7 +44,7 @@ void MeritFilterList<LR>::parse(
       const std::vector<std::string>& multilevelFilters,
       const std::string& combiner,
       const LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam,
-      const LatCommon::Weights& weights,
+      const LatticeTester::Weights& weights,
       Real normType
       )
 {

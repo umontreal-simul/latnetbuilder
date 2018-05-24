@@ -21,7 +21,7 @@
 LATBUILDER_PREFIX = @PREFIX@
 
 INCLUDES = -I$(LATBUILDER_PREFIX)/include @INCLUDES@
-LIBS = -L$(LATBUILDER_PREFIX)/lib -llatbuilder -llatcommon @LIBPATH@ @LIBRARIES@
+LIBS = -L$(LATBUILDER_PREFIX)/lib -llatbuilder -llatticetester @LIBPATH@ @LIBRARIES@
 
 # release
 CXXFLAGS = @CXXFLAGS@

@@ -32,15 +32,18 @@
 
 #include "netbuilder/Task/Eval.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
+#include "latticetester/Weights.h"
+#include "latticetester/UniformWeights.h"
 
 #include <iostream>
 #include <fstream>
 #include <time.h>
 #include <math.h>
+#include <map>
 
 using namespace NetBuilder;
+
+// typedef long float RealLong;
 
 unsigned int getmsb (unsigned long long x){
     unsigned int r = 0;
@@ -79,21 +82,21 @@ void digital_shift(LatBuilder::LFSR258 gen, std::vector<std::vector<unsigned lon
     }
 }
 
-Real f(std::vector<Real>& x){
-    Real y = 0;
+RealLong f(std::vector<RealLong>& x){
+    RealLong y = 1;
     for (int j=0; j<x.size(); j++){
-        y += x[j];
+        y *= 1 + 0.25*(x[j]- 0.5);
     }
     // std::cout << std::endl;
-    return sin(M_PI*y);
+    return y-1;
 }
 
-Real integrate(std::vector<std::vector<unsigned long>>& points){
-    Real s = 0;
+RealLong integrate(std::vector<std::vector<unsigned long>>& points){
+    RealLong s = 0;
     for (int i=0; i<points.size(); i++){
-        std::vector<Real> x = std::vector<Real>(points[0].size(), 0);
+        std::vector<RealLong> x = std::vector<RealLong>(points[0].size(), 0);
         for (int j=0; j<x.size(); j++){
-            x[j] = ((Real) points[i][j]) / points.size();
+            x[j] = ((RealLong) points[i][j]) / points.size();
         }
         s += f(x);
     }
@@ -137,7 +140,7 @@ int main(int argc, const char *argv[])
             std::cout << "Reached " << i << std::endl;
         // }
         
-        auto weights1 = std::make_unique<LatCommon::ProductWeights>(0.1);
+        auto weights1 = std::make_unique<LatticeTester::ProductWeights>(0.1);
         auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(1, m, m);
         auto net2 = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(1, m, m);
         auto net3 = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(1, m, m);
@@ -173,7 +176,7 @@ int main(int argc, const char *argv[])
 
         // std::cout << "3" << std::endl;
 
-        auto weights2 = std::make_unique<LatCommon::ProductWeights>(0.1);
+        auto weights2 = std::make_unique<LatticeTester::ProductWeights>(0.1);
         auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(3);
         auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
         auto task2 = Task::Eval(std::move(net2),std::move(fig2));
@@ -183,9 +186,9 @@ int main(int argc, const char *argv[])
         // std::cout << "4" << std::endl;
 
         LatBuilder::LFSR258 gen = LatBuilder::LFSR258();
-        std::vector<Real> int_values = std::vector<Real>(nRandomSimul, 0);
-        Real mean = 0;
-        Real variance = 0;
+        std::vector<RealLong> int_values = std::vector<RealLong>(nRandomSimul, 0);
+        RealLong mean = 0;
+        RealLong variance = 0;
         for (int j=0; j<nRandomSimul; j++){
             // if (j % 100 == 0){
             // std::cout << "Reached " << j << std::endl;
@@ -217,7 +220,7 @@ int main(int argc, const char *argv[])
     // auto vecGenValues = ConstructionMethod::genValueSpaceDim(s+1);    
 
     // for (int i=0; i<vecGenValues.size(); i++){
-    //     auto weights1 = std::make_unique<LatCommon::OrderDependentWeights>(0.1);
+    //     auto weights1 = std::make_unique<LatticeTester::OrderDependentWeights>(0.1);
     //     auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s, m, m);
 
     //     auto net2 = net->extendDimension(vecGenValues[i]);

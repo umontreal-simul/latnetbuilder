@@ -2,7 +2,7 @@
 # coding: utf-8
 
 def build(ctx):
-    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
+    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
     src_dir = ctx.path
 

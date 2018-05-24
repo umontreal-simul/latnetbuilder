@@ -21,10 +21,10 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/CombinedWeights.h"
 
-#include "latcommon/ProjectionDependentWeights.h"
-#include "latcommon/OrderDependentWeights.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/PODWeights.h"
+#include "latticetester/ProjectionDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/PODWeights.h"
 
 namespace LatBuilder { namespace Norm {
 
@@ -120,7 +120,7 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType=2);
+   PAlphaSL10(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
 
    template <LatticeType LR, PointSetType L>
    Real value(
@@ -134,7 +134,7 @@ public:
    { return "PAlphaSL10"; }
 
 private:
-   const LatCommon::Weights& m_weights;
+   const LatticeTester::Weights& m_weights;
 };
 
 }}

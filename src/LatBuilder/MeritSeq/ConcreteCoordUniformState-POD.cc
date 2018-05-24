@@ -24,7 +24,7 @@ namespace LatBuilder { namespace MeritSeq {
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::PODWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::PODWeights>::
 reset()
 {
    CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
@@ -37,7 +37,7 @@ reset()
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::PODWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::PODWeights>::
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 {
    CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
@@ -63,10 +63,10 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::PODWeights>::
+ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::PODWeights>::
 weightedState() const
 {
-   using LatCommon::Coordinates;
+   using LatticeTester::Coordinates;
 
    const auto nextCoordinate = this->dimension();
 
@@ -89,18 +89,18 @@ weightedState() const
 }
 
 
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatticeTester::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatticeTester::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatticeTester::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  LatticeTester::PODWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatticeTester::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatticeTester::PODWeights>;
 
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatticeTester::PODWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatCommon::PODWeights>;
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  LatCommon::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatticeTester::PODWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  LatticeTester::PODWeights>;
 
 }}

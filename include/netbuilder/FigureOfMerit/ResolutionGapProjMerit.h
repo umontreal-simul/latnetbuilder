@@ -24,8 +24,8 @@
 #include "netbuilder/CBCCoordinateSet.h"
 #include "netbuilder/ProgressiveRowReducer.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Weights.h"
+#include "latticetester/Coordinates.h"
 
 #include <vector>
 #include <memory>
@@ -77,7 +77,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
          * @param net is the digital net for which we want to compute the merit
          * @param projection is the projection to consider
          */ 
-        Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
+        Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
             unsigned int dimension = (unsigned int) projection.size();
             unsigned int numCols = net.numColumns();
@@ -152,7 +152,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
          * @param net is the digital net for which we want to compute the merit
          * @param projection is the projection to consider
          */ 
-        Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection) 
+        Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
             unsigned int dimension = (unsigned int) projection.size();
 

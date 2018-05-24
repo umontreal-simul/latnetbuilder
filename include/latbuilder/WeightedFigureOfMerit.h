@@ -18,7 +18,7 @@
 #define LATBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
 
 #include "latbuilder/FigureOfMerit.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/CoordinateSets.h"
 
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
@@ -90,7 +90,7 @@ public:
     */
    WeightedFigureOfMerit(
          Real normType,
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          PROJDEP projdep = PROJDEP()
          ):
       m_normType(normType),
@@ -109,7 +109,7 @@ public:
    { return m_normType; }
 
    /// \copydoc FigureOfMerit::weights()
-   const LatCommon::Weights& weights() const
+   const LatticeTester::Weights& weights() const
    { return *m_weights; }
 
    /**
@@ -143,7 +143,7 @@ public:
 
 private:
    Real m_normType;
-   std::unique_ptr<LatCommon::Weights> m_weights;
+   std::unique_ptr<LatticeTester::Weights> m_weights;
    PROJDEP m_projDepMerit;
 
    std::ostream& format(std::ostream& os) const
@@ -230,7 +230,7 @@ public:
     * to the projections \c projections of the lattice \c lat.
     *
     * \param lat     Lattice for which the figure of merit will be computed.
-    * \param projections  Set of projections \f$\mathcal J\f$ (see LatCommon::CoordinateSets).
+    * \param projections  Set of projections \f$\mathcal J\f$ (see LatticeTester::CoordinateSets).
     * \param initialValue  Initial value to put in the accumulator.
     */
    template <class CSETS>
@@ -241,7 +241,7 @@ public:
          ) const
    {
    //#define DEBUG
-      using namespace LatCommon;
+      using namespace LatticeTester;
 #ifdef DEBUG
       using TextStream::operator<<;
       std::cout << "computing merit for lattice " << lat << std::endl;
