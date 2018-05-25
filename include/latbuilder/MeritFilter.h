@@ -36,11 +36,11 @@ namespace LatBuilder
  * This class template is useful to reuse the same code to apply the filter to a
  * single merit value or to embedded merit values.
  */
-template <LatType LAT>
-class MeritFilter : public BasicMeritFilter<LAT> {
+template <LatticeType LR, PointSetType PST>
+class MeritFilter : public BasicMeritFilter<LR, PST> {
 public:
-   typedef typename BasicMeritFilter<LAT>::InputMeritValue  MeritValue;
-   typedef typename BasicMeritFilter<LAT>::LatDef           LatDef;
+   typedef typename BasicMeritFilter<LR, PST>::InputMeritValue  MeritValue;
+   typedef typename BasicMeritFilter<LR, PST>::LatDef           LatDef;
 
    /**
     * Filter function type.

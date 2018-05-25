@@ -39,35 +39,35 @@ struct Creator {
    /**
     * Creates a new sequence object.
     */
-   template <LatType L, typename... ARGS>
+   template <LatticeType LR, PointSetType L, typename... ARGS>
    static result_type create(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          ARGS&&... t
          )
-   { return result_type(sizeParam.numPoints(), std::forward<ARGS>(t)...); }
+   { return result_type(sizeParam.modulus(), std::forward<ARGS>(t)...); }
 };
 
 /**
  * Creator specialization for cyclic groups.
  */
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-struct Creator<CyclicGroup<COMPRESS, TRAV, ORDER>> {
-   typedef CyclicGroup<COMPRESS, TRAV, ORDER> result_type;
+template <LatticeType LR,Compress COMPRESS, class TRAV, GroupOrder ORDER>
+struct Creator<CyclicGroup<LR,COMPRESS, TRAV, ORDER>> {
+   typedef CyclicGroup<LR, COMPRESS, TRAV, ORDER> result_type;
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LatType::EMBEDDED>& sizeParam,
+         const SizeParam<LR,PointSetType::MULTILEVEL>& sizeParam,
          ARGS&&... t
          )
    { return result_type(sizeParam.base(), sizeParam.maxLevel(), std::forward<ARGS>(t)...); }
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LatType::ORDINARY>& sizeParam,
+         const SizeParam<LR,PointSetType::UNILEVEL>& sizeParam,
          ARGS&&... t
          )
    {
-      SizeParam<LatType::EMBEDDED> ml(sizeParam.numPoints());
+      SizeParam<LR, PointSetType::MULTILEVEL> ml(sizeParam.modulus());
       return result_type(ml.base(), ml.maxLevel(), std::forward<ARGS>(t)...);
    }
 };
@@ -81,13 +81,13 @@ struct Creator<PowerSeq<SEQ>> {
    /**
     * Creates a new sequence object.
     */
-   template <LatType L, typename... ARGS>
+   template <LatticeType LR, PointSetType L, typename... ARGS>
    static result_type create(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          unsigned int power,
          ARGS&&... t
          )
-   { return result_type(Creator<SEQ>::create(sizeParam, std::forward<ARGS>(t)...), power, sizeParam.numPoints()); }
+   { return result_type(Creator<SEQ>::create(sizeParam, std::forward<ARGS>(t)...), power, sizeParam.modulus()); }
 };
 
 }}

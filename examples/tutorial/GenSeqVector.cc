@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
@@ -27,15 +27,13 @@
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-int main()
-{
-   //! [main]
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Seq;
-
-   SizeParam<LatType::ORDINARY> n(7);      // lattice size
-   SizeParam<LatType::ORDINARY> n0(2);     // fake lattice size to obtain a single value (1)
-   Dimension dim = 3;           // dimension
-
+//! [nonrandom]
+template <LatticeType LA>
+void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Seq;
+   SizeParam<LA, PointSetType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, PointSetType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   Dimension dim = 3;
    //! [VectorCreator]
    auto vec = GenSeq::VectorCreator<Seq>::create(n, dim);
    //! [VectorCreator]
@@ -43,17 +41,38 @@ int main()
    vec[0] = GenSeq::Creator<Seq>::create(n0);
    //! [1st]
    std::cout << "lattice size: " << n << std::endl;
-   std::cout << "    integer sequences: " << vec << std::endl;
-   //! [main]
+   std::cout << "    generating value sequences: " << vec << std::endl;
 
-   //! [random]
-   n = 31;
-   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR113>> RandomSeq;
+}
+//! [nonrandom]
+
+//! [random]
+template <LatticeType LA>
+void RandomSeqVector(typename LatticeTraits<LA>::Modulus modulus){
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR113>> RandomSeq;
+   SizeParam<LA, PointSetType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, PointSetType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   Dimension dim = 3;
+  
    auto randVec = GenSeq::VectorCreator<RandomSeq>::create(n, dim, 5);
    randVec[0] = GenSeq::Creator<RandomSeq>::create(n0, 1); // replace 1st with singleton
    std::cout << "lattice size: " << n << std::endl;
-   std::cout << "    random integer sequences: " << randVec << std::endl;
-   //! [random]
+   std::cout << "    random generating value sequences: " << randVec << std::endl;
 
+}
+//! [random]
+
+int main()
+{
+   //! [nonrandommain]
+   SeqVector<LatticeType::ORDINARY>(7);
+   SeqVector<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
+   //! [nonrandommain]
+   //! [randommain]
+   RandomSeqVector<LatticeType::ORDINARY>(7);
+   RandomSeqVector<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
+   //! [randommain]
+
+   
    return 0;
 }

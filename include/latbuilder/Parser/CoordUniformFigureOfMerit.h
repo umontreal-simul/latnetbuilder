@@ -36,13 +36,14 @@ public:
 /**
  * Parser for coordinate-uniform figures of merit.
  */
+template <LatticeType LR>
 struct CoordUniformFigureOfMerit {
 
    struct ParseKernel {
       template <class KERNEL, typename FUNC, typename... ARGS>
       void operator()(
             KERNEL kernel,
-            std::unique_ptr<LatCommon::Weights> weights,
+            std::unique_ptr<LatticeTester::Weights> weights,
             FUNC&& func, ARGS&&... args
             ) const
       {
@@ -65,13 +66,14 @@ struct CoordUniformFigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
+
       try {
          const auto norm = boost::lexical_cast<Real>(strNorm);
          if (norm == 2) {
-            Kernel::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+            Kernel<LR>::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
             return;
          }
       }

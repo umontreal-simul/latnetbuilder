@@ -15,18 +15,20 @@
 // limitations under the License.
 
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/CoordinateSets.h"
 
 #include "latbuilder/ProjDepMerit/Spectral.h"
-#include "latcommon/NormaBestLat.h"
+#include "latticetester/NormaBestLat.h"
+#include "latbuilder/ProjDepMerit/CoordUniform.h" 
+#include "latbuilder/Kernel/PAlphaPLR.h"
 
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Storage.h"
 #include "latbuilder/Functor/binary.h"
 
 #include "latbuilder/LatSeq/CBC.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 
 #include "latbuilder/TextStream.h"
 
@@ -41,9 +43,10 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 //! [Observer]
+template<LatticeType LA>
 class Observer {
 public:
-   typedef LatBuilder::LatDef<LatType::ORDINARY> LatDef;
+   typedef LatBuilder::LatDef<LA, PointSetType::UNILEVEL> LatDef;
 
    Observer() { reset(); }
 
@@ -76,20 +79,34 @@ private:
 //! [Observer]
 
 
-template <LatType L, Compress C>
-void test(const Storage<L, C>& storage, Dimension dimension)
+template <LatticeType LA, PointSetType L, Compress C>
+void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   typedef ProjDepMerit::Spectral<LatCommon::NormaBestLat> ProjDep;
+   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
+   /*
+   // The P_{\alpha,PLR} figure of merit for polynomial lattices
+   //! [pfigure]
+   auto weights = unique<LatticeTester::ProductWeights>();
+   weights->setDefaultWeight(0.7);
+
+   //! [pProjDepMerit]
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaPLR> ProjDep;
+   WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(2, std::move(weights), ProjDep(2));
+   //! [pProjDepMerit]
+   std::cout << "figure of merit: " << figure << std::endl;
+   //! [pfigure]
+   */
+
    // sequence of lattice definitions
-   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
+   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression()> Coprime;
    //! [baseLat]
    auto baseLat = createLatDef(storage.sizeParam());
    //! [baseLat]
@@ -108,12 +125,12 @@ void test(const Storage<L, C>& storage, Dimension dimension)
 
       auto latSeq = LatSeq::cbc(
             baseLat,
-            Coprime(baseDim == 0 ? 2 : storage.sizeParam().numPoints())
+            Coprime(baseDim == 0 ? LatticeTraits<LA>::TrivialModulus : storage.sizeParam().modulus())
             );
    //! [CBC loop cond]
 
-      using LatCommon::CoordinateSets::FromRanges;
-      using LatCommon::CoordinateSets::AddCoordinate;
+      using LatticeTester::CoordinateSets::FromRanges;
+      using LatticeTester::CoordinateSets::AddCoordinate;
 
       std::cout << "CBC search for dimension: " << (baseDim + 1) << std::endl;
       std::cout << "  base lattice: " << baseLat << std::endl;
@@ -135,7 +152,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
       std::cout << "  new projections: " << newProjections << std::endl;
 
       //! [loop]
-      Observer obs;
+      Observer<LA> obs;
       for (const auto& lat : latSeq) {
          // compute merit value of lattice for all projections
          auto merit = eval(lat, newProjections, initialMerit);
@@ -158,8 +175,13 @@ int main()
    Dimension dim = 3;
 
    //! [storage]
-   test(Storage<LatType::ORDINARY, Compress::SYMMETRIC>(19), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(19), dim);
    //! [storage]
+   /*
+   //! [pstorage]
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(13)), dim);
+   //! [pstorage]
+   */
 
    return 0;
 }

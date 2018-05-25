@@ -15,8 +15,9 @@
 // limitations under the License.
 
 #include "latbuilder/CoordUniformFigureOfMerit.h"
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
+#include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Functor/binary.h"
 #include "latbuilder/Storage.h"
@@ -30,7 +31,7 @@
 
 #include "latbuilder/MeritSeq/CoordUniformCBC.h"
 #include "latbuilder/MeritSeq/CoordUniformInnerProd.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/Creator.h"
 
 #include "latbuilder/TextStream.h"
@@ -45,12 +46,12 @@ template <typename T, typename... ARGS>
 std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
-template <class NORMALIZER>
-void setLevelWeights(NORMALIZER&, const SizeParam<LatType::ORDINARY>&)
+template <LatticeType LA, class NORMALIZER>
+void setLevelWeights(NORMALIZER&, const SizeParam<LA, PointSetType::UNILEVEL>&)
 {}
 
-template <class NORMALIZER>
-void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LatType::EMBEDDED>& sizeParam)
+template <LatticeType LA, class NORMALIZER>
+void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, PointSetType::MULTILEVEL>& sizeParam)
 {
    //! [per-level weights]
    normalizer.setWeights(RealVector(
@@ -60,39 +61,53 @@ void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LatType::EMBEDDED>&
    //! [per-level weights]
 }
 
-void setCombiner(MeritFilterList<LatType::ORDINARY>&) {}
+template<LatticeType LA>
+void setCombiner(MeritFilterList<LA, PointSetType::UNILEVEL>&) {}
 
 //! [combiner]
-void setCombiner(MeritFilterList<LatType::EMBEDDED>& filters)
-{ filters.add(unique<MeritCombiner::Accumulator<Functor::Sum>>()); }
+template<LatticeType LA>
+void setCombiner(MeritFilterList<LA, PointSetType::MULTILEVEL>& filters)
+{ filters.add(unique<MeritCombiner::Accumulator<LA, Functor::Sum>>()); }
 //! [combiner]
 
-template <LatType L, Compress C>
-void test(const Storage<L, C>& storage, Dimension dimension)
-{
+template <LatticeType LA, PointSetType L, Compress C>
+void test(const Storage<LA, L, C>& storage, Dimension dimension)
+{  
+
    //! [figure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
    CoordUniformFigureOfMerit<Kernel::PAlpha> figure(std::move(weights), 2);
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
+   
+   /*
+   // The P_{\alpha,PLR} figure of merit for polynomial lattices
+   //! [pfigure]
+   auto weights = unique<LatticeTester::ProductWeights>();
+   weights->setDefaultWeight(0.7);
 
-   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
+   CoordUniformFigureOfMerit<Kernel::PAlphaPLR> figure(std::move(weights), 2);
+   std::cout << "figure of merit: " << figure << std::endl;
+   //! [pfigure]
+   */
+
+   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression()> Coprime;
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
-   auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<L>(2));
+   auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<LA, L>(LatticeTraits<LA>::TrivialModulus));
 
    //! [cbc]
    auto cbc = MeritSeq::cbc<MeritSeq::CoordUniformInnerProd>(storage, figure);
    //! [cbc]
 
    //! [filters]
-   MeritFilterList<L> filters;
+   MeritFilterList<LA, L> filters;
 
    setCombiner(filters);
 
    //! [normalizer]
-   auto normalizer = unique<Norm::Normalizer<L, Norm::PAlphaSL10>>(
+   auto normalizer = unique<Norm::Normalizer<LA, L, Norm::PAlphaSL10>>(
          Norm::PAlphaSL10(figure.kernel().alpha(), figure.weights())
          );
    setLevelWeights(*normalizer, storage.sizeParam());
@@ -100,7 +115,7 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    //! [normalizer]
 
    //! [low-pass]
-   auto lowPass = unique<MeritFilter<L>>(Functor::LowPass<Real>(1.0), "low-pass");
+   auto lowPass = unique<MeritFilter<LA, L>>(Functor::LowPass<Real>(1.0), "low-pass");
    filters.add(std::move(lowPass));
    //! [low-pass]
    std::cout << "filters: " << filters << std::endl;
@@ -140,11 +155,18 @@ void test(const Storage<L, C>& storage, Dimension dimension)
 int main()
 {
    Dimension dim = 3;
-
+   
    //! [Storage]
-   test(Storage<LatType::ORDINARY, Compress::SYMMETRIC>(256), dim);
-   test(Storage<LatType::EMBEDDED, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(256), dim);
    //! [Storage]
+   
+   /*
+   //! [pstorage]
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   //! [pstorage]
+   */
 
    return 0;
 }

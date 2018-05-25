@@ -21,7 +21,7 @@
 LATBUILDER_PREFIX = @PREFIX@
 
 INCLUDES = -I$(LATBUILDER_PREFIX)/include @INCLUDES@
-LIBS = -L$(LATBUILDER_PREFIX)/lib -llatbuilder -llatcommon @LIBPATH@ @LIBRARIES@
+LIBS = -L$(LATBUILDER_PREFIX)/lib -llatbuilder -llatticetester @LIBPATH@ @LIBRARIES@
 
 # release
 CXXFLAGS = @CXXFLAGS@
@@ -32,7 +32,7 @@ CXXFLAGS = @CXXFLAGS@
 LDFLAGS = -Wl,-R,"$(LATBUILDER_PREFIX)/lib"
 
 %.o: %.cc
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -std=c++11 -c $< -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -std=c++14 -c $< -o $@
 
 myproject: myproject.o
 	$(CXX) $(LDFLAGS) $< $(LIBS) -o $@

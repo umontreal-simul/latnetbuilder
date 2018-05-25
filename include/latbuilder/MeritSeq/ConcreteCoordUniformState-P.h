@@ -20,14 +20,14 @@
 #include "latbuilder/MeritSeq/CoordUniformState.h"
 #include "latbuilder/Storage.h"
 
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 
 #include <memory>
 
 namespace LatBuilder { namespace MeritSeq {
 
 // forward declaration
-template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUniformState;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class WEIGHTS> class ConcreteCoordUniformState;
 
 /**
  * Implementation of CoordUniformState for product weights.
@@ -55,9 +55,9 @@ template <LatType LAT, Compress COMPRESS, class WEIGHTS> class ConcreteCoordUnif
  *       (\boldsymbol 1 + \gamma_s \boldsymbol\omega_s) \odot \boldsymbol p_{s-1}.
  * \f]
  */
-template <LatType LAT, Compress COMPRESS>
-class ConcreteCoordUniformState<LAT, COMPRESS, LatCommon::ProductWeights> :
-   public CoordUniformState<LAT, COMPRESS> {
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
+class ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProductWeights> :
+   public CoordUniformState<LR, PST, COMPRESS, PLO> {
 public:
    /**
     * Constructor.
@@ -69,10 +69,10 @@ public:
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
    ConcreteCoordUniformState(
-         const Storage<LAT, COMPRESS>& storage,
-         const LatCommon::ProductWeights& weights
+         const Storage<LR, PST, COMPRESS, PLO>& storage,
+         const LatticeTester::ProductWeights& weights
          ):
-      CoordUniformState<LAT, COMPRESS>(storage),
+      CoordUniformState<LR, PST, COMPRESS, PLO>(storage),
       m_weights(weights)
    { reset(); }
 
@@ -87,7 +87,7 @@ public:
     *       (\boldsymbol 1 + \gamma_s \boldsymbol\omega_s) \odot \boldsymbol p_{s-1}.
     * \f]
     */
-   void update(const RealVector& kernelValues, Modulus gen);
+   void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen);
 
    /**
     * Computes the weighted combination state vectors.
@@ -100,20 +100,30 @@ public:
    RealVector weightedState() const;
 
    /// \copydoc CoordUniformState::clone()
-   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
+   std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
-   const LatCommon::ProductWeights& m_weights;
+   const LatticeTester::ProductWeights& m_weights;
 
    // m_state(i)
    RealVector m_state;
 };
 
-extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::NONE,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatType::ORDINARY, Compress::SYMMETRIC, LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::NONE,      LatCommon::ProductWeights>;
-extern template class ConcreteCoordUniformState<LatType::EMBEDDED, Compress::SYMMETRIC, LatCommon::ProductWeights>;
+
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatticeTester::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatticeTester::ProductWeights>;
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProductWeights>;
+
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProductWeights>;
+
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProductWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatticeTester::ProductWeights>;
 
 }}
 

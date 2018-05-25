@@ -20,7 +20,7 @@
 #include "latbuilder/Norm/PAlphaBase.h"
 #include "latbuilder/Types.h"
 
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 #include "latbuilder/CombinedWeights.h"
 
 namespace LatBuilder { namespace Norm {
@@ -44,12 +44,12 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights, Real normType);
+   PAlphaDPW08(unsigned int alpha, const LatticeTester::Weights& weights, Real normType);
 
-   template <LatType L>
+   template <LatticeType LR, PointSetType L>
    Real value(
          Real lambda,
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
          Real norm = 1.0
          ) const;
@@ -58,7 +58,7 @@ public:
    { return "PAlphaDPW08"; }
 
 private:
-   const LatCommon::Weights& m_weights;
+   const LatticeTester::Weights& m_weights;
 };
 
 }}

@@ -27,6 +27,7 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for generic weighted figures of merit.
  */
+  template<LatticeType LR>
 struct FigureOfMerit {
    /**
     * Parses a string specifying a weighted figure of merit and a string
@@ -38,14 +39,14 @@ struct FigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
       auto strCS = splitPair<>(str, ':');
       if (strCS.first == "CU")
-         CoordUniformFigureOfMerit::parse(strNorm, strCS.second, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         CoordUniformFigureOfMerit<LR>::parse(strNorm, strCS.second, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
       else
-         WeightedFigureOfMerit::parse(strNorm, str, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         WeightedFigureOfMerit<LR>::parse(strNorm, str, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
    }
 };
 

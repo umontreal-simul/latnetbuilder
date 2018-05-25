@@ -163,8 +163,8 @@ that is passed to the constructor and thus avoids copying the object, which can
 safely be stored as a class member of the `owner' object.
 Generator sequences (see the GenSeq namespace) are an example of non-trivial
 objects that are transferred to other  ̀owner' objects using this mechanism.
-Weights objects, such as instances of LatCommon::ProductWeights or of
-LatCommon::ProjectionDependentWeights, are other examples of non-trivial
+Weights objects, such as instances of LatticeTester::ProductWeights or of
+LatticeTester::ProjectionDependentWeights, are other examples of non-trivial
 objects, but because they are polymorphic, they are stored using a
 std::unique_ptr, which in turn, is passed using either std::move() or,
 equivalently, std::unique_ptr::release().
@@ -225,6 +225,11 @@ others are header-only libraries.
 The fast CBC implementation of Lattice Builder, as well as the computation of
 the \f$R_\alpha\f$ criterion, depends on the
 <a href="http://www.fftw.org/">FFTW library</a>.
+
+\section impl_ntl Usage of NTL
+
+The implementation of polynomials over \f$Z_2\f$ in Lattice Builder, depends on the
+<a href="http://www.shoup.net/ntl/">NTL library</a>.
 
 */
 vim: ft=doxygen spelllang=en spell

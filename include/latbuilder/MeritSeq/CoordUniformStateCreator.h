@@ -26,20 +26,20 @@
 
 namespace LatBuilder { namespace MeritSeq {
 
-template <LatType LAT, Compress COMPRESS>
-using CoordUniformStateList = std::list<ClonePtr<MeritSeq::CoordUniformState<LAT, COMPRESS>>>;
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
+using CoordUniformStateList = std::list<ClonePtr<MeritSeq::CoordUniformState<LR, PST, COMPRESS, PLO>>>;
 
 class CoordUniformStateCreator {
 public:
    /**
     * Returns a new vector of empty states for the evaluation algorithm.
     */
-   template <LatType L, Compress C, class WEIGHTS>
+   template <LatticeType LA, PointSetType L, Compress C, PerLevelOrder P, class WEIGHTS >
    static
-   CoordUniformStateList<L, C>
-   create(const Storage<L, C>& storage, const WEIGHTS& weights)
+   CoordUniformStateList<LA, L, C, P>
+   create(const Storage<LA, L, C, P>& storage, const WEIGHTS& weights)
    {
-      CoordUniformStateList<L, C> list;
+      CoordUniformStateList<LA, L, C, P> list;
       WeightsDispatcher::dispatch<AddCoordUniformStates>(weights, storage, list);
       return list;
    }
@@ -48,35 +48,35 @@ private:
 
    template <typename WEIGHTS>
    struct AddCoordUniformStates {
-      template <LatType L, Compress C>
+      template <LatticeType LA, PointSetType L, Compress C, PerLevelOrder P >
       void operator()(
             const WEIGHTS& weights,
-            const Storage<L, C>& storage,
-            CoordUniformStateList<L, C>& list
+            const Storage<LA, L, C, P>& storage,
+            CoordUniformStateList<LA, L, C, P>& list
             ) const
       { addCoordUniformStates(weights, storage, list); }
    };
 
-   template <LatType L, Compress C>
+   template <LatticeType LA, PointSetType L, Compress C, PerLevelOrder P >
    static void addCoordUniformStates(
          const CombinedWeights& weights,
-         const Storage<L, C>& storage,
-         CoordUniformStateList<L, C>& list
+         const Storage<LA, L, C, P>& storage,
+         CoordUniformStateList<LA, L, C, P>& list
          )
    {
       for (const auto& w : weights.list())
          WeightsDispatcher::dispatch<AddCoordUniformStates>(*w, storage, list);
    }
 
-   template <class WEIGHTS, LatType L, Compress C>
+   template <class WEIGHTS,LatticeType LA, PointSetType L, Compress C, PerLevelOrder P >
    static void addCoordUniformStates(
          const WEIGHTS& weights,
-         const Storage<L, C>& storage,
-         CoordUniformStateList<L, C>& list
+         const Storage<LA, L, C, P>& storage,
+         CoordUniformStateList<LA, L, C, P>& list
          )
    {
-      list.push_back(ClonePtr<MeritSeq::CoordUniformState<L, C>>(
-               new MeritSeq::ConcreteCoordUniformState<L, C, WEIGHTS>(storage, weights)
+      list.push_back(ClonePtr<MeritSeq::CoordUniformState<LA, L, C, P>>(
+               new MeritSeq::ConcreteCoordUniformState<LA, L, C, P, WEIGHTS>(storage, weights)
                ));
    }
 

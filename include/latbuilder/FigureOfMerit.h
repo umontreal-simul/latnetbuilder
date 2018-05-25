@@ -20,7 +20,7 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 #include <ostream>
 
@@ -49,7 +49,7 @@ public:
    /**
     * Returns the projection-dependent weights \f$\gamma_{\mathfrak u}\f$.
     */
-   virtual const LatCommon::Weights& weights() const = 0;
+   virtual const LatticeTester::Weights& weights() const = 0;
 
    virtual std::string name() const = 0;
 

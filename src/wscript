@@ -2,7 +2,7 @@
 # coding: utf-8
 
 def build(ctx):
-    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
+    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
     src_dir = ctx.path
 
@@ -15,3 +15,6 @@ def build(ctx):
     # header files
     for inc in inc_dir.ant_glob('**/*.h'):
         ctx.install_files('${INCLUDEDIR}/' + inc.parent.path_from(inc_dir), inc)
+
+    for csv in inc_dir.ant_glob('**/*.csv'):
+        ctx.install_files('${INCLUDEDIR}/' + csv.parent.path_from(inc_dir), csv)

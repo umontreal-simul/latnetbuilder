@@ -22,8 +22,8 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
 
-#include "latcommon/Num.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Num.h"
+#include "latticetester/Coordinates.h"
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -78,9 +78,9 @@ public:
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <LatType LAT, Compress COMPRESS>
-   Evaluator<CoordUniform, LAT, COMPRESS> evaluator(Storage<LAT, COMPRESS> storage) const
-   { return Evaluator<CoordUniform, LAT, COMPRESS>(std::move(storage), kernel().valuesVector(storage)); }
+   template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+   Evaluator<CoordUniform, LR, PST, COMPRESS, PLO> evaluator(Storage<LR, PST, COMPRESS, PLO> storage) const
+   { return Evaluator<CoordUniform, LR, PST, COMPRESS, PLO>(std::move(storage), kernel().valuesVector(storage)); }
 
 private:
    KERNEL m_kernel;
@@ -89,13 +89,13 @@ private:
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class KERNEL, LatType LAT, Compress COMPRESS>
-class Evaluator<CoordUniform<KERNEL>, LAT, COMPRESS> {
+template <class KERNEL, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+class Evaluator<CoordUniform<KERNEL>, LR, PST, COMPRESS, PLO> {
 public:
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
 
    Evaluator(
-      Storage<LAT, COMPRESS> storage,
+      Storage<LR, PST, COMPRESS, PLO> storage,
       RealVector kernelValues
       ):
       m_storage(std::move(storage)),
@@ -107,8 +107,8 @@ public:
     * \c projection.
     */
    MeritValue operator() (
-         const LatDef<LAT>& lat,
-         const LatCommon::Coordinates& projection
+         const LatDef<LR, PST>& lat,
+         const LatticeTester::Coordinates& projection
          ) const
    {
       if (projection.size() == 0)
@@ -142,7 +142,7 @@ public:
    }
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, PST, COMPRESS, PLO> m_storage;
    RealVector m_kernelValues;
 };
 

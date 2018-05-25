@@ -17,7 +17,7 @@
 #ifndef LATBUILDER__COMBINED_WEIGHTS_H
 #define LATBUILDER__COMBINED_WEIGHTS_H
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 #include <list>
 #include <memory>
 
@@ -29,10 +29,10 @@ namespace LatBuilder {
  * Sum of different instances of weights (possibly be of different concrete
  * types).
  */
-class CombinedWeights : public LatCommon::Weights {
+class CombinedWeights : public LatticeTester::Weights {
 public:
 
-   typedef std::list<std::unique_ptr<LatCommon::Weights>> WeightsList;
+   typedef std::list<std::unique_ptr<LatticeTester::Weights>> WeightsList;
 
    /**
     * Constructs an empty set of combined weights.
@@ -47,12 +47,14 @@ public:
    /**
     * Returns the weight of the projection specified by \c projection.
     */
-   virtual LatCommon::Weight getWeight (const LatCommon::Coordinates & projection) const;
+   virtual LatticeTester::Weight getWeight (const LatticeTester::Coordinates & projection) const;
+
+   virtual std::string name() const { return "combined"; }
 
    /**
     * Adds a weight specification to the set of combined weights.
     */
-   void add (std::unique_ptr<LatCommon::Weights> weights) 
+   void add (std::unique_ptr<LatticeTester::Weights> weights) 
    { m_weights.push_back(std::move(weights)); }
 
    const WeightsList& list() const
@@ -82,7 +84,7 @@ protected:
  * associated to the projection-match <tt>\<match<i>n</i>\></tt>, and
  * <tt>\<match<i>n</i>\></tt> is one of:
  * - a set of coordinates, as specified in
- *   #operator>>(std::istream&, LatCommon::Coordinates&)
+ *   #operator>>(std::istream&, LatticeTester::Coordinates&)
  *   to explicitly set the weight for the projection that
  *   correspond to these coordinates;
  * - the string <tt>order <i>m</i></tt> to implicitly set the weights of
@@ -96,7 +98,7 @@ protected:
  *
  * \remark The colons (\c :) can be replaced with <tt>=\></tt> or <tt>-\></tt>.
  *
- * \sa  #operator>>(std::istream&, LatCommon::Coordinates&)
+ * \sa  #operator>>(std::istream&, LatticeTester::Coordinates&)
  */
 std::istream& operator>> (std::istream& is, CombinedWeights& weights);
 #endif

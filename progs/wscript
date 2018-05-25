@@ -3,14 +3,19 @@
 
 def build(ctx):
 
-    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
+    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
+    # print(lc_inc_dir)
+    # print(inc_dir)
+    # print(ctx.env.LIB_PROGRAM_OPTIONS)
+    # print(ctx.env.STLIB_PROGRAM_OPTIONS)
+
 
     ctx(features='cxx cxxprogram',
             source=ctx.path.ant_glob('*.cc'),
             includes=[inc_dir, lc_inc_dir],
-            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT,
-            stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO,
-            target='bin/latbuilder',
-            use=['latbuilder', 'latcommon'],
+            lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_CHRONO + ctx.env.LIB_RT + ctx.env.LIB_NTL + ctx.env.LIB_GMP,
+            stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
+            target='bin/latnet',
+            use=['latbuilder', 'netbuilder', 'latticetester' + ctx.env.LATTICETESTER_SUFFIX],
             install_path='${BINDIR}')

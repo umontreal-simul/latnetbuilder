@@ -39,6 +39,7 @@ public:
 /**
  * Parser for generic weighted figures of merit.
  */
+template< LatticeType LR>
 struct WeightedFigureOfMerit {
 
    template <template <typename> class ACC>
@@ -47,7 +48,7 @@ struct WeightedFigureOfMerit {
       void operator()(
             PROJDEP projDepMerit,
             Real normType,
-            std::unique_ptr<LatCommon::Weights> weights,
+            std::unique_ptr<LatticeTester::Weights> weights,
              FUNC&& func, ARGS&&... args
             ) const
       {
@@ -73,16 +74,16 @@ struct WeightedFigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
           FUNC&& func, ARGS&&... args)
    {
       if (strNorm == "inf") {
-         ProjDepMerit::parse(str, ParseProjDepMerit<Functor::Max>(), 1.0, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         ProjDepMerit<LR>::parse(str, ParseProjDepMerit<Functor::Max>(), 1.0, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       try {
          const auto norm = boost::lexical_cast<Real>(strNorm);
-         ProjDepMerit::parse(str, ParseProjDepMerit<Functor::Sum>(), norm, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         ProjDepMerit<LR>::parse(str, ParseProjDepMerit<Functor::Sum>(), norm, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (boost::bad_lexical_cast&) {}

@@ -23,7 +23,7 @@
 #include "latbuilder/MeritSeq/CoordUniformCBC.h"
 #include "latbuilder/LatSeq/Combiner.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/Traversal.h"
 #include "latbuilder/LFSR113.h"
 #include "latbuilder/TextStream.h"
@@ -56,12 +56,12 @@ struct Execute {
    template <class FIGURE, class LATSEQ>
    void execute(
          FIGURE figure,
-         LatBuilder::SizeParam<LatType::ORDINARY> size,
+         LatBuilder::SizeParam<Lattice::INTEGRATION, LatType::ORDINARY> size,
          LATSEQ latSeq,
          unsigned int numSamples
          ) const
    {
-      Storage<LatType::ORDINARY, FIGURE::suggestedCompression()> storage(std::move(size));
+      Storage<Lattice::INTEGRATION, LatType::ORDINARY, FIGURE::suggestedCompression()> storage(std::move(size));
 
       auto latSeqOverCBC = MeritSeq::latSeqOverCBC(MeritSeq::cbc(storage, figure));
 
@@ -92,11 +92,11 @@ struct Execute {
 
    // random sampling
    template <class FIGURE>
-   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension, unsigned int nrand) const
+   void operator()(FIGURE figure, LatBuilder::SizeParam<Lattice::INTEGRATION, LatType::ORDINARY> size, Dimension dimension, unsigned int nrand) const
    {
-      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
+      typedef GenSeq::GeneratingValues<Lattice::INTEGRATION, FIGURE::suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension, nrand);
-      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2), nrand);
+      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<Lattice::INTEGRATION, LatType::ORDINARY>(2), nrand);
 
       auto latSeq = LatSeq::combine<Zip>(size, std::move(genSeqs));
 
@@ -112,9 +112,9 @@ struct Execute {
 
    // exhaustive sampling
    template <class FIGURE>
-   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension) const
+   void operator()(FIGURE figure, LatBuilder::SizeParam<Lattice::INTEGRATION, LatType::ORDINARY> size, Dimension dimension) const
    {
-      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression()> Coprime;
+      typedef GenSeq::GeneratingValues<Lattice::INTEGRATION, FIGURE::suggestedCompression()> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension);
       genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2));
 
@@ -154,7 +154,7 @@ int main(int argc, const char *argv[])
       if (++iarg < argc)
         nrand =  (unsigned int)atoi(argv[iarg]);
 
-      auto size = Parser::SizeParam::parse<LatType::ORDINARY>(sizeSpec);
+      auto size = Parser::SizeParam::parse<Lattice::INTEGRATION, LatType::ORDINARY>(sizeSpec);
 
       if (nrand) {
          Parser::CoordUniformFigureOfMerit::parse(

@@ -22,7 +22,7 @@
 
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/Kernel/PAlpha.h"
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 #include "latbuilder/Storage.h"
 
 #include "latbuilder/WeightedFigureOfMerit.h"
@@ -53,7 +53,7 @@ void execute(SEARCH search)
 
 CoordUniformFigureOfMerit<Kernel::PAlpha> figureCS()
 {
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
    return CoordUniformFigureOfMerit<Kernel::PAlpha>(std::move(weights), 2);
 }
@@ -61,7 +61,7 @@ CoordUniformFigureOfMerit<Kernel::PAlpha> figureCS()
 WeightedFigureOfMerit<ProjDepMerit::CoordUniform<Kernel::PAlpha>, Functor::Sum> figure()
 {
    typedef ProjDepMerit::CoordUniform<Kernel::PAlpha> ProjDep;
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
    return WeightedFigureOfMerit<ProjDep, Functor::Sum>(2, std::move(weights), ProjDep(2));
 }
@@ -69,7 +69,7 @@ WeightedFigureOfMerit<ProjDepMerit::CoordUniform<Kernel::PAlpha>, Functor::Sum> 
 int main()
 {
    Dimension dim = 3;
-   Storage<LatType::ORDINARY, Compress::SYMMETRIC> storage(256);
+   Storage<PointSetType::UNILEVEL, Compress::SYMMETRIC> storage(256);
 
    execute(Task::exhaustive(storage, dim, figureCS()));
    execute(Task::random(storage, dim, figureCS(), 10));
@@ -78,7 +78,7 @@ int main()
 
    execute(Task::exhaustive(storage, dim, figure()));
 
-   Storage<LatType::ORDINARY, Compress::SYMMETRIC> extStorage(storage.sizeParam().numPoints() * 2);
+   Storage<PointSetType::UNILEVEL, Compress::SYMMETRIC> extStorage(storage.sizeParam().numPoints() * 2);
    execute(Task::extend(extStorage, createLatDef(storage.sizeParam(), {1, 99, 27}), figure()));
 
    return 0;

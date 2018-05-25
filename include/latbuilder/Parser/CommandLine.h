@@ -25,14 +25,14 @@ namespace LatBuilder { namespace Parser {
 /**
  * Collection of arguments required to construct a Search instance.
  */
-template <LatBuilder::LatType>
+template <LatBuilder::LatticeType , LatBuilder::PointSetType>
 struct CommandLine;
 
 /**
  * Specialization of CommandLine for ordinary lattices.
  */
-template <>
-struct CommandLine<LatBuilder::LatType::ORDINARY> {
+template <LatBuilder::LatticeType LR>
+struct CommandLine<LR, LatBuilder::PointSetType::UNILEVEL> {
    std::string construction;
    std::string size;
    std::string dimension;
@@ -42,23 +42,26 @@ struct CommandLine<LatBuilder::LatType::ORDINARY> {
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
 
-   std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::ORDINARY>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::PointSetType::UNILEVEL>> parse() const;
 };
 
 /**
  * Specialization of CommandLine for embedded lattices.
  */
-template <>
-struct CommandLine<LatBuilder::LatType::EMBEDDED> : CommandLine<LatBuilder::LatType::ORDINARY> {
+template <LatBuilder::LatticeType LR>
+struct CommandLine<LR, LatBuilder::PointSetType::MULTILEVEL> : CommandLine<LR, LatBuilder::PointSetType::UNILEVEL> {
    std::vector<std::string> multilevelFilters;
    std::string combiner;
 
-   std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::EMBEDDED>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::PointSetType::MULTILEVEL>> parse() const;
 };
 
-extern template struct CommandLine<LatBuilder::LatType::ORDINARY>;
-extern template struct CommandLine<LatBuilder::LatType::EMBEDDED>;
-
+/*
+extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>;
+*/
 }}
 
 #endif

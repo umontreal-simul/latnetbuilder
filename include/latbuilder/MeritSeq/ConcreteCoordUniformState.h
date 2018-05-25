@@ -21,7 +21,7 @@ namespace LatBuilder { namespace MeritSeq {
 
 /**
  * Default implementation of CoordUniformState that works with any implementation of
- * LatCommon::Weights.
+ * LatticeTester::Weights.
  *
  * Define
  * \f[
@@ -54,9 +54,9 @@ namespace LatBuilder { namespace MeritSeq {
  * See CoordUniformCBC for the definition of
  * \f$\boldsymbol \omega_s\f$.
  */
-template <LatType LAT, Compress COMPRESS, class WEIGHTS>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO , class WEIGHTS>
 class ConcreteCoordUniformState :
-   public CoordUniformState<LAT, COMPRESS> {
+   public CoordUniformState<LR, PST, COMPRESS, PLO> {
 public:
    /**
     * Constructor.
@@ -68,19 +68,19 @@ public:
     * \param weights       Product weights \f$ \gamma_{\mathfrak u} \f$.
     */
    ConcreteCoordUniformState(
-         Storage<LAT, COMPRESS> storage,
+         Storage<LR, PST, COMPRESS, PLO> storage,
          const WEIGHTS& weights
          ):
-      CoordUniformState<LAT, COMPRESS>(std::move(storage)),
+      CoordUniformState<LR, PST, COMPRESS, PLO>(std::move(storage)),
       m_weights(weights)
    { reset(); }
 
    void reset()
    {
-	  CoordUniformState<LAT, COMPRESS>::reset();
+	  CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
 	  m_state.clear();
 	  // empty set
-	  m_state[LatCommon::Coordinates()] =
+	  m_state[LatticeTester::Coordinates()] =
 		 boost::numeric::ublas::scalar_vector<Real>(this->storage().size(), 1.0);
    }
 
@@ -94,11 +94,11 @@ public:
     *       \quad (\forall \mathfrak u \subseteq \{1,\dots,s-1\}).
     * \f]
     */
-   void update(const RealVector& kernelValues, Modulus gen)
+   void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
    {
-      CoordUniformState<LAT, COMPRESS>::update(kernelValues, gen);
+      CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
 
-      using LatCommon::Coordinates;
+      using LatticeTester::Coordinates;
 
       auto stridedKernelValues = this->storage().strided(kernelValues, gen);
 
@@ -138,7 +138,7 @@ public:
    {
 	  std::cerr << "warning: using default implementation of coordinate-uniform state" << std::endl;
 
-	  using LatCommon::Coordinates;
+	  using LatticeTester::Coordinates;
 
 	  const auto nextCoordinate = this->dimension();
 
@@ -159,14 +159,14 @@ public:
 	  return weightedState;
    }
 
-   std::unique_ptr<CoordUniformState<LAT, COMPRESS>> clone() const
-   { return std::unique_ptr<CoordUniformState<LAT, COMPRESS>>(new ConcreteCoordUniformState(*this)); }
+   std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
    const WEIGHTS& m_weights;
 
    // m_state[projection](i)
-   std::map<LatCommon::Coordinates, RealVector> m_state;
+   std::map<LatticeTester::Coordinates, RealVector> m_state;
 };
 
 

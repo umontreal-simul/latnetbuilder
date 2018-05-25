@@ -41,7 +41,7 @@ public:
     *                   the Kernel namespace for examples.
     */
    CoordUniformFigureOfMerit(
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          KERNEL kernel = KERNEL()
          ):
       m_weights(std::move(weights)),
@@ -49,7 +49,7 @@ public:
    {}
 
    /// \copydoc FigureOfMerit::weights()
-   const LatCommon::Weights& weights() const
+   const LatticeTester::Weights& weights() const
    { return *m_weights; }
 
    /**
@@ -88,7 +88,7 @@ protected:
    }
 
 private:
-   std::unique_ptr<LatCommon::Weights> m_weights;
+   std::unique_ptr<LatticeTester::Weights> m_weights;
    KERNEL m_kernel;
 };
 

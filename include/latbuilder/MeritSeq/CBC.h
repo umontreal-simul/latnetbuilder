@@ -23,7 +23,7 @@
 #include "latbuilder/BridgeIteratorCached.h"
 #include "latbuilder/LatSeq/CBC.h"
 
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/CoordinateSets.h"
 
 #include <memory>
 
@@ -42,17 +42,17 @@ namespace LatBuilder { namespace MeritSeq {
  * <li> Repeat from step 2 until desired dimension is reached. </li>
  * </ol>
  */
-template <LatType LAT, Compress COMPRESS, class PROJDEP, template <typename> class ACC>
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO , class PROJDEP, template <typename> class ACC>
 class CBC
 {
 public:
    typedef WeightedFigureOfMerit<PROJDEP, ACC> FigureOfMerit;
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
-   typedef LatBuilder::LatDef<LAT> LatDef;
+   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
+   typedef LatBuilder::LatDef<LR, PST> LatDef;
    typedef MeritValue value_type;
-   typedef decltype(std::declval<FigureOfMerit>().evaluator(std::declval<Storage<LAT, COMPRESS>>())) Evaluator;
+   typedef decltype(std::declval<FigureOfMerit>().evaluator(std::declval<Storage<LR, PST, COMPRESS, PLO>>())) Evaluator;
 
-   typedef LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges> Projections;
+   typedef LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges> Projections;
 
    /**
     * Constructor.
@@ -61,7 +61,7 @@ public:
     * \param figure      Figure of merit instance to be used.
     */
    CBC(
-         Storage<LAT, COMPRESS> storage,
+         Storage<LR, PST, COMPRESS, PLO> storage,
          const FigureOfMerit& figure
          ):
       m_storage(std::move(storage)),
@@ -83,7 +83,7 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LAT, COMPRESS>& storage() const
+   const Storage<LR, PST, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -142,7 +142,7 @@ public:
    class Seq :
       public BridgeSeq<
          Seq<GENSEQ>,
-         LatSeq::CBC<LAT, GENSEQ>,
+         LatSeq::CBC<LR, PST, GENSEQ>,
          value_type,
          BridgeIteratorCached>
    {
@@ -209,7 +209,7 @@ public:
    }
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, PST, COMPRESS, PLO> m_storage;
    const FigureOfMerit& m_figureOfMerit;
    Evaluator m_eval;
    LatDef m_baseLat;
@@ -217,11 +217,11 @@ private:
 };
 
 /// Creates a CBC algorithm.
-template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC>
-CBC<LAT, COMPRESS, PROJDEP, ACC> cbc(
-      Storage<LAT, COMPRESS> storage,
+template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC >
+CBC<LR, PST, COMPRESS, PLO, PROJDEP, ACC> cbc(
+      Storage<LR, PST, COMPRESS, PLO> storage,
       const WeightedFigureOfMerit<PROJDEP, ACC>& figure)
-{ return CBC<LAT, COMPRESS, PROJDEP, ACC>(std::move(storage), figure); }
+{ return CBC<LR, PST, COMPRESS, PLO, PROJDEP, ACC>(std::move(storage), figure); }
 
 }}
 

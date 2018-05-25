@@ -30,36 +30,39 @@ namespace LatBuilder
  * - lattice size parameter;
  * - generating vector.
  *
- * \tparam LAT  Type of lattice.
+ * \tparam PST  Type of lattice.
  */
-template <LatType LAT>
+template <LatticeType LR, PointSetType PST>
 class LatDef {
 public:
+
+  typedef typename LatticeTraits<LR>::GeneratingVector GeneratingVector;
+  
    /**
     * Constructor.
     * \param sizeParam     Size parameter of the lattice.
     * \param gen           Generating vector.
     */
    LatDef(
-         SizeParam<LAT> sizeParam = SizeParam<LAT>(),
+         SizeParam<LR, PST> sizeParam = SizeParam<LR, PST>(),
          GeneratingVector gen = GeneratingVector()
          ):
       m_sizeParam(std::move(sizeParam)),
       m_gen(std::move(gen))
    {}
 
-   template <LatType L>
-   LatDef(const LatDef<L>& other): LatDef(other.sizeParam(), other.gen())
+   template <PointSetType L>
+   LatDef(const LatDef<LR,L>& other): LatDef(other.sizeParam(), other.gen())
    {}
 
    /**
     * Returns the size parameter of the lattice.
     */
-   SizeParam<LAT>& sizeParam()
+   SizeParam<LR,PST>& sizeParam()
    { return m_sizeParam; }
 
    /// \copydoc sizeParam()
-   const SizeParam<LAT>& sizeParam() const
+   const SizeParam<LR,PST>& sizeParam() const
    { return m_sizeParam; }
 
    /**
@@ -100,31 +103,41 @@ public:
 
 
 private:
-   SizeParam<LAT> m_sizeParam;
+   SizeParam<LR,PST> m_sizeParam;
    GeneratingVector m_gen;
 };
 
 
+//==================================================================================
 /**
  * Formats \c lat and outputs it to \c os.
  */
-template <LatType LAT>
-std::ostream& operator<< (std::ostream& os, const LatDef<LAT>& lat)
+template <PointSetType PST>
+std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::ORDINARY,PST>& lat)
 {
    using TextStream::operator<<;
    os << "lattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
    return os;
 }
 
+template <PointSetType PST>
+std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::POLYNOMIAL,PST>& lat)
+{
+   using TextStream::operator<<;
+   os << "PolynomialLattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
+   return os;
+}
+
+//====================================================================================
 /**
  * Returns a lattice definition instance with the proper type of size parameter.
  */
-template <LatType LAT>
-LatDef<LAT> createLatDef(
-      SizeParam<LAT> sizeParam = SizeParam<LAT>(), 
-      GeneratingVector gen = GeneratingVector()
+template <LatticeType LR,PointSetType PST>
+LatDef<LR,PST> createLatDef(
+      SizeParam<LR,PST> sizeParam = SizeParam<LR,PST>(), 
+      typename LatDef<LR,PST>::GeneratingVector gen = typename LatDef<LR,PST>::GeneratingVector()
       )
-{ return LatDef<LAT>(std::move(sizeParam), std::move(gen)); }
+{ return LatDef<LR,PST>(std::move(sizeParam), std::move(gen)); }
 
 }
 

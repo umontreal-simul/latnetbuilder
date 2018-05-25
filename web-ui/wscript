@@ -6,8 +6,6 @@ from waflib import Utils, Task, Build
 def build(ctx):
 
     # install files
-    exe = [ctx.path.find_node('share/latbuilder/web-ui/' + x) for x in ['serve.py', 'services/lbjson.py']]
-    data = [x for x in ctx.path.ant_glob('share/**/*') if x not in exe]
-    ctx.install_files('${DATADIR}', data, cwd=ctx.path.find_dir('share'), relative_trick=True)
-    ctx.install_files('${DATADIR}', exe, cwd=ctx.path.find_dir('share'), relative_trick=True, chmod=Utils.O755)
-    ctx.install_files('${BINDIR}', ctx.path.find_node('bin/latbuilder-web.py'), chmod=Utils.O755)
+    data = [x for x in ctx.path.ant_glob('web_ui/**/*')]
+    ctx.install_files('${DATADIR}/latbuilder', data, cwd=ctx.path.find_dir('share'), relative_trick=True)
+    ctx.install_files('${BINDIR}', ctx.path.find_node('notebooks/Interface.ipynb'), chmod=Utils.O755)

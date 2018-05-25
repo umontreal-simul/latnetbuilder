@@ -1,0 +1,194 @@
+
+#include <vector>
+#include <array>
+#include <algorithm>
+#include <math.h>
+#include <iostream>
+
+typedef std::vector<unsigned int> GenValue ;
+typedef std::pair<unsigned int, unsigned int> PrimitivePolynomial; 
+typedef std::vector<std::vector<bool>> Matrix;
+
+const unsigned int dim = 3; 
+unsigned int m = 8;
+std::vector<GenValue> genValues { {}, {1}, {1, 3}, {1, 3, 1} };
+
+
+// primitive polynomials are hard-coded because their computation is really complex.
+static const std::array<unsigned int, dim> degrees =
+{
+    1, 2, 3
+};
+
+static const std::array<unsigned long, dim> representations =
+{
+    0, 1, 1
+};
+
+PrimitivePolynomial  nthPrimitivePolynomial(unsigned int n)
+{
+    return std::pair<unsigned int, unsigned int>(degrees[n-1], representations[n-1]);
+}
+
+/** Compute the element-wise product of two vector and reduce the resulting vector using the exclusive or operator.
+ * @param a first vector
+ * @param b second vector 
+ */ 
+unsigned int xor_prod_reduce(const std::vector<unsigned int>& a, const std::vector<unsigned int>& b)
+{
+    unsigned int res = 0;
+    unsigned int n = a.size();
+    for (unsigned int i = 0; i<n; ++i){
+        res ^= a[i]*b[i];
+    }
+    return res;
+}
+
+/** Compute the m-bit binary representation of the given integer. The most significant bit is the leftest non zero
+ * bit in the returned vector.
+ * @param num non-negative integer
+ * @param unsigned int size of the binary representation
+ */
+std::vector<unsigned int> bin_vector(unsigned int num, unsigned int m)
+{
+    std::vector<unsigned int> res(m);
+    for(unsigned int i = 0; i<m; ++i){
+        res[m-i-1] = num % 2;
+        num = num >> 1;
+    }
+    return res;
+}
+
+unsigned int getmsb (unsigned long long x){
+    unsigned int r = 0;
+    if (x < 1) return 0;
+    while (x >>= 1) r++;
+    return r;
+}
+
+int numPoints(const Matrix& matrix){
+    return pow(2, matrix.size());
+}
+
+std::vector<unsigned long> getColsReverse(const Matrix& matrix){
+    std::vector<unsigned long> res(matrix.size(), 0);
+    for (unsigned int j=0; j<matrix.size(); j++){
+        unsigned long s = 0;
+        for (unsigned int i=0; i<matrix.size(); i++){
+            s += matrix[i][j] << (matrix.size() - i -1);
+        }
+        res[j] = s;
+    }
+    return res;
+}
+
+
+Matrix createGeneratingMatrix(const GenValue& genValue, unsigned int m, unsigned int coord) 
+    {
+        // GeneratingMatrix tmp = new GeneratingMatrix(m,m);
+        std::vector<std::vector<bool>> tmp (m, std::vector<bool>(m, 0));
+
+        for(unsigned int k = 0; k<m; ++k){
+            tmp[k][k] = 1; // start with identity
+        }
+
+        if (coord==1) // special case for the first dimension
+        {
+            return tmp;
+        }
+
+        // compute the vector defining the linear recurrence on the columns of the matrix
+
+        PrimitivePolynomial p = nthPrimitivePolynomial(coord-1);
+        auto degree = p.first;
+        auto poly_rep = p.second;
+
+        std::vector<unsigned int> a = bin_vector(poly_rep,degree-1);
+        a.push_back(1);
+
+        for(unsigned int i = 0; i<degree; ++i){
+            a[i] *= 2 << i;
+        }
+
+        // initialization of the first columns
+
+        for(unsigned int k = 0; k < std::min(degree,m); ++k){
+            auto dirNum = bin_vector(genValue[k],k+1);
+
+            for(unsigned int i = 0; i<k; ++i){
+                tmp[i][k] = dirNum[i];
+            }
+        }
+
+        if (m > degree)
+        {
+            std::vector<unsigned int> reg(degree); // register for the linear reccurence
+            std::reverse_copy(genValue.begin(),genValue.end(), reg.begin()); // should be reversed
+
+            // computation of the recurrence
+            for(unsigned int k = degree; k<m; ++k){
+                unsigned int new_num = xor_prod_reduce(a,reg) ^ reg[degree-1];
+                reg.pop_back();
+                reg.insert(reg.begin(),new_num);
+                auto dirNum = bin_vector(new_num,k+1);
+                for(unsigned int i = 0; i<k; ++i){
+                    tmp[i][k] = dirNum[i];
+                }
+            }
+        }
+
+        return tmp;
+    }
+
+
+std::vector<std::vector<double>> points(std::vector<Matrix> matrices, std::vector<unsigned int> graycode){
+    std::vector<std::vector<double>> points;
+    int nbPoints = numPoints(matrices[0]);
+    for (int i=0; i<nbPoints; i++){
+        points.push_back(std::vector<double>());
+    }
+
+    for (int j=0; j < matrices.size(); j++){
+        Matrix matrix = matrices[j];
+        std::vector<unsigned long> cols = getColsReverse(matrix);
+        std::vector<unsigned long> m_permutation = std::vector<unsigned long>(nbPoints, 0);
+        points[0].push_back(0);
+        for (unsigned int i=1; i<m_permutation.size(); ++i){
+            m_permutation[i] = m_permutation[i-1] ^ cols[graycode[i-1]];
+            points[i].push_back(((double) m_permutation[i]) / nbPoints);
+        }
+    }
+    return points;
+}
+
+int main(){
+    std::vector<Matrix> matrices = std::vector<Matrix>();
+    for (unsigned int i=0; i<dim; i++){
+        matrices.push_back(createGeneratingMatrix(genValues[i], m, i+1));
+    }
+    for (int k=0; k<matrices.size(); k++){
+        for (int i=0; i<matrices[k].size(); i++){
+            for (int j=0; j<matrices[k][i].size(); j++){
+                std::cout << matrices[k][i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
+    std::vector<unsigned int> graycode = std::vector<unsigned int>();
+    for(unsigned int i=0; i < pow(2, m); i++){
+            graycode.push_back(getmsb(((i >> 1) ^ i)^(((i+1) >> 1) ^ (i+1))));
+    }
+
+    std::vector<std::vector<double>> myPoints = points(matrices, graycode);
+    for (int i=0; i<myPoints.size(); i++){
+        for (int j=0; j<myPoints[i].size(); j++){
+            std::cout << myPoints[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    return 0;
+}
+
+
