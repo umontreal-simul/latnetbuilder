@@ -1,3 +1,3 @@
-[submodule "latticetester"]
+[submodule "latcommon"]
 	path = latticetester
-	url = https://github.com/PierreMarion23/latticetester.git
+	url = https://github.com/umontreal-simul/latcommon.git
