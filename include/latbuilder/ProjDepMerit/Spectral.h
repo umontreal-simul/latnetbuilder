@@ -121,13 +121,14 @@ namespace detail {
       // throw std::invalid_argument("projection order must be >= 2");
 
       // extract projection of the generating vector
-      MVect gen(projection.size() + 1);
+      MVect gen(projection.size());
       {
          // first component is not used
          size_t j = 0;
-         gen(j++) = 0;
-         for (const auto& coord : projection)
-            gen(j++) = lat.gen()[coord];
+         for (const auto& coord : projection){
+               gen(j) = lat.gen()[coord];
+                  j++;
+         }   
       }
 
 #ifdef DEBUG
@@ -151,13 +152,14 @@ namespace detail {
          return std::numeric_limits<Real>::infinity();
       }
 
+
       // get length of shortest vector under L2NORM
       // lattice.getPrimalBasis ().updateScalL2Norm (1);    # TODO
-      lattice.updateScalL2Norm (1);
+      lattice.updateScalL2Norm (0);
 
       // square length
       // Real sqlength = lattice.getPrimalBasis().getVecNorm(1);  # TODO
-      Real sqlength = lattice.getVecNorm(1); 
+      Real sqlength = lattice.getVecNorm(0); 
 
       // normalization
       Real sqlength0 =

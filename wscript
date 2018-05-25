@@ -30,7 +30,7 @@ def configure(ctx):
     if ctx.options.fftw:
         deps.add_deps_path(ctx, 'FFTW', ctx.options.fftw)
     if ctx.options.boost:
-        deps.add_deps_path(ctx, 'boost', ctx.options.fftw)
+        deps.add_deps_path(ctx, 'boost', ctx.options.boost)
 
     ctx_check = deps.shared_or_static(ctx, ctx.check)
 
