@@ -291,6 +291,8 @@ class DigitalNetConstruction : public DigitalNet
                 throw std::domain_error("This net cannot be viewed as a digital sequence.");
             }
         }
+
+        DesignParameter designParameter() const { return m_designParameter ; }
     
     private:
 

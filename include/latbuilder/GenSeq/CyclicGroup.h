@@ -20,8 +20,6 @@
 #include "latbuilder/Traversal.h"
 #include "latbuilder/CompressTraits.h"
 
-#include "latcommon/Util.h"
-
 #include <iterator>
 #include <boost/iterator/iterator_facade.hpp>
 
