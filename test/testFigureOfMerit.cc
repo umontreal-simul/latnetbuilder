@@ -23,9 +23,9 @@
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/Weights.h"
+#include "latticetester/UniformWeights.h"
+#include "latticetester/CoordinateSets.h"
 
 #include <iostream>
 
@@ -39,14 +39,14 @@ int main(int argc, const char *argv[])
     const DigitalNet& net = DigitalNetConstruction<NetConstruction::SOBOL>(s, m, m);
 
 
-    auto weights1 = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights1 = std::make_unique<LatticeTester::UniformWeights>(1);
 
     auto projDep1 = std::make_unique<FigureOfMerit::SimpleProjDepMerit<PointSetType::UNILEVEL>>();
 
     auto fig1 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::SimpleProjDepMerit<PointSetType::UNILEVEL>>>(1, std::move(weights1), std::move(projDep1));
 
 
-    auto weights2 = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights2 = std::make_unique<LatticeTester::UniformWeights>(1);
 
     auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(5);
 
@@ -72,7 +72,7 @@ int main(int argc, const char *argv[])
     // ==========================================
 
 
-    /*std::unique_ptr<LatCommon::UniformWeights> weights2( new LatCommon::UniformWeights(1));
+    /*std::unique_ptr<LatticeTester::UniformWeights> weights2( new LatticeTester::UniformWeights(1));
 
     std::unique_ptr<TValueProjMerit<PointSetType::UNILEVEL>> projDep2 = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(s);
 

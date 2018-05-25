@@ -317,7 +317,7 @@ compiling the Lattice Builder program itself.
 External software can make use of the Lattice Builder libraries by
 setting the compiler to use the C++11 standard, by adding the `include`
 and `lib` directories (under the installation directory) to the include and
-library paths, respectively, then by linking with the `latcommon` and
+library paths, respectively, then by linking with the `latticetester` and
 `latbuilder` libraries, together with the `fftw3` library.
 An example `Makefile` to build a project that uses the Lattice Builder
 application programming interface (API) can be found under
@@ -331,7 +331,7 @@ under `$HOME/latsoft`, `/opt/boost` and `/opt/FFTW`, a C++ source file called
 `myprog.cc` can be compiled and linked into an executable called `myprog` by
 using the following command line with GCC:
 
-	g++ -std=c++14 -I$HOME/latsoft/include -I/opt/boost/include -I/opt/fftw/include -O2 -o myprog myprog.cc -L$HOME/latsoft/lib -l latbuilder -l latcommon -L/opt/fftw/lib -l fftw3
+	g++ -std=c++14 -I$HOME/latsoft/include -I/opt/boost/include -I/opt/fftw/include -O2 -o myprog myprog.cc -L$HOME/latsoft/lib -l latbuilder -l latticetester -L/opt/fftw/lib -l fftw3
 
 With clang, just replace `g++` with `clang++`.
 
@@ -350,7 +350,7 @@ steps:
    from your Boost and FFTW installations if not under standard system
    locations.
 5. To **Build Phases &#9658; Link Binary With Libraries**, add (+) the following files:
-     - `liblatbuilder.a` and `liblatcommon.a ` from the `lib` directory of your
+     - `liblatbuilder.a` and `liblatticetester.a ` from the `lib` directory of your
        Lattice Builder installation (e.g., `/Users/me/latbuilder/lib`);
      - `libfftw3.a` from your FFTW installation.
 

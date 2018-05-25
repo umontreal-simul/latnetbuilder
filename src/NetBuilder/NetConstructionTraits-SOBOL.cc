@@ -37,6 +37,8 @@ namespace NetBuilder {
 
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
 
+    DesignParameter NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameter = 1;
+
     bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
         auto dimension = genValue.first;

@@ -21,7 +21,7 @@ namespace LatBuilder { namespace MeritSeq {
 
 /**
  * Default implementation of CoordUniformState that works with any implementation of
- * LatCommon::Weights.
+ * LatticeTester::Weights.
  *
  * Define
  * \f[
@@ -80,7 +80,7 @@ public:
 	  CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
 	  m_state.clear();
 	  // empty set
-	  m_state[LatCommon::Coordinates()] =
+	  m_state[LatticeTester::Coordinates()] =
 		 boost::numeric::ublas::scalar_vector<Real>(this->storage().size(), 1.0);
    }
 
@@ -98,7 +98,7 @@ public:
    {
       CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
 
-      using LatCommon::Coordinates;
+      using LatticeTester::Coordinates;
 
       auto stridedKernelValues = this->storage().strided(kernelValues, gen);
 
@@ -138,7 +138,7 @@ public:
    {
 	  std::cerr << "warning: using default implementation of coordinate-uniform state" << std::endl;
 
-	  using LatCommon::Coordinates;
+	  using LatticeTester::Coordinates;
 
 	  const auto nextCoordinate = this->dimension();
 
@@ -166,7 +166,7 @@ private:
    const WEIGHTS& m_weights;
 
    // m_state[projection](i)
-   std::map<LatCommon::Coordinates, RealVector> m_state;
+   std::map<LatticeTester::Coordinates, RealVector> m_state;
 };
 
 

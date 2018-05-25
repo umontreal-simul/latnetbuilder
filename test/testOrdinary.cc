@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "latbuilder/CoordUniformFigureOfMerit.h"
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Accumulator.h"
@@ -41,13 +41,13 @@ void setCombiner(MeritFilterList<LR, PointSetType::MULTILEVEL>& filters, const S
 template <LatticeType LA, PointSetType L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
-//    auto weights = unique<LatCommon::ProductWeights>();
+//    auto weights = unique<LatticeTester::ProductWeights>();
 //    weights->setDefaultWeight(0.7);
 //    CoordUniformFigureOfMerit<Kernel::PAlpha> figure(std::move(weights), 2);
 //    std::cout << "figure of merit: " << figure << std::endl;
    
    // The P_{\alpha,PLR} figure of merit for polynomial lattices
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
    CoordUniformFigureOfMerit<Kernel::PAlphaPLR> figure(std::move(weights), 2);
    std::cout << "figure of merit: " << figure << std::endl;

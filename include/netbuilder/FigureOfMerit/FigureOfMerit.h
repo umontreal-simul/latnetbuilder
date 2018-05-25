@@ -22,8 +22,8 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Weights.h"
+#include "latticetester/Coordinates.h"
 
 #include "latbuilder/Functor/AllOf.h"
 
@@ -45,7 +45,7 @@ using LatBuilder::Functor::AllOf;
 class FigureOfMeritEvaluator
 {
     public:
-        typedef LatCommon::Coordinates Coordinates;
+        typedef LatticeTester::Coordinates Coordinates;
 
         typedef boost::signals2::signal<bool (const MeritValue&), LatBuilder::Functor::AllOf> OnProgress;
         typedef boost::signals2::signal<void (const DigitalNet&)> OnAbort;

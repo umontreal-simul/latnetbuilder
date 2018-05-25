@@ -23,7 +23,7 @@
 #include "latbuilder/BridgeIteratorCached.h"
 #include "latbuilder/LatSeq/CBC.h"
 
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/CoordinateSets.h"
 
 #include <memory>
 
@@ -52,7 +52,7 @@ public:
    typedef MeritValue value_type;
    typedef decltype(std::declval<FigureOfMerit>().evaluator(std::declval<Storage<LR, PST, COMPRESS, PLO>>())) Evaluator;
 
-   typedef LatCommon::CoordinateSets::AddCoordinate<LatCommon::CoordinateSets::FromRanges> Projections;
+   typedef LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges> Projections;
 
    /**
     * Constructor.

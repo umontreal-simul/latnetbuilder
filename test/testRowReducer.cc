@@ -27,8 +27,8 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 10;
-    unsigned int m = 5;
+    unsigned int s = 3;
+    unsigned int m = 7;
 
     auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
@@ -47,21 +47,12 @@ int main(int argc, const char *argv[])
 
     // std::cout << mat << std::endl;
 
-    for(unsigned int i = 0; i < m; ++i)
+    for(unsigned int i = 0; i < 5; ++i)
     {
-        std::cout << "New row: " << std::endl;
-        if ((i % 3) == 2)
-        {
-            auto newRow = GeneratingMatrix(1,m);
-            std::cout << newRow << std::endl;
-            rowReducer.addRow(newRow);
-        }
-        else
-        {
-            auto newRow = net.pointerToGeneratingMatrix( (i % 3) + 1 )->subMatrix(i,1,m);
-            std::cout << newRow << std::endl;
-            rowReducer.addRow(newRow);
-        }
+        auto newRow = net.pointerToGeneratingMatrix(0)->subMatrix(i,1,m);
+        std::cout << newRow << std::endl;
+        rowReducer.addRow(newRow);
+    }
 
         // rowReducer.addRow(mat.subMatrix(i,1,m));
 

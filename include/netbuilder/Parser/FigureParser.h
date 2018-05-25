@@ -193,7 +193,7 @@ struct FigureParser
             weightsPowerScale /= weightPower;
         }
 
-        std::unique_ptr<LatCommon::Weights> weights = LatBuilder::Parser::Weights::parse(weightString, weightsPowerScale);
+        std::unique_ptr<LatticeTester::Weights> weights = LatBuilder::Parser::Weights::parse(weightString, weightsPowerScale);
         
         if (name == "t-value"){
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);

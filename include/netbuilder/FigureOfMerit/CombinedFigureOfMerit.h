@@ -21,7 +21,7 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 #include "latbuilder/Functor/AllOf.h"
 

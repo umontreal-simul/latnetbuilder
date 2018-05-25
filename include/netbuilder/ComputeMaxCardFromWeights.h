@@ -17,10 +17,10 @@
 #ifndef NETBUILDER__COMPUTE_MAX_CARD_FROM_WEIGHTS_H
 #define NETBUILDER__COMPUTE_MAX_CARD_FROM_WEIGHTS_H
 
-#include "latcommon/OrderDependentWeights.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/PODWeights.h"
-#include "latcommon/ProjectionDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/PODWeights.h"
+#include "latticetester/ProjectionDependentWeights.h"
 
 /**
  * Helper structure template to compute the maximal order of subprojections
@@ -41,17 +41,17 @@ struct ComputeMaxCardFromWeights {
     unsigned int operator()(const weight_type& w) const;\
     }
 
-   DECLARE_COMPUTE_MAX_CARD(LatCommon::OrderDependentWeights);
-   DECLARE_COMPUTE_MAX_CARD(LatCommon::ProductWeights);
-   DECLARE_COMPUTE_MAX_CARD(LatCommon::PODWeights);
-   DECLARE_COMPUTE_MAX_CARD(LatCommon::ProjectionDependentWeights);
+   DECLARE_COMPUTE_MAX_CARD(LatticeTester::OrderDependentWeights);
+   DECLARE_COMPUTE_MAX_CARD(LatticeTester::ProductWeights);
+   DECLARE_COMPUTE_MAX_CARD(LatticeTester::PODWeights);
+   DECLARE_COMPUTE_MAX_CARD(LatticeTester::ProjectionDependentWeights);
 
 #undef DECLARE_COMPUTE_MAX_CARD
 
 /**
  * Template specialization in the case of OrderDependentWeights
  */ 
-unsigned int ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>::operator()(const LatCommon::OrderDependentWeights& w) const{
+unsigned int ComputeMaxCardFromWeights<LatticeTester::OrderDependentWeights>::operator()(const LatticeTester::OrderDependentWeights& w) const{
     if (w.getDefaultWeight() > 0){
         throw std::invalid_argument("default weight must be zero to use this figure." );
     }
@@ -67,7 +67,7 @@ unsigned int ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>::operat
 /**
  * Template specialization in the case of OrderDependentWeights
  */ 
-unsigned int ComputeMaxCardFromWeights<LatCommon::ProductWeights>::operator()(const LatCommon::ProductWeights& w) const{
+unsigned int ComputeMaxCardFromWeights<LatticeTester::ProductWeights>::operator()(const LatticeTester::ProductWeights& w) const{
     if (w.getDefaultWeight() > 0){
         throw std::invalid_argument("default weight must be zero to use this figure." );
     }
@@ -77,18 +77,18 @@ unsigned int ComputeMaxCardFromWeights<LatCommon::ProductWeights>::operator()(co
 /**
  * Template specialization in the case of PODWeights.
  */ 
-unsigned int ComputeMaxCardFromWeights<LatCommon::PODWeights>::operator()(const LatCommon::PODWeights& w) const{
-    const LatCommon::OrderDependentWeights& ordDepWeights = w.getOrderDependentWeights();
-    const LatCommon::ProductWeights& prodWeights = w .getProductWeights();
-    auto computer1 = ComputeMaxCardFromWeights<LatCommon::OrderDependentWeights>();
-    auto computer2 = ComputeMaxCardFromWeights<LatCommon::ProductWeights>();
+unsigned int ComputeMaxCardFromWeights<LatticeTester::PODWeights>::operator()(const LatticeTester::PODWeights& w) const{
+    const LatticeTester::OrderDependentWeights& ordDepWeights = w.getOrderDependentWeights();
+    const LatticeTester::ProductWeights& prodWeights = w .getProductWeights();
+    auto computer1 = ComputeMaxCardFromWeights<LatticeTester::OrderDependentWeights>();
+    auto computer2 = ComputeMaxCardFromWeights<LatticeTester::ProductWeights>();
     return std::max(computer1(ordDepWeights),computer2(prodWeights));
 }
 
 /**
  * Template specialization in the case of ProjectionDependentWeights.
  */ 
-unsigned int ComputeMaxCardFromWeights<LatCommon::ProjectionDependentWeights>::operator()(const LatCommon::ProjectionDependentWeights& w) const{
+unsigned int ComputeMaxCardFromWeights<LatticeTester::ProjectionDependentWeights>::operator()(const LatticeTester::ProjectionDependentWeights& w) const{
     unsigned int maxCard = 0;
     for (unsigned int i=0; i<w.getSize(); i++){
         for (const auto &kv : w.getWeightsForLargestIndex(i)){

@@ -19,11 +19,11 @@ index eb2964e..9991c13 100644
 --- a/include/latbuilder/Parser/Weights.h
 +++ b/include/latbuilder/Parser/Weights.h
 @@ -97,6 +97,11 @@ struct Weights {
-    static std::unique_ptr<LatCommon::Weights>
+    static std::unique_ptr<LatticeTester::Weights>
     parsePOD(const std::string& arg, Real powerScale);
  
    //! [parser decl]
-   static std::unique_ptr<LatCommon::Weights>
+   static std::unique_ptr<LatticeTester::Weights>
    parseMyWeights(const std::string& arg, Real powerScale);
    //! [parser decl]
 
@@ -35,31 +35,31 @@ index 0c07669..8555f08 100644
 --- a/src/Parser/Weights.cc
 +++ b/src/Parser/Weights.cc
 @@ -22,6 +22,9 @@
- #include "latcommon/OrderDependentWeights.h"
- #include "latcommon/PODWeights.h"
- #include "latcommon/ProductWeights.h"
+ #include "latticetester/OrderDependentWeights.h"
+ #include "latticetester/PODWeights.h"
+ #include "latticetester/ProductWeights.h"
 // [parser header]
-#include "latcommon/MyWeights.h"
+#include "latticetester/MyWeights.h"
 // [parser header]
  
- #include "latcommon/Coordinates.h"
+ #include "latticetester/Coordinates.h"
  
 @@ -96,6 +99,17 @@ Weights::parsePOD(const std::string& arg, Real powerScale)
-    return std::unique_ptr<LatCommon::Weights>(w);
+    return std::unique_ptr<LatticeTester::Weights>(w);
  }
  
 //! [parser impl]
-std::unique_ptr<LatCommon::Weights>
+std::unique_ptr<LatticeTester::Weights>
 Weights::parseMyWeights(const std::string& arg, Real powerScale)
 {
    auto ka = splitPair<std::string, Real>(arg, ':');
    if (ka.first != "my-weights") return nullptr;
-   auto w = new LatCommon::MyWeights(ka.second);
-   return std::unique_ptr<LatCommon::Weights>(w);
+   auto w = new LatticeTester::MyWeights(ka.second);
+   return std::unique_ptr<LatticeTester::Weights>(w);
 }
 //! [parser impl]
 
- std::unique_ptr<LatCommon::Weights> 
+ std::unique_ptr<LatticeTester::Weights> 
  Weights::parse(const std::string& arg, Real powerScale)
  {
 @@ -107,6 +121,10 @@ Weights::parse(const std::string& arg, Real powerScale)
@@ -73,19 +73,19 @@ Weights::parseMyWeights(const std::string& arg, Real powerScale)
     throw BadWeights(arg);
  }
  
-diff --git a/latcommon/include/latcommon/MyWeights.h b/latcommon/include/latcommon/MyWeights.h
+diff --git a/latticetester/include/latticetester/MyWeights.h b/latticetester/include/latticetester/MyWeights.h
 new file mode 100644
 index 0000000..e0e0a4d
 --- /dev/null
-+++ b/latcommon/include/latcommon/MyWeights.h
++++ b/latticetester/include/latticetester/MyWeights.h
 @@ -0,0 +1,25 @@
-#ifndef LATCOMMON__MY_WEIGHTS_H
-#define LATCOMMON__MY_WEIGHTS_H
+#ifndef LATTICETESTER__MY_WEIGHTS_H
+#define LATTICETESTER__MY_WEIGHTS_H
 
 //! [weights def]
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 
-namespace LatCommon {
+namespace LatticeTester {
 
 class MyWeights : public ProductWeights {
 public:

@@ -22,8 +22,8 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
 
-#include "latcommon/Num.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Num.h"
+#include "latticetester/Coordinates.h"
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -108,7 +108,7 @@ public:
     */
    MeritValue operator() (
          const LatDef<LR, PST>& lat,
-         const LatCommon::Coordinates& projection
+         const LatticeTester::Coordinates& projection
          ) const
    {
       if (projection.size() == 0)

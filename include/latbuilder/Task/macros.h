@@ -23,7 +23,7 @@
 #include "latbuilder/WeightedFigureOfMerit.h"
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/ProjDepMerit/Spectral.h"
-#include "latcommon/NormaBestLat.h"
+#include "latticetester/NormaBestLat.h"
 #include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
@@ -49,7 +49,7 @@
    func(__VA_ARGS__, Functor::Max)
 
 #define TASK_ADD_ARG_PROJDEP_LATTICE_ORDINARY(func, ...) \
-   func(__VA_ARGS__, ProjDepMerit::Spectral<LatCommon::NormaBestLat>); \
+   func(__VA_ARGS__, ProjDepMerit::Spectral<LatticeTester::NormaBestLat>); \
    func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::PAlpha>); \
    func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::RAlpha>)
 

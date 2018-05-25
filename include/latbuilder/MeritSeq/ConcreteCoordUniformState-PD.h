@@ -20,8 +20,8 @@
 #include "latbuilder/MeritSeq/CoordUniformState.h"
 #include "latbuilder/Storage.h"
 
-#include "latcommon/ProjectionDependentWeights.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/ProjectionDependentWeights.h"
+#include "latticetester/Coordinates.h"
 
 #include <map>
 
@@ -66,7 +66,7 @@ template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO
  * \f$\boldsymbol \omega_s\f$.
  */
 template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-class ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatCommon::ProjectionDependentWeights> :
+class ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights> :
    public CoordUniformState<LR, PST, COMPRESS, PLO> {
 public:
 
@@ -82,7 +82,7 @@ public:
     */
    ConcreteCoordUniformState(
          const Storage<LR, PST, COMPRESS, PLO>& storage,
-         const LatCommon::ProjectionDependentWeights& weights
+         const LatticeTester::ProjectionDependentWeights& weights
          ):
       CoordUniformState<LR, PST, COMPRESS, PLO>(storage),
       m_weights(weights)
@@ -120,11 +120,11 @@ public:
    { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
-   const LatCommon::ProjectionDependentWeights& m_weights;
+   const LatticeTester::ProjectionDependentWeights& m_weights;
 
    // m_state[projection](i)
    // declared mutable because it is updated transparently by #getStateVector()
-   std::map<LatCommon::Coordinates, RealVector> m_state;
+   std::map<LatticeTester::Coordinates, RealVector> m_state;
 
    // keep track of the selected generator values to be able to generate state
    // vectors on demand
@@ -136,24 +136,24 @@ private:
     *
     * \return A reference to the state vector.
     */
-   const RealVector& createStateVector(const LatCommon::Coordinates& projection, const RealVector& kernelValues);
+   const RealVector& createStateVector(const LatticeTester::Coordinates& projection, const RealVector& kernelValues);
 };
 
 
 
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatticeTester::ProjectionDependentWeights>;
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
 
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatCommon::ProjectionDependentWeights>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatCommon::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
 
 }}
 

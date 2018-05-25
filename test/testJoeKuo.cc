@@ -29,7 +29,7 @@
 #include "netbuilder/Task/Eval.h"
 #include "netbuilder/Task/FullCBCExplorer.h"
 
-#include "latcommon/UniformWeights.h"
+#include "latticetester/UniformWeights.h"
 
 #include <iostream>
 #include <memory>
@@ -87,7 +87,7 @@ int main(int argc, const char *argv[])
     {
         m = 12;
         s = 28;
-        auto weights_tValue = std::make_unique<LatCommon::UniformWeights>(1.);
+        auto weights_tValue = std::make_unique<LatticeTester::UniformWeights>(1.);
         auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(2);
         auto fig3 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights_tValue), std::move(projDep2));
         auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);

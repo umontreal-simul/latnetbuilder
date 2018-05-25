@@ -23,8 +23,8 @@
 #include "netbuilder/TValueComputation.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Weights.h"
+#include "latticetester/Coordinates.h"
 
 #include <vector>
 #include <memory>
@@ -78,7 +78,7 @@ class TValueProjMerit<PointSetType::UNILEVEL>
          * @param projection is the projection to consider
          * @param maxMeritsSubProj is the maximal merit of the subprojections
          */ 
-        Real operator()(const DigitalNet& net , const LatCommon::Coordinates& projection, unsigned int maxMeritsSubProj) const 
+        Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection, unsigned int maxMeritsSubProj) const 
         {
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
@@ -129,7 +129,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
          * @param projection is the projection to consider
          * @param maxMeritsSubProj is the maximal merit of the subprojections
          */ 
-        std::vector<unsigned int> operator()(const DigitalNet& net, const LatCommon::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
+        std::vector<unsigned int> operator()(const DigitalNet& net, const LatticeTester::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
         {
             std::vector<unsigned int> res(net.numColumns());
             for(unsigned int m = 1; m <= res.size(); ++m)

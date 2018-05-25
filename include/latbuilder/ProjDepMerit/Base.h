@@ -19,7 +19,7 @@
 
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Coordinates.h"
 #include "latbuilder/Storage.h"
 
 #include <memory>
@@ -43,7 +43,7 @@ public:
    typename Storage<LR, PST, COMPRESS, PLO>::MeritValue operator() (
          const Storage<LR, PST, COMPRESS, PLO>& storage,
          const LatDef<LR, PST>& lat,
-         const LatCommon::Coordinates& projection
+         const LatticeTester::Coordinates& projection
          ) const
    { return derived()(storage, lat, projection); }
 

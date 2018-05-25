@@ -43,7 +43,7 @@ struct CoordUniformFigureOfMerit {
       template <class KERNEL, typename FUNC, typename... ARGS>
       void operator()(
             KERNEL kernel,
-            std::unique_ptr<LatCommon::Weights> weights,
+            std::unique_ptr<LatticeTester::Weights> weights,
             FUNC&& func, ARGS&&... args
             ) const
       {
@@ -66,7 +66,7 @@ struct CoordUniformFigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
 

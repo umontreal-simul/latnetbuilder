@@ -23,8 +23,8 @@
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Weights.h"
+#include "latticetester/Coordinates.h"
 
 #include <vector>
 #include <memory>
@@ -47,7 +47,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
          * @param weights is a smart pointer to a Weights instance
          * @param projDepMerit is a smart pointer to the projection-dependent merit
          */  
-        WeightedFigureOfMerit(Real normType, std::unique_ptr<LatCommon::Weights> weights, std::unique_ptr<PROJDEP> projDepMerit):
+        WeightedFigureOfMerit(Real normType, std::unique_ptr<LatticeTester::Weights> weights, std::unique_ptr<PROJDEP> projDepMerit):
             m_normType(normType),
             m_weights(std::move(weights)),
             m_projDepMerit(std::move(projDepMerit)),
@@ -56,7 +56,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         {};
 
         /** Returns the weights of the figure */
-        const LatCommon::Weights& weights() const { return *m_weights; }
+        const LatticeTester::Weights& weights() const { return *m_weights; }
 
         /** Returns the projection-dependent merit of the figure */
         PROJDEP& projDepMerit() const { return *m_projDepMerit; }
@@ -83,7 +83,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
     private:
 
         Real m_normType;
-        std::unique_ptr<LatCommon::Weights> m_weights;
+        std::unique_ptr<LatticeTester::Weights> m_weights;
         std::unique_ptr<PROJDEP> m_projDepMerit;
         BinOp m_binOp;
         Real m_expNorm;
@@ -106,7 +106,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
              */ 
             virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
             {
-                using namespace LatCommon;
+                using namespace LatticeTester;
 
                 auto projections = m_figure->projDepMerit().projections(dimension);
 

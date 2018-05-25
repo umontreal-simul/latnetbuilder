@@ -11,6 +11,7 @@ VERSION
 *.txt
 !web-ui/web_ui/**/*.txt
 *-checkpoint.ipynb
+web-ui/notebooks/*
 
 test/*
 !test/*.cc

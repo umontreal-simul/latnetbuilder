@@ -1321,7 +1321,7 @@ take the value
 for projection \f$\mathfrak u\f$.
 First, we define the new weights class that overrides
 ProductWeights::getWeightForCoordinate() in
-\c latcommon/include/latcommon/MyWeights.h:
+\c latticetester/include/latticetester/MyWeights.h:
 \snippet custom-weights.patch.cc weights def
 Next, we declare a new member function in Parser::Weights in
 \c include/latbuilder/Parser/Weights.h:
