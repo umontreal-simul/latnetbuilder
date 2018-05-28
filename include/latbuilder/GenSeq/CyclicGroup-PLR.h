@@ -207,7 +207,7 @@ private:
 //================================================================================
 
 #include "latbuilder/Util.h"
-#include "latcommon/IntFactor.h"
+#include "latticetester/IntFactor.h"
 #include <NTL/GF2XFactoring.h>
 
 namespace LatBuilder { namespace GenSeq {

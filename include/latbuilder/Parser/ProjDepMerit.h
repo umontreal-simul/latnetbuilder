@@ -22,7 +22,7 @@
 #include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/ProjDepMerit/Spectral.h"
 
-#include "latcommon/NormaBestLat.h"
+#include "latticetester/NormaBestLat.h"
 
 
 namespace LatBuilder { namespace Parser {
@@ -87,7 +87,7 @@ template <typename FUNC, typename... ARGS>
       // try spectral
         if (str == "spectral") {
            func(
-                 LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
+                 LatBuilder::ProjDepMerit::Spectral<LatticeTester::NormaBestLat>(2.0),
                  std::forward<ARGS>(args)...
                );
            return;

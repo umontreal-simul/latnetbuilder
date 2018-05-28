@@ -28,8 +28,8 @@
 
 #include "netbuilder/Task/Eval.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
+#include "latticetester/Weights.h"
+#include "latticetester/UniformWeights.h"
 
 #include <iostream>
 
@@ -72,7 +72,7 @@ int main(int argc, const char *argv[])
 
     unsigned int modulus = intPow(2, m);
 
-    auto weights1 = std::make_unique<LatCommon::ProductWeights>(1.);
+    auto weights1 = std::make_unique<LatticeTester::ProductWeights>(1.);
 
     auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
 

@@ -20,6 +20,11 @@
 #include "latbuilder/Traversal.h"
 #include "latbuilder/CompressTraits.h"
 
+<<<<<<< HEAD
+=======
+#include "latticetester/Util.h"
+
+>>>>>>> 546e00ef41ca979bc604f11df6b441d0ff1df0d5
 #include <iterator>
 #include <boost/iterator/iterator_facade.hpp>
 

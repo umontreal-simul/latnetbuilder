@@ -26,9 +26,9 @@
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/UniformityProperties.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/Weights.h"
+#include "latticetester/UniformWeights.h"
+#include "latticetester/CoordinateSets.h"
 
 #include "latbuilder/LFSR258.h"
 
@@ -46,7 +46,7 @@ int main(int argc, const char *argv[])
     auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
 
-    auto weights = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
     // auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>(s);
 

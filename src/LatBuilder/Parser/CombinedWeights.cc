@@ -16,8 +16,8 @@
 
 #include "latbuilder/Parser/CombinedWeights.h"
 #include "latbuilder/Parser/Weights.h"
-#include "latcommon/ProjectionDependentWeights.h"
-#include "latcommon/OrderDependentWeights.h"
+#include "latticetester/ProjectionDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
 
 #include <fstream>
 #include <iostream>
@@ -64,8 +64,8 @@ namespace {
 
    istream& operator>> (istream& is, LatBuilder::CombinedWeights& weights)
    {
-      auto ow = new LatCommon::OrderDependentWeights;
-      auto pw = new LatCommon::ProjectionDependentWeights;
+      auto ow = new LatticeTester::OrderDependentWeights;
+      auto pw = new LatticeTester::ProjectionDependentWeights;
 
       string whitespace = " \t\n\r";
       string sep = whitespace + ",";
@@ -108,7 +108,7 @@ namespace {
          }
 
          // read coordinates
-         LatCommon::Coordinates coords;
+         LatticeTester::Coordinates coords;
          if (!(is_default || is_order))
             is >> coords;
 
@@ -122,7 +122,7 @@ namespace {
          skip_any(is, whitespace);
 
          // read weight
-         LatCommon::Weight weight;
+         LatticeTester::Weight weight;
          is >> weight;
          weight = std::pow(weight, inputPowerScale);
 
@@ -136,8 +136,8 @@ namespace {
          // skip across-pairs separator
          skip_any(is, sep);
       }
-      weights.add(std::unique_ptr<LatCommon::Weights>(ow));
-      weights.add(std::unique_ptr<LatCommon::Weights>(pw));
+      weights.add(std::unique_ptr<LatticeTester::Weights>(ow));
+      weights.add(std::unique_ptr<LatticeTester::Weights>(pw));
       return is;
    }
 }

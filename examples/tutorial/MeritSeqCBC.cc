@@ -15,10 +15,10 @@
 // limitations under the License.
 
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/CoordinateSets.h"
 #include "latbuilder/ProjDepMerit/Spectral.h"
-#include "latcommon/NormaBestLat.h"
+#include "latticetester/NormaBestLat.h"
 #include "latbuilder/ProjDepMerit/CoordUniform.h" 
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Accumulator.h"
@@ -46,10 +46,10 @@ template <LatticeType LA, PointSetType L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   typedef ProjDepMerit::Spectral<LatCommon::NormaBestLat> ProjDep;
+   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
@@ -57,7 +57,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    /*
    // The P_{\alpha,PLR} figure of merit for polynomial lattices
    //! [pfigure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
    //! [pProjDepMerit]

@@ -20,7 +20,7 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Types.h"
 
-#include "latcommon/ProjectionDependentWeights.h"
+#include "latticetester/ProjectionDependentWeights.h"
 
 #include <memory>
 
@@ -52,7 +52,7 @@ struct Weights {
     *
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
-   static std::unique_ptr<LatCommon::Weights>
+   static std::unique_ptr<LatticeTester::Weights>
    parseProjectionDependent(const std::string& arg, Real powerScale);
 
    /**
@@ -66,7 +66,7 @@ struct Weights {
     *
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
-   static std::unique_ptr<LatCommon::Weights>
+   static std::unique_ptr<LatticeTester::Weights>
    parseOrderDependent(const std::string& arg, Real powerScale);
 
    /**
@@ -80,7 +80,7 @@ struct Weights {
     *
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
-   static std::unique_ptr<LatCommon::Weights>
+   static std::unique_ptr<LatticeTester::Weights>
    parseProduct(const std::string& arg, Real powerScale);
 
    /**
@@ -93,7 +93,7 @@ struct Weights {
     *
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
-   static std::unique_ptr<LatCommon::Weights>
+   static std::unique_ptr<LatticeTester::Weights>
    parsePOD(const std::string& arg, Real powerScale);
 
    /**
@@ -114,7 +114,7 @@ struct Weights {
     *
     * \return A pointer to a newly created object or \c nullptr on failure.
     */
-   static std::unique_ptr<LatCommon::Weights>
+   static std::unique_ptr<LatticeTester::Weights>
    parse(const std::string& arg, Real powerScale=1.0);
 };
 

@@ -15,7 +15,7 @@
 // limitations under the License.
 
 #include "latbuilder/CoordUniformFigureOfMerit.h"
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Accumulator.h"
@@ -75,7 +75,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {  
 
    //! [figure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
    CoordUniformFigureOfMerit<Kernel::PAlpha> figure(std::move(weights), 2);
@@ -85,7 +85,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    /*
    // The P_{\alpha,PLR} figure of merit for polynomial lattices
    //! [pfigure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
    CoordUniformFigureOfMerit<Kernel::PAlphaPLR> figure(std::move(weights), 2);

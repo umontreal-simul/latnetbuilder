@@ -56,7 +56,7 @@ struct Execute {
    void operator()(
          FIG2 fig2,
          const std::string& fig1,
-         std::unique_ptr<LatCommon::Weights> weights1,
+         std::unique_ptr<LatticeTester::Weights> weights1,
          LatBuilder::SizeParam<LatType::ORDINARY> size,
          Dimension dimension,
          MeritFilterList<LatType::ORDINARY> filters,

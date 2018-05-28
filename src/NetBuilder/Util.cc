@@ -66,6 +66,51 @@ std::vector<std::vector<int>> compositions(int n, int nb_parts){
     }
 }
 
+std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> compositionsChanges(int n, int nb_parts){
+    assert(nb_parts>= 2 && n>= nb_parts);
+    if (nb_parts == 2){
+        std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> v;
+        if (n == 2){
+            return {};
+        }
+        for (int k=n-1; k>1; k--){
+            v.push_back({{1, k}, {2, n+1-k}});
+        }
+        return v;
+    }
+    else{
+        std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> V_grand;
+        for (int k=n-nb_parts+1; k>=1; k--){
+            auto V_petit = compositionsChanges(n-k, nb_parts-1);
+
+            if (! (k & 1)){
+                std::reverse(V_petit.begin(), V_petit.end());
+                if (k < n-nb_parts+1){
+                    V_grand.push_back({{1, k+1}, {nb_parts, n-k-nb_parts+2}});
+                }
+            }
+            else{
+                if (k < n-nb_parts+1){
+                    V_grand.push_back({{1, k+1}, {2, n-k-nb_parts+2}});
+                }
+            }
+            
+            for (std::pair<std::pair<int, int>, std::pair<int, int>> v: V_petit){
+                if (! (k & 1)){   // k is even
+                    auto temp = v.first;
+                    v.first = v.second;
+                    v.second = temp;
+                }
+                v.first.first++;
+                v.second.first++;
+                
+                V_grand.push_back(v);
+            }    
+        }
+        return V_grand;
+    }
+}
+
 Row permutation(Row& row, std::vector<int>& C){
     Row new_row(row.size());
     for (unsigned int i=0; i < row.size(); i++){

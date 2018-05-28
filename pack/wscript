@@ -8,7 +8,7 @@ import mimetypes, tarfile, zipfile, shutil
 
 import imp
 def waftool(name):
-    return imp.load_module('waf_' + name, *imp.find_module(name, ['../latcommon/waftools']))
+    return imp.load_module('waf_' + name, *imp.find_module(name, ['../latticetester/waftools']))
 
 version = waftool('version')
 

@@ -35,13 +35,15 @@ class ProgressiveRowReducer
     public:
         ProgressiveRowReducer(unsigned int nCols = 0);
 
+        ProgressiveRowReducer copy();
+
         void reset(unsigned int nCols);
         
         void addRow(GeneratingMatrix newRow);
 
         void addColumn(GeneratingMatrix newCol);
 
-        void exchangeRow(unsigned int rowIndex, GeneratingMatrix newRow);
+        void exchangeRow(unsigned int rowIndex, GeneratingMatrix newRow, int verbose);
 
         unsigned int computeRank() const;
 
@@ -54,6 +56,8 @@ class ProgressiveRowReducer
         unsigned int numRows() const {return m_nRows; }
 
         unsigned int numCols() const {return m_nCols; }
+        
+        void check() const;
 
 
     public:
@@ -61,6 +65,7 @@ class ProgressiveRowReducer
         unsigned int m_nCols;
         GeneratingMatrix m_mat;
         GeneratingMatrix m_rowOperations;
+        // GeneratingMatrix m_OriginalMatrix;
         // std::list<std::pair<unsigned int, unsigned int>> m_pivotsPositions;
         std::map<unsigned int, unsigned int> m_pivotsColRowPositions; // columns index are the keys and rows indexes are the values
         std::map<unsigned int, unsigned int> m_pivotsRowColPositions; // columns index are the keys and rows indexes are the values

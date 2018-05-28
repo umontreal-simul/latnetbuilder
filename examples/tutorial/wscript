@@ -54,7 +54,7 @@ class check_output(Task.Task):
 
 def build(ctx):
 
-    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
+    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
     targets = []
@@ -68,7 +68,7 @@ def build(ctx):
                 lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_RT,
                 stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS,
                 target=targets[-1],
-                use=['latbuilder', 'latcommon'],
+                use=['latbuilder', 'latticetester'],
                 install_path=None)
 
     ctx.install_files('${DOCDIR}/examples/tutorial', ctx.path.ant_glob('*.cc'))

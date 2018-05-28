@@ -1,6 +1,6 @@
-// This file is part of LatCommon.
+// This file is part of LatticeTester.
 //
-// LatCommon
+// LatticeTester
 // Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,17 +18,17 @@
 #ifndef NETBUILDER__JOE_KUO_WEIGHTS_H
 #define NETBUILDER__JOE_KUO_WEIGHTS_H
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 #include <map>
 #include <vector>
 
 
 namespace NetBuilder {
 
-typedef LatCommon::Weight Weight;
-typedef LatCommon::Coordinates Coordinates;
+typedef LatticeTester::Weight Weight;
+typedef LatticeTester::Coordinates Coordinates;
 
-class JoeKuoWeights : public LatCommon::Weights {
+class JoeKuoWeights : public LatticeTester::Weights {
 public:
 
    JoeKuoWeights();
@@ -51,7 +51,7 @@ public:
    virtual Weight getWeight (const Coordinates & projection) const;
 
 protected:
-   /// \copydoc LatCommon::Weights::format()
+   /// \copydoc LatticeTester::Weights::format()
    virtual void format(std::ostream& os) const;
 };
 

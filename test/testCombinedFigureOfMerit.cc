@@ -28,8 +28,8 @@
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 
 #include <iostream>
-#include "latcommon/Weights.h"
-#include "latcommon/UniformWeights.h"
+#include "latticetester/Weights.h"
+#include "latticetester/UniformWeights.h"
 
 
 using namespace NetBuilder;
@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
 
     const auto& net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
-    auto weights = std::make_unique<LatCommon::UniformWeights>(1);
+    auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
     auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 

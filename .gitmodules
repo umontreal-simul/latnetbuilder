@@ -1,4 +1,3 @@
 [submodule "latcommon"]
-	path = latcommon
-	url = https://github.com/PierreMarion23/latcommon/
-	ignore = dirty
+	path = latticetester
+	url = https://github.com/umontreal-simul/latcommon.git
