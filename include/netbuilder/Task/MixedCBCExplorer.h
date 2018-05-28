@@ -76,6 +76,18 @@ class MixedCBCExplorer
             m_fullExplorer->setVerbose(verbose);
         }
 
+        void switchToDimension(unsigned int dim)
+        {
+            if (dim <= m_maxFullDimension)
+            {
+                return m_fullExplorer->switchToDimension(dim);
+            }
+            else
+            {
+                return m_randExplorer->switchToDimension(dim);
+            } 
+        }; 
+
     private:
         unsigned int m_dimension;
         unsigned int m_maxFullDimension;

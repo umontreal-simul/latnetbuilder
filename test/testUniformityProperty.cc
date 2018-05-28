@@ -18,17 +18,13 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/ProgressiveRowReducer.h"
 
+#include "netbuilder/Task/Eval.h"
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
-#include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/UniformityProperties.h"
 
 #include <iostream>
-#include <algorithm>
-#include <boost/numeric/ublas/blas.hpp>
 
 using namespace NetBuilder;
 
@@ -37,13 +33,26 @@ int main(int argc, const char *argv[])
     unsigned int s = 1120;
     unsigned int m = 1;
 
-    auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
+    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
 
-    auto fig = std::make_unique<FigureOfMerit::APrimeProperty>();
+    // for(unsigned int d = 1; d <= s; ++d)
+    // {
+    //     std::cout << *(net->pointerToGeneratingMatrix(d)) << std::endl;
+    // }
 
-    auto eval = fig->evaluator();
+    // net->extendSize(10,10);
 
-    (*eval)(net,2);
+    // for(unsigned int d = 1; d <= s; ++d)
+    // {
+    //     std::cout << *(net->pointerToGeneratingMatrix(d)) << std::endl;
+    // }
+    // std::cout << std::endl;
+
+    auto fig = std::make_unique<FigureOfMerit::AProperty>();
+
+    Task::Eval task(std::move(net), std::move(fig), 2);
+
+    task.execute();
     
     return 0;
 }

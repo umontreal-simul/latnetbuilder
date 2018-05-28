@@ -175,9 +175,8 @@ namespace NetBuilder {
         assert(dimension >= 1 && dimension <= 21201);
         std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
         std::vector<std::vector<uInteger>> res(dimension);
-        res[0] = {0};
         std::string sent;
-        for(unsigned int i = 2; i <= dimension; ++i)
+        for(unsigned int i = 1; i <= dimension; ++i)
         {
             if(getline(file,sent))
             {

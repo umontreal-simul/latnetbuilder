@@ -51,7 +51,7 @@ class CBCSearch : public Search<NC>
         };
 
         CBCSearch(  Dimension dimension, 
-                    std::unique_ptr<NetConstructionTraits<NC>> baseNet,
+                    std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
@@ -92,6 +92,7 @@ class CBCSearch : public Search<NC>
                 evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
             }
 
+            m_explorer->switchToDimension(this->minimumObserver().bestNet().dimension() + 1);
 
             for(unsigned int dim = this->minimumObserver().bestNet().dimension() + 1; dim <= this->dimension(); ++dim)
             {
@@ -120,6 +121,7 @@ class CBCSearch : public Search<NC>
                 merit = this->m_minimumObserver->bestMerit();
                 if (dim < this->dimension()){
                     this->m_minimumObserver->reset();
+                    m_explorer->switchToDimension(dim+1);
                 }
             }
             this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
