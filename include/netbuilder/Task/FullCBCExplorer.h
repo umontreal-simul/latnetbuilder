@@ -58,9 +58,7 @@ class FullCBCExplorer
 
         void reset()
         {
-            m_currentDim = 1;
-            m_data = (ConstructionMethod::genValueSpaceDim(1));
-            m_state = 0;
+            switchToDimension(1);
         }
 
         void setVerbose(int verbose)
@@ -83,6 +81,21 @@ class FullCBCExplorer
         size_t m_state;
         int m_verbose;
 };
+
+template<> void FullCBCExplorer<NetConstruction::POLYNOMIAL>::switchToDimension(unsigned int dim)
+{
+    if(m_currentDim == 1 && dim != 1)
+    {
+        m_data = ConstructionMethod::genValueSpaceDim(dim,  m_designParameter);
+    }
+    if(dim == 1 && m_currentDim != 1)
+    {
+        m_data = ConstructionMethod::genValueSpaceDim(dim,  m_designParameter);
+    }
+    m_state = 0;
+    m_currentDim = dim;
+}
+
 
 }}
 

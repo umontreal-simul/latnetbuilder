@@ -184,7 +184,7 @@ MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEva
 
     m_newReducer = m_memReducer;
 
-    std::vector<unsigned int> merits(nCols);
+    std::vector<unsigned int> merits(nCols,0);
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit)
     {
@@ -193,9 +193,9 @@ MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEva
 
         for(unsigned int m = 1; m <= nCols; ++m)
         {
-            if (ranks[m-1] < m)
+            if (m >= m_newReducer.numRows() && ranks[m-1] <  m_newReducer.numRows() )
             {
-                merits[m-1] = 1; // TO DO
+                merits[m-1] = 1;
             }
         }
 
@@ -206,6 +206,7 @@ MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEva
     }
 
     Real merit = m_figure->combine(merits);
+    
     if (merit > 0)
     {
         acc.accumulate(m_figure->weight(), merit, m_figure->expNorm());
