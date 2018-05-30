@@ -16,12 +16,16 @@
 
 #include <map>
 #include <fstream>
+#include <algorithm>
+
 #include "netbuilder/TValueComputation.h"
 #include "netbuilder/Util.h"
+#include "netbuilder/ProgressiveRowReducer.h"
+
 
 namespace NetBuilder {
 
-void first_pivot(GeneratingMatrix& M, GeneratingMatrix& D, std::vector<int>& C, int verbose= 0){
+void first_pivot2(GeneratingMatrix M, int verbose= 0){
     int k = M.nRows();
     int m = M.nCols();
     
@@ -42,241 +46,163 @@ void first_pivot(GeneratingMatrix& M, GeneratingMatrix& D, std::vector<int>& C, 
             continue;
         }
         M.swap_rows(i_temp, i_pivot);
-        D.swap_rows(i_temp, i_pivot);
+
         Pivots[i_pivot] = j;
         for (int i=i_pivot+1; i<k; i++){
             if (M[i][j] != 0){
                 M[i] = M[i] ^ M[i_pivot];
-                D[i] = D[i] ^ D[i_pivot];
             }
         }
         i_pivot++;
     }
-    if (verbose){
-        std::cout << "middle of pivoting" << std::endl;
-        std::cout << M << std::endl;
-    }
     if (Pivots[k-1] == -1){
-        throw std::runtime_error("Matrice non inversible");
-    }
-    
-    for (int i_pivot = k-1; i_pivot >=0; i_pivot--){
-        int j = Pivots[i_pivot];
-        for (int i=0; i<i_pivot; i++){
-            if (M[i][j] == 1){
-                M[i] = M[i] ^ M[i_pivot];
-                D[i] = D[i] ^ D[i_pivot];
-            }
-        }
-    }
-        
-    for (int i_pivot = 0; i_pivot < k; i_pivot++){
-        int j = Pivots[i_pivot];
-        M.swap_columns(i_pivot, j);
-        std::swap(C[i_pivot],C[j]);
-        // swap_col(M, C, i_pivot, j);
-    }
-    if (verbose){
-        std::cout << "end of pivoting" << std::endl;
-        std::cout << M << std::endl;
-    }  
-    // delete Pivots;
-}
-
-void add_line(GeneratingMatrix& T, GeneratingMatrix& D, std::map<int, int>& Origin_to_M, std::vector<int>& C, Row& newLine, int i_new_in_Origin[2], int i_old_in_Origin[2], bool verbose=false){
-    int k = T.nRows();
-    int m = T.nCols();
-    
-    int i_old=-1;
-    int i_old_inM = Origin_to_M[i_old_in_Origin[0]*m + i_old_in_Origin[1]];
-    if (verbose){
-        std::cout << T << std::endl;
-        std::cout << D << std::endl;
-        std::cout << "i_old_inM = j_old : " << i_old_inM << std::endl;
-    }    
-    int j_old = i_old_inM;
-    bool found = false;
-    
-    for (int i=0; i<k; i++){
-        if (D[i][j_old] == 1){
-            if (! found){
-                i_old = i;
-                found = true;
-            }
-            else{
-                T[i] = T[i] ^ T[i_old];
-                D[i] = D[i] ^ D[i_old];
-            }
-        }
-    }
-    if (verbose){
-        std::cout << "i_old : " << i_old << std::endl;
-        std::cout << "de-pivot old line" << std::endl;
-        std::cout << T << std::endl;
-        std::cout << D << std::endl;
-    }
-    
-    T[i_old] = newLine;
-    D[i_old] = Row(k, 0);
-    for (int i=0; i<k; i++){
-        D[i][j_old] = 0;
-    }
-    D[i_old][j_old] = 1;
-    if (verbose){
-        std::cout << "swapped old line and new line" << std::endl;
-        std::cout << T << std::endl;
-        std::cout << D << std::endl;
-    }
-    
-    Origin_to_M.erase(i_old_in_Origin[0]*m + i_old_in_Origin[1]);
-    Origin_to_M[i_new_in_Origin[0]*m + i_new_in_Origin[1]] = i_old_inM;
-    
-    for (int i=0; i<k; i++){
-        if (i != i_old && T[i_old][i] != 0){
-            T[i_old] = T[i] ^ T[i_old];
-            D[i_old] = D[i] ^ D[i_old];
-        }
-    }
-    if (verbose){
-        std::cout << "simplified new line" << std::endl;
-        std::cout << T << std::endl;
-        std::cout << D << std::endl;
-    }
-
-    if (T[i_old][i_old] == 0){
-        int j = k;
-        while (j < m and T[i_old][j] == 0){
-            j += 1;
-        }
-        if (j == m){
-            throw std::runtime_error("Nouvelle matrice non inversible");
-        }
-        else{
-            T.swap_columns(i_old, j);
-            std::swap(C[i_old],C[j]);
-            // swap_col(T, C, i_old, j);
-        }
-    }
-    if (verbose){
-        std::cout << "brought new pivot on the good column" << std::endl;
-        std::cout << T << std::endl;
-        std::cout << D << std::endl;
-    }
-    
-    for (int i=0; i<k; i++){
-        if (i == i_old){
-            continue;
-        }
-        if (T[i][i_old] == 1){
-            T[i] = T[i] ^ T[i_old];
-            // D[i] = (Row) D[i] ^ D[i_old];
-            D[i] = D[i] ^ D[i_old];
-        }
-    }
-    if (verbose){
-        std::cout << "re-pivoted with new pivot" << std::endl;
-        std::cout << T << std::endl;
-        std::cout << D << std::endl;
+        // assert(false);
+        std::cout << ("not invertible") << std::endl;
     }
 }
 
-int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, int k, bool verbose=false){
+unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, int k, ProgressiveRowReducer& rowReducer, int mMin, int mMax, int nbCol, int verbose){
+    // int ok = 0;
     int s = (int) Origin_Mats.size();
-    int m = (int) Origin_Mats[0].nCols();
 
-    std::vector<std::vector<int>> lines_order = compositions(k, s);
+    std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> rows_order = compositionsChanges(k, s);
     
-    // Initialization of data structures
-    std::map<int, int> Origin_to_M;
-    GeneratingMatrix T(k, m);
-    GeneratingMatrix D(k, m);
+    // Initialization of row map from original matrices to computation matrix
+    std::map<std::pair<int, int>, int> Origin_to_M;
+
     for (int i=0; i<k-s+1; i++){
-        Origin_to_M[i] = i;
-        T[i] = Row(Origin_Mats[0][i]);
+        Origin_to_M[{1, i+1}] = i;
+        rowReducer.addRow(Origin_Mats[s-1].subMatrix(i, 1, mMax+1));
     }
     for (int i=1; i<s; i++){
-        Origin_to_M[i*m] = i;
-        T[k-s+i] = Row(Origin_Mats[i][0]);
+        Origin_to_M[{i+1, 1}] = k-s+i;
+        rowReducer.addRow(Origin_Mats[s-1-i].subMatrix(0, 1, mMax+1));
     }
-    for (int i=0; i<k; i++){
-        D[i] = Row(k, 0);
-        D[i][i] = 1;
+    // std::cout << rowReducer.m_OriginalMatrix << std::endl;
+    // std::cout << std::endl;
+    // std::cout << rowReducer.m_mat << std::endl;
+    // first_pivot2(rowReducer.m_OriginalMatrix.subMatrix(7, 7));
+
+
+    // bool stop = rowReducer.updateStatus(mMin, status, k, ok);
+    unsigned int smallestInvertible = rowReducer.computeSmallestInvertible(mMin, nbCol, k);
+    // std::cout << "after initialization, smallest invertible= " << smallestInvertible << std::endl;
+
+    if (smallestInvertible == mMax+1){
+        // std::cout << "end in initialization" << std::endl;
+        return mMax+1;
     }
-    std::vector<int> C;
-    for (int j=0; j<m; j++){
-        C.push_back(j);
-    }
+    // if (rowReducer.computeRank() != k){
+    //     throw std::runtime_error("should be full rank");
+    // }
 
-    try{
-        first_pivot(T, D, C, verbose);
-    }
-    catch (const std::runtime_error& e){
-        return 1;
-    }
+    // int step = 0;
+    for (auto it = begin (rows_order); it != end (rows_order); ++it) {
+        // if (verbose > 0){
+        //     std::cout << "STEP " << step << std::endl;
+        // }
+        // step++;
+        std::pair<std::pair<int, int>, std::pair<int, int>> rowChange = *it;
 
-    int step = 0;
-    for (auto it = begin (lines_order); it != end (lines_order) - 1; ++it) {
-        if (verbose){
-            std::cout << "STEP " << step << std::endl;
-        }
-        step++;
-        std::vector<int> old_choice_of_lines = *it;
-        std::vector<int> new_choice_of_lines = *(it+1);
-        Row new_line;
-        int ind_new_line[2];
-        int ind_old_line[2];
+        int ind_exchange = Origin_to_M[rowChange.first];
+        Origin_to_M[rowChange.second] = ind_exchange;
+        Origin_to_M.erase(rowChange.first);
+        
+        GeneratingMatrix newRow = Origin_Mats[s-rowChange.second.first].subMatrix(rowChange.second.second-1, 1, mMax+1);
 
-        for (int i=0; i<s; i++){
-            if (new_choice_of_lines[i] - old_choice_of_lines[i] == 1){
-                // indice of new matrix = i
-                // because of numbering conventions, indice of new line in matrix = old_choice_of_lines[i] = new_choice_of_lines[i] - 1
-                ind_new_line[0] = i; 
-                ind_new_line[1] = old_choice_of_lines[i];
-                new_line = Row(Origin_Mats[i][old_choice_of_lines[i]]);
-            }
-            if (new_choice_of_lines[i] - old_choice_of_lines[i] == -1){
-                // indice of new matrix = i
-                // because of numbering conventions, indice of old line in matrix = new_choice_of_lines[i] = old_choice_of_lines[i] - 1
-                ind_old_line[0] = i; 
-                ind_old_line[1] = new_choice_of_lines[i];
-            }
-        }
-        if (verbose){
-            std::cout << "new line " << new_line << std::endl;
-        }
+        // if (verbose > 0){
+        //     std::cout << "new row " << newRow << std::endl;
+        // }
 
-        // apply permutation to new line
-        new_line = permutation(new_line, C);
+        smallestInvertible = rowReducer.exchangeRow(ind_exchange, std::move(newRow), smallestInvertible, verbose-1);
+        // if (temp < smallestInvertible){
+        //     throw std::runtime_error("smallest invertible should be non decreasing");
+        // }
+        // smallestInvertible = temp;
+        // rowReducer.check();
+        // if (pivotRemoved > 0 && pivotRemoved <= smallestInvertible){
+        //     std::cout << "pivot removed: " << pivotRemoved << std::endl;
+        //     smallestInvertible = pivotRemoved-1;
+        // }
+        // stop = rowReducer.updateStatus(mMin, status, k, ok);
 
-        try{
-            add_line(T, D, Origin_to_M, C, new_line, ind_new_line, ind_old_line, verbose);
-        }
-        catch (const std::runtime_error& e){
-            return 1;
+        if (smallestInvertible == mMax+1){
+            return smallestInvertible;
         }
     }
-    return 0;
+    return smallestInvertible;
 }
 
-int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, int verbose=0)
+unsigned int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int maxSubProj, int verbose=0)
 {
-    int m = (int) Origin_Mats[0].nRows();
+    return GaussMethod::computeTValue(Origin_Mats, Origin_Mats[0].nCols()-1, {maxSubProj}, verbose)[0];
+}
+
+std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int mMin, std::vector<unsigned int> maxSubProj, int verbose=0)
+{
+    // int m = (int) Origin_Mats[0].nCols();
+    int nRows = (int) Origin_Mats[0].nRows();
+    int nCols = (int) Origin_Mats[0].nCols();
+    int mMax = nCols-1;
     int s = (int) Origin_Mats.size();
-    if (s == 1){    // to be modified!
-        return 0;
+    unsigned int nLevel = maxSubProj.size();
+    ProgressiveRowReducer rowReducer = ProgressiveRowReducer();
+
+    // reversing the matrices to put the new matrices at the front: heuristic to gain time
+    // std::reverse(std::begin(Origin_Mats), std::end(Origin_Mats));   // TODO: better?
+
+    
+    std::vector<unsigned int> result = maxSubProj;
+    int diff = 0;
+    if (mMin < s-1){     // TODO
+        diff = (s-1-mMin);
+        nLevel -= (s-1-mMin);
+        mMin = s-1;
     }
-    for (int k=m-maxSubProj; k >= s; k--){
-        int status = iteration_on_k(Origin_Mats, k, verbose);
-        if (verbose){
-            std::cout << "after iteration " << k << ", status : " << status << std::endl;
-        }     
-        if (status == 0){
-            return std::max(m-k, maxSubProj);
+    for (unsigned int i=0; i<nLevel; i++){
+        result[i+diff] = std::max(nCols-(nLevel-1-i)-s+1, maxSubProj[i+diff]);
+    }
+    unsigned int previousIndSmallestInvertible = nLevel;
+    // std::vector<int> status(nLevel, 1);
+    
+    if (s == 1){    // does not make sense when s == 1
+        return result;
+    }
+    for (int k=nRows-maxSubProj[maxSubProj.size()-1]; k >= s; k--){
+        // std::cout << "begin iteration " << k << std::endl;
+        rowReducer.reset(mMax+1);
+        unsigned int smallestInvertible = iteration_on_k(Origin_Mats, k, rowReducer, mMin, mMax, nLevel, verbose-1);
+        // if (verbose){
+            // std::cout << "after iteration " << k << ", smallestInvertible : " << smallestInvertible << std::endl;
+        // }
+        // mMax = mMin-1;
+        if (smallestInvertible == mMax+1){
+            continue;
         }
+        // if (smallestInvertible >= mMin){
+        for (unsigned int i= ((smallestInvertible > mMin) ? smallestInvertible-mMin: 0); i<previousIndSmallestInvertible; i++){
+            // if (previousIndSmallestInvertible+diff > result.size()){
+            //     throw std::runtime_error("oups 42");
+            // }
+            // std::cout << "i " << i << std::endl;
+            result[i+diff] = std::max(nCols-(nLevel-1-i)-k, maxSubProj[i+diff]);
+        }
+        if (smallestInvertible <= mMin){
+            break;
+        } 
+        previousIndSmallestInvertible = smallestInvertible-mMin;
+            // mMax = smallestInvertible;
+            // std::cout << mMax << std::endl;
+        
+        
+        // }       
     }
-    return std::max(m-s+1, maxSubProj);
+    // std::cout << "end of compute tvalue" << std::endl;
+    // std::cout << result.size() << std::endl;
+    // std::cout << result[0] << std::endl;
+    return result;
 }
 
 }
-
+ 
 

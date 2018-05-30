@@ -43,17 +43,22 @@ class ProgressiveRowReducer
 
         void addColumn(GeneratingMatrix newCol);
 
-        void exchangeRow(unsigned int rowIndex, GeneratingMatrix newRow, int verbose);
+        unsigned int exchangeRow(unsigned int rowIndex, GeneratingMatrix&& newRow, unsigned int smallestInvertible, int verbose);
 
         unsigned int computeRank() const;
 
         std::vector<unsigned int> computeRanks(unsigned int firstCol, unsigned int numCol) const;
 
+        // std::vector<bool> areFullRanks(unsigned int firstCol, unsigned int numCol) const;
+        bool updateStatus(unsigned int firstCol, std::vector<int>& status, int k, int& ok);
+
+        int computeSmallestInvertible(unsigned int firstCol, int numCol, int k);
+
         const GeneratingMatrix& matrix() const {return m_mat;}
 
         const GeneratingMatrix& rowOperations() const {return m_rowOperations; }
 
-        void check() const;
+        void check();
 
 
     public:
@@ -68,7 +73,7 @@ class ProgressiveRowReducer
         std::set<unsigned int> m_columnsWithoutPivot;
         std::list<unsigned int> m_rowsWithoutPivot;
 
-        void pivotRowAndFindNewPivot(unsigned int row);
+        unsigned int pivotRowAndFindNewPivot(unsigned int row);
 
 };
 
