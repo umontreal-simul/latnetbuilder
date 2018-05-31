@@ -32,18 +32,6 @@ namespace NetBuilder{
         m_rowsWithoutPivot()
     {};
 
-    // ProgressiveRowReducer ProgressiveRowReducer::copy(){
-    //     ProgressiveRowReducer newRed = ProgressiveRowReducer();
-    //     newRed.m_nCols = m_nCols;
-    //     newRed.m_mat = m_mat;
-    //     newRed.m_rowOperations = m_rowOperations;
-    //     newRed.m_pivotsColRowPositions = m_pivotsColRowPositions;
-    //     newRed.m_pivotsRowColPositions = m_pivotsRowColPositions;
-    //     newRed.m_columnsWithoutPivot = m_columnsWithoutPivot;
-    //     newRed.m_rowsWithoutPivot = m_rowsWithoutPivot;
-    //     return newRed;
-    // }
-
     void ProgressiveRowReducer::reset(unsigned int nCols)  
     {
         m_nCols = nCols;
@@ -100,99 +88,13 @@ namespace NetBuilder{
         return ranks;
     }
 
-    bool ProgressiveRowReducer::updateStatus(unsigned int firstCol, std::vector<int>& status, int k, int& ok){
-        unsigned int numCol = status.size();
-        unsigned int rank = 0;
-        bool stop = true;
-        unsigned int lastCol = firstCol;
-
-        for(const auto& colRow : m_pivotsColRowPositions)
-        {
-            if(colRow.first >= firstCol+numCol)
-            {
-                break;
-            }
-
-            for(unsigned int col = lastCol; col < colRow.first ; ++col)
-            {
-                // ranks[col-firstCol] = rank;
-                if (rank == k){
-                    stop = false;
-                }
-                else{
-                    status[col-firstCol] = 1;
-                    ok = 1;
-                }
-            }
-
-            rank+=1;
-
-            if (colRow.first >= firstCol)
-            {
-                lastCol = colRow.first;
-            }
-        }
-
-        for(unsigned int col = lastCol; col < firstCol + numCol; ++col)
-        {
-            // ranks[col-firstCol] = rank;
-            if (rank == k){
-                stop = false;
-            }
-            else{
-                status[col-firstCol] = 1;
-                ok = 1;
-            }
-        }
-       
-        return stop;
-    }
-
-    int ProgressiveRowReducer::computeSmallestInvertible(unsigned int firstCol, int numCol, int k){
-        int rank = 0;
-        int result = m_nCols;
+    int ProgressiveRowReducer::computeSmallestInvertible(unsigned int firstCol, int numCol, unsigned int k){
         if (m_pivotsColRowPositions.size()<k){
             return m_nCols;
         }
         else{
             return (*std::max_element(m_pivotsColRowPositions.begin(), m_pivotsColRowPositions.end())).first;
         }
-        // unsigned int lastCol = firstCol;
-
-        // for(const auto& colRow : m_pivotsColRowPositions)
-        // {
-        //     if(colRow.first >= firstCol+numCol)
-        //     {
-        //         break;
-        //     }
-
-        //     for(unsigned int col = lastCol; col < colRow.first ; ++col)
-        //     {
-        //         // ranks[col-firstCol] = rank;
-        //         if (rank == k){
-        //             result = col;
-        //             return result;
-        //         }
-        //     }
-
-        //     rank+=1;
-
-        //     if (colRow.first >= firstCol)
-        //     {
-        //         lastCol = colRow.first;
-        //     }
-        // }
-
-        // for(unsigned int col = lastCol; col < firstCol + numCol; ++col)
-        // {
-        //     // ranks[col-firstCol] = rank;
-        //     if (rank == k){
-        //         result = col;
-        //         return result;
-        //     }
-        // }
-       
-        // return result;
     }
 
     unsigned int ProgressiveRowReducer::pivotRowAndFindNewPivot(unsigned int rowIndex)
@@ -237,7 +139,6 @@ namespace NetBuilder{
         else // if not
         {
             m_rowsWithoutPivot.push_back(rowIndex);
-            // return -1;
         }
         return newPivotColPosition;
     }
@@ -300,12 +201,6 @@ namespace NetBuilder{
     unsigned int ProgressiveRowReducer::exchangeRow(unsigned int rowIndex, GeneratingMatrix&& newRow, unsigned int smallestInvertible, int verbose=0)
     {
         auto rowIndexColPivPos = m_pivotsRowColPositions.find(rowIndex);
-        // if (rowIndexColPivPos == m_pivotsRowColPositions.end()){
-        //     throw std::runtime_error("oups 72");
-        // }
-        
-        // int colPosErased = -1;
-        // int nextColPos = m_nCols;
 
         if (rowIndexColPivPos != m_pivotsRowColPositions.end())
         {
@@ -323,56 +218,22 @@ namespace NetBuilder{
                         if(tmpIndexPivPos != m_pivotsRowColPositions.end())
                         {
                             tmpIndexColPivPos = (*tmpIndexPivPos).second;
-                            // auto ptrToNextCol = m_pivotsColRowPositions.find(tmpIndexColPivPos);
-                            // if (std::next(ptrToNextCol) != m_pivotsColRowPositions.end()){
-                            //     nextColPos = (*(std::next(ptrToNextCol))).second;
-                            // }
-                            
-                            // if (m_pivotsColRowPositions.find(tmpIndexColPivPos) == m_pivotsColRowPositions.end()){
-                            //     throw std::runtime_error("oups");
-                            // }
                             m_pivotsColRowPositions.erase(tmpIndexColPivPos);
                             m_columnsWithoutPivot.insert(tmpIndexColPivPos);
-                            
-                            // if (m_pivotsRowColPositions.find(rowIndex) == m_pivotsRowColPositions.end()){
-                            //     throw std::runtime_error("oups 2");
-                            // }
-                            
-
-                            // std::cout << "replacing " << tmpIndexColPivPos << " with " << (*rowIndexColPivPos).second << std::endl;
-                            // colPosErased = tmpIndexColPivPos;
-
-                            
-                            // std::cout << "possible issue" << std::endl;
                         }
-                        // else{
-                        //     throw std::runtime_error("oups 666");
-                        // }
                         
                         m_pivotsRowColPositions.erase(rowIndex);
                         m_pivotsColRowPositions[colPositionPivot] = tmpIndex;
                         m_pivotsRowColPositions[tmpIndex] = colPositionPivot;
                         
                         firstRowToDepivot = tmpIndex+1;
-                        // rowIndex = i;
                         break;
                     }
                 }
             }
             else{
-                // auto ptrToNextCol = m_pivotsColRowPositions.find(colPositionPivot);
-                // if (std::next(ptrToNextCol) != m_pivotsRowColPositions.end()){
-                //     nextColPos = (*(std::next(ptrToNextCol))).second;
-                // }
-                // if (m_pivotsRowColPositions.find(rowIndex) == m_pivotsRowColPositions.end()){
-                //     throw std::runtime_error("oups 3");
-                // }
-                // if (m_pivotsColRowPositions.find(colPositionPivot) == m_pivotsColRowPositions.end()){
-                //     throw std::runtime_error("oups 4");
-                // }
                 m_pivotsRowColPositions.erase(rowIndex);
                 m_pivotsColRowPositions.erase(colPositionPivot);
-                // colPosErased = colPositionPivot;
                 m_columnsWithoutPivot.insert(colPositionPivot);
             }
 
@@ -389,56 +250,13 @@ namespace NetBuilder{
         m_mat[rowIndex] = std::move(newRow[0]);
         // m_mat[rowIndex] = newRow[0];
         // m_OriginalMatrix[rowIndex] = newRow[0];
+
         m_rowOperations[rowIndex].reset();
-        // for(unsigned int j = 0; j < m_nRows; ++j)
-        // {
-        //     m_rowOperations(rowIndex,j) = 0;
-        // }
         m_rowOperations(rowIndex, rowIndex) = 1;
 
         unsigned int newPivotPos = pivotRowAndFindNewPivot(rowIndex);
-        // if (newPivotPos < 0){
-        //     // if (computeRank() == m_nRows){
-        //     //     throw std::runtime_error("oups 23");
-        //     // }
-        //     // std::cout << "deleted a pivot" << std::endl;
-        //     return m_nCols;
-        // }
 
-        // if (colPosErased <= smallestInvertible){
-        //     if (newPivotPos <= colPosErased){
-        //         return smallestInvertible;
-        //     }
-        //     else{
-        //         if (std::min(newPivotPos, nextColPos) > smallestInvertible){
-        //             std::cout << "newPivotPos " << newPivotPos << std::endl;
-        //             std::cout << "nextColPos " << nextColPos << std::endl;
-        //             std::cout << "smallestInvertible " << smallestInvertible << std::endl;
-        //         }
-        //         return std::max(std::min(newPivotPos, nextColPos), smallestInvertible);
-        //     }
-        // }
-        // else{
-        //     return smallestInvertible;
-        // }
         return std::max(smallestInvertible, newPivotPos);
-        // if (newPivotPos <= colPosErased){
-        //     colPosErased = -1;
-        // }
-        // else{
-        //     if (newPivotPos < nextColPos){
-        //         return newPivotPos;
-        //     }
-        //     else{
-        //         return nextColPos;
-        //     }
-        //     std::cout << (newPivotPos) << std::endl;
-        //     std::cout << (colPosErased)<< std::endl;
-        //     std::cout << m_columnsWithoutPivot.size() << std::endl;
-        // }
-
-        // return colPosErased;
-
     }
 
 void first_pivot(GeneratingMatrix M, int verbose= 0){

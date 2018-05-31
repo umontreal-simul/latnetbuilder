@@ -24,7 +24,7 @@ namespace NetBuilder {
     struct GaussMethod
     {
     static unsigned int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int maxSubProj, int verbose);
-    static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int mMin, std::vector<unsigned int> maxSubProj, int verbose);
+    static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int mMin, std::vector<unsigned int> maxSubProj, int verbose);
     };
 
     struct SchmidMethod

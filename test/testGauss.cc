@@ -64,7 +64,6 @@ void first_pivot(GeneratingMatrix M, int verbose= 0){
         i_pivot++;
     }
     if (Pivots[k-1] == -1){
-        // assert(false);
         std::cout << ("not invertible") << std::endl;
     }
 }
@@ -146,16 +145,10 @@ int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, int
     int kMax = nRows-maxSubProj;
     ProgressiveRowReducer rowReducer = ProgressiveRowReducer();
     
-    // std::vector<ProgressiveRowReducer> vecRowRed;
-    // Initialization of row map from original matrices to computation matrix
-    // std::vector<std::map<std::pair<int, int>, int>> vecOrigin_to_M;
-
-    
     for (int k=kMax; k >= s; k--){
         // std::cout << "begin iteration " << k << std::endl;
         rowReducer.reset(nCols);
         int status = iteration_on_k(Origin_Mats, k, rowReducer, verbose-1);
-        // int status = iteration_on_k(Origin_Mats, k, vecRowRed[k-s], vecOrigin_to_M[k-s], verbose);
         if (verbose){
             std::cout << "after iteration " << k << ", status : " << status << std::endl;
         }     
@@ -170,8 +163,8 @@ int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, int maxSubProj, int
 int main(int argc, const char *argv[])
 {        
     int m = 25;
-    int s = 7;
-    int nLevel=25;
+    int s =7;
+    int nLevel=m;
 
     typedef NetConstructionTraits<NetConstruction::SOBOL> ConstructionMethod;
 
@@ -201,7 +194,7 @@ int main(int argc, const char *argv[])
     
 
     clock_t t1,t2, t3, t4;
-    float diff1, diff2, diff3;
+    float diff1, diff2, diff3 = 0;
 
     std::vector<int> iNew;
     std::vector<int> iNew2;
