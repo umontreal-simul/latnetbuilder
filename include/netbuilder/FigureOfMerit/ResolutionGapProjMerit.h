@@ -49,7 +49,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
 {
     public:
 
-        /** Construct a projection-dependent merit based on theresolution of projections.
+        /** Construct a projection-dependent merit based on the resolution of projections.
          * @param maxCardinal is the maximum order of the subprojections to take into account
          */  
         ResolutionGapProjMerit(unsigned int maxCardinal,  Combiner combiner = Combiner()):
@@ -88,19 +88,18 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
             unsigned int merit = maxResolution; 
             for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
             {
-                GeneratingMatrix block(0,numCols);
                 for(auto coord : projection)
                 {
-                    block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
                 }
-                // if (m_rowReducer.reduceNewBlock(std::move(block)))
-                // {
-                //     --merit;
-                // }
-                // else
-                // {
-                //     break;
-                // }
+                if(m_rowReducer.computeRank() == m_rowReducer.numRows())
+                {
+                    --merit;
+                }
+                else
+                {
+                    break;
+                }
             }
             return  merit;
         }
@@ -159,28 +158,34 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
             unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
 
+            m_rowReducer.reset(numCols);
+
             std::vector<unsigned int> merits(numRows);
 
             for(unsigned int m = 1; m <= numCols; ++m)
             {
-                unsigned int maxResolution = m/dimension;
-                merits[m-1] = maxResolution;
-                m_rowReducer.reset(m);
-                for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
+                merits[m-1] = m/dimension;
+            }
+
+            unsigned int maxResolution = numCols/dimension;
+
+            for(unsigned int resolution = 0; resolution < maxResolution; ++resolution)
+            {
+                for(auto coord : projection)
                 {
-                    GeneratingMatrix block(0,m);
-                    for(auto coord : projection)
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
+                }
+                std::vector<unsigned int> ranks = m_rowReducer.computeRanks(0,numCols);
+                for(unsigned int m = 1; m <= numCols; ++m)
+                {
+                    if (ranks[m-1] == m_rowReducer.numRows())
                     {
-                    block.vstack(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,m));
+                        --merits[m-1];
                     }
-                    // if (m_rowReducer.reduceNewBlock(std::move(block)))
-                    // {
-                    //     --merits[m-1];
-                    // }
-                    // else
-                    // {
-                    //     break;
-                    // }
+                }
+                if (ranks[numCols-1] <  m_rowReducer.numRows())
+                {
+                    break;
                 }
             }
             return combine(merits);

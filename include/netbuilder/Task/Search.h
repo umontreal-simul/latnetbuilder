@@ -66,6 +66,25 @@ public:
         m_earlyAbortion(earlyAbortion)
         {};
 
+    Search( Dimension dimension, 
+            std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
+            std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
+            int verbose = 0,
+            bool earlyAbortion = true ):
+        m_onNetSelected(new OnNetSelected),
+        m_onFailedSearch(new OnFailedSearch),
+        m_dimension(dimension),
+        m_designParameter(baseNet->designParameter()),
+        m_nRows(NetConstructionTraits<NC>::nRows(m_designParameter)),
+        m_nCols(NetConstructionTraits<NC>::nCols(m_designParameter)),
+        m_figure(std::move(figure)),
+        m_bestNet(0, m_designParameter),
+        m_bestMerit(std::numeric_limits<Real>::infinity()),
+        m_minimumObserver(new MinimumObserver<NC>(std::move(baseNet), verbose-2)),
+        m_verbose(verbose),
+        m_earlyAbortion(earlyAbortion)
+        {};
+
     Search(Search&& ) = default;
 
     /** Returns the dimension of the searched net.

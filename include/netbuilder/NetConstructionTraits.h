@@ -21,6 +21,8 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/GeneratingMatrix.h"
 
+#include "latbuilder/GenSeq/GeneratingValues.h"
+
 #include <memory>
 #include <string>
 
@@ -164,11 +166,10 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
         {
             public:
                 RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
-                    m_designParameter(std::move(designParameter)),
                     m_randomGen(std::move(randomGen))
                 {
-                    m_primes = genValueSpaceDim(2, m_designParameter);
-                    m_totient = m_primes.size();
+                    m_generatingValues = LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE>(std::move(designParameter));
+                    m_totient = m_generatingValues.size();
                 };
                 
                 GenValue operator()(unsigned int dimension)
@@ -179,14 +180,13 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
                     }
                     else
                     {
-                        return m_primes[m_randomGen() % m_totient];
+                        return m_generatingValues[m_randomGen() % m_totient];
                     }
                 }
             private:
-                DesignParameter m_designParameter;
+                size_t m_totient;
+                LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE> m_generatingValues;
                 RAND m_randomGen;
-                std::vector<GenValue> m_primes;
-                uInteger m_totient;
         };
 
         static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);

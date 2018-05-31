@@ -21,16 +21,10 @@
 
 namespace NetBuilder{
 
-        ProgressiveRowReducer::ProgressiveRowReducer():
-        m_nCols(0),
-        m_mat(0,0),
-        // m_OriginalMatrix(0,0),
-        m_rowOperations(0,0),
-        m_pivotsColRowPositions(),
-        m_pivotsRowColPositions(),
-        m_columnsWithoutPivot(),
-        m_rowsWithoutPivot()
-    {};
+    ProgressiveRowReducer::ProgressiveRowReducer(unsigned int nCols)
+    {
+        reset(nCols);
+    };
 
     void ProgressiveRowReducer::reset(unsigned int nCols)  
     {

@@ -68,6 +68,9 @@ class RandomCBCExplorer
             m_verbose = verbose;
         }
 
+        void switchToDimension(unsigned int dim)
+        {};
+
     private:
         unsigned int m_dimension;
         unsigned int m_nbTries;

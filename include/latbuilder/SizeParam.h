@@ -135,7 +135,7 @@ public:
 
    unsigned int log2NumPoints() const
    { 
-     return log2Int(numPoints());
+     return (unsigned int) log2Int( (unsigned int) numPoints() );
    }
 
 private:

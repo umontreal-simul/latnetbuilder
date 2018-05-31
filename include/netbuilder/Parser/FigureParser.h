@@ -36,6 +36,7 @@
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/UniformityProperties.h"
+#include "netbuilder/FigureOfMerit/BitEquidistribution.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 
@@ -151,13 +152,28 @@ struct FigureParser
         if (name == "A'-Property"){
             if (NetConstructionTraits<NC>::isSequenceViewable)
             {
-                vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>());
+                vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>(importance));
                 vecWeights.push_back(1);
                 return;
             }
             else
             {
                 throw BadFigure("A'-Property not compatible with net construction.");
+            }
+        }
+
+        std::vector<std::string> nameParsing;
+        boost::split(nameParsing, name, boost::is_any_of(":"));
+
+        if (nameParsing.size()==2)
+        {
+            name = nameParsing[0];
+            unsigned int nbBits = boost::lexical_cast<unsigned int>(nameParsing[1]);
+            if (name == "BitEquidistribution")
+            {
+                vecFigures.push_back(std::make_unique<FigureOfMerit::BitEquidistribution<PST>>(nbBits, importance, std::numeric_limits<Real>::infinity(),  commandLine.m_combiner));
+                vecWeights.push_back(1);
+                return;
             }
         }
 

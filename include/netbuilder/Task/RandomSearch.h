@@ -49,6 +49,7 @@ class RandomSearch : public Search<NC>
             m_nbTries(nbTries),
             m_randomGenValueGenerator(this->m_designParameter)
         {};
+    
 
         /** Default move constructor. */
         RandomSearch(RandomSearch&&) = default;

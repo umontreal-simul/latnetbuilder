@@ -40,25 +40,25 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int s = 50;
+    unsigned int s = 10;
     unsigned int m = 30;
 
-    auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m,m);
+    auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
 
 
     auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    // auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<NetEmbed::SIMPLE>>(s);
+    // auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>(s);
 
-    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<NetEmbed::SIMPLE>>>(1, std::move(weights), std::move(projDep), OpMax());
+    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>>(3, std::move(weights), std::move(projDep));
     
-    auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<NetEmbed::EMBEDDED>>(2, Combiner(boost::numeric::ublas::blas_1::amax<RealVector>));
+    auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(3, Combiner(boost::numeric::ublas::blas_1::amax<RealVector>));
 
-    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<NetEmbed::EMBEDDED>>>(1, std::move(weights), std::move(projDep), OpMax());
+    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     auto eval = fig->evaluator();
 
-    (*eval)(net,true);
+    (*eval)(net,2);
     
     return 0;
 }

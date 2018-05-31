@@ -49,6 +49,13 @@ class MinimumObserver
         {
             reset();
         };
+
+        MinimumObserver(std::unique_ptr<DigitalNetConstruction<NC>> baseNet, int verbose = 0):
+            m_bestNet(std::move(baseNet)),
+            m_verbose(verbose)
+        {
+            reset();
+        };
             
         /** Initializes the best observed merit value to infinity. */
         void reset() 

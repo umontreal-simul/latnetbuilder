@@ -35,25 +35,14 @@ class FullCBCExplorer
         FullCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, int verbose = 0):
             m_dimension(dimension),
             m_designParameter(std::move(designParameter)),
-            m_currentDim(1),
-            m_data(ConstructionMethod::genValueSpaceDim(1, m_designParameter)),
+            m_currentDim(0),
             m_state(0),
             m_verbose(verbose)
         {};
 
         bool isOver(unsigned int dim) 
         {
-            if (m_state==m_data.size() && m_currentDim<=m_dimension)
-            {
-                if (m_currentDim < m_dimension)
-                {
-                    ++m_currentDim;
-                    m_data = ConstructionMethod::genValueSpaceDim(m_currentDim,  m_designParameter);
-                    m_state = 0;
-                }
-                return true;
-            }
-            return false;
+            return m_state==m_data.size() && m_currentDim<=m_dimension;
         }
 
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
@@ -69,14 +58,19 @@ class FullCBCExplorer
 
         void reset()
         {
-            m_currentDim = 1;
-            m_data = (ConstructionMethod::genValueSpaceDim(1));
-            m_state = 0;
+            switchToDimension(1);
         }
 
         void setVerbose(int verbose)
         {
             m_verbose = verbose;
+        }
+
+        void switchToDimension(unsigned int dim)
+        {
+            m_currentDim = dim;
+            m_data = ConstructionMethod::genValueSpaceDim(m_currentDim,  m_designParameter);
+            m_state = 0;
         }
 
     private:
@@ -87,6 +81,21 @@ class FullCBCExplorer
         size_t m_state;
         int m_verbose;
 };
+
+template<> void FullCBCExplorer<NetConstruction::POLYNOMIAL>::switchToDimension(unsigned int dim)
+{
+    if(m_currentDim == 1 && dim != 1)
+    {
+        m_data = ConstructionMethod::genValueSpaceDim(dim,  m_designParameter);
+    }
+    if(dim == 1 && m_currentDim != 1)
+    {
+        m_data = ConstructionMethod::genValueSpaceDim(dim,  m_designParameter);
+    }
+    m_state = 0;
+    m_currentDim = dim;
+}
+
 
 }}
 

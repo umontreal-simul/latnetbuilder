@@ -50,6 +50,18 @@ class CBCSearch : public Search<NC>
             m_explorer->setVerbose(this->m_verbose-1);
         };
 
+        CBCSearch(  Dimension dimension, 
+                    std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
+                    std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
+                    std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
+                    int verbose = 0,
+                    bool earlyAbortion = true):
+            Search<NC>(dimension, std::move(baseNet), std::move(figure), verbose, earlyAbortion),
+            m_explorer(std::move(explorer))
+        {
+            m_explorer->setVerbose(this->m_verbose-1);
+        };
+
         /** Default move constructor. */
         CBCSearch(CBCSearch&&) = default;
 
@@ -65,15 +77,24 @@ class CBCSearch : public Search<NC>
 
             auto evaluator = this->m_figure->evaluator();
 
+            Real merit = 0;
+
+            for(unsigned int dim = 1; dim <= this->minimumObserver().bestNet().dimension(); ++dim)
+            {
+                evaluator->prepareForNextDimension();
+                merit = (*evaluator)(this->minimumObserver().bestNet(), dim, merit) ;
+                evaluator->lastNetWasBest();
+            }
+
             if (this->m_earlyAbortion)
             {
                 evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
                 evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
             }
 
-            Real merit = 0;
+            m_explorer->switchToDimension(this->minimumObserver().bestNet().dimension() + 1);
 
-            for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
+            for(unsigned int dim = this->minimumObserver().bestNet().dimension() + 1; dim <= this->dimension(); ++dim)
             {
                 evaluator->prepareForNextDimension();
                 if(this->m_verbose==1)
@@ -100,6 +121,7 @@ class CBCSearch : public Search<NC>
                 merit = this->m_minimumObserver->bestMerit();
                 if (dim < this->dimension()){
                     this->m_minimumObserver->reset();
+                    m_explorer->switchToDimension(dim+1);
                 }
             }
             this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
