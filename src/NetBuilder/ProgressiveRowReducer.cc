@@ -306,9 +306,9 @@ void ProgressiveRowReducer::check(){
     //     }
     // }
     for (const auto& colRow : m_pivotsColRowPositions){
-        int col = colRow.first;
-        int row = colRow.second;
-        for (int i=0; i < m_nRows; i++){
+        unsigned int col = colRow.first;
+        unsigned int row = colRow.second;
+        for (unsigned int i=0; i < m_nRows; i++){
             if (m_mat(i, col) != (i == row)){
                 throw std::runtime_error("checking pivot");
             }
@@ -318,8 +318,8 @@ void ProgressiveRowReducer::check(){
     }
 
     for (const auto& rowCol : m_pivotsRowColPositions){
-        int row = rowCol.first;
-        int col = rowCol.second;
+        unsigned int row = rowCol.first;
+        unsigned int col = rowCol.second;
         if (check_row[row] != 1 || check_col[col] != 1){
             throw std::runtime_error("checking row col 1");
         }

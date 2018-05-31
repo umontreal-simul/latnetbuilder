@@ -17,25 +17,19 @@
 #include <map>
 #include <fstream>
 #include <algorithm>
-#include <chrono>
 
 #include "netbuilder/TValueComputation.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/ProgressiveRowReducer.h"
+#include "netbuilder/CompositionMaker.h"
 
 
 
 namespace NetBuilder {
 
-unsigned int iteration_on_k(float& t_tot, std::vector<GeneratingMatrix>& Origin_Mats, unsigned int k, ProgressiveRowReducer& rowReducer, unsigned int mMin, unsigned int nbCol, int verbose){
+unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned int k, ProgressiveRowReducer& rowReducer, unsigned int mMin, unsigned int nbCol, int verbose){
     unsigned int nCols = Origin_Mats[0].nCols();
     unsigned int s = Origin_Mats.size();
-
-    clock_t t1,t2;
-    t1=clock();
-    std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> rows_order = compositionsChanges(k, s);
-    t2=clock();
-    t_tot += ((float)t2 - (float)t1);
     
     // Initialization of row map from original matrices to computation matrix
     std::map<std::pair<int, int>, int> Origin_to_M;
@@ -61,8 +55,11 @@ unsigned int iteration_on_k(float& t_tot, std::vector<GeneratingMatrix>& Origin_
         return nCols;
     }
 
-    for (auto it = begin (rows_order); it != end (rows_order); ++it) {
-        std::pair<std::pair<int, int>, std::pair<int, int>> rowChange = *it;
+    CompositionMaker compositionMaker(k, s);
+
+    while (compositionMaker.goToNextComposition()) {
+
+        std::pair<std::pair<int, int>, std::pair<int, int>> rowChange = compositionMaker.changeFromPreviousComposition();
 
         int ind_exchange = Origin_to_M[rowChange.first];
         Origin_to_M[rowChange.second] = ind_exchange;
@@ -92,8 +89,6 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
 
     unsigned int nLevel = maxSubProj.size();
     ProgressiveRowReducer rowReducer = ProgressiveRowReducer();
-
-    float t_tot = 0;
     
     std::vector<unsigned int> result = maxSubProj;
     if (s == 1){    // does not make sense when s == 1
@@ -117,7 +112,7 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
             std::cout << "begin iteration " << k << std::endl;
         }
         rowReducer.reset(nCols);
-        unsigned int smallestInvertible = iteration_on_k(t_tot, Origin_Mats, k, rowReducer, mMin, nLevel, verbose-1);
+        unsigned int smallestInvertible = iteration_on_k(Origin_Mats, k, rowReducer, mMin, nLevel, verbose-1);
         if (verbose > 0){
             std::cout << "after iteration " << k << ", smallestInvertible : " << smallestInvertible << std::endl;
         }
@@ -136,7 +131,6 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
         previousIndSmallestInvertible = smallestInvertible-mMin;
     
     }
-    std::cout << "t_tot " << t_tot << std::endl;
     return result;
 }
 

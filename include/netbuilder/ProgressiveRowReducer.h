@@ -59,7 +59,7 @@ class ProgressiveRowReducer
 
         unsigned int numCols() const {return m_nCols; }
         
-        void check() const;
+        void check();
 
 
     public:
