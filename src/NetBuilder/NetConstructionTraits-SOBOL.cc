@@ -72,12 +72,12 @@ namespace NetBuilder {
 
     static const std::array<unsigned int,21200> degrees =
     {{
-        #include "netbuilder/data/primitive_polynomials_degrees.csv"
+        #include "../data/primitive_polynomials_degrees.csv"
     }};
 
     static const std::array<unsigned long,21200> representations =
     {{
-        #include "netbuilder/data/primitive_polynomials_representations.csv"
+        #include "../data/primitive_polynomials_representations.csv"
     }};
 
     NetConstructionTraits<NetConstruction::SOBOL>::PrimitivePolynomial  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomial(unsigned int n)
@@ -176,6 +176,13 @@ namespace NetBuilder {
         std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
         std::vector<std::vector<uInteger>> res(dimension);
         std::string sent;
+
+        do
+        {
+            getline(file,sent);
+        }
+        while (sent != "END OF LICENSE");
+
         for(unsigned int i = 1; i <= dimension; ++i)
         {
             if(getline(file,sent))

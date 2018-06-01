@@ -81,7 +81,7 @@ unsigned int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mat
     return GaussMethod::computeTValue(Origin_Mats, Origin_Mats[0].nCols()-1, {maxSubProj}, verbose)[0];
 }
 
-std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int mMin, std::vector<unsigned int> maxSubProj, int verbose=0)
+std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int mMin, const std::vector<unsigned int>& maxSubProj, int verbose=0)
 {
     unsigned int nRows = Origin_Mats[0].nRows();
     unsigned int nCols = Origin_Mats[0].nCols();

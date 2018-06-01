@@ -43,9 +43,9 @@ using namespace NetBuilder;
 int main(int argc, const char *argv[])
 {
     unsigned int m = 31 ;
-    unsigned int maxDim = 8;
+    unsigned int maxDim = 19;
 
-    for(unsigned int s = 1; s <= maxDim; ++s)
+    for(unsigned int s = 1; s < maxDim; ++s)
     {
 
         Real meritFromSearch = -1;
@@ -73,7 +73,7 @@ int main(int argc, const char *argv[])
             auto baseNet = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
             
             auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::SOBOL>>(s+1,m);
-            auto task = std::make_unique<Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>>(s+1, std::move(baseNet), std::move(fig), std::move(explorer),2, false);
+            auto task = std::make_unique<Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>>(s+1, std::move(baseNet), std::move(fig), std::move(explorer),2, true);
 
             task->execute();
 
@@ -111,7 +111,7 @@ int main(int argc, const char *argv[])
             meritFromEval = task->outputMeritValue() ;
         }
 
-        std::cout <<"Dimension " << s << ": " << meritFromEval << " / " << meritFromSearch << std::endl;
+        std::cout <<"Dimension " << s+1 << ": " << meritFromEval << " / " << meritFromSearch << std::endl;
 
     }
 
