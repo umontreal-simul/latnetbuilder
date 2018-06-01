@@ -18,9 +18,8 @@
 #define NET_BUILDER_FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
+#include "netbuilder/Util.h"
 
 #include "latticetester/Weights.h"
 #include "latticetester/Coordinates.h"
@@ -31,8 +30,9 @@
 #include <memory>
 #include <algorithm>
 #include <string>
-
+#include <limits>
 #include <functional>
+
 #include <boost/signals2.hpp>
 
 
@@ -40,16 +40,19 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
-/** Evaluator class which evaluates a figure of merit for a net.
+/** 
+ * Evaluator abstract class to evaluate figure of merit for a net.
  */ 
 class FigureOfMeritEvaluator
 {
     public:
-        typedef LatticeTester::Coordinates Coordinates;
 
         typedef boost::signals2::signal<bool (const MeritValue&), LatBuilder::Functor::AllOf> OnProgress;
         typedef boost::signals2::signal<void (const DigitalNet&)> OnAbort;
 
+        /**
+         * Default virtual destructor.
+         */ 
         virtual ~FigureOfMeritEvaluator() = default;
 
         /**
@@ -59,12 +62,6 @@ class FigureOfMeritEvaluator
             m_onProgress(new OnProgress),
             m_onAbort(new OnAbort)
         {};
-
-        /**
-        * Move constructor.
-        */
-        FigureOfMeritEvaluator(FigureOfMeritEvaluator&&) = default;
-
 
         /// \name Signals
         //@{
@@ -89,52 +86,63 @@ class FigureOfMeritEvaluator
         OnAbort& onAbort() const { return *m_onAbort; }
         //@}
 
-        /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+        /** 
+         * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
          * starting from the initial value \c initialValue.
-         * @param net is the net for which we compute the merit
-         * @param dimension is the dimension for which we want to compute the merit
-         * @param initialValue is the value from which to start
-         * @param verbose controls the level of verbosity of the computation
+         *  @param net Net to evaluate.
+         *  @param dimension Dimension to compute.
+         *  @param initialValue Initial value of the merit.
+         *  @param verbose Verbosity level.
          */ 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) = 0;
 
-        /** Computes the figure of merit for the given \c net for all the dimensions (full computation).
-         * @param net is the net for which we compute the merit
-         * @param verbose controls the level of verbosity of the computation
+        /** 
+         * Computes the figure of merit for the given \c net for all the dimensions (full computation).
+         * @param net Net to evaluate.
+         * @param verbose Verbosity level.
          */ 
         MeritValue operator() (const DigitalNet& net, int verbose = 0)
         {
-            MeritValue merit = 0;
-            for(unsigned int dim = 1; dim <= net.dimension(); ++dim)
+            MeritValue merit = 0; // start from a merit equal to zero
+            for(unsigned int dim = 1; dim <= net.dimension(); ++dim) // for each dimension
             {
-                prepareForNextDimension();
+                prepareForNextDimension(); // prepare the evaluator for the next dimension
                 if (verbose>0)
                 {
                     std::cout << "Computing for dimension: " << dim << "..." <<std::endl;
                 }
-                merit = operator()(net, dim, merit, verbose-1);
+                merit = operator()(net, dim, merit, verbose-1); // evaluate the partial merit value
                 if (verbose>0)
                 {
                     std::cout << "Partial merit value: " << merit <<std::endl;
                 }
-                if (!onProgress()(merit))
+                if (!onProgress()(merit)) // // if someone is listening, may tell that the computation is useless
                 {
                     onAbort()(net);
                     merit = std::numeric_limits<Real>::infinity();
                     break;
                 }
-                lastNetWasBest();
+                lastNetWasBest(); // tell the evaluator that the only net evaluated was best and shoud be kept for the next dimension
             }
-            reset();
-            return merit;
+            reset(); // reset the evaluator
+            return merit; 
         }
 
-        /** Reset the evaluator, enabling the full computation for a new net
+        /**     
+         * Resets the evaluator and prepare it to evaluate a new net.
          */ 
         virtual void reset() = 0;
 
+        /**
+         * Tells the evaluator that no more net will be evaluate for the current dimension,
+         * store information about the best net for the dimension which is over and prepare data structures
+         * for the nest dimension.
+         */ 
         virtual void prepareForNextDimension() = 0;
 
+        /**
+         * Tells the evaluator that the last net was the best so far and store the relevant information
+         */
         virtual void lastNetWasBest() = 0;
 
     private:
@@ -142,17 +150,23 @@ class FigureOfMeritEvaluator
         std::unique_ptr<OnAbort> m_onAbort;
 };
 
-/** Virtual class to represent any figure of merit. Derived classes should implement
- * the evaluator() member function and a concrete evaluator class which derives from FigureOfMeritEvaluator.
+/** 
+ * Virtual class to represent any figure of merit. Derived classes should implement
+ * the evaluator() member function returning a unique pointer to an instance of a concrete evaluator class 
+ * which derives from FigureOfMeritEvaluator.
  */ 
 class FigureOfMerit{
 
     public:
 
-        /** Virtual default destructor. */
+        /** 
+         * Virtual default destructor. 
+         */
         virtual ~FigureOfMerit() = default;
 
-        /* Returns a std::unique_ptr to an evaluator for the figure of merit. */
+        /**
+         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() = 0  ;
 };
 

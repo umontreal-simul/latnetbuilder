@@ -17,25 +17,20 @@
 #ifndef NETBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
 #define NETBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
 
-#include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
-#include "netbuilder/DigitalNet.h"
-
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
-#include "latticetester/Weights.h"
 #include "latticetester/Coordinates.h"
-
-#include <vector>
-#include <memory>
-#include <algorithm>
-#include <string>
-#include <functional>
 
 namespace NetBuilder{ namespace FigureOfMerit { 
 
 /** Class which represents a weighted figure of merit based on a projection dependent merit whose type is the template
  * parameter. 
+ * 
+ * @tparam PROJDEP The type of the projection dependent merit. This type should implement the following methods:
+ *  - container<LatticeTester::Coordinates> projections(unsigned int dimension) which returns an iterable container of the projections to consider for the 
+ *  given dimension. \n 
+ *  - Real operator()(const DigitalNet& net, LatticeTester::Coordinates) which returns the projection-dependent merit of the net for the given projection. \n
+ *  
  */  
 template<typename PROJDEP>
 class WeightedFigureOfMerit : public FigureOfMerit
@@ -43,9 +38,9 @@ class WeightedFigureOfMerit : public FigureOfMerit
     public:
 
         /** Constructs a weigthed figure of merit based on the given arguments.
-         * @param normType is the power to which the projection-dependent merit should be raised
-         * @param weights is a smart pointer to a Weights instance
-         * @param projDepMerit is a smart pointer to the projection-dependent merit
+         * @param normType Norm type of the figure of merit.
+         * @param weights Weights of the subprojections.
+         * @param projDepMerit Projection-dependent merit.
          */  
         WeightedFigureOfMerit(Real normType, std::unique_ptr<LatticeTester::Weights> weights, std::unique_ptr<PROJDEP> projDepMerit):
             m_normType(normType),
@@ -55,13 +50,19 @@ class WeightedFigureOfMerit : public FigureOfMerit
             m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
 
-        /** Returns the weights of the figure */
+        /** 
+         * Returns the weights of the figure 
+         */
         const LatticeTester::Weights& weights() const { return *m_weights; }
 
-        /** Returns the projection-dependent merit of the figure */
+        /** 
+         * Returns the projection-dependent merit of the figure 
+         */
         PROJDEP& projDepMerit() const { return *m_projDepMerit; }
 
-        /** Returns the norm type of the figure */
+        /** 
+         * Returns the norm type of the figure .
+         */
         Real normType() const{ return m_normType; }
 
         /**
@@ -71,24 +72,30 @@ class WeightedFigureOfMerit : public FigureOfMerit
         Accumulator accumulator(Real initialValue) const
         { return Accumulator(std::move(initialValue), m_binOp); }
 
-        /** Instantiates an evaluator for the figure of merit and returns a smart pointer to it.
+        /**
+         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
         {
             return std::make_unique<WeightedFigureOfMeritEvaluator>(this);
         }
 
+        /** 
+         * Returns the exponent to use when accumulating merits
+         */ 
         Real expNorm() const { return m_expNorm; }
 
     private:
 
-        Real m_normType;
-        std::unique_ptr<LatticeTester::Weights> m_weights;
-        std::unique_ptr<PROJDEP> m_projDepMerit;
-        BinOp m_binOp;
-        Real m_expNorm;
+        Real m_normType; // norm type of the figure
+        std::unique_ptr<LatticeTester::Weights> m_weights; // weights of the projections
+        std::unique_ptr<PROJDEP> m_projDepMerit; // projection dependent merit
+        BinOp m_binOp; // binary operation to use when accumulating merit
+        Real m_expNorm; // exponent to use when accumulating merit
 
-        /** Class which describes how the figure of merit is computed. */
+        /** 
+         * Class which describes how the figure of merit is computed. 
+         */
         class WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
         {
             public:
@@ -97,56 +104,69 @@ class WeightedFigureOfMerit : public FigureOfMerit
                     m_figure(figure)
                 {};
 
-            /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
-             * starting from the initial value \c initialValue.
-             * @param net is the net for which we compute the merit
-             * @param dimension is the dimension for which we want to compute the merit
-             * @param initialValue is the value from which to start
-             * @param verbose controls the level of verbosity of the computation
-             */ 
-            virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
-            {
-                using namespace LatticeTester;
-
-                auto projections = m_figure->projDepMerit().projections(dimension);
-
-                auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
-
-                for (auto cit = projections.begin (); cit != projections.end (); ++cit) // for each coordinate
+                /** 
+                 * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+                 * starting from the initial value \c initialValue.
+                 *  @param net Net to evaluate.
+                 *  @param dimension Dimension to compute.
+                 *  @param initialValue Initial value of the merit.
+                 *  @param verbose Verbosity level.
+                 */ 
+                virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
-                    const Coordinates& proj = *cit;
+                    using namespace LatticeTester;
 
-                    Real weight = m_figure->weights().getWeight(proj); // get the weight
+                    auto projections = m_figure->projDepMerit().projections(dimension);
 
-                    if (weight == 0.0) { 
-                        continue; // skip the projection
-                    }
+                    auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-                    MeritValue merit = m_figure->projDepMerit()(net, proj); // compute the proj-dep merit
-
-                    if(verbose>0)
+                    for (auto cit = projections.begin (); cit != projections.end (); ++cit) // for each coordinate
                     {
-                        std::cout << "projection: " << proj << " - weight: " << weight << " - merit: " << merit << std::endl;
-                    }
+                        const Coordinates& proj = *cit;
 
-                    acc.accumulate(weight, merit, m_figure->expNorm()); // accumulate the merit
+                        Real weight = m_figure->weights().getWeight(proj); // get the weight
 
-                    if (!onProgress()(acc.value())) { // if the current merit is too high
-                        acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
-                        onAbort()(net); // abort the computation
-                        break;
+                        if (weight == 0.0) { 
+                            continue; // skip the projection
+                        }
+
+                        MeritValue merit = m_figure->projDepMerit()(net, proj); // compute the proj-dep merit
+
+                        if(verbose>0)
+                        {
+                            std::cout << "projection: " << proj << " - weight: " << weight << " - merit: " << merit << std::endl;
+                        }
+
+                        acc.accumulate(weight, merit, m_figure->expNorm()); // accumulate the merit
+
+                        if (!onProgress()(acc.value())) { // if the current merit is too high
+                            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure->expNorm()); // set the merit to infinity
+                            onAbort()(net); // abort the computation
+                            break;
+                        }
                     }
+                    return acc.value(); // return the result
                 }
-                return acc.value(); // return the result
-            }
 
-            virtual void reset() override {};
+                /**     
+                 * Resets the evaluator and prepare it to evaluate a new net.
+                 */ 
+                virtual void reset() override {};
 
-            virtual void prepareForNextDimension() override {}; 
+                /**
+                 * Tells the evaluator that no more net will be evaluate for the current dimension,
+                 * store information about the best net for the dimension which is over and prepare data structures
+                 * for the nest dimension.
+                 */ 
+                virtual void prepareForNextDimension() override {}; 
 
-            virtual void lastNetWasBest() override {};
+                /**
+                 * Tells the evaluator that the last net was the best so far and store the relevant information
+                 */
+                virtual void lastNetWasBest() override {};
 
             private:
+
                 WeightedFigureOfMerit* m_figure;
         };
 };

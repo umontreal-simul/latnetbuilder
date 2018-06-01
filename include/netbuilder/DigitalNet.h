@@ -151,7 +151,7 @@ class DigitalNet
 /** Derived class of DigitalNet designed to implement specific construction methods. The available construction methods
  * are described by the NetConstruction enumeration which is a non-type template parameter of the DigitalNetConstruction 
  * class. @see NetBuilder::NetConstructionTraits.
- * */ 
+ */ 
 template <NetConstruction NC>
 class DigitalNetConstruction : public DigitalNet
 {

@@ -17,24 +17,17 @@
 #ifndef NETBUILDER__TVALUE_PROJ_MERIT
 #define NETBUILDER__TVALUE_PROJ_MERIT
 
-#include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
-#include "netbuilder/DigitalNet.h"
-#include "netbuilder/TValueComputation.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 
-#include "latticetester/Weights.h"
-#include "latticetester/Coordinates.h"
+#include "netbuilder/TValueComputation.h"
 
-#include <vector>
-#include <memory>
-#include <algorithm>
-#include <string>
 
 #include <functional>
 #include <stdexcept>
 
 namespace NetBuilder { namespace FigureOfMerit {
+
+using LatticeTester::Coordinates;
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection
  */ 
@@ -73,7 +66,8 @@ class TValueProjMerit<PointSetType::UNILEVEL>
         } 
 
 
-        /** Computes the projection-dependent merit of the net for the given projection.
+        /** 
+         * Computes the projection-dependent merit of the net for the given projection.
          * @param net is the digital net for which we want to compute the merit
          * @param projection is the projection to consider
          * @param maxMeritsSubProj is the maximal merit of the subprojections
@@ -124,24 +118,20 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
             return os;
         } 
 
-        /** Computes the projection-dependent merits (embedded) of the net for the given projection.
+        /** 
+         * Computes the projection-dependent merits (embedded) of the net for the given projection.
          * @param net is the digital net for which we want to compute the merit
          * @param projection is the projection to consider
          * @param maxMeritsSubProj is the maximal merit of the subprojections
          */ 
         std::vector<unsigned int> operator()(const DigitalNet& net, const LatticeTester::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
         {
-            std::vector<unsigned int> res(net.numColumns());
-            for(unsigned int m = 1; m <= res.size(); ++m)
+            std::vector<GeneratingMatrix> mats;
+            for(auto dim : projection)
             {
-                std::vector<GeneratingMatrix> mats;
-                for(auto dim : projection)
-                {
-                    mats.push_back(net.pointerToGeneratingMatrix((unsigned int) (dim+1))->subMatrix(m,m));
-                }
-                res[m-1] = GaussMethod::computeTValue(std::move(mats),maxMeritsSubProj[m-1], false);
+                mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
             }
-            return res ;
+            return GaussMethod::computeTValue(std::move(mats), 0, maxMeritsSubProj, 0);
         }
 
         /** Combines the projection-dependent merits (embedded) into a single value merit.
@@ -195,7 +185,8 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
             }
         }
 
-        /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+        /** 
+         * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
           * starting from the initial value \c initialValue.
           * @param net is the net for which we compute the merit
           * @param dimension is the dimension for which we want to compute the merit

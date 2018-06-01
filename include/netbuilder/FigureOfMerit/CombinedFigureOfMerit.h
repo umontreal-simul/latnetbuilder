@@ -17,37 +17,25 @@
 #ifndef NET_BUILDER_COMBINED_FIGURE_OF_MERIT_H
 #define NET_BUILDER_COMBINED_FIGURE_OF_MERIT_H
 
-#include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-
-#include "latticetester/Weights.h"
-
-#include "latbuilder/Functor/AllOf.h"
-
-#include <vector>
-#include <memory>
-#include <algorithm>
-#include <string>
-
-#include <functional>
-#include <boost/signals2.hpp>
 
 
 namespace NetBuilder { namespace FigureOfMerit {
 
 using LatBuilder::Functor::AllOf;
 
-/** Class to describe an aggregation of figures of merit computed in a specific order.
+/** 
+ * Aggregation of figures of merit computed in a specific order.
  */ 
 class CombinedFigureOfMerit : public FigureOfMerit{
 
     public:
 
-        /** Constructor.
-         * @param normType is the power to which to raise the aggregated merits
-         * @param figures is a vector of std::unique_ptr to the figures of merit to aggregate
-         * @param weights is a vector of weights to use to aggregate the figures of merit
+        /** 
+         * Constructor.
+         * @param normType Norm type use in the aggregation of merits
+         * @param figures Vector of figures of merit
+         * @param weights Vector of weights
          */ 
         CombinedFigureOfMerit(Real normType, std::vector<std::unique_ptr<FigureOfMerit>> figures, std::vector<Real> weights):
             m_normType(normType),
@@ -58,42 +46,58 @@ class CombinedFigureOfMerit : public FigureOfMerit{
             m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
 
-        /** Returns the norm type of the figure */
+        /** 
+         * Returns the norm type of the figure 
+         */
         Real normType() const { return m_normType; }
 
         /**
          * Creates a new accumulator.
-         * @param initialValue is the initial accumulator value.
+         * @param initialValue Initial accumulator value.
          */
         Accumulator accumulator(Real initialValue) const
         { return Accumulator(std::move(initialValue), m_binOp); }
 
-        /** Returns the vector of weights. */
+        /** 
+         * Returns the vector of weights. 
+         */
         std::vector<Real> weights() const { return m_weights; }
 
-        /** Returns the number of figures. */
+        /** 
+         * Returns the number of figures. 
+         */
         unsigned int size() const {return m_size ; }
 
-        /** Returns the figure in position \c num. */
-        FigureOfMerit* figure(unsigned int num) const { return m_figures[num].get() ; }
+        /** 
+         Returns a pointer to the figure in position \c num. 
+         */
+        FigureOfMerit* pointerToFigure(unsigned int num) const { return m_figures[num].get() ; }
 
-        /** Instantiates an evaluator and returns a std::unique_ptr to it. */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
+        /**
+         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         */
+        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {
             return std::make_unique<CombinedFigureOfMeritEvaluator>(this);
         }
 
+        /** 
+         * Returns the exponent to use when accumulating merits
+         */ 
         Real expNorm() const { return m_expNorm; }
 
     private:
 
-        /** Evaluator class for CombinedFigureOfMerit. */
+        /** 
+         * Evaluator class for CombinedFigureOfMerit. 
+         */
         class CombinedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
         {
             public:
-                /**Constructor. 
-                 * @param figure is a pointer to the figure of merit.
-                */
+                /**
+                 * Constructor. 
+                 * @param figure Pointer to the figure of merit.
+                 */
                 CombinedFigureOfMeritEvaluator(CombinedFigureOfMerit* figure):
                     m_figure(figure),
                     m_oldMerits(figure->size(),0),
@@ -101,49 +105,54 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                 {
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
-                        m_evaluators.push_back((m_figure->figure(i)->evaluator()));
+                        m_evaluators.push_back((m_figure->pointerToFigure(i)->evaluator()));
                     }
                 };
 
-                /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+                /** 
+                 * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
                  *  starting from the initial value \c initialValue.
-                 *  @param net is the net for which we compute the merit
-                 *  @param dimension is the dimension for which we want to compute the merit
-                 *  @param initialValue is the value from which to start
-                 *  @param verbose controls the level of verbosity of the computation
+                 *  @param net Net to evaluate.
+                 *  @param dimension Dimension to compute.
+                 *  @param initialValue Initial value of the merit.
+                 *  @param verbose Verbosity level.
                  */ 
                 virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     auto acc = m_figure->accumulator(std::move(0)); // create the accumulator from the initial value
 
-                    Real weight;
+                    Real weight; // weight of the figure currently evaluated
 
+                    // capture used to determine whether the computation should be aborted is early abortion is activated
                     auto goOn = [this, &acc, &weight] (MeritValue value) -> bool { return this->onProgress()(acc.tryAccumulate(weight, value, this->m_figure->expNorm())) ;} ;
+
+
                     for(unsigned int i = 0; i < m_figure->size(); ++i)
                     {
                         if (verbose>0)
                         {
                             std::cout << "Computing for figure n°" << i  << "..." << std::endl;
                         }
+
                         weight = m_figure->weights()[i];
 
                         if (weight != 0.0)
                         {
-                            auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn);
+                            auto goOnConnection = m_evaluators[i]->onProgress().connect(goOn); // connect the closure
 
-                            m_newMerits[i] = (*m_evaluators[i])(net, dimension, 0, verbose-1);
+                            m_newMerits[i] = (*m_evaluators[i])(net, dimension, 0, verbose-1); // compute the merit
 
-                            acc.accumulate(m_figure->weights()[i], m_newMerits[i], m_figure->expNorm()) ;
+                            acc.accumulate(m_figure->weights()[i], m_newMerits[i], m_figure->expNorm()) ; // accumulate the merit
 
-                            goOnConnection.disconnect();
+                            goOnConnection.disconnect(); // disconnect the closure
 
                             if (verbose>0)
                             {
                                 std::cout << "Partial merit value: " << acc.value() << std::endl;
                             }
 
-                            if (!onProgress()(acc.value())) 
-                            { // if the current merit is too high
+                            if (!onProgress()(acc.value())) // if someone is listening, may tell that the computation is useless
+                            {
                                 acc.accumulate(weight, std::numeric_limits<Real>::infinity(), m_figure->expNorm()); // set the merit to infinity
                                 onAbort()(net); // abort the computation
                                 break;
@@ -160,6 +169,9 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                     return acc.value();
                 }
 
+                /**     
+                 * Resets the evaluator and prepare it to evaluate a new net.
+                 */ 
                 virtual void reset() override
                 {
                     for(auto& eval : m_evaluators)
@@ -171,6 +183,9 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                     m_oldMerits = std::vector<Real>(m_figure->size(),0);
                 }
 
+                /**
+                 * Tells the evaluator that the last net was the best so far and store the relevant information
+                 */
                 virtual void prepareForNextDimension() override
                 {
                     for(auto& eval : m_evaluators)
@@ -180,6 +195,11 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                     m_oldMerits = std::move(m_bestNewMerits);
                 }
 
+                /**
+                 * Tells the evaluator that no more net will be evaluate for the current dimension,
+                 * store information about the best net for the dimension which is over and prepare data structures
+                 * for the nest dimension.
+                 */ 
                 virtual void lastNetWasBest() override
                 {
                     for(auto& eval : m_evaluators)
@@ -190,20 +210,20 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                 }
 
             private:
-                CombinedFigureOfMerit* m_figure;
-                std::vector<std::unique_ptr<FigureOfMeritEvaluator>> m_evaluators;
-                std::vector<Real> m_oldMerits;
-                std::vector<Real> m_bestNewMerits;
-                std::vector<Real> m_newMerits;
+                CombinedFigureOfMerit* m_figure; // pointer to the figure
+                std::vector<std::unique_ptr<FigureOfMeritEvaluator>> m_evaluators; // evaluators
+                std::vector<Real> m_oldMerits; // merits for the best net of the previous dimension
+                std::vector<Real> m_bestNewMerits; // best merits for the best net so far for the current dimension
+                std::vector<Real> m_newMerits; // merits of the latest evaluated net 
 
         };
 
-        Real m_normType;
-        std::vector<std::unique_ptr<FigureOfMerit>> m_figures;
-        unsigned int m_size;
-        BinOp m_binOp;
-        std::vector<Real> m_weights;
-        Real m_expNorm;
+        Real m_normType; // norm type of the figure
+        std::vector<std::unique_ptr<FigureOfMerit>> m_figures; // vector of aggregated figures
+        unsigned int m_size; // number of figures
+        BinOp m_binOp; // binary operation used by the accumulator
+        std::vector<Real> m_weights; // individual weight of each aggregated figure
+        Real m_expNorm; // exponent used in accumulation
 };
 
 }}
