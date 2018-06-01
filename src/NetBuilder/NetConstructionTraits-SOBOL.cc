@@ -170,6 +170,29 @@ namespace NetBuilder {
         return tmp;
     }
 
+    
+    const char* ws = " \t\n\r\f\v";
+
+    // trim from end (right)
+    inline std::string& rtrim(std::string& s, const char* t = ws)
+    {
+        s.erase(s.find_last_not_of(t) + 1);
+        return s;
+    }
+
+    // trim from beginning (left)
+    inline std::string& ltrim(std::string& s, const char* t = ws)
+    {
+        s.erase(0, s.find_first_not_of(t));
+        return s;
+    }
+
+    // trim from both ends (left & right)
+    inline std::string& trim(std::string& s, const char* t = ws)
+    {
+        return ltrim(rtrim(s, t), t);
+    }    
+
     std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(unsigned int dimension)
     {
         assert(dimension >= 1 && dimension <= 21201);
@@ -180,8 +203,11 @@ namespace NetBuilder {
         do
         {
             getline(file,sent);
+            trim(sent);
         }
-        while (sent != "END OF LICENSE");
+        while (sent != "###");
+
+        getline(file,sent);
 
         for(unsigned int i = 1; i <= dimension; ++i)
         {

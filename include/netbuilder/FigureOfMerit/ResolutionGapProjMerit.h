@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__RESOLUTION_GAP_PROJ_MERIT
-#define NETBUILDER__RESOLUTION_GAP_PROJ_MERIT
+#ifndef NETBUILDER__FIGURE_OF_MERIT_BIT__RESOLUTION_GAP_PROJ_MERIT
+#define NETBUILDER__FIGURE_OF_MERIT_BIT__RESOLUTION_GAP_PROJ_MERIT
 
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/CBCCoordinateSet.h"
@@ -33,7 +33,7 @@ template <PointSetType PST>
 class ResolutionGapProjMerit
 {};
 
-/** Template specialization in the case of simple nets.
+/** Template specialization in the case of unilevel nets.
  */ 
 template <>
 class ResolutionGapProjMerit<PointSetType::UNILEVEL>
@@ -41,7 +41,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
     public:
 
         /** 
-         * Construct a projection-dependent merit based on the resolution of projections.
+         * Construct a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
@@ -111,12 +111,12 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
         }
 
     private:
-        std::string m_name = "resolution (simple nets)"; // name of the projection-dependent merit
+        std::string m_name = "resolution (unilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account
         ProgressiveRowReducer m_rowReducer; // use to compute the rank of matrices
 };
 
-/** Template specialization in the case of simple nets.
+/** Template specialization in the case of unilevel nets.
  */ 
 template <>
 class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
@@ -124,7 +124,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
     public:
 
         /** 
-         * Construct a projection-dependent merit based on the resolution of projections.
+         * Construct a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Combiner used to combine multilevel merits.
          */   
@@ -223,7 +223,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
         }
 
     private:
-        std::string m_name = "resolution (embedded nets)"; // name of the projection-dependent merit
+        std::string m_name = "resolution (multilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
         Combiner m_combiner; 
         ProgressiveRowReducer m_rowReducer;

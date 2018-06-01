@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER_UNIFORMITY_PROPERTY
-#define NET_BUILDER_UNIFORMITY_PROPERTY
+#ifndef NET_BUILDER__FIGURE_OF_MERIT_BIT__UNIFORMITY_PROPERTY
+#define NET_BUILDER__FIGURE_OF_MERIT_BIT__UNIFORMITY_PROPERTY
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/ProgressiveRowReducer.h"

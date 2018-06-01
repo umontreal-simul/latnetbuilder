@@ -29,7 +29,7 @@ namespace NetBuilder {
 
 unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned int k, ProgressiveRowReducer& rowReducer, unsigned int mMin, unsigned int nbCol, int verbose){
     unsigned int nCols = Origin_Mats[0].nCols();
-    unsigned int s = Origin_Mats.size();
+    unsigned int s = (unsigned int) Origin_Mats.size();
     
     // Initialization of row map from original matrices to computation matrix
     std::map<std::pair<int, int>, int> Origin_to_M;
@@ -78,6 +78,12 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned
 
 unsigned int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int maxSubProj, int verbose=0)
 {
+    unsigned int s = (unsigned int) Origin_Mats.size();
+    if (s == 1)
+    {
+        return 0;
+    }
+
     return GaussMethod::computeTValue(Origin_Mats, Origin_Mats[0].nCols()-1, {maxSubProj}, verbose)[0];
 }
 
@@ -85,16 +91,16 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
 {
     unsigned int nRows = Origin_Mats[0].nRows();
     unsigned int nCols = Origin_Mats[0].nCols();
-    unsigned int s = Origin_Mats.size();
+    unsigned int s = (unsigned int) Origin_Mats.size();
 
-    unsigned int nLevel = maxSubProj.size();
+    unsigned int nLevel = (unsigned int) maxSubProj.size();
     ProgressiveRowReducer rowReducer = ProgressiveRowReducer();
     
-    std::vector<unsigned int> result = maxSubProj;
     if (s == 1){    // does not make sense when s == 1
-        return result;
+        return std::vector<unsigned int>(nCols-mMin);
     }
 
+    std::vector<unsigned int> result = maxSubProj;
     unsigned int diff = 0;
     if (mMin < s-1){
         diff = (s-1-mMin);

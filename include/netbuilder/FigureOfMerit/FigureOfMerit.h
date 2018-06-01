@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER_FIGURE_OF_MERIT_H
-#define NET_BUILDER_FIGURE_OF_MERIT_H
+#ifndef NET_BUILDER__FIGURE_OF_MERIT_BIT__FIGURE_OF_MERIT_H
+#define NET_BUILDER__FIGURE_OF_MERIT_BIT__FIGURE_OF_MERIT_H
 
 #include "netbuilder/Types.h"
 #include "netbuilder/DigitalNet.h"

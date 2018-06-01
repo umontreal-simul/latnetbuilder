@@ -43,17 +43,17 @@ using namespace NetBuilder;
 int main(int argc, const char *argv[])
 {
     unsigned int m = 31 ;
-    unsigned int maxDim = 19;
+    unsigned int maxDim = 7;
 
     for(unsigned int s = 1; s < maxDim; ++s)
     {
 
         Real meritFromSearch = -1;
-        Real meritFromEval = 1;
+        Real meritFromEval = -1;
 
         // Search step
 
-        // {
+        {
             auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
 
             auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
@@ -78,7 +78,7 @@ int main(int argc, const char *argv[])
             task->execute();
 
             meritFromSearch = task->outputMeritValue() ;
-        // }
+        }
 
         // Eval step
 
@@ -104,11 +104,12 @@ int main(int argc, const char *argv[])
             auto baseNet = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s+1,m);
         
            
-            auto task = std::make_unique<Task::Eval>(std::move(baseNet), std::move(fig),0);
+            auto task = std::make_unique<Task::Eval>(std::move(baseNet), std::move(fig), 0);
             
             task->execute();
 
             meritFromEval = task->outputMeritValue() ;
+
         }
 
         std::cout <<"Dimension " << s+1 << ": " << meritFromEval << " / " << meritFromSearch << std::endl;

@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__COORD_UNIFORM_FIGURE_OF_MERIT_H
-#define NETBUILDER__COORD_UNIFORM_FIGURE_OF_MERIT_H
+#ifndef NETBUILDER__FIGURE_OF_MERIT_BIT__COORD_UNIFORM_FIGURE_OF_MERIT_H
+#define NETBUILDER__FIGURE_OF_MERIT_BIT__COORD_UNIFORM_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
