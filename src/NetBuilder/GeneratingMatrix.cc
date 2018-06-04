@@ -94,7 +94,7 @@ GeneratingMatrix GeneratingMatrix::subMatrix(unsigned int startingRow, unsigned 
     GeneratingMatrix res(nRows, nCols);
     for(unsigned int i = 0; i < nRows; ++i)
     {
-        if (startingRow==0)
+        if (startingCol==0)
         {
             auto tmp = (*this)[i+startingRow];
             tmp.resize(nCols);

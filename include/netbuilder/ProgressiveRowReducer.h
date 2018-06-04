@@ -57,13 +57,12 @@ class ProgressiveRowReducer
         void addColumn(GeneratingMatrix newCol);
 
         /**
-         * Exchanges the row in position \c rowIndex with \c newRow.
-         * @param rowIndex
-         * @param newRow
-         * @param smallestInvertible Index of the last column of the smallest full-row-rank submatrix.
+         * Replaces the row in position \c rowIndex by \c newRow.
+         * @param rowIndex Index of the row to discard.
+         * @param newRow Replacement row.
          * @param verbose Verbosity level.
          */ 
-        unsigned int exchangeRow(unsigned int rowIndex, GeneratingMatrix&& newRow, unsigned int smallestInvertible, int verbose = 0);
+        void replaceRow(unsigned int rowIndex, GeneratingMatrix&& newRow, int verbose = 0);
 
         /** 
          * Computes the rank of the matrix.
@@ -78,18 +77,15 @@ class ProgressiveRowReducer
         std::vector<unsigned int> computeRanks(unsigned int firstCol, unsigned int numCol) const;
 
         /** 
-         * Computes the smallest column index such that the submatrix whose last column corresponds to this index
-         * is invertible.
-         * @param firstCol
-         * @param numCol
-         * @param k Number of rows.
+         * Returns the minimal number of columns necessary for the system spanned by the rows to be of full rank.
+         * Returns nCols() + 1 if the system is not of full rank even if all the columns are taken.
          */ 
-        int computeSmallestInvertible(unsigned int firstCol, int numCol, unsigned int k);
+        unsigned int smallestFullRank() { return m_smallestFullRank; }
 
         /**
          * Returns a const reference to the row-reduced matrix.
          */ 
-        const GeneratingMatrix& matrix() const {return m_redMat;}
+        const GeneratingMatrix& reducedMatrix() const {return m_redMat;}
 
         /**
          * Returns a const reference to the row operations matrix.
@@ -114,12 +110,14 @@ class ProgressiveRowReducer
         
         #ifdef DEBUG_ROW_REDUCER
         void check();
+        const GeneratingMatrix& baseMatrix() const {return m_baseMatrix;}
         #endif
 
 
     private:
         unsigned int m_nRows = 0; // number of rows in the reducer
         unsigned int m_nCols; // number of columns of the reducer
+        unsigned int m_smallestFullRank; // minimal number of columns necessary for the system spanned by the rows to be full-rank.
         GeneratingMatrix m_redMat; // row-reduced matrix
         GeneratingMatrix m_rowOperations; // row operations matrix
         #ifdef DEBUG_ROW_REDUCER

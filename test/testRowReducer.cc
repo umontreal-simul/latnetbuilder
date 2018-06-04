@@ -112,7 +112,7 @@ int main(int argc, const char *argv[])
     {
         dummyRow(0,i) = 1;
     }
-    rowReducer.exchangeRow(1,dummyRow);
+    rowReducer.replaceRow(1,dummyRow);
 
 
     std::cout << std::endl <<  "================" <<  std::endl << std::endl;

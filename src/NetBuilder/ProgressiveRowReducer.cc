@@ -30,6 +30,7 @@ namespace NetBuilder{
     {
         m_nCols = nCols;
         m_nRows = 0;
+        m_smallestFullRank = nCols;
         m_redMat = GeneratingMatrix(0, m_nCols);
         #ifdef DEBUG_ROW_REDUCER
         m_baseMatrix = GeneratingMatrix(0, m_nCols);
@@ -82,15 +83,6 @@ namespace NetBuilder{
         }
 
         return ranks;
-    }
-
-    int ProgressiveRowReducer::computeSmallestInvertible(unsigned int firstCol, int numCol, unsigned int k){
-        if (m_pivotsColRowPositions.size()<k){
-            return m_nCols;
-        }
-        else{
-            return (*std::max_element(m_pivotsColRowPositions.begin(), m_pivotsColRowPositions.end())).first;
-        }
     }
 
     unsigned int ProgressiveRowReducer::pivotRowAndFindNewPivot(unsigned int rowIndex)
@@ -156,6 +148,15 @@ namespace NetBuilder{
 
         pivotRowAndFindNewPivot(row);
 
+        if (m_pivotsColRowPositions.size() < m_nRows)
+        {
+            m_smallestFullRank = m_nCols + 1;
+        }
+        else
+        {
+            m_smallestFullRank = (*std::max_element(m_pivotsColRowPositions.begin(), m_pivotsColRowPositions.end())).first + 1;
+        }
+
     }
 
     void ProgressiveRowReducer::addColumn(GeneratingMatrix newCol)
@@ -201,7 +202,7 @@ namespace NetBuilder{
         }
     }
 
-    unsigned int ProgressiveRowReducer::exchangeRow(unsigned int rowIndex, GeneratingMatrix&& newRow, unsigned int smallestInvertible, int verbose)
+    void ProgressiveRowReducer::replaceRow(unsigned int rowIndex, GeneratingMatrix&& newRow, int verbose)
     {
         auto rowIndexColPivPos = m_pivotsRowColPositions.find(rowIndex);
 
@@ -262,7 +263,7 @@ namespace NetBuilder{
 
         unsigned int newPivotPos = pivotRowAndFindNewPivot(rowIndex);
 
-        return std::max(smallestInvertible, newPivotPos);
+        m_smallestFullRank = std::max(m_smallestFullRank, newPivotPos + 1);
     }
 
     bool ProgressiveRowReducer::checkIfInvertible(GeneratingMatrix matrix)
