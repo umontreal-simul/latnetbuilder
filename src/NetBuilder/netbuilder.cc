@@ -20,13 +20,13 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 
-#include <netbuilder/Types.h>
-#include <netbuilder/Parser/CommandLine.h>
-#include <netbuilder/Parser/PointSetTypeParser.h>
-#include <netbuilder/Parser/NetConstructionParser.h>
+#include "netbuilder/Types.h"
+#include "netbuilder/Parser/CommandLine.h"
+#include "netbuilder/Parser/PointSetTypeParser.h"
+#include "netbuilder/Parser/NetConstructionParser.h"
 #include "netbuilder/Task/BaseTask.h"
 
-#include <latbuilder/Parser/Common.h>
+#include "latbuilder/Parser/Common.h"
 #include "latbuilder/SizeParam.h"
 
 // using namespace LatBuilder;

@@ -49,7 +49,7 @@ int main(int argc, const char *argv[])
 
     for(unsigned int i = 0; i < 5; ++i)
     {
-        auto newRow = net.pointerToGeneratingMatrix(0)->subMatrix(i,1,m);
+        auto newRow = net.pointerToGeneratingMatrix(0)->subMatrix(i,0,1,m);
         std::cout << newRow << std::endl;
         rowReducer.addRow(newRow);
     }

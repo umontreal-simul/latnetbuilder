@@ -36,11 +36,11 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned
 
     for (unsigned int i=0; i<k-s+1; i++){
         Origin_to_M[{1, i+1}] = i;
-        rowReducer.addRow(Origin_Mats[s-1].subMatrix(i, 1, nCols));
+        rowReducer.addRow(Origin_Mats[s-1].subMatrix(i, 0, 1, nCols));
     }
     for (unsigned int i=1; i<s; i++){
         Origin_to_M[{i+1, 1}] = k-s+i;
-        rowReducer.addRow(Origin_Mats[s-1-i].subMatrix(0, 1, nCols));
+        rowReducer.addRow(Origin_Mats[s-1-i].subMatrix(0, 0, 1, nCols));
     }
 
     unsigned int smallestInvertible = rowReducer.computeSmallestInvertible(mMin, nbCol, k);
@@ -65,7 +65,7 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned
         Origin_to_M[rowChange.second] = ind_exchange;
         Origin_to_M.erase(rowChange.first);
         
-        GeneratingMatrix newRow = Origin_Mats[s-rowChange.second.first].subMatrix(rowChange.second.second-1, 1, nCols);
+        GeneratingMatrix newRow = Origin_Mats[s-rowChange.second.first].subMatrix(rowChange.second.second-1, 0, 1, nCols);
 
         smallestInvertible = rowReducer.exchangeRow(ind_exchange, std::move(newRow), smallestInvertible, verbose-1);
 

@@ -14,14 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__MATRIX_H
-#define NETBUILDER__MATRIX_H
+#ifndef NETBUILDER__GENERATING_MATRIX_H
+#define NETBUILDER__GENERATING_MATRIX_H
 
 #include <boost/dynamic_bitset.hpp> 
 #include <iostream>
 #include <string>
 #include <algorithm>
-// #include "netbuilder/Types.h"
 
 
 namespace NetBuilder {
@@ -34,52 +33,30 @@ class GeneratingMatrix {
 
     public:
 
+        /// Type for the rows of the matrices.
         typedef boost::dynamic_bitset<> Row; 
+
+        /// Type for references to rows.
         typedef Row::reference reference;
+
+        /// Type for unsigned long.
         typedef unsigned long uInteger;
 
         /** Constructs a generating matrix with all entries set to zero.
-         * @param n_rows is the number of rows of the matrix
-         * @param n_cols is the number of columns of the matrix
+         * @param nRows Number of rows.
+         * @param nCols Number of columns.
          */  
-        GeneratingMatrix(unsigned int n_rows = 0, unsigned int n_cols = 0);
+        GeneratingMatrix(unsigned int nRows = 0, unsigned int nCols = 0);
 
         /** Constructs a generating matrix with rows initialized 
          * using the given integers.
-         * @param n_rows is the number of rows of the matrix
-         * @param n_cols is the number of columns of the matrix
-         * @param init is a vector of uInteger of length n_rows
+         * @param nRows Number of rows.
+         * @param nCols Number of columns.
+         * @param init  Vector of uInteger of length nRows
          */  
-        GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, std::vector<uInteger> init);
+        GeneratingMatrix(unsigned int nRows, unsigned int nCols, std::vector<uInteger> init);
 
-        /*
-        GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, bool random):
-        m_data(n_rows),
-        m_rows(n_rows),
-        m_cols(n_cols)
-        {
-            std::string str;
-            for (int i=0; i<m_cols; i++){
-                str = "";
-                for (int j=0; j<m_cols; j++){
-                    if (rand() % 2 == 0){
-                        str.append("0");
-                    }
-                    else{
-                        str.append("1");
-                    }
-                }
-                m_data[i] = boost::dynamic_bitset<>(str);
-            }
-        };*/
-
-        /** Constructs a random matrix. 
-         * @param n_rows is the number of rows of the matrix
-         * @param n_cols is the number of columns of the matrix 
-         * @param uniTriangular is a boolean indicating whether the matrix should be unitriangular
-         */ 
-
-        GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, bool uniTriangular);
+        // GeneratingMatrix(unsigned int nRows, unsigned int nCols, bool uniTriangular);
 
         /** Returns the number of columns of the matrix. */
         unsigned int nCols() const;
@@ -87,85 +64,93 @@ class GeneratingMatrix {
         /** Returns the number of rows of the matrix. */
         unsigned int nRows() const;
 
-        std::vector<unsigned long> getColsReverse() const;
-
-        /** Returns the row at position \c i of the matrix
-         * @param i is the position of the row
-         */ 
-        Row operator[](unsigned int i) const;
-
-        /** Returns a reference to the row at position \c i of the matrix
-         * @param i is the position of the row
-         */ 
-        Row& operator[](unsigned int i);
-
-        /** Returns a the element at position \c i, \c j of the matrix.
-         * @param i is the row index
-         * @param j is the column index
-         */ 
-        bool operator()(unsigned int i, unsigned j) const;
-
-        /** Returns a reference to the element at position \c i, \c j of the matrix.
-         * @param i is the row index
-         * @param j is the column index
-         */ 
-        reference operator()(unsigned int i, unsigned int j);
-
-        /** Flip the element at at position \c i, \c j of the matrix.
-         * @param i is the row index
-         * @param j is the column index
-         */ 
-        void flip(unsigned int i, unsigned int j);
-
-        /** Swap the rows at position i1 and i2 of the matrix.
-         * @param i1 is the position of the first row
-         * @param i2 is the position of the second row
-         */ 
-        void swap_rows(unsigned int i1, unsigned int i2);
-
-        /** Insert the row at position i1 of the matrix at position i2, shifting the other rows.
-         * @param i1 is the position of the first row
-         * @param i2 is the position of the second row
-         */ 
-        void insert_row(unsigned int i1, unsigned int i2);
-
-        /** Swap the columns at position j1 and j2 of the matrix.
-         * @param j1 is the position of the first row
-         * @param j2 is the position of the second row
-         */ 
-        void swap_columns(unsigned int j1, unsigned int j2);
-
-        void permuteColumns(const std::vector<unsigned int>& permutation);
-
-        /** Returns the upper-left submatrix with \c nRows rows and \c nCols columns.
-         * @param nRows is the number of rows of the matrix
-         * @param nCols is the number of columns of the matrix
-         */ 
-        GeneratingMatrix subMatrix(unsigned int nRows, unsigned int nCols) const;
-
-        GeneratingMatrix subMatrix(unsigned int startingRow, unsigned int nRows, unsigned int nCols) const;
-
-        GeneratingMatrix subMatrix(unsigned int startingRow, unsigned int startingCol, unsigned nRows, unsigned nCols) const;
-
-        GeneratingMatrix operator*(const GeneratingMatrix& m) const;
-
-        void stackRight(const GeneratingMatrix& block);
-
         /** Resizes the matrix to the given shape. Potential new elements are set to zero.
          * @param nRows is the new number of rows of the matrix
          * @param nCols is the new number of columns of the matrix
          */ 
+
         void resize(unsigned int nRows, unsigned int nCols);
+        /** Returns the element at position \c i, \c j of the matrix.
+         * @param i Row index.
+         * @param j Column index.
+         */ 
+        bool operator()(unsigned int i, unsigned j) const;
 
-        void vstack(GeneratingMatrix m);
+        /** Returns a reference to the element at position \c i, \c j of the matrix.
+         * @param i Row index.
+         * @param j Column index.
+         */ 
+        reference operator()(unsigned int i, unsigned int j);
 
-        /** Overloads of << operator the print matrices. */
+        /** Flip the element at at position \c i, \c j of the matrix.
+         * @param i Row index.
+         * @param j Column index.
+         */ 
+        void flip(unsigned int i, unsigned int j);
+         
+
+        /** Returns the row at position \c i of the matrix.
+         * @param i Position of the row.
+         */ 
+        Row operator[](unsigned int i) const;
+
+        /** Returns a reference to the row at position \c i of the matrix.
+         * @param i Position of the row.
+         */ 
+        Row& operator[](unsigned int i);
+
+        /** Returns the upper-left submatrix with \c nRows rows and \c nCols columns.
+         * @param nRows Number of rows.
+         * @param nCols Number of columns.
+         * @return A copy of the submatrix.
+         */ 
+        GeneratingMatrix upperLeftSubMatrix(unsigned int nRows, unsigned int nCols) const;
+
+        /** Returns the submatrix with upper-left corner at position \c startingRow, \c startingCol
+         * with \c nRows rows and \c nCols columns.
+         * @param startingRow Row position of the upper-left corner.
+         * @param startingCol Column position of the upper-left corner.
+         * @param nRows Number of rows.
+         * @param nCols Number of columns.
+         * @return A copy of the submatrix.
+         */ 
+        GeneratingMatrix subMatrix(unsigned int startingRow, unsigned int startingCol, unsigned nRows, unsigned nCols) const;
+
+        /**
+         * Computes the product of the matrix by matrix \c m.
+         * @param m Right multiplier.
+         */ 
+        GeneratingMatrix operator*(const GeneratingMatrix& m) const;
+
+        /** Swap the rows at position i1 and i2 of the matrix.
+         * @param i1 Position of the first row.
+         * @param i2 Position of the second row.
+         */
+        void swapRows(unsigned int i1, unsigned int i2);
+
+        /**
+         * Extends the matrix by stacking on the right the matrix \c block.
+         * @param block The matrix to stack. Should have the same number of rows as the base matrix.
+         */ 
+        void stackRight(const GeneratingMatrix& block);
+
+        /**
+         * Extends the matrix by stacking below the matrix \c block.
+         * @param block The matrix to stack. Should have the same number of columns as the base matrix.
+         */ 
+        void stackBelow(GeneratingMatrix block);
+
+        /** Overloads of << operator to print matrices. */
         friend std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat);
 
+        /** Returns an integer representation of the columns of the matrix. A column is read as a bit string
+         * with highest bit in first position.
+         */ 
+        std::vector<unsigned long> getColsReverse() const;
     private:
         std::vector<boost::dynamic_bitset<>> m_data; // data internal representantion
-        unsigned int m_rows; // number of rows of the matrix
-        unsigned int m_cols; // number of columns of the matrix
+        unsigned int m_nRows; // number of rows of the matrix
+        unsigned int m_nCols; // number of columns of the matrix
 };
 
 }

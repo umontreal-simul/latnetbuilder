@@ -22,6 +22,8 @@
 #include "latticetester/PODWeights.h"
 #include "latticetester/ProjectionDependentWeights.h"
 
+namespace NetBuilder { namespace Parser {
+
 /**
  * Helper structure template to compute the maximal order of subprojections
  * with non zero weights when possible.
@@ -97,5 +99,7 @@ unsigned int ComputeMaxCardFromWeights<LatticeTester::ProjectionDependentWeights
     }
     return maxCard;
 }
+
+}}
 
 #endif

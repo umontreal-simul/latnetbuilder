@@ -28,8 +28,8 @@ namespace NetBuilder { namespace FigureOfMerit {
  * introduced by Sobol.
  * Ref:
  *  Sobol, I. M. (1976) "Uniformly distributed sequences with an additional uniform property". Zh. Vych. Mat. Mat. Fiz. 16: 1332–1337 (in Russian); U.S.S.R. Comput. Maths. Math. Phys. 16: 236–242 (in English).
- * A digital sequence in base 2 in dimension \f s \f is said to have the \f k \f bits uniformity property if its \f 2^s \f first points are
- * \f k \f bit-equidistributed.
+ * A digital sequence in base 2 in dimension \f$ s \f$ is said to have the \f$ k \f$ bits uniformity property if its \f$ 2^s \f$ first points are
+ * \f$ k \f$ bit-equidistributed.
  */ 
 
 class UniformityProperty : public FigureOfMerit{
@@ -124,7 +124,7 @@ class UniformityProperty : public FigureOfMerit{
                             GeneratingMatrix newCol(0,1);
                             for(unsigned int dim = 1; dim < dimension; ++dim)
                             {
-                                newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
+                                newCol.stackBelow(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
                             }
                             m_newReducer.addColumn(newCol);
                         }
@@ -132,7 +132,7 @@ class UniformityProperty : public FigureOfMerit{
 
                     for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                     {
-                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 1, m_figure->nbBits()*dimension);
+                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 0, 1, m_figure->nbBits()*dimension);
 
                         m_newReducer.addRow(std::move(newRow));
                     }

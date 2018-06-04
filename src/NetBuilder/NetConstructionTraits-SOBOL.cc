@@ -14,12 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/Types.h"
-#include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/SobolDirectionNumbers.h"
 
 #include "latbuilder/SeqCombiner.h"
+
 #include <string>
 #include <fstream>
 #include <boost/algorithm/string.hpp>

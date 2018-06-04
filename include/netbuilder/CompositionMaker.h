@@ -20,9 +20,9 @@
 /**
  * Generator of all the compositions of an integer in a specific number of parts.
  * 
- * This class can be used to generate iteratively all the compositions of an integer \fn\f in a specific number of parts \fk\f, that
- * is all the \f k \f-uple \f(a_1, ..., a_k)\f such that \f \sum_{i=1}^k a_i = n \f. Furthermore, two consecutive compositions only differ 
- * by one unitary operation: only one unit has been transfered from one \f a_i\f to another \f a_j \f.
+ * This class can be used to generate iteratively all the compositions of an integer \f$n\f$ in a specific number of parts \f$k\f$, that
+ * is all the \f$ k \f$-uple \f$(a_1, ..., a_k)\f$ such that \f$ \sum_{i=1}^k a_i = n \f$. Furthermore, two consecutive compositions only differ 
+ * by one unitary operation: only one unit has been transfered from one \f$ a_i\f$ to another \f$ a_j \f$.
  */
 
 class CompositionMaker
@@ -43,8 +43,8 @@ class CompositionMaker
 
         /** 
          * Returns the difference between the previous compositon and the current composition.
-         * @return A pair of pairs of ints. The first pair indicates which \fa_i\f has decreased and its former value, 
-         * the second indicates which \f a_i \f has increased and its new value.
+         * @return A pair of pairs of ints. The first pair indicates which \f$a_i\f$ has decreased and its former value, 
+         * the second indicates which \f$ a_i \f$ has increased and its new value.
          */ 
         const std::pair<std::pair<int,int>, std::pair<int,int>>& changeFromPreviousComposition() const ;
 

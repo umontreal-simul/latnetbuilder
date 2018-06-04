@@ -38,7 +38,7 @@ class DigitalNet
     public:
 
         /** 
-         * Default constructor 
+         * Default constructor. 
          * @param dimension Number of coordinates in the net.
          * @param nRows Number of rows of the generating matrices.
          * @param nCols Number of columns of the generating matrices.
@@ -50,63 +50,52 @@ class DigitalNet
         {};
 
         /** 
-         * Default destructor
-        */
+         * Default destructor.
+         */
         virtual ~DigitalNet() = default;
 
         /** 
-         * Return the number of columns of the generating matrices. 
-        */
+         * Returns the number of columns of the generating matrices. 
+         */
         unsigned int numColumns() const { return m_nCols; }
 
         /** 
          * Returns the number of rows of the generating matrices. 
-        */
+         */
         unsigned int numRows() const { return m_nRows; };
 
         /** 
          * Returns the number of points of the net 
-        */
+         */
         uInteger numPoints() const { return intPow(2, m_nCols) ; }
 
         /** 
          * Returns the number of points of the net 
-        */
+         */
         uInteger size() const { return intPow(2, m_nCols) ; }
 
         /** 
          * Returns the dimension (number of coordinates) of the net.
-        */
+         */
         unsigned int dimension() const { return m_dimension ; }
 
         /** 
          * Returns the generating matrix corresponding to coordinate \c coord.
-         * @param coord An integer refering to the coordinate (ranges in 1 -> dimension).
-        */
+         * @param coord A coordinate (between 1 and dimension()).
+         */
         GeneratingMatrix generatingMatrix(unsigned int coord) const 
         {
-            return m_generatingMatrices[coord-1]->subMatrix(m_nRows, m_nCols);
+            return m_generatingMatrices[coord-1]->upperLeftSubMatrix(m_nRows, m_nCols);
         }
 
         /** 
          * Returns a raw pointer to the generating matrix corresponding to coordinate \c coord.
-         * @param coord An integer refering to the coordinate (ranges in 1 -> dimension).
+         * @param coord A coordinate (between 1 and dimension()).
         */
         GeneratingMatrix* pointerToGeneratingMatrix(unsigned int coord) const 
         {
             return m_generatingMatrices[coord-1].get();
         }
-
-        // /** 
-        //  *  Returns the upper-left submatrix of the generating matrix corresponding coordinate \c coord.
-        //  *  @param coord Coordinate (ranges in 1 -> dimension).
-        //  *  @param nRows Number of rows of the submatrix (ranges in 1 -> numRows() ).
-        //  *  @param nCols Number of columns of the submatrix (ranges in 1 -> numCols() ).
-        //  */ 
-        // GeneratingMatrix generatingMatrix(unsigned int coord, unsigned int nRows, unsigned int nCols)
-        // {
-        //     return m_generatingMatrices[coord-1]->subMatrix(nRows, nCols);
-        // }
 
         /**
          * Returns a std::string representing the net. The verbosity of the representation
@@ -127,7 +116,7 @@ class DigitalNet
          * @param nRows New number of rows.
          * @param nCols New number of columns.
          */ 
-        virtual void extendSize(unsigned int nRows, unsigned int nCols) const= 0;
+        virtual void extendSize(unsigned int nRows, unsigned int nCols) const = 0;
 
     protected:
 
@@ -137,8 +126,12 @@ class DigitalNet
         mutable std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
 
         /** 
-         * Most general constructor. 
-         * Designed to be used by derived classes. */
+         * Most general constructor. Designed to be used by derived classes. 
+         * @param dimension Dimension of the net.
+         * @param nRows Number of rows of the generating matrices.
+         * @param nCols Number of columns of the generating matrices.
+         * @param genMatrices Vector of shared pointers to the generating matrices.
+         */
         DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
             m_dimension(dimension),
             m_nRows(nRows),
@@ -150,7 +143,8 @@ class DigitalNet
 
 /** Derived class of DigitalNet designed to implement specific construction methods. The available construction methods
  * are described by the NetConstruction enumeration which is a non-type template parameter of the DigitalNetConstruction 
- * class. @see NetBuilder::NetConstructionTraits.
+ * class. @see NetBuilder::NetConstructionTraits. Construction methods are based on two parameters: a design parameter which is 
+ * shared by all coordinates and a sequence of generating values, each of them being associated to one coordinate.
  */ 
 template <NetConstruction NC>
 class DigitalNetConstruction : public DigitalNet
@@ -159,16 +153,19 @@ class DigitalNetConstruction : public DigitalNet
 
         typedef NetConstructionTraits<NC> ConstructionMethod;
 
+        /// Type of the generating values of the method.
         typedef typename ConstructionMethod::GenValue GenValue;
 
+        /// Type of the design parameter of the method.
         typedef typename ConstructionMethod::DesignParameter DesignParameter;
 
+        /// Type of the data stored when computing generating matrices.
         typedef typename ConstructionMethod::GeneratingMatrixComputationData GeneratingMatrixComputationData;
 
         /** 
-         * Basic constructor with default parameters
-         * @param dimension Dimension of the net.
-         * @param designParameter Design parameter of the net.
+         * Constructor. Uses default generating values to create a net.
+         * @param dimension Dimension of the net. Defaults to zero.
+         * @param designParameter Design parameter of the net. Defaults to a value depending on the construction method.
          */
         DigitalNetConstruction(
             unsigned int dimension = 0, DesignParameter designParameter = ConstructionMethod::defaultDesignParameter):
@@ -192,9 +189,10 @@ class DigitalNetConstruction : public DigitalNet
 
 
         /** 
-         * Basic constructor with default parameters
+         * Constructor.
          * @param dimension Dimension of the net.
          * @param designParameter Design parameter of the net.
+         * @param genValues Sequence of generating values to create the net.
          */
         DigitalNetConstruction(
             unsigned int dimension,
@@ -216,12 +214,12 @@ class DigitalNetConstruction : public DigitalNet
 
         /**
          * Default destructor
-        */
+         */
         ~DigitalNetConstruction() = default;
 
         /** Instantiates a digital net with a dimension increased by one using the generating value \c newGenValue. 
-         * Note that the generating matrices for the lower dimensions are not copied. The net on 
-         * which this method is called and the new net share these ressources.
+         * Note that the resources (generating matrices, generatins values and computation data) for the lower dimensions are not copied. The net on 
+         * which this method is called and the new net share these resources.
          * @param newGenValue  Generating value used to extend the net.
          * @return A std::unique_ptr to the instantiated net.
          */ 
@@ -300,8 +298,7 @@ class DigitalNetConstruction : public DigitalNet
         mutable std::vector<std::shared_ptr<GenValue>> m_genValues; // vector of shared pointers to the generating values of the net
         mutable std::vector<std::shared_ptr<GeneratingMatrixComputationData>> m_genMatsComputationData; // vector of shared pointers to the computation data of the generating matrices of the net
 
-        /** Most general constructor
-         * for the use of std::make_unique in member fuctions.
+        /** Most general constructor.
          * @param dimension Dimension of the net.
          * @param designParameter Design parameter of the net.
          * @param genValues Vector of shared pointers to the generating values of each coordinate.

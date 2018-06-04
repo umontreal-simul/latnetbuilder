@@ -185,7 +185,7 @@ MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvalu
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit) // for each bit of equidistribution
     {
-        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 1, nCols )); // add the new row
+        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 0, 1, nCols )); // add the new row
         if (m_newReducer.computeRank() < m_newReducer.numRows())
         {
             acc.accumulate(m_figure->weight(), 1, m_figure->expNorm()); // the points are not equidistributed: set the merit
@@ -222,7 +222,7 @@ MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEva
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit) // for each bit of equidistribution
     {
-        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 1, nCols )); // add the new row
+        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 0, 1, nCols )); // add the new row
         std::vector<unsigned int> ranks = m_newReducer.computeRanks(0,nCols); // compute the rank
 
         for(unsigned int m = 1; m <= nCols; ++m) // for each level of points

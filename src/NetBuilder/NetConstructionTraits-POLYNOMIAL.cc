@@ -14,8 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/Types.h"
-#include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
 
 #include "latbuilder/GenSeq/GeneratingValues-PLR.h"
@@ -152,3 +150,4 @@ namespace NetBuilder {
         return res;
     }  
 }
+
