@@ -27,30 +27,30 @@
 
 namespace NetBuilder {
 
-unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned int k, int verbose){
-    unsigned int nCols = Origin_Mats[0].nCols();
-    unsigned int s = Origin_Mats.size();
-
-    ProgressiveRowReducer rowReducer = ProgressiveRowReducer(nCols);
+unsigned int iteration_on_k(std::vector<GeneratingMatrix>& baseMatrices, unsigned int k, int verbose){
+    unsigned int nCols = baseMatrices[0].nCols();
+    unsigned int s = (unsigned int) baseMatrices.size();
     
     // Initialization of row map from original matrices to computation matrix
     std::map<std::pair<int, int>, int> Origin_to_M;
 
+    ProgressiveRowReducer rowReducer(nCols);
+
     for (unsigned int i=0; i<k-s+1; i++){
         Origin_to_M[{1, i+1}] = i;
-        rowReducer.addRow(Origin_Mats[s-1].subMatrix(i, 1, nCols));
+        rowReducer.addRow(baseMatrices[s-1].subMatrix(i, 0, 1, nCols));
     }
     for (unsigned int i=1; i<s; i++){
         Origin_to_M[{i+1, 1}] = k-s+i;
-        rowReducer.addRow(Origin_Mats[s-1-i].subMatrix(0, 1, nCols));
+        rowReducer.addRow(baseMatrices[s-1-i].subMatrix(0, 0, 1, nCols));
     }
 
-    unsigned int smallestInvertible = rowReducer.computeSmallestInvertible(k);
+    unsigned int smallestFullRankIndex = rowReducer.smallestFullRank() - 1;
     if (verbose > 0){
-        std::cout << "after initialization, smallest invertible= " << smallestInvertible << std::endl;
+        std::cout << "after initialization, smallest invertible= " << smallestFullRankIndex << std::endl;
     }
 
-    if (smallestInvertible == nCols){
+    if (smallestFullRankIndex == nCols){
         if (verbose > 0){
             std::cout << "end in initialization" << std::endl;
         }
@@ -67,35 +67,43 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned
         Origin_to_M[rowChange.second] = ind_exchange;
         Origin_to_M.erase(rowChange.first);
         
-        GeneratingMatrix newRow = Origin_Mats[s-rowChange.second.first].subMatrix(rowChange.second.second-1, 1, nCols);
+        GeneratingMatrix newRow = baseMatrices[s-rowChange.second.first].subMatrix(rowChange.second.second-1, 0, 1, nCols);
 
-        smallestInvertible = rowReducer.exchangeRow(ind_exchange, std::move(newRow), smallestInvertible, verbose-1);
+        rowReducer.replaceRow(ind_exchange, std::move(newRow), verbose-1);
 
-        if (smallestInvertible == nCols){
-            return smallestInvertible;
+        smallestFullRankIndex = rowReducer.smallestFullRank() - 1;
+
+        if (smallestFullRankIndex == nCols){
+            return smallestFullRankIndex;
         }
     }
-    return smallestInvertible;
+    return smallestFullRankIndex;
 }
 
-unsigned int GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int maxSubProj, int verbose=0)
+unsigned int GaussMethod::computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxSubProj, int verbose=0)
 {
-    return GaussMethod::computeTValue(Origin_Mats, Origin_Mats[0].nCols()-1, {maxSubProj}, verbose)[0];
-}
-
-std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int mMin, std::vector<unsigned int> maxSubProj, int verbose=0)
-{
-    unsigned int nRows = Origin_Mats[0].nRows();
-    unsigned int nCols = Origin_Mats[0].nCols();
-    unsigned int s = Origin_Mats.size();
-
-    unsigned int nLevel = maxSubProj.size();
-    
-    std::vector<unsigned int> result = maxSubProj;
-    if (s == 1){    // does not make sense when s == 1
-        return result;
+    unsigned int s = (unsigned int) baseMatrices.size();
+    if (s == 1)
+    {
+        return 0;
     }
 
+    return GaussMethod::computeTValue(baseMatrices, baseMatrices[0].nCols()-1, {maxSubProj}, verbose)[0];
+}
+
+std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int mMin, const std::vector<unsigned int>& maxSubProj, int verbose=0)
+{
+    unsigned int nRows = baseMatrices[0].nRows();
+    unsigned int nCols = baseMatrices[0].nCols();
+    unsigned int s = (unsigned int) baseMatrices.size();
+
+    unsigned int nLevel = (unsigned int) maxSubProj.size();
+    
+    if (s == 1){    // does not make sense when s == 1
+        return std::vector<unsigned int>(nCols-mMin);
+    }
+
+    std::vector<unsigned int> result = maxSubProj;
     unsigned int diff = 0;
     if (mMin < s-1){
         diff = (s-1-mMin);
@@ -112,23 +120,23 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
         if (verbose > 0){
             std::cout << "begin iteration " << k << std::endl;
         }
-        unsigned int smallestInvertible = iteration_on_k(Origin_Mats, k, verbose-1);
+        unsigned int smallestFullRankIndex = iteration_on_k(baseMatrices, k, verbose-1);
         if (verbose > 0){
-            std::cout << "after iteration " << k << ", smallestInvertible : " << smallestInvertible << std::endl;
+            std::cout << "after iteration " << k << ", smallestFullRankIndex : " << smallestFullRankIndex << std::endl;
         }
-        if (smallestInvertible == nCols){
+        if (smallestFullRankIndex == nCols){
             continue;
         }
-        for (unsigned int i= ((smallestInvertible > mMin) ? smallestInvertible-mMin: 0); i<previousIndSmallestInvertible; i++){
+        for (unsigned int i= ((smallestFullRankIndex > mMin) ? smallestFullRankIndex-mMin: 0); i<previousIndSmallestInvertible; i++){
             if (verbose > 0){
                 std::cout << "storing t-value of index " << i << std::endl;
             }
             result[i+diff] = std::max(nCols-(nLevel-1-i)-k, maxSubProj[i+diff]);
         }
-        if (smallestInvertible <= mMin){
+        if (smallestFullRankIndex <= mMin){
             break;
         } 
-        previousIndSmallestInvertible = smallestInvertible-mMin;
+        previousIndSmallestInvertible = smallestFullRankIndex-mMin;
     
     }
     return result;

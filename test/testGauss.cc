@@ -51,7 +51,7 @@ int main(int argc, const char *argv[])
     for (int level=0; level<nLevel; level++){
         std::vector<GeneratingMatrix> gen;
         for (int i=1; i<=s; i++){
-            gen.push_back(net->pointerToGeneratingMatrix(i)->subMatrix(m, m-level));
+            gen.push_back(net->pointerToGeneratingMatrix(i)->upperLeftSubMatrix(m, m-level));
         }
         v.push_back(gen);
     }

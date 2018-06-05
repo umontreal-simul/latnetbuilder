@@ -16,7 +16,7 @@
 
 #include "netbuilder/TValueComputation.h"
 #include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
+#include "netbuilder/CompositionMaker.h"
 
 namespace NetBuilder {
 
@@ -31,7 +31,7 @@ getmsb (unsigned long long x)
 
 typedef GeneratingMatrix GeneratingMatrix;
 
-int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, int verbose=0)
+unsigned int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, int verbose=0)
 {
     unsigned int m = matrices[0].nCols();
     unsigned int s = (unsigned int)matrices.size();
@@ -48,9 +48,10 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned
     unsigned int k;
     for(k = s ; k <= m-maxTValuesSubProj; ++k)
     {
-        std::vector<std::vector<int>> comps  = compositions(k,s);
-        for (const auto& comp : comps)
-        {   
+        CompositionMaker compMaker(k,s);
+        do
+        { 
+            std::vector<unsigned int> comp = compMaker.currentComposition();
             std::vector<GeneratingMatrix::Row*> tmp(k);
             unsigned int idx = 0;
             for(unsigned int coord = 0; coord < s; ++coord)
@@ -72,39 +73,53 @@ int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned
                 }
             }
         }
+        while(compMaker.goToNextComposition());
     }
     return maxTValuesSubProj;
 }
 
-int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, int verbose = 0)
+std::vector<unsigned int> SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose=0)
 {
     unsigned int m = matrices[0].nCols();
     unsigned int s = (unsigned int)matrices.size();
 
-    if (s==1){ return 0; } 
+    std::cout << s << std::endl;
 
-    size_type upperLimit = (1<<(m-maxTValuesSubProj))-1;
+    if (s==1){ return std::vector<unsigned int>(m); } 
+
+    size_type upperLimit ;
+    std::vector<unsigned int> res;
+    if (maxTValuesSubProj.size()>=1)
+    {
+        upperLimit= (1<<(m-maxTValuesSubProj.back()))-1;
+        res = maxTValuesSubProj;
+    }
+    else
+    {
+        upperLimit = (1<<m)-1;
+        res.resize(m,0);
+    }
     std::vector<unsigned int> flipingOrder(upperLimit);
     for(uInteger r = 0; r < upperLimit; ++r)
     {
         flipingOrder[r] = getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1)));
     }
 
-    unsigned int k = m-maxTValuesSubProj;
-    bool isFullRank = false;
-    while(k>=s && !isFullRank)
+    unsigned int alreadyComputed = 0;
+    unsigned int k;
+    for(k = s ; k <= m-maxTValuesSubProj.back(); ++k)
     {
-        std::vector<std::vector<int>> comps  = compositions(k,s);
-        bool isFullRankSubSystem = true;
-        unsigned int idxComp = 0;
-
+        std::cout << k << std::endl;
+        CompositionMaker compMaker(k, s);
         do
         {
+            std::vector<unsigned int> comp = compMaker.currentComposition();
+            std::cout << k << std::endl;
             std::vector<GeneratingMatrix::Row*> tmp(k);
             unsigned int idx = 0;
             for(unsigned int coord = 0; coord < s; ++coord)
             {
-                for(int j = 0; j < comps[idxComp][coord]; ++j)
+                for(int j = 0; j < comp[coord]; ++j)
                 {
                     tmp[idx] = &(matrices[coord][j]);
                     ++idx;
@@ -112,24 +127,24 @@ int ReversedSchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices, 
             }
 
             boost::dynamic_bitset<> v(m);
-            
             for(uInteger r = 0; r < (unsigned int) ((1 << k) - 1); ++r)
             {
-                v ^= *tmp[flipingOrder.at(r)];
-                if (v.none())
+                v ^= *tmp[flipingOrder[r]];
+                while(!v[alreadyComputed] && alreadyComputed < m)
                 {
-                    isFullRankSubSystem = false;
-                    break;
+                    res[alreadyComputed] = std::max(alreadyComputed+2-k, maxTValuesSubProj[alreadyComputed]);
+                    ++alreadyComputed;
+                }
+                if (alreadyComputed == m)
+                {
+                    return res;
                 }
             }
-            idxComp++;
         }
-        while(isFullRankSubSystem && idxComp < comps.size());
-        isFullRank = isFullRankSubSystem;
-        --k;
+        while(compMaker.goToNextComposition());
     }
-    //assert(isFullRank);
-    //std::cout << k << std::endl;
-    return std::max(m-(k+1),maxTValuesSubProj);
+    return res;
 }
+
+
 }

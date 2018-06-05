@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <assert.h>
 #include <iostream>
-#include <netbuilder/Util.h>
+#include "netbuilder/Util.h"
 
 // std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> compositionsChanges(int n, int nb_parts){
 //     assert(nb_parts>= 2 && n>= nb_parts);

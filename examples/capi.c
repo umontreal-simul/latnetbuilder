@@ -4,7 +4,7 @@ Example GCC command line:
   gcc -o lbc -Wall -O2 -I./latbuilder/include -L./latbuilder/lib latbuilder_capi.c -llatbuilder -llatticetester -lstdc++
 */
 
-#include <latbuilder/capi.h>
+#include "latbuilder/capi.h"
 #include <stdio.h>
 
 void report(const latbuilder_result* result)

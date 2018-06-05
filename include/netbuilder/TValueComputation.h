@@ -21,21 +21,68 @@
 
 namespace NetBuilder {
 
+    /**
+     * Class to compute the t-value of a projection of a digital net in base 2.
+     * This class uses a refined version of the gaussian elimination to compute efficiently the t-value of
+     * a projection, knowing the t-value of the smaller projections.
+     */  
     struct GaussMethod
     {
-    static unsigned int computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int maxSubProj, int verbose);
-    static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> Origin_Mats, unsigned int mMin, std::vector<unsigned int> maxSubProj, int verbose);
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, using the prior knowledge that the maximum of the
+         * t-values of the subprojections is \c maxTValuesSubProj.
+         * @param baseMatrices Generating matrices.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         */ 
+        static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, for each level, using the prior knowledge that the maximum of the
+         * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
+         * @param baseMatrices Generating matrices.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         */ 
+        static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose)
+        {
+            return computeTValue(baseMatrices, 0, maxTValuesSubProj, verbose);
+        };
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, for each level greater or equal to \c mMin, using the prior knowledge that the maximum of the
+         * t-values of the subprojections, for each level <CODE> i + mMin </CODE> is \c maxTValuesSubProj[i]. We do not compute the t-value for the lower levels.
+         * @param baseMatrices Generating matrices.
+         * @param mMin Minimul level.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         */ 
+        static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int mMin, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };
 
+    /**
+     * Class to compute the t-value of a projection of a digital net in base 2.
+     * This class uses the algorithm described in THE EXACT QUALITY PARAMETER OF NETS DERIVED FROM SOBOL’ AND NIEDERREITER SEQUENCES WOLFGANG CH. SCHMID 
+     * Recent Advances in Numerical Methods and Applications II. July 1999, 296-304, which consists , for each compositions of matrices, in enumerating all the combinations of the rows of the rows in the
+     * Gray code order, looking for a linear dependence between the columns.
+     */  
     struct SchmidMethod
     {
-        static int computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, int verbose);
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, using the prior knowledge that the maximum of the
+         * t-values of the subprojections is \c maxTValuesSubProj.
+         * @param baseMatrices Generating matrices.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         */ 
+        static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, for each level, using the prior knowledge that the maximum of the
+         * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
+         * @param baseMatrices Generating matrices.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         */ 
+        static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };
 
-    struct ReversedSchmidMethod
-    {
-        static int computeTValue(std::vector<GeneratingMatrix> matrices, unsigned int maxTValuesSubProj, int verbose);   
-    };
 }
 
 #endif

@@ -34,7 +34,7 @@ class CBCCoordinateSet
 {
     public:
 
-        /** Constructs a set of all non empty subsets of \f\{0,\dots, \c maxCoordinate\}\f with order lower than \c maxOrder
+        /** Constructs the set of all the non empty subsets of \f$\{0,\dots, \c maxCoordinate\}\f$ with order lower than \c maxOrder
          *  containing \c maxCoordinate.
          * @param maxCoordinate Maximal coordinate of the subsets.
          * @param maxOrder Maximal order of subsets.
@@ -47,7 +47,7 @@ class CBCCoordinateSet
         {};
 
         /**
-        * Returns an iterator pointing to the first element in the seq.
+        * Returns an iterator pointing to the first element in the sequence.
         */
         LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges>::const_iterator begin() const 
         {
@@ -55,7 +55,7 @@ class CBCCoordinateSet
         }
 
         /**
-        * Returns an iterator pointing past the last element in the seq.
+        * Returns an iterator pointing past the last element in the sequence.
         */
         LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges>::const_iterator end() const 
         {

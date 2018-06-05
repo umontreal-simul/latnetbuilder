@@ -20,56 +20,27 @@
 
 namespace NetBuilder {
 
-GeneratingMatrix::GeneratingMatrix(unsigned int n_rows, unsigned int n_cols):
-    m_data(n_rows,boost::dynamic_bitset<>(n_cols)),
-    m_rows(n_rows),
-    m_cols(n_cols)
+GeneratingMatrix::GeneratingMatrix(unsigned int nRows, unsigned int nCols):
+    m_data(nRows,boost::dynamic_bitset<>(nCols)),
+    m_nRows(nRows),
+    m_nCols(nCols)
 {};
 
-GeneratingMatrix::GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, std::vector<uInteger> init):
-    m_data(n_rows),
-    m_rows(n_rows),
-    m_cols(n_cols)
+GeneratingMatrix::GeneratingMatrix(unsigned int nRows, unsigned int nCols, std::vector<uInteger> init):
+    m_data(nRows),
+    m_nRows(nRows),
+    m_nCols(nCols)
     {
-        assert(init.size() == m_rows);
-        for(unsigned int i = 0; i < m_rows; ++i)
+        assert(init.size() == m_nRows);
+        for(unsigned int i = 0; i < m_nRows; ++i)
         {
-            m_data[i] = boost::dynamic_bitset<>(n_cols,init[i]);
+            m_data[i] = boost::dynamic_bitset<>(nCols,init[i]);
         }
     };
 
-GeneratingMatrix::GeneratingMatrix(unsigned int n_rows, unsigned int n_cols, bool uniTriangular):
-    GeneratingMatrix(n_rows,n_cols)
-{
-    if (uniTriangular)
-    {
-        for(unsigned int i = 0; i < n_rows; ++i)
-        {
-            if (i < n_cols)
-            {
-                (*this)(i,i) = 1;
-            }
-            for(unsigned int j = i+1; j < n_cols; ++j)
-            {
-                (*this)(i,j) = rand() % 2;
-            }
-        }
-    }
-    else
-    {
-        for(unsigned int i = 0; i < n_rows; ++i)
-        {
-            for(unsigned int j = 0; j < n_cols; ++j)
-            {
-                (*this)(i,j) = rand() % 2;
-            }
-        }
-    }
-}
+unsigned int GeneratingMatrix::nCols() const { return m_nCols; }
 
-unsigned int GeneratingMatrix::nCols() const { return m_cols; }
-
-unsigned int GeneratingMatrix::nRows() const { return m_rows; }
+unsigned int GeneratingMatrix::nRows() const { return m_nRows; }
 
 std::vector<unsigned long> GeneratingMatrix::getColsReverse() const{
     std::vector<unsigned long> res(nCols(), 0);
@@ -109,53 +80,13 @@ void GeneratingMatrix::flip(unsigned int i, unsigned int j)
     m_data[i].flip(j);
 }
 
-void GeneratingMatrix::swap_rows(unsigned int i1, unsigned int i2){
+void GeneratingMatrix::swapRows(unsigned int i1, unsigned int i2){
     std::swap(m_data[i1], m_data[i2]);
 }
 
-void GeneratingMatrix::insert_row(unsigned int i1, unsigned i2)
+GeneratingMatrix GeneratingMatrix::upperLeftSubMatrix(unsigned int nRows, unsigned int nCols) const
 {
-    std::rotate(m_data.begin()+i2,m_data.begin()+i1,m_data.begin()+i1);
-}
-
-void GeneratingMatrix::swap_columns(unsigned int j1, unsigned int j2)
-{
-    assert(j1 < m_cols && j2 < m_cols);
-    for(unsigned int i = 0; i < m_rows; ++i)
-    {
-        bool tmp = m_data[i][j1];
-        m_data[i][j1] = m_data[i][j2];
-        m_data[i][j2] = tmp;
-    }
-};
-
-void GeneratingMatrix::permuteColumns(const std::vector<unsigned int>& permutation)
-{
-    std::vector<boost::dynamic_bitset<>> tmp(m_data);
-    for(unsigned int j = 0; j < m_cols; ++j)
-    {
-        for(unsigned int i = 0; i < m_rows; ++i)
-        {
-            m_data[i][j] = tmp[i][permutation[j]];
-        }
-    }
-}
-
-GeneratingMatrix GeneratingMatrix::subMatrix(unsigned int nRows, unsigned int nCols) const
-{
-    return subMatrix(0,nRows,nCols);
-}
-
-GeneratingMatrix GeneratingMatrix::subMatrix(unsigned int startingRow, unsigned int nRows, unsigned int nCols) const
-{
-    GeneratingMatrix res(nRows, nCols);
-    for(unsigned int i = 0; i < nRows; ++i)
-    {
-        auto tmp = (*this)[i+startingRow];
-        tmp.resize(nCols);
-        res[i] = std::move(tmp);
-    }
-    return res;
+    return subMatrix(0, 0, nRows, nCols);
 }
 
 GeneratingMatrix GeneratingMatrix::subMatrix(unsigned int startingRow, unsigned int startingCol, unsigned nRows, unsigned nCols) const 
@@ -163,42 +94,51 @@ GeneratingMatrix GeneratingMatrix::subMatrix(unsigned int startingRow, unsigned 
     GeneratingMatrix res(nRows, nCols);
     for(unsigned int i = 0; i < nRows; ++i)
     {
-        for(unsigned int j = 0; j < nCols; ++j)
+        if (startingCol==0)
         {
-            res(i,j) = (*this)(startingRow+i, startingCol+j);
+            auto tmp = (*this)[i+startingRow];
+            tmp.resize(nCols);
+            res[i] = std::move(tmp);
+        }
+        else
+        {
+            for(unsigned int j = 0; j < nCols; ++j)
+            {
+                res(i,j) = (*this)(startingRow+i, startingCol+j);
+            }
         }
     }
     return res;
 }
 
 void GeneratingMatrix::resize(unsigned int nRows, unsigned int nCols){
-    for(unsigned int i = 0; i < std::min(nRows, m_rows); ++i)
+    for(unsigned int i = 0; i < std::min(nRows, m_nRows); ++i)
     {
         (*this)[i].resize(nCols);
     }
-    for(unsigned int i = m_rows; i < nRows; ++i){
+    for(unsigned int i = m_nRows; i < nRows; ++i){
         m_data.push_back(Row(nCols));
     }
-    if (nRows < m_rows)
+    if (nRows < m_nRows)
     {
-        m_data.erase(m_data.begin()+nRows, m_data.begin()+m_rows);
+        m_data.erase(m_data.begin()+nRows, m_data.begin()+m_nRows);
     }
-    m_rows = nRows;
-    m_cols = nCols;
+    m_nRows = nRows;
+    m_nCols = nCols;
 }
 
-void GeneratingMatrix::vstack(GeneratingMatrix m)
+void GeneratingMatrix::stackBelow(GeneratingMatrix m)
 {
-    m_rows += m.nRows();
-    m_data.resize(m_rows);
+    m_nRows += m.nRows();
+    m_data.resize(m_nRows);
     std::move(m.m_data.begin(),m.m_data.end(),m_data.end()-m.nRows());
 }
 
 std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat)
 {
-    for(unsigned int i = 0; i < mat.m_rows; ++i)
+    for(unsigned int i = 0; i < mat.m_nRows; ++i)
     {
-        for(unsigned int j = 0; j < mat.m_cols; ++j)
+        for(unsigned int j = 0; j < mat.m_nCols; ++j)
         {
             os << mat(i,j) << " ";
         }
@@ -215,7 +155,7 @@ GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
         for(unsigned int j = 0; j < m.nCols(); ++j)
         {
             unsigned int val = 0;
-            for(unsigned int k = 0; k < m_rows; ++k)
+            for(unsigned int k = 0; k < m_nRows; ++k)
             {
                 val += (*this)(i,k) * m(k,j);
                 val %= 2;
@@ -228,12 +168,12 @@ GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
 
 void GeneratingMatrix::stackRight(const GeneratingMatrix& block)
 {
-    resize(m_rows, m_cols+block.nCols());
-    for(unsigned int i = 0; i < m_rows; ++ i)
+    resize(m_nRows, m_nCols+block.nCols());
+    for(unsigned int i = 0; i < m_nRows; ++ i)
     {
         for(unsigned int j = 0; j < block.nCols(); ++j)
         {
-            (*this)(i,m_cols+j-block.nCols()) = block(i,j);
+            (*this)(i,m_nCols+j-block.nCols()) = block(i,j);
         }
     }
 }

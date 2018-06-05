@@ -45,7 +45,7 @@ int main(int argc, const char *argv[])
 
     auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
-    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, JoeKuoD6Combiner());
+    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, LevelCombiner::JoeKuoD6Combiner());
     auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;

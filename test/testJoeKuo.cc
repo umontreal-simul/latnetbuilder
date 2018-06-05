@@ -43,22 +43,22 @@ using namespace NetBuilder;
 int main(int argc, const char *argv[])
 {
     unsigned int m = 31 ;
-    unsigned int maxDim = 8;
+    unsigned int maxDim = 7;
 
-    for(unsigned int s = 1; s <= maxDim; ++s)
+    for(unsigned int s = 1; s < maxDim; ++s)
     {
 
         Real meritFromSearch = -1;
-        Real meritFromEval = 1;
+        Real meritFromEval = -1;
 
         // Search step
 
-        // {
+        {
             auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
 
             auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
-            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, JoeKuoD6Combiner());
+            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, LevelCombiner::JoeKuoD6Combiner());
             auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
 
             std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;
@@ -73,12 +73,12 @@ int main(int argc, const char *argv[])
             auto baseNet = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
             
             auto explorer = std::make_unique<Task::FullCBCExplorer<NetConstruction::SOBOL>>(s+1,m);
-            auto task = std::make_unique<Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>>(s+1, std::move(baseNet), std::move(fig), std::move(explorer),2, false);
+            auto task = std::make_unique<Task::CBCSearch<NetConstruction::SOBOL,Task::FullCBCExplorer>>(s+1, std::move(baseNet), std::move(fig), std::move(explorer),2, true);
 
             task->execute();
 
             meritFromSearch = task->outputMeritValue() ;
-        // }
+        }
 
         // Eval step
 
@@ -86,7 +86,7 @@ int main(int argc, const char *argv[])
             auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
             auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
-            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, JoeKuoD6Combiner());
+            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, LevelCombiner::JoeKuoD6Combiner());
 
             auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
 
@@ -104,14 +104,15 @@ int main(int argc, const char *argv[])
             auto baseNet = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s+1,m);
         
            
-            auto task = std::make_unique<Task::Eval>(std::move(baseNet), std::move(fig),0);
+            auto task = std::make_unique<Task::Eval>(std::move(baseNet), std::move(fig), 0);
             
             task->execute();
 
             meritFromEval = task->outputMeritValue() ;
+
         }
 
-        std::cout <<"Dimension " << s << ": " << meritFromEval << " / " << meritFromSearch << std::endl;
+        std::cout <<"Dimension " << s+1 << ": " << meritFromEval << " / " << meritFromSearch << std::endl;
 
     }
 

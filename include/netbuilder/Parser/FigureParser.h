@@ -29,7 +29,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
-#include "netbuilder/ComputeMaxCardFromWeights.h"
+#include "netbuilder/Parser/ComputeMaxCardFromWeights.h"
 #include "netbuilder/Parser/LevelCombinerParser.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"

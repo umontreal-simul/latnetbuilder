@@ -16,8 +16,8 @@
 
 #include "netbuilder/CompositionMaker.h"
 
-CompositionMaker::CompositionMaker(unsigned int n, unsigned int nb_parts):
-    m_nbParts(nb_parts),
+CompositionMaker::CompositionMaker(unsigned int n, unsigned int k):
+    m_nbParts(k),
     m_composition(m_nbParts,0),
     m_deepestBoxIndex(0),
     m_boxBegin(m_nbParts),

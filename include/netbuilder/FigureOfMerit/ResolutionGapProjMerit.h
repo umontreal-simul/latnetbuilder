@@ -14,57 +14,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__RESOLUTION_GAP_PROJ_MERIT
-#define NETBUILDER__RESOLUTION_GAP_PROJ_MERIT
+#ifndef NETBUILDER__FIGURE_OF_MERIT_BIT__RESOLUTION_GAP_PROJ_MERIT
+#define NETBUILDER__FIGURE_OF_MERIT_BIT__RESOLUTION_GAP_PROJ_MERIT
 
-#include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
-#include "netbuilder/DigitalNet.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/CBCCoordinateSet.h"
 #include "netbuilder/ProgressiveRowReducer.h"
 
-#include "latticetester/Weights.h"
-#include "latticetester/Coordinates.h"
-
-#include <vector>
-#include <memory>
-#include <algorithm>
-#include <string>
-
-#include <functional>
-
 namespace NetBuilder { namespace FigureOfMerit {
 
-/** Template class representing a projection-dependent merit defined by the t-value of the projection
+/** 
+ * Template class representing a projection-dependent merit defined by the resolution-gap of the projection.
+ * The resolution gap is defined as follows. Let \f$ l \f$ be the maximal integer such that the net is \f$ (l, \dots, l) \f$ equidistributed.
+ * We have a natural upper-bound on \f$ l \f$ given by \f$ \frac{m}{s} \f$ where \f$ m \f$ is the number of columns of the generating matrices and
+ * \f$ s \f$ is the order of the projection. \f$ l \f$ is called the resolution of the net and the resolution-gap is defined by the difference \f$ \frac{m}{s} - l \f$/.
  */ 
 template <PointSetType PST>
 class ResolutionGapProjMerit
 {};
 
-/** Template specialization in the case of simple nets.
+/** Template specialization in the case of unilevel nets.
  */ 
 template <>
 class ResolutionGapProjMerit<PointSetType::UNILEVEL>
 {
     public:
 
-        /** Construct a projection-dependent merit based on the resolution of projections.
-         * @param maxCardinal is the maximum order of the subprojections to take into account
+        /** 
+         * Construct a projection-dependent merit based on the resolution-gap of projections.
+         * @param maxCardinal Maximum order of the subprojections.
+         * @param combiner Not used. For sake of uniformity.
          */  
         ResolutionGapProjMerit(unsigned int maxCardinal,  Combiner combiner = Combiner()):
             m_maxCardinal(maxCardinal)
         {};
 
-        /** Returns the maximum order of the subprojections to take into account.
+        /** 
+         * Returns the maximum order of the subprojections to take into account.
          */ 
         unsigned int maxCardinal() const { return m_maxCardinal; }
 
-        /** Returns the name of the projection-dependent merit.
+        /** 
+         * Returns the name of the projection-dependent merit.
          */ 
         std::string name() const { return m_name ;}
 
-        /**  Overload of << operator to print the name of the the projection-dependent merit on the given output stream
+        /**  
+         * Overloads of << operator to print the name of the the projection-dependent merit on the given output stream
          */ 
         friend std::ostream& operator<<(std::ostream& os, const ResolutionGapProjMerit& dt)
         {
@@ -73,9 +69,10 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
         } 
 
 
-        /** Computes the projection-dependent merit of the net for the given projection.
-         * @param net is the digital net for which we want to compute the merit
-         * @param projection is the projection to consider
+        /** 
+         * Computes the projection-dependent merit of the net \c net for the given projection.
+         * @param net Digital to evaluate.
+         * @param projection Projection to use.
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
@@ -90,7 +87,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution, 0, 1,numCols));
                 }
                 if(m_rowReducer.computeRank() == m_rowReducer.numRows())
                 {
@@ -104,41 +101,50 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
             return  merit;
         }
 
+        /** 
+         * Returns the projections to include in the figure of merit partial computation for dimension \c dimension.
+         * @param dimension Dimension of the partial computation.
+         */ 
         CBCCoordinateSet projections(unsigned int dimension) const
         {
             return CBCCoordinateSet(dimension, m_maxCardinal);
         }
 
     private:
-        std::string m_name = "resolution (simple nets)"; // name of the projection-dependent merit
+        std::string m_name = "resolution (unilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account
-        ProgressiveRowReducer m_rowReducer; 
+        ProgressiveRowReducer m_rowReducer; // use to compute the rank of matrices
 };
 
-/** Template specialization in the case of simple nets.
+/** Template specialization in the case of unilevel nets.
  */ 
 template <>
 class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
 {
     public:
 
-        /** Construct a projection-dependent merit based on the resolution of projections.
-         * @param maxCardinal is the maximum order of the subprojections to take into account
-         */  
+        /** 
+         * Construct a projection-dependent merit based on the resolution-gap of projections.
+         * @param maxCardinal Maximum order of the subprojections.
+         * @param combiner Combiner used to combine multilevel merits.
+         */   
         ResolutionGapProjMerit(unsigned int maxCardinal, Combiner combiner):
             m_maxCardinal(maxCardinal),
             m_combiner(combiner)
         {};
 
-        /** Returns the maximum order of the subprojections to take into account.
+        /** 
+         * Returns the maximum order of the subprojections to take into account.
          */ 
         unsigned int maxCardinal() const { return m_maxCardinal; }
 
-        /** Returns the name of the projection-dependent merit.
+        /** 
+         * Returns the name of the projection-dependent merit.
          */ 
         std::string name() const { return m_name ;}
 
-        /**  Overload of << operator to print the name of the the projection-dependent merit on the given output stream
+        /**  
+         * Overloads of << operator to print the name of the the projection-dependent merit on the given output stream
          */ 
         friend std::ostream& operator<<(std::ostream& os, const ResolutionGapProjMerit& dt)
         {
@@ -147,9 +153,10 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
         } 
 
 
-        /** Computes the projection-dependent merit of the net for the given projection.
-         * @param net is the digital net for which we want to compute the merit
-         * @param projection is the projection to consider
+        /** 
+         * Computes the projection-dependent merit of the net \c net for the given projection.
+         * @param net Digital to evaluate.
+         * @param projection Projection to use.
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
@@ -173,7 +180,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution,1,numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution, 0,  1, numCols));
                 }
                 std::vector<unsigned int> ranks = m_rowReducer.computeRanks(0,numCols);
                 for(unsigned int m = 1; m <= numCols; ++m)
@@ -191,12 +198,21 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
             return combine(merits);
         }
 
+
+        /** 
+         * Returns the projections to include in the figure of merit partial computation for dimension \c dimension.
+         * @param dimension Dimension of the partial computation.
+         */ 
         CBCCoordinateSet projections(unsigned int dimension) const
         {
             return CBCCoordinateSet(dimension, m_maxCardinal);
         }
 
-        Real combine(std::vector<unsigned int> merits)
+        /** 
+         * Combines the vector of multilevel merits into a single value merit.
+         * @param merits Multilevel merits to combine.
+         */ 
+        Real combine(const std::vector<unsigned int>& merits)
         {
             RealVector tmp(merits.size());
             for(unsigned int i = 0; i < merits.size(); ++i)
@@ -207,7 +223,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
         }
 
     private:
-        std::string m_name = "resolution (embedded nets)"; // name of the projection-dependent merit
+        std::string m_name = "resolution (multilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
         Combiner m_combiner; 
         ProgressiveRowReducer m_rowReducer;

@@ -63,7 +63,7 @@ enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};
 /// Binary real operator type
 typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
 
-// Level combiner for embedded nets
+// Level combiner for multilevel nets
 typedef std::function<Real (const RealVector&)> Combiner;
 
 /// polynomial over Z/2Z type 

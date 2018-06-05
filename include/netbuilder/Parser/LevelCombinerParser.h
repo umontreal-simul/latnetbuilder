@@ -26,6 +26,9 @@
 
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
+
+using namespace NetBuilder::LevelCombiner;
+
 /**
  * Exception thrown when trying to parse an invalid size parameter.
  */

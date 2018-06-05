@@ -17,62 +17,101 @@
 #ifndef NETBUILDER__LEVEL_COMBINER_H
 #define NETBUILDER__LEVEL_COMBINER_H
 
-#include <netbuilder/Types.h>
+#include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 #include <limits>
 #include <boost/numeric/ublas/blas.hpp>
 
 namespace NetBuilder { 
 
-    struct MaxCombiner
-    {
-        Real operator()(const RealVector& merits){
-            return boost::numeric::ublas::blas_1::amax<RealVector>(merits);
-        }
-    };
+    namespace LevelCombiner {
 
-    struct SumCombiner
-    {
-        Real operator()(const RealVector& merits){
-            Real res = 0;
-            for(Real merit: merits)
-            {
-                res+= merit;
-            }
-            return res;
-        }
-    };
-
-    struct JoeKuoD6Combiner
-    {
-        Real operator()(const RealVector& merits){
-            Real res = 0;
-            unsigned int level = 0;
-            for(Real merit : merits)
-            {
-                ++level;
-                res = std::max(res, intPow(merit,6)/(level-merit+1));
-            }
-            return res;
-        }
-    };
-
-    class LevelSelectorCombiner
-    {
-        public:
-
-            LevelSelectorCombiner(unsigned int level):
-                m_level(level)
-            {};
-
+        /** 
+         * Maximum combiner. Combines merits using the maximum of the merits.
+         */ 
+        struct MaxCombiner
+        {
+            /** 
+             * Combines the merits.
+             */ 
             Real operator()(const RealVector& merits)
             {
-                return merits[m_level-1];
+                Real res = merits[0];
+                for(unsigned int i = 1; i < merits.size(); ++i)
+                {
+                    res = std::max(res, merits[i]);
+                }
+                return res;
             }
+        };
 
-        private:   
-            unsigned int m_level;
-    };
-}
+        /**
+         * Sum combiner. Combines merits using the sum of the merits.
+         */ 
+        struct SumCombiner
+        {
+            /** 
+             * Combines the merits.
+             */ 
+            Real operator()(const RealVector& merits)
+            {
+                Real res = 0;
+                for(Real merit: merits)
+                {
+                    res+= merit;
+                }
+                return res;
+            }
+        };
+
+        /**
+         * Combiner corresponding to \f$ D^{(6)} \f$ in 
+         * S. Joe and F. Y. Kuo, <EM> Constructing Sobol sequences with better two-dimensional projections </EM>, 
+         * SIAM J. Sci. Comput. <BOLD> 30 </BOLD>, 2635-2654 (2008).
+         */ 
+        struct JoeKuoD6Combiner
+        {
+            /** 
+             * Combines the merits.
+             */ 
+            Real operator()(const RealVector& merits)
+            {
+                Real res = 0;
+                unsigned int level = 0;
+                for(Real merit : merits)
+                {
+                    ++level;
+                    res = std::max(res, intPow(merit,6)/(level-merit+1));
+                }
+                return res;
+            }
+        };
+
+        /**
+         * Level selector combiner. Selects the merit value corresponding to a specific level.
+         */ 
+        class LevelSelectorCombiner
+        {
+            public:
+
+                /** Constructs a combiner selecting the merit corresponding to \c level.
+                 * @param level Level to select. Starts from 1. 
+                 */ 
+                LevelSelectorCombiner(unsigned int level):
+                    m_level(level)
+                {};
+
+                /** 
+                * Combines the merits.
+                */ 
+                Real operator()(const RealVector& merits)
+                {
+                    return merits[m_level-1];
+                }
+
+            private:   
+                unsigned int m_level;
+        };
+}}
 
 #endif

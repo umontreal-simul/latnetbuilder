@@ -14,33 +14,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER_UNIFORMITY_PROPERTY
-#define NET_BUILDER_UNIFORMITY_PROPERTY
+#ifndef NET_BUILDER__FIGURE_OF_MERIT_BIT__UNIFORMITY_PROPERTY
+#define NET_BUILDER__FIGURE_OF_MERIT_BIT__UNIFORMITY_PROPERTY
 
-#include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/ProgressiveRowReducer.h"
 
-#include <vector>
-#include <memory>
-#include <algorithm>
-#include <string>
-#include <limits>
-
-#include <functional>
-#include <boost/signals2.hpp>
-
 
 namespace NetBuilder { namespace FigureOfMerit {
+
+/** 
+ * Class which represents uniformity properties for digital sequences. Uniformity properties generalize the so-called Property A and Property A'
+ * introduced by Sobol.
+ * Ref:
+ *  Sobol, I. M. (1976) "Uniformly distributed sequences with an additional uniform property". Zh. Vych. Mat. Mat. Fiz. 16: 1332–1337 (in Russian); U.S.S.R. Comput. Maths. Math. Phys. 16: 236–242 (in English).
+ * A digital sequence in base 2 in dimension \f$ s \f$ is said to have the \f$ k \f$ bits uniformity property if its \f$ 2^s \f$ first points are
+ * \f$ k \f$ bit-equidistributed.
+ */ 
 
 class UniformityProperty : public FigureOfMerit{
 
     public:
 
-        /** Constructor.
-         * @param weight is weight of the figure of merit;
-         */ 
+        /** 
+         * Constructor.
+         * @param nbBits Number of equidistribution bits.
+         * @param weight Weight of the figure of merit. Default to +inf.
+         * @param normType Norm type of the figure. Default to sup norm.
+         */
         UniformityProperty(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
             m_nbBits(nbBits),
             m_weight(weight),
@@ -49,30 +50,48 @@ class UniformityProperty : public FigureOfMerit{
             m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};    
 
+        /**
+         * Returns the weight of the figure
+         */ 
         Real weight() const {return m_weight; }
 
+        /**
+         * Creates a new accumulator.
+         * @param initialValue Initial accumulator value.
+         */
         Accumulator accumulator(Real initialValue) const
         { return Accumulator(std::move(initialValue), m_binOp); }
 
-        /** Instantiates an evaluator and returns a std::unique_ptr to it. */
+        /**
+         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
         {
             return std::make_unique<UniformityPropertyEvaluator>(this);
         }
 
+        /** 
+         * Returns the number fo equidistribution bits.
+         */ 
         unsigned int nbBits() const {return m_nbBits; }
 
+        /** 
+         * Returns the exponent to use when accumulating merits
+         */ 
         Real expNorm() const {return m_expNorm;}
 
     private:
 
-        /** Evaluator class for UniformityProperty. */
+        /** 
+         * Evaluator class for UniformityProperty. 
+         */
         class UniformityPropertyEvaluator : public FigureOfMeritEvaluator
         {
             public:
-                /**Constructor. 
-                 * @param figure is a pointer to the figure of merit.
-                */
+                /**
+                 * Constructor. 
+                 * @param figure Pointer to the figure of merit.
+                 */
                 UniformityPropertyEvaluator(UniformityProperty* figure):
                     m_figure(figure),
                     m_tmpReducer(m_figure->nbBits()),
@@ -80,7 +99,8 @@ class UniformityProperty : public FigureOfMerit{
                     m_newReducer(m_figure->nbBits())
                 {};
 
-                /** Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+                /** 
+                 * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
                  *  starting from the initial value \c initialValue.
                  *  @param net is the net for which we compute the merit
                  *  @param dimension is the dimension for which we want to compute the merit
@@ -104,7 +124,7 @@ class UniformityProperty : public FigureOfMerit{
                             GeneratingMatrix newCol(0,1);
                             for(unsigned int dim = 1; dim < dimension; ++dim)
                             {
-                                newCol.vstack(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
+                                newCol.stackBelow(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
                             }
                             m_newReducer.addColumn(newCol);
                         }
@@ -112,7 +132,7 @@ class UniformityProperty : public FigureOfMerit{
 
                     for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                     {
-                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 1, m_figure->nbBits()*dimension);
+                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 0, 1, m_figure->nbBits()*dimension);
 
                         m_newReducer.addRow(std::move(newRow));
                     }
@@ -131,6 +151,9 @@ class UniformityProperty : public FigureOfMerit{
                     return acc.value();
                 }
 
+                /**     
+                 * Resets the evaluator and prepare it to evaluate a new net.
+                 */ 
                 virtual void reset() override
                 {
                     m_tmpReducer.reset(0);
@@ -138,11 +161,19 @@ class UniformityProperty : public FigureOfMerit{
                     m_newReducer = m_memReducer;
                 }
 
+                /**
+                 * Tells the evaluator that the last net was the best so far and store the relevant information
+                 */
                 virtual void lastNetWasBest() override
                 {
                     m_tmpReducer = std::move(m_newReducer);
                 }
                 
+                /**
+                 * Tells the evaluator that no more net will be evaluate for the current dimension,
+                 * store information about the best net for the dimension which is over and prepare data structures
+                 * for the nest dimension.
+                 */ 
                 virtual void prepareForNextDimension() override
                 {
                     m_memReducer = m_tmpReducer;
@@ -165,6 +196,9 @@ class UniformityProperty : public FigureOfMerit{
         Real m_expNorm;
 };
 
+/**
+ * Special case of Property A.
+ */ 
 class AProperty : public UniformityProperty {
     public:
         AProperty(Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
@@ -172,6 +206,9 @@ class AProperty : public UniformityProperty {
         {};
 };
 
+/**
+ * Special case of Property A'.
+ */ 
 class APrimeProperty : public UniformityProperty {
     public:
         APrimeProperty(Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
