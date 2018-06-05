@@ -82,7 +82,7 @@ namespace NetBuilder{
         return ranks;
     }
 
-    int ProgressiveRowReducer::computeSmallestInvertible(unsigned int firstCol, int numCol, unsigned int k){
+    int ProgressiveRowReducer::computeSmallestInvertible(unsigned int k){
         if (m_pivotsColRowPositions.size()<k){
             return m_nCols;
         }

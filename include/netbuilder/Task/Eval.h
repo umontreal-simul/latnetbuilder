@@ -99,6 +99,12 @@ class Eval : public BaseTask
             m_merit = 0;
         }
 
+        virtual void reset(std::unique_ptr<DigitalNet> net)
+        {
+            m_net = std::move(net);
+            m_merit = 0;
+        }
+
     private:
 
         std::unique_ptr<DigitalNet> m_net;

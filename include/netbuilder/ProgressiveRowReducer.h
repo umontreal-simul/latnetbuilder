@@ -49,7 +49,7 @@ class ProgressiveRowReducer
 
         std::vector<unsigned int> computeRanks(unsigned int firstCol, unsigned int numCol) const;
 
-        int computeSmallestInvertible(unsigned int firstCol, int numCol, unsigned int k);
+        int computeSmallestInvertible(unsigned int k);
 
         const GeneratingMatrix& matrix() const {return m_mat;}
 

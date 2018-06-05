@@ -27,9 +27,11 @@
 
 namespace NetBuilder {
 
-unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned int k, ProgressiveRowReducer& rowReducer, unsigned int mMin, unsigned int nbCol, int verbose){
+unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned int k, int verbose){
     unsigned int nCols = Origin_Mats[0].nCols();
     unsigned int s = Origin_Mats.size();
+
+    ProgressiveRowReducer rowReducer = ProgressiveRowReducer(nCols);
     
     // Initialization of row map from original matrices to computation matrix
     std::map<std::pair<int, int>, int> Origin_to_M;
@@ -43,7 +45,7 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& Origin_Mats, unsigned
         rowReducer.addRow(Origin_Mats[s-1-i].subMatrix(0, 1, nCols));
     }
 
-    unsigned int smallestInvertible = rowReducer.computeSmallestInvertible(mMin, nbCol, k);
+    unsigned int smallestInvertible = rowReducer.computeSmallestInvertible(k);
     if (verbose > 0){
         std::cout << "after initialization, smallest invertible= " << smallestInvertible << std::endl;
     }
@@ -88,7 +90,6 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     unsigned int s = Origin_Mats.size();
 
     unsigned int nLevel = maxSubProj.size();
-    ProgressiveRowReducer rowReducer = ProgressiveRowReducer();
     
     std::vector<unsigned int> result = maxSubProj;
     if (s == 1){    // does not make sense when s == 1
@@ -111,8 +112,7 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
         if (verbose > 0){
             std::cout << "begin iteration " << k << std::endl;
         }
-        rowReducer.reset(nCols);
-        unsigned int smallestInvertible = iteration_on_k(Origin_Mats, k, rowReducer, mMin, nLevel, verbose-1);
+        unsigned int smallestInvertible = iteration_on_k(Origin_Mats, k, verbose-1);
         if (verbose > 0){
             std::cout << "after iteration " << k << ", smallestInvertible : " << smallestInvertible << std::endl;
         }
