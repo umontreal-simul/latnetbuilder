@@ -115,18 +115,19 @@ class ProgressiveRowReducer
 
 
     private:
+    
         unsigned int m_nRows = 0; // number of rows in the reducer
         unsigned int m_nCols; // number of columns of the reducer
         unsigned int m_smallestFullRank; // minimal number of columns necessary for the system spanned by the rows to be full-rank.
         GeneratingMatrix m_redMat; // row-reduced matrix
         GeneratingMatrix m_rowOperations; // row operations matrix
-        #ifdef DEBUG_ROW_REDUCER
-        GeneratingMatrix m_baseMatrix;
-        #endif
         std::map<unsigned int, unsigned int> m_pivotsColRowPositions; // columns index are the keys and rows indexes are the values
         std::map<unsigned int, unsigned int> m_pivotsRowColPositions; // columns index are the keys and rows indexes are the values
         std::set<unsigned int> m_columnsWithoutPivot; // ordered set for columns without a pivot
         std::list<unsigned int> m_rowsWithoutPivot; // list of rows without a pivot 
+        #ifdef DEBUG_ROW_REDUCER
+        GeneratingMatrix m_baseMatrix;
+        #endif
 
         /**
          * Uses existing pivots to pivot the row at position \c rowIndex and look for

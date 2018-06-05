@@ -88,7 +88,7 @@ class TValueProjMerit<PointSetType::UNILEVEL>
             {
                 mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
             }
-            return GaussMethod::computeTValue(std::move(mats),maxMeritsSubProj, false);
+            return SchmidMethod::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
 
         Real combine(Merit merit)
@@ -197,7 +197,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
             {
                 mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
             }
-            return GaussMethod::computeTValue(std::move(mats), maxMeritsSubProj, 0);
+            return SchmidMethod::computeTValue(std::move(mats), maxMeritsSubProj, 0);
         }
 
         /** 
