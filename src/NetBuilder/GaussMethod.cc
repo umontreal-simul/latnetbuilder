@@ -104,6 +104,16 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
         return std::vector<unsigned int>(nCols-mMin);
     }
 
+    // if (s==1)
+    // {   
+    //     std::vector<unsigned int> res(nCols-mMin);
+    //     for(unsigned int i = 0; i < nCols-mMin; ++i)
+    //     {
+    //         res[i] = nCols - ( mMin + i + 1 ) ;
+    //     }
+    //     return res;
+    // }
+
     std::vector<unsigned int> result = maxSubProj;
     unsigned int diff = 0;
     if (mMin < s-1){

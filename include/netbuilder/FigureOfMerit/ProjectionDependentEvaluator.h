@@ -25,10 +25,9 @@ namespace NetBuilder { namespace FigureOfMerit {
  * Class to implement the evaluation of specific projection-dependent weighted figure of merit where
  * the merits of the subprojections of order one less are used to compute the merit of a bigger projection, for instance
  * the t-value of subprojections. 
- * @tparam PST Point set type: unilevel or multilevel
- * @tparam PROJDEP Template parameter representing the projection-dependent merit. The template parameter is the point set type.
+ * @tparam PROJDEP Template parameter representing the projection-dependent merit.
  */ 
-template <PointSetType PST, template <PointSetType> class PROJDEP>
+template <typename PROJDEP>
 class ProjectionDependentEvaluator : public FigureOfMeritEvaluator 
 {
 
@@ -39,7 +38,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          * Constructor.
          * @param figure Pointer to the figure of merit.
          */ 
-        ProjectionDependentEvaluator(WeightedFigureOfMerit<PROJDEP<PST>>* figure):
+        ProjectionDependentEvaluator(WeightedFigureOfMerit<PROJDEP>* figure):
                     m_figure(figure),
                     m_dimension(0),
                     m_maxDimension(0),
@@ -74,7 +73,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          */ 
         virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
         {
-            unsigned int nLevels = PROJDEP<PST>::numLevels(net); // determine the number of levels
+            unsigned int nLevels = PROJDEP::numLevels(net); // determine the number of levels
 
             auto acc = m_figure->accumulator(std::move(initialValue));
 
@@ -83,9 +82,9 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             {   
                 Real weight = it->getWeight();
                 
-                if (PROJDEP<PST>::size(it->getSubProjCombination()) < nLevels) // resize the subprojections combination if required
+                if (PROJDEP::size(it->getSubProjCombination()) < nLevels) // resize the subprojections combination if required
                 {
-                    PROJDEP<PST>::resize(it->getSubProjCombination(), nLevels);
+                    PROJDEP::resize(it->getSubProjCombination(), nLevels);
                 }
 
                 it->updateSubProjCombination(); // update the subprojection combination
@@ -160,10 +159,10 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
         struct ProjectionNode
         {
             /// Type of merit value storage.
-            typedef typename PROJDEP<PST>::Merit MeritStorage;
+            typedef typename PROJDEP::Merit MeritStorage;
 
             /// Type of the combination of the merits of the subprojections.
-            typedef typename PROJDEP<PST>::SubProjCombination SubProjCombination; 
+            typedef typename PROJDEP::SubProjCombination SubProjCombination; 
 
             /** 
              * Constructor.
@@ -258,15 +257,15 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             {
                 if (getCardinal() > 1)
                 {
-                    PROJDEP<PST>::setToZero(m_subProjCombination);
+                    PROJDEP::setToZero(m_subProjCombination);
                     for (auto const* m : m_mothersNodes)
                     {
                         if (m->getMaxDimension() < m_dimension)
                         {
-                            PROJDEP<PST>::update(m->getMeritMem(), m_subProjCombination);
+                            PROJDEP::update(m->getMeritMem(), m_subProjCombination);
                         }
                         else{
-                            PROJDEP<PST>::update(m->getMeritTmp(), m_subProjCombination);
+                            PROJDEP::update(m->getMeritTmp(), m_subProjCombination);
                         } 
                     }
                 }
@@ -416,7 +415,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             }
         }
 
-        WeightedFigureOfMerit<PROJDEP<PST>> * m_figure;
+        WeightedFigureOfMerit<PROJDEP> * m_figure;
 
         unsigned int m_dimension; 
         unsigned int m_maxDimension;

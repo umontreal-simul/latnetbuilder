@@ -42,7 +42,7 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int m = 31 ;
+    unsigned int m = 10 ;
     unsigned int maxDim = 7;
 
     for(unsigned int s = 1; s < maxDim; ++s)

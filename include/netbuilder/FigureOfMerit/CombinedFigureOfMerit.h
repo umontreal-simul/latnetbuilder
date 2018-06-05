@@ -119,7 +119,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  */ 
                 virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
-                    auto acc = m_figure->accumulator(std::move(0)); // create the accumulator from the initial value
+                    auto acc = m_figure->accumulator(0); // create the accumulator from the initial value
 
                     Real weight; // weight of the figure currently evaluated
 
