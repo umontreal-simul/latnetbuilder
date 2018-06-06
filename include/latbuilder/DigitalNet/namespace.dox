@@ -1,8 +1,0 @@
-namespace LatBuilder {
-/**
- * Digital nets.
- * 
- * 
- */
-namespace DigitalNet {
-}}

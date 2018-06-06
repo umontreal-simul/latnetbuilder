@@ -167,10 +167,9 @@ struct FigureParser
 
         if (nameParsing.size()==2)
         {
-            name = nameParsing[0];
-            unsigned int nbBits = boost::lexical_cast<unsigned int>(nameParsing[1]);
-            if (name == "BitEquidistribution")
+            if (nameParsing[0] == "BitEquidistribution")
             {
+                unsigned int nbBits = boost::lexical_cast<unsigned int>(nameParsing[1]);
                 vecFigures.push_back(std::make_unique<FigureOfMerit::BitEquidistribution<PST>>(nbBits, importance, std::numeric_limits<Real>::infinity(),  commandLine.m_combiner));
                 vecWeights.push_back(1);
                 return;

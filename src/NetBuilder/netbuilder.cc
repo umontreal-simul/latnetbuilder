@@ -24,6 +24,7 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/PointSetTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
+#include "netbuilder/Parser/OutputFormat.h"
 #include "netbuilder/Task/BaseTask.h"
 
 #include "latbuilder/Parser/Common.h"
@@ -33,17 +34,28 @@
 // using TextStream::operator<<;
 
 namespace NetBuilder{
-static unsigned int merit_digits_displayed = 0; 
+static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const NetBuilder::Task::BaseTask& task, NetBuilder::OutputFormat outputFormat = OutputFormat::CLI)
-   {
-   unsigned int old_precision = (unsigned int) std::cout.precision();
-   if (merit_digits_displayed)
-      std::cout.precision(merit_digits_displayed);
-   std::cout << task.outputNet(outputFormat) << "merit: " << task.outputMeritValue() << std::endl;
-   if (merit_digits_displayed)
-      std::cout.precision(old_precision);
-   }
+void TaskOutput(const Task::BaseTask &task, std::vector<Parser::OutputFormatParameters> vecOutputFormatParameters)
+{
+  unsigned int old_precision = (unsigned int)std::cout.precision();
+  if (merit_digits_displayed){
+    std::cout.precision(merit_digits_displayed);
+  }
+  std::cout << task.outputNet(OutputFormat::CLI) << "merit: " << task.outputMeritValue() << std::endl;
+
+  for (Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
+    ofstream outFile;
+    std::string fileName = outputFormatParameters.file();
+    outFile.open(fileName);
+    outFile << task.outputNet(outputFormatParameters.outputFormat());
+    outFile.close();
+  }
+  
+  if (merit_digits_displayed){
+    std::cout.precision(old_precision);
+  }
+}
 
 boost::program_options::options_description
 makeOptionsDescription()
@@ -133,7 +145,13 @@ makeOptionsDescription()
   //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
   //   "  even[:<min-level>[:<max-level>]] (default)\n")
    ("no-early-abort,e", "(optional) disable early abortion in computations.")
-   ("GUI,g","(optional) output format for the GUI")
+    ("output-format,g", po::value< std::vector<std::string> >()->composing(),
+    "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
+   "  file:\"<file>\":format\n"
+   "  available output formats\n"
+   "  - ssj \n"
+   "  - cli \n"
+   "  - gui \n")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
    "(can be useful to obtain different results from random constructions)\n");
@@ -223,13 +241,13 @@ int main(int argc, const char *argv[])
 
         auto repeat = opt["repeat"].as<unsigned int>();
 
-        NetBuilder::OutputFormat outputFormat;
-        if (opt.count("GUI")) {
-          outputFormat = NetBuilder::OutputFormat::GUI;
+        // NetBuilder::OutputFormat outputFormat;
+        std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
+        if (opt.count("output-format") >= 1){
+          std::vector<Parser::OutputFormatParameters> outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
         }
-        else
-        {
-          outputFormat = NetBuilder::OutputFormat::CLI;
+        else{
+          outputFormatParameters = {};
         }
 
         // global variable
@@ -280,7 +298,7 @@ int main(int argc, const char *argv[])
       t0 = high_resolution_clock::now();\
       task->execute();\
       t1 = high_resolution_clock::now();\
-      TaskOutput(*task, outputFormat);
+      TaskOutput(*task, outputFormatParameters);
       auto dt = duration_cast<duration<double>>(t1 - t0);
       std::cout << std::endl;
       std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;

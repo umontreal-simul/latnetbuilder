@@ -37,6 +37,7 @@ namespace LatBuilder
 
 /// Scalar unsigned integer .
 typedef unsigned long uInteger;
+const int LENGTH_UINTEGER = 64;
 
 /// Scalar floating-point type.
 typedef double Real;

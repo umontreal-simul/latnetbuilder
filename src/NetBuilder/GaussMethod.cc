@@ -116,7 +116,7 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     unsigned int previousIndSmallestInvertible = nLevel;
     
 
-    for (unsigned int k=nRows-maxSubProj[maxSubProj.size()-1]; k >= s; k--){
+    for (unsigned int k=nRows-maxSubProj.back(); k >= s; k--){
         if (verbose > 0){
             std::cout << "begin iteration " << k << std::endl;
         }

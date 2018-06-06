@@ -16,10 +16,13 @@
 
 #include "latbuilder/Parser/PointSetType.h"
 #include "latbuilder/Parser/Lattice.h"
-#include "latbuilder/Parser/CommandLine.h"  
-#include "latbuilder/Parser/OutputPoly.h" 
+#include "latbuilder/Parser/CommandLine.h"   
 #include "latbuilder/TextStream.h"
 #include "latbuilder/Types.h"
+
+#include "netbuilder/DigitalNet.h"
+#include "netbuilder/Parser/OutputFormat.h"
+#include "netbuilder/Types.h"
 
 #include <fstream>
 #include <chrono>
@@ -133,11 +136,13 @@ makeOptionsDescription()
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
    "(can be useful to obtain different results from random constructions)\n")
-   ("output-poly,g", po::value<std::string>()->default_value("file:$HOME/output.out"),
+    ("output-format,g", po::value< std::vector<std::string> >()->composing(),
     "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
    "  file:\"<file>\":format\n"
    "  available output formats\n"
-   "  - ssj ")
+   "  - ssj \n"
+   "  - cli \n"
+   "  - gui \n")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -160,11 +165,6 @@ parse(int argc, const char* argv[])
       std::cout << desc << std::endl;
       std::exit (0);
    }
-
-  //  if (opt.count("version")) {
-  //     std::cout << "Lattice Builder " << LATBUILDER_VERSION << std::endl;
-  //     std::exit (0);
-  //  }
 
   if (opt.count("combiner") < 1 && opt["embedded-lattice"].as<std::string>() == "true"){
     throw std::runtime_error("--combiner must be specified for embedded (try --help)");
@@ -236,7 +236,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
 
 
 template <PointSetType PST>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& cmd, bool quiet, unsigned int repeat, const Parser::OutputPolyParameters& outPoly)
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& cmd, bool quiet, unsigned int repeat, const std::vector<NetBuilder::Parser::OutputFormatParameters>& vecOutputFormatParameters)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -249,11 +249,6 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
       search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
       std::cout << *search << std::endl;
    }
-   ofstream outPolyFile;
-    if(outPoly.doOutput()){
-        
-        outPolyFile.open (outPoly.file());
-     }
 
    for (unsigned int i = 0; i < repeat; i++) {
 
@@ -265,15 +260,16 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
         auto t1 = high_resolution_clock::now();
 
         unsigned int old_precision = (unsigned int) std::cout.precision();
-        if (merit_digits_displayed)
-            std::cout.precision(merit_digits_displayed);
+        if (merit_digits_displayed){
+          std::cout.precision(merit_digits_displayed);
+        }
        const auto lat = search->bestLattice();
       
 
         if (not quiet) {
         auto dt = duration_cast<duration<double>>(t1 - t0);
            std::cout << std::endl;
-           std::cout << "BEST LATTICE: " << search->bestLattice() << ": " << search->bestMeritValue() << std::endl;
+           std::cout << "BEST LATTICE: " << lat << ": " << search->bestMeritValue() << std::endl;
            std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
         }
         else {
@@ -282,25 +278,25 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
               std::cout << "\t" << a;
            std::cout << "\t" << search->bestMeritValue() << std::endl;
         }
-        if(outPoly.doOutput()){
-           LatBuilder::DigitalNet::PolynomialLatticeBase2 PolLat (lat.sizeParam().modulus(),lat.gen());
-           PolLat.setOutputFormat(outPoly.outputFormat());
-           
-           outPolyFile << PolLat ;
-           std::cout << std::endl;
-           std::cout << "BEST MATRICES" << std::endl;
-           std::cout << PolLat ;
-         }
-       outPolyFile.close();
-
         
-        if (merit_digits_displayed)
-            std::cout.precision(old_precision);
+        if (i == 0){ 
+          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net(lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
 
+          for (NetBuilder::Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
+            std::string fileName = outputFormatParameters.file();
+            ofstream outFile;
+            outFile.open(fileName);
+            outFile << net.format(outputFormatParameters.outputFormat());
+            outFile.close();
+          }
+        }
+        
+        if (merit_digits_displayed){
+          std::cout.precision(old_precision);
+        }
+          
         search->reset();
     }
-    if(outPoly.doOutput())
-     outPolyFile.close();
 
    if (not quiet)
       std::cout << separator << std::endl;
@@ -345,7 +341,6 @@ int main(int argc, const char *argv[])
             else{
               cmd.combiner = "level:max";
             }
-            
 
             cmd.weightsPowerScale = 1.0;
             if (opt.count("weights-power") >= 1) {
@@ -421,7 +416,13 @@ int main(int argc, const char *argv[])
 
             PointSetType latType = Parser::PointSetType::parse(opt["embedded-lattice"].as<std::string>());
 
-            Parser::OutputPolyParameters outPoly = Parser::OutputPoly::parse(opt["output-poly"].as<std::string>());
+            std::vector<NetBuilder::Parser::OutputFormatParameters> outPoly;
+            if (opt.count("output-format") >= 1){
+              outPoly = NetBuilder::Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<string>>());
+            }
+            else{
+              outPoly = {};
+            }
 
             if (latType == PointSetType::UNILEVEL){
                executePolynomial< PointSetType::UNILEVEL> (cmd, quiet, repeat, outPoly);
