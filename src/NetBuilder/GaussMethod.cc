@@ -27,7 +27,7 @@
 
 namespace NetBuilder {
 
-unsigned int iteration_on_k(std::vector<GeneratingMatrix>& baseMatrices, unsigned int k, unsigned int mMin, int verbose){
+unsigned int iteration_on_k(std::vector<GeneratingMatrix>& baseMatrices, unsigned int k, int verbose){
     unsigned int nCols = baseMatrices[0].nCols();
     unsigned int s = (unsigned int) baseMatrices.size();
     
@@ -98,7 +98,6 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     unsigned int s = (unsigned int) baseMatrices.size();
 
     unsigned int nLevel = (unsigned int) maxSubProj.size();
-    ProgressiveRowReducer rowReducer = ProgressiveRowReducer();
     
     if (s == 1){    // does not make sense when s == 1
         return std::vector<unsigned int>(nCols-mMin);
@@ -127,11 +126,11 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     unsigned int previousIndSmallestInvertible = nLevel;
     
 
-    for (unsigned int k=nRows-maxSubProj[maxSubProj.size()-1]; k >= s; k--){
+    for (unsigned int k=nRows-maxSubProj.back(); k >= s; k--){
         if (verbose > 0){
             std::cout << "begin iteration " << k << std::endl;
         }
-        unsigned int smallestFullRankIndex = iteration_on_k(baseMatrices, k, mMin, verbose-1);
+        unsigned int smallestFullRankIndex = iteration_on_k(baseMatrices, k, verbose-1);
         if (verbose > 0){
             std::cout << "after iteration " << k << ", smallestFullRankIndex : " << smallestFullRankIndex << std::endl;
         }

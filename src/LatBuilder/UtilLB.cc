@@ -24,14 +24,15 @@ namespace LatBuilder
 //===============================================================================
 Polynomial PolynomialFromInt(uInteger x)
 {
-   Polynomial P; 
+   Polynomial P;
+   P.SetLength(LENGTH_UINTEGER); 
    uInteger y=x;
    long i=0;
-   while(y>0){
-      P += Polynomial(INIT_MONO, i, y%2);
-      i++;
-      y /= 2;
-   }
+    do{
+       P[i++] = y%2;
+   } while(y >>= 1);
+    
+    P.normalize();
     return P;
 }
 
@@ -44,10 +45,10 @@ uInteger IndexOfPolynomial(Polynomial P)
    
    for (int i = 0; i <= deg(P); i++)
     { 
-       if(IsOne(coeff(P,i))){
+        if(IsOne(coeff(P,i))){
             x+= q;
        }
-       q *= 2;
+       q <<= 1;
     }
     return x;
 }

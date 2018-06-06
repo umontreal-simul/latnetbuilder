@@ -66,7 +66,7 @@ typedef std::function<Real (const RealVector&)> Combiner;
 /// polynomial over Z/2Z type 
 typedef LatBuilder::Polynomial Polynomial;
 
-enum class OutputFormat { GUI, CLI};
+enum class OutputFormat { GUI, CLI, SSJ};
 
 //@}
 }

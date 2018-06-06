@@ -257,6 +257,49 @@ class DigitalNetConstruction : public DigitalNet
          */ 
         virtual std::string format(OutputFormat outputFormat) const
         {
+            
+            // if (outputFormat == OutputFormat::SSJ){
+            //     std::ostringstream out;
+            //     out << "2  //Base" << std::endl;
+            //     out << numColumns() << "  //Number of columns" << std::endl;
+            //     out << numRows() << "  //Number of rows" << std::endl;
+            //     out << numPoints() << "  //Number of points" << std::endl;
+            //     out << dimension() << "  //dimension of points" << std::endl;
+            //     out << std::endl;
+            //     for(uInteger j=0; j<dimension(); j++){
+            //         out << "//dim = " << j+1 << std::endl;
+            //         std::vector<uInteger> cols = generatingMatrix(j+1).getColsReverse();
+            //         for(uInteger c=0; c<numColumns(); c++){
+            //             uInteger x = cols[c];
+            //             uInteger mult = intPow(2,30);
+            //             uInteger res = 0;
+            //             while(x > 0){
+            //                 res += (x%2) * mult ;
+            //                 x /= 2;
+            //                 mult /= 2;
+            //             }
+            //             out << res << std::endl;
+            //         }
+            //         out << std::endl;
+            //     }
+            //     return out.str();
+            // }
+            if (outputFormat == OutputFormat::SSJ){
+                std::ostringstream out;
+                out << "2  //Base" << std::endl;
+                out << numColumns() << "  //Number of columns" << std::endl;
+                out << numRows() << "  //Number of rows" << std::endl;
+                out << numPoints() << "  //Number of points" << std::endl;
+                out << dimension() << "  //dimension of points" << std::endl;
+                out << std::endl;
+                for(unsigned int dim = 1; dim <= m_dimension; ++dim)
+                {
+                    out << "//dim = " << dim << std::endl;
+                    out << generatingMatrix(dim) << std::endl;
+                }
+                return out.str();
+            }
+
             std::string res = ConstructionMethod::format(m_genValues,m_designParameter,outputFormat);
             if (outputFormat==OutputFormat::GUI)
             {
@@ -323,14 +366,8 @@ class DigitalNetConstruction : public DigitalNet
         {};
 };
 
-
-// Override of extendSize method in the case of Sobol construction.
 template<>
-void DigitalNetConstruction<NetConstruction::SOBOL>::extendSize(unsigned int nRows, unsigned int nCols) const
-{
-    assert(nRows == nCols);
-    ConstructionMethod::extendGeneratingMatrices(nRows, nCols, m_generatingMatrices, m_genMatsComputationData);
-}
+void DigitalNetConstruction<NetConstruction::SOBOL>::extendSize(unsigned int nRows, unsigned int nCols) const;
 
 }
 

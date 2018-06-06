@@ -30,8 +30,8 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {        
-    int m = 20;
-    int s = 10;
+    int m = 30;
+    int s = 4;
     int nLevel=m;
 
     typedef NetConstructionTraits<NetConstruction::SOBOL> ConstructionMethod;
@@ -58,29 +58,29 @@ int main(int argc, const char *argv[])
     
 
     clock_t t1,t2, t3, t4;
-    float diff1, diff2 = 0;
+    double diff1, diff2 = 0;
 
     std::vector<int> iNew;
     std::vector<int> iNew2;
     std::vector<unsigned int> iOld; 
     std::vector<unsigned int> maxSubProj (nLevel, 0);
     for (int i=0; i<10; i++){
-        t1=clock();
-        for (int level=nLevel-1; level>=0; level--){
-            iNew.push_back(SchmidMethod::computeTValue(v[level], 0, 0));
-        }
-        t2=clock();
+        // t1=clock();
+        // // for (int level=nLevel-1; level>=0; level--){
+        // //     iNew.push_back(SchmidMethod::computeTValue(v[level], 0, 0));
+        // // }
+        // t2=clock();
         t3=clock();
         iOld = GaussMethod::computeTValue(v[0], m-nLevel, maxSubProj, 0);
         t4=clock();
-        diff1 += ((float)t2-(float)t1);
-        diff2 += ((float)t4-(float)t3);
+        diff1 += ((double)t2-(double)t1);
+        diff2 += ((double)t4-(double)t3);
     }
-    std::cout << "Schmid method s=" << s << ", m=" << m << ", time= " << diff1 <<std::endl;
-    for (int level=0; level<nLevel; level++){
-        std::cout << iNew[level] << " ";
-    }
-    std::cout << std::endl;
+    // std::cout << "Schmid method s=" << s << ", m=" << m << ", time= " << diff1 <<std::endl;
+    // for (int level=0; level<nLevel; level++){
+    //     std::cout << iNew[level] << " ";
+    // }
+    // std::cout << std::endl;
 
     std::cout << "Gauss method  s=" << s << ", m=" << m << ", time= " << diff2 <<std::endl;
     for (int level=0; level<nLevel; level++){
