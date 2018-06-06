@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file
+ * This file defines a class which computes the rank of matrices in \f$ F_2 \f$ using the gaussian elimination
+ */ 
+
 #ifndef NETBUILDER__PROGRESSIVE_ROW_REDUCER_H
 #define NETBUILDER__PROGRESSIVE_ROW_REDUCER_H
 

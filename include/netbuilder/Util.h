@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file
+ * Various utility functions
+ */ 
+
 #ifndef NETBUILDER__UTIL_H
 #define NETBUILDER__UTIL_H
 

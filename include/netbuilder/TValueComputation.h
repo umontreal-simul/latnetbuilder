@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file
+ * This file defines several methods to compute the t-value of a digital net in base 2
+ */ 
+
 #ifndef NETBUILDER__TVALUE_COMPUTATION_H
 #define NETBUILDER__TVALUE_COMPUTATION_H
 

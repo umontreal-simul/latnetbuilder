@@ -18,7 +18,7 @@
 #define LATBUILDER__TYPES_H
 
 /** \file
- * Basic type definitions.
+ * Basic type definitions of LatBuilder.
  */
 
 #include <vector>

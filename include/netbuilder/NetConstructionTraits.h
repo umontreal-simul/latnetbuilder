@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file 
+ * This file contains the various methods used to construct generating matrices of digital nets
+ */
+ 
 #ifndef NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 #define NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 

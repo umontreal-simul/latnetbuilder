@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file
+ * This file contains the definition of merit accumulators.
+ */ 
+
 #ifndef NETBUILDER__ACCUMULATOR_H
 #define NETBUILDER__ACCUMULATOR_H
 

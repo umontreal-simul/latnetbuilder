@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file
+ * This file contains the definition of generating matrices in base 2
+ */ 
+
 #ifndef NETBUILDER__GENERATING_MATRIX_H
 #define NETBUILDER__GENERATING_MATRIX_H
 

@@ -18,7 +18,7 @@
 #define NETBUILDER__TYPES_H
 
 /** \file
- * Basic type definitions.
+ * Basic type definitions of NetBuilder.
  */
 
 #include <vector>

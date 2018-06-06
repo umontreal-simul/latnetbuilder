@@ -14,6 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file 
+ * This file contains the definition of a class which computes iteratively all the compositons of an integer \f$ n \f$ in 
+ * \f$ k \f$ parts.
+ */ 
+
 #include <vector>
 #include <utility>
 
