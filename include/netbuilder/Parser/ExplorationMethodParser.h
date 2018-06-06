@@ -25,7 +25,7 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/NetDescriptionParser.h"
 
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 #include "netbuilder/Task/CBCSearch.h"
 #include "netbuilder/Task/Eval.h"
 #include "netbuilder/Task/ExhaustiveSearch.h"
@@ -58,7 +58,7 @@ class BadExplorationMethod : public lbp::ParserError
 template<NetConstruction NC, PointSetType PST>
 struct ExplorationMethodParser
 {
-    typedef std::unique_ptr<Task::BaseTask> result_type;
+    typedef std::unique_ptr<Task::Task> result_type;
 
     static result_type parse(Parser::CommandLine<NC, PST>& commandLine)
     {

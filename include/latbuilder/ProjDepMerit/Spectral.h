@@ -147,6 +147,8 @@ namespace detail {
 
       LatticeTester::Reducer reducer(lattice);
 
+      reducer.preRedDieter((int) projection.size());
+
       if (not reducer.shortestVector(lattice.getNorm())) {
          // reduction failed
          return std::numeric_limits<Real>::infinity();
@@ -154,11 +156,9 @@ namespace detail {
 
 
       // get length of shortest vector under L2NORM
-      // lattice.getPrimalBasis ().updateScalL2Norm (1);    # TODO
       lattice.updateScalL2Norm (0);
 
       // square length
-      // Real sqlength = lattice.getPrimalBasis().getVecNorm(1);  # TODO
       Real sqlength = lattice.getVecNorm(0); 
 
       // normalization

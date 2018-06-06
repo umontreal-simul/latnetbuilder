@@ -176,7 +176,7 @@ public:
     * \param power   \f$m\f$
     * \param checkPrime    If \c true, checks if the base is actually prime.
     *
-    * The algorithm is described in \cite mCOH93a .
+    * The algorithm is described in \cite mCOH93a . TODO
     */
    static value_type smallestGenerator(Modulus base, Level power, bool checkPrime = true);
 

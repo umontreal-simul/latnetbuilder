@@ -43,7 +43,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
     public:
 
         /** 
-         * Construct a projection-dependent merit based on the resolution-gap of projections.
+         * Constructs a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
@@ -127,7 +127,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
     public:
 
         /** 
-         * Construct a projection-dependent merit based on the resolution-gap of projections.
+         * Constructs a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Combiner used to combine multilevel merits.
          */   

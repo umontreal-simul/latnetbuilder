@@ -24,6 +24,9 @@
 
 namespace NetBuilder { namespace Task {
 
+/**
+ * Class to explorer first exhaustively and then randomly a search space using the CBC search algorithm. 
+ */ 
 template<NetConstruction NC>
 class MixedCBCExplorer
 {
@@ -31,6 +34,13 @@ class MixedCBCExplorer
 
     public:
 
+        /** Constructor.
+         * @param dimension Maximal dimension of the explorer.
+         * @param designParameter Design parameter of the search space.
+         * @param maxFullDimension Maximum dimension for which the search is exhaustive.
+         * @param nbTries Number of random choices of generating values by dimension after dimension \c maxFullDimension.
+         * @param verbose Verbosity level.
+         */
         MixedCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries, int verbose = 0):
             m_dimension(dimension),
             m_maxFullDimension(maxFullDimension),
@@ -38,8 +48,9 @@ class MixedCBCExplorer
             m_fullExplorer(new FullCBCExplorer<NC>(dimension,designParameter, verbose))
         {};
 
-        ~MixedCBCExplorer() = default;
-
+        /**
+         * Returns whether the dimension \c dim is fully explored
+         */ 
         bool isOver(unsigned int dim)
         {
             if (dim <= m_maxFullDimension)
@@ -52,6 +63,9 @@ class MixedCBCExplorer
             }
         }
 
+        /**
+         * Returns the next generating values of dimension \c dim
+         */ 
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
             if (dim <= m_maxFullDimension)
@@ -64,18 +78,27 @@ class MixedCBCExplorer
             } 
         }
 
+        /**
+         * Resets the explorer to the first dimension
+         */ 
         void reset() 
         {
             m_randExplorer.reset();
             m_fullExplorer.reset();
         }
 
+        /**
+         * Sets the verbosity level of the explorer.
+         */ 
         void setVerbose(int verbose)
         {
             m_randExplorer->setVerbose(verbose);
             m_fullExplorer->setVerbose(verbose);
         }
 
+        /**
+         * Switches the explorer to dimension \c dim.
+         */ 
         void switchToDimension(unsigned int dim)
         {
             if (dim <= m_maxFullDimension)

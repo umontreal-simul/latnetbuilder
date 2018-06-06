@@ -21,9 +21,8 @@
 
 namespace NetBuilder { namespace Task {
 
-/** Class for CBC Search tasks.
- * Template template parameter EXPLORER must implement the following:
- * 
+/** 
+ * Class for exhaustive search tasks.
  */ 
 template < NetConstruction NC>
 class ExhaustiveSearch : public Search<NC>
@@ -31,11 +30,12 @@ class ExhaustiveSearch : public Search<NC>
     public:
     
         /** Constructor.
-         * @param dimension is the dimension of the searched net
-         * @param nRows is the number of rows of the generating matrices
-         * @param nCols is the number of columns of the generating matrices
-         * @param figure is a std::unique_ptr to the figure of merit to use
-         */ 
+         * @param dimension Dimension of the searched net.
+         * @param designParameter Design parameter of the searched net.
+         * @param figure Figure of merit used to compare nets.
+         * @param verbose Verbosity level.
+         * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
+         */
         ExhaustiveSearch(   Dimension dimension, 
                             typename NetConstructionTraits<NC>::DesignParameter designParameter,
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
@@ -44,7 +44,10 @@ class ExhaustiveSearch : public Search<NC>
             Search<NC>(dimension, designParameter, std::move(figure), verbose, earlyAbortion)
         {};
 
-        /** Default move constructor. */
+        /** 
+         * Default move constructor. 
+         * Deletes the implicit copy constructor.
+         */
         ExhaustiveSearch(ExhaustiveSearch&&) = default;
 
         /**

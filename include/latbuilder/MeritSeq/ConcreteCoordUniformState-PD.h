@@ -91,7 +91,13 @@ public:
    void reset();
 
    /**
-    * \copydoc CoordUniformState::update()
+    * Updates the current state using the specified row of the permuted matrix      
+    * of kernel values.           
+    * This corresponds to appending a component \f$a_j\f$ to the generating      
+    * vector \f$\boldsymbol a = (a_1, \dots, a_{j-1})\f$.      
+    * To each possible value of \f$a_j\f$ corresponds a distinct row of the      
+    * matrix \f$\boldsymbol\Omega\f$ of kernel values.           
+    * This increases the internal dimension counter.
     *
     * Computes
     * \f[
@@ -103,7 +109,7 @@ public:
    void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen);
 
    /**
-    * \copydoc CoordUniformState::weightedState()
+    * Computes and returns the weighted state vector \f$\boldsymbol q_s\f$.
     *
     * Computes
     * \f[
@@ -115,7 +121,9 @@ public:
     */
    RealVector weightedState() const;
 
-   /// \copydoc CoordUniformState::clone()
+    /**
+    * Returns a copy of this instance.
+    */
    std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>> clone() const
    { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 

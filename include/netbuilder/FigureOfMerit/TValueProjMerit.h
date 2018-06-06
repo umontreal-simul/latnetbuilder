@@ -162,7 +162,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
         typedef std::vector<unsigned int> SubProjCombination;
 
         /**
-         * Construct a projection-dependent merit based on the resolution of projections.
+         * Constructs a projection-dependent merit based on the resolution of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Combiner used to combine multilevel merits.
          */  

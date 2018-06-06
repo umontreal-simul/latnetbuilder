@@ -24,6 +24,9 @@
 
 namespace NetBuilder { namespace Task {
 
+/**
+ * Class to explorer exhaustively a search space using the CBC search algorithm. 
+ */ 
 template <NetConstruction NC>
 class FullCBCExplorer
 {
@@ -32,6 +35,12 @@ class FullCBCExplorer
     public:
 
 
+        /**
+         * Constructor.
+         * @param dimension Maximal dimension of the explorer.
+         * @param designParameter Design parameter of the search space.
+         * @param verbose Verbosity level.
+         */ 
         FullCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, int verbose = 0):
             m_dimension(dimension),
             m_designParameter(std::move(designParameter)),
@@ -40,11 +49,17 @@ class FullCBCExplorer
             m_verbose(verbose)
         {};
 
+        /**
+         * Returns whether the dimension \c dim is fully explored
+         */ 
         bool isOver(unsigned int dim) 
         {
             return m_state==m_data.size() && m_currentDim<=m_dimension;
         }
 
+        /**
+         * Returns the next generating values of dimension \c dim
+         */ 
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
             m_state+=1;
@@ -56,16 +71,25 @@ class FullCBCExplorer
             return m_data[m_state-1];
         }
 
+        /**
+         * Resets the explorer to the first dimension
+         */ 
         void reset()
         {
             switchToDimension(1);
         }
 
+        /**
+         * Sets the verbosity level of the explorer.
+         */ 
         void setVerbose(int verbose)
         {
             m_verbose = verbose;
         }
 
+        /**
+         * Switches the explorer to dimension \c dim.
+         */ 
         void switchToDimension(unsigned int dim)
         {
             m_currentDim = dim;

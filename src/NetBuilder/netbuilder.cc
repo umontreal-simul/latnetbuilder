@@ -24,7 +24,7 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/PointSetTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/SizeParam.h"
@@ -35,7 +35,7 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0; 
 
-void TaskOutput(const NetBuilder::Task::BaseTask& task, NetBuilder::OutputFormat outputFormat = OutputFormat::CLI)
+void TaskOutput(const NetBuilder::Task::Task& task, NetBuilder::OutputFormat outputFormat = OutputFormat::CLI)
    {
    unsigned int old_precision = (unsigned int) std::cout.precision();
    if (merit_digits_displayed)
@@ -256,7 +256,7 @@ int main(int argc, const char *argv[])
 
         std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
-        std::unique_ptr<NetBuilder::Task::BaseTask> task;
+        std::unique_ptr<NetBuilder::Task::Task> task;
 
         if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)

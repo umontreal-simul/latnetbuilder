@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include "latbuilder/SizeParam.h"
@@ -54,7 +54,7 @@ struct CommandLine {
    std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
    int m_verbose;
 
-   std::unique_ptr<Task::BaseTask> parse();
+   std::unique_ptr<Task::Task> parse();
 };
 
 }
@@ -67,7 +67,7 @@ struct CommandLine {
 
 namespace NetBuilder { namespace Parser {
 template <NetConstruction NC, PointSetType PST>
-std::unique_ptr<NetBuilder::Task::BaseTask>
+std::unique_ptr<NetBuilder::Task::Task>
 CommandLine<NC, PST>::parse()
 {
       namespace lbp = LatBuilder::Parser;

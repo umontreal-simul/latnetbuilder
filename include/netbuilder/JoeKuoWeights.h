@@ -26,9 +26,9 @@
 namespace NetBuilder {
 
 /**
- * Class to represent the weights used in 
+ * Weights used by Joe and Kuo. Ref: 
  * S. Joe and F. Y. Kuo, <EM> Constructing Sobol sequences with better two-dimensional projections </EM>, 
- * SIAM J. Sci. Comput. <B> 30 </B>, 2635-2654 (2008).
+ * SIAM J. Sci. Comput. <B> 30 </B>, 2635-2654 (2008). TODO
  */ 
 class JoeKuoWeights : public LatticeTester::Weights {
 

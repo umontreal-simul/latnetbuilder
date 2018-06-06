@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include <boost/signals2.hpp>
@@ -29,7 +29,7 @@
 
 namespace NetBuilder { namespace Task {
 
-class Eval : public BaseTask 
+class Eval : public Task 
 {
     public:
 
