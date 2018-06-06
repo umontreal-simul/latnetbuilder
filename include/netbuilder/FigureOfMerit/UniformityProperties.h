@@ -26,7 +26,7 @@ namespace NetBuilder { namespace FigureOfMerit {
 /** 
  * Class which represents uniformity properties for digital sequences. Uniformity properties generalize the so-called Property A and Property A'
  * introduced by Sobol.
- * Ref:
+ * Ref: TODO
  *  Sobol, I. M. (1976) "Uniformly distributed sequences with an additional uniform property". Zh. Vych. Mat. Mat. Fiz. 16: 1332–1337 (in Russian); U.S.S.R. Comput. Maths. Math. Phys. 16: 236–242 (in English).
  * A digital sequence in base 2 in dimension \f$ s \f$ is said to have the \f$ k \f$ bits uniformity property if its \f$ 2^s \f$ first points are
  * \f$ k \f$ bit-equidistributed.
@@ -45,7 +45,6 @@ class UniformityProperty : public FigureOfMerit{
         UniformityProperty(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity()):
             m_nbBits(nbBits),
             m_weight(weight),
-            m_binOp(realToBinOp(normType)),
             m_normType(normType),
             m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};    
@@ -59,13 +58,13 @@ class UniformityProperty : public FigureOfMerit{
          * Creates a new accumulator.
          * @param initialValue Initial accumulator value.
          */
-        Accumulator accumulator(Real initialValue) const
-        { return Accumulator(std::move(initialValue), m_binOp); }
+        virtual Accumulator accumulator(Real initialValue) const override
+        { return Accumulator(std::move(initialValue), m_normType); }
 
         /**
          * Returns a std::unique_ptr to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
+        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {
             return std::make_unique<UniformityPropertyEvaluator>(this);
         }
@@ -172,7 +171,7 @@ class UniformityProperty : public FigureOfMerit{
                 /**
                  * Tells the evaluator that no more net will be evaluate for the current dimension,
                  * store information about the best net for the dimension which is over and prepare data structures
-                 * for the nest dimension.
+                 * for the next dimension.
                  */ 
                 virtual void prepareForNextDimension() override
                 {
@@ -191,13 +190,13 @@ class UniformityProperty : public FigureOfMerit{
 
         unsigned int m_nbBits;
         Real m_weight;
-        BinOp m_binOp;
         Real m_normType;
         Real m_expNorm;
 };
 
 /**
- * Special case of Property A.
+ * Special case of NetBuilder::UniformityProperty for one equidistribution bit. This figure was introduced by Sobol'
+ * as the A-Property.
  */ 
 class AProperty : public UniformityProperty {
     public:
@@ -207,7 +206,8 @@ class AProperty : public UniformityProperty {
 };
 
 /**
- * Special case of Property A'.
+ * Special case of NetBuilder::UniformityProperty for one equidistribution bit. This figure was introduced by Sobol'
+ * as the A'-Property.
  */ 
 class APrimeProperty : public UniformityProperty {
     public:

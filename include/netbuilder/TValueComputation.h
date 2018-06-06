@@ -34,6 +34,7 @@ namespace NetBuilder {
          * t-values of the subprojections is \c maxTValuesSubProj.
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
 
@@ -42,6 +43,7 @@ namespace NetBuilder {
          * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose)
         {
@@ -54,6 +56,7 @@ namespace NetBuilder {
          * @param baseMatrices Generating matrices.
          * @param mMin Minimul level.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int mMin, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };
@@ -71,6 +74,7 @@ namespace NetBuilder {
          * t-values of the subprojections is \c maxTValuesSubProj.
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
 
@@ -79,6 +83,7 @@ namespace NetBuilder {
          * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };

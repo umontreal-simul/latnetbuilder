@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/DigitalNet.h"
-#include "netbuilder/Util.h"
+#include "netbuilder/Accumulator.h"
 
 #include "latticetester/Weights.h"
 #include "latticetester/Coordinates.h"
@@ -136,7 +136,7 @@ class FigureOfMeritEvaluator
         /**
          * Tells the evaluator that no more net will be evaluate for the current dimension,
          * store information about the best net for the dimension which is over and prepare data structures
-         * for the nest dimension.
+         * for the next dimension.
          */ 
         virtual void prepareForNextDimension() = 0;
 
@@ -168,6 +168,12 @@ class FigureOfMerit{
          * Returns a std::unique_ptr to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() = 0  ;
+
+        /**
+         * Creates a new accumulator.
+         * @param initialValue Initial accumulator value.
+         */
+        virtual Accumulator accumulator(Real initialValue) const = 0 ;
 };
 
 }}

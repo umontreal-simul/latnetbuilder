@@ -25,13 +25,14 @@
 
 namespace NetBuilder {
 
-typedef LatticeTester::Weight Weight;
-typedef LatticeTester::Coordinates Coordinates;
-
+/**
+ * Class to represent the weights used in 
+ * S. Joe and F. Y. Kuo, <EM> Constructing Sobol sequences with better two-dimensional projections </EM>, 
+ * SIAM J. Sci. Comput. <B> 30 </B>, 2635-2654 (2008).
+ */ 
 class JoeKuoWeights : public LatticeTester::Weights {
-public:
 
-   JoeKuoWeights();
+public:
 
    /**
     * Destructor.
@@ -48,7 +49,7 @@ public:
    /**
     * Returns the weight of the projection specified by \c projection.
     */
-   virtual Weight getWeight (const Coordinates & projection) const;
+   virtual LatticeTester::Weight getWeight (const LatticeTester::Coordinates & projection) const;
 
 protected:
    /// \copydoc LatticeTester::Weights::format()

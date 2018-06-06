@@ -83,7 +83,7 @@ protected :
    }
    /**
     * computes the generator matrices given the modulus and the generator vector.
-    * reference : \cite{rDIC10a}, page 299
+    * reference : \cite rDIC10a , page 299
     * 
     *
     */

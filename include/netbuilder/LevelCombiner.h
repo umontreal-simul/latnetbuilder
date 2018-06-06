@@ -67,7 +67,7 @@ namespace NetBuilder {
         /**
          * Combiner corresponding to \f$ D^{(6)} \f$ in 
          * S. Joe and F. Y. Kuo, <EM> Constructing Sobol sequences with better two-dimensional projections </EM>, 
-         * SIAM J. Sci. Comput. <BOLD> 30 </BOLD>, 2635-2654 (2008).
+         * SIAM J. Sci. Comput. <B> 30 </B>, 2635-2654 (2008).
          */ 
         struct JoeKuoD6Combiner
         {

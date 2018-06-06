@@ -46,7 +46,6 @@ class WeightedFigureOfMerit : public FigureOfMerit
             m_normType(normType),
             m_weights(std::move(weights)),
             m_projDepMerit(std::move(projDepMerit)),
-            m_binOp(realToBinOp(normType)),
             m_expNorm( (normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
 
@@ -69,13 +68,13 @@ class WeightedFigureOfMerit : public FigureOfMerit
          * Creates a new accumulator.
          * @param initialValue Initial accumulator value.
          */
-        Accumulator accumulator(Real initialValue) const
-        { return Accumulator(std::move(initialValue), m_binOp); }
+        virtual Accumulator accumulator(Real initialValue) const override
+        { return Accumulator(std::move(initialValue), m_normType); }
 
         /**
          * Returns a std::unique_ptr to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator()
+        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {
             return std::make_unique<WeightedFigureOfMeritEvaluator>(this);
         }
@@ -90,7 +89,6 @@ class WeightedFigureOfMerit : public FigureOfMerit
         Real m_normType; // norm type of the figure
         std::unique_ptr<LatticeTester::Weights> m_weights; // weights of the projections
         std::unique_ptr<PROJDEP> m_projDepMerit; // projection dependent merit
-        BinOp m_binOp; // binary operation to use when accumulating merit
         Real m_expNorm; // exponent to use when accumulating merit
 
         /** 
@@ -156,7 +154,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
                 /**
                  * Tells the evaluator that no more net will be evaluate for the current dimension,
                  * store information about the best net for the dimension which is over and prepare data structures
-                 * for the nest dimension.
+                 * for the next dimension.
                  */ 
                 virtual void prepareForNextDimension() override {}; 
 

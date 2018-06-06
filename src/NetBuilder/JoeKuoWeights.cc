@@ -26,17 +26,11 @@ namespace NetBuilder
 
 //===========================================================================
 
-JoeKuoWeights::JoeKuoWeights():
-   Weights()
-{}
-
-//===========================================================================
-
-Weight JoeKuoWeights::getWeight (const Coordinates& projection) const
+LatticeTester::Weight JoeKuoWeights::getWeight (const LatticeTester::Coordinates& projection) const
 {
    if (projection.size()==2)
    {
-         return std::pow((Weight).9999, *projection.rbegin());
+         return std::pow((LatticeTester::Weight).9999, *projection.rbegin());
    }
    // fall back to zero
    return 0.0;

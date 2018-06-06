@@ -41,7 +41,6 @@ class CombinedFigureOfMerit : public FigureOfMerit{
             m_normType(normType),
             m_figures(std::move(figures)),
             m_size((unsigned int) m_figures.size()),
-            m_binOp(realToBinOp(normType)),
             m_weights(std::move(weights)),
             m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
@@ -55,8 +54,8 @@ class CombinedFigureOfMerit : public FigureOfMerit{
          * Creates a new accumulator.
          * @param initialValue Initial accumulator value.
          */
-        Accumulator accumulator(Real initialValue) const
-        { return Accumulator(std::move(initialValue), m_binOp); }
+        virtual Accumulator accumulator(Real initialValue) const override
+        { return Accumulator(std::move(initialValue), m_normType); }
 
         /** 
          * Returns the vector of weights. 
@@ -198,7 +197,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                 /**
                  * Tells the evaluator that no more net will be evaluate for the current dimension,
                  * store information about the best net for the dimension which is over and prepare data structures
-                 * for the nest dimension.
+                 * for the next dimension.
                  */ 
                 virtual void lastNetWasBest() override
                 {
@@ -221,7 +220,6 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         Real m_normType; // norm type of the figure
         std::vector<std::unique_ptr<FigureOfMerit>> m_figures; // vector of aggregated figures
         unsigned int m_size; // number of figures
-        BinOp m_binOp; // binary operation used by the accumulator
         std::vector<Real> m_weights; // individual weight of each aggregated figure
         Real m_expNorm; // exponent used in accumulation
 };

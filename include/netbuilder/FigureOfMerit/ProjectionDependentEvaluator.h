@@ -131,7 +131,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
         /**
          * Tells the evaluator that no more net will be evaluate for the current dimension,
          * store information about the best net for the dimension which is over and prepare data structures
-         * for the nest dimension.
+         * for the next dimension.
          */ 
         virtual void prepareForNextDimension() override
         {

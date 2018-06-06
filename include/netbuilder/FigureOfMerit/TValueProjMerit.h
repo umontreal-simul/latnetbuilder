@@ -29,13 +29,16 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 using LatticeTester::Coordinates;
 
-/** Template class representing a projection-dependent merit defined by the t-value of the projection
+/** Template class representing a projection-dependent merit defined by the t-value of the projection.
+ *  @tparam PST Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::PointSetType.
+ *  @tparam METHOD Computation method of the t-value. @see TValueComputation
  */ 
 template <PointSetType PST, typename METHOD = GaussMethod>
 class TValueProjMerit
 {};
 
-/** Template specialization in the case of unilevel nets.
+/** Template specialization of the projection-dependent merit defined by the t-value of the projection
+ *  in the case of unilevel nets. @see NetBuilder::TValueProjMerit.
  */ 
 template <typename METHOD>
 class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
@@ -80,6 +83,7 @@ class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
          * Computes the projection-dependent merit of the net \c net for the given projection.
          * @param net Digital net to evaluate.
          * @param projection Projection to use.
+         * @param maxMeritsSubProj Maximum of the t-value of the subprojections. 
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection, SubProjCombination maxMeritsSubProj) const 
         {
@@ -123,8 +127,9 @@ class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
         /** 
          * Resize the combination of merit \c subProjCombination to match the number of levels \c numLevels.
          * @param subProjCombination  Combination of merit to resize. 
+         * @param numLevels Number of levels.
          */ 
-        static void resize(SubProjCombination& subProjCombination, unsigned int numLevels)
+        static void resize(SubProjCombination& subProjCombination, unsigned int numLevels = 1)
         {};
 
         /**
@@ -142,7 +147,8 @@ class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
 
 };
 
-/** Template specialization in the case of multilevel nets.
+/** Template specialization of the projection-dependent merit defined by the t-value of the projection
+ *  in the case of multilevel nets. @see NetBuilder::TValueProjMerit.
  */ 
 template <typename METHOD>
 class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
@@ -243,6 +249,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
         /** 
          * Resize the combination of merit \c subProjCombination to match the number of levels \c numLevels.
          * @param subProjCombination  Combination of merit to resize. 
+         * @param numLevels Number of levels.
          */ 
         static void resize(SubProjCombination& subProjCombination, unsigned int numLevels)
         {
