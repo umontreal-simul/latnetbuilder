@@ -14,14 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page webif Lattice Builder Web Application
+/** \page webif LatNet Builder Web Application
 
-A cross-platform web interface to Lattice Builder is included in the binary
+TODO
+
+A cross-platform web interface to LatNet Builder is included in the binary
 packages.
 
-It requires <a href="http://python.org/">Python</a> (version 2.7 or later) to be run.
+It requires <a href="http://python.org/">Python</a> (version 3.6 or later) to be run.
 A connection to the Internet is also necessary to display the mathematical
 symbols.
+
 It can be launched by executing the <code>latbuilder-web.py</code> script that
 can be found under the <code>bin</code> directory of the package.
 The <code>latbuilder</code> executable program <em>must</em> lie in the same

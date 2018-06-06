@@ -32,7 +32,7 @@
 namespace NetBuilder
 {
 
-/// \defgroup typedefs Type Definitions
+/// \defgroup ypedefsNetBuilder NetBuilder Type Definitions
 
 //@{
 

@@ -2,5 +2,5 @@ namespace NetBuilder {
 /**
  * Figures of merit that can be computed by Net Builder.
  */
-namespace Task {
+namespace FigureOfMerit {
 }}
