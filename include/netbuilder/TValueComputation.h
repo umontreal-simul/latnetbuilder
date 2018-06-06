@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+/**
+ * \file
+ * This file defines several methods to compute the t-value of a digital net in base 2
+ */ 
 
 #ifndef NETBUILDER__TVALUE_COMPUTATION_H
 #define NETBUILDER__TVALUE_COMPUTATION_H
@@ -34,6 +39,7 @@ namespace NetBuilder {
          * t-values of the subprojections is \c maxTValuesSubProj.
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
 
@@ -42,6 +48,7 @@ namespace NetBuilder {
          * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose)
         {
@@ -54,6 +61,7 @@ namespace NetBuilder {
          * @param baseMatrices Generating matrices.
          * @param mMin Minimul level.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int mMin, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };
@@ -71,6 +79,7 @@ namespace NetBuilder {
          * t-values of the subprojections is \c maxTValuesSubProj.
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
 
@@ -79,6 +88,7 @@ namespace NetBuilder {
          * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
          * @param baseMatrices Generating matrices.
          * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
          */ 
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };

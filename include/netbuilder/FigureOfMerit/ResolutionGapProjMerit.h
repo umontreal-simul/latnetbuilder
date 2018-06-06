@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,12 +28,14 @@ namespace NetBuilder { namespace FigureOfMerit {
  * The resolution gap is defined as follows. Let \f$ l \f$ be the maximal integer such that the net is \f$ (l, \dots, l) \f$ equidistributed.
  * We have a natural upper-bound on \f$ l \f$ given by \f$ \frac{m}{s} \f$ where \f$ m \f$ is the number of columns of the generating matrices and
  * \f$ s \f$ is the order of the projection. \f$ l \f$ is called the resolution of the net and the resolution-gap is defined by the difference \f$ \frac{m}{s} - l \f$/.
+ * @tparam PST Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::PointSetType.
  */ 
 template <PointSetType PST>
 class ResolutionGapProjMerit
 {};
 
-/** Template specialization in the case of unilevel nets.
+/** Template specialization of the projection-dependent merit defined by the resolution-gap of the projection
+ *  in the case of unilevel nets. @see NetBuilder::ResolutionGapProjMerit.
  */ 
 template <>
 class ResolutionGapProjMerit<PointSetType::UNILEVEL>
@@ -41,7 +43,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
     public:
 
         /** 
-         * Construct a projection-dependent merit based on the resolution-gap of projections.
+         * Constructs a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
@@ -116,7 +118,8 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
         ProgressiveRowReducer m_rowReducer; // use to compute the rank of matrices
 };
 
-/** Template specialization in the case of unilevel nets.
+/** Template specialization of the projection-dependent merit defined by the resolution-gap of the projection
+ *  in the case of multilevel nets. @see NetBuilder::ResolutionGapProjMerit.
  */ 
 template <>
 class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
@@ -124,7 +127,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
     public:
 
         /** 
-         * Construct a projection-dependent merit based on the resolution-gap of projections.
+         * Constructs a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Combiner used to combine multilevel merits.
          */   

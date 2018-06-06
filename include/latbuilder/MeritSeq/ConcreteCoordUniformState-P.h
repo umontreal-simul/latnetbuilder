@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -79,7 +79,13 @@ public:
    void reset();
 
    /**
-    * \copydoc CoordUniformState::update()
+    * Updates the current state using the specified row of the permuted matrix      
+    * of kernel values.           
+    * This corresponds to appending a component \f$a_j\f$ to the generating      
+    * vector \f$\boldsymbol a = (a_1, \dots, a_{j-1})\f$.      
+    * To each possible value of \f$a_j\f$ corresponds a distinct row of the      
+    * matrix \f$\boldsymbol\Omega\f$ of kernel values.           
+    * This increases the internal dimension counter.
     *
     * Computes
     * \f[
@@ -99,7 +105,9 @@ public:
     */
    RealVector weightedState() const;
 
-   /// \copydoc CoordUniformState::clone()
+   /**
+    * Returns a copy of this instance.
+    */
    std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>> clone() const
    { return std::unique_ptr<CoordUniformState<LR, PST, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 

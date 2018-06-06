@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,6 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/**
+ * \file 
+ * This file contains the various methods used to construct generating matrices of digital nets
+ */
+ 
 #ifndef NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 #define NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 

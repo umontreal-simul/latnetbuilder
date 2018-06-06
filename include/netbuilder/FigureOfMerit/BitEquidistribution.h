@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class BitEquidistribution : public FigureOfMerit{
 
         /** 
          * Constructor.
-         * &param nbBits Number of bits taken into account by the figure.
+         * @param nbBits Number of bits taken into account by the figure.
          * @param weight Weight of the figure of merit. Defaults to +inf.
          * @param normType Norm type of the figure of merit. Defaults to sup norm.
          * @param combiner Combiner for the multilevel case. Default to the (non-callable) empty function.
@@ -43,7 +43,6 @@ class BitEquidistribution : public FigureOfMerit{
         BitEquidistribution(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity(), Combiner combiner = Combiner()):
             m_nbBits(nbBits),
             m_weight(weight),
-            m_binOp(realToBinOp(normType)),
             m_normType(normType),
             m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1),
             m_combiner(std::move(combiner))
@@ -58,8 +57,8 @@ class BitEquidistribution : public FigureOfMerit{
          * Creates a new accumulator.
          * @param initialValue Initial accumulator value.
          */
-        Accumulator accumulator(Real initialValue) const
-        { return Accumulator(std::move(initialValue), m_binOp); }
+        virtual Accumulator accumulator(Real initialValue) const override
+        { return Accumulator(std::move(initialValue), m_normType); }
 
         /**
          * Returns a std::unique_ptr to an evaluator for the figure of merit. 
@@ -145,7 +144,7 @@ class BitEquidistribution : public FigureOfMerit{
                 /**
                  * Tells the evaluator that no more net will be evaluate for the current dimension,
                  * store information about the best net for the dimension which is over and prepare data structures
-                 * for the nest dimension.
+                 * for the next dimension.
                  */ 
                 virtual void prepareForNextDimension() override
                 {
@@ -162,7 +161,6 @@ class BitEquidistribution : public FigureOfMerit{
 
         unsigned int m_nbBits; // number of equidistribution bits
         Real m_weight; // weight of the figure
-        BinOp m_binOp; // binary operation used by the accumulator
         Real m_normType; // norm type of the figure
         Real m_expNorm; // exponent used in accumulation
         Combiner m_combiner; // combiner used in the multilevel case

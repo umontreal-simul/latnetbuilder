@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__TASK__BASE_TASK_H
-#define NETBUILDER__TASK__BASE_TASK_H
+#ifndef NETBUILDER__TASK__TASK_H
+#define NETBUILDER__TASK__TASK_H
 
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/Types.h"
@@ -29,19 +29,28 @@ namespace NetBuilder { namespace Task {
 /**
  * Base base class for all tasks.
  */
-class BaseTask {
+class Task {
 public:
-   virtual ~BaseTask() {}
+   virtual ~Task() {}
 
    /**
     * Executes the task.
     */
     virtual void execute() = 0;
 
+    /**
+     * Outputs the resulting net of the task.
+     */ 
     virtual std::string outputNet(OutputFormat outputFormat) const = 0;
 
+    /**
+     * Outputs the resulting merit value of the task.
+     */ 
     virtual Real outputMeritValue() const = 0;
 
+    /**
+     * Resets the task.
+     */ 
     virtual void reset() = 0;
 };
 

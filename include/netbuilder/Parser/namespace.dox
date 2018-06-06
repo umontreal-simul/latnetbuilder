@@ -1,0 +1,14 @@
+namespace NetBuilder {
+
+/**
+ * String parsing facilities for Net Builder objects.
+ *
+ * For polymorphic objects, the parser functions return a shared pointer to a
+ * newly created object, or a null pointer on failure, without throwing
+ * exceptions.
+ * For other object types, the parser functions return a newly created instance,
+ * or throw a ParserError exception on failure.
+ */
+namespace Parser {
+
+}}

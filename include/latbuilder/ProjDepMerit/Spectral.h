@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -147,6 +147,8 @@ namespace detail {
 
       LatticeTester::Reducer reducer(lattice);
 
+      reducer.preRedDieter((int) projection.size());
+
       if (not reducer.shortestVector(lattice.getNorm())) {
          // reduction failed
          return std::numeric_limits<Real>::infinity();
@@ -154,11 +156,9 @@ namespace detail {
 
 
       // get length of shortest vector under L2NORM
-      // lattice.getPrimalBasis ().updateScalL2Norm (1);    # TODO
       lattice.updateScalL2Norm (0);
 
       // square length
-      // Real sqlength = lattice.getPrimalBasis().getVecNorm(1);  # TODO
       Real sqlength = lattice.getVecNorm(0); 
 
       // normalization

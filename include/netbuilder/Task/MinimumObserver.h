@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@ class MinimumObserver
 {
     public:
 
-        /** Constructor. 
-         * @param nRows is the number of rows of the nets
-         * @param nCols is the number of columns of the nets
-         * @verbose is the level of verbosity of the observer
+        /** 
+         * Constructor. 
+         * @param designParameter Design parameter of the searched net.
+         * @param verbose Verbosity level.
         */
         MinimumObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, int verbose = 0):
             m_bestNet(new DigitalNetConstruction<NC>(0,designParameter)),
@@ -50,6 +50,11 @@ class MinimumObserver
             reset();
         };
 
+        /** 
+         * Constructor. 
+         * @param baseNet Net from which to start the search.
+         * @param verbose Verbosity level.
+        */
         MinimumObserver(std::unique_ptr<DigitalNetConstruction<NC>> baseNet, int verbose = 0):
             m_bestNet(std::move(baseNet)),
             m_verbose(verbose)
@@ -57,21 +62,29 @@ class MinimumObserver
             reset();
         };
             
-        /** Initializes the best observed merit value to infinity. */
+        /** 
+         * Initializes the best observed merit value to infinity and 
+         * set the foud net flag to \c false. 
+         */
         void reset() 
         { 
             m_bestMerit = std::numeric_limits<Real>::infinity();
             m_foundBestNet = false;
         }
 
-        /** Returns the best observed net. */
+        /** 
+         * Returns the best observed net. 
+         */
         const DigitalNetConstruction<NC>& bestNet() { return *m_bestNet; }
         
-        /** Returns the best observed merit value. */
+        /** 
+         * Returns the best observed merit value. 
+         */
         Real bestMerit() { return m_bestMerit; }
 
-        /** Notifies the observer that the merit value of a new candidate net has
-         *  been observed, updates the best observed candidate net if necessary.
+        /** 
+         * Notifies the observer that the merit value of a new candidate net has
+         * been observed, updates the best observed candidate net if necessary.
          */
         bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit)
         {
@@ -100,14 +113,21 @@ class MinimumObserver
                 }
         }
 
-        // Returns a bool indicating whether the search has found a net.
+        /**
+         * Returns whether the search has found a net.
+         */ 
         bool hasFoundNet() const { return m_foundBestNet; }
 
-        // Returns a bool indicating whether the computation should continue.
+        /**
+         * Returns whether the computation of the merit of a net should continue.
+         */ 
+
         bool onProgress(Real merit) const
         { return merit < m_bestMerit; }
 
-        // Does nothing.
+        /**
+         * Does nothing.
+         */ 
         void onAbort(const DigitalNet& net) const
         {};
 

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/NetDescriptionParser.h"
 
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 #include "netbuilder/Task/CBCSearch.h"
 #include "netbuilder/Task/Eval.h"
 #include "netbuilder/Task/ExhaustiveSearch.h"
@@ -58,7 +58,7 @@ class BadExplorationMethod : public lbp::ParserError
 template<NetConstruction NC, PointSetType PST>
 struct ExplorationMethodParser
 {
-    typedef std::unique_ptr<Task::BaseTask> result_type;
+    typedef std::unique_ptr<Task::Task> result_type;
 
     static result_type parse(Parser::CommandLine<NC, PST>& commandLine)
     {

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,17 +44,19 @@ namespace NetBuilder{ namespace FigureOfMerit {
             *
             * @param weights    See LatBuilder::WeightedFigureOfMerit::WeightedFigureOfMerit for
             *                   details about this parameter.
+            * @param sizeParam  Digital size param corresponding to the size of the nets to be evaluated.
             * @param kernel     Kernel (\f$\omega\f$ in the reference paper).  See
             *                   the LatBuilder::Kernel namespace for examples.
+            * @param combiner   Combiner used to combine multilevel merits into a single value merit. Not used is PST is UNILEVEL.
             */
             CoordUniformFigureOfMerit(  std::unique_ptr<LatticeTester::Weights> weights, 
-                                        LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> sizeparam,
+                                        LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> sizeParam,
                                         KERNEL kernel = KERNEL(),
                                         Combiner combiner = Combiner()
             ):
             m_weights(std::move(weights)),
             m_kernel(std::move(kernel)),
-            m_sizeParam(sizeparam),
+            m_sizeParam(sizeParam),
             m_combiner(std::move(combiner))
             {}
 
@@ -109,6 +111,13 @@ namespace NetBuilder{ namespace FigureOfMerit {
             {
                 return std::make_unique<CoordUniformFigureOfMeritEvaluator>(this);
             }
+
+            /**
+             * Creates a new accumulator.
+             * @param initialValue Initial accumulator value.
+             */
+            virtual Accumulator accumulator(Real initialValue) const override
+            { return Accumulator(std::move(initialValue), 2); }
 
 
             private:
@@ -224,7 +233,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
                         /**
                          * Tells the evaluator that no more net will be evaluate for the current dimension,
                          * store information about the best net for the dimension which is over and prepare data structures
-                         * for the nest dimension.
+                         * for the next dimension.
                          */ 
                         virtual void prepareForNextDimension() override
                         {

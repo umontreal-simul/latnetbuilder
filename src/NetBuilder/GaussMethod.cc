@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -102,6 +102,16 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     if (s == 1){    // does not make sense when s == 1
         return std::vector<unsigned int>(nCols-mMin);
     }
+
+    // if (s==1)
+    // {   
+    //     std::vector<unsigned int> res(nCols-mMin);
+    //     for(unsigned int i = 0; i < nCols-mMin; ++i)
+    //     {
+    //         res[i] = nCols - ( mMin + i + 1 ) ;
+    //     }
+    //     return res;
+    // }
 
     std::vector<unsigned int> result = maxSubProj;
     unsigned int diff = 0;

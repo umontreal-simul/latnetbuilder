@@ -1,0 +1,6 @@
+namespace NetBuilder {
+/**
+ * Standard tasks that can be performed by Lattice Builder.
+ */
+namespace Task {
+}}

@@ -1,6 +1,6 @@
 // This file is part of Nettice Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 
 #include "latbuilder/SizeParam.h"
@@ -54,7 +54,7 @@ struct CommandLine {
    std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
    int m_verbose;
 
-   std::unique_ptr<Task::BaseTask> parse();
+   std::unique_ptr<Task::Task> parse();
 };
 
 }
@@ -67,7 +67,7 @@ struct CommandLine {
 
 namespace NetBuilder { namespace Parser {
 template <NetConstruction NC, PointSetType PST>
-std::unique_ptr<NetBuilder::Task::BaseTask>
+std::unique_ptr<NetBuilder::Task::Task>
 CommandLine<NC, PST>::parse()
 {
       namespace lbp = LatBuilder::Parser;

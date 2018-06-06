@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ class CombinedFigureOfMerit : public FigureOfMerit{
             m_normType(normType),
             m_figures(std::move(figures)),
             m_size((unsigned int) m_figures.size()),
-            m_binOp(realToBinOp(normType)),
             m_weights(std::move(weights)),
             m_expNorm( (m_normType < std::numeric_limits<Real>::infinity()) ? normType : 1)
         {};
@@ -55,8 +54,8 @@ class CombinedFigureOfMerit : public FigureOfMerit{
          * Creates a new accumulator.
          * @param initialValue Initial accumulator value.
          */
-        Accumulator accumulator(Real initialValue) const
-        { return Accumulator(std::move(initialValue), m_binOp); }
+        virtual Accumulator accumulator(Real initialValue) const override
+        { return Accumulator(std::move(initialValue), m_normType); }
 
         /** 
          * Returns the vector of weights. 
@@ -119,7 +118,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  */ 
                 virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
                 {
-                    auto acc = m_figure->accumulator(std::move(0)); // create the accumulator from the initial value
+                    auto acc = m_figure->accumulator(0); // create the accumulator from the initial value
 
                     Real weight; // weight of the figure currently evaluated
 
@@ -198,7 +197,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                 /**
                  * Tells the evaluator that no more net will be evaluate for the current dimension,
                  * store information about the best net for the dimension which is over and prepare data structures
-                 * for the nest dimension.
+                 * for the next dimension.
                  */ 
                 virtual void lastNetWasBest() override
                 {
@@ -221,7 +220,6 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         Real m_normType; // norm type of the figure
         std::vector<std::unique_ptr<FigureOfMerit>> m_figures; // vector of aggregated figures
         unsigned int m_size; // number of figures
-        BinOp m_binOp; // binary operation used by the accumulator
         std::vector<Real> m_weights; // individual weight of each aggregated figure
         Real m_expNorm; // exponent used in accumulation
 };

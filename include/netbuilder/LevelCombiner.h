@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -65,9 +65,9 @@ namespace NetBuilder {
         };
 
         /**
-         * Combiner corresponding to \f$ D^{(6)} \f$ in 
+         * Combiner used by Joe and Kuo. Corresponds to \f$ D^{(6)} \f$ in 
          * S. Joe and F. Y. Kuo, <EM> Constructing Sobol sequences with better two-dimensional projections </EM>, 
-         * SIAM J. Sci. Comput. <BOLD> 30 </BOLD>, 2635-2654 (2008).
+         * SIAM J. Sci. Comput. <B> 30 </B>, 2635-2654 (2008). // TODO
          */ 
         struct JoeKuoD6Combiner
         {

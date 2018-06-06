@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+/**
+ * \file 
+ * This file contains the definition of a sequence of coordinates used by CBC construction.
+ */ 
 
 #ifndef NETBUILDER__CBC_COORDINATE_SET_H
 #define NETBUILDER__CBC_COORDINATE_SET_H
@@ -28,16 +33,16 @@ namespace NetBuilder {
  * CBC sequence of coordinate sets.
  * 
  * This class implements a sequence of coordinates (@see LatticeTester::CoordinateSets) which can be used in the CBC
- * evaluation of figures of merit.
+ * evaluation of figures of merit. More precisely, this class is meant to represent all the non empty subsets of \f$ \{0, \dots, d-1\} \f$
+ * with order lower than \f$ \k \in \mathbb{N} \f$ which contain \f$ d-1 \f$.
  */ 
 class CBCCoordinateSet
 {
     public:
 
-        /** Constructs the set of all the non empty subsets of \f$\{0,\dots, \c maxCoordinate\}\f$ with order lower than \c maxOrder
-         *  containing \c maxCoordinate.
-         * @param maxCoordinate Maximal coordinate of the subsets.
-         * @param maxOrder Maximal order of subsets.
+        /** Constructs the set of coordinates.
+         * @param maxCoordinate Maximal coordinate of the subsets. Corresponds to \f$ d \f$.
+         * @param maxOrder Maximal order of subsets. Corresponds to \f$ k \f$.
          */ 
         CBCCoordinateSet(int maxCoordinate, int maxOrder):
             m_dimension(maxCoordinate),

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #ifndef NETBUILDER__TASK__SEARCH_H
 #define NETBUILDER__TASK__SEARCH_H
 
-#include "netbuilder/Task/BaseTask.h"
+#include "netbuilder/Task/Task.h"
 #include "netbuilder/Task/MinimumObserver.h"
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
@@ -28,15 +28,27 @@
 namespace NetBuilder { namespace Task {
 
 
+/**
+ * Virtual base class for search task.
+ * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...).
+ */ 
 template <NetConstruction NC> 
-class Search : public BaseTask {
+class Search : public Task {
 
 public:
 
+    /** Virtual default destructor.
+     */ 
     virtual ~Search() = default;
 
+    /**
+     * Executes the search.
+     */ 
     virtual void execute() override = 0;
 
+    /**
+     * Resets the search.
+     */ 
     virtual void reset() override
     {
         m_minimumObserver.reset();
@@ -44,9 +56,21 @@ public:
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
 
+    /// Signal emitted when a net has been selected.
+
     typedef boost::signals2::signal<void (const Search<NC>&)> OnNetSelected;
+
+    /// Signal emitted when the search has failed.
     typedef boost::signals2::signal<void (const Search<NC>&)> OnFailedSearch;
 
+    /**
+     * Constructor.
+     * @param dimension Dimension of the searched net.
+     * @param designParameter Design parameter of the searched net.
+     * @param figure Figure of merit used to compare nets.
+     * @param verbose Verbosity level.
+     * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
+     */
     Search( Dimension dimension, 
             typename NetConstructionTraits<NC>::DesignParameter designParameter,
             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
@@ -66,6 +90,14 @@ public:
         m_earlyAbortion(earlyAbortion)
         {};
 
+    /**
+     * Constructor.
+     * @param dimension Dimension of the net to search.
+     * @param baseNet Net from which to start the search.
+     * @param figure Figure of merit used to compare nets.
+     * @param verbose Verbosity level.
+     * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
+     */
     Search( Dimension dimension, 
             std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
@@ -85,24 +117,36 @@ public:
         m_earlyAbortion(earlyAbortion)
         {};
 
+    /** Default move constructor. 
+     * Deletes the implicit copy constructor.
+     */ 
     Search(Search&& ) = default;
 
-    /** Returns the dimension of the searched net.
+    /** 
+     * Returns the dimension of the searched net.
     */
     Dimension dimension() const
     { return m_dimension; }
 
-    /** Returns the number of rows of the searched generating matrices. */
+    /** 
+     * Returns the number of rows of the searched generating matrices. 
+     */
     unsigned int nRows() const {return m_nRows; }
 
-    /** Returns the number of columns of the searched generating matrices. */
+    /** 
+     * Returns the number of columns of the searched generating matrices.
+     */ 
     unsigned int nCols() const {return m_nCols; }
 
-    /** Returns the best net found by the search. */
+    /** 
+     * Returns the best net found by the search. 
+     */
     const DigitalNetConstruction<NC>& bestNet() const
     { return m_bestNet; }
 
-    /** Returns the best merit found by the search. */
+    /** 
+     * Returns the best merit found by the search. ``
+     */
     Real bestMeritValue() const
     { return m_bestMerit; }
 
@@ -112,58 +156,75 @@ public:
     }
 
     /**
-    * Returns the best net found by the search task.
-    */
+     *  Returns the best net found by the search task.
+     */
     virtual std::string outputNet(OutputFormat outputFormat) const override
     { return bestNet().format(outputFormat); }
 
     /**
-    * Returns the best merit value found by the search task.
-    */
+     * Returns the best merit value found by the search task.
+     */
     virtual Real outputMeritValue() const override
     { return bestMeritValue(); }
 
-    /** Returns a reference to the minimum-element observer. */
+    /** 
+     * Returns a reference to the minimum-element observer. 
+     */
     MinimumObserver<NC>& minimumObserver()
     { return *m_minimumObserver; }
 
-    /** Returns a const qualified reference the minimum-element observer. */
+    /** 
+     * Returns a const qualified reference the minimum-element observer. 
+     */
     const MinimumObserver<NC>& minimumObserver() const
     { return *m_minimumObserver; }
 
     /**
-    * Net-selected signal.
-    *  Emitted when a net has been selected by the search algorithm.
-    */
+     * Net-selected signal.
+     * Emitted when a net has been selected by the search algorithm.
+     */
     OnNetSelected& onNetSelected()
     { return *m_onNetSelected; }
 
+    /**
+     * Net-selected signal.
+     * Emitted when a net has been selected by the search algorithm.
+     */
     const OnNetSelected& onNetSelected() const
     { return *m_onNetSelected; }
 
     /**
-    * Failed search signal.
-    *  Emitted when no net has been selected by the search algorithm.
-    */
+     * Failed search signal.
+     * Emitted when no net has been selected by the search algorithm.
+     */
     OnFailedSearch& onFailedSearch()
     { return *m_onFailedSearch; }
 
+    /**
+     * Failed search signal.
+     * Emitted when no net has been selected by the search algorithm.
+     */
     const OnFailedSearch& onFailedSearch() const
     { return *m_onFailedSearch; }
 
-    /** Returns a const qualified reference to the figure of merit. */
+    /** 
+     * Returns a const qualified reference to the figure of merit. 
+     */
     const FigureOfMerit::FigureOfMerit& figureOfMerit() const 
     {
             return *m_figure;
     }
 
+    /** 
+     * Returns a const qualified reference to the design parameter of the search.
+     */ 
     const typename NetConstructionTraits<NC>::DesignParameter& designParameter() const {return m_designParameter;}
 
     protected:
 
         /**
-        * Selects a new best net and emits an OnNetSelected signal.
-        */
+         * Selects a new best net and emits an OnNetSelected signal.
+         */
         void selectBestNet(const DigitalNetConstruction<NC>& net, Real merit)
         {
             m_bestNet = net;
@@ -171,18 +232,18 @@ public:
             onNetSelected()(*this);
         }
 
-        std::unique_ptr<OnNetSelected> m_onNetSelected;
-        std::unique_ptr<OnFailedSearch> m_onFailedSearch;
-        Dimension m_dimension;
-        typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
-        unsigned int m_nRows;
-        unsigned int m_nCols;
-        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
-        DigitalNetConstruction<NC> m_bestNet;
-        Real m_bestMerit;
-        std::unique_ptr<MinimumObserver<NC>> m_minimumObserver;
-        int m_verbose;
-        bool m_earlyAbortion;
+        std::unique_ptr<OnNetSelected> m_onNetSelected; // onNetSelected signal
+        std::unique_ptr<OnFailedSearch> m_onFailedSearch; // onFailedSearch signal
+        Dimension m_dimension; // dimension of the search
+        typename NetConstructionTraits<NC>::DesignParameter m_designParameter; // design parameter of the search
+        unsigned int m_nRows; // number of rows of the generating matrices
+        unsigned int m_nCols; // number of columns of the generating matrices
+        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure; // figure of merit
+        DigitalNetConstruction<NC> m_bestNet; // best net 
+        Real m_bestMerit; // best merit
+        std::unique_ptr<MinimumObserver<NC>> m_minimumObserver; // minimum observer
+        int m_verbose; // verbosity level
+        bool m_earlyAbortion; // early abortion switch
         
 };
 

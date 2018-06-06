@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,11 +34,13 @@ class RandomSearch : public Search<NC>
     public:
     
         /** Constructor.
-         * @param dimension is the dimension of the searched net
-         * @param nRows is the number of rows of the generating matrices
-         * @param nCols is the number of columns of the generating matrices
-         * @param figure is a std::unique_ptr to the figure of merit to use
-         */ 
+         * @param dimension Dimension of the searched net.
+         * @param designParameter Design parameter of the searched net.
+         * @param nbTries Number of nets to evaluated.
+         * @param figure Figure of merit used to compare nets.
+         * @param verbose Verbosity level.
+         * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
+         */
         RandomSearch(   Dimension dimension, 
                         typename NetConstructionTraits<NC>::DesignParameter designParameter,
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
@@ -51,7 +53,10 @@ class RandomSearch : public Search<NC>
         {};
     
 
-        /** Default move constructor. */
+        /** 
+         * Default move constructor. 
+         * Deletes the implicit copy constructor.
+         */
         RandomSearch(RandomSearch&&) = default;
 
         /**

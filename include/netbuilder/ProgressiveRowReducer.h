@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+/**
+ * \file
+ * This file defines a class which computes the rank of matrices in \f$ F_2 \f$ using the gaussian elimination
+ */ 
 
 #ifndef NETBUILDER__PROGRESSIVE_ROW_REDUCER_H
 #define NETBUILDER__PROGRESSIVE_ROW_REDUCER_H

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,16 +29,19 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 using LatticeTester::Coordinates;
 
-/** Template class representing a projection-dependent merit defined by the t-value of the projection
+/** Template class representing a projection-dependent merit defined by the t-value of the projection.
+ *  @tparam PST Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::PointSetType.
+ *  @tparam METHOD Computation method of the t-value. @see TValueComputation
  */ 
-template <PointSetType PST>
+template <PointSetType PST, typename METHOD = GaussMethod>
 class TValueProjMerit
 {};
 
-/** Template specialization in the case of unilevel nets.
+/** Template specialization of the projection-dependent merit defined by the t-value of the projection
+ *  in the case of unilevel nets. @see NetBuilder::TValueProjMerit.
  */ 
-template <>
-class TValueProjMerit<PointSetType::UNILEVEL>
+template <typename METHOD>
+class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
 {
     public:
 
@@ -80,6 +83,7 @@ class TValueProjMerit<PointSetType::UNILEVEL>
          * Computes the projection-dependent merit of the net \c net for the given projection.
          * @param net Digital net to evaluate.
          * @param projection Projection to use.
+         * @param maxMeritsSubProj Maximum of the t-value of the subprojections. 
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection, SubProjCombination maxMeritsSubProj) const 
         {
@@ -88,7 +92,7 @@ class TValueProjMerit<PointSetType::UNILEVEL>
             {
                 mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
             }
-            return SchmidMethod::computeTValue(std::move(mats),maxMeritsSubProj, false);
+            return METHOD::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
 
         Real combine(Merit merit)
@@ -123,8 +127,9 @@ class TValueProjMerit<PointSetType::UNILEVEL>
         /** 
          * Resize the combination of merit \c subProjCombination to match the number of levels \c numLevels.
          * @param subProjCombination  Combination of merit to resize. 
+         * @param numLevels Number of levels.
          */ 
-        static void resize(SubProjCombination& subProjCombination, unsigned int numLevels)
+        static void resize(SubProjCombination& subProjCombination, unsigned int numLevels = 1)
         {};
 
         /**
@@ -142,10 +147,11 @@ class TValueProjMerit<PointSetType::UNILEVEL>
 
 };
 
-/** Template specialization in the case of multilevel nets.
+/** Template specialization of the projection-dependent merit defined by the t-value of the projection
+ *  in the case of multilevel nets. @see NetBuilder::TValueProjMerit.
  */ 
-template <>
-class TValueProjMerit<PointSetType::MULTILEVEL>
+template <typename METHOD>
+class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
 {
     public:
 
@@ -156,7 +162,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
         typedef std::vector<unsigned int> SubProjCombination;
 
         /**
-         * Construct a projection-dependent merit based on the resolution of projections.
+         * Constructs a projection-dependent merit based on the resolution of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Combiner used to combine multilevel merits.
          */  
@@ -197,7 +203,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
             {
                 mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
             }
-            return SchmidMethod::computeTValue(std::move(mats), maxMeritsSubProj, 0);
+            return METHOD::computeTValue(std::move(mats), maxMeritsSubProj, 0);
         }
 
         /** 
@@ -243,6 +249,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
         /** 
          * Resize the combination of merit \c subProjCombination to match the number of levels \c numLevels.
          * @param subProjCombination  Combination of merit to resize. 
+         * @param numLevels Number of levels.
          */ 
         static void resize(SubProjCombination& subProjCombination, unsigned int numLevels)
         {
@@ -271,11 +278,11 @@ class TValueProjMerit<PointSetType::MULTILEVEL>
  * in the case of unilevel nets.
  */ 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<PointSetType::UNILEVEL, TValueProjMerit>
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>>
 {
     public:
 
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>* figure):
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>>* figure):
             ProjectionDependentEvaluator(figure)
         {}
 };
@@ -285,11 +292,39 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>::WeightedFi
  * in the case of multilevel nets.
  */ 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<PointSetType::MULTILEVEL, TValueProjMerit>
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, GaussMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::MULTILEVEL, GaussMethod>>
 {
     public:
 
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL>>* figure):
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, GaussMethod>>* figure):
+            ProjectionDependentEvaluator(figure)
+        {}
+};
+
+/**
+ * Template specialization of the evaluator for the weighted figure of merit based on the t-value projection-dependent merit 
+ * in the case of unilevel nets.
+ */ 
+template<>
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod>>
+{
+    public:
+
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod>>* figure):
+            ProjectionDependentEvaluator(figure)
+        {}
+};
+
+/**
+ * Template specialization of the evaluator for the weighted figure of merit based on the t-value projection-dependent merit 
+ * in the case of multilevel nets.
+ */ 
+template<>
+class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, SchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::MULTILEVEL, SchmidMethod>>
+{
+    public:
+
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, SchmidMethod>>* figure):
             ProjectionDependentEvaluator(figure)
         {}
 };

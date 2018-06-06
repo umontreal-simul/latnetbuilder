@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@
 
 namespace NetBuilder { namespace Task {
 
+/**
+ * Class to explorer randomly a search space using the CBC search algorithm. 
+ */ 
 template <NetConstruction NC>
 class RandomCBCExplorer
 {
@@ -34,6 +37,12 @@ class RandomCBCExplorer
 
     public:
 
+        /** Constructor.
+         * @param dimension Maximal dimension of the explorer.
+         * @param designParameter Design parameter of the search space.
+         * @param nbTries Number of random choices of generating values by dimension.
+         * @param verbose Verbosity level.
+         */
         RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries, int verbose = 0):
             m_dimension(dimension),
             m_nbTries(nbTries),
@@ -42,11 +51,17 @@ class RandomCBCExplorer
             m_verbose(verbose)
         {};
 
+        /**
+         * Returns whether the dimension \c dim is fully explored
+         */ 
         bool isOver(unsigned int dim) 
         {
             return m_countTries[dim-1]>=m_nbTries;
         }
 
+        /**
+         * Returns the next generating values of dimension \c dim
+         */
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
             m_countTries[dim-1] += 1;
@@ -58,16 +73,26 @@ class RandomCBCExplorer
             return m_randomGenValueGenerator(dim);
         }
 
+
+        /**
+         * Resets the explorer to the first dimension
+         */ 
         void reset()
         {
             std::fill(m_countTries.begin(),m_countTries.end(), 0);
         }
 
+        /**
+         * Sets the verbosity level of the explorer.
+         */ 
         void setVerbose(int verbose)
         {
             m_verbose = verbose;
         }
 
+        /**
+         * Switches the explorer to dimension \c dim.
+         */ 
         void switchToDimension(unsigned int dim)
         {};
 

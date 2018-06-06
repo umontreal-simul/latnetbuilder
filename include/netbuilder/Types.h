@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #define NETBUILDER__TYPES_H
 
 /** \file
- * Basic type definitions.
+ * Basic type definitions of NetBuilder.
  */
 
 #include <vector>
@@ -55,19 +55,16 @@ typedef unsigned int Dimension;
 typedef size_t size_type;
 
 /// Type of nets
-using PointSetType = LatBuilder::PointSetType;
+typedef LatBuilder::PointSetType PointSetType;
 
 /// Net construction methods
 enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};
-
-/// Binary real operator type
-typedef std::function<MeritValue (MeritValue, MeritValue)> BinOp;
 
 // Level combiner for multilevel nets
 typedef std::function<Real (const RealVector&)> Combiner;
 
 /// polynomial over Z/2Z type 
-typedef NTL::GF2X Polynomial;
+typedef LatBuilder::Polynomial Polynomial;
 
 enum class OutputFormat { GUI, CLI, SSJ};
 

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 #include "netbuilder/TValueComputation.h"
 #include "netbuilder/Types.h"
 #include "netbuilder/CompositionMaker.h"
+
+#include <list>
+
+#include "netbuilder/Util.h"
 
 namespace NetBuilder {
 
@@ -45,8 +49,7 @@ unsigned int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices,
         flipingOrder[r] = getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1)));
     }
 
-    unsigned int k;
-    for(k = s ; k <= m-maxTValuesSubProj; ++k)
+    for(unsigned int k = s ; k <= m-maxTValuesSubProj; ++k)
     {
         CompositionMaker compMaker(k,s);
         do
@@ -62,14 +65,13 @@ unsigned int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices,
                     ++idx;
                 }
             }
-
             boost::dynamic_bitset<> v(m);
             for(uInteger r = 0; r < (unsigned int) ((1 << k) - 1); ++r)
             {
                 v ^= *tmp[flipingOrder[r]];
                 if (v.none())
                 {
-                    return m-k+1;
+                    return m-(k-1);
                 }
             }
         }
@@ -83,38 +85,26 @@ std::vector<unsigned int> SchmidMethod::computeTValue(std::vector<GeneratingMatr
     unsigned int m = matrices[0].nCols();
     unsigned int s = (unsigned int)matrices.size();
 
-    std::cout << s << std::endl;
-
-    if (s==1){ return std::vector<unsigned int>(m); } 
+    if (s==1){ return std::vector<unsigned int>(m, 0); } 
 
     size_type upperLimit ;
-    std::vector<unsigned int> res;
-    if (maxTValuesSubProj.size()>=1)
-    {
-        upperLimit= (1<<(m-maxTValuesSubProj.back()))-1;
-        res = maxTValuesSubProj;
-    }
-    else
-    {
-        upperLimit = (1<<m)-1;
-        res.resize(m,0);
-    }
-    std::vector<unsigned int> flipingOrder(upperLimit);
+    std::vector<unsigned int> res = maxTValuesSubProj;
+
+    upperLimit= (1<<(m-maxTValuesSubProj.back()))-1;
+
+    std::list<unsigned int> flipingOrder;
     for(uInteger r = 0; r < upperLimit; ++r)
     {
-        flipingOrder[r] = getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1)));
+        flipingOrder.push_back(getmsb(((r >> 1) ^ r)^(((r+1) >> 1) ^ (r+1))));
     }
 
-    unsigned int alreadyComputed = 0;
-    unsigned int k;
-    for(k = s ; k <= m-maxTValuesSubProj.back(); ++k)
+    unsigned int nextToCompute = s-1;
+    for(unsigned int k = s ; k <= m-maxTValuesSubProj.back(); ++k)
     {
-        std::cout << k << std::endl;
         CompositionMaker compMaker(k, s);
         do
         {
             std::vector<unsigned int> comp = compMaker.currentComposition();
-            std::cout << k << std::endl;
             std::vector<GeneratingMatrix::Row*> tmp(k);
             unsigned int idx = 0;
             for(unsigned int coord = 0; coord < s; ++coord)
@@ -127,17 +117,38 @@ std::vector<unsigned int> SchmidMethod::computeTValue(std::vector<GeneratingMatr
             }
 
             boost::dynamic_bitset<> v(m);
-            for(uInteger r = 0; r < (unsigned int) ((1 << k) - 1); ++r)
+            unsigned int r = 0;
+            unsigned int currentLimit = (unsigned int) ((1 << k) - 1);
+            for(unsigned int flip : flipingOrder)
             {
-                v ^= *tmp[flipingOrder[r]];
-                while(!v[alreadyComputed] && alreadyComputed < m)
+                v ^= *tmp[flip];
+
+                auto numberOfZeros = v.find_first();
+                
+                if (numberOfZeros == GeneratingMatrix::Row::npos)
                 {
-                    res[alreadyComputed] = std::max(alreadyComputed+2-k, maxTValuesSubProj[alreadyComputed]);
-                    ++alreadyComputed;
+                    numberOfZeros = m;
                 }
-                if (alreadyComputed == m)
+
+                for(unsigned int i = nextToCompute; i < numberOfZeros; ++i)
+                {
+                    res[i] = std::max(i+1-(k-1), res[i]);
+                }
+
+                if (nextToCompute < (unsigned int) numberOfZeros)
+                {
+                    nextToCompute = (unsigned int) numberOfZeros;
+                }
+
+                if (nextToCompute == m)
                 {
                     return res;
+                }
+
+                ++r;
+                if(r >= currentLimit)
+                {
+                    break;
                 }
             }
         }

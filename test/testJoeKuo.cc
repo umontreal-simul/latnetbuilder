@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ using namespace NetBuilder;
 
 int main(int argc, const char *argv[])
 {
-    unsigned int m = 31 ;
+    unsigned int m = 10 ;
     unsigned int maxDim = 7;
 
     for(unsigned int s = 1; s < maxDim; ++s)

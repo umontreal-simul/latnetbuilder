@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
 // limitations under the License.
 
 /*!
-\mainpage Lattice Builder Manual
+\mainpage LatNet Builder Manual
 
 \section overview Overview
 
-<strong>Lattice Builder</strong> is a software package for constructing rank-1 lattices using  
-state-of-the-art techniques.
+<strong>LatNet Builder</strong> is a software package for constructing highly-uniform point sets for quasi Monte-Carlo 
+and randomized quasi Monte-Carlo methods using state-of-the-art techniques. The software can construct rank-1 lattices and digital nets 
+in base 2.
 
 Reference paper:
 <blockquote>
@@ -52,5 +53,12 @@ P. L'Ecuyer and D. Munger.
  * Class and type definitions that are specific to Lattice Builder.
  */
 namespace LatBuilder {}
+
+/**
+ * Net Builder namespace.
+ *
+ * Class and type definitions that are specific to Net Builder.
+ */
+namespace NetBuilder {}
 
 vim: ft=doxygen spelllang=en spell
