@@ -203,10 +203,10 @@ def configure(ctx):
 
     ctx.version_file()
     ctx.env.PACKAGE_NAME = APPNAME
-    ctx.env.LATBUILDER_VERSION = ctx.set_version()
+    ctx.env.LATNETBUILDER_VERSION = ctx.set_version()
 
     # version
-    ctx.msg("Lattice Builder version", ctx.env.LATBUILDER_VERSION)
+    ctx.msg("Lattice Builder version", ctx.env.LATNETBUILDER_VERSION)
 
     # dependencies
     for lib in [boost, fftw]:
@@ -277,7 +277,7 @@ def build(ctx):
         archive = shutil.make_archive(tgt, ctx.ARCHIVE_TYPE, cwd, src)
 
     archive = ctx.path.get_bld().make_node('latbuilder-%s-%s%s' % (
-        ctx.env.LATBUILDER_VERSION, ctx.variant, ctx.ARCHIVE_EXT))
+        ctx.env.LATNETBUILDER_VERSION, ctx.variant, ctx.ARCHIVE_EXT))
     ctx(rule=pack, source=prefix, target=archive)
 
 

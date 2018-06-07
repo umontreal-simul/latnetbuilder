@@ -20,8 +20,8 @@
 #include "latbuilder/LatBuilder.h"
 #include "netbuilder/NetBuilder.h"
 
-#ifndef LATBUILDER_VERSION
-#define LATBUILDER_VERSION "(unkown version)"
+#ifndef LATNETBUILDER_VERSION
+#define LATNETBUILDER_VERSION "(unkown version)"
 #endif
 
 boost::program_options::options_description
@@ -62,7 +62,7 @@ int main(int argc, const char *argv[])
 
         if (opt.count("version"))
         {
-            std::cout << "Lattice Builder " << LATBUILDER_VERSION << std::endl;
+            std::cout << "LatNet Builder " << LATNETBUILDER_VERSION << std::endl;
             std::exit(0);
         }
 
