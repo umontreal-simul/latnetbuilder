@@ -78,10 +78,10 @@ def configure(ctx):
         ctx.env.BUILD_EXAMPLES = True
 
     # version
-    ctx.version_file('latbuilder')
-    version_tag = ctx.set_version('latbuilder')
-    ctx.define('LATBUILDER_VERSION', version_tag)
-    ctx.msg("Setting Lattice Builder version", version_tag)
+    ctx.version_file('latnetbuilder')
+    version_tag = ctx.set_version('latnetbuilder')
+    ctx.define('LATNETBUILDER_VERSION', version_tag)
+    ctx.msg("Setting LatNet Builder version", version_tag)
 
     # build variants
     env = ctx.env.derive()
@@ -98,7 +98,7 @@ def configure(ctx):
 
 def distclean(ctx):
     ctx.recurse('latticetester')
-    verfile = ctx.path.find_node('VERSION')
+    verfile = ctx.path.find_node('latnetbuilder-version.txt')
     if verfile:
         verfile.delete()
     from waflib import Scripting

@@ -176,11 +176,6 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-  //  if (opt.count("version")) {
-  //     std::cout << "Net Builder " << LATBUILDER_VERSION << std::endl;
-  //     std::exit (0);
-  //  }
-
    if (opt.count("add-figure") < 1)
       throw std::runtime_error("--add-figure must be specified (try --help)");
    for (const auto x : {"size", "exploration-method", "dimension"}) {

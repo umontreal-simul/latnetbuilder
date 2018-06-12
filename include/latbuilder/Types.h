@@ -32,7 +32,7 @@
 namespace LatBuilder
 {
 
-/// \defgroup typedefs Type Definitions
+/// \defgroup typedefsLatBuilder LatBuilder Type Definitions
 //@{
 
 /// Scalar unsigned integer .

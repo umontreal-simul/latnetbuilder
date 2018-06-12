@@ -5,10 +5,6 @@ def build(ctx):
 
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
-    # print(lc_inc_dir)
-    # print(inc_dir)
-    # print(ctx.env.LIB_PROGRAM_OPTIONS)
-    # print(ctx.env.STLIB_PROGRAM_OPTIONS)
 
 
     ctx(features='cxx cxxprogram',

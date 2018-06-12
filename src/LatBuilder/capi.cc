@@ -23,8 +23,8 @@
 
 #include <chrono>
 
-#ifndef LATBUILDER_VERSION
-#define LATBUILDER_VERSION "(unkown version)"
+#ifndef LATNETBUILDER_VERSION
+#define LATNETBUILDER_VERSION "(unkown version)"
 #endif
 
 using namespace LatBuilder;
@@ -65,7 +65,7 @@ void latbuilder_release_result(latbuilder_result* result) {
 }
 
 const char* latbuilder_get_version_string() {
-  return LATBUILDER_VERSION;
+  return LATNETBUILDER_VERSION;
 }
 
 const char* latbuilder_get_error_string() {
