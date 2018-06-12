@@ -36,7 +36,7 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParameters> vecOutputFormatParameters)
+void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParameters>& vecOutputFormatParameters)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
@@ -244,12 +244,12 @@ int main(int argc, const char *argv[])
         // NetBuilder::OutputFormat outputFormat;
         std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
         if (opt.count("output-format") >= 1){
-          std::vector<Parser::OutputFormatParameters> outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
+          outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
         }
         else{
           outputFormatParameters = {};
         }
-
+        
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 

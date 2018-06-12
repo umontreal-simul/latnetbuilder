@@ -1,0 +1,30 @@
+
+package:
+    name: latnetbuilder
+    version: "0.1.0a1"
+
+source:
+    path: ../..
+
+build:
+    number: 0
+
+requirements:
+    build:
+        - python
+        - pip
+    run:
+        - python
+        - ipywidgets>=7.1.0
+        - widgetsnbextension>=3.1.0
+        - notebook>=5.3.0
+        - pandas==0.20.3
+        - bqplot==0.10.2
+        - numexpr
+
+test:
+    imports:
+        - latnetbuilder
+
+
+

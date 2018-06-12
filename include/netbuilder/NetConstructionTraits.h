@@ -117,7 +117,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
         class RandomGenValueGenerator
         {
             public:
-                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
                     m_designParameter(std::move(designParameter)),
                     m_randomGen(std::move(randomGen))
                 {};
@@ -190,7 +190,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
         class RandomGenValueGenerator
         {
             public:
-                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
                     m_randomGen(std::move(randomGen))
                 {
                     m_generatingValues = LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE>(std::move(designParameter));
@@ -249,7 +249,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
         class RandomGenValueGenerator
         {
             public:
-                RandomGenValueGenerator(DesignParameter designParameter = defaultDesignParameter, RAND randomGen = RAND()):
+                RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
                     m_designParameter(std::move(designParameter)),
                     m_randomGen(std::move(randomGen))
                 {};
