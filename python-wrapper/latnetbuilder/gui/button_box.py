@@ -50,10 +50,11 @@ def on_click_search(b, gui):
     gui.button_box.abort.disabled = False
     gui.button_box.abort.button_style = 'warning'
     gui.button_box.abort.value = False
-    gui.button_box.abort.observe(lambda b: abort_process(b, process))
     stdout_file = open('cpp_outfile.txt', 'w')
     stderr_file = open('cpp_errfile.txt', 'w')
     process = s._launch_subprocess(stdout_file, stderr_file)
+    gui.process = process
+    gui.button_box.abort.observe(lambda b: abort_process(b, process))
     thread = threading.Thread(target=s._monitor_process, args=(process, gui))
     thread.start()
 

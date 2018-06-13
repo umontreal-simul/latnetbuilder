@@ -1,6 +1,6 @@
 import csv
 import ipywidgets as widgets
-from bqplot import Axis, LinearScale, Scatter, Figure
+from matplotlib import pyplot as plt
 import numpy as np
 from jinja2 import Environment, PackageLoader
 
@@ -17,38 +17,46 @@ def transform_to_c(List):
 
 def create_output(output, create_graph=True):
     result_obj = output.result_obj
-    if create_graph:
-        sc_x = LinearScale(min=0., max=1.)
-        sc_y = LinearScale(min=0., max=1.)
+    if create_graph and not ('polynomial' in result_obj.search_type and result_obj.getMaxLevel() > 15):
 
-        b1 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=1, layout=widgets.Layout(width='150px'), description='x-axis')
-        b2 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=2, layout=widgets.Layout(width='150px'), description='y-axis')
-        b3 = widgets.BoundedIntText(max=min(result_obj.getMaxLevel(), 11), min=1, value=min(result_obj.getMaxLevel(), 11), layout=widgets.Layout(width='150px'), description='Level')
+        b1 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=1, layout=widgets.Layout(width='180px'), description='Coordinate on x-axis', style=style_default)
+        b2 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=2, layout=widgets.Layout(width='180px'), description='Coordinate on y-axis', style=style_default)
+        b3 = widgets.BoundedIntText(max=min(result_obj.getMaxLevel(), 15), min=1, value=min(result_obj.getMaxLevel(), 15), layout=widgets.Layout(width='150px'), description='Level')
         
         if 'polynomial' in result_obj.search_type:
             b3.disabled = True
-        scatt = Scatter(x=result_obj.getNet(0, b3.value), 
-                        y=result_obj.getNet(1, b3.value), 
-                        scales={'x': sc_x, 'y': sc_y},
-                        default_size=20)
-        ax_x = Axis(scale=sc_x, label='Coordinate 1')
-        ax_y = Axis(scale=sc_y, label='Coordinate 2', orientation='vertical')
 
-        fig = Figure(marks=[scatt], axes=[ax_x, ax_y], layout=widgets.Layout(width='650px', height='650px'))
-        plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3, widgets.HTML('<p>Warning: the plot lags for 2^13 points and more. </p> <p>Level restricted to be less than 13.</p>')])], 
+        pt_x = result_obj.getNet(0, b3.value)
+        pt_y = result_obj.getNet(1, b3.value)
+        fig = widgets.Output(layout=widgets.Layout(width='600px', height='500px'))
+        with fig:
+            plt.figure(figsize=(8,8))
+            plt.xlim(0, 1)
+            plt.ylim(0, 1)
+            plt.scatter(pt_x, pt_y, s=0.8)
+            plt.show()
+
+        plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3, widgets.HTML('<p>Warning: the plot lags for 2^15 points and more. </p> <p>Level restricted to be less than 15.</p>')])], 
                 layout=widgets.Layout(align_items='center'))
 
         def change_graph(b):
             if b['name'] == 'value':
                 if b['owner'] == b1:
-                    scatt.x = result_obj.getNet(b['new']-1, b3.value)
-                    ax_x.label = 'Coordinate ' + str(b['new'])
+                    pt_x = result_obj.getNet(b['new']-1, b3.value)
+                    pt_y = result_obj.getNet(b2.value-1, b3.value)
                 if b['owner'] == b2:
-                    scatt.y = result_obj.getNet(b['new']-1, b3.value)
-                    ax_y.label = 'Coordinate ' + str(b['new'])
+                    pt_x = result_obj.getNet(b1.value-1, b3.value)
+                    pt_y = result_obj.getNet(b['new']-1, b3.value)
                 if b['owner'] == b3:
-                    scatt.x = result_obj.getNet(b1.value-1, b['new'])
-                    scatt.y = result_obj.getNet(b2.value-1, b['new'])
+                    pt_x = result_obj.getNet(b1.value-1, b['new'])
+                    pt_y = result_obj.getNet(b2.value-1, b['new'])
+                fig.clear_output()
+                with fig:
+                    plt.figure(figsize=(8,8))
+                    plt.xlim(0, 1)
+                    plt.ylim(0, 1)
+                    plt.scatter(pt_x, pt_y, s=0.8)
+                    plt.show()
         b1.observe(change_graph)
         b2.observe(change_graph)
         b3.observe(change_graph)

@@ -34,7 +34,7 @@ class Search():
 
     def _launch_subprocess(self, stdout_file, stderr_file):
         command = self.construct_command_line()
-        process = subprocess.Popen([' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
+        process = subprocess.Popen(['exec ' + ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
         return process
 
     def _parse_progress(self, line):
