@@ -61,7 +61,9 @@ makeOptionsDescription()
     "  net\n")
    ("help,h", "produce help message")
    ("version,V", "show version")
-   ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
+   ("verbose,v", po::value<int>()->default_value(0),
+   "specify the verbosity of the program\n")
+  //  ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
    ("lattice-type,l", po::value<std::string>()->default_value("ordinary"),
    "lattice; possible values:\n"
    "  ordinary (default)\n"
@@ -182,7 +184,7 @@ parse(int argc, const char* argv[])
 
 
 template <PointSetType PST>
-void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd, bool quiet, unsigned int repeat)
+void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd, int verbose, unsigned int repeat)
 {
    const LatticeType LR = LatticeType::ORDINARY ;
    using namespace std::chrono;
@@ -191,14 +193,15 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
 
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
-   if (not quiet) {
+   if (verbose > 0) {
       search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
+      search->setObserverVerbosity(verbose-1);
       std::cout << *search << std::endl;
    }
 
    for (unsigned int i = 0; i < repeat; i++) {
 
-      if (not quiet)
+      if (verbose > 0)
          std::cout << separator << std::endl;
 
       auto t0 = high_resolution_clock::now();
@@ -210,7 +213,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
    std::cout.precision(merit_digits_displayed);
      const auto lat = search->bestLattice();
      
-      if (not quiet) {
+      if (verbose > 0) {
    auto dt = duration_cast<duration<double>>(t1 - t0);
          std::cout << std::endl;
          std::cout << "BEST LATTICE: " << search->bestLattice() << ": " << search->bestMeritValue() << std::endl;
@@ -230,13 +233,13 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
       search->reset();
     }
 
-   if (not quiet)
+   if (verbose > 0)
       std::cout << separator << std::endl;
 }
 
 
 template <PointSetType PST>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& cmd, bool quiet, unsigned int repeat, const std::vector<NetBuilder::Parser::OutputFormatParameters>& vecOutputFormatParameters)
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& cmd, int verbose, unsigned int repeat, const std::vector<NetBuilder::Parser::OutputFormatParameters>& vecOutputFormatParameters)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -245,14 +248,15 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
 
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
-   if (not quiet) {
+   if (verbose > 0) {
       search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
+      search->setObserverVerbosity(verbose-1);
       std::cout << *search << std::endl;
    }
 
    for (unsigned int i = 0; i < repeat; i++) {
 
-        if (not quiet)
+        if (verbose > 0)
            std::cout << separator << std::endl;
 
         auto t0 = high_resolution_clock::now();
@@ -266,7 +270,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
        const auto lat = search->bestLattice();
       
 
-        if (not quiet) {
+        if (verbose > 0) {
         auto dt = duration_cast<duration<double>>(t1 - t0);
            std::cout << std::endl;
            std::cout << "BEST LATTICE: " << lat << ": " << search->bestMeritValue() << std::endl;
@@ -298,7 +302,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
         search->reset();
     }
 
-   if (not quiet)
+   if (verbose > 0)
       std::cout << separator << std::endl;
 }
 
@@ -314,8 +318,9 @@ int main(int argc, const char *argv[])
    try {
         auto opt = parse(argc, argv);
 
-        bool quiet = opt.count("quiet");
-
+        // bool quiet = opt.count("quiet");
+        int verbose = opt["verbose"].as<int>();
+        
         auto repeat = opt["repeat"].as<unsigned int>();
 
         // global variable
@@ -366,11 +371,11 @@ int main(int argc, const char *argv[])
 
             if (latType == PointSetType::UNILEVEL){
 
-               executeOrdinary<PointSetType::UNILEVEL> (cmd, quiet, repeat);
+               executeOrdinary<PointSetType::UNILEVEL> (cmd, verbose, repeat);
                
              }
             else{
-               executeOrdinary<PointSetType::MULTILEVEL> (cmd, quiet, repeat);
+               executeOrdinary<PointSetType::MULTILEVEL> (cmd, verbose, repeat);
                
              }
       }
@@ -425,11 +430,11 @@ int main(int argc, const char *argv[])
             }
 
             if (latType == PointSetType::UNILEVEL){
-               executePolynomial< PointSetType::UNILEVEL> (cmd, quiet, repeat, outPoly);
+               executePolynomial< PointSetType::UNILEVEL> (cmd, verbose, repeat, outPoly);
                
              }
             else{
-               executePolynomial<PointSetType::MULTILEVEL> (cmd, quiet, repeat, outPoly);
+               executePolynomial<PointSetType::MULTILEVEL> (cmd, verbose, repeat, outPoly);
                
              }
       }
