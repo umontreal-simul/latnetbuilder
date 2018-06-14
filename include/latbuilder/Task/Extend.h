@@ -84,6 +84,7 @@ public:
    {
       typedef GenSeq::Extend<LR> GenSeqType;
       typedef LatSeq::Combiner<LR, PST, GenSeqType, CartesianProduct> LatSeqType;
+      this->setObserverTotalDim(1);
 
       std::vector<GenSeqType> gens(this->dimension());
       gens[0] = GenSeqType(LatticeTraits<LR>::TrivialModulus, LatticeTraits<LR>::TrivialModulus, typename LatticeTraits<LR>::GenValue(1));
@@ -97,7 +98,7 @@ public:
       LatSeqType latSeq(storage().sizeParam(), std::move(gens));
 
       auto fseq = this->filters().apply(latSeqOverCBC().meritSeq(std::move(latSeq)));
-      const auto itmin = this->minElement()(fseq.begin(), fseq.end());
+      const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount());
       this->selectBestLattice(*itmin.base().base(), *itmin);
    }
 

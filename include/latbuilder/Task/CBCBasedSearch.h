@@ -80,12 +80,13 @@ public:
    virtual void execute()
    {
       auto genSeqs = m_traits.genSeqs(storage().sizeParam(), this->dimension());
+      this->setObserverTotalDim(this->dimension());
 
       // iterate through dimension
       for (const auto& genSeq : genSeqs) {
          auto seq = cbc().meritSeq(genSeq);
          auto fseq = this->filters().apply(seq);
-         const auto itmin = this->minElement()(fseq.begin(), fseq.end());
+         const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount());
          cbc().select(itmin.base());
          this->selectBestLattice(cbc().baseLat(), *itmin);
       }
