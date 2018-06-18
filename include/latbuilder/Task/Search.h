@@ -63,10 +63,13 @@ public:
             size_t maxTotalCount = std::numeric_limits<size_t>::max()
             )
       {
+         m_totalDim = 0;
+         m_dimension = 0;
+         m_verbose=0;
          setMaxAcceptedCount(maxAcceptedCount);
          setMaxTotalCount(maxTotalCount);
          setTruncateSum(false);
-         start();
+         start(0);
       }
 
       void setMaxAcceptedCount(size_t maxCount)
@@ -83,8 +86,8 @@ public:
       void setTruncateSum(bool value)
       { m_truncateSum = value; }
 
-      void start()
-      { stop(); m_totalCount = 0; m_rejectedCount = 0; }
+      void start(const int& n_totToBeVisited)
+      { stop(); m_dimension++; m_totalCount = 0; m_rejectedCount = 0; m_nTotToBeVisited = n_totToBeVisited;}
 
       /**
        * Reset the low-pass filter when min-element stops.
@@ -95,6 +98,15 @@ public:
       bool visited(const Real&)
       {
          m_totalCount++;
+         if (m_verbose && m_totalCount % 100 == 0){
+               std::cout << "dimension " << m_dimension-1 << "/" << m_totalDim <<  " - reached ";
+               if (m_maxAcceptedCount < std::numeric_limits<size_t>::max()){
+                 std::cout << acceptedCount() << "/" << m_maxAcceptedCount << std::endl;
+               }
+               else{
+                 std::cout << m_totalCount << "/" << m_nTotToBeVisited << std::endl;
+               }
+         }
          return acceptedCount() < maxAcceptedCount() and
             totalCount() < maxTotalCount();
       }
@@ -109,6 +121,14 @@ public:
        */
       void minUpdated(const Real& newMin)
       { m_lowPass.setThreshold(newMin); }
+
+      void setVerbosity(int verbose){
+        m_verbose = verbose;
+      }
+
+      void setTotalDim(unsigned int totalDim){
+        m_totalDim = totalDim;
+      }
 
       size_t maxAcceptedCount() const
       { return m_maxAcceptedCount; }
@@ -143,11 +163,15 @@ public:
       { return m_lowPass; }
 
    private:
+      Dimension m_dimension;
+      bool m_verbose;
       bool m_truncateSum;
       size_t m_maxAcceptedCount;
       size_t m_maxTotalCount;
       size_t m_totalCount;
       size_t m_rejectedCount;
+      int m_nTotToBeVisited;
+      unsigned int m_totalDim;
 
       /**
        * Low-pass filter whose threshold is continuously updated with the
@@ -223,6 +247,16 @@ public:
    const MinObserver& minObserver() const
    { return *m_minObserver; }
 
+   void setObserverVerbosity(int verbose) const
+   {
+      m_minObserver->setVerbosity(verbose);
+   }
+
+   void setObserverTotalDim(unsigned int totalDim) const
+   {
+      m_minObserver->setTotalDim(totalDim);
+   }
+
    /**
     * Lattice-selected signal.
     *
@@ -285,7 +319,8 @@ private:
       // notify minObserver before minElement visits the first element
       m_minElement.onStart().connect(boost::bind(
                &MinObserver::start,
-               &minObserver()
+               &minObserver(),
+               _1
                ));
 
       // notify minObserver when minElement visits a new element

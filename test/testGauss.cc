@@ -31,30 +31,35 @@ using namespace NetBuilder;
 int main(int argc, const char *argv[])
 {        
     int m = 30;
-    int s = 4;
+    int s = 1;
     int nLevel=m;
 
-    typedef NetConstructionTraits<NetConstruction::SOBOL> ConstructionMethod;
+    typedef NetConstructionTraits<NetConstruction::EXPLICIT> ConstructionMethod;
 
     typedef ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> randomGenValueGenerator;
-    randomGenValueGenerator randomGen = randomGenValueGenerator();
+    // randomGenValueGenerator randomGen = randomGenValueGenerator(Polynomial(INIT_MONO, 30, 1));
+    // auto net = std::make_unique<DigitalNetConstruction<NetConstruction::POLYNOMIAL>>(0, Polynomial(INIT_MONO, 30, 1));
+    
+    randomGenValueGenerator randomGen = randomGenValueGenerator(std::pair<unsigned int, unsigned int>(m, m));
+    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::EXPLICIT>>(0, std::pair<unsigned int, unsigned int>(m, m));
 
-    auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(1, m);
-    for (int dim=2; dim<=s; dim++){
+    // auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(1, m);
+    
+    for (int dim=1; dim<=s; dim++){
         net = net->extendDimension(randomGen(dim));
     }
-
-    // auto net = DigitalNetConstruction<NetConstruction::SOBOL>(s,m);
+    // std::cout << net->dimension() << std::endl;
+    // std::cout << *(net->pointerToGeneratingMatrix(1)) << std::endl;
     
 
-    std::vector<std::vector<GeneratingMatrix>> v;
-    for (int level=0; level<nLevel; level++){
+    // std::vector<std::vector<GeneratingMatrix>> v;
+    // for (int level=0; level<nLevel; level++){
         std::vector<GeneratingMatrix> gen;
         for (int i=1; i<=s; i++){
-            gen.push_back(net->pointerToGeneratingMatrix(i)->upperLeftSubMatrix(m, m-level));
+            gen.push_back(net->pointerToGeneratingMatrix(i)->upperLeftSubMatrix(m, m));
         }
-        v.push_back(gen);
-    }
+    //     v.push_back(gen);
+    // }
     
 
     clock_t t1,t2, t3, t4;
@@ -64,16 +69,16 @@ int main(int argc, const char *argv[])
     std::vector<int> iNew2;
     std::vector<unsigned int> iOld; 
     std::vector<unsigned int> maxSubProj (nLevel, 0);
-    for (int i=0; i<10; i++){
+    for (int i=0; i<1; i++){
         // t1=clock();
         // // for (int level=nLevel-1; level>=0; level--){
         // //     iNew.push_back(SchmidMethod::computeTValue(v[level], 0, 0));
         // // }
         // t2=clock();
         t3=clock();
-        iOld = GaussMethod::computeTValue(v[0], m-nLevel, maxSubProj, 0);
+        iOld = GaussMethod::computeTValue(gen, m-nLevel, maxSubProj, 0);
         t4=clock();
-        diff1 += ((double)t2-(double)t1);
+        // diff1 += ((double)t2-(double)t1);
         diff2 += ((double)t4-(double)t3);
     }
     // std::cout << "Schmid method s=" << s << ", m=" << m << ", time= " << diff1 <<std::endl;

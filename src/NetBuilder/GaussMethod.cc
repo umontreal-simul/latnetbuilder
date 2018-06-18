@@ -99,19 +99,28 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
 
     unsigned int nLevel = (unsigned int) maxSubProj.size();
     
-    if (s == 1){    // does not make sense when s == 1
-        return std::vector<unsigned int>(nCols-mMin);
+    if (s == 1){
+        ProgressiveRowReducer rowReducer(nCols);
+        for (unsigned int r=0; r<nRows; r++){
+            rowReducer.addRow(baseMatrices[0].subMatrix(r, 0, 1, nCols));
+        }
+        std::map<unsigned int, unsigned int> pivotPos = rowReducer.getPivots();
+        
+        std::vector<unsigned int> countPivot(nCols);
+        for (const auto &rowCol : pivotPos){
+            countPivot[std::max(rowCol.first, rowCol.second)]++;
+        }
+        unsigned int count = 0;
+        for (unsigned int c=0; c<mMin; c++){
+            count += countPivot[c];
+        }
+        std::vector<unsigned int> res(nCols-mMin);
+        for (unsigned int c=mMin; c<nCols; c++){
+            count += countPivot[c];
+            res[c-mMin] = c+1-count;
+        }
+        return res;
     }
-
-    // if (s==1)
-    // {   
-    //     std::vector<unsigned int> res(nCols-mMin);
-    //     for(unsigned int i = 0; i < nCols-mMin; ++i)
-    //     {
-    //         res[i] = nCols - ( mMin + i + 1 ) ;
-    //     }
-    //     return res;
-    // }
 
     std::vector<unsigned int> result = maxSubProj;
     unsigned int diff = 0;

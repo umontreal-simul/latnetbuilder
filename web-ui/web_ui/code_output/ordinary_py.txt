@@ -1,3 +1,0 @@
-n = {{n}}
-a = {{a}}
-points = [[(i * aj % n) / float(n) for aj in a] for i in range(n)]

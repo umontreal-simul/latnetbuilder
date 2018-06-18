@@ -1,14 +1,13 @@
-FROM pierremarion23/latbuilder:dep
+FROM ubuntu:16.04
 
-RUN jupyter nbextension enable --py --sys-prefix widgetsnbextension
-RUN pip install bqplot==0.10.2
-RUN pip install numexpr
-RUN pip install wheel
-RUN pip install appmode
-RUN jupyter nbextension enable --py --sys-prefix appmode
-RUN jupyter serverextension enable --py --sys-prefix appmode
-RUN jupyter nbextension install --py --sys-prefix bqplot
-RUN jupyter nbextension enable --py --sys-prefix bqplot
+RUN apt-get update \
+&& apt-get install -y gcc g++ python \
+&& apt-get clean
 
-RUN git clone -b polynomial --single-branch --recursive https://github.com/PierreMarion23/latbuilder
-RUN cd $HOME/latbuilder && ls && ./waf configure --prefix $HOME/latsoft --boost $HOME/dependencies --fftw $HOME/dependencies --ntl $HOME/dependencies && ./waf build && ./waf install
+COPY ./src_docker /usr/src
+
+WORKDIR /usr/src
+RUN cd ntl-11.0.0 && make && make check && make install
+
+RUN ./waf configure PREFIX=$HOME/latsoft \
+&& ./waf install

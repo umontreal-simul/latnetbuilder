@@ -76,9 +76,10 @@ public:
    virtual void execute()
    {
       auto latSeq = m_traits.latSeq(storage().sizeParam(), this->dimension());
+      this->setObserverTotalDim(1);
 
       auto fseq = this->filters().apply(latSeqOverCBC().meritSeq(std::move(latSeq)));
-      const auto itmin = this->minElement()(fseq.begin(), fseq.end());
+      const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount());
       this->selectBestLattice(*itmin.base().base(), *itmin);
    }
 

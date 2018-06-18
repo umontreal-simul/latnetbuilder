@@ -108,6 +108,11 @@ class ProgressiveRowReducer
         unsigned int numCols() const {return m_nCols; }
 
         /**
+         * Returns a map of pivot positions (key: row index, value: column index).
+         */ 
+        std::map<unsigned int, unsigned int> getPivots() const {return m_pivotsRowColPositions; }
+
+        /**
          * Check if a matrix is invertible. Returns false if the matrix is not-square or singular, 
          * and true otherwise.
          */ 

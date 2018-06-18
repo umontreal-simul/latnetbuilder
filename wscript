@@ -120,7 +120,6 @@ def build(ctx):
         ctx.recurse('doc')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
-    ctx.recurse('web-ui')
 
 
 # build variants

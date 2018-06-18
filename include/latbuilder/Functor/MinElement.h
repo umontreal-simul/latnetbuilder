@@ -19,6 +19,7 @@
 
 #include "latbuilder/Functor/AllOf.h"
 
+#include <limits>
 #include <boost/signals2.hpp>
 
 namespace LatBuilder { namespace Functor {
@@ -32,7 +33,7 @@ namespace LatBuilder { namespace Functor {
 template <typename T>
 struct MinElement {
 public:
-   typedef boost::signals2::signal<void ()> OnStart;
+   typedef boost::signals2::signal<void (const int&)> OnStart;
    typedef boost::signals2::signal<void ()> OnStop;
    typedef boost::signals2::signal<void (const T&)> OnMinUpdated;
    typedef boost::signals2::signal<bool (const T&), Functor::AllOf> OnElementVisited;
@@ -56,9 +57,14 @@ public:
     * An element-visited signal is emitted after an element has been visited.
     */
    template <typename ForwardIterator>
-   ForwardIterator operator()(ForwardIterator first, ForwardIterator last) const
+   ForwardIterator operator()(ForwardIterator first, ForwardIterator last, size_t maxAcceptedCount) const
    {
-      onStart()();
+      if (maxAcceptedCount == std::numeric_limits<size_t>::max()){
+        onStart()(std::distance(first, last));
+      }
+      else{
+        onStart()(0);
+      }
 
       if (first == last) {
          onStop()();
