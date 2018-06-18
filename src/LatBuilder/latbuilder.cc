@@ -280,7 +280,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
         }
         
         if (i == 0){ 
-          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net(lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
+          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
 
           for (NetBuilder::Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
             std::string fileName = outputFormatParameters.file();

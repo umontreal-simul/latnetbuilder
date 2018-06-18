@@ -86,7 +86,7 @@ public:
       void setTruncateSum(bool value)
       { m_truncateSum = value; }
 
-      void start(const int& n_totToBeVisited)
+      void start(const size_t& n_totToBeVisited)
       { stop(); m_dimension++; m_totalCount = 0; m_rejectedCount = 0; m_nTotToBeVisited = n_totToBeVisited;}
 
       /**
@@ -126,7 +126,7 @@ public:
         m_verbose = verbose;
       }
 
-      void setTotalDim(unsigned int totalDim){
+      void setTotalDim(Dimension totalDim){
         m_totalDim = totalDim;
       }
 
@@ -170,8 +170,8 @@ public:
       size_t m_maxTotalCount;
       size_t m_totalCount;
       size_t m_rejectedCount;
-      int m_nTotToBeVisited;
-      unsigned int m_totalDim;
+      size_t m_nTotToBeVisited;
+      Dimension m_totalDim;
 
       /**
        * Low-pass filter whose threshold is continuously updated with the
@@ -252,7 +252,7 @@ public:
       m_minObserver->setVerbosity(verbose);
    }
 
-   void setObserverTotalDim(unsigned int totalDim) const
+   void setObserverTotalDim(Dimension totalDim) const
    {
       m_minObserver->setTotalDim(totalDim);
    }
