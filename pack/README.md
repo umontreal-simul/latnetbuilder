@@ -18,7 +18,7 @@ through cross-compilation.  They are meant to be run under a Linux environment
 
 Configure the output directory, say `outdir`, with:
 
-    ../waf -o outdir
+    ../waf configure -o outdir
 
 Then build the packages:
 
