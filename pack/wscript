@@ -146,6 +146,56 @@ class FFTW(DepBase):
                 cwd=builddir.abspath())
 
 
+class GMP(DepBase):
+    def __init__(self, *version):
+        DepBase.__init__(self)
+        self._version = version
+    def name(self):
+        return 'gmp'
+    def url(self):
+        return 'https://gmplib.org/download/gmp/gmp-{0}.{1}.{2}.tar.lz'.format(*self._version)
+    def src_prefix(self):
+        return 'gmp-{0}.{1}.{2}'.format(*self._version)
+    def outputs(self, ctx):
+        prefix    = self.install_dir(ctx)
+        return [prefix.make_node('include/gmp.h'), prefix.make_node('lib/libgmp.a')]
+    def build(self, ctx):
+        srcdir    = ctx.env.SRCDIR.make_node(self.src_prefix())
+        archive   = srcdir.parent.make_node(ctx.env['ARCHIVE_' + self.name()])
+        configure = srcdir.make_node('configure')
+        prefix    = self.install_dir(ctx)
+        builddir  = self.build_dir(ctx)
+        makefile  = builddir.make_node('Makefile')
+        libtest   = builddir.make_node('libfftw3.la')
+        insttest  = self.outputs(ctx)
+
+        builddir.mkdir()
+        prefix.mkdir()
+
+        # unpack rule
+        add_task(ctx, unpack, archive, configure)
+
+        # configure
+        ctx(rule=' '.join([configure.abspath(),
+            '--prefix={}'.format(prefix.abspath()),
+            '--enable-static',
+            '--host', ctx.PLATFORM]),
+            source=configure,
+            target=makefile,
+            cwd=builddir.abspath())
+                
+        # build
+        ctx(rule='make -j{}'.format(ctx.options.jobs),
+                source=makefile,
+                target=libtest,
+                cwd=builddir.abspath())
+
+        # install
+        ctx(rule='make install'.format(ctx.options.jobs),
+                source=libtest,
+                target=insttest,
+                cwd=builddir.abspath())
+
 def add_task(ctx, task, inputs=None, outputs=None):
     t = task(env=ctx.env)
     if inputs:
@@ -191,8 +241,9 @@ class unpack(Task.Task):
         archive.extractall(destdir.abspath())
 
 
-boost = Boost(1,57,0)
-fftw  = FFTW(3,3,4)
+boost = Boost(1,67,0)
+fftw  = FFTW(3,3,8)
+gmp = GMP(6,1,2)
 
 def options(ctx):
     pass
@@ -201,9 +252,9 @@ def configure(ctx):
     build_platform = Utils.unversioned_sys_platform()
     ctx.msg("Build platform", build_platform)
 
-    ctx.version_file()
+    ctx.version_file("latnetbuilder")
     ctx.env.PACKAGE_NAME = APPNAME
-    ctx.env.LATNETBUILDER_VERSION = ctx.set_version()
+    ctx.env.LATNETBUILDER_VERSION = ctx.set_version("latnetbuilder")
 
     # version
     ctx.msg("Lattice Builder version", ctx.env.LATNETBUILDER_VERSION)
