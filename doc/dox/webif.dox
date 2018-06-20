@@ -16,7 +16,7 @@
 
 /** \page webif LatNet Builder Web Application
 
-TODO
+\todo
 
 A cross-platform web interface to LatNet Builder is included in the binary
 packages.

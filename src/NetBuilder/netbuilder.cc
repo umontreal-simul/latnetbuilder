@@ -85,7 +85,7 @@ makeOptionsDescription()
     "(required) size of the net; possible values:\n"
    "  <size>\n"
    "  2^<max-power>\n")
-   ("exploration-method,e", po::value<std::string>(),
+   ("exploration-method,E", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
     "  evaluation:<net_description>\n" 
     "  exhaustive\n"
@@ -130,7 +130,7 @@ makeOptionsDescription()
     ("add-figure,a", po::value< std::vector<std::string> >()->composing(),
     "(at least one required) add one type of figure of merits. If several, specify a figure combiner.\n"
     "Syntax pattern:\n"
-    "rt \n"
+    "rt \n" // TODO
     "where name can take the following values:\n"
     "resolution-gap, t-value, A-Property, A'-Property and \n"
     "P<alpha> with the optional \"CU:\" prefix to switch to the coordinate-uniform evaluation algorithm\n")

@@ -19,7 +19,7 @@
 
 \section overview Overview
 
-<strong>LatNet Builder</strong> is a software package for constructing highly-uniform point sets for quasi Monte-Carlo 
+<strong>LatNet Builder</strong> is a software library and tool for constructing highly-uniform point sets for quasi Monte-Carlo 
 and randomized quasi Monte-Carlo methods using state-of-the-art techniques. The software can construct rank-1 lattices and digital nets 
 in base 2.
 
@@ -32,15 +32,10 @@ P. L'Ecuyer and D. Munger.
 </a>
 </blockquote>
 
-\section history A bit of history
-
-A previous version of this software, called Lattice Builder, only handled rank-1 lattices. In this new version, the software can also handle digital nets in base 2. 
-This new piece of software is called Net Builder.
-
 The current version of the software is called LatNet Builder, for Lattice & Net Builder, because it can handle both rank-1 lattices and digital nets in base 2.
 
 \section outline Manual Outline
-- \subpage funcs
+- \subpage feats
 - \subpage webif
 - \subpage cmdtut
 - \subpage hightut

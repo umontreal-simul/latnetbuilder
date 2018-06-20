@@ -76,9 +76,9 @@ makeOptionsDescription()
    "  <base>^<max-power>\n"
    "  input format :\n"
    "  ordinary lattice rules: integer (decimal reprisentation)\n"
-   "  polynomial lattice rules: polynomial : list of coeifficients : 1011 stands for 1 + X^2 + X^3\n")
-   ("construction,c", po::value<std::string>(),
-    "(required) construction type; possible values:\n"
+   "  polynomial lattice rules: polynomial : list of coefficients : 1011 stands for 1 + X^2 + X^3\n")
+   ("exploration-method,E", po::value<std::string>(),
+    "(required) exploration method; possible values:\n"
     "  explicit:<a1>,...,<as>\n"
     "  exhaustive\n"
     "  random:<r>\n"
@@ -134,8 +134,8 @@ makeOptionsDescription()
     "  max\n"
     "  level:{<level>|max}\n")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
-    "(optional) number of times the construction must be executed\n"
-   "(can be useful to obtain different results from random constructions)\n")
+    "(optional) number of times the exploration must be executed\n"
+   "(can be useful to obtain different results from random exploration)\n")
     ("output-format,g", po::value< std::vector<std::string> >()->composing(),
     "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
    "  file:\"<file>\":format\n"
@@ -172,7 +172,7 @@ parse(int argc, const char* argv[])
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"modulus", "construction", "dimension", "figure-of-merit"}) {
+   for (const auto x : {"modulus", "exploration-method", "dimension", "figure-of-merit"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
@@ -329,7 +329,7 @@ int main(int argc, const char *argv[])
 
             
 
-            cmd.construction  = opt["construction"].as<std::string>();
+            cmd.construction  = opt["exploration-method"].as<std::string>();
             cmd.size          = opt["modulus"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
@@ -381,7 +381,7 @@ int main(int argc, const char *argv[])
 
             
 
-            cmd.construction  = opt["construction"].as<std::string>();
+            cmd.construction  = opt["exploration-method"].as<std::string>();
             cmd.size          = opt["modulus"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();

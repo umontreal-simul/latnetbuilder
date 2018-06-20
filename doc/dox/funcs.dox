@@ -15,12 +15,80 @@
 // limitations under the License.
 
 /**
-\page funcs Main functionalities
+\page feats Main features
 
-Polynomial lattice rules, viewed as rank-1 lattices in the
-Laurent series space were later added to the Lattice Builder.
-It turned out that viewing the polynomial lattice rules as digital nets was in most case much more efficient than using the rank-1 lattice approach. As a consequence, polynomial lattice rules can
-be constructed by the sofware using both methods.
+<strong>LatNet Builder</strong> is a software library and tool for constructing highly-uniform point sets for quasi Monte-Carlo 
+and randomized quasi Monte-Carlo methods using state-of-the-art techniques.
+
+A previous version of this software, called Lattice Builder, only handled rank-1 lattices. Rank-1 polynomial lattices, viewed as rank-1 lattices in the
+Laurent series space, were later added to Lattice Builder. In the current version, the software can also handle digital nets in base 2. 
+This new piece of software is called Net Builder.
+
+As polynomial lattices can also be viewed as digital nets in base 2, such point sets can also be constructed by Net Builder. Moreover, it turns out that viewing the polynomial 
+lattices as digital nets is in most cases much more efficient than using the rank-1 lattice approach. Detailed guidelines
+specifying which approach should be used to construct polynomial lattices depending of what one wants to achieve can be found here \todo page.
+
+All in all, the types of point sets handled by LatNetBuilder include rank-1 (ordinary and polynomial) lattices and digital nets (Sobol' nets, polynomial lattice rules and nets defined by explicit generating matrices.)
+More precisely, LatNetBuilder can search for point sets of arbitrary size in any dimension of high quality with respect to various quality criteria. 
+Such quality criteria are called figure of merits. These figures of merit are parametrized by weights which give different importance to the subprojections of the net. 
+The merit of the subprojections is aggregated using a given (weighted) norm \f$ L_q \f$ with \f$ q \leq \infty \f$.
+
+LatNetBuilder can use various exploration methods to construct the point sets such as the exhaustive, the random sampling or the component-by-component (CBC) methods.
+
+Additionally LatNetBuilder contains more advanced features such as multilevel point sets, normalizations, filters and combined figures of merit.
+
+
+\todo reference
+<table border="1" align="center" class="tg">
+  <tr align="center">
+    <th class="tg-uys7">Features</th>
+    <th class="tg-uys7" colspan="2">LatBuilder</th>
+    <th class="tg-uys7">NetBuilder</th>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Type of point sets </td>
+    <td class="tg-uys7">rank-1 ordinary lattices</td>
+    <td class="tg-uys7">rank-1 polynomial lattices</td>
+    <td class="tg-uys7">Sobol' nets<br>polynomial digital nets, <br>nets with explicit generating matrices</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Figures of merit</td>
+    <td class="tg-uys7">Kernel based: \f$ P_\alpha \f$,\f$ R_\alpha \f$, <br>Others: spectral test</td>
+    <td class="tg-uys7">Kernel based: \f$ P_\alpha \f$,\f$ R_1 \f$</td>
+    <td class="tg-uys7">Kernel based: \f$ P_2 \f$,\f$ R_1 \f$, <br Bit equidistribution: t-value, resolution-gap ></td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Weights</td>
+    <td class="tg-uys7" colspan="3">projection-dependent, order-dependent, product and product-order-dependent</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Exploration methods</td>
+    <td class="tg-uys7" colspan="3">exhaustive, random, random and full CBC</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Fast CBC</td>
+    <td class="tg-uys7">fast CBC for power of a prime modulus</td>
+    <td class="tg-uys7">fast CBC for irreducible modulus</td>
+    <td class="tg-uys7">non applicable</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Multilevel point sets</td>
+    <td class="tg-uys7" colspan="2">embedded nets</td>
+    <td class="tg-uys7">digital sequence</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Normalizations and filters</td>
+    <td class="tg-uys7" colspan="2">yes</td>
+    <td class="tg-uys7">in progress</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Combined figures of merit</td>
+    <td class="tg-uys7" colspan="2">no</td>
+    <td class="tg-uys7">yes</td>
+  </tr>
+</table>
+
+
 
 */
 vim: ft=doxygen spelllang=en spell

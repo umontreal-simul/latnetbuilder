@@ -54,7 +54,7 @@ int main(int argc, const char *argv[])
         po::store(po::command_line_parser(argc, argv).options(desc).allow_unregistered().run(), opt);
         po::notify(opt);
 
-        if (opt.count("main-construction") < 1 && opt.count("help"))
+        if (opt.count("help") && opt.count("main-construction") < 1)
         {
             std::cout << desc << std::endl;
             std::exit(0);

@@ -138,7 +138,7 @@ public:
          return;
       }
 
-      throw ParserError("unsupported construction type: " + str);
+      throw ParserError("unsupported construction method: " + str);
    }
 
 private:
