@@ -191,7 +191,7 @@ namespace NetBuilder {
     std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(unsigned int dimension)
     {
         assert(dimension >= 1 && dimension <= 21201);
-        std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
+        std::ifstream file("../share/latnetbuilder/data/JoeKuoSobolNets.csv");
         std::vector<std::vector<uInteger>> res(dimension);
         std::string sent;
 

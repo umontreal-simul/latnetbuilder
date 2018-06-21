@@ -6,4 +6,4 @@ def build(ctx):
 
     # data files
     for dat in data_dir.ant_glob('*.csv'):
-        ctx.install_files("${PREFIX}/share/latbuilder/data", dat)
+        ctx.install_files("${PREFIX}/share/latnetbuilder/data", dat)

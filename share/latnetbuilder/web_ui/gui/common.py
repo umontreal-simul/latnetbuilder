@@ -2,7 +2,7 @@ import os
 import csv
 import numpy as np
 
-dev_mod = not os.path.exists('../share/latbuilder/data/JoeKuoSobolNets.csv')
+dev_mod = not os.path.exists('../share/latnetbuilder/data/JoeKuoSobolNets.csv')
 
 # joe and kuo sobol nets - necessary for digital net evaluation
 JoeKuoSobolNets = []
@@ -11,8 +11,8 @@ if dev_mod:
     _JoeKuoSobolNetsPath = '../../data/JoeKuoSobolNets.csv'
     _primPolyPath = '../../data/primitive_polynomials.csv'
 else:
-    _JoeKuoSobolNetsPath = '../share/latbuilder/data/JoeKuoSobolNets.csv'
-    _primPolyPath = '../share/latbuilder/data/primitive_polynomials.csv'
+    _JoeKuoSobolNetsPath = '../share/latnetbuilder/data/JoeKuoSobolNets.csv'
+    _primPolyPath = '../share/latnetbuilder/data/primitive_polynomials.csv'
 
 with open(_JoeKuoSobolNetsPath, newline='') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=';')
