@@ -22,7 +22,7 @@
 #include "latbuilder/GenSeq/VectorCreator.h"
 
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -62,11 +62,11 @@ int main()
    test<CyclicGroup<Compress::NONE>>(init2);
    test<CyclicGroup<Compress::SYMMETRIC>>(init2);
 
-   test<CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR113>>>(init3, 5);
-   test<CoprimeIntegers<Compress::SYMMETRIC, Traversal::Random<LFSR113>>>(init3, 5);
+   test<CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR258>>>(init3, 5);
+   test<CoprimeIntegers<Compress::SYMMETRIC, Traversal::Random<LFSR258>>>(init3, 5);
 
-   test<CyclicGroup<Compress::NONE, Traversal::Random<LFSR113>>>(init4, 5);
-   test<CyclicGroup<Compress::SYMMETRIC, Traversal::Random<LFSR113>>>(init4, 5);
+   test<CyclicGroup<Compress::NONE, Traversal::Random<LFSR258>>>(init4, 5);
+   test<CyclicGroup<Compress::SYMMETRIC, Traversal::Random<LFSR258>>>(init4, 5);
 
    return 0;
 }

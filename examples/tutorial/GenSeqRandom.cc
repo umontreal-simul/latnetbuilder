@@ -16,7 +16,7 @@
 
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -28,7 +28,7 @@ int main()
 {
    //! [main]
    //! [types]
-   typedef Traversal::Random<LFSR113> Trav;
+   typedef Traversal::Random<LFSR258> Trav;
    typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::SYMMETRIC, Trav> RandomSeq;
    //! [types]
 

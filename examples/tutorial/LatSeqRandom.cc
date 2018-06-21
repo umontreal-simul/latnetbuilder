@@ -19,7 +19,7 @@
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -37,7 +37,7 @@ void test(typename LatticeTraits<LA>::Modulus modulus){
    Dimension dim = 3;
    size_t r = 4; // 4 random samples
 
-   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR113>> Coprime;
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR258>> Coprime;
    auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dim,r);
    // consider only 1 for 1st coordinate
    genSeqs[0] = GenSeq::Creator<Coprime>::create(size0);

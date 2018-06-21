@@ -18,7 +18,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 #include "latbuilder/Storage.h"
 #include "latbuilder/LatSeq/Combiner.h"   

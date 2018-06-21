@@ -27,6 +27,7 @@
 #include "netbuilder/GeneratingMatrix.h"
 
 #include "latbuilder/GenSeq/GeneratingValues.h"
+#include "latbuilder/UniformUIntDistribution.h"
 
 #include <string>
 #include <list>
@@ -119,7 +120,8 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             public:
                 RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
                     m_designParameter(std::move(designParameter)),
-                    m_randomGen(std::move(randomGen))
+                    m_randomGen(std::move(randomGen)),
+                    m_unif(0, 1)
                 {};
                 
                 GenValue operator()(unsigned int dimension)
@@ -134,9 +136,12 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                         size = nthPrimitivePolynomialDegree(dimension-1);
                     }
                     std::vector<unsigned long> res(size);
+                    unsigned long upperBound = 0;
                     for(unsigned int k = 0; k < size; ++k)
                     {
-                        res[k] = 2 * (m_randomGen() % (1 << k)) + 1 ; 
+                        m_unif.setUpperBound(upperBound);
+                        res[k] = 2 * m_unif(m_randomGen) + 1 ;
+                        upperBound = 2 * (upperBound + 1) - 1; 
                     }
                     return GenValue(dimension,std::move(res));
                 }
@@ -144,6 +149,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             private:
                 DesignParameter m_designParameter;
                 RAND m_randomGen;
+                LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
         };
 
         static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
@@ -191,11 +197,11 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
         {
             public:
                 RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
-                    m_randomGen(std::move(randomGen))
-                {
-                    m_generatingValues = LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE>(std::move(designParameter));
-                    m_totient = m_generatingValues.size();
-                };
+                    m_randomGen(std::move(randomGen)),
+                    m_generatingValues(LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE>(std::move(designParameter))),
+                    m_totient(m_generatingValues.size()),
+                    m_unif(0, m_totient - 1)
+                {}
                 
                 GenValue operator()(unsigned int dimension)
                 {
@@ -205,13 +211,14 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
                     }
                     else
                     {
-                        return m_generatingValues[m_randomGen() % m_totient];
+                        return m_generatingValues[m_unif(m_randomGen)];
                     }
                 }
             private:
-                size_t m_totient;
-                LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE> m_generatingValues;
                 RAND m_randomGen;
+                LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE> m_generatingValues;
+                size_t m_totient;
+                LatBuilder::UniformUIntDistribution<size_t, RAND> m_unif;
         };
 
         static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
@@ -251,7 +258,8 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             public:
                 RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
                     m_designParameter(std::move(designParameter)),
-                    m_randomGen(std::move(randomGen))
+                    m_randomGen(std::move(randomGen)),
+                    m_unif(0, (1 << m_designParameter.second) - 1)
                 {};
                 
                 GenValue operator()(unsigned int dimension)
@@ -260,13 +268,14 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
                     init.reserve(m_designParameter.first);
                     for(unsigned int i = 0; i < m_designParameter.second; ++i)
                     {
-                        init.push_back(m_randomGen() % (1<<m_designParameter.second));
+                        init.push_back(m_unif(m_randomGen));
                     }
                     return GeneratingMatrix(m_designParameter.first, m_designParameter.second, std::move(init));
                 }
             private:
                 DesignParameter m_designParameter;
                 RAND m_randomGen;
+                LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
                 std::vector<GenValue> m_primes;
                 uInteger m_totient;
         };

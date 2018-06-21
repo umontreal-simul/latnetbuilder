@@ -26,7 +26,7 @@
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -58,7 +58,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LR, PST, COMPRESS, PLO, FIGURE>> {
    typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
    typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
    typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
-   typedef LFSR113 RandomGenerator;
+   typedef LFSR258 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
    typedef GenSeq::GeneratingValues<LR, COMPRESS, Traversal> GenSeqType;
    typedef LatSeq::Combiner<LR, PST, GenSeqType, Zip> LatSeqType;
