@@ -49,7 +49,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          * Destructor. */
         ~ProjectionDependentEvaluator()
         {
-            for(unsigned int dim = 0; dim < m_maxNumCoordinates; ++dim)
+            for(Dimension dim = 0; dim < m_maxNumCoordinates; ++dim)
             {
                 ProjectionNode* it = m_roots[dim];
                 ProjectionNode* nextIt = nullptr;
@@ -71,7 +71,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          *  @param initialValue Initial value of the merit.
          *  @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
+        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
         {
             unsigned int nLevels = PROJDEP::numLevels(net); // determine the number of levels
 
@@ -170,7 +170,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
              * @param cardinal Cardinal of the projection.
              * @param weight Importance of the projection in the figure of merit.
              */ 
-            ProjectionNode(unsigned int dimension, unsigned int cardinal, double weight):
+            ProjectionNode(Dimension dimension, unsigned int cardinal, double weight):
                 m_weight(weight),
                 m_dimension(dimension),
                 m_cardinal(cardinal)
@@ -179,12 +179,12 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             /** 
              * Returns the cardinal of the projection represented by the node.
              */ 
-            unsigned getCardinal() const { return m_cardinal; }
+            unsigned int getCardinal() const { return m_cardinal; }
 
             /** 
              * Returns the maximum dimension, that is the highest coordinate in all the projections of the layer.
              */ 
-            unsigned int getMaxDimension() const { return m_dimension; }
+            Dimension getMaxDimension() const { return m_dimension; }
 
             /** Returns a pointer to the next projection to evaluate. May be null.
              */ 
@@ -299,7 +299,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             }
 
             double m_weight; // weight of the projection
-            unsigned int m_dimension; // last dimension (highest coordinate in the projection)
+            Dimension m_dimension; // last dimension (highest coordinate in the projection)
             unsigned int m_cardinal; // cardinal of the projection
 
             ProjectionNode* m_nextNode = nullptr; // pointer to the next projection to evaluate
@@ -393,7 +393,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
         /** Save the merits of all the nodes corresponding to the \c dimension.
          * @param dimension Dimension of the nodes.
          */  
-        void saveMerits(unsigned int dimension)
+        void saveMerits(Dimension dimension)
         {
             ProjectionNode* it = m_roots[dimension];
             do
@@ -417,8 +417,8 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
 
         WeightedFigureOfMerit<PROJDEP> * m_figure;
 
-        unsigned int m_numCoordinates; 
-        unsigned int m_maxNumCoordinates;
+        Dimension m_numCoordinates; 
+        Dimension m_maxNumCoordinates;
         unsigned int m_maxCardinal; 
         std::vector<ProjectionNode*> m_roots; // pointer to the first node of each layer (one by dimension)
 };

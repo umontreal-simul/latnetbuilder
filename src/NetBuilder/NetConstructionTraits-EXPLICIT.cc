@@ -44,7 +44,7 @@ namespace NetBuilder {
         return genMat;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::defaultGenValues(Dimension dimension, const DesignParameter& designParameter)
     {
         GeneratingMatrix identity(nRows(designParameter), nCols(designParameter));
         for(unsigned int i = 0; i < nRows(designParameter); ++i)
@@ -54,13 +54,13 @@ namespace NetBuilder {
         return std::vector<GeneratingMatrix>(dimension,identity);
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter)
     {
         throw std::logic_error("The space of all matrices is far too big to be exhautively explored.");
         return std::vector<GenValue>{};
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpace(Dimension maxDimension, const DesignParameter& designParameter)
     {
         throw std::logic_error("The space of all matrices is far too big to be exhautively explored.");
         return std::vector<std::vector<GenValue>>{};

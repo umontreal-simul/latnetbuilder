@@ -43,7 +43,7 @@ class RandomCBCExplorer
          * @param nbTries Number of random choices of generating values by dimension.
          * @param verbose Verbosity level.
          */
-        RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries, int verbose = 0):
+        RandomCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries, int verbose = 0):
             m_dimension(dimension),
             m_nbTries(nbTries),
             m_randomGenValueGenerator(std::move(designParameter)),
@@ -54,7 +54,7 @@ class RandomCBCExplorer
         /**
          * Returns whether the dimension \c dim is fully explored
          */ 
-        bool isOver(unsigned int dim) 
+        bool isOver(Dimension dim) 
         {
             return m_countTries[dim]>=m_nbTries;
         }
@@ -62,7 +62,7 @@ class RandomCBCExplorer
         /**
          * Returns the next generating values of dimension \c dim
          */
-        typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
+        typename ConstructionMethod::GenValue nextGenValue(Dimension dim)
         {
             m_countTries[dim] += 1;
             if(this->m_verbose>0)
@@ -93,11 +93,11 @@ class RandomCBCExplorer
         /**
          * Switches the explorer to dimension \c dim.
          */ 
-        void switchToDimension(unsigned int dim)
+        void switchToDimension(Dimension dim)
         {};
 
     private:
-        unsigned int m_dimension;
+        Dimension m_dimension;
         unsigned int m_nbTries;
         typename ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> m_randomGenValueGenerator;
         std::vector<unsigned int> m_countTries;

@@ -78,7 +78,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
-            unsigned int dimension = (unsigned int) projection.size();
+            Dimension dimension = projection.size();
             unsigned int numCols = net.numColumns();
 
             m_rowReducer.reset(numCols);
@@ -89,7 +89,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord))->subMatrix(resolution, 0, 1,numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix(coord)->subMatrix(resolution, 0, 1,numCols));
                 }
                 if(m_rowReducer.computeRank() == m_rowReducer.numRows())
                 {
@@ -107,7 +107,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
          * Returns the projections to include in the figure of merit partial computation for dimension \c dimension.
          * @param dimension Dimension of the partial computation.
          */ 
-        CBCCoordinateSet projections(unsigned int dimension) const
+        CBCCoordinateSet projections(Dimension dimension) const
         {
             return CBCCoordinateSet(dimension, m_maxCardinal);
         }
@@ -163,7 +163,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
-            unsigned int dimension = (unsigned int) projection.size();
+            Dimension dimension = projection.size();
 
             unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
@@ -183,7 +183,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord))->subMatrix(resolution, 0,  1, numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix(coord)->subMatrix(resolution, 0,  1, numCols));
                 }
                 std::vector<unsigned int> ranks = m_rowReducer.computeRanks(0,numCols);
                 for(unsigned int m = 1; m <= numCols; ++m)
@@ -206,7 +206,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
          * Returns the projections to include in the figure of merit partial computation for dimension \c dimension.
          * @param dimension Dimension of the partial computation.
          */ 
-        CBCCoordinateSet projections(unsigned int dimension) const
+        CBCCoordinateSet projections(Dimension dimension) const
         {
             return CBCCoordinateSet(dimension, m_maxCardinal);
         }

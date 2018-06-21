@@ -90,7 +90,7 @@ class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
             {
-                mats.push_back(net.generatingMatrix((unsigned int) (dim)));
+                mats.push_back(net.generatingMatrix(dim));
             }
             return METHOD::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
@@ -201,7 +201,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
             {
-                mats.push_back(net.generatingMatrix((unsigned int) (dim)));
+                mats.push_back(net.generatingMatrix(dim));
             }
             return METHOD::computeTValue(std::move(mats), maxMeritsSubProj, 0);
         }

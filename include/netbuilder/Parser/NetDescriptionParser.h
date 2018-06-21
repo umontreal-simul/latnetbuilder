@@ -54,7 +54,7 @@ struct NetDescriptionParser<NetConstruction::SOBOL, PST>
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
-       unsigned int dim = 1;
+       Dimension dim = 1;
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
        for(const auto& dirNumsString : netDescriptionStrings)

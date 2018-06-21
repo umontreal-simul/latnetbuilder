@@ -79,7 +79,7 @@ namespace NetBuilder {
         #include "../data/primitive_polynomials_representations.csv"
     }};
 
-    NetConstructionTraits<NetConstruction::SOBOL>::PrimitivePolynomial  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomial(unsigned int n)
+    NetConstructionTraits<NetConstruction::SOBOL>::PrimitivePolynomial  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomial(Dimension n)
     {
         // primitive polynomials are hard-coded because their computation is really complex.
         if (n>0 && n <= 21200)
@@ -89,7 +89,7 @@ namespace NetBuilder {
         }
     }
 
-    unsigned int  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomialDegree(unsigned int n)
+    unsigned int  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomialDegree(Dimension n)
     {
         // primitive polynomials are hard-coded because their computation is really complex.
         if (n>0 && n <= 21200)
@@ -127,7 +127,7 @@ namespace NetBuilder {
     GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData)
     {
         unsigned int m  = nCols(designParam);
-        unsigned int coord = genValue.first;
+        Dimension coord = genValue.first;
 
         if (coord==0) // special case for the first dimension
         {
@@ -188,7 +188,7 @@ namespace NetBuilder {
         return ltrim(rtrim(s, t), t);
     }    
 
-    std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(unsigned int dimension)
+    std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(Dimension dimension)
     {
         assert(dimension >= 1 && dimension <= 21201);
         std::ifstream file("../share/latnetbuilder/data/JoeKuoSobolNets.csv");
@@ -223,7 +223,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter){
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(Dimension dimension, const DesignParameter& designParameter){
         std::vector<std::vector<uInteger>> tmp = readJoeKuoDirectionNumbers(dimension);
         std::vector<GenValue> res(dimension);
         for(unsigned int j = 0; j < dimension; ++j)
@@ -347,7 +347,7 @@ namespace NetBuilder {
     return m_data[i];
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter)
     {
         unsigned int size;
         if (dimension==0)
@@ -375,7 +375,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(Dimension maxDimension, const DesignParameter& designParameter)
     {
         std::vector<std::vector<GenValue>> seqs;
         seqs.reserve(maxDimension);

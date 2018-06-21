@@ -74,7 +74,7 @@ CommandLine<NC, PST>::parse()
       m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, PST>::parse(s_size);
       m_designParameter = DesignParameterParser<NC,PST>::parse(*this);
       m_dimension = boost::lexical_cast<Dimension>(s_dimension);
-      m_verbose = boost::lexical_cast<Dimension>(s_verbose);
+      m_verbose = boost::lexical_cast<int>(s_verbose);
       m_figure = FigureParser<NC, PST>::parse(*this); // m_combiner initialized as a side effect
       return ExplorationMethodParser<NC, PST>::parse(*this); // as a side effect, m_figure has been moved to task
 }

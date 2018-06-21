@@ -70,7 +70,7 @@ namespace NetBuilder {
         return genMat;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultGenValues(Dimension dimension, const DesignParameter& designParameter)
     {
         std::vector<GenValue> res(dimension);
         for(unsigned int j = 0; j < dimension; ++j)
@@ -80,7 +80,7 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter)
     {
         if (dimension==0)
         {
@@ -99,7 +99,7 @@ namespace NetBuilder {
         }
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpace(Dimension maxDimension, const DesignParameter& designParameter)
     {
         if (maxDimension==0)
         {
@@ -111,7 +111,7 @@ namespace NetBuilder {
             seqs.reserve(maxDimension);
             seqs.push_back(genValueSpaceDim(1,designParameter));
             std::vector<GenValue> primes = genValueSpaceDim(maxDimension, designParameter);
-            for(unsigned int dim = 1; dim < maxDimension; ++dim)
+            for(Dimension dim = 1; dim < maxDimension; ++dim)
             {
                 seqs.push_back(primes);
             }

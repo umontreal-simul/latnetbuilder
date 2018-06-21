@@ -41,7 +41,7 @@ class MixedCBCExplorer
          * @param nbTries Number of random choices of generating values.
          * @param verbose Verbosity level.
          */
-        MixedCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries, int verbose = 0):
+        MixedCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries, int verbose = 0):
             m_dimension(dimension),
             m_maxFullDimension(maxFullDimension),
             m_randExplorer(new RandomCBCExplorer<NC>(dimension,designParameter, nbTries, verbose)),
@@ -51,7 +51,7 @@ class MixedCBCExplorer
         /**
          * Returns whether the dimension \c dim is fully explored
          */ 
-        bool isOver(unsigned int dim)
+        bool isOver(Dimension dim)
         {
             if (dim < m_maxFullDimension)
             {
@@ -66,7 +66,7 @@ class MixedCBCExplorer
         /**
          * Returns the next generating values of dimension \c dim
          */ 
-        typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
+        typename ConstructionMethod::GenValue nextGenValue(Dimension dim)
         {
             if (dim < m_maxFullDimension)
             {
@@ -99,7 +99,7 @@ class MixedCBCExplorer
         /**
          * Switches the explorer to dimension \c dim.
          */ 
-        void switchToDimension(unsigned int dim)
+        void switchToDimension(Dimension dim)
         {
             if (dim < m_maxFullDimension)
             {
@@ -112,7 +112,7 @@ class MixedCBCExplorer
         }; 
 
     private:
-        unsigned int m_dimension;
+        Dimension m_dimension;
         unsigned int m_maxFullDimension;
         std::unique_ptr<RandomCBCExplorer<NC>> m_randExplorer;
         std::unique_ptr<FullCBCExplorer<NC>> m_fullExplorer;

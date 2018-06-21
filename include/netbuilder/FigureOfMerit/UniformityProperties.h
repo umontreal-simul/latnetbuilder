@@ -106,12 +106,12 @@ class UniformityProperty : public FigureOfMerit{
                  *  @param initialValue is the value from which to start
                  *  @param verbose controls the level of verbosity of the computation
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
 
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-                    unsigned int size = m_figure->nbBits()*dimension;
+                    unsigned int size = (unsigned int) (m_figure->nbBits()*dimension);
                     net.extendSize(size,size);
 
                     m_newReducer = m_memReducer;
@@ -121,9 +121,9 @@ class UniformityProperty : public FigureOfMerit{
                         for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                         {
                             GeneratingMatrix newCol(0,1);
-                            for(unsigned int dim = 1; dim < dimension; ++dim)
+                            for(Dimension dim = 1; dim < dimension; ++dim)
                             {
-                                newCol.stackBelow(net.pointerToGeneratingMatrix(dim)->subMatrix(0, m_figure->nbBits()*(dimension-1), m_figure->nbBits(), 1));
+                                newCol.stackBelow(net.pointerToGeneratingMatrix(dim)->subMatrix(0, (unsigned int) (m_figure->nbBits()*(dimension-1)), m_figure->nbBits(), 1));
                             }
                             m_newReducer.addColumn(newCol);
                         }
@@ -131,7 +131,7 @@ class UniformityProperty : public FigureOfMerit{
 
                     for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                     {
-                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 0, 1, m_figure->nbBits()*dimension);
+                        GeneratingMatrix newRow = net.pointerToGeneratingMatrix(dimension)->subMatrix(i, 0, 1, size);
 
                         m_newReducer.addRow(std::move(newRow));
                     }

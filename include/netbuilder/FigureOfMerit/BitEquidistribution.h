@@ -118,7 +118,7 @@ class BitEquidistribution : public FigureOfMerit{
                  *  @param initialValue Initial value of the merit.
                  *  @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     return initialValue;
                 }
@@ -168,7 +168,7 @@ class BitEquidistribution : public FigureOfMerit{
 
 // template specialization for the unilevel case
 template<>
-MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose)
+MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
 {
 
     unsigned int nCols = net.numColumns();
@@ -202,7 +202,7 @@ MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvalu
 
 //template specialization for the multilevel case
 template<>
-MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose)
+MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
 {
 
     unsigned int nCols = net.numColumns();

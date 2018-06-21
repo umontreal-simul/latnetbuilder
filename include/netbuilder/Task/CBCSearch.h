@@ -25,10 +25,10 @@ namespace NetBuilder { namespace Task {
  * Class for CBC Search tasks.
  * Template template parameter EXPLORER must implement the following member functions:
  * - <CODE> void setVerbose() </CODE>: set the verbosity level of the explorer.
- * - <CODE> void reset(unsigned int dim) </CODE>: reset to its initial state the explorer.
- * - <CODE> void switchToDimension(unsigned int dim) </CODE>: switch the explorer to dimension \c dim.
- * - <CODE> typename NetConstructionTraits<NC>::GenValue nextGenValue(unsigned int dim) </CODE>: return the next generating value for dimension \c dim.
- * - <CODE> bool isOver(unsigned int dim) </CODE>: indicate whether the exploration of dimension \c dim is over.
+ * - <CODE> void reset(Dimension dim) </CODE>: reset to its initial state the explorer.
+ * - <CODE> void switchToDimension(Dimension dim) </CODE>: switch the explorer to dimension \c dim.
+ * - <CODE> typename NetConstructionTraits<NC>::GenValue nextGenValue(Dimension dim) </CODE>: return the next generating value for dimension \c dim.
+ * - <CODE> bool isOver(Dimension dim) </CODE>: indicate whether the exploration of dimension \c dim is over.
  * where NC is the template parameter of EXPLORER.
  */ 
 template < NetConstruction NC, template <NetConstruction> class EXPLORER>
@@ -100,7 +100,7 @@ class CBCSearch : public Search<NC>
             // compute the merit of the base net is one was provided
             Real merit = 0; 
 
-            for(unsigned int dim = 0; dim < this->minimumObserver().bestNet().dimension(); ++dim)
+            for(Dimension dim = 0; dim < this->minimumObserver().bestNet().dimension(); ++dim)
             {
                 evaluator->prepareForNextDimension();
                 merit = (*evaluator)(this->minimumObserver().bestNet(), dim, merit) ;
@@ -115,7 +115,7 @@ class CBCSearch : public Search<NC>
 
             m_explorer->switchToDimension(this->minimumObserver().bestNet().dimension() + 1); // to to the first dimension to explore
 
-            for(unsigned int dim = this->minimumObserver().bestNet().dimension() ; dim < this->dimension(); ++dim) // for each dimension to explore
+            for(Dimension dim = this->minimumObserver().bestNet().dimension() ; dim < this->dimension(); ++dim) // for each dimension to explore
             {
                 evaluator->prepareForNextDimension();
                 if(this->m_verbose==1)

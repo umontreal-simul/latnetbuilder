@@ -41,7 +41,7 @@ class FullCBCExplorer
          * @param designParameter Design parameter of the search space.
          * @param verbose Verbosity level.
          */ 
-        FullCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, int verbose = 0):
+        FullCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, int verbose = 0):
             m_dimension(dimension),
             m_designParameter(std::move(designParameter)),
             m_currentDim(0),
@@ -52,7 +52,7 @@ class FullCBCExplorer
         /**
          * Returns whether the dimension \c dim is fully explored
          */ 
-        bool isOver(unsigned int dim) 
+        bool isOver(Dimension dim) 
         {
             return m_state==m_data.size() && m_currentDim == dim;
         }
@@ -60,7 +60,7 @@ class FullCBCExplorer
         /**
          * Returns the next generating values of dimension \c dim
          */ 
-        typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
+        typename ConstructionMethod::GenValue nextGenValue(Dimension dim)
         {
             m_state+=1;
             if(this->m_verbose>0)
@@ -90,7 +90,7 @@ class FullCBCExplorer
         /**
          * Switches the explorer to dimension \c dim.
          */ 
-        void switchToDimension(unsigned int dim)
+        void switchToDimension(Dimension dim)
         {
             m_currentDim = dim;
             m_data = ConstructionMethod::genValueSpaceDim(m_currentDim,  m_designParameter);
@@ -98,15 +98,15 @@ class FullCBCExplorer
         }
 
     private:
-        unsigned int m_dimension;
+        Dimension m_dimension;
         typename ConstructionMethod::DesignParameter m_designParameter;
-        unsigned int m_currentDim;
+        Dimension m_currentDim;
         std::vector<typename ConstructionMethod::GenValue> m_data;
         size_t m_state;
         int m_verbose;
 };
 
-template<> void FullCBCExplorer<NetConstruction::POLYNOMIAL>::switchToDimension(unsigned int dim)
+template<> void FullCBCExplorer<NetConstruction::POLYNOMIAL>::switchToDimension(Dimension dim)
 {
     if(m_currentDim == 1 && dim != 1)
     {

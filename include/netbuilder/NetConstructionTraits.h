@@ -57,11 +57,11 @@ namespace NetBuilder {
  *  - <CODE> static \c unsigned int \c nCols(const GenValue& genValue) </CODE>: computes the number of columns associated to the design parameter
  *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, DesignParameter designParameter, std::shared_ptr<GeneratingMatrixComputationData>& computationData)</CODE>: 
  * create a generating matrix using the generating value and the design parameter, storing computation data in \c computationData.
- *  - <CODE>static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter))</CODE>: returns a vector of default generating values
+ *  - <CODE>static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter))</CODE>: returns a vector of default generating values
  *  (one for each coordinates lower than dimension)
- *  - <CODE>static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)</CODE>: returns a vector of all the possible generating values
+ *  - <CODE>static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter)</CODE>: returns a vector of all the possible generating values
  *  for the given dimension
- *  - <CODE> static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter) </CODE>: returns a vector of all the possible combination 
+ *  - <CODE> static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter) </CODE>: returns a vector of all the possible combination 
  *  of the generating values for dimensions lower than \c dimension
  * \n and the following class template:
  *  - <CODE> template<typename RAND> class RandomGenValueGenerator </CODE>: a class template where template parameter RAND implements
@@ -108,11 +108,11 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData);
             
 
-        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
+        static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
+        static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
+        static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator
@@ -124,7 +124,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                     m_unif(0, 1)
                 {};
                 
-                GenValue operator()(unsigned int dimension)
+                GenValue operator()(Dimension dimension)
                 {
                     unsigned int size;
                     if (dimension==0)
@@ -157,11 +157,11 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
     private:
         typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
-        static PrimitivePolynomial nthPrimitivePolynomial(unsigned int n);
+        static PrimitivePolynomial nthPrimitivePolynomial(Dimension n);
 
-        static unsigned int  nthPrimitivePolynomialDegree(unsigned int n);
+        static unsigned int  nthPrimitivePolynomialDegree(Dimension n);
 
-        static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(unsigned int dimension);
+        static std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(Dimension dimension);
 };
 
 template<>
@@ -186,11 +186,11 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
     
-        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
+        static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
+        static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
+        static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator
@@ -203,7 +203,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
                     m_unif(0, m_totient - 1)
                 {}
                 
-                GenValue operator()(unsigned int dimension)
+                GenValue operator()(Dimension dimension)
                 {
                     if (dimension==0)
                     {
@@ -246,11 +246,11 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
         static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
     
-        static std::vector<GenValue> defaultGenValues(unsigned int dimension, const DesignParameter& designParameter);
+        static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<GenValue> genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter);
+        static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<std::vector<GenValue>> genValueSpace(unsigned int maxDimension , const DesignParameter& designParameter);
+        static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator
@@ -262,7 +262,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
                     m_unif(0, (1 << m_designParameter.second) - 1)
                 {};
                 
-                GenValue operator()(unsigned int dimension)
+                GenValue operator()(Dimension dimension)
                 {
                     std::vector<uInteger> init;
                     init.reserve(m_designParameter.first);

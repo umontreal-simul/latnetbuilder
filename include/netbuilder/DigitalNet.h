@@ -33,8 +33,6 @@
 
 namespace NetBuilder {
 
-typedef size_t size_type;
-
 /** Definition of a digital net in base 2. A digital net is uniquely defined by its set
  * of generating matrices.
 */
@@ -48,7 +46,7 @@ class DigitalNet
          * @param nRows Number of rows of the generating matrices.
          * @param nCols Number of columns of the generating matrices.
         */
-        DigitalNet(unsigned int dimension=0, unsigned int nRows=0, unsigned int nCols=0):
+        DigitalNet(Dimension dimension=0, unsigned int nRows=0, unsigned int nCols=0):
             m_dimension(dimension),
             m_nRows(nRows),
             m_nCols(nCols)
@@ -82,13 +80,13 @@ class DigitalNet
         /** 
          * Returns the dimension (number of coordinates) of the net.
          */
-        unsigned int dimension() const { return m_dimension ; }
+        Dimension dimension() const { return m_dimension ; }
 
         /** 
          * Returns the generating matrix corresponding to coordinate \c coord.
          * @param coord A coordinate (between 0 and dimension() - 1 ).
          */
-        GeneratingMatrix generatingMatrix(unsigned int coord) const 
+        GeneratingMatrix generatingMatrix(Dimension coord) const 
         {
             return m_generatingMatrices[coord]->upperLeftSubMatrix(m_nRows, m_nCols);
         }
@@ -97,7 +95,7 @@ class DigitalNet
          * Returns a raw pointer to the generating matrix corresponding to coordinate \c coord.
          * @param coord A coordinate (between 0 and dimension() - 1).
         */
-        GeneratingMatrix* pointerToGeneratingMatrix(unsigned int coord) const 
+        GeneratingMatrix* pointerToGeneratingMatrix(Dimension coord) const 
         {
             return m_generatingMatrices[coord].get();
         }
@@ -125,7 +123,7 @@ class DigitalNet
 
     protected:
 
-        unsigned int m_dimension; // dimension of the net
+        Dimension m_dimension; // dimension of the net
         unsigned int m_nRows; // number of rows in generating matrices
         unsigned int m_nCols; // number of columns in generating matrices
         mutable std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
@@ -137,7 +135,7 @@ class DigitalNet
          * @param nCols Number of columns of the generating matrices.
          * @param genMatrices Vector of shared pointers to the generating matrices.
          */
-        DigitalNet(unsigned int dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
+        DigitalNet(Dimension dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
             m_dimension(dimension),
             m_nRows(nRows),
             m_nCols(nCols),
@@ -173,7 +171,7 @@ class DigitalNetConstruction : public DigitalNet
          * @param designParameter Design parameter of the net. Defaults to a value depending on the construction method.
          */
         DigitalNetConstruction(
-            unsigned int dimension = 0, DesignParameter designParameter = ConstructionMethod::defaultDesignParameter):
+            Dimension dimension = 0, DesignParameter designParameter = ConstructionMethod::defaultDesignParameter):
             DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
             m_designParameter(designParameter)
         {
@@ -200,7 +198,7 @@ class DigitalNetConstruction : public DigitalNet
          * @param genValues Sequence of generating values to create the net.
          */
         DigitalNetConstruction(
-            unsigned int dimension,
+            Dimension dimension,
             DesignParameter designParameter, 
             std::vector<GenValue> genValues):
                 DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
@@ -292,7 +290,7 @@ class DigitalNetConstruction : public DigitalNet
                 out << numPoints() << "  //Number of points" << std::endl;
                 out << dimension() << "  //dimension of points" << std::endl;
                 out << std::endl;
-                for(unsigned int dim = 0; dim < m_dimension; ++dim)
+                for(Dimension dim = 0; dim < m_dimension; ++dim)
                 {
                     out << "//dim = " << dim << std::endl;
                     out << generatingMatrix(dim) << std::endl;
@@ -304,7 +302,7 @@ class DigitalNetConstruction : public DigitalNet
             if (outputFormat==OutputFormat::GUI)
             {
                 std::ostringstream stream;
-                for(unsigned int dim = 1; dim <= m_dimension; ++dim)
+                for(Dimension dim = 1; dim <= m_dimension; ++dim)
                 {
                     stream << "//dim = " << dim << std::endl;
                     stream << generatingMatrix(dim) << std::endl;
@@ -354,7 +352,7 @@ class DigitalNetConstruction : public DigitalNet
          * @param computationData Vector of shared pointers to the computation data of the matrices of each coordinates.
         */ 
         DigitalNetConstruction(
-            unsigned int dimension,
+            Dimension dimension,
             DesignParameter designParameter,
             std::vector<std::shared_ptr<GenValue>> genValues,
             std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices,
