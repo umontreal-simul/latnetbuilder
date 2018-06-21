@@ -18,6 +18,7 @@
 #include "netbuilder/Util.h"
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/LevelCombiner.h"
+#include "netbuilder/JoeKuo.h"
 
 #include "netbuilder/Task/Eval.h"
 
@@ -42,7 +43,7 @@ int main(int argc, const char *argv[])
 
     auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2,Level::Combiner::JoeKuoD6Combiner());
+    auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2,JoeKuo::Combiner<6>());
 
     auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
 

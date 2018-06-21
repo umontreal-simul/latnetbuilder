@@ -70,10 +70,6 @@ struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
        {
            return result_type(MaxCombiner());
        }
-       else if (str=="JoeKuoD6")
-       {
-           return result_type(JoeKuoD6Combiner());
-       }
        else
        {
             std::vector<std::string> combinerStrings;

@@ -15,18 +15,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/JoeKuoWeights.h"
+#include "netbuilder/JoeKuo.h"
 #include "netbuilder/Util.h"
 #include <cmath>
 
 using namespace std;
 
-namespace NetBuilder
-{
+namespace NetBuilder { namespace JoeKuo {
 
 //===========================================================================
 
-LatticeTester::Weight JoeKuoWeights::getWeight (const LatticeTester::Coordinates& projection) const
+LatticeTester::Weight Weights::getWeight (const LatticeTester::Coordinates& projection) const
 {
    if (projection.size()==2)
    {
@@ -38,10 +37,10 @@ LatticeTester::Weight JoeKuoWeights::getWeight (const LatticeTester::Coordinates
 
 //===========================================================================
 
-void JoeKuoWeights::format(ostream& os) const
+void Weights::format(ostream& os) const
 {
    using LatticeTester::operator<<;
-   os << "JoeKuoWeights()";
+   os << "Weights()";
 }
 
-} // namespace
+}} // namespace

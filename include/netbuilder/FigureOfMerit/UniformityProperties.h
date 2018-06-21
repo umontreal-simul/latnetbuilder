@@ -25,9 +25,7 @@ namespace NetBuilder { namespace FigureOfMerit {
 
 /** 
  * Class which represents uniformity properties for digital sequences. Uniformity properties generalize the so-called Property A and Property A'
- * introduced by Sobol.
- * Ref: TODO
- *  Sobol, I. M. (1976) "Uniformly distributed sequences with an additional uniform property". Zh. Vych. Mat. Mat. Fiz. 16: 1332–1337 (in Russian); U.S.S.R. Comput. Maths. Math. Phys. 16: 236–242 (in English).
+ * proposed by Sobol in \cite rSOB76b.
  * A digital sequence in base 2 in dimension \f$ s \f$ is said to have the \f$ k \f$ bits uniformity property if its \f$ 2^s \f$ first points are
  * \f$ k \f$ bit-equidistributed.
  */ 
