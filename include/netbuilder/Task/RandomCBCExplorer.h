@@ -38,7 +38,7 @@ class RandomCBCExplorer
     public:
 
         /** Constructor.
-         * @param dimension Maximal dimension of the explorer.
+         * @param dimension Number of coordinates of the explorer.
          * @param designParameter Design parameter of the search space.
          * @param nbTries Number of random choices of generating values by dimension.
          * @param verbose Verbosity level.
@@ -56,7 +56,7 @@ class RandomCBCExplorer
          */ 
         bool isOver(unsigned int dim) 
         {
-            return m_countTries[dim-1]>=m_nbTries;
+            return m_countTries[dim]>=m_nbTries;
         }
 
         /**
@@ -64,11 +64,11 @@ class RandomCBCExplorer
          */
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
-            m_countTries[dim-1] += 1;
+            m_countTries[dim] += 1;
             if(this->m_verbose>0)
             {
                 std::cout << "Dimension: " << dim << "/" << m_dimension <<  " - ";
-                std::cout << "net " << m_countTries[dim-1] << "/" << m_nbTries << std::endl;
+                std::cout << "net " << m_countTries[dim] << "/" << m_nbTries << std::endl;
             }
             return m_randomGenValueGenerator(dim);
         }

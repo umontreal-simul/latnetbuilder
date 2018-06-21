@@ -37,7 +37,7 @@ class FullCBCExplorer
 
         /**
          * Constructor.
-         * @param dimension Maximal dimension of the explorer.
+         * @param dimension Number of coordinates of the explorer.
          * @param designParameter Design parameter of the search space.
          * @param verbose Verbosity level.
          */ 
@@ -54,7 +54,7 @@ class FullCBCExplorer
          */ 
         bool isOver(unsigned int dim) 
         {
-            return m_state==m_data.size() && m_currentDim<=m_dimension;
+            return m_state==m_data.size() && m_currentDim == dim;
         }
 
         /**
@@ -76,7 +76,7 @@ class FullCBCExplorer
          */ 
         void reset()
         {
-            switchToDimension(1);
+            switchToDimension(0);
         }
 
         /**

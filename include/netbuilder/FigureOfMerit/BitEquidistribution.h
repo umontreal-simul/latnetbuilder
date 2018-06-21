@@ -172,7 +172,7 @@ MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvalu
 {
 
     unsigned int nCols = net.numColumns();
-    if (dimension==1)
+    if (dimension==0)
     {
         m_memReducer.reset(nCols); // if the dimension is the first dimension, initiate the data structure
     }
@@ -207,7 +207,7 @@ MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEva
 
     unsigned int nCols = net.numColumns();
 
-    if (dimension==1) // if the dimension is the first dimension, initiate the data structure
+    if (dimension==0) // if the dimension is the first dimension, initiate the data structure
     {
         m_memReducer.reset(nCols);
     }

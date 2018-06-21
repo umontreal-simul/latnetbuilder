@@ -86,20 +86,20 @@ class DigitalNet
 
         /** 
          * Returns the generating matrix corresponding to coordinate \c coord.
-         * @param coord A coordinate (between 1 and dimension()).
+         * @param coord A coordinate (between 0 and dimension() - 1 ).
          */
         GeneratingMatrix generatingMatrix(unsigned int coord) const 
         {
-            return m_generatingMatrices[coord-1]->upperLeftSubMatrix(m_nRows, m_nCols);
+            return m_generatingMatrices[coord]->upperLeftSubMatrix(m_nRows, m_nCols);
         }
 
         /** 
          * Returns a raw pointer to the generating matrix corresponding to coordinate \c coord.
-         * @param coord A coordinate (between 1 and dimension()).
+         * @param coord A coordinate (between 0 and dimension() - 1).
         */
         GeneratingMatrix* pointerToGeneratingMatrix(unsigned int coord) const 
         {
-            return m_generatingMatrices[coord-1].get();
+            return m_generatingMatrices[coord].get();
         }
 
         /**
@@ -268,7 +268,7 @@ class DigitalNetConstruction : public DigitalNet
             //     out << std::endl;
             //     for(uInteger j=0; j<dimension(); j++){
             //         out << "//dim = " << j+1 << std::endl;
-            //         std::vector<uInteger> cols = generatingMatrix(j+1).getColsReverse();
+            //         std::vector<uInteger> cols = generatingMatrix(j).getColsReverse();
             //         for(uInteger c=0; c<numColumns(); c++){
             //             uInteger x = cols[c];
             //             uInteger mult = intPow(2,30);
@@ -292,7 +292,7 @@ class DigitalNetConstruction : public DigitalNet
                 out << numPoints() << "  //Number of points" << std::endl;
                 out << dimension() << "  //dimension of points" << std::endl;
                 out << std::endl;
-                for(unsigned int dim = 1; dim <= m_dimension; ++dim)
+                for(unsigned int dim = 0; dim < m_dimension; ++dim)
                 {
                     out << "//dim = " << dim << std::endl;
                     out << generatingMatrix(dim) << std::endl;

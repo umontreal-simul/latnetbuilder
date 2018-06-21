@@ -83,12 +83,14 @@ class RandomSearch : public Search<NC>
                 }
                 std::vector<typename ConstructionMethod::GenValue> genVals;
                 genVals.reserve(this->dimension());
-                for(unsigned int dim = 1; dim <= this->dimension(); ++dim)
+                for(unsigned int dim = 0; dim < this->dimension(); ++dim)
                 {
                     auto tmp = m_randomGenValueGenerator(dim);
                     genVals.push_back(std::move(tmp));
                 }
+                std::cout << "building a net" << std::endl;
                 auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, std::move(genVals));
+                std::cout << "done" << std::endl;
                 double merit = (*evaluator)(*net,this->m_verbose-3);
                 this->m_minimumObserver->observe(std::move(net),merit);
             }

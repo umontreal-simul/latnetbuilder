@@ -42,7 +42,7 @@ namespace NetBuilder {
     {
         auto dimension = genValue.first;
 
-        if (dimension==1)
+        if (dimension==0)
         {
             return (genValue.second.size()==1 && genValue.second.front()==0);
         }
@@ -129,7 +129,7 @@ namespace NetBuilder {
         unsigned int m  = nCols(designParam);
         unsigned int coord = genValue.first;
 
-        if (coord==1) // special case for the first dimension
+        if (coord==0) // special case for the first dimension
         {
             GeneratingMatrix* tmp = new GeneratingMatrix(m,m);
             for(unsigned int k = 0; k<m; ++k){
@@ -139,15 +139,12 @@ namespace NetBuilder {
         }
 
         // compute the vector defining the linear recurrence on the columns of the matrix
-
-        PrimitivePolynomial p = nthPrimitivePolynomial(coord-1);
+        PrimitivePolynomial p = nthPrimitivePolynomial(coord);
         auto degree = p.first;
         auto poly_rep = p.second;
         boost::dynamic_bitset<> mask(degree,(poly_rep << 1) + 1);
-
         unsigned int matrixSize = std::max(degree,m);
         GeneratingMatrix* tmp = new GeneratingMatrix(matrixSize, matrixSize);
-
         std::list<boost::dynamic_bitset<>> reg;
         unsigned int k = 1;
         for(auto dirNum : genValue.second)
@@ -159,10 +156,9 @@ namespace NetBuilder {
             }
             ++k;
         }
-
         while (k<=matrixSize)
         {
-            makeIteration(*tmp,reg, mask, k);
+            makeIteration(*tmp, reg, mask, k);
             ++k;
         }
         computationData = std::make_shared<GeneratingMatrixComputationData>(k, std::move(mask), std::move(reg));
@@ -354,14 +350,14 @@ namespace NetBuilder {
     std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
     {
         unsigned int size;
-        if (dimension==1)
+        if (dimension==0)
         {
-            return std::vector<GenValue>{GenValue(1,{0})};
+            return std::vector<GenValue>{GenValue(0,{0})};
             size = 1;
         }
         else
         {
-            size = nthPrimitivePolynomialDegree(dimension-1);
+            size = nthPrimitivePolynomialDegree(dimension);
         }
         std::vector<SobolDirectionNumbers<>> seqs;
         seqs.reserve(size);
@@ -385,7 +381,7 @@ namespace NetBuilder {
         seqs.reserve(maxDimension);
         for(unsigned int i = 0; i < maxDimension; ++i)
         {
-            seqs.push_back(genValueSpaceDim(i+1,designParameter));
+            seqs.push_back(genValueSpaceDim(i,designParameter));
         }
         LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
         std::vector<std::vector<GenValue>> res;

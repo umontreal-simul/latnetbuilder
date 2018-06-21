@@ -92,7 +92,7 @@ public:
 
     /**
      * Constructor.
-     * @param dimension Dimension of the net to search.
+     * @param dimension Dimension of the searched net.
      * @param baseNet Net from which to start the search.
      * @param figure Figure of merit used to compare nets.
      * @param verbose Verbosity level.

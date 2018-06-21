@@ -127,13 +127,13 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                 GenValue operator()(unsigned int dimension)
                 {
                     unsigned int size;
-                    if (dimension==1)
+                    if (dimension==0)
                     {
-                        return GenValue(1, {0});
+                        return GenValue(0, {0});
                     }
                     else
                     {
-                        size = nthPrimitivePolynomialDegree(dimension-1);
+                        size = nthPrimitivePolynomialDegree(dimension);
                     }
                     std::vector<unsigned long> res(size);
                     unsigned long upperBound = 0;
@@ -205,7 +205,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
                 
                 GenValue operator()(unsigned int dimension)
                 {
-                    if (dimension==1)
+                    if (dimension==0)
                     {
                         return GenValue(1);
                     }

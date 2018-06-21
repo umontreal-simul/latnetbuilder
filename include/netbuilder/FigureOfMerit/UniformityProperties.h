@@ -116,7 +116,7 @@ class UniformityProperty : public FigureOfMerit{
 
                     m_newReducer = m_memReducer;
 
-                    if (dimension>1)
+                    if (dimension>0)
                     {
                         for(unsigned int i = 0; i < m_figure->nbBits(); ++i)
                         {

@@ -35,10 +35,10 @@ class MixedCBCExplorer
     public:
 
         /** Constructor.
-         * @param dimension Maximal dimension of the explorer.
+         * @param dimension Number of coordinates of the explorer.
          * @param designParameter Design parameter of the search space.
-         * @param maxFullDimension Maximum dimension for which the search is exhaustive.
-         * @param nbTries Number of random choices of generating values by dimension after dimension \c maxFullDimension.
+         * @param maxFullDimension Number of coordinates for which the search is exhaustive.
+         * @param nbTries Number of random choices of generating values.
          * @param verbose Verbosity level.
          */
         MixedCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries, int verbose = 0):
@@ -53,7 +53,7 @@ class MixedCBCExplorer
          */ 
         bool isOver(unsigned int dim)
         {
-            if (dim <= m_maxFullDimension)
+            if (dim < m_maxFullDimension)
             {
                 return m_fullExplorer->isOver(dim);
             }
@@ -68,7 +68,7 @@ class MixedCBCExplorer
          */ 
         typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
         {
-            if (dim <= m_maxFullDimension)
+            if (dim < m_maxFullDimension)
             {
                 return m_fullExplorer->nextGenValue(dim);
             }
@@ -101,7 +101,7 @@ class MixedCBCExplorer
          */ 
         void switchToDimension(unsigned int dim)
         {
-            if (dim <= m_maxFullDimension)
+            if (dim < m_maxFullDimension)
             {
                 return m_fullExplorer->switchToDimension(dim);
             }

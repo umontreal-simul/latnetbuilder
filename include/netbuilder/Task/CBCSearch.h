@@ -100,7 +100,7 @@ class CBCSearch : public Search<NC>
             // compute the merit of the base net is one was provided
             Real merit = 0; 
 
-            for(unsigned int dim = 1; dim <= this->minimumObserver().bestNet().dimension(); ++dim)
+            for(unsigned int dim = 0; dim < this->minimumObserver().bestNet().dimension(); ++dim)
             {
                 evaluator->prepareForNextDimension();
                 merit = (*evaluator)(this->minimumObserver().bestNet(), dim, merit) ;
@@ -115,7 +115,7 @@ class CBCSearch : public Search<NC>
 
             m_explorer->switchToDimension(this->minimumObserver().bestNet().dimension() + 1); // to to the first dimension to explore
 
-            for(unsigned int dim = this->minimumObserver().bestNet().dimension() + 1; dim <= this->dimension(); ++dim) // for each dimension to explore
+            for(unsigned int dim = this->minimumObserver().bestNet().dimension() ; dim < this->dimension(); ++dim) // for each dimension to explore
             {
                 evaluator->prepareForNextDimension();
                 if(this->m_verbose==1)
@@ -140,7 +140,7 @@ class CBCSearch : public Search<NC>
                 }
                 ++m_lastDimension;
                 merit = this->m_minimumObserver->bestMerit();
-                if (dim < this->dimension()){ // if at least one dimension remains unexplored
+                if (dim + 1 < this->dimension()){ // if at least one dimension remains unexplored
                     this->m_minimumObserver->reset();
                     m_explorer->switchToDimension(dim+1);
                 }

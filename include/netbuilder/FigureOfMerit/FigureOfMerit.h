@@ -104,7 +104,7 @@ class FigureOfMeritEvaluator
         MeritValue operator() (const DigitalNet& net, int verbose = 0)
         {
             MeritValue merit = 0; // start from a merit equal to zero
-            for(unsigned int dim = 1; dim <= net.dimension(); ++dim) // for each dimension
+            for(unsigned int dim = 0; dim < net.dimension(); ++dim) // for each dimension
             {
                 prepareForNextDimension(); // prepare the evaluator for the next dimension
                 if (verbose>0)
