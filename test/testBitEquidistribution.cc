@@ -43,8 +43,8 @@ int main(int argc, const char *argv[])
 
     auto net = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(s,m);
 
-    // auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<PointSetType::UNILEVEL>>(2);
-    auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<PointSetType::MULTILEVEL>>(1, std::numeric_limits<Real>::infinity(), std::numeric_limits<Real>::infinity(), LevelCombiner::MaxCombiner());
+    // auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<EmbeddingType::UNILEVEL>>(2);
+    auto fig = std::make_unique<FigureOfMerit::BitEquidistribution<EmbeddingType::MULTILEVEL>>(1, std::numeric_limits<Real>::infinity(), std::numeric_limits<Real>::infinity(), LevelCombiner::MaxCombiner());
 
     auto task = Task::Eval(std::move(net),std::move(fig), 5);
 

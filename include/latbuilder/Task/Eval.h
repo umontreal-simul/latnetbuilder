@@ -29,32 +29,32 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct EvalTag {};
 
 
 /// Explicit construction (evaluates a figure of merit for a single lattice).
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Eval =
-   CBCBasedSearch<EvalTag<LR, PST, COMPRESS, PLO, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Eval =
+   CBCBasedSearch<EvalTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Explicit construction (evaluates a figure of merit for a single lattice).
-template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-Eval<LR, PST, COMPRESS, PLO, FIGURE> eval(
-      Storage<LR, PST, COMPRESS, PLO> storage,
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+Eval<LR, ET, COMPRESS, PLO, FIGURE> eval(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure,
       typename LatticeTraits<LR>::GeneratingVector genVec
       )
-{ return Eval<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), std::move(genVec)); }
+{ return Eval<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), std::move(genVec)); }
 
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-struct CBCBasedSearchTraits<EvalTag<LR, PST, COMPRESS, PLO, FIGURE>> {
-   typedef LatBuilder::Task::Search<LR, PST> Search;
-   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
-   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<EvalTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef typename LatticeTraits<LR>::GeneratingVector GeneratingVector;
    typedef std::vector< typename LatticeTraits<LR>::GenValue> GenSeqType;
 
@@ -75,7 +75,7 @@ struct CBCBasedSearchTraits<EvalTag<LR, PST, COMPRESS, PLO, FIGURE>> {
    std::string name() const
    { return FIGURE::evaluationName() + " evaluation"; }
 
-   void init(LatBuilder::Task::Eval<LR, PST, COMPRESS, PLO, FIGURE>& search) const
+   void init(LatBuilder::Task::Eval<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 
    GeneratingVector genVec;

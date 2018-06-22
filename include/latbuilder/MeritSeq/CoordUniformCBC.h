@@ -48,23 +48,23 @@ namespace LatBuilder { namespace MeritSeq {
  * \f]
  * for some function \f$\omega: [0,1) \to [0,\infty)\f$.
  *
- * \tparam PST          Type of lattice.
+ * \tparam ET          Type of lattice.
  * \tparam COMPRESS     Type of compression.
  * \tparam KERNEL       Kernel of the coordinate-uniform figure of merit;
  *                      should derive from Kernel::Base.
  * \tparam PROD         Type of inner product; either CoordUniformInnerProd
  *                      or CoordUniformInnerProdFast.
  */
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO,
-                 class KERNEL, template <LatticeType, PointSetType, Compress, PerLevelOrder> class PROD = CoordUniformInnerProd >
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO,
+                 class KERNEL, template <LatticeType, EmbeddingType, Compress, PerLevelOrder> class PROD = CoordUniformInnerProd >
 class CoordUniformCBC
 {
-   typedef CoordUniformCBC<LR, PST, COMPRESS, PLO, KERNEL, PROD> self_type;
+   typedef CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, PROD> self_type;
 
 public:
-   typedef PROD<LR, PST, COMPRESS, PLO> CoordUniformInnerProd;
-   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
-   typedef LatBuilder::LatDef<LR, PST> LatDef;
+   typedef PROD<LR, ET, COMPRESS, PLO> CoordUniformInnerProd;
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
+   typedef LatBuilder::LatDef<LR, ET> LatDef;
    typedef CoordUniformFigureOfMerit<KERNEL> FigureOfMerit;
    typedef typename CoordUniformInnerProd::StateList StateList;
    typedef MeritValue value_type;
@@ -77,7 +77,7 @@ public:
     * \param figure        Coordinate-uniform figure of merit.
     */
    CoordUniformCBC(
-         Storage<LR, PST, COMPRESS, PLO> storage,
+         Storage<LR, ET, COMPRESS, PLO> storage,
          const FigureOfMerit& figure
          ):
       m_storage(std::move(storage)),
@@ -102,7 +102,7 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LR, PST, COMPRESS, PLO>& storage() const
+   const Storage<LR, ET, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -156,7 +156,7 @@ public:
    public:
       typedef GENSEQ GenSeq;
       typedef typename CoordUniformInnerProd::template Seq<GenSeq> ProdSeq;
-      typedef LatBuilder::LatSeq::CBC<LR, PST, GenSeq> LatSeq;
+      typedef LatBuilder::LatSeq::CBC<LR, ET, GenSeq> LatSeq;
       typedef typename LatSeq::size_type size_type;
 
       /**
@@ -321,7 +321,7 @@ public:
    }
 
 private:
-   Storage<LR, PST, COMPRESS, PLO> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    const FigureOfMerit& m_figure;
    CoordUniformInnerProd m_innerProd;
    StateList m_states;
@@ -332,13 +332,13 @@ private:
 
 
 /// Creates a coordinate-uniform CBC algorithm.
-template <template <LatticeType, PointSetType, Compress, PerLevelOrder > class PROD = CoordUniformInnerProd, LatticeType LR,  PointSetType PST, Compress COMPRESS, PerLevelOrder PLO ,
+template <template <LatticeType, EmbeddingType, Compress, PerLevelOrder > class PROD = CoordUniformInnerProd, LatticeType LR,  EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO ,
                                                                      class KERNEL>
-CoordUniformCBC<LR, PST, COMPRESS, PLO, KERNEL, PROD> cbc(
-      Storage<LR, PST, COMPRESS, PLO> storage,
+CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, PROD> cbc(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       const CoordUniformFigureOfMerit<KERNEL>& figure
       )
-{ return CoordUniformCBC<LR, PST, COMPRESS, PLO, KERNEL, PROD>(std::move(storage), figure); }
+{ return CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, PROD>(std::move(storage), figure); }
 
 }}
 

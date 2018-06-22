@@ -122,7 +122,7 @@ public:
     */
    PAlphaSL10(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
 
-   template <LatticeType LR, PointSetType L>
+   template <LatticeType LR, EmbeddingType L>
    Real value(
          Real lambda,
          const SizeParam<LR, L>& sizeParam,

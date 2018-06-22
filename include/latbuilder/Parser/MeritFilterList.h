@@ -34,46 +34,46 @@ namespace LatBuilder { namespace Parser {
    template <LatticeType LR>
 struct MeritFilterList {
 
-   static LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::UNILEVEL> parse(
+   static LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::UNILEVEL> parse(
          const std::vector<std::string>& filters,
-         const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::UNILEVEL>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::UNILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType
          )
    {
-      LatBuilder::MeritFilterList<LR, PointSetType::UNILEVEL> f;
+      LatBuilder::MeritFilterList<LR, EmbeddingType::UNILEVEL> f;
       parse(f, filters, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
-         LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::UNILEVEL>& list,
+         LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::UNILEVEL>& list,
          const std::vector<std::string>& filters,
-         const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::UNILEVEL>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::UNILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType
          );
 
-   static LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::MULTILEVEL> parse(
+   static LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL> parse(
          const std::vector<std::string>& filters,
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
-         const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::MULTILEVEL>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType
          )
    {
-      LatBuilder::MeritFilterList<LR, PointSetType::MULTILEVEL> f;
+      LatBuilder::MeritFilterList<LR, EmbeddingType::MULTILEVEL> f;
       parse(f, filters, multilevelFilters, combiner, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
-         LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::MULTILEVEL>& list,
+         LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL>& list,
          const std::vector<std::string>& filters,
          const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
-         const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::MULTILEVEL>& sizeParam,
+         const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType
          );

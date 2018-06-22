@@ -41,16 +41,16 @@ int main(int argc, const char *argv[])
 
     auto weights1 = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    auto projDep1 = std::make_unique<FigureOfMerit::SimpleProjDepMerit<PointSetType::UNILEVEL>>();
+    auto projDep1 = std::make_unique<FigureOfMerit::SimpleProjDepMerit<EmbeddingType::UNILEVEL>>();
 
-    auto fig1 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::SimpleProjDepMerit<PointSetType::UNILEVEL>>>(1, std::move(weights1), std::move(projDep1));
+    auto fig1 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::SimpleProjDepMerit<EmbeddingType::UNILEVEL>>>(1, std::move(weights1), std::move(projDep1));
 
 
     auto weights2 = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(5);
+    auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<EmbeddingType::UNILEVEL>>(5);
 
-    auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
+    auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<EmbeddingType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
 
     std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figs;
     figs.push_back(std::move(fig1));
@@ -74,9 +74,9 @@ int main(int argc, const char *argv[])
 
     /*std::unique_ptr<LatticeTester::UniformWeights> weights2( new LatticeTester::UniformWeights(1));
 
-    std::unique_ptr<TValueProjMerit<PointSetType::UNILEVEL>> projDep2 = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(s);
+    std::unique_ptr<TValueProjMerit<EmbeddingType::UNILEVEL>> projDep2 = std::make_unique<TValueProjMerit<EmbeddingType::UNILEVEL>>(s);
 
-    WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>> fig2(1, std::move(weights2), std::move(projDep2));
+    WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL>> fig2(1, std::move(weights2), std::move(projDep2));
 
     auto eval2 = fig2.evaluator();
 

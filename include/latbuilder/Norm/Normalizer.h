@@ -27,20 +27,20 @@ namespace LatBuilder { namespace Norm {
 /**
  * Generic normalizer for merit values.
  *
- * \tparam PST   Type of lattice.
+ * \tparam ET   Type of lattice.
  * \tparam NORM  Type of norm.
  */
-template <LatticeType LR, PointSetType PST, class NORM>
+template <LatticeType LR, EmbeddingType ET, class NORM>
 class Normalizer;
 
 /**
- * Specialization of PointSetType::Normalizer for ordinary lattices.
+ * Specialization of EmbeddingType::Normalizer for ordinary lattices.
  */
 template <LatticeType LR, class NORM>
-class Normalizer<LR, PointSetType::UNILEVEL, NORM> : public BasicMeritFilter<LR, PointSetType::UNILEVEL> {
+class Normalizer<LR, EmbeddingType::UNILEVEL, NORM> : public BasicMeritFilter<LR, EmbeddingType::UNILEVEL> {
 public:
    typedef Real MeritValue;
-   typedef LatBuilder::LatDef<LR, PointSetType::UNILEVEL> LatDef;
+   typedef LatBuilder::LatDef<LR, EmbeddingType::UNILEVEL> LatDef;
    typedef NORM Norm;
 
    /**
@@ -74,23 +74,23 @@ private:
 
    /// Cache parameters.
    mutable Real m_cachedNorm;
-   mutable SizeParam<LR, PointSetType::UNILEVEL> m_cachedSizeParam;
+   mutable SizeParam<LR, EmbeddingType::UNILEVEL> m_cachedSizeParam;
    mutable Dimension m_cachedDimension;
 
    void updateCache(
-         const SizeParam<LR, PointSetType::UNILEVEL>& sizeParam,
+         const SizeParam<LR, EmbeddingType::UNILEVEL>& sizeParam,
          const Dimension dimension
          ) const;
 };
 
 /**
- * Specialization of PointSetType::Normalizer for embedded lattices.
+ * Specialization of EmbeddingType::Normalizer for embedded lattices.
  */
 template <LatticeType LR, class NORM>
-class Normalizer<LR, PointSetType::MULTILEVEL, NORM> : public BasicMeritFilter<LR, PointSetType::MULTILEVEL> {
+class Normalizer<LR, EmbeddingType::MULTILEVEL, NORM> : public BasicMeritFilter<LR, EmbeddingType::MULTILEVEL> {
 public:
    typedef RealVector MeritValue;
-   typedef LatBuilder::LatDef<LR, PointSetType::MULTILEVEL> LatDef;
+   typedef LatBuilder::LatDef<LR, EmbeddingType::MULTILEVEL> LatDef;
    typedef NORM Norm;
 
    /**
@@ -141,7 +141,7 @@ private:
 
    /// Cache parameters.
    mutable RealVector m_cachedNorm;
-   mutable SizeParam<LR, PointSetType::MULTILEVEL> m_cachedSizeParam;
+   mutable SizeParam<LR, EmbeddingType::MULTILEVEL> m_cachedSizeParam;
    mutable Dimension m_cachedDimension;
 
    /**
@@ -151,7 +151,7 @@ private:
    static void checkWeights(const RealVector& levelWeights);
 
    void updateCache(
-         const SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam,
+         const SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam,
          const Dimension dimension,
          bool force = false
          ) const;
@@ -160,7 +160,7 @@ private:
 //================================================================================
 
 template <LatticeType LR, class NORM>
-Real Normalizer<LR, PointSetType::UNILEVEL, NORM>::operator()(
+Real Normalizer<LR, EmbeddingType::UNILEVEL, NORM>::operator()(
       const MeritValue& merit,
       const LatDef& lat) const
 {
@@ -171,7 +171,7 @@ Real Normalizer<LR, PointSetType::UNILEVEL, NORM>::operator()(
 //================================================================================
 
 template <LatticeType LR, class NORM>
-RealVector Normalizer<LR, PointSetType::MULTILEVEL, NORM>::operator()(
+RealVector Normalizer<LR, EmbeddingType::MULTILEVEL, NORM>::operator()(
       const MeritValue& merit,
       const LatDef& lat) const
 {
@@ -190,8 +190,8 @@ RealVector Normalizer<LR, PointSetType::MULTILEVEL, NORM>::operator()(
 //================================================================================
 
 template <LatticeType LR, class NORM>
-void Normalizer<LR, PointSetType::UNILEVEL, NORM>::updateCache(
-      const SizeParam<LR, PointSetType::UNILEVEL>& sizeParam,
+void Normalizer<LR, EmbeddingType::UNILEVEL, NORM>::updateCache(
+      const SizeParam<LR, EmbeddingType::UNILEVEL>& sizeParam,
       const Dimension dimension) const
 {
    if (m_cachedSizeParam == sizeParam and m_cachedDimension == dimension)
@@ -210,8 +210,8 @@ void Normalizer<LR, PointSetType::UNILEVEL, NORM>::updateCache(
 //================================================================================
 
 template <LatticeType LR, class NORM>
-void Normalizer<LR, PointSetType::MULTILEVEL, NORM>::updateCache(
-      const SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam,
+void Normalizer<LR, EmbeddingType::MULTILEVEL, NORM>::updateCache(
+      const SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam,
       const Dimension dimension, bool force) const
 {
    if (m_cachedSizeParam == sizeParam and m_cachedDimension == dimension)
@@ -226,7 +226,7 @@ void Normalizer<LR, PointSetType::MULTILEVEL, NORM>::updateCache(
 
    for (Level level = 0; level < m_cachedNorm.size(); level++) {
 
-      SizeParam<LR, PointSetType::MULTILEVEL> levelSizeParam(
+      SizeParam<LR, EmbeddingType::MULTILEVEL> levelSizeParam(
             sizeParam.base(),
             level
             );
@@ -251,7 +251,7 @@ void Normalizer<LR, PointSetType::MULTILEVEL, NORM>::updateCache(
 //================================================================================
 
 template <LatticeType LR, class NORM>
-void Normalizer<LR, PointSetType::MULTILEVEL, NORM>::setWeights(RealVector levelWeights)
+void Normalizer<LR, EmbeddingType::MULTILEVEL, NORM>::setWeights(RealVector levelWeights)
 {
    m_levelWeights = std::move(levelWeights);
    //checkWeights(m_levelWeights);
@@ -261,7 +261,7 @@ void Normalizer<LR, PointSetType::MULTILEVEL, NORM>::setWeights(RealVector level
 //================================================================================
 
 template <LatticeType LR, class NORM>
-void Normalizer<LR, PointSetType::MULTILEVEL, NORM>::checkWeights(
+void Normalizer<LR, EmbeddingType::MULTILEVEL, NORM>::checkWeights(
       const RealVector& levelWeights)
 {
    Real wsum = 0.0;

@@ -21,7 +21,7 @@ using namespace LatBuilder;
 using TextStream::operator<<;
 
 //! [printLatDef]
-template <LatticeType LA, PointSetType L>
+template <LatticeType LA, EmbeddingType L>
 void printLatDef(const LatDef<LA, L>& def)
 {
    std::cout << "    dimension:         " << def.dimension() << std::endl;
@@ -33,26 +33,26 @@ void printLatDef(const LatDef<LA, L>& def)
 int main()
 {
    //! [ordinary]
-   auto ordinary = createLatDef(SizeParam<LatticeType::ORDINARY, PointSetType::UNILEVEL>(31), {1, 12, 3});
+   auto ordinary = createLatDef(SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(31), {1, 12, 3});
    std::cout << "ordinary - simple lattice:" << std::endl;
    printLatDef(ordinary);
     //! [ordinary]
 
     //! [embedded]
-   auto embedded = createLatDef(SizeParam<LatticeType::ORDINARY, PointSetType::MULTILEVEL>(2, 5), {1, 7, 9});
+   auto embedded = createLatDef(SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(2, 5), {1, 7, 9});
    std::cout << "ordinary - embedded lattice:" << std::endl;
    printLatDef(embedded);
    //! [embedded]
 
    //! [pordinary]
    Polynomial P = PolynomialFromInt(13); // P = 1 + z^2 + z^3
-   auto pordinary = createLatDef(SizeParam<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>(P), {PolynomialFromInt(1), PolynomialFromInt(5), PolynomialFromInt(3)});
+   auto pordinary = createLatDef(SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(P), {PolynomialFromInt(1), PolynomialFromInt(5), PolynomialFromInt(3)});
    std::cout << "polynomial - simple lattice:" << std::endl;
    printLatDef(pordinary);
    //! [pordinary]
 
    //! [pembedded]
-   auto pembedded = createLatDef(SizeParam<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>(PolynomialFromInt(2), 5),{PolynomialFromInt(1), PolynomialFromInt(10), PolynomialFromInt(3)});
+   auto pembedded = createLatDef(SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(PolynomialFromInt(2), 5),{PolynomialFromInt(1), PolynomialFromInt(10), PolynomialFromInt(3)});
    std::cout << "polynomial - embedded lattice:" << std::endl;
    printLatDef(pembedded);
    //! [pembedded]

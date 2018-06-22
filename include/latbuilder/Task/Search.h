@@ -41,9 +41,9 @@ namespace LatBuilder { namespace Task {
 /**
  * Base class for search tasks.
  *
- * \tparam PST   Type of lattice.
+ * \tparam ET   Type of lattice.
  */
-template <LatticeType LR, PointSetType PST>
+template <LatticeType LR, EmbeddingType ET>
 class Search : public Task {
 public:
    typedef boost::signals2::signal<void (const Search&)> OnLatticeSelected;
@@ -111,7 +111,7 @@ public:
             totalCount() < maxTotalCount();
       }
 
-      template <LatticeType LA, PointSetType L>
+      template <LatticeType LA, EmbeddingType L>
       void reject(const LatDef<LA, L>& lat)
       { m_rejectedCount++; }
 
@@ -216,17 +216,17 @@ public:
    /**
     * Returns the filters of merit transformations.
     */
-   const MeritFilterList<LR, PST>& filters() const
+   const MeritFilterList<LR, ET>& filters() const
    { return m_filters; }
 
    /// \copydoc filters() const
-   MeritFilterList<LR, PST>& filters()
+   MeritFilterList<LR, ET>& filters()
    { return m_filters; }
 
    /**
     * Returns the best lattice found by the search task.
     */
-   const LatDef<LR, PST>& bestLattice() const
+   const LatDef<LR, ET>& bestLattice() const
    { return m_bestLat; }
 
    /**
@@ -282,7 +282,7 @@ public:
     */
    virtual void reset()
    {
-      m_bestLat = LatDef<LR, PST>();
+      m_bestLat = LatDef<LR, ET>();
       m_bestMerit = 0.0;
    }
 
@@ -297,7 +297,7 @@ protected:
    /**
     * Selects a new best lattice and emits an OnLatticeSelected signal.
     */
-   void selectBestLattice(const LatDef<LR, PST>& lattice, Real merit)
+   void selectBestLattice(const LatDef<LR, ET>& lattice, Real merit)
    {
       m_bestLat = lattice;
       m_bestMerit = merit;
@@ -308,11 +308,11 @@ private:
    std::unique_ptr<OnLatticeSelected> m_onLatticeSelected;
 
    Dimension m_dimension;
-   LatDef<LR, PST> m_bestLat;
+   LatDef<LR, ET> m_bestLat;
    Real m_bestMerit;
    std::unique_ptr<MinObserver> m_minObserver;
    Functor::MinElement<Real> m_minElement;
-   MeritFilterList<LR, PST> m_filters;
+   MeritFilterList<LR, ET> m_filters;
 
    void connectSignals()
    {
@@ -340,26 +340,26 @@ private:
       connectSignals(filters());
    }
 
-   void connectSignals(MeritFilterList<LR, PointSetType::UNILEVEL>& filters)
+   void connectSignals(MeritFilterList<LR, EmbeddingType::UNILEVEL>& filters)
    {
       // notify minObserver when the filters rejects an element
-      filters.template onReject<PointSetType::UNILEVEL>().connect(boost::bind(
-               &MinObserver::template reject<LR, PointSetType::UNILEVEL>,
+      filters.template onReject<EmbeddingType::UNILEVEL>().connect(boost::bind(
+               &MinObserver::template reject<LR, EmbeddingType::UNILEVEL>,
                &minObserver(),
                _1
                ));
    }
 
-   void connectSignals(MeritFilterList<LR, PointSetType::MULTILEVEL>& filters)
+   void connectSignals(MeritFilterList<LR, EmbeddingType::MULTILEVEL>& filters)
    {
       // notify minObserver when the filters rejects an element
-      filters.template onReject<PointSetType::UNILEVEL>().connect(boost::bind(
-               &MinObserver::template reject<LR, PointSetType::UNILEVEL>,
+      filters.template onReject<EmbeddingType::UNILEVEL>().connect(boost::bind(
+               &MinObserver::template reject<LR, EmbeddingType::UNILEVEL>,
                &minObserver(),
                _1
                ));
-      filters.template onReject<PointSetType::MULTILEVEL>().connect(boost::bind(
-               &MinObserver::template reject<LR, PointSetType::MULTILEVEL>,
+      filters.template onReject<EmbeddingType::MULTILEVEL>().connect(boost::bind(
+               &MinObserver::template reject<LR, EmbeddingType::MULTILEVEL>,
                &minObserver(),
                _1
                ));
@@ -370,7 +370,7 @@ private:
 /**
  * Selector the proper CBC algorithm, given a figure of merit.
  *
- * \tparam PST          Type of lattice.
+ * \tparam ET          Type of lattice.
  * \tparam COMPRESS     Type of compression.
  * \tparam FIGURE       Type of figure of merit.
  *
@@ -384,17 +384,17 @@ private:
  * - an init() function that takes an instance of Task::Search as its argument
  *   and that performs special actions depending on the type of CBC algorithm.
  */
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCSelector;
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC>
-struct CBCSelector<LR, PST, COMPRESS, PLO, WeightedFigureOfMerit<PROJDEP, ACC>> {
-   typedef MeritSeq::CBC<LR, PST, COMPRESS, PLO, PROJDEP, ACC> CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC>
+struct CBCSelector<LR, ET, COMPRESS, PLO, WeightedFigureOfMerit<PROJDEP, ACC>> {
+   typedef MeritSeq::CBC<LR, ET, COMPRESS, PLO, PROJDEP, ACC> CBC;
 };
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
-struct CBCSelector<LR, PST, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>> {
-   typedef MeritSeq::CoordUniformCBC<LR, PST, COMPRESS, PLO, KERNEL, MeritSeq::CoordUniformInnerProd> CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
+struct CBCSelector<LR, ET, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>> {
+   typedef MeritSeq::CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, MeritSeq::CoordUniformInnerProd> CBC;
 };
 
 
@@ -402,9 +402,9 @@ struct CBCSelector<LR, PST, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>> {
  * Connects WeightedFigureOfMerit::OnProgress with an Search::MinObserver::progress
  * function and activates Search::MinObserver::setTruncateSum().
  */
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC, class OBSERVER>
-void connectCBCProgress(const MeritSeq::CBC<LR, PST, COMPRESS, PLO, PROJDEP, ACC>& cbc, OBSERVER& obs, bool truncateSum) {
-   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC, class OBSERVER>
+void connectCBCProgress(const MeritSeq::CBC<LR, ET, COMPRESS, PLO, PROJDEP, ACC>& cbc, OBSERVER& obs, bool truncateSum) {
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
    typedef bool (OBSERVER::*ProgressCallback)(const MeritValue&) const;
    ProgressCallback progress = &OBSERVER::progress;
 
@@ -426,8 +426,8 @@ void connectCBCProgress(const MeritSeq::CBC<LR, PST, COMPRESS, PLO, PROJDEP, ACC
 /**
  * Does nothing.
  */
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class KERNEL, template <LatticeType, PointSetType, Compress, PerLevelOrder> class PROD, class OBSERVER>
-void connectCBCProgress(const MeritSeq::CoordUniformCBC<LR, PST, COMPRESS, PLO, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL, template <LatticeType, EmbeddingType, Compress, PerLevelOrder> class PROD, class OBSERVER>
+void connectCBCProgress(const MeritSeq::CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
    // nothing to do with coordinate-uniform CBC
 }
 

@@ -52,7 +52,7 @@ namespace detail {
  * Computes the inner product with a second vector for all vectors in the
  * sequence at once.
  */
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 class CoordUniformInnerProdFast {
 
 protected:
@@ -60,9 +60,9 @@ protected:
    typedef typename fftw<Real>::complex_vector FFTComplexVector;
 
 public:
-   typedef Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PerLevelOrder::CYCLIC> InternalStorage;
-   typedef CoordUniformStateList<LR, PointSetType::MULTILEVEL, COMPRESS, PerLevelOrder::CYCLIC> StateList;
-   typedef typename Storage<LR, PST, COMPRESS>::MeritValue MeritValue;
+   typedef Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PerLevelOrder::CYCLIC> InternalStorage;
+   typedef CoordUniformStateList<LR, EmbeddingType::MULTILEVEL, COMPRESS, PerLevelOrder::CYCLIC> StateList;
+   typedef typename Storage<LR, ET, COMPRESS>::MeritValue MeritValue;
 
    /**
     * Constructor.
@@ -74,7 +74,7 @@ public:
     */
    template <class K>
    CoordUniformInnerProdFast(
-         Storage<LR, PST, COMPRESS, PLO> storage,
+         Storage<LR, ET, COMPRESS, PLO> storage,
          const Kernel::Base<K>& kernel
          ):
       m_storage(std::move(storage)),
@@ -87,7 +87,7 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LR, PST, COMPRESS, PLO>& storage() const
+   const Storage<LR, ET, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -331,7 +331,7 @@ private:
    InternalStorage asIntenalStorage(const InternalStorage& s)
    { return s; }
 
-   template <PointSetType L, Compress C, PerLevelOrder P>
+   template <EmbeddingType L, Compress C, PerLevelOrder P>
    InternalStorage asIntenalStorage(const Storage<LR, L, C, P>& s)
    { return InternalStorage(s.sizeParam().modulus()); }
 
@@ -360,7 +360,7 @@ private:
 
 
 private:
-   Storage<LR, PST, COMPRESS, PLO> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    InternalStorage m_internalStorage;
    RealVector m_kernelValues;
    std::vector<boost::numeric::ublas::range> m_levelRanges;

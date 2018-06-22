@@ -29,13 +29,13 @@ namespace NetBuilder { namespace Parser {
 /**
  * Collection of arguments required to construct a Search instance.
  */
-// template <NetBuilder::NetConstruction , NetBuilder::PointSetType>
+// template <NetBuilder::NetConstruction , NetBuilder::EmbeddingType>
 // struct CommandLine;
 
 /**
  * Specialization of CommandLine for ordinary nets.
  */
-template <NetConstruction NC, PointSetType PST>
+template <NetConstruction NC, EmbeddingType ET>
 struct CommandLine {
    std::string s_explorationMethod;
    std::string s_designParameter;
@@ -47,7 +47,7 @@ struct CommandLine {
    std::string s_verbose;
    
    bool m_earlyAbort;
-   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, PST> m_sizeParam;
+   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParam;
    typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
    Combiner m_combiner;
    Dimension m_dimension;
@@ -66,17 +66,17 @@ struct CommandLine {
 #include "netbuilder/Parser/ExplorationMethodParser.h"
 
 namespace NetBuilder { namespace Parser {
-template <NetConstruction NC, PointSetType PST>
+template <NetConstruction NC, EmbeddingType ET>
 std::unique_ptr<NetBuilder::Task::Task>
-CommandLine<NC, PST>::parse()
+CommandLine<NC, ET>::parse()
 {
       namespace lbp = LatBuilder::Parser;
-      m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, PST>::parse(s_size);
-      m_designParameter = DesignParameterParser<NC,PST>::parse(*this);
+      m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(s_size);
+      m_designParameter = DesignParameterParser<NC,ET>::parse(*this);
       m_dimension = boost::lexical_cast<Dimension>(s_dimension);
       m_verbose = boost::lexical_cast<int>(s_verbose);
-      m_figure = FigureParser<NC, PST>::parse(*this); // m_combiner initialized as a side effect
-      return ExplorationMethodParser<NC, PST>::parse(*this); // as a side effect, m_figure has been moved to task
+      m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized as a side effect
+      return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task
 }
 
 

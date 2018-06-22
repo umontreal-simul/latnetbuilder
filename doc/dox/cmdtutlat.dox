@@ -16,16 +16,16 @@
 
 /** \page cmdtutlat LatBuilder Command-Line Tutorial
 
-This tutorial teaches how to use the Lattice Builder command-line tool to
-search for highly uniform point sets.
+This tutorial teaches how to use the LatBuilder Command-Line Interface to
+search for good rank-1 lattice rules.
 
 This tutorial is divided into the following sections:
 <ol>
-    <li> \subpage cmdtut_recipes    </li>
+    <li> \subpage cmdtutlat_recipes    </li>
     <li> \subpage cmdtut_summary    </li>
 </ol>
 
-\section cmdtut_recipes Recipes
+\section cmdtutlat_recipes Recipes
 
 In this section, we start with a basic example to perform a standard
 component-by-component (CBC) construction, which we use to introduce the
@@ -35,12 +35,13 @@ different specific tasks.
 
 Consider the following basic example:
 \verbatim
-latbuilder \
-  --lattice-type ordinary
-  --embedded-lattice false \
+latnet \
+  --set-type lattice
+  --construction ordinary
+  --multilevel false \
   --modulus 2053 \
   --dimension 5 \
-  --construction CBC \
+  --exploration-method CBC \
   --figure-of-merit CU:P2 \
   --weights product:0.7
 \endverbatim
@@ -48,13 +49,13 @@ latbuilder \
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
 
-- The argument <code>\--lattice-type ordinary</code> indicates that we seek an ordinary
+- The argument <code>\--construction ordinary</code> indicates that we seek an ordinary
   (in contrast to polynomial) rank-1 lattice rule. The construction of polynomial lattices 
   is illustrated in \ref cmdtut_polynomial_lattices.
-- The argument <code>\--embedded-lattice false</code> indicates that we seek a
+- The argument <code>\--multilevel false</code> indicates that we seek a
   simple (in contrast to embedded) rank-1 lattice rule.
   The construction of embedded lattices is illustrated in
-  \ref cmdtut_recipes_embedded.
+  \ref cmdtutlat_recipes_embedded.
 
 - The argument <code>\--modulus 2053</code> indicates that we seek a lattice rule
   with modulus 2053.
@@ -64,7 +65,7 @@ Some arguments consists of several tokens, separated by a colon.
 
 - The argument <code>\--construction CBC</code> specifies that a CBC construction
   should be used.  Specifying other construction methods is explained in
-  \ref cmdtut_recipes_construction.
+  \ref cmdtutlat_recipes_construction.
 
 - The argument <code>\--figure-of-merit CU:P2</code> consists of three colon-separated
   tokens.
@@ -75,7 +76,7 @@ Some arguments consists of several tokens, separated by a colon.
 - The argument <code>\--weights product:0.7</code> assigns product weights to the
   figure of merit,  with the same weight (0.7) for every coordinate.  More
   general examples on how to specify the weights are given below in \ref
-  cmdtut_recipes_weights.
+  cmdtutlat_recipes_weights.
 
 To summarize, this command executes a CBC construction for an ordinary, simple lattice
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
@@ -99,19 +100,19 @@ should be left as in the basic example.
 This section covers the following topics:
 <ol>
     <li> \subpage cmdtut_polynomial_lattices   </li>
-    <li> \subpage cmdtut_recipes_weights       </li>
-    <li> \subpage cmdtut_recipes_merit         </li>
-    <li> \subpage cmdtut_recipes_filters       </li>
-    <li> \subpage cmdtut_recipes_construction  </li>
-    <li> \subpage cmdtut_recipes_embedded      </li>
-    <li> \subpage cmdtut_recipes_extensible    </li>
+    <li> \subpage cmdtutlat_recipes_weights       </li>
+    <li> \subpage cmdtutlat_recipes_merit         </li>
+    <li> \subpage cmdtutlat_recipes_filters       </li>
+    <li> \subpage cmdtutlat_recipes_construction  </li>
+    <li> \subpage cmdtutlat_recipes_embedded      </li>
+    <li> \subpage cmdtutlat_recipes_extensible    </li>
 </ol>
 
 \subsection cmdtut_polynomial_lattices Polynomial lattices
-We can construct polynomial lattices by setting the argument <code>\--lattice-type </code> to <code>polynomial</code>, and by specifying a polynomial as the modulus parameter to the argument <code>\--modulus </code>. The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.Optionally, we can print the generator matrices of the the retained polynomial lattice (as a digital net in base 2) in a specified file and using a specified format, by adding the argument  <code>\--output-poly </code> with the value <code>file:<var>file.txt</var>,format:<var>format</var></code>.
-For example, changing the arguments <code>\--lattice-type </code>, <code>\--modulus </code> to
+We can construct polynomial lattices by setting the argument <code>\--construction </code> to <code>polynomial</code>, and by specifying a polynomial as the modulus parameter to the argument <code>\--modulus </code>. The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.Optionally, we can print the generator matrices of the the retained polynomial lattice (as a digital net in base 2) in a specified file and using a specified format, by adding the argument  <code>\--output-poly </code> with the value <code>file:<var>file.txt</var>,format:<var>format</var></code>.
+For example, changing the arguments <code>\--construction </code>, <code>\--modulus </code> to
 \verbatim
---lattice-type polynomial --modulus 1011 
+--construction polynomial --modulus 1011 
 \endverbatim
 and adding
 \verbatim
@@ -119,9 +120,9 @@ and adding
 \endverbatim
 means that we seek a polynomial lattice rule with modulus \f$1+z^2+z^3\f$ and we want to print its generator matrices in  <code>outFile.txt</code> in the input format of digital nets in base 2 for the library ssj.
 
-\subsection cmdtut_recipes_weights Specifying the Weights
+\subsection cmdtutlat_recipes_weights Specifying the Weights
 
-\subsubsection cmdtut_recipes_weights_projdep Projection-Dependent Weights
+\subsubsection cmdtutlat_recipes_weights_projdep Projection-Dependent Weights
 
 With projection-dependent weights, the weight associated to the projection onto
 the coordinates in \f$\mathfrak u\f$ can be set to any non-negative constant
@@ -168,7 +169,7 @@ option
 must be added to the command line.
 
 
-\subsubsection cmdtut_recipes_weights_orderdep Order-Dependent Weights
+\subsubsection cmdtutlat_recipes_weights_orderdep Order-Dependent Weights
 
 With order-dependent weights, the weight associated to the projection onto the
 coordinates in \f$\mathfrak u\f$ is
@@ -195,7 +196,7 @@ some \f$j\f$.
   \endverbatim
 
 
-\subsubsection cmdtut_recipes_weights_product Product Weights
+\subsubsection cmdtutlat_recipes_weights_product Product Weights
 
 With product weights, the weight associated to the projection onto the
 coordinates in \f$\mathfrak u\f$ is
@@ -222,7 +223,7 @@ some \f$j\f$.
   \endverbatim
 
 
-\subsubsection cmdtut_recipes_weights_pod POD Weights
+\subsubsection cmdtutlat_recipes_weights_pod POD Weights
 
 With product and order-dependent (POD) weights, the weight associated to the
 projection onto the coordinates in \f$\mathfrak u\f$ is
@@ -235,8 +236,8 @@ projection onto the coordinates in \f$\mathfrak u\f$ is
 In that case, the argument of the <tt>\--weights</tt> option consists of five 
 colon-separated tokens: the first is the type of weights (POD), the next two
 specify the \f$\Gamma_j\f$'s as in \ref
-cmdtut_recipes_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
-as in \ref cmdtut_recipes_weights_product.
+cmdtutlat_recipes_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
+as in \ref cmdtutlat_recipes_weights_product.
 
 - POD weights with \f$\Gamma_1^2 = 1.0\f$, \f$\Gamma_2^2 = 0.7\f$,
   \f$\Gamma_3^2 = 0.3\f$ and \f$\Gamma_\ell^2 = 0.1\f$ for all \f$\ell \geq 4\f$,
@@ -247,7 +248,7 @@ as in \ref cmdtut_recipes_weights_product.
   \endverbatim
 
 
-\subsection cmdtut_recipes_merit Figures of Merit
+\subsection cmdtutlat_recipes_merit Figures of Merit
 \subsubsection cmdtut_integration_lattices Ordinary Lattice Rules
 - The spectral figure of merit (weighted worst projection):
   \f[
@@ -313,7 +314,7 @@ as in \ref cmdtut_recipes_weights_product.
     --figure-of-merit CU:P2 --filters norm:P2-SL10
   \endverbatim
   Usage of the <code>\--filters</code> option is illustrated in \ref
-  cmdtut_recipes_filters.
+  cmdtutlat_recipes_filters.
 
 \subsubsection cmdtut_figures_polynomial_lattices Polynomial Lattice Rules
 - The \f$\mathcal P_{\alpha,PLR}\f$ discrepancy with \f$\alpha=2\f$, using a
@@ -340,7 +341,7 @@ as in \ref cmdtut_recipes_weights_product.
   \endverbatim
 
 
-\subsection cmdtut_recipes_filters Filtering Merit Values
+\subsection cmdtutlat_recipes_filters Filtering Merit Values
 
 Filters are optional and can be used to transform the computed values of a
 figure of merit, or to reject bad values.
@@ -373,10 +374,10 @@ arguments separated by whitespace.
   the second one specifies the threshold value of this low-pass filter.
 
 
-For usage with embedded lattices, see \ref cmdtut_recipes_embedded.
+For usage with embedded lattices, see \ref cmdtutlat_recipes_embedded.
 
 
-\subsection cmdtut_recipes_construction Construction Type
+\subsection cmdtutlat_recipes_construction Construction Type
 
 - Simply evaluate the figure of merit for an ordinary lattice rule with generating vector
   \f$(1, 468, 896, 603, 367)\f$:
@@ -431,7 +432,7 @@ For usage with embedded lattices, see \ref cmdtut_recipes_embedded.
 
 
 
-\subsection cmdtut_recipes_embedded Embedded Lattices
+\subsection cmdtutlat_recipes_embedded Embedded Lattices
 
 Constructing embedded lattices involves producing a compound merit value that
 accounts for the merit of each nested level.  This compound merit value is
@@ -445,7 +446,7 @@ computed as follows:
 This mechanism can be selected in Lattice Builder by changing the lattice type
 to embedded with:
 \verbatim
---embedded-lattice true
+--multilevel true
 \endverbatim
 
 - To build embedded ordinary lattices with CBC construction in dimension 5 with
@@ -453,8 +454,8 @@ to embedded with:
   spectral merit across all levels, with the same weight for all projections:
   \verbatim
   latbuilder \
-    --lattice-type ordinary \
-    --embedded-lattice true \
+    --construction ordinary \
+    --multilevel true \
     --modulus "2^16" \
     --dimension 5 \
     --construction CBC \
@@ -477,8 +478,8 @@ to embedded with:
   the even weights across all levels:
   \verbatim
   latbuilder \
-    --lattice-type ordinary \
-    --embedded-lattice true \
+    --construction ordinary \
+    --multilevel true \
     --modulus "2^16" \
     --dimension 10 \
     --construction fast-CBC \
@@ -503,8 +504,8 @@ to embedded with:
   \f$\mathcal P_{2,PLR}\f$  merit across all levels, with the same weight for all projections:
   \verbatim
   latbuilder \
-    --lattice-type polynomial \
-    --embedded-lattice true \
+    --construction polynomial \
+    --multilevel true \
     --modulus "01^8" \
     --dimension 5 \
     --construction CBC \
@@ -534,14 +535,14 @@ It is also possible to select any given level, say \f$m=8\f$, with
 \endverbatim
 
 
-\subsection cmdtut_recipes_extensible Extensible Lattices
+\subsection cmdtutlat_recipes_extensible Extensible Lattices
 
 Suppose you have constructed embedded ordinary lattice rules up to \f$2^8\f$ points in
 dimension 5 with:
 \verbatim
 latbuilder \
-  --lattice-type ordinary \
-  --embedded-lattice true \
+  --construction ordinary \
+  --multilevel true \
   --modulus "2^8" \
   --dimension 5 \
   --construction fast-CBC \
@@ -555,8 +556,8 @@ Then, you find out that you need to extend the number of points to \f$2^9\f$.
 This can be done with:
 \verbatim
 latbuilder \
-  --lattice-type ordinary \
-  --embedded-lattice false \
+  --construction ordinary \
+  --multilevel false \
   --modulus "2^9" \
   --dimension 5 \
   --construction "extend:2^8:1,45,101,41,25" \
@@ -577,7 +578,7 @@ that we want to extend on a lattice with \f$2^8\f$ points and generating vector
 The <code>latbuilder</code> executable supports the following command-line
 options:
 <dl>
-  <dt><code>\--lattice-type</code> / <code>-L</code></dt>
+  <dt><code>\--construction</code> / <code>-L</code></dt>
   <dd><em>Optional (default: ordinary).</em>
     Specifies the lattice type.
     Takes one of the following values:
@@ -586,7 +587,7 @@ options:
     - <code>polynomial</code>
       to search for polynomial lattices.
   </dd>
-	<dt><code>\--embedded-lattice</code> / <code>-l</code></dt>
+	<dt><code>\--multilevel</code> / <code>-l</code></dt>
 	<dd><em>Optional (default: false).</em>
 		Specifies the lattice modulus.
 		Takes one of the following values:

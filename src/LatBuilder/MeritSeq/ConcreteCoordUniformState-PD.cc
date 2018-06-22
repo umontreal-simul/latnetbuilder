@@ -22,12 +22,12 @@ namespace LatBuilder { namespace MeritSeq {
 // ProjectionDependentWeights
 //========================================================================
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 reset()
 {
-   CoordUniformState<LR, PST, COMPRESS, PLO>::reset();
+   CoordUniformState<LR, ET, COMPRESS, PLO>::reset();
    m_state.clear();
    // empty set
    m_state[LatticeTester::Coordinates()] =
@@ -37,9 +37,9 @@ reset()
 
 //===========================================================================
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 const RealVector&
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 createStateVector(const LatticeTester::Coordinates& projection, const RealVector& kernelValues)
 {
    auto it = m_state.find(projection);
@@ -68,12 +68,12 @@ createStateVector(const LatticeTester::Coordinates& projection, const RealVector
 
 //===========================================================================
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 void
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 {
-   CoordUniformState<LR, PST, COMPRESS, PLO>::update(kernelValues, gen);
+   CoordUniformState<LR, ET, COMPRESS, PLO>::update(kernelValues, gen);
    m_gen.push_back(gen);
 
    // Create a new state vector for each projection $\mathfrak u$ such that
@@ -91,9 +91,9 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 
 //===========================================================================
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 RealVector
-ConcreteCoordUniformState<LR, PST, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights>::
 weightedState() const
 {
    using LatticeTester::Coordinates;
@@ -120,18 +120,18 @@ weightedState() const
 
 //===========================================================================
 
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC, LatticeTester::ProjectionDependentWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,      LatticeTester::ProjectionDependentWeights>;
 
 
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
 
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,      LatticeTester::ProjectionDependentWeights>;
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC, LatticeTester::ProjectionDependentWeights>;
 
 }}

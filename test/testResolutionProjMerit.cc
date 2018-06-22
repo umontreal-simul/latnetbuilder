@@ -48,13 +48,13 @@ int main(int argc, const char *argv[])
 
     auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    // auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>(s);
+    // auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<EmbeddingType::UNILEVEL>>(s);
 
-    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::UNILEVEL>>>(3, std::move(weights), std::move(projDep));
+    // auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<EmbeddingType::UNILEVEL>>>(3, std::move(weights), std::move(projDep));
     
-    auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(3, Combiner(boost::numeric::ublas::blas_1::amax<RealVector>));
+    auto projDep = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>>(3, Combiner(boost::numeric::ublas::blas_1::amax<RealVector>));
 
-    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
+    auto fig = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     auto eval = fig->evaluator();
 

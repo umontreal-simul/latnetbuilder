@@ -28,7 +28,7 @@ namespace NetBuilder { namespace FigureOfMerit {
  * 
  *  Figure of merit which penalizes digital nets for which the first bits are not equidistributed.
  */ 
-template <PointSetType PST>
+template <EmbeddingType ET>
 class BitEquidistribution : public FigureOfMerit{
 
     public:
@@ -112,7 +112,7 @@ class BitEquidistribution : public FigureOfMerit{
 
                 /** 
                  * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
-                 *  starting from the initial value \c initialValue. Intended to be specialized based on template parameter PST.
+                 *  starting from the initial value \c initialValue. Intended to be specialized based on template parameter ET.
                  *  @param net Net to evaluate.
                  *  @param dimension Dimension to compute.
                  *  @param initialValue Initial value of the merit.
@@ -168,7 +168,7 @@ class BitEquidistribution : public FigureOfMerit{
 
 // template specialization for the unilevel case
 template<>
-MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
+MeritValue BitEquidistribution<EmbeddingType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
 {
 
     unsigned int nCols = net.numColumns();
@@ -202,7 +202,7 @@ MeritValue BitEquidistribution<PointSetType::UNILEVEL>::BitEquidistributionEvalu
 
 //template specialization for the multilevel case
 template<>
-MeritValue BitEquidistribution<PointSetType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
+MeritValue BitEquidistribution<EmbeddingType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
 {
 
     unsigned int nCols = net.numColumns();

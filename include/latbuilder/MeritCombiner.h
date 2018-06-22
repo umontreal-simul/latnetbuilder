@@ -48,9 +48,9 @@ namespace MeritCombiner {
  *
  */
 template <LatticeType LR, template <typename> class ACC>
-class Accumulator : public MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner {
+class Accumulator : public MeritFilterList<LR, EmbeddingType::MULTILEVEL>::Combiner {
 public:
-   typedef typename MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner Combiner;
+   typedef typename MeritFilterList<LR, EmbeddingType::MULTILEVEL>::Combiner Combiner;
    typedef typename Combiner::LatDef LatDef;
 
    /**
@@ -75,7 +75,7 @@ public:
  * single merit value.
  */
 template <LatticeType LR>
-class SelectLevel : public MeritFilterList<LR, PointSetType::MULTILEVEL>::Combiner {
+class SelectLevel : public MeritFilterList<LR, EmbeddingType::MULTILEVEL>::Combiner {
 public:
    /**
     * Constructor.
@@ -86,7 +86,7 @@ public:
    /**
     * Calls the functor.
     */
-   Real operator() (const RealVector& merit, const LatDef<LR, PointSetType::MULTILEVEL>&) const
+   Real operator() (const RealVector& merit, const LatDef<LR, EmbeddingType::MULTILEVEL>&) const
    { return merit[m_level]; }
 
    std::string name() const

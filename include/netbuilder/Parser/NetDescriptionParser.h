@@ -41,16 +41,16 @@ public:
 /**
  * Parser for construction parameters.
  */
-template<NetConstruction NC, PointSetType PST>
+template<NetConstruction NC, EmbeddingType ET>
 struct NetDescriptionParser {};
 
-template<PointSetType PST>
-struct NetDescriptionParser<NetConstruction::SOBOL, PST>
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::SOBOL, ET>
 {
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
    typedef std::vector<GenValue> result_type;
 
-   static result_type parse(CommandLine<NetConstruction::SOBOL, PST>& commandLine, const std::string& str)
+   static result_type parse(CommandLine<NetConstruction::SOBOL, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
@@ -83,13 +83,13 @@ struct NetDescriptionParser<NetConstruction::SOBOL, PST>
    }
 };
 
-template<PointSetType PST>
-struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::POLYNOMIAL, ET>
 {
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValue GenValue;
     typedef std::vector<GenValue> result_type;
 
-   static result_type parse(CommandLine<NetConstruction::POLYNOMIAL, PST>& commandLine, const std::string& str)
+   static result_type parse(CommandLine<NetConstruction::POLYNOMIAL, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
@@ -112,13 +112,13 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
    }
 };
 
-template<PointSetType PST>
-struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
 {
     typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::GenValue GenValue;
     typedef std::vector<GenValue> result_type;
 
-   static result_type parse(CommandLine<NetConstruction::EXPLICIT, PST>& commandLine, const std::string& str)
+   static result_type parse(CommandLine<NetConstruction::EXPLICIT, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));

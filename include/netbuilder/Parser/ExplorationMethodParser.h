@@ -55,12 +55,12 @@ class BadExplorationMethod : public lbp::ParserError
 /**
  * Parser for figure parameters.
  */
-template<NetConstruction NC, PointSetType PST>
+template<NetConstruction NC, EmbeddingType ET>
 struct ExplorationMethodParser
 {
     typedef std::unique_ptr<Task::Task> result_type;
 
-    static result_type parse(Parser::CommandLine<NC, PST>& commandLine)
+    static result_type parse(Parser::CommandLine<NC, ET>& commandLine)
     {
         std::string str = commandLine.s_explorationMethod;
         boost::algorithm::erase_all(str, " ");
@@ -73,7 +73,7 @@ struct ExplorationMethodParser
             {
                 throw BadExplorationMethod("net description must be specified; see --help");
             }
-            auto genValues = NetDescriptionParser<NC,PST>::parse(commandLine, explorationCharacteristicStrings[1]);
+            auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, explorationCharacteristicStrings[1]);
             auto net = std::make_unique<DigitalNetConstruction<NC>>(commandLine.m_dimension, commandLine.m_designParameter, std::move(genValues));
             return std::make_unique<Task::Eval>(std::move(net), std::move(commandLine.m_figure), commandLine.m_verbose);
         }

@@ -39,7 +39,7 @@ struct Creator {
    /**
     * Creates a new sequence object.
     */
-   template <LatticeType LR, PointSetType L, typename... ARGS>
+   template <LatticeType LR, EmbeddingType L, typename... ARGS>
    static result_type create(
          const SizeParam<LR, L>& sizeParam,
          ARGS&&... t
@@ -56,18 +56,18 @@ struct Creator<CyclicGroup<LR,COMPRESS, TRAV, ORDER>> {
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LR,PointSetType::MULTILEVEL>& sizeParam,
+         const SizeParam<LR,EmbeddingType::MULTILEVEL>& sizeParam,
          ARGS&&... t
          )
    { return result_type(sizeParam.base(), sizeParam.maxLevel(), std::forward<ARGS>(t)...); }
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LR,PointSetType::UNILEVEL>& sizeParam,
+         const SizeParam<LR,EmbeddingType::UNILEVEL>& sizeParam,
          ARGS&&... t
          )
    {
-      SizeParam<LR, PointSetType::MULTILEVEL> ml(sizeParam.modulus());
+      SizeParam<LR, EmbeddingType::MULTILEVEL> ml(sizeParam.modulus());
       return result_type(ml.base(), ml.maxLevel(), std::forward<ARGS>(t)...);
    }
 };
@@ -81,7 +81,7 @@ struct Creator<PowerSeq<SEQ>> {
    /**
     * Creates a new sequence object.
     */
-   template <LatticeType LR, PointSetType L, typename... ARGS>
+   template <LatticeType LR, EmbeddingType L, typename... ARGS>
    static result_type create(
          const SizeParam<LR, L>& sizeParam,
          unsigned int power,

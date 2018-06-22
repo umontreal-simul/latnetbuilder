@@ -55,7 +55,7 @@ typedef size_t Dimension;
 // typedef size_t size_type;
 
 /// Type of nets
-typedef LatBuilder::PointSetType PointSetType;
+typedef LatBuilder::EmbeddingType EmbeddingType;
 
 /// Net construction methods
 enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};

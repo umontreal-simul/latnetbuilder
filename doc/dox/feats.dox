@@ -73,7 +73,7 @@ Additionally LatNetBuilder contains more advanced features such as multilevel po
   </tr>
   <tr align="center">
     <td class="tg-uys7">Multilevel point sets</td>
-    <td class="tg-uys7" colspan="2">embedded nets</td>
+    <td class="tg-uys7" colspan="2">embedded lattices</td>
     <td class="tg-uys7">digital sequence</td>
   </tr>
   <tr align="center">

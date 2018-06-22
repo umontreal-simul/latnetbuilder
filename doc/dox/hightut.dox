@@ -27,7 +27,7 @@ Simulation software written in an arbitrary language can always make use of
 Lattice Builder by invoking the command-line tool with appropriate options (see
 the \ref cmdtut) and by parsing its text output to extract the generating
 vector from the results.
-This is what the \ref webif does.
+This is what the \ref gui does.
 Calling an external command can be done in most programming languages.
 
 From software written in C++, it is also possible avoids the overhead of
@@ -48,7 +48,7 @@ The Parser::Search class provides a \c parse() method that returns a
 pointer to a Task::Search instance.  The arguments to \c parse() are all
 text of the same format as the command-line arguments (in the following order) to:
 - \c \--construction
-- \c \--lattice-type
+- \c \--construction
 - \c \--size
 - \c \--dimension
 - \c \--figure-of-merit

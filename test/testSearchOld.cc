@@ -68,9 +68,9 @@ int main(int argc, const char *argv[])
     unsigned int r = 1;
     auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    auto projDep = std::make_unique<ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(2,combiner);
+    auto projDep = std::make_unique<ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>>(2,combiner);
 
-    auto fig = std::make_unique<WeightedFigureOfMerit<ResolutionGapProjMerit<PointSetType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
+    auto fig = std::make_unique<WeightedFigureOfMerit<ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     // auto explorer = std::make_unique<Task::RandomCBCExplorer<NetConstruction::SOBOL>>(s,designParam,r);
     // auto search = Task::CBCSearch<NetConstruction::SOBOL,Task::RandomCBCExplorer>(s,designParam,std::move(fig),std::move(explorer), verbose);

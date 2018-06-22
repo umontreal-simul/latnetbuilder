@@ -89,6 +89,8 @@ namespace NetBuilder {
             private:   
                 unsigned int m_level;
         };
+
+        
 }}
 
 #endif

@@ -27,31 +27,31 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct FastCBCTag {};
 
 
 /// Fast CBC construction.
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using FastCBC =
-   CBCBasedSearch<FastCBCTag<LR, PST, COMPRESS, PLO, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using FastCBC =
+   CBCBasedSearch<FastCBCTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Fast CBC construction.
-template <class FIGURE,LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-FastCBC<LR, PST, COMPRESS, PLO, FIGURE> fastCBC(
-      Storage<LR, PST, COMPRESS, PLO> storage,
+template <class FIGURE,LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+FastCBC<LR, ET, COMPRESS, PLO, FIGURE> fastCBC(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return FastCBC<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return FastCBC<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 // specialization for coordinate-uniform figures of merit
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
-struct CBCBasedSearchTraits<FastCBCTag<LR, PST, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>>> {
-   typedef LatBuilder::Task::Search<LR, PST> Search;
-   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
-   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef MeritSeq::CoordUniformCBC<LR, PST, COMPRESS, PLO, KERNEL, MeritSeq::CoordUniformInnerProdFast> CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
+struct CBCBasedSearchTraits<FastCBCTag<LR, ET, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef MeritSeq::CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, MeritSeq::CoordUniformInnerProdFast> CBC;
    typedef typename CBC::FigureOfMerit FigureOfMerit;
    typedef GenSeq::CyclicGroup<LR, COMPRESS> GenSeqType;
 
@@ -65,18 +65,18 @@ struct CBCBasedSearchTraits<FastCBCTag<LR, PST, COMPRESS, PLO, CoordUniformFigur
    std::string name() const
    { return "fast CBC"; }
 
-   void init(LatBuilder::Task::FastCBC<LR, PST, COMPRESS, PLO, FigureOfMerit>& search) const
+   void init(LatBuilder::Task::FastCBC<LR, ET, COMPRESS, PLO, FigureOfMerit>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 
 // specialization for other figures of merit
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-struct CBCBasedSearchTraits<FastCBCTag<LR, PST, COMPRESS, PLO, FIGURE>> {
-   typedef LatBuilder::Task::Search<LR, PST> Search;
-   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<FastCBCTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
    typedef FIGURE FigureOfMerit;
-   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef GenSeq::CyclicGroup<LR, COMPRESS> GenSeqType;
 
    virtual ~CBCBasedSearchTraits() {}
@@ -91,7 +91,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LR, PST, COMPRESS, PLO, FIGURE>> {
    std::string name() const
    { return "unimplemented fast CBC"; }
 
-   void init(LatBuilder::Task::FastCBC<LR, PST, COMPRESS, PLO, FIGURE>& search) const
+   void init(LatBuilder::Task::FastCBC<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { throw std::runtime_error("fast CBC is implemented only for coordinate-uniform figures of merit"); }
 };
 

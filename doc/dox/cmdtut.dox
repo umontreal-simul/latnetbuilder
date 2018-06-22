@@ -25,15 +25,18 @@ full path to the executable program, for example
 <code>/path/to/latnet</code>, should be used in the place of just
 <code>latnet</code>.
 
-Alternatively, the \ref webif can be used to construct a command line, to
+Alternatively, the \ref gui can be used to construct a command line, to
 invoke the command-line tool and to see the results.
 
 As LatNet Builder can handle both rank-1 lattices and digital nets in base 2, this tutorial is divided
-between this two types of point sets:
+between these two types of point sets:
 <ol>
     <li> \subpage cmdtutlat    </li>
     <li> \subpage cmdtutnet   </li>
 </ol>
+
+The switch between these two types of point sets can be made using the <code>--set-type</code> option which supports
+two values : <code> lattice </code> and <code> net </code>.
 
 The following typesetting semantics is adopted:
 - <code>verbatim</code> for text to be typed as is;

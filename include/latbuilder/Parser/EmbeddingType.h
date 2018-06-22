@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__PARSER__POINT_SET_TYPE_H
-#define LATBUILDER__PARSER__POINT_SET_TYPE_H
+#ifndef LATBUILDER__PARSER__EMBEDDING_TYPE_H
+#define LATBUILDER__PARSER__EMBEDDING_TYPE_H
 
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Types.h"
@@ -25,26 +25,26 @@ namespace LatBuilder { namespace Parser {
 /**
  * Exception thrown when trying to parse an invalid size parameter.
  */
-class BadPointSetType : public ParserError {
+class BadEmbeddingType : public ParserError {
 public:
-   BadPointSetType(const std::string& message):
-      ParserError("cannot parse size parameter string: " + message)
+   BadEmbeddingType(const std::string& message):
+      ParserError("cannot parse embedding type string: " + message)
    {}
 };
 
 /**
  * Parser for size parameters.
  */
-struct PointSetType {
-   typedef LatBuilder::PointSetType result_type;
+struct EmbeddingType {
+   typedef LatBuilder::EmbeddingType result_type;
 
    static result_type parse(const std::string& str)
    {
       if (str == "false")
-         return LatBuilder::PointSetType::UNILEVEL;
+         return LatBuilder::EmbeddingType::UNILEVEL;
       else if (str == "true")
-         return LatBuilder::PointSetType::MULTILEVEL;
-      throw BadPointSetType(str);
+         return LatBuilder::EmbeddingType::MULTILEVEL;
+      throw BadEmbeddingType(str);
    }
 };
 

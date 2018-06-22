@@ -27,9 +27,9 @@ namespace LatBuilder {
  * In an compressed vector some elements are implicitly repeated.
  */
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO, class E>
-typename Storage<LR, PointSetType::UNILEVEL, COMPRESS, PLO>::MeritValue
+typename Storage<LR, EmbeddingType::UNILEVEL, COMPRESS, PLO>::MeritValue
 compressedSum(
-      const Storage<LR, PointSetType::UNILEVEL, COMPRESS, PLO>& storage, 
+      const Storage<LR, EmbeddingType::UNILEVEL, COMPRESS, PLO>& storage, 
       const boost::numeric::ublas::vector_expression<E>& e
       ) 
 {
@@ -58,9 +58,9 @@ compressedSum(
  * vector expression \c e.
  */
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO, class E>
-typename Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>::MeritValue
+typename Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>::MeritValue
 compressedSum(
-      const Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>& storage, 
+      const Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>& storage, 
       const boost::numeric::ublas::vector_expression<E>& e
       ) 
 {

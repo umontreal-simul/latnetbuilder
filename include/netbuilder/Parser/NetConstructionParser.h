@@ -37,11 +37,11 @@ public:
 /**
  * Parser for construction parameters.
  */
-template <PointSetType PST>
+template <EmbeddingType ET>
 struct NetConstructionParser {};
 
 template<>
-struct NetConstructionParser<PointSetType::UNILEVEL>
+struct NetConstructionParser<EmbeddingType::UNILEVEL>
 {
    typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
 
@@ -66,14 +66,14 @@ struct NetConstructionParser<PointSetType::UNILEVEL>
 };
 
 template<>
-struct NetConstructionParser<PointSetType::MULTILEVEL>
+struct NetConstructionParser<EmbeddingType::MULTILEVEL>
 {
    typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
 
    static result_type parse(const std::string& str)
    {
 
-      result_type tmp = NetConstructionParser<PointSetType::UNILEVEL>::parse(str);
+      result_type tmp = NetConstructionParser<EmbeddingType::UNILEVEL>::parse(str);
 
       if (tmp.first!=NetConstruction::SOBOL)
       {

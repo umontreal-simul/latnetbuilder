@@ -27,7 +27,7 @@ namespace LatBuilder {
 /**
  * Lattice size parameter.
  */
-template <LatticeType, PointSetType> class SizeParam;
+template <LatticeType, EmbeddingType> class SizeParam;
 
 /**
  * SizeParam traits.
@@ -45,8 +45,8 @@ struct SizeParamTraits;
  * SizeParam traits for ordinary lattice rule.
  *
  */
-template<PointSetType PST>
-struct SizeParamTraits<SizeParam<LatticeType::ORDINARY,PST>>{
+template<EmbeddingType ET>
+struct SizeParamTraits<SizeParam<LatticeType::ORDINARY,ET>>{
   ///  type for modulus (= number of points) values.
   typedef typename LatticeTraits<LatticeType::ORDINARY>::Modulus Modulus;
   typedef uInteger size_type;
@@ -61,8 +61,8 @@ struct SizeParamTraits<SizeParam<LatticeType::ORDINARY,PST>>{
  * SizeParam traits for digital lattice rule.
  *
  */
-template<PointSetType PST>
-struct SizeParamTraits<SizeParam<LatticeType::DIGITAL,PST>>{
+template<EmbeddingType ET>
+struct SizeParamTraits<SizeParam<LatticeType::DIGITAL,ET>>{
   ///  type for modulus (= number of points) values.
   typedef typename LatticeTraits<LatticeType::DIGITAL>::Modulus Modulus;
   typedef uInteger size_type;
@@ -76,8 +76,8 @@ struct SizeParamTraits<SizeParam<LatticeType::DIGITAL,PST>>{
  * SizeParam traits for polynomial lattice rule.
  *
  */
-template<PointSetType PST>
-struct SizeParamTraits<SizeParam<LatticeType::POLYNOMIAL,PST>>{
+template<EmbeddingType ET>
+struct SizeParamTraits<SizeParam<LatticeType::POLYNOMIAL,ET>>{
   ///  type for modulus values.
   typedef typename LatticeTraits<LatticeType::POLYNOMIAL>::Modulus Modulus;
   typedef uInteger size_type;

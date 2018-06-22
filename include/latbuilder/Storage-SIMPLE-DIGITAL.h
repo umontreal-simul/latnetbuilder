@@ -27,12 +27,12 @@ namespace LatBuilder {
 
 
 template <Compress COMPRESS>
-struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPRESS>> {
+struct StorageTraits<Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS>> {
    typedef uInteger            size_type;
    typedef typename LatticeTraits<LatticeType::DIGITAL>::GenValue  value_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef Real               MeritValue;
-   typedef LatBuilder::SizeParam<LatticeType::DIGITAL, PointSetType::UNILEVEL> SizeParam;
+   typedef LatBuilder::SizeParam<LatticeType::DIGITAL, EmbeddingType::UNILEVEL> SizeParam;
 
    /**
     * Unpermuted permutation.
@@ -41,11 +41,11 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPR
    public:
       typedef StorageTraits::size_type size_type;
 
-      Unpermute(Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPRESS> storage): m_storage(std::move(storage)) {}
+      Unpermute(Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS> storage): m_storage(std::move(storage)) {}
       size_type operator() (size_type i) const { return Compress::compressIndex(i, m_storage.virtualSize()); }
       size_type size() const { return m_storage.virtualSize(); }
    private:
-      Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPRESS> m_storage;
+      Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS> m_storage;
    };
 
    /**
@@ -63,7 +63,7 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPR
       typedef StorageTraits::size_type size_type;
       typedef StorageTraits::value_type value_type;
 
-      Stride(Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPRESS> storage, value_type stride):
+      Stride(Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS> storage, value_type stride):
          m_storage(std::move(storage)),
          m_stride(stride),
          m_permutation(m_storage.virtualSize(), 0)
@@ -86,7 +86,7 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPR
       { return m_storage.size(); }
 
    private:
-      Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPRESS> m_storage;
+      Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS> m_storage;
       value_type m_stride;
       std::vector<size_type> m_permutation;
 
@@ -106,11 +106,11 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPR
 
 // template
 
-template <Compress COMPRESS> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, COMPRESS>>::Stride::m_graycode = std::vector<uInteger>();
+template <Compress COMPRESS> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS>>::Stride::m_graycode = std::vector<uInteger>();
 // StorageTraits< = std::vector<size_type>()
 
-// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::NONE>>::Stride::m_graycode = std::vector<uInteger>();
-// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, PointSetType::UNILEVEL, Compress::SYMMETRIC>>::Stride::m_graycode = std::vector<uInteger>();
+// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE>>::Stride::m_graycode = std::vector<uInteger>();
+// template<> std::vector<uInteger> StorageTraits<Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::SYMMETRIC>>::Stride::m_graycode = std::vector<uInteger>();
 
 }
 

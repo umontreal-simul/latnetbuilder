@@ -28,8 +28,8 @@ using TextStream::operator<<;
 //! [genSeqs]
 template <LatticeType LA>
 void test(typename LatticeTraits<LA>::Modulus modulus){
-   SizeParam<LA, PointSetType::UNILEVEL> size(modulus);      
-   SizeParam<LA, PointSetType::UNILEVEL> size0(LatticeTraits<LA>::TrivialModulus);   
+   SizeParam<LA, EmbeddingType::UNILEVEL> size(modulus);      
+   SizeParam<LA, EmbeddingType::UNILEVEL> size0(LatticeTraits<LA>::TrivialModulus);   
    Dimension dim = 3;
 
    typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;

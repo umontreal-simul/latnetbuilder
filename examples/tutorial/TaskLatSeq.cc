@@ -69,7 +69,7 @@ WeightedFigureOfMerit<ProjDepMerit::CoordUniform<Kernel::PAlpha>, Functor::Sum> 
 int main()
 {
    Dimension dim = 3;
-   Storage<PointSetType::UNILEVEL, Compress::SYMMETRIC> storage(256);
+   Storage<EmbeddingType::UNILEVEL, Compress::SYMMETRIC> storage(256);
 
    execute(Task::exhaustive(storage, dim, figureCS()));
    execute(Task::random(storage, dim, figureCS(), 10));
@@ -78,7 +78,7 @@ int main()
 
    execute(Task::exhaustive(storage, dim, figure()));
 
-   Storage<PointSetType::UNILEVEL, Compress::SYMMETRIC> extStorage(storage.sizeParam().numPoints() * 2);
+   Storage<EmbeddingType::UNILEVEL, Compress::SYMMETRIC> extStorage(storage.sizeParam().numPoints() * 2);
    execute(Task::extend(extStorage, createLatDef(storage.sizeParam(), {1, 99, 27}), figure()));
 
    return 0;

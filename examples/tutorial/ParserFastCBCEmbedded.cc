@@ -51,7 +51,7 @@ template<LatBuilder::LatticeType LA>
 EmbeddedLatticePoints<LA> search()
 {
    //! [search inst]
-   LatBuilder::Parser::CommandLine<LA, LatBuilder::PointSetType::MULTILEVEL> cmd;
+   LatBuilder::Parser::CommandLine<LA, LatBuilder::EmbeddingType::MULTILEVEL> cmd;
    cmd.construction  = "fast-CBC";
    cmd.size          = "2^8";
    cmd.dimension     = "10";

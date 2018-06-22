@@ -22,7 +22,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/CommandLine.h"
-#include "netbuilder/Parser/PointSetTypeParser.h"
+#include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
 #include "netbuilder/Parser/OutputFormat.h"
 #include "netbuilder/Task/Task.h"
@@ -64,8 +64,8 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
-    ("main-construction,C", po::value<std::string>(),
-    "(required) main construction type; possible values:\n"
+    ("set-type,T", po::value<std::string>(),
+    "(required) point set type; possible values:\n"
     "  lattice\n"
     "  net\n")
    ("help,h", "produce help message")
@@ -73,14 +73,14 @@ makeOptionsDescription()
    ("verbose,v", po::value<std::string>()->default_value("0"),
    "specify the verbosity of the program\n")
    ("construction,c", po::value<std::string>()->default_value("sobol"),
-   "digital-net; possible constructions:\n"
+   "digital net; possible constructions:\n"
    "  sobol (default)\n"
    "  polynomial:<modulus>\n"
    "  explicit:<matrix-size>\n")
-   ("set-type,t", po::value<std::string>()->default_value("net"),
-    "type of point set; possible values:\n"
-   "  net (default)\n"
-   "  sequence\n")
+   ("multilevel,m", po::value<std::string>()->default_value("false"),
+    "multilevel point set; possible values:\n"
+   "  false (default)\n"
+   "  true\n")
    ("size,s", po::value<std::string>(),
     "(required) size of the net; possible values:\n"
    "  <size>\n"
@@ -193,7 +193,7 @@ parse(int argc, const char* argv[])
 
 
 #define BUILD_TASK(net_construction, point_set_type)\
-NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, NetBuilder::PointSetType::point_set_type> cmd;\
+NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, NetBuilder::EmbeddingType::point_set_type> cmd;\
 \
 cmd.s_designParameter = designParameterString;\
 cmd.s_verbose = opt["verbose"].as<std::string>();\
@@ -248,19 +248,19 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
-        std::string s_setType = opt["set-type"].as<std::string>();
+        std::string s_multilevel = opt["multilevel"].as<std::string>();
         std::string s_construction = opt["construction"].as<std::string>();
-        NetBuilder::PointSetType setType = NetBuilder::Parser::PointSetTypeParser::parse(s_setType);
+        NetBuilder::EmbeddingType embeddingType = NetBuilder::Parser::EmbeddingTypeParser::parse(s_multilevel);
 
         std::pair<NetBuilder::NetConstruction,std::string> netConstructionPair;
 
-        if (setType==NetBuilder::PointSetType::UNILEVEL)
+        if (embeddingType==NetBuilder::EmbeddingType::UNILEVEL)
         {
-          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::PointSetType::UNILEVEL>::parse(s_construction);
+          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::UNILEVEL>::parse(s_construction);
         }
         else
         {
-          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::PointSetType::MULTILEVEL>::parse(s_construction);
+          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::MULTILEVEL>::parse(s_construction);
         }
 
         NetBuilder::NetConstruction netConstruction = netConstructionPair.first;
@@ -271,22 +271,22 @@ int main(int argc, const char *argv[])
       
         std::unique_ptr<NetBuilder::Task::Task> task;
 
-        if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::UNILEVEL){
+        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::MULTILEVEL){
+       if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(SOBOL, MULTILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::UNILEVEL){
+       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::MULTILEVEL){
+      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
       //     BUILD_TASK(POLYNOMIAL, MULTILEVEL)
       //  }
-        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::UNILEVEL){
+        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::MULTILEVEL){
+      //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
       //     BUILD_TASK(EXPLICIT, MULTILEVEL)
       //  }
       for (unsigned i=0; i<repeat; i++){

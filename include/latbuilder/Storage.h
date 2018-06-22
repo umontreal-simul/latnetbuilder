@@ -32,35 +32,35 @@ namespace LatBuilder {
  *  default per level value depending on the lattice (ordinary/polynomial) and the lattice type (ordinary/embedded).
  *
  */
-template <LatticeType LR, PointSetType PST>
+template <LatticeType LR, EmbeddingType ET>
 struct defaultPerLevelOrder;
 
 template <>
-struct defaultPerLevelOrder<LatticeType::ORDINARY, PointSetType::UNILEVEL>{
+struct defaultPerLevelOrder<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 template <>
-struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>{
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::ORDINARY, PointSetType::MULTILEVEL>{
+struct defaultPerLevelOrder<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::CYCLIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>{
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::UNILEVEL>{
+struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::MULTILEVEL>{
+struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
@@ -114,7 +114,7 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::MULTILEVEL>{
  * The output from \ref Storage.cc gives an intuition of how this works for
  * different combination of lattice type and of compression.
  */
-template <LatticeType LR, PointSetType PST, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, PST>::Order > class Storage;
+template <LatticeType LR, EmbeddingType ET, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, ET>::Order > class Storage;
 
 /**
  * Storage traits.

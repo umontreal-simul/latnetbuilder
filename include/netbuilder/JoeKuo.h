@@ -30,7 +30,7 @@ namespace NetBuilder {
 namespace JoeKuo {
 
 /**
- * Weights used by Joe and Kuo in \cite rJOE08.
+ * Weights used by Joe and Kuo in \cite rJOE08a.
  */ 
 class Weights : public LatticeTester::Weights {
 
@@ -59,7 +59,7 @@ public:
 };
 
 /**
- * \f$D^{(q)} \f$Combiner used by Joe and Kuo in \cite rJOE08.
+ * \f$D^{(q)} \f$Combiner used by Joe and Kuo in \cite rJOE08a.
  * \tparam q Power used in the combiner.
  */ 
 template<unsigned int q>

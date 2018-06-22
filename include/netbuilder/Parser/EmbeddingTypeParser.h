@@ -25,26 +25,26 @@ namespace lbp = LatBuilder::Parser;
 /**
  * Exception thrown when trying to parse an invalid size parameter.
  */
-class BadPointSetType : public lbp::ParserError {
+class BadEmbeddingType : public lbp::ParserError {
 public:
-   BadPointSetType(const std::string& message):
-      lbp::ParserError("cannot parse size parameter string: " + message)
+   BadEmbeddingType(const std::string& message):
+      lbp::ParserError("cannot parse embedding type string: " + message)
    {}
 };
 
 /**
  * Parser for size parameters.
  */
-struct PointSetTypeParser {
-   typedef NetBuilder::PointSetType result_type;
+struct EmbeddingTypeParser {
+   typedef NetBuilder::EmbeddingType result_type;
 
    static result_type parse(const std::string& str)
    {
-      if (str == "net")
-         return NetBuilder::PointSetType::UNILEVEL;
-      else if (str == "sequence")
-         return NetBuilder::PointSetType::MULTILEVEL;
-      throw BadPointSetType(str);
+      if (str == "false")
+         return NetBuilder::EmbeddingType::UNILEVEL;
+      else if (str == "true")
+         return NetBuilder::EmbeddingType::MULTILEVEL;
+      throw BadEmbeddingType(str);
    }
 };
 

@@ -80,11 +80,11 @@ struct PerLevelOrderTraits<PerLevelOrder::BASIC, LatticeType::DIGITAL, COMPRESS>
 
 
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
-struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
+struct StorageTraits<Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>> {
    typedef uInteger               size_type;
    typedef CompressTraits<COMPRESS> Compress;
    typedef RealVector            MeritValue;
-   typedef LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL> SizeParam;
+   typedef LatBuilder::SizeParam<LR, EmbeddingType::MULTILEVEL> SizeParam;
 
    typedef typename PerLevelOrderTraits<PLO, LR, COMPRESS>::GroupType GroupType; 
    typedef typename PerLevelOrderTraits<PLO, LR, COMPRESS>::GenGroupType GenGroupType; 
@@ -99,7 +99,7 @@ struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
       typedef StorageTraits::size_type size_type;
       typedef std::pair<boost::numeric::ublas::range, size_type> AddressType;
       typedef StorageTraits::value_type value_type;
-      Unpermute(Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> storage):
+      Unpermute(Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO> storage):
          m_storage(std::move(storage))
       {
          // initialize addresses
@@ -129,7 +129,7 @@ struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
    private:
       typedef std::map< value_type, AddressType> MapType;
 
-      Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO > m_storage;
+      Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO > m_storage;
       MapType m_indexToAddress;
 
       /**
@@ -227,7 +227,7 @@ struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
       typedef StorageTraits::size_type size_type;
       typedef StorageTraits::value_type value_type;
 
-      Stride(Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> storage, value_type stride):
+      Stride(Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO> storage, value_type stride):
          m_storage(std::move(storage)),
          m_stride(stride),
          m_row(findRow(stride))
@@ -299,7 +299,7 @@ struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
       { return m_storage.size(); }
 
    private:
-      Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> m_storage;
+      Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO> m_storage;
       value_type m_stride;
       size_type m_row;
 
@@ -357,10 +357,10 @@ struct StorageTraits<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
  * See the output of \ref Storage.cc for an illustration of this.
  */
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
-class Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> :
-   public BasicStorage<Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO>> {
+class Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO> :
+   public BasicStorage<Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>> {
 
-   typedef Storage<LR, PointSetType::MULTILEVEL, COMPRESS, PLO> self_type;
+   typedef Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO> self_type;
 
 private:
    typedef typename StorageTraits<self_type>::GroupType    GroupType;

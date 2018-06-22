@@ -39,26 +39,26 @@ public:
 /**
  * Parser for construction parameters.
  */
-template<NetConstruction NC, PointSetType PST>
+template<NetConstruction NC, EmbeddingType ET>
 struct DesignParameterParser {};
 
-template<PointSetType PST>
-struct DesignParameterParser<NetConstruction::SOBOL, PST>
+template<EmbeddingType ET>
+struct DesignParameterParser<NetConstruction::SOBOL, ET>
 {
    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter result_type;
 
-   static result_type parse(Parser::CommandLine<NetConstruction::SOBOL, PST>& commandLine)
+   static result_type parse(Parser::CommandLine<NetConstruction::SOBOL, ET>& commandLine)
    {
          return commandLine.m_sizeParam.log2NumPoints();
    }
 };
 
-template<PointSetType PST>
-struct DesignParameterParser<NetConstruction::POLYNOMIAL, PST>
+template<EmbeddingType ET>
+struct DesignParameterParser<NetConstruction::POLYNOMIAL, ET>
 {
    typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter result_type;
 
-   static result_type parse(Parser::CommandLine<NetConstruction::POLYNOMIAL, PST>& commandLine)
+   static result_type parse(Parser::CommandLine<NetConstruction::POLYNOMIAL, ET>& commandLine)
    {
          result_type tmp = polynomialParserHelper(commandLine.s_designParameter);
          if (NetConstructionTraits<NetConstruction::POLYNOMIAL>::nCols(tmp) != commandLine.m_sizeParam.log2NumPoints())
@@ -69,12 +69,12 @@ struct DesignParameterParser<NetConstruction::POLYNOMIAL, PST>
    }
 };
 
-template<PointSetType PST>
-struct DesignParameterParser<NetConstruction::EXPLICIT, PST>
+template<EmbeddingType ET>
+struct DesignParameterParser<NetConstruction::EXPLICIT, ET>
 {
       typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::DesignParameter result_type;
 
-      static result_type parse(Parser::CommandLine<NetConstruction::EXPLICIT, PST>& commandLine)
+      static result_type parse(Parser::CommandLine<NetConstruction::EXPLICIT, ET>& commandLine)
       {
             std::vector<std::string> designParameterStrings;
             result_type tmp;

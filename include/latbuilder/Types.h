@@ -58,7 +58,7 @@ typedef NTL::GF2X Polynomial;
 enum class LatticeType { ORDINARY , POLYNOMIAL, DIGITAL };
 
 /// Simple lattice / a sequence of embedded lattices 
-enum class PointSetType { UNILEVEL, MULTILEVEL };
+enum class EmbeddingType { UNILEVEL, MULTILEVEL };
 
 /// Types of compression.
 enum class Compress { NONE, SYMMETRIC };
@@ -158,7 +158,7 @@ struct LatticeTraits<LatticeType::POLYNOMIAL>{
 
 
 //@}
-std::ostream& operator<<(std::ostream& os, PointSetType latType);
+std::ostream& operator<<(std::ostream& os, EmbeddingType latType);
 
 
 }

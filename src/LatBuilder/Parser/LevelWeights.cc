@@ -22,7 +22,7 @@ namespace LatBuilder { namespace Parser {
 template <LatticeType LR> 
 auto LevelWeights<LR>::parse(
       const std::string& arg,
-      const SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam
+      const SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam
       ) -> result_type
 {
    const auto args = splitPair<>(arg, ':');

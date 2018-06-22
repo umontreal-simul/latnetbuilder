@@ -9,7 +9,7 @@ def build(ctx):
     ctx(features='cxx cxxstlib',
             source=src_dir.ant_glob('**/*.cc'),
             includes=[inc_dir, lc_inc_dir],
-            target='latbuilder',
+            target='latnetbuilder',
             install_path='${LIBDIR}')
 
     # header files

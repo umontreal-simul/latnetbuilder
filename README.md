@@ -11,32 +11,31 @@ For certain problems, well-constructed point sets can dramatically reduce the in
 *LatNet Builder* is a software tool and library that implements a variety of
 construction algorithms for highly uniform point sets. 
 
-The user can quickly discover the functionalities of LatNet Builder without anything to install using Binder TODO button. This service hosts a version of LatNet Builder which can be used through a Graphical User Interface. However, this service only provides limited computation ressources. For a better experience, one should install directly the software on their machine.
+The user can quickly discover the functionalities of LatNet Builder without anything to install using Binder TODO button. This service hosts a version of LatNet Builder which can be used through a Graphical User Interface. However, this service only provides limited computation ressources. For a better experience, one should directly install the software on their machine.
 
-The simplest to use the software is to use its Graphical User Interface (GUI). 
-A Command Line Interface (CLI) is also available.
-The software can also be used as a C++ library or through its C API.  Interfaces with Python and R are also provided. Finally, the software can be used directly from the simulation software [SSJ](http://simul.iro.umontreal.ca/ssj/indexe.html).
+The simplest way to use the software is through its Graphical User Interface (GUI). 
+A Command Line Interface (CLI) is available as an alternative.
+The software can also be used as a C++ library. Interfaces with Python and R are also provided. Finally, the software can be used directly from the simulation software [SSJ](http://simul.iro.umontreal.ca/ssj/indexe.html).
 
 LatNet Builder comprises two interdependent pieces called LatBuilder and NetBuilder.
-*Lat Builder* focuses on the construction of good rank-1 ordinary and polynomial lattice rules whereas *Net Builder* supports the construction of good digital nets in base 2. The quality of point sets are assessed using various measures of (non)uniformity of the points. 
+*Lat Builder* focuses on the construction of rank-1 ordinary and polynomial lattice rules whereas *Net Builder* supports the construction of digital nets in base 2. The quality of point sets are assessed using various measures of (non)uniformity of the points. 
 
-The implemented quality measures include, for the LatBuilder part, the weighted P<sub>α</sub> square discrepancy, the R<sub>α</sub> criterion, and figures of merit based on the spectral test and for the NetBuilder part, the weighted P<sub>2</sub> square discrepancy, the R<sub>1</sub> criterion and bit equidistribution quality measures such as the t-value and the resolution-gap.
+The implemented quality measures include, for the LatBuilder part, the weighted P<sub>α</sub> square discrepancy, the R<sub>α</sub> criterion, and figures of merit based on the spectral test, and for the NetBuilder part, the weighted P<sub>2</sub> square discrepancy, the R<sub>1</sub> criterion and bit equidistribution quality measures such as the t-value and the resolution-gap.
 
 All these measures, which are called figures of merit, are parametrized with weights to give different importances to the projections of the point sets.
 
-It supports exhaustive and random searches, as well as component-by-component
+The software supports exhaustive and random searches, as well as component-by-component
 (CBC) and random CBC constructions, for any number of points, and for various
 measures of (non)uniformity of the points.
 
 The software also support the construction of multi-level point sets. A multi-level point set is actually a sequence of point sets whose points are embedded. Good multi-level point sets are highly uniform for their different embedding levels.
 
 For modulus that are powers of an irreducible base, the construction
-of embedded rank-1 ordinary and polynomial lattice rules is supported by LatBuilder through any of the above algorithms. In this case, a fast-CBC algorithm is also available for specific figures of merit. For polynomial lattice rules, the fast-CBC algorithm is only available for irreducible modulus.
+of embedded rank-1 ordinary and polynomial lattice rules is supported by LatBuilder through any of the above algorithms. In this case, a fast-CBC algorithm is also available for specific figures of merit. For polynomial lattice rules, the fast-CBC algorithm is only available for irreducible modulus. 
 
 NetBuilder supports the construction of various (finite) good digital sequences.
 
 The software supports a variety of possibilities for the normalization of the merit values of individual embedded levels and for their combination into a single merit value.
-
 
 #### Get the Software
 
@@ -78,7 +77,7 @@ together with the Graphical User Interface.
 
 Interfaces with Python and R ???
 
-The binary distribution packages, under the `latnet` base directory, have
+The binary distribution packages, under the `latnetbuilder` base directory, have
 the following directory structure:
 
 * `bin`: contains the executable `latnet` program
@@ -92,7 +91,6 @@ the following directory structure:
 * `share/doc/examples`: contains examples on using the LatNet Builder library.
 
 ## Compiling the Source Code
-
 
 ### Software Dependencies
 
@@ -335,12 +333,12 @@ application programming interface (API) can be found under
 `$HOME/latnetsoft/share/doc/examples/myproject`. TODO
 If you compiled LatNet Builder yourself from the source code, this `Makefile`
 will be adapted to your specific system configuration; otherwise, it may need
-to be customized.
+to be customized. TODO
 
 In particular, if LatNet Builder, Boost , NTL, GMP and FFTW were respectively installed
 under `$HOME/latnetsoft`, `/opt/boost`, `/opt/ntl`, `/opt/gmp` and `/opt/FFTW`, a C++ source file called
 `myprog.cc` can be compiled and linked into an executable called `myprog` by
-using the following command line with GCC:
+using the following command line with GCC: TODO
 
 	g++ -std=c++14 -I$HOME/latnetsoft/include -I/opt/boost/include -I/opt/ntl/include -I/opt/gmp/include -I/opt/fftw/include -O2 -o myprog myprog.cc -L$HOME/latnetsoft/lib -l latnetbuilder -l latticetester -L/opt/ntl/lib  -l ntl -L/opt/gmp/lib  -l gmp -L/opt/fftw/lib -l fftw3
 

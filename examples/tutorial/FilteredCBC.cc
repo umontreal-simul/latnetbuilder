@@ -47,11 +47,11 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 template <LatticeType LA, class NORMALIZER>
-void setLevelWeights(NORMALIZER&, const SizeParam<LA, PointSetType::UNILEVEL>&)
+void setLevelWeights(NORMALIZER&, const SizeParam<LA, EmbeddingType::UNILEVEL>&)
 {}
 
 template <LatticeType LA, class NORMALIZER>
-void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, PointSetType::MULTILEVEL>& sizeParam)
+void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, EmbeddingType::MULTILEVEL>& sizeParam)
 {
    //! [per-level weights]
    normalizer.setWeights(RealVector(
@@ -62,15 +62,15 @@ void setLevelWeights(NORMALIZER& normalizer, const SizeParam<LA, PointSetType::M
 }
 
 template<LatticeType LA>
-void setCombiner(MeritFilterList<LA, PointSetType::UNILEVEL>&) {}
+void setCombiner(MeritFilterList<LA, EmbeddingType::UNILEVEL>&) {}
 
 //! [combiner]
 template<LatticeType LA>
-void setCombiner(MeritFilterList<LA, PointSetType::MULTILEVEL>& filters)
+void setCombiner(MeritFilterList<LA, EmbeddingType::MULTILEVEL>& filters)
 { filters.add(unique<MeritCombiner::Accumulator<LA, Functor::Sum>>()); }
 //! [combiner]
 
-template <LatticeType LA, PointSetType L, Compress C>
+template <LatticeType LA, EmbeddingType L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {  
 
@@ -157,14 +157,14 @@ int main()
    Dimension dim = 3;
    
    //! [Storage]
-   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(256), dim);
-   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC>(256), dim);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC>(256), dim);
    //! [Storage]
    
    /*
    //! [pstorage]
-   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
-   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim);
    //! [pstorage]
    */
 

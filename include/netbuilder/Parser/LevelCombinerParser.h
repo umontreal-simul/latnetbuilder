@@ -42,24 +42,24 @@ public:
 /**
  * Parser for construction parameters.
  */
-template <NetConstruction NC, NetBuilder::PointSetType PST>
+template <NetConstruction NC, NetBuilder::EmbeddingType ET>
 struct LevelCombinerParser {};
 
 template <NetConstruction NC>
-struct LevelCombinerParser<NC, NetBuilder::PointSetType::UNILEVEL> {
+struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::UNILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::UNILEVEL>& commandLine)
+   static result_type parse(const CommandLine<NC,NetBuilder::EmbeddingType::UNILEVEL>& commandLine)
    {
        return result_type();
    }
 };
 
 template <NetConstruction NC>
-struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
+struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::MULTILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::MULTILEVEL>& commandLine)
+   static result_type parse(const CommandLine<NC,NetBuilder::EmbeddingType::MULTILEVEL>& commandLine)
    {
        std::string str = commandLine.s_combiner;
        if (str=="sum")
