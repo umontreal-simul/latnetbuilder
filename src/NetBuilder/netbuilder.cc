@@ -18,6 +18,7 @@
 #include <fstream>
 #include <chrono>
 #include <boost/program_options.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 
 #include "netbuilder/Types.h"
@@ -111,12 +112,8 @@ makeOptionsDescription()
   //   "      order <x>: <weight>\n"
   //   "      default: <weight>\n"
   //   "    if <file> is `-' data is read from standard input\n")
-  //  ("weights-power,o", po::value<Real>(),
-  //   "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
-  //  ("norm-type,p", po::value<std::string>()->default_value("2"),
-  //   "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
-  //   "    <p>: a real number corresponding the l_<p> norm\n"
-  //   "    inf: corresponding to the `max' norm\n")
+   ("weights-power,o", po::value<Real>(),
+    "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
     ("combiner,b", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
@@ -218,6 +215,13 @@ if (opt.count("no-early-abort") >= 1){\
 }\
 else{\
   cmd.m_earlyAbort = true;\
+}\
+if (opt.count("weight-power") == 1 ){\
+  cmd.m_hasWeightPower = true; \
+  cmd.m_weightPower = boost::lexical_cast<Real>(opt["weight-power"].as<std::string>());\
+}\
+else{\
+  cmd.m_hasWeightPower = false;\
 }\
 task = cmd.parse();
 

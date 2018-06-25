@@ -25,8 +25,7 @@ Laurent series space, were later added to Lattice Builder. In the current versio
 This new piece of software is called Net Builder.
 
 As polynomial lattices can also be viewed as digital nets in base 2, such point sets can also be constructed by Net Builder. Moreover, it turns out that viewing the polynomial 
-lattices as digital nets is in most cases much more efficient than using the rank-1 lattice approach. Detailed guidelines
-specifying which approach should be used to construct polynomial lattices depending of what one wants to achieve can be found here \todo page.
+lattices as digital nets is in most cases much more efficient than using the rank-1 lattice approach. \ref cmdtut_poly specifying which approach should be used in which case are available.
 
 All in all, the types of point sets handled by LatNetBuilder include rank-1 (ordinary and polynomial) lattices and digital nets (Sobol' nets, polynomial lattice rules and nets defined by explicit generating matrices.)
 More precisely, LatNetBuilder can search for point sets of arbitrary size in any dimension of high quality with respect to various quality criteria. 
@@ -85,6 +84,12 @@ Additionally LatNetBuilder contains more advanced features such as multilevel po
     <td class="tg-uys7">Combined figures of merit</td>
     <td class="tg-uys7" colspan="2">no</td>
     <td class="tg-uys7">yes</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7">Extensible point sets</td>
+    <td class="tg-uys7">yes</td>
+    <td class="tg-uys7">TODO is it possible to extend PLR</td>
+    <td class="tg-uys7">no</td>
   </tr>
 </table>
 

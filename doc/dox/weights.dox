@@ -1,0 +1,156 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page weights Specifying the weights
+
+\todo build page
+
+Most figures of merit implemented in LatNet Builder can be parametrized by weights.
+Weights are used to put more importance on specific projections of the point set. Various types
+of weights have been proposed. LatNet Builder implements the following:
+- projection-dependent weights
+  \n With projection-dependent weights, the weight associated to the projection onto
+  the coordinates in \f$\mathfrak u\f$ can be set to any non-negative constant
+  \f$\gamma_{\mathfrak u}\f$.
+- order-dependent weights
+  \n With order-dependent weights, the weight associated to the projection onto the
+  coordinates in \f$\mathfrak u\f$ is
+  \f[
+    \gamma_{\mathfrak u} = \Gamma_{|\mathfrak u|}.
+  \f]
+- product weights
+  \n With product weights, the weight associated to the projection onto the
+  coordinates in \f$\mathfrak u\f$ is
+  \f[
+    \gamma_{\mathfrak u} = \prod_{j \in \mathfrak u} \gamma_j.
+  \f]
+
+- product and order dependent weights.
+  \n With product and order-dependent (POD) weights, the weight associated to the
+  projection onto the coordinates in \f$\mathfrak u\f$ is
+  \f[
+    \gamma_{\mathfrak u} =
+    \Gamma_{|\mathfrak u|}
+    \prod_{j \in \mathfrak u} \gamma_j.
+  \f]
+
+In the Command-Line Tutorial, the <code><var><weights-description></var></code> tag can be replaced by any of the following specifications.
+Weights specification depend on their type.
+
+\subsubsection weights_projdep Projection-Dependent Weights
+
+The projection-dependent weights cannot be specified directly on the command
+line.  They have to be written to a text file, say <tt>weights.txt</tt>, with a
+content similar to the following:
+\verbatim
+# this is a comment
+1,2,3:      0.7
+1,2,4:      0.5
+2,3,4:      0.3
+order 2:    1.0
+order 3:    0.1
+default:    1.0e-3
+\endverbatim
+This assigns the square weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
+\f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a square weight of 1.0 to
+every projection of order 2, a square weight of 0.1 to every projection of order
+3 other than the above three for which weights were explicitly assigned, then a
+square weight of \f$10^{-3}\f$ to every other projection.
+The order of the lines in the file is not important.
+LatNet Builder must be told where to look for the weights by changing the 
+<code><var><weights-description></var></code> tag to 
+\todo check the syntax
+\verbatim
+  file:weights.txt
+\endverbatim
+The first colon-separated token indicates the type (projection-dependent) of
+weights, and the second one, the name of the file from which the weights must be
+read.
+
+\todo change weights power description + position
+Note that the weights in the above examples are interpreted as square weights
+because, by default, the numerical values read by LatNet Builder are
+interpreted as the constants \f$\gamma_{\mathfrak u}^p\f$, i.e. the weights
+elevated the power \f$p\f$ matching the choice of \f$\mathcal L_p\f$-norm.
+An exception to this occurs when using the infinity-norm, where they are
+interpreted as if \f$p = 1\f$.
+To interpret the numerical values as another power of the weights, say 1, the
+option
+\verbatim
+  --weights-power 1
+\endverbatim
+must be added to the command line.
+
+
+\subsubsection weights_orderdep Order-Dependent Weights
+
+In that case, the value of the <code><var><weights-description></var></code> tag consists of three 
+colon-separated tokens: the first is the type of weights (order-dependent
+weights); the second is the default weight assigned to projection orders for
+which no weight is explicitly given; the last token is optional and is a
+comma-separated list of order-dependent weights \f$\Gamma_1,\dots,\Gamma_j\f$ for
+some \f$j\f$.
+
+- Order-dependent weights with \f$\Gamma_\ell^2 = 0.3\f$ for all \f$\ell\f$:
+  \verbatim
+  --weights order-dependent:0.3
+  \endverbatim
+
+- Order-dependent weights with \f$\Gamma_1^2 = 1.0\f$, \f$\Gamma_2^2 = 0.7\f$,
+  \f$\Gamma_3^2 = 0.3\f$ and \f$\Gamma_\ell^2 = 0.1\f$ for all \f$\ell \geq 4\f$:
+  \verbatim
+  --weights order-dependent:0.1:1.0,0.7,0.3
+  \endverbatim
+
+
+\subsubsection weights_product Product Weights
+In that case, the value of the <code><var><weights-description></var></code> tag consists of three 
+colon-separated tokens: the first is the type of weights (product
+weights); the second is the default weight assigned to coordinates for
+which no weight is explicitly given; the last token is optional and is a
+comma-separated list of coordinate weights \f$\gamma_1,\dots,\gamma_j\f$ for
+some \f$j\f$.
+
+- Product weights with \f$\gamma_j^2 = 0.3\f$ for all \f$j\f$:
+  \verbatim
+  --weights product:0.3
+  \endverbatim
+
+- Product weights with \f$\gamma_1^2 = 1.0\f$, \f$\gamma_2^2 = 0.7\f$, \f$\gamma_3^2 =
+  0.3\f$ and \f$\gamma_j^2 = 0.1\f$ for all \f$j \geq 4\f$:
+  \verbatim
+  --weights product:0.1:1.0,0.7,0.3
+  \endverbatim
+
+
+\subsubsection weights_pod POD Weights
+
+In that case, the value of the <code><var><weights-description></var></code> tag consists of five 
+colon-separated tokens: the first is the type of weights (POD), the next two
+specify the \f$\Gamma_j\f$'s as in \ref
+weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
+as in \ref weights_product.
+
+- POD weights with \f$\Gamma_1^2 = 1.0\f$, \f$\Gamma_2^2 = 0.7\f$,
+  \f$\Gamma_3^2 = 0.3\f$ and \f$\Gamma_\ell^2 = 0.1\f$ for all \f$\ell \geq 4\f$,
+  and with \f$\gamma_1^2 = 1.0\f$, \f$\gamma_2^2 = 0.9\f$, \f$\gamma_3^2 =
+  0.7\f$ and \f$\gamma_j^2 = 0.5\f$ for all \f$j \geq 4\f$:
+  \verbatim
+  --weights POD:0.1:1.0,0.7,0.3:0.5:1.0,0.9,0.7
+  \endverbatim
+
+*/
+vim: ft=doxygen spelllang=en spell

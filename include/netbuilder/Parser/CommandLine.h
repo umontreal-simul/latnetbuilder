@@ -47,6 +47,8 @@ struct CommandLine {
    std::string s_verbose;
    
    bool m_earlyAbort;
+   bool m_hasWeightPower;
+   Real m_weightPower;
    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParam;
    typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
    Combiner m_combiner;

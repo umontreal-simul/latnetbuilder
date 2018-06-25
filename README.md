@@ -274,7 +274,7 @@ lattice rule with 8191 points in 5 dimensions using the P<sub>α</sub> criterion
 $\alpha = 2$ and with uniform product weights with value 0.8, issue the following
 command (from the installation directory):
 
-	bin/latnet -C lattice -l ordinary -s 8191 -d 5 -m CU:P2 -w product:0.8 -E CBC
+	bin/latnet -T lattice -c ordinary -s 8191 -d 5 -M CU:P2 -w product:0.8 -E CBC
 
 #### Constructing digital nets
 
@@ -282,7 +282,7 @@ Likewise, to construct, using the component-by-component (CBC) algorithm, Sobol'
 $\alpha = 2$ and with uniform product weights with value 0.8, issue the following
 command (from the installation directory):
 
-  bin/latnet -C net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -E random:1000
+  bin/latnet -T net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -E random:1000
 
 
 ### The LatNet Builder Graphical User Interface
@@ -314,8 +314,7 @@ directory under the installation directory and in subdirectories.
 
 To teach yourself how to code using the LatNet Builder library, you can read:
 
-* [High-Level API Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/d5/d98/hightut.html) TODO
-* [Low-Level API Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html) TOOD
+* [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html)
 
 #### Compiling and Linking
 
@@ -380,7 +379,7 @@ the same weight of 0.1 to every coordinate (this means a weight of
 10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections
 of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
 
-	./latnet -C lattice -l ordinary -s 2^16 -d 100 -m CU:P2 -w product:0.1 -E fast-CBC
+	./latnet -T lattice -c ordinary -s 2^16 -d 100 -M CU:P2 -w product:0.1 -E fast-CBC
 
 The above search is for n=2<sup>16</sup>=65,536 points in dimension 100.  LatNet Builder
 does that very quickly.

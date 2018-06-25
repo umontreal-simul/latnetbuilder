@@ -64,16 +64,16 @@ struct ExplorationMethodParser
     {
         std::string str = commandLine.s_explorationMethod;
         boost::algorithm::erase_all(str, " ");
-        std::vector<std::string> explorationCharacteristicStrings;
-        boost::split(explorationCharacteristicStrings, str, boost::is_any_of(":"));
+        std::vector<std::string> explorationDescriptionStrings;
+        boost::split(explorationDescriptionStrings, str, boost::is_any_of(":"));
 
-        std::string name = explorationCharacteristicStrings[0];
+        std::string name = explorationDescriptionStrings[0];
         if (name == "evaluation"){
-            if (explorationCharacteristicStrings.size() < 2)
+            if (explorationDescriptionStrings.size() < 2)
             {
                 throw BadExplorationMethod("net description must be specified; see --help");
             }
-            auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, explorationCharacteristicStrings[1]);
+            auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, explorationDescriptionStrings[1]);
             auto net = std::make_unique<DigitalNetConstruction<NC>>(commandLine.m_dimension, commandLine.m_designParameter, std::move(genValues));
             return std::make_unique<Task::Eval>(std::move(net), std::move(commandLine.m_figure), commandLine.m_verbose);
         }
@@ -84,10 +84,10 @@ struct ExplorationMethodParser
                                                         commandLine.m_verbose);
         }
         else if (name == "random" || name == "random-CBC" || name == "mixed-CBC"){
-            if (explorationCharacteristicStrings.size() < 2){
+            if (explorationDescriptionStrings.size() < 2){
                 throw BadExplorationMethod("nb of random tries required; see --help");
             }
-            unsigned int r = boost::lexical_cast<unsigned int>(explorationCharacteristicStrings[1]);
+            unsigned int r = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[1]);
             if (name == "random")
                 return std::make_unique<Task::RandomSearch<NC>>(commandLine.m_dimension,
                                                         commandLine.m_designParameter,
@@ -106,10 +106,10 @@ struct ExplorationMethodParser
             }
 
             if (name == "mixed-CBC"){
-                if (explorationCharacteristicStrings.size() < 3){
+                if (explorationDescriptionStrings.size() < 3){
                 throw BadExplorationMethod("max exhaustive dimension required; see --help");
                 }
-                unsigned int maxDim = boost::lexical_cast<unsigned int>(explorationCharacteristicStrings[2]);
+                unsigned int maxDim = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[2]);
 
                 return std::make_unique<Task::CBCSearch<NC, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_designParameter,

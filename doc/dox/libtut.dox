@@ -16,7 +16,7 @@
 
 namespace LatBuilder {
 
-/** \page libtut Low-Level API Tutorial
+/** \page libtut Library Tutorial
 
 This tutorial aims at explaining through a series of examples how to use the
 different facilities provided by the Lattice Builder application programming
@@ -36,6 +36,7 @@ The tutorial is divided into the following sections:
     <li> \subpage libtut_filters      </li>
     <li> \subpage libtut_misc           </li>
     <li> \subpage libtut_extending      </li>
+    <li> \subpage libtut_impl </li>
 </ol>
 
 */

@@ -111,30 +111,30 @@ struct FigureParser
 
         // boost::algorithm::erase_all(str, " ");
 
-        std::vector<std::string> figureCharacteristicStrings;
-        boost::split(figureCharacteristicStrings, str, boost::is_any_of("/"));
+        std::vector<std::string> figureDescriptionStrings;
+        boost::split(figureDescriptionStrings, str, boost::is_any_of("/"));
 
-        unsigned int nbParam = (unsigned int) figureCharacteristicStrings.size();
+        unsigned int nbParam = (unsigned int) figureDescriptionStrings.size();
         for (unsigned int i=0; i<nbParam; i++){
             std::vector<std::string> split;
-            boost::split(split, figureCharacteristicStrings[i], boost::is_any_of("="));
+            boost::split(split, figureDescriptionStrings[i], boost::is_any_of("="));
             if (split.size() == 2){
-                figureCharacteristicStrings[i] = split[1];
+                figureDescriptionStrings[i] = split[1];
             }
-            // std::cout << figureCharacteristicStrings[i] << std::endl;
+            // std::cout << figureDescriptionStrings[i] << std::endl;
         }
 
-        if (figureCharacteristicStrings.size()==0)
+        if (figureDescriptionStrings.size()==0)
         {
             throw BadFigure("figure name must be specified; see --help");
         }
 
-        std::string name = figureCharacteristicStrings[0];
+        std::string name = figureDescriptionStrings[0];
 
         Real importance = std::numeric_limits<Real>::infinity(); 
-        if(figureCharacteristicStrings.size()>=2)
+        if(figureDescriptionStrings.size()>=2)
         {
-            importance = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
+            importance = boost::lexical_cast<Real>(figureDescriptionStrings[1]);
         }
 
         if (name == "A-Property"){
@@ -186,7 +186,7 @@ struct FigureParser
             throw BadFigure("norm-type must be specified; see -help.");
         }
 
-        Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[2]);
+        Real normType = boost::lexical_cast<Real>(figureDescriptionStrings[2]);
 
         if (nbParam <=3)
         {
@@ -195,17 +195,15 @@ struct FigureParser
 
         vecWeights.push_back(importance);
 
-        std::string weightString = figureCharacteristicStrings[3];
+        std::string weightString = figureDescriptionStrings[3];
         
         // TODO: comment
         Real weightsPowerScale = 1.0;
-        if (nbParam >= 5) {
-            Real weightPower = boost::lexical_cast<Real>(figureCharacteristicStrings[4]);
-
+        if (commandLine.m_hasWeightPower) {
             if (normType < std::numeric_limits<Real>::infinity())
                 weightsPowerScale = normType;
          // then scale down according to interpretation of input
-            weightsPowerScale /= weightPower;
+            weightsPowerScale /= commandLine.m_weightPower;
         }
 
         std::unique_ptr<LatticeTester::Weights> weights = LatBuilder::Parser::Weights::parse(weightString, weightsPowerScale);

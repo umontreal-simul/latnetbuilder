@@ -38,10 +38,8 @@ The current version of the software is called LatNet Builder, for Lattice & Net 
 - \subpage feats
 - \subpage gui
 - \subpage cmdtut
-- \subpage hightut
 - \subpage libtut
-- \subpage impl
-- \subpage latticetesterNested
+- \subpage latticetester
 
 \section links Links
 

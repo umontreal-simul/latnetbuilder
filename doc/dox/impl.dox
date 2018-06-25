@@ -14,9 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*! \page impl Implementation Notes
+/*! \page libtut_impl Implementation Notes
 
-\section impl_func_args Function Arguments
+\todo
+
+\section libtut_impl_func_args Function Arguments
 
 In Lattice Builder, there are three different types of declarations of function
 arguments:
@@ -41,7 +43,7 @@ void f(T y) { y.modify(); }
 f(T());
 \endcode
 
-\section impl_seq Sequence
+\section libtut_impl_seq Sequence
 
 In multiple situations, Lattice Builder needs to access arrays of values that
 can interchangeably be computed on-the-fly or pre-computed.  The concept of
@@ -81,7 +83,7 @@ Concrete examples are given in the tutorial in sections \ref libtut_genseq,
    Concrete examples are given in the tutorial in section \ref libtut_textstream .
 
 
-\section impl_bridgeseq Bridge Sequence
+\section libtut_impl_bridgeseq Bridge Sequence
 
 The values in a sequence often need to be mapped to other values, possibly of a
 different type.  For that purpose, Lattice Builder introduces the concept of a
@@ -91,7 +93,7 @@ as the sequence it is based on.
 \sa LatBuilder::BridgeSeq
 
 
-\section impl_polymorphism Static Polymorphism
+\section libtut_impl_polymorphism Static Polymorphism
 
 Traditional object-oriented programming makes use of dynamic polymorphism, where
 the exact class of an object is resolved at execution time, dynamically.  It
@@ -130,7 +132,7 @@ resolution.
 
 
 
-\section impl_concepts Concept
+\section libtut_impl_concepts Concept
 
 Concepts in C++ can be thought of as the static-polymorphism counterpart of
 dynamic-polymorphism interfaces.  Like interfaces, concepts can specify
@@ -153,7 +155,7 @@ libtut.
 
 
 
-\section impl_memory Memory Management
+\section libtut_impl_memory Memory Management
 
 In Lattice Builder, when a non-trivial object is no longer needed in its scope
 after it is passed as an argument to a constructor or factory function, it is
@@ -176,7 +178,7 @@ the object ownership has changed.
 
 
 
-\section impl_cpp11 Usage of the C++11 Standard
+\section libtut_impl_cpp11 Usage of the C++11 Standard
 
 Lattice Builder makes uses of the following C++11 features:
 - auto-typed variables
@@ -194,7 +196,7 @@ Lattice Builder makes uses of the following C++11 features:
 
 
 
-\section impl_boost Usage of the Boost C++ Libraries
+\section libtut_impl_boost Usage of the Boost C++ Libraries
 
 The Lattice Builder library depends on the following
 <a href="http://www.boost.org/">Boost libraries</a>:
@@ -220,13 +222,13 @@ others are header-only libraries.
 
 
 
-\section impl_fftw Usage of FFTW
+\section libtut_impl_fftw Usage of FFTW
 
 The fast CBC implementation of Lattice Builder, as well as the computation of
 the \f$R_\alpha\f$ criterion, depends on the
 <a href="http://www.fftw.org/">FFTW library</a>.
 
-\section impl_ntl Usage of NTL
+\section libtut_impl_ntl Usage of NTL
 
 The implementation of polynomials over \f$Z_2\f$ in Lattice Builder, depends on the
 <a href="http://www.shoup.net/ntl/">NTL library</a>.

@@ -32,7 +32,7 @@ namespace lbp = LatBuilder::Parser;
 class BadOutputFormat : public lbp::ParserError
 {
   public:
-    BadOutputFormat(const std::string &message) : lbp::ParserError("cannot interpret \"" + message + "\" as an output format")
+    BadOutputFormat(const std::string &message) : lbp::ParserError("cannot interpret \"" + message + "\" as an output format.")
     {
     }
 };
