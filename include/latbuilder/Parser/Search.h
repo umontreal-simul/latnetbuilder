@@ -45,7 +45,7 @@ public:
    /**
     * Parses a string specifying a construction method.
     *
-    * Example strings: <code>CBC</code>, <code>fast-CBC</code>, <code>random-CBC:30</code>
+    * Example strings: <code>full-CBC</code>, <code>fast-CBC</code>, <code>random-CBC:30</code>
     *
     * \return A pointer to a Search instance.
     */
@@ -89,7 +89,7 @@ public:
 
       auto strSplit = splitPair<std::string, std::string>(str, ':');
 
-      if (str == "CBC") {
+      if (str == "full-CBC") {
          func(Task::cbc(std::move(storage), dimension, std::move(figure)), std::forward<ARGS>(args)...);
          return;
       }
@@ -123,7 +123,7 @@ public:
       }
       catch (boost::bad_lexical_cast&) {}
 
-      if (strSplit.first == "explicit") {
+      if (strSplit.first == "evaluation") {
          auto genVec = LatticeParametersParseHelper<LR>::ParseGeneratingVector(strSplit.second);
          func(Task::eval(std::move(storage), dimension, std::move(figure), genVec), std::forward<ARGS>(args)...);
          return;

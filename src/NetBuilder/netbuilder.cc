@@ -99,28 +99,14 @@ makeOptionsDescription()
     "(required) net dimension\n")
     ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n")
-  //  ("weights,w", po::value<std::vector<std::string>>()->multitoken(),
-  //   "(required) whitespace-separated list of weights specifications (the actual weights are the sum of these); possible values:\n"
-  //   "  product:<default>:<coord1-weight>[,...]\n"
-  //   "  order-dependent:<default>:<order-1-weight>,...,<order-s-weight>\n"
-  //   "  POD:<default>:<order-1-weight>,...,<order-s-weight>:<default>:<coord1-weight>[,...]\n"
-  //   "  projection-dependent:<proj-1>:<weight-1>[:<proj-2>:<weight-2>[:...]]\n"
-  //   "    where <proj-n> is a comma-separated list of coordinates\n"
-  //   "  file:\"<file>\"\n"
-  //   "    line format in <file>:\n"
-  //   "      <i1>,<i2>,...: <weight>\n"
-  //   "      order <x>: <weight>\n"
-  //   "      default: <weight>\n"
-  //   "    if <file> is `-' data is read from standard input\n")
    ("weights-power,o", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
     ("combiner,b", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
-    "  level:{<level>|max}\n"
-    "  JoeKuoD6\n")
-    ("figure-combiner,f", po::value<std::string>(),
+    "  level:{<level>|max}\n")
+    ("figure-combiner,B", po::value<std::string>()->default_value("max"),
     "combiner for combined figure of merit; possible values: \n"
     "  sum\n"
     "  max (default)\n")

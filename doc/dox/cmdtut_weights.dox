@@ -14,43 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page weights Specifying the weights
-
-\todo build page
-
-Most figures of merit implemented in LatNet Builder can be parametrized by weights.
-Weights are used to put more importance on specific projections of the point set. Various types
-of weights have been proposed. LatNet Builder implements the following:
-- projection-dependent weights
-  \n With projection-dependent weights, the weight associated to the projection onto
-  the coordinates in \f$\mathfrak u\f$ can be set to any non-negative constant
-  \f$\gamma_{\mathfrak u}\f$.
-- order-dependent weights
-  \n With order-dependent weights, the weight associated to the projection onto the
-  coordinates in \f$\mathfrak u\f$ is
-  \f[
-    \gamma_{\mathfrak u} = \Gamma_{|\mathfrak u|}.
-  \f]
-- product weights
-  \n With product weights, the weight associated to the projection onto the
-  coordinates in \f$\mathfrak u\f$ is
-  \f[
-    \gamma_{\mathfrak u} = \prod_{j \in \mathfrak u} \gamma_j.
-  \f]
-
-- product and order dependent weights.
-  \n With product and order-dependent (POD) weights, the weight associated to the
-  projection onto the coordinates in \f$\mathfrak u\f$ is
-  \f[
-    \gamma_{\mathfrak u} =
-    \Gamma_{|\mathfrak u|}
-    \prod_{j \in \mathfrak u} \gamma_j.
-  \f]
+/** \page cmdtut_weights Specifying the weights
 
 In the Command-Line Tutorial, the <code><var><weights-description></var></code> tag can be replaced by any of the following specifications.
-Weights specification depend on their type.
+Weights specification depends on their type.
 
-\subsubsection weights_projdep Projection-Dependent Weights
+\section cmdtut_weights_projdep Projection-Dependent Weights
 
 The projection-dependent weights cannot be specified directly on the command
 line.  They have to be written to a text file, say <tt>weights.txt</tt>, with a
@@ -80,7 +49,6 @@ The first colon-separated token indicates the type (projection-dependent) of
 weights, and the second one, the name of the file from which the weights must be
 read.
 
-\todo change weights power description + position
 Note that the weights in the above examples are interpreted as square weights
 because, by default, the numerical values read by LatNet Builder are
 interpreted as the constants \f$\gamma_{\mathfrak u}^p\f$, i.e. the weights
@@ -95,7 +63,7 @@ option
 must be added to the command line.
 
 
-\subsubsection weights_orderdep Order-Dependent Weights
+\section cmdtut_weights_orderdep Order-Dependent Weights
 
 In that case, the value of the <code><var><weights-description></var></code> tag consists of three 
 colon-separated tokens: the first is the type of weights (order-dependent
@@ -116,7 +84,7 @@ some \f$j\f$.
   \endverbatim
 
 
-\subsubsection weights_product Product Weights
+\section cmdtut_weights_product Product Weights
 In that case, the value of the <code><var><weights-description></var></code> tag consists of three 
 colon-separated tokens: the first is the type of weights (product
 weights); the second is the default weight assigned to coordinates for
@@ -136,13 +104,13 @@ some \f$j\f$.
   \endverbatim
 
 
-\subsubsection weights_pod POD Weights
+\section cmdtut_weights_pod POD Weights
 
 In that case, the value of the <code><var><weights-description></var></code> tag consists of five 
 colon-separated tokens: the first is the type of weights (POD), the next two
 specify the \f$\Gamma_j\f$'s as in \ref
-weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
-as in \ref weights_product.
+cmdtut_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
+as in \ref cmdtut_weights_product.
 
 - POD weights with \f$\Gamma_1^2 = 1.0\f$, \f$\Gamma_2^2 = 0.7\f$,
   \f$\Gamma_3^2 = 0.3\f$ and \f$\Gamma_\ell^2 = 0.1\f$ for all \f$\ell \geq 4\f$,

@@ -81,12 +81,12 @@ makeOptionsDescription()
    "  polynomial lattice rules: polynomial : list of coefficients : 1011 stands for 1 + X^2 + X^3\n")
    ("exploration-method,E", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
-    "  explicit:<a1>,...,<as>\n" // TODO change name to evaluation (and in python-wrapper)
+    "  evaluation:<a1>,...,<as>\n" // TODO change name to evaluation (and in python-wrapper)
     "  exhaustive\n"
     "  random:<r>\n"
     "  Korobov\n"
     "  random-Korobov:<r>\n"
-    "  CBC\n"
+    "  full-CBC\n"
     "  random-CBC:<r>\n"
     "  fast-CBC\n"
     "  extend:<num-points>:<a1>,...,<as>\n"

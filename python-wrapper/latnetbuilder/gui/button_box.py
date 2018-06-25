@@ -40,7 +40,7 @@ def on_click_search(b, gui):
             gui.progress_bars.progress_bar_dim.layout.display = 'flex'
         else:
             gui.progress_bars.progress_bar_dim.layout.display = 'none'
-        if 'explicit' not in s.exploration_method:
+        if 'evaluation' not in s.exploration_method:
             gui.progress_bars.progress_bar_nets.value = 0
             gui.progress_bars.progress_bar_nets.layout.display = 'flex'
 

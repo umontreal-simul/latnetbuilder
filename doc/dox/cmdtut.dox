@@ -28,18 +28,18 @@ full path to the executable program, for example
 Alternatively, the \ref gui can be used to construct a command line, to
 invoke the command-line tool and to see the results.
 
-- \subpage cmdtut_lat
-- \subpage cmdtut_net
-- \subpage cmdtut_poly
-
-The switch between these two types of point sets can be made using the <code>--set-type</code> option which supports
-two values : <code> lattice </code> and <code> net </code>.
-
 The following typesetting semantics is adopted:
 - <code>verbatim</code> for text to be typed as is;
 - <code><var>arg</var></code> for text to be substituted;
 - when a command is broken into multiple lines, a trailing backslash (\\)
   indicates that the command is continued on the next line.
 
+This tutorial is divided in three parts:
+<ol>
+    <li> \subpage cmdtut_recipes    </li>
+    <li> \subpage cmdtut_summary    </li>
+    <li> \subpage cmdtut_spec    </li>
+</ol>
 */
+
 vim: ft=doxygen spelllang=en spell

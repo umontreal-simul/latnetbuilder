@@ -1,0 +1,134 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_recipes Quick recipes
+
+In this section, we present basic examples which we use to introduce the
+different command-line options. 
+
+Two types of point sets are supported by the software: rank-1 lattices and digital nets in base 2.
+The switch between these two types of point sets can be operated using the <code>--set-type</code> option which supports
+two values : <code> lattice </code> and <code> net </code>. The Command-Line Interface do not differ a lot from one type of points
+to another but for sake of clarity, these recipes are divided into two parts, each corresponding to a type of point sets:
+- \subpage cmdtut_recipes_lat
+- \subpage cmdtut_recipes_net
+
+\section cmdtut_recipes_lat Rank-1 lattice rules
+
+Consider the following basic example:
+\verbatim
+./latnet \ 
+--set-type lattice \
+ --construction ordinary \
+ --multilevel false \
+ --modulus 2053 \
+ --dimension 5 \
+ --exploration-method CBC  \
+ --figure-of-merit CU:P2 \
+ --weights product:0.7
+\endverbatim
+
+The order in which the arguments are specified is not important.
+Some arguments consists of several tokens, separated by a colon.
+- The argument <code>--set-type lattice </code> indicates that we seek for a rank-1 lattice rule.
+- The argument <code>\--construction ordinary</code> indicates that we seek an ordinary
+  (in contrast to polynomial) rank-1 lattice rule.
+- The argument <code>\--multilevel false</code> indicates that we seek a
+  simple (in contrast to embedded) rank-1 lattice rule.
+
+- The argument <code>\--modulus 2053</code> indicates that we seek a lattice rule
+  with modulus 2053.
+
+- The argument <code>\--dimension 5</code> specifies that we seek a lattice point
+  set of dimension 5. 
+
+- The argument <code>\--exploration-method CBC</code> specifies that the CBC method
+  should be used.  Specifying other exploration methods is explained in
+  \ref cmdtut_exploration.
+
+- The argument <code>\--figure-of-merit CU:P2</code> consists of two colon-separated
+  tokens.
+  It tells LatNet Builder to use the specialized coordinate-uniform
+  evaluation algorithm, whence the first \c CU token,  for the \f$\mathcal P_2\f$
+  discrepancy. The list of available figures of merit can be found in \ref feats_figures 
+  and the way to specify them in \ref cmdtut_figures. 
+
+- The argument <code>\--weights product:0.7</code> assigns product weights to the
+  figure of merit,  with the same weight (0.7) for every coordinate.  Specifying
+  different types of weights is explained in \ref
+  cmdtut_weights.
+
+To summarize, this command executes a CBC method for an ordinary, simple lattice
+with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
+of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with product weights
+such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
+
+Option names come in long and short forms.  For example, the following has the
+same effect as the previous example:
+\verbatim
+./latnet -T lattice -c ordinary -m false -s 2053 -d 5 -E CBC -M CU:P2 -w product:0.7
+\endverbatim
+The long forms are favored in this tutorial to make the examples
+self-explanatory.
+For the sake of conciseness, in the derived examples, we only show the
+command-line parameters that need to be changed, or added; other parameters
+should be left as in the basic example.
+
+\section cmdtut_recipes_net Digital nets
+
+Consider the following basic example:
+\verbatim
+./latnet \ 
+--set-type net \
+ --construction sobol \
+ --multilevel false \
+ --size 2^10 \
+ --dimension 20 \
+ --exploration-method random:1000  \
+ --add-figure CU:P2/1/2/order-dependent:0:1,2,3
+\endverbatim
+
+The order in which the arguments are specified is not important.
+Some arguments consists of several tokens, separated by a colon.
+- The argument <code>--set-type net </code> indicates that we seek for a digital net.
+- The argument <code>\--construction sobol</code> indicates that we seek a Sobol net.
+- The argument <code>\--multilevel false</code> indicates that we seek a
+  unilevel point set.
+
+- The argument <code>\--size 2^10</code> indicates that we seek digital net with \f$2^10 = 1024 \f$ points.
+
+- The argument <code>\--dimension 10</code> specifies that we seek a point
+  set of dimension 20. 
+
+- The argument <code>\--exploration-method random:1000</code> specifies that the random exploration method (explore 1000 nets)
+  should be used.
+
+- The argument <code>\--add-figure CU:P2/1/2/order-dependent:0:1,2,3</code> consists of four slash-separated
+  tokens. It telles LatNet Builder to use the following figure of merit. 
+  The token <code>CU:P2</code> indicates to use the coordinate-uniform evaluation algorithm for the \f$P_2\f$ criterion.
+  The token <code>1</code> indicates the importance of the figure of merit. 
+  The token <code>2</code> indicates that we use an \f$\ell_2\f$ norm for the figure of merit. 
+  THe token <code>order-dependent:0:0,2,1</code> indicates that the weight associated with the figure of merit are order-dependent weights
+  with weights 0, 2 and 1 on 1-dimensional, 2 dimensional and 3-dimensional projections respectively.
+
+To summarize, this command executes a random method with 1000 tries for a digital, univelevel, net
+with 1024 points in 20 dimensions, using the weighted \f$\mathcal P_2\f$ figure
+of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with order-dependent weights
+such that \f$\gamma_2^2 = 2\f$, \f$\gamma_3^2 = 1\f$ and \f$\gamma_k^2 = 0\f$  for all other \f$k\f$.
+
+*/
+
+vim: ft=doxygen spelllang=en spell
