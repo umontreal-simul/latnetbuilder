@@ -26,95 +26,31 @@ computed as follows:
 - optionally filters are applied to this combined value to produce a final
   compound merit value.
 
-This mechanism can be enabled in LatNet Builder by changing the value of the <code> --multilevel </code> option with:
-\verbatim
---multilevel true
-\endverbatim
+The possible combiners are the sum and the max of the merit values.
 
-- To build embedded ordinary lattices with CBC construction in dimension 5 with
-  \f$n=2^m\f$ points with \f$m=1,\dots,16\f$ using the maximum value of the
-  spectral merit across all levels, with the same weight for all projections:
-  \verbatim
-  latbuilder \
-    --construction ordinary \
-    --multilevel true \
-    --modulus "2^16" \
-    --dimension 5 \
-    --construction CBC \
-    --figure-of-merit spectral \
-    --weights product:1.0 \
-    --combiner max
-  \endverbatim
-  The modulus of the lattice with the largest number of points can be specified
-  with the <code>\--modulus b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
-  simply with <code>\--modulus 65536</code>, where \f$65,536 = 2^{16}\f$.
-  The spectral merit is evaluated for each nested level, and the maximum value
-  across all level is selected as the compound merit value, as specified with the
-  argument <code>\--combiner max</code>.
-  
-- To build embedded ordinary lattices with fast CBC construction in dimension 10 with
-  \f$n=2^m\f$ points with \f$m=8,\dots,16\f$, using a weighted sum of the
-  normalized values of the \f$\mathcal P_2\f$ figure of merit with product
-  weights, and rejecting any candidate lattice that has such an individual
-  normalized merit value larger than unity, as proposed in \cite vDIC08c , with
-  the even weights across all levels:
-  \verbatim
-  latbuilder \
-    --construction ordinary \
-    --multilevel true \
-    --modulus "2^16" \
-    --dimension 10 \
-    --construction fast-CBC \
-    --figure-of-merit CU:P2 \
-    --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0 \
-    --weights product:0.1 \
-    --combiner sum
-  \endverbatim
-  The <code>\--multilevel-filters</code> argument specifies filters that must be
-  applied individually to each embedded level.
-  The first filter is a normalization using the weighted bound on the
-  \f$\mathcal P_2\f$ figure of merit as derived in \cite vDIC08c , with even
-  weights across all levels from \f$m=8,\dots,16\f$, and no weight for other
-  levels.
-  If regular filters were also specified with the <code>\--filters</code>
-  argument, they would apply to the combined merit value.
-  Here the argument <code>\--combiner sum</code> indicates that the normalized
-  merit values should be added to produce the combined merit value.
+Multilevel point sets are handled differently for lattices and for nets. 
+Multilevel lattices correspond to embedded lattices whereas multilevel nets correspond
+to finite digital sequence.
 
-- To build embedded polynomial lattices with CBC construction in dimension 5 with
-  \f$P(z)=z^m\f$ with \f$m=1,\dots,8\f$ using the maximum value of the
-  \f$\mathcal P_{2,PLR}\f$  merit across all levels, with the same weight for all projections:
-  \verbatim
-  latbuilder \
-    --construction polynomial \
-    --multilevel true \
-    --modulus "01^8" \
-    --dimension 5 \
-    --construction CBC \
-    --figure-of-merit CU:P2 \
-    --weights product:1.0 \
-    --combiner max
-  \endverbatim
-  The modulus of the lattice with the largest number of points can be specified
-  with the <code>\--modulus b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
-  simply with <code>\--modulus 000000001</code>, where 00000001 represents \f$z^{8}\f$.
-  The \f$\mathcal P_{2,PLR}\f$ merit is evaluated for each nested level, and the maximum value
-  across all level is selected as the compound merit value, as specified with the
-  argument <code>\--combiner max</code>.
+\section feats_multilevel_lat Embedded lattices
 
+\todo define embedded lattices
 
+\section feats_multilevel_net Multilevel digital nets
 
-If no combiner is explicitly specified, LatNet Builder defaults to selecting
-the merit value of the maximum level (highest value of \f$m\f$), which is
-equivalent to constructing simple lattices.
-This combiner can also be explicitly selected with:
-\verbatim
---combiner level:max
-\endverbatim
-It is also possible to select any given level, say \f$m=8\f$, with
-\verbatim
---combiner level:8
-\endverbatim
+A digital net is uniquely defined by its generating matrices. The number of points in a digital net
+equals \f$ 2^k \f$ where \f$k\f$ is the number of columns of its generating matrices. 
+Replacing the finite matrices which define a digital net with infinite matrices, one can obtain an infinite point set called a digital sequence.
+Conversely, given infinite matrices, one can restrict its size to obtain a digital net. 
+By further restricting the size of the matrix, one obtain another digital net which is included in the previous one. 
+More generally, given generating matrices, one can obtain nested digital nets by considering successively 
+their upper-left submatrices. From nested generating matrices we thus obtain a multilevel digital net 
+which is in fact a finite digital sequence. Taking nested generating matrices is not sufficient to have an increasing number of distinct points. 
+The number of points doubles when the size increases by one
+only if all the nested generating matrices are full-rank.
 
+<b>Multilevel digital nets are only available with Sobol' construction.</b>
+Due to the previous constraint, searching multilevel digital nets requires to use the Sobol' construction
+as it is the only construction that produces nested full-rank generating matrices.
 */
 vim: ft=doxygen spelllang=en spell

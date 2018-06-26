@@ -16,9 +16,9 @@
 
 /** \page cmdtut_spec Specification details
 
-Details on how to specify all the features presented in this section can be found on the following pages:
+Details on how to specify all the features presented in \ref feats can be found on the following pages:
 
-- \subpage cmdtut_types
+- \subpage cmdtut_pointsets
 - \subpage cmdtut_figures
 - \subpage cmdtut_weights
 - \subpage cmdtut_exploration

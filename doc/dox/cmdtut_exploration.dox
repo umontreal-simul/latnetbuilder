@@ -16,5 +16,8 @@
 
 /** \page cmdtut_exploration Specifying the exploration method
 
+All the details on how to specify the exploration method can be found in the description
+of <code>--exploration-method</code> in \ref cmdtut_summary.
+
 */
 vim: ft=doxygen spelllang=en spell

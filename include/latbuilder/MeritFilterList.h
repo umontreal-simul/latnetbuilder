@@ -170,7 +170,7 @@ extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingTyp
  * sequences of merit values but need to access the original sequence by calling
  * the member function \c base() would not know in advance how many times to
  * call \c base() to trace back the original sequence.  These are the main
- * reasons why there are filters in Lattice Builder.
+ * reasons why there are filters in LatBuilder.
  */
 template <LatticeType LR, EmbeddingType ET>
 class MeritFilterList : public MeritFilterListPolicy<LR, ET> {

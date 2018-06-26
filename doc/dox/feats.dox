@@ -22,9 +22,9 @@ and randomized quasi Monte-Carlo methods using state-of-the-art techniques.
 
 A previous version of this software, called Lattice Builder, only handled rank-1 lattices. Rank-1 polynomial lattices, viewed as rank-1 lattices in the
 Laurent series space, were later added to Lattice Builder. In the current version, the software can also handle digital nets in base 2. 
-This new piece of software is called Net Builder.
+This new piece of software is called NetBuilder.
 
-As polynomial lattices can also be viewed as digital nets in base 2, such point sets can also be constructed by Net Builder. Moreover, it turns out that viewing the polynomial 
+As polynomial lattices can also be viewed as digital nets in base 2, such point sets can also be constructed by NetBuilder. Moreover, it turns out that viewing the polynomial 
 lattices as digital nets is in most cases much more efficient than using the rank-1 lattice approach. \ref feats_poly specifying which approach should be used in which case are available.
 
 All in all, the types of point sets handled by LatNetBuilder include rank-1 (ordinary and polynomial) lattices and digital nets (Sobol' nets, polynomial lattice rules and nets defined by explicit generating matrices.)

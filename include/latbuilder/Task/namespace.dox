@@ -1,6 +1,6 @@
 namespace LatBuilder {
 /**
- * Standard tasks that can be performed by Lattice Builder.
+ * Standard tasks that can be performed by LatBuilder.
  */
 namespace Task {
 }}

@@ -1,0 +1,118 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_pointsets Specifying point sets
+
+\section cmdtut_pointsets_types Choosing the type of point sets
+
+LatNet Builder can handle two main types of point sets : 
+- rank-1 lattices;
+- digital nets in base 2.
+
+The switch between these two types of points can be operated using the option
+<code>--set-type</code> which can take the following values:
+    - <code>lattice</code>
+      to search for rank-1 lattices; or
+    - <code>net</code>
+      to search for digital nets.
+
+\section cmdtut_pointsets_lat Specifying rank-1 lattices
+
+Two types of rank-1 lattices are supporyted by LatBuilder:
+- ordinary rank-1 lattices;
+- polynomial rank-1 lattices.
+
+The switch between these two types of lattices can be operated using the option
+<code>--construction</code> which can take the following values:
+    - <code>ordinary</code>
+      to search for rank-1 lattices; or
+    - <code>polynomial</code>
+      to search for digital nets.
+
+To specify a specific rank-1 lattice, for instance to evalute its merit value or to extend it,
+one must specify its generating vector. LatBuilder uses the following convention: a generating vector is described
+by a comma-separated list of integers or polynomials, depending on whether the lattice is ordinary or polynomial.
+
+Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by
+<code>101001</code>. A polynomial generating vector is a comma-separated list of such polynomial specificiations. 
+In the case of polynomial lattices, the <code>--modulus</code> option is also specified this way, with the additionnal possibility to
+raise the polynomial to an integer power. For instance <code>--modulus 01^8</code> tells LatNet Builder that the modulus of the lattice is
+\f$z^8\f$.
+
+In the Command-Line Tutorial, every occurence of <code><var>genVec</var></code> or <code><var><point-set-description></var></code> can be 
+replaced by such a list.
+For instance to specify an ordinary lattice with generating vector \f$(1, 2, 3, 5, 7, 11)\f$, replace <code><var>genVec</var></code> with
+<code>1,2,3,5,7,11</code>.
+
+\section cmdtut_pointsets_net Specifying digital nets
+
+Three types of rank-1 lattices are supported by NetBuilder:
+- Sobol' nets;
+- polynomial digital nets;
+- digital nets with explicit generating matrices.
+
+The switch between these two types of lattices can be operated using the option
+<code>--construction</code> which can take the following values:
+    - <code>sobol</code>
+      to search for Sobol' nets;
+    - <code>polynomial:<var>modulus</var></code>
+      to search for polynomial digital nets; or
+    - <code>explicit:<var>size</var></code>
+      to search for with digital nets with explicit generating matrices.
+
+Note the <code><var>modulus</var></code> and <code><var>size</var></code> tokens. They are used to 
+specify additionnal information concerning the construction method:
+- <code><var>modulus</var></code> stands for
+the modulus of the polynomial digital nets and can be replaced by any polynomial whose we note <code><var>k</var></code> the degree.
+-  <code><var>size</var></code> stands for the size of the generating matrices and can be replaced by <code><var>k</var></code>
+to have square matrices of size <code><var>k</var></code> of by <code><var>r</var>,<var>k</var></code> to have matrices with
+<code><var>r</var></code> rows and <code><var>k</var></code> columns.
+
+In any case,  <code><var>k</var></code> should be compatible with the specified size of the nets
+(the option <code>--size 2^<var>k</var></code> must be set).
+
+Specifying a specific digital net depends on its construction method. In the Command-Line Tutorial, any occurence of
+<code><var><point-set-description></var></code> or <code><var><net-description></var></code> can be replaced as follows:
+
+- for Sobol' nets:
+  a list of direction numbers. Direction numbers are specified as a slash-separated list of comma-separated lists of 
+  integers. Each comma-separated list correspond to a coordinate. Details on direction numbers can be find in \ref feats_types.
+  Note that a dummy direction number equal to zero must be specified for the first coordinate. 
+- for polynomial digital nets:
+  a generating vector. See <code><var>genVect</var></code> in \ref cmdtut_pointsets_lat.
+- for explicit digital nets. A slash separated list of comma-seperated lists of rows. Each comma-separated list
+  correspond to a generating matrix. The rows are specified as a binary sequence without separators. For instance, 
+  <code>001,010,111/110,001,111/100,110,001</code> stands for the following generating matrices :
+
+  \f[ 
+    \begin{pmatrix}
+      0 & 0 & 1 \\
+      0 & 1 & 0 \\
+      1 & 1 & 1 
+    \end{pmatrix},
+    \begin{pmatrix}
+      1 & 1 & 0 \\
+      0 & 0 & 1 \\
+      1 & 1 & 1 
+    \end{pmatrix},
+    \begin{pmatrix}
+      1 & 0 & 0 \\
+      1 & 1 & 0 \\
+      0 & 0 & 1 
+    \end{pmatrix}.
+  \f]
+*/
+vim: ft=doxygen spelllang=en spell

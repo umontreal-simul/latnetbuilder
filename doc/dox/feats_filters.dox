@@ -23,7 +23,7 @@ figure of merit, or to reject bad values. Various types of filters exist:
 
 - Normalizations using a bound on the figure of merit,
 
-- Normalizations related to Koksma-Hlawka inequalities,
+- Projection-dependent normalizations related to Koksma-Hlawka inequalities,
 
 - Low-pass filters to reject point sets having a merit value larger than a threshold
 (should be used with the previous type of normalization).

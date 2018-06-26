@@ -26,6 +26,8 @@ to another but for sake of clarity, these recipes are divided into two parts, ea
 - \subpage cmdtut_recipes_lat
 - \subpage cmdtut_recipes_net
 
+Additional details concerning the command-line options can be found in \ref cmdtut_summary and \ref cmdtut_spec.
+
 \section cmdtut_recipes_lat Rank-1 lattice rules
 
 Consider the following basic example:
@@ -36,14 +38,14 @@ Consider the following basic example:
  --multilevel false \
  --modulus 2053 \
  --dimension 5 \
- --exploration-method CBC  \
+ --exploration-method full-CBC  \
  --figure-of-merit CU:P2 \
  --weights product:0.7
 \endverbatim
 
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
-- The argument <code>--set-type lattice </code> indicates that we seek for a rank-1 lattice rule.
+- The argument <code>--set-type lattice </code> indicates that we seek a rank-1 lattice rule.
 - The argument <code>\--construction ordinary</code> indicates that we seek an ordinary
   (in contrast to polynomial) rank-1 lattice rule.
 - The argument <code>\--multilevel false</code> indicates that we seek a
@@ -55,7 +57,7 @@ Some arguments consists of several tokens, separated by a colon.
 - The argument <code>\--dimension 5</code> specifies that we seek a lattice point
   set of dimension 5. 
 
-- The argument <code>\--exploration-method CBC</code> specifies that the CBC method
+- The argument <code>\--exploration-method full-CBC</code> specifies that the CBC method
   should be used.  Specifying other exploration methods is explained in
   \ref cmdtut_exploration.
 
@@ -83,9 +85,6 @@ same effect as the previous example:
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
-For the sake of conciseness, in the derived examples, we only show the
-command-line parameters that need to be changed, or added; other parameters
-should be left as in the basic example.
 
 \section cmdtut_recipes_net Digital nets
 
@@ -103,7 +102,7 @@ Consider the following basic example:
 
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
-- The argument <code>--set-type net </code> indicates that we seek for a digital net.
+- The argument <code>--set-type net </code> indicates that we seek a digital net.
 - The argument <code>\--construction sobol</code> indicates that we seek a Sobol net.
 - The argument <code>\--multilevel false</code> indicates that we seek a
   unilevel point set.

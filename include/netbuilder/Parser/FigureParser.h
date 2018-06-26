@@ -197,7 +197,7 @@ struct FigureParser
 
         std::string weightString = figureDescriptionStrings[3];
         
-        // TODO: comment
+        // interpretation of weights depends on the norm-type and be changed with option --weight-power
         Real weightsPowerScale = 1.0;
         if (commandLine.m_hasWeightPower) {
             if (normType < std::numeric_limits<Real>::infinity())

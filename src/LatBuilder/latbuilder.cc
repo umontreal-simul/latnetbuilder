@@ -65,7 +65,7 @@ makeOptionsDescription()
    "specify the verbosity of the program\n")
   //  ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
    ("construction,c", po::value<std::string>()->default_value("ordinary"),
-   "lattice; possible values:\n"
+   "lattice construction; possible values:\n"
    "  ordinary (default)\n"
    "  polynomial\n")
    ("multilevel,m", po::value<std::string>()->default_value("false"),
