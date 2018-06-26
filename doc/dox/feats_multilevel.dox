@@ -41,11 +41,14 @@ to finite digital sequence.
 A digital net is uniquely defined by its generating matrices. The number of points in a digital net
 equals \f$ 2^k \f$ where \f$k\f$ is the number of columns of its generating matrices. 
 Replacing the finite matrices which define a digital net with infinite matrices, one can obtain an infinite point set called a digital sequence.
+
 Conversely, given infinite matrices, one can restrict its size to obtain a digital net. 
 By further restricting the size of the matrix, one obtain another digital net which is included in the previous one. 
 More generally, given generating matrices, one can obtain nested digital nets by considering successively 
 their upper-left submatrices. From nested generating matrices we thus obtain a multilevel digital net 
-which is in fact a finite digital sequence. Taking nested generating matrices is not sufficient to have an increasing number of distinct points. 
+which is in fact a finite digital sequence. 
+
+However, taking nested generating matrices is not sufficient to have an increasing number of distinct points. 
 The number of points doubles when the size increases by one
 only if all the nested generating matrices are full-rank.
 

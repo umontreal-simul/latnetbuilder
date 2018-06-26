@@ -16,7 +16,15 @@
 
 /** \page feats_figures Figures of merit
 
-\todo build page
+Figures of merit are the quality measures used to evaluate point sets. Figures of merit are most often derived
+from Kolsma-Hlakka inequalities: the merit value somehow bounds the integration error.
+
+LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them
+can be parametrized by a norm-type and a weights. <b>Note that when a norm-type parameter \f$ q \f$ is used, the figure of merit actually computed
+by LatNet Builder is not the \f$L_q\f$ norm but the \f$L_q\f$ norm raised to power \f$ q \f$.</b> \todo check if this is true ?
+
+- \subpage feats_figures_lat
+- \subpage feats_figures_net
 
 */
 vim: ft=doxygen spelllang=en spell

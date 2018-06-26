@@ -115,7 +115,7 @@ To build embedded polynomial lattices with CBC construction in dimension 5 with
 
 \section cmdtut_multilevel_net Constructing multilevel digital nets
 
-Recall that multilevel digital nets are only available with Sobol' construction (<code> --construction sobol</code>).
+<b>Recall that multilevel digital nets are only available with Sobol' construction (<code> --construction sobol</code>)</b>.
 
 To build Sobol' digital nets with the random CBC method with 100 random samples for each coordinates with
 \f$2^1\f$ to \f$2^{20}\f$ points using the maximum value fo the projection-dependent t-value merit 

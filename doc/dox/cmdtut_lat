@@ -87,7 +87,7 @@
 - The \f$\mathcal R\f$ criterion, using a
   coordinate-uniform evaluation algorithm:
   \verbatim
-    --figure-of-merit CU:R
+    --figure-of-merit CU:R1
   \endverbatim
 
 
