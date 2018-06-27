@@ -124,7 +124,7 @@ namespace NetBuilder {
         reg.push_back(std::move(newDirNum));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam)
     {
         unsigned int m  = nCols(designParam);
         Dimension coord = genValue.first;
@@ -161,7 +161,6 @@ namespace NetBuilder {
             makeIteration(*tmp, reg, mask, k);
             ++k;
         }
-        computationData = std::make_shared<GeneratingMatrixComputationData>(k, std::move(mask), std::move(reg));
         return tmp;
     }
 
@@ -338,42 +337,6 @@ namespace NetBuilder {
             seqs.push_back(genValueSpaceCoord(coord, designParameter));
         }
         return GenValueSpaceSeq(seqs);
-    }
-
-    void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
-            unsigned int nRows,
-            unsigned int nCols,
-            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData)
-    {
-        unsigned int s = (unsigned int) genMats.size();
-        for(unsigned int k = 0; k < s; ++k)
-        {
-            if (nCols > genMats[k]->nCols())
-            {
-                unsigned int oldNCols = genMats[k]->nCols();
-                genMats[k]->resize(nRows,nCols);
-                if(k==0)
-                {
-                    {
-                        for(unsigned int i = oldNCols; i < nCols; ++i)
-                        {
-                            genMats[k]->flip(i,i);
-                        }
-                    }
-                }
-                else
-                {
-                    unsigned int col = std::get<0>(*computationData[k]);
-                    while (col<= nCols)
-                    {
-                        makeIteration(*genMats[k],std::get<2>(*computationData[k]),std::get<1>(*computationData[k]),col);
-                        ++col;
-                    }
-                    std::get<0>(*computationData[k]) = col;
-                }
-            }
-        }
     }
 
     std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)

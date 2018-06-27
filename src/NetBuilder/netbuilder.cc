@@ -115,8 +115,7 @@ makeOptionsDescription()
     "Syntax pattern:\n"
     " \n" // TODO
     "where name can take the following values:\n"
-    "resolution-gap, t-value, A-Property, A'-Property and \n"
-    "P<alpha> with the optional \"CU:\" prefix to switch to the coordinate-uniform evaluation algorithm\n")
+    "resolution-gap, t-value,  and CU:P2\n")
   //  ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
   //   "whitespace-separated list of filters for merit values; possible values:\n"
   //   "  norm:P<alpha>-{SL10|DPW08}\n"

@@ -35,7 +35,6 @@
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
-#include "netbuilder/FigureOfMerit/UniformityProperties.h"
 #include "netbuilder/FigureOfMerit/BitEquidistribution.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
@@ -135,31 +134,6 @@ struct FigureParser
         if(figureDescriptionStrings.size()>=2)
         {
             importance = boost::lexical_cast<Real>(figureDescriptionStrings[1]);
-        }
-
-        if (name == "A-Property"){
-            if (NetConstructionTraits<NC>::isSequenceViewable)
-            {
-                vecFigures.push_back(std::make_unique<FigureOfMerit::AProperty>(importance));
-                vecWeights.push_back(1);
-                return;
-            }
-            else
-            {
-                throw BadFigure("A-Property not compatible with net construction.");
-            }
-        }
-        if (name == "A'-Property"){
-            if (NetConstructionTraits<NC>::isSequenceViewable)
-            {
-                vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>(importance));
-                vecWeights.push_back(1);
-                return;
-            }
-            else
-            {
-                throw BadFigure("A'-Property not compatible with net construction.");
-            }
         }
 
         std::vector<std::string> nameParsing;

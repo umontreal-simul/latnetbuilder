@@ -37,7 +37,7 @@ namespace NetBuilder {
 
     unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(const DesignParameter& designParameter) {return (unsigned int) designParameter.second; }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParameter, std::shared_ptr<GeneratingMatrixComputationData>& computationData)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParameter)
     {
         GeneratingMatrix* genMat = new GeneratingMatrix(genValue);
         genMat->resize(nRows(designParameter),nCols(designParameter));

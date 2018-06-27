@@ -48,7 +48,6 @@ namespace NetBuilder {
  * \n the following types:
  *  - \c GenValue: type of the value required to construct a generating matrix (specific to a coordinate)
  *  - \c DesignParameter: type of the parameter used to construct a net (shared by all coordinates)
- *  - \c GeneratingMatrixComputationData: type of the data stored when computing a generating matrix
  * \n the following static variables:
  *  - \c defaultDesignParameter: a default design parameter
  *  - \c isSequenceViewable: a bool indicating whether the net can be viewed as a sequence
@@ -56,8 +55,8 @@ namespace NetBuilder {
  *  - <CODE> static \c bool \c checkGenValue(const GenValue& genValue) </CODE>: checks whether a generating value is correct
  *  - <CODE> static \c unsigned int \c nRows(const GenValue& genValue) </CODE>: computes the number of rows associated to the design parameter
  *  - <CODE> static \c unsigned int \c nCols(const GenValue& genValue) </CODE>: computes the number of columns associated to the design parameter
- *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, DesignParameter designParameter, std::shared_ptr<GeneratingMatrixComputationData>& computationData)</CODE>: 
- * create a generating matrix using the generating value and the design parameter, storing computation data in \c computationData.
+ *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, DesignParameter designParameter)</CODE>: 
+ * create a generating matrix using the generating value and the design parameter.
  *  - <CODE>static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter))</CODE>: returns a vector of default generating values
  *  (one for each coordinates lower than dimension)
  *  - <CODE>static std::vector<GenValue> genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)</CODE>: returns a vector of all the possible generating values
@@ -69,13 +68,6 @@ namespace NetBuilder {
  *  a C++11 type PRNG. This is a random generator of generating values. This class template must define a constructor 
  *  <CODE> RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()) </CODE> and an the member function <CODE>GenValue operator()(unsigned int dimenion)</CODE> returning
  *  a generating value for \c dimension.
- * \n Additionally, if member variable \c isSequenceViewable is \c true, the class should define the following static method:
- *  <CODE> static void extendGeneratingMatrices( 
-            unsigned int nRows,
-            unsigned int nCols,
-            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData) </CODE>: extends the size of the generating matrices. 
- * 
  */ 
 template <NetConstruction NC>
 struct NetConstructionTraits;
@@ -90,8 +82,6 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         static DesignParameter defaultDesignParameter;
 
-        typedef std::tuple<unsigned int, boost::dynamic_bitset<>, std::list<boost::dynamic_bitset<>>> GeneratingMatrixComputationData;
-
         static constexpr bool isSequenceViewable = true;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
@@ -100,13 +90,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         static unsigned int nCols(const DesignParameter& param);
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
-
-        static void extendGeneratingMatrices( 
-            unsigned int nRows,
-            unsigned int nCols,
-            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData);
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
 
         class GenValueSpaceCoordSeq
         {
@@ -231,8 +215,6 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static DesignParameter defaultDesignParameter;
 
-        typedef short GeneratingMatrixComputationData;
-
         typedef LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE> GenValueSpaceCoordSeq;
 
         typedef LatBuilder::SeqCombiner<GenValueSpaceCoordSeq, LatBuilder::CartesianProduct> GenValueSpaceSeq;
@@ -245,7 +227,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static unsigned int nCols(const DesignParameter& param);
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
     
         static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
@@ -295,8 +277,6 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
         static DesignParameter defaultDesignParameter;
 
-        typedef short GeneratingMatrixComputationData;
-
         typedef std::vector<GenValue> GenValueSpaceCoordSeq;
 
         static constexpr bool isSequenceViewable = false;
@@ -307,7 +287,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
         static unsigned int nCols(const DesignParameter& param);
 
-        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData);
+        static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
     
         static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
