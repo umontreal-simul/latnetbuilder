@@ -84,6 +84,8 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
         static constexpr bool isSequenceViewable = true;
 
+        static constexpr bool hasSpecialFirstCoordinate = true;
+
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 
         static unsigned int nRows(const DesignParameter& param);
@@ -221,6 +223,8 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         static constexpr bool isSequenceViewable = false;
 
+        static constexpr bool hasSpecialFirstCoordinate = true;
+
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 
         static unsigned int nRows(const DesignParameter& param);
@@ -280,6 +284,8 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
         typedef std::vector<GenValue> GenValueSpaceCoordSeq;
 
         static constexpr bool isSequenceViewable = false;
+
+        static constexpr bool hasSpecialFirstCoordinate = false;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
 

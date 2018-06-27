@@ -55,7 +55,7 @@ class RandomCBCExplorer
          */ 
         bool isOver() 
         {
-            return m_countTries>=m_nbTries;
+            return size() == count();
         }
 
         /**
@@ -86,6 +86,10 @@ class RandomCBCExplorer
 
         size_t size() const
         {
+            if (NetConstructionTraits<NC>::hasSpecialFirstCoordinate && m_currentCoord == 0)
+            {
+                return 1;
+            }
             return m_nbTries;
         }
 

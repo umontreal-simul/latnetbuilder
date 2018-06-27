@@ -116,7 +116,7 @@ class CBCSearch : public Search<NC, ET>
                 evaluator->prepareForNextDimension();
                 if(this->m_verbose>=1)
                 {
-                    std::cout << "Coordinate: " << coord << "/" << (this->dimension()-1) << std::endl;
+                    std::cout << "Coordinate: " << coord + 1 << "/" << this->dimension() << std::endl;
                 }
                 auto net = this->m_minimumObserver->bestNet(); // base net of the search
                 while(!m_explorer->isOver()) // for each generating values provided by the explorer

@@ -53,7 +53,7 @@ class FullCBCExplorer
          */ 
         bool isOver() 
         {
-            return m_state==m_data.end();
+            return size() == count();
         }
 
         /**
