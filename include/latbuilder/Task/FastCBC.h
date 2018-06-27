@@ -31,12 +31,12 @@ template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO
 struct FastCBCTag {};
 
 
-/// Fast CBC construction.
+/// Fast CBC exploration.
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using FastCBC =
    CBCBasedSearch<FastCBCTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
-/// Fast CBC construction.
+/// Fast CBC exploration.
 template <class FIGURE,LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 FastCBC<LR, ET, COMPRESS, PLO, FIGURE> fastCBC(
       Storage<LR, ET, COMPRESS, PLO> storage,

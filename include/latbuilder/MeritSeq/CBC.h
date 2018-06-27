@@ -30,7 +30,7 @@
 namespace LatBuilder { namespace MeritSeq {
 
 /**
- * Sequence of lattice merit for CBC construction.
+ * Sequence of lattice merit for CBC exploration.
  *
  * This class is intended to be used with the following steps:
  * <ol>

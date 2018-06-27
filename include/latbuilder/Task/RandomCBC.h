@@ -33,12 +33,12 @@ template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO
 struct RandomCBCTag {};
 
 
-/// Random CBC construction.
+/// Random CBC exploration.
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomCBC =
    CBCBasedSearch<RandomCBCTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
-/// Random CBC construction.
+/// Random CBC exploration.
 template <class FIGURE,LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 RandomCBC<LR, ET, COMPRESS, PLO, FIGURE> randomCBC(
       Storage<LR, ET, COMPRESS, PLO> storage,

@@ -31,7 +31,7 @@ measures of (non)uniformity of the points.
 The software also support the construction of multi-level point sets. A multi-level point set is actually a sequence of point sets whose points are embedded. Good multi-level point sets are highly uniform for their different embedding levels.
 
 For modulus that are powers of an irreducible base, the construction
-of embedded rank-1 ordinary and polynomial lattice rules is supported by LatBuilder through any of the above algorithms. In this case, a fast-CBC algorithm is also available for specific figures of merit. For polynomial lattice rules, the fast-CBC algorithm is only available for irreducible modulus. 
+of embedded rank-1 ordinary and polynomial lattice rules is supported by LatBuilder through any of the above algorithms. In this case, a fast-CBC exploration is also available for specific figures of merit. For polynomial lattice rules, the fast-CBC algorithm is only available for irreducible modulus. 
 
 NetBuilder supports the construction of various (finite) good digital sequences.
 
@@ -373,7 +373,7 @@ TODO
 
 Fast CBC with a coordinate-uniform figure of merit.
 
-For example, the following command line performs a fast CBC construction using
+For example, the following command line performs a fast CBC exploration using
 the weighted P<sub>α</sub> criterion with α=2 and with product weights giving
 the same weight of 0.1 to every coordinate (this means a weight of
 10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections

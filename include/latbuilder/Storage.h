@@ -95,7 +95,7 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL>{
  * the \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ blocks. 
  * The elements within each block can be ordered according to the inversed cyclic order of \f$U_{p^k}\f$. i.e the block (ordered) elements are
  * \f$\{p^{m-k}g^{-l}, l=0..\varphi(p^k)-1 \}\f$ with \f$g\f$ a generator of  \f$U_{p^k}\f$.
- * This order permits to do fast CBC construction.  This order can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
+ * This order permits to do fast CBC exploration.  This order can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
  * One can set PerLevelOrder to PerLevelOrder::BASIC, in this case, elements within each block are ordered in the non-decreasing order.
  * PerLevelOrder::CYCLIC is set as the default order, the basic order was introduced especially for polynomial lattices, where the cyclic structure does not apply if \f$m>1\f$.
  *
@@ -107,7 +107,7 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL>{
  * The \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ blocks.
  * If \f$m=1\f$, we have two block with sizes 1 and \f$2^{\deg(b(z))}-1\f$ and the elements within the second block can be ordered according to the inversed cyclic order of \f$(\mathbb{Z}_2[z]/(b(z)))^*\f$.
  * i.e the block (ordered) elements are \f$\{g^{-l}, l=0..\varphi(b(z))-1 \}\f$ with \f$g\f$ a generator of \f$(\mathbb{Z}_2[z]/(b(z)))^*\f$.
- * This order permits to do fast CBC construction, and can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
+ * This order permits to do fast CBC exploration, and can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
  * If \f$m>1\f$, the cyclic structure does not apply and we have to set PerLevelOrder to PerLevelOrder::BASIC.
  * In this case, elements of \f$(\mathbb{Z}_2[z]/(b(z)^k))^*\f$ are ordered according to the order given by the class GeneratingValues.
  * 

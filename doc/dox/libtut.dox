@@ -238,7 +238,7 @@ polynomial lattice size: [1 0 1 1]
 
 \section libtut_lat_genseq_random Random Traversal
 
-Sometimes, as with random Korobov or random CBC construction, it is necessary to
+Sometimes, as with random Korobov or random CBC, it is necessary to
 randomly select a certain number of elements from a GenSeq::GeneratingValues
 instance.
 GenSeq::GeneratingValues optionally takes a third template arguments that
@@ -292,7 +292,7 @@ In these cases, the class template GenSeq::CyclicGroup can be used to enumerate 
 the cyclic group of integers modulo \f$n\f$ (respectively polynomials modulo \f$P\f$) in the natural
 group order where the \f$i\f$-th element is \f$g^i \bmod n\f$ (\f$g^i \bmod P\f$ respectively), where \f$g\f$ is
 the group generator.
-This is useful in particular to perform fast CBC construction.
+This is useful in particular to perform fast CBC exploration.
 Like GenSeq::GeneratingValues, GenSeq::CyclicGroup takes a compression type as
 the second template argument.
 This is illustrated in \ref tutorial/GenSeqCyclicGroup.cc :
@@ -1016,7 +1016,7 @@ Then, we replace the MeritSeq::CBC instance with a MeritSeq::CoordUniformCBC
 instance:
 \snippet tutorial/MeritSeqCoordUniform.cc cbc
 The MeritSeq::CoordUniformInnerProd template argument specifies that we want to use
-a standard inner product during the CBC algorithm.
+a standard inner product during CBC exploration.
 The complete example can be found in \ref tutorial/MeritSeqCoordUniform.cc.
 
 
@@ -1044,12 +1044,12 @@ The complete example can be found in \ref tutorial/MeritSeqFastCBC.cc.
 
 \section libtut_lat_meritseq_noncbc Non-CBC Construction Methods
 
-In LatBuilder, sequences of merit values for non-CBC construction methods
-are available only as a wrapper of the CBC construction applied independently to
+In LatBuilder, sequences of merit values for non-CBC exploration methods
+are available only as a wrapper of the CBC exploration applied independently to
 each lattice definition, by replacing the sequences of candidate lattice
 definitions by singletons that contain only the candidate lattice being
 currently examined.
-CBC construction can thus output only this one lattice, together with its merit
+CBC exploration can thus output only this one lattice, together with its merit
 value.
 This enables the efficient computation algorithms used in the
 coordinate-uniform case with standard CBC.

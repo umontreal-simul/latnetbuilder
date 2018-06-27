@@ -31,12 +31,12 @@ template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO
 struct CBCTag {};
 
 
-/// CBC construction.
+/// CBC exploration.
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using CBC =
    CBCBasedSearch<CBCTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
-/// CBC construction.
+/// CBC exploration.
 template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
 CBC<LR, ET, COMPRESS, PLO, FIGURE> cbc(
       Storage<LR, ET, COMPRESS, PLO> storage,

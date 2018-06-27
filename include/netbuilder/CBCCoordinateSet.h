@@ -16,7 +16,7 @@
 
 /**
  * \file 
- * This file contains the definition of a sequence of coordinates used by CBC construction.
+ * This file contains the definition of a sequence of coordinates used by CBC exploration.
  */ 
 
 #ifndef NETBUILDER__CBC_COORDINATE_SET_H

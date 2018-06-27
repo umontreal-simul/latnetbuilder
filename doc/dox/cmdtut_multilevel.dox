@@ -60,7 +60,7 @@ For instance to search for embedded ordinary lattices with the full-CBC explorat
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
   
-To build embedded ordinary lattices with fast CBC construction in dimension 10 with
+To build embedded ordinary lattices with fast CBC exploration in dimension 10 with
   \f$n=2^m\f$ points with \f$m=8,\dots,16\f$, using a weighted sum of the
   normalized values of the \f$\mathcal P_2\f$ figure of merit with product
   weights, and rejecting any candidate lattice that has such an individual
@@ -90,7 +90,7 @@ To build embedded ordinary lattices with fast CBC construction in dimension 10 w
   Here the argument <code>\--combiner sum</code> indicates that the normalized
   merit values should be added to produce the combined merit value.
 
-To build embedded polynomial lattices with CBC construction in dimension 5 with
+To build embedded polynomial lattices with CBC exploration in dimension 5 with
   \f$P(z)=z^m\f$ with \f$m=1,\dots,8\f$ using the maximum value of the
   \f$\mathcal P_{2,PLR}\f$ merit across all levels, with the same weight for all projections:
   \verbatim
