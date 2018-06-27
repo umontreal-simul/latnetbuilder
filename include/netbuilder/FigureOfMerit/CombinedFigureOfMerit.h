@@ -73,7 +73,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         FigureOfMerit* pointerToFigure(unsigned int num) const { return m_figures[num].get() ; }
 
         /**
-         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {

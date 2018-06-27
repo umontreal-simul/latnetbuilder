@@ -30,8 +30,6 @@ namespace NetBuilder {
 
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::DesignParameter DesignParameter;
 
-    DesignParameter NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultDesignParameter(1);
-
     bool NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
         return IsOne(GCD(genValue,designParameter));
@@ -68,16 +66,6 @@ namespace NetBuilder {
             }
         }
         return genMat;
-    }
-
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::defaultGenValues(Dimension dimension, const DesignParameter& designParameter)
-    {
-        std::vector<GenValue> res(dimension);
-        for(unsigned int j = 0; j < dimension; ++j)
-        {
-            res[j] = GenValue(1);
-        }
-        return res;
     }
 
     typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)

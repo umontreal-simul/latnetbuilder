@@ -61,7 +61,7 @@ class BitEquidistribution : public FigureOfMerit{
         { return Accumulator(std::move(initialValue), m_normType); }
 
         /**
-         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {

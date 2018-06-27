@@ -26,8 +26,6 @@ namespace NetBuilder {
 
     typedef NetConstructionTraits<NetConstruction::EXPLICIT>::DesignParameter DesignParameter;
 
-    DesignParameter NetConstructionTraits<NetConstruction::EXPLICIT>::defaultDesignParameter(0,0);
-
     bool NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
         return genValue.nRows() == nRows(designParameter) && genValue.nCols() == nCols(designParameter);
@@ -42,16 +40,6 @@ namespace NetBuilder {
         GeneratingMatrix* genMat = new GeneratingMatrix(genValue);
         genMat->resize(nRows(designParameter),nCols(designParameter));
         return genMat;
-    }
-
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::defaultGenValues(Dimension dimension, const DesignParameter& designParameter)
-    {
-        GeneratingMatrix identity(nRows(designParameter), nCols(designParameter));
-        for(unsigned int i = 0; i < nRows(designParameter); ++i)
-        {
-            identity.flip(i,i);
-        }
-        return std::vector<GeneratingMatrix>(dimension,identity);
     }
 
     std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)

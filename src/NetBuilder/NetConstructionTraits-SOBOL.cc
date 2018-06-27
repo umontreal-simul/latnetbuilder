@@ -20,13 +20,9 @@
 #include "latbuilder/SeqCombiner.h"
 #include "latbuilder/Traversal.h"
 
-#include <string>
-#include <fstream>
-#include <boost/algorithm/string.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <vector>
 #include <list>
-#include <assert.h>
 
 #include "latbuilder/TextStream.h"
 
@@ -35,8 +31,6 @@ namespace NetBuilder {
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
-
-    DesignParameter NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameter = 1;
 
     bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
     {
@@ -162,74 +156,6 @@ namespace NetBuilder {
             ++k;
         }
         return tmp;
-    }
-
-    
-    const char* ws = " \t\n\r\f\v";
-
-    // trim from end (right)
-    inline std::string& rtrim(std::string& s, const char* t = ws)
-    {
-        s.erase(s.find_last_not_of(t) + 1);
-        return s;
-    }
-
-    // trim from beginning (left)
-    inline std::string& ltrim(std::string& s, const char* t = ws)
-    {
-        s.erase(0, s.find_first_not_of(t));
-        return s;
-    }
-
-    // trim from both ends (left & right)
-    inline std::string& trim(std::string& s, const char* t = ws)
-    {
-        return ltrim(rtrim(s, t), t);
-    }    
-
-    std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(Dimension dimension)
-    {
-        assert(dimension >= 1 && dimension <= 21201);
-        std::ifstream file("../share/latnetbuilder/data/JoeKuoSobolNets.csv");
-        std::vector<std::vector<uInteger>> res(dimension);
-        std::string sent;
-
-        do
-        {
-            getline(file,sent);
-            trim(sent);
-        }
-        while (sent != "###");
-
-        getline(file,sent);
-
-        for(unsigned int i = 1; i <= dimension; ++i)
-        {
-            if(getline(file,sent))
-            {
-                std::vector<std::string> fields;
-                boost::split( fields, sent, boost::is_any_of( ";" ) );
-                for( const auto& token : fields)
-                {
-                    res[i-1].push_back(std::stol(token));
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-        return res;
-    }
-
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(Dimension dimension, const DesignParameter& designParameter){
-        std::vector<std::vector<uInteger>> tmp = readJoeKuoDirectionNumbers(dimension);
-        std::vector<GenValue> res(dimension);
-        for(unsigned int j = 0; j < dimension; ++j)
-        {
-            res[j] = GenValue(j,tmp[j]);
-        }
-        return res;
     }
 
    NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::GenValueSpaceCoordSeq(Dimension coord):

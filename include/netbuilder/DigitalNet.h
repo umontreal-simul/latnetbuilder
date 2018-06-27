@@ -101,7 +101,7 @@ class DigitalNet
         }
 
         /**
-         * Returns a std::string representing the net. The verbosity of the representation
+         * Returns a <code>std::string</code> representing the net. The verbosity of the representation
          * depends on \c outputFormat.
          * @param outputFormat Format to use to represent the net.
          */ 
@@ -153,29 +153,6 @@ class DigitalNetConstruction : public DigitalNet
         /// Type of the design parameter of the method.
         typedef typename ConstructionMethod::DesignParameter DesignParameter;
 
-        /** 
-         * Constructor. Uses default generating values to create a net.
-         * @param dimension Dimension of the net. Defaults to zero.
-         * @param designParameter Design parameter of the net. Defaults to a value depending on the construction method.
-         */
-        DigitalNetConstruction(
-            Dimension dimension = 0, DesignParameter designParameter = ConstructionMethod::defaultDesignParameter):
-            DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
-            m_designParameter(designParameter)
-        {
-            if(dimension>0)
-            {
-                std::vector<GenValue> genValues = ConstructionMethod::defaultGenValues(dimension, m_designParameter); // get the default generating values
-                m_genValues.reserve(m_dimension);
-                for(const auto& genValue : genValues)
-                {
-                    // construct the generating matrix and store them and the generating values
-                    m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_designParameter)));
-                    m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
-                }
-            }
-        };
-
 
         /** 
          * Constructor.
@@ -199,6 +176,18 @@ class DigitalNetConstruction : public DigitalNet
             }
         }
 
+        /** 
+         * Constructor for placeholder nets.
+         * @param dimension Dimension of the net.
+         * @param designParameter Design parameter of the net.
+         */
+        DigitalNetConstruction(
+            Dimension dimension = 0,
+            DesignParameter designParameter = DesignParameter()):
+                DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
+                m_designParameter(std::move(designParameter))
+        {}
+
         /**
          * Default destructor
          */
@@ -208,7 +197,7 @@ class DigitalNetConstruction : public DigitalNet
          * Note that the resources (generating matrices, generatins values and computation data) for the lower dimensions are not copied. The net on 
          * which this method is called and the new net share these resources.
          * @param newGenValue  Generating value used to extend the net.
-         * @return A std::unique_ptr to the instantiated net.
+         * @return A <code>std::unique_ptr</code> to the instantiated net.
          */ 
         std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue) const 
         {
@@ -232,7 +221,7 @@ class DigitalNetConstruction : public DigitalNet
          */ 
         virtual std::string format(OutputFormat outputFormat) const
         {
-            
+            // TODO
             // if (outputFormat == OutputFormat::SSJ){
             //     std::ostringstream out;
             //     out << "2  //Base" << std::endl;

@@ -20,6 +20,8 @@
 #include "latticetester/Weights.h"
 
 #include "netbuilder/Types.h"
+#include "netbuilder/DigitalNet.h"
+#include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Util.h"
 
 namespace NetBuilder { 
@@ -28,6 +30,12 @@ namespace NetBuilder {
  with better two-dimensional projections.
  */
 namespace JoeKuo {
+
+/// Pair made of a coordinate and a sequence of direction numbers
+typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue DirectionNumbers;
+
+/// Size of generating matrices
+typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter MatrixSize;
 
 /**
  * Weights used by Joe and Kuo in \cite rJOE08a.
@@ -80,6 +88,28 @@ struct Combiner
         return res;
     }
 };
+
+/**
+ * Get the direction numbers suggested by Joe and Kuo in \cite rJOE08a. These can be used
+ * to compute generating matrices for a Sobol' net in dimension \c dimension.
+ * @param dimension Dimension of the net.
+ */ 
+std::vector<DirectionNumbers> getJoeKuoDirectionNumbers(Dimension dimension);
+
+/**
+ * Constructs a Sobol' net using the direction numbers suggested by Joe and Kuo in \cite rJOE08a.
+ * @param dimension Dimension of the net.
+ * @param size Size of the generating matrices.
+ */ 
+DigitalNetConstruction<NetConstruction::SOBOL> createJoeKuoSobolNet(Dimension dimension, MatrixSize size);
+
+/**
+ * Constructs a Sobol' net using the direction numbers suggested by Joe and Kuo in \cite rJOE08a.
+ * @param dimension Dimension of the net.
+ * @param size Size of the generating matrices.
+ * @return A <code>std::unique_ptr</code> to the constructed net.
+ */ 
+std::unique_ptr<DigitalNetConstruction<NetConstruction::SOBOL>> createPtrToJoeKuoSobolNet(Dimension dimension, MatrixSize size);
 
 }}
 

@@ -31,8 +31,8 @@
 namespace NetBuilder {
 
 /** This class implements a generating matrix of a digital net in base 2.
- *  A matrix is represented as a std::vector of Rows where Row is actually
- *  a boost::dynamic_bitset.
+ *  A matrix is represented as a <code>std::vector</code> of rows implemented by
+ *  <code>boost::dynamic_bitset</code>.
  */ 
 class GeneratingMatrix {
 
