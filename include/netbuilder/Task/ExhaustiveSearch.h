@@ -24,8 +24,8 @@ namespace NetBuilder { namespace Task {
 /** 
  * Class for exhaustive search tasks.
  */ 
-template < NetConstruction NC>
-class ExhaustiveSearch : public Search<NC>
+template < NetConstruction NC, EmbeddingType ET>
+class ExhaustiveSearch : public Search<NC, ET>
 {
     public:
     
@@ -41,7 +41,7 @@ class ExhaustiveSearch : public Search<NC>
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                             int verbose = 0,
                             bool earlyAbortion = true):
-            Search<NC>(dimension, designParameter, std::move(figure), verbose, earlyAbortion)
+            Search<NC, ET>(dimension, designParameter, std::move(figure), verbose, earlyAbortion)
         {};
 
         /** 

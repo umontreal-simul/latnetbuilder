@@ -27,7 +27,7 @@ namespace NetBuilder { namespace Task {
 /**
  * Class to explorer first exhaustively and then randomly a search space using the CBC search algorithm. 
  */ 
-template<NetConstruction NC>
+template <NetConstruction NC, EmbeddingType ET>
 class MixedCBCExplorer
 {
     typedef NetConstructionTraits<NC> ConstructionMethod;
@@ -37,85 +37,103 @@ class MixedCBCExplorer
         /** Constructor.
          * @param dimension Number of coordinates of the explorer.
          * @param designParameter Design parameter of the search space.
-         * @param maxFullDimension Number of coordinates for which the search is exhaustive.
+         * @param nbFullCoordinates Number of coordinates for which the search is exhaustive.
          * @param nbTries Number of random choices of generating values.
-         * @param verbose Verbosity level.
          */
-        MixedCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int maxFullDimension, unsigned int nbTries, int verbose = 0):
+        MixedCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbFullCoordinates, unsigned int nbTries):
             m_dimension(dimension),
-            m_maxFullDimension(maxFullDimension),
-            m_randExplorer(new RandomCBCExplorer<NC>(dimension,designParameter, nbTries, verbose)),
-            m_fullExplorer(new FullCBCExplorer<NC>(dimension,designParameter, verbose))
+            m_currentCoord(0),
+            m_nbFullCoordinates(nbFullCoordinates),
+            m_randExplorer(new RandomCBCExplorer<NC, ET>(dimension, designParameter, nbTries)),
+            m_fullExplorer(new FullCBCExplorer<NC, ET>(nbFullCoordinates, designParameter))
         {};
 
         /**
          * Returns whether the dimension \c dim is fully explored
          */ 
-        bool isOver(Dimension dim)
+        bool isOver()
         {
-            if (dim < m_maxFullDimension)
+            if (m_currentCoord < m_nbFullCoordinates)
             {
-                return m_fullExplorer->isOver(dim);
+                return m_fullExplorer->isOver();
             }
             else
             {
-                return m_randExplorer->isOver(dim);
+                return m_randExplorer->isOver();
             }
         }
 
         /**
          * Returns the next generating values of dimension \c dim
          */ 
-        typename ConstructionMethod::GenValue nextGenValue(Dimension dim)
+        typename ConstructionMethod::GenValue nextGenValue()
         {
-            if (dim < m_maxFullDimension)
+            if (m_currentCoord < m_nbFullCoordinates)
             {
-                return m_fullExplorer->nextGenValue(dim);
+                return m_fullExplorer->nextGenValue();
             }
             else
             {
-                return m_randExplorer->nextGenValue(dim);
+                return m_randExplorer->nextGenValue();
             } 
         }
 
         /**
-         * Resets the explorer to the first dimension
+         * Resets the explorer to the first coordinate.
          */ 
         void reset() 
         {
+            m_currentCoord = 0;
             m_randExplorer.reset();
             m_fullExplorer.reset();
         }
 
         /**
-         * Sets the verbosity level of the explorer.
+         * Switches the explorer to coordinate \c coord.
          */ 
-        void setVerbose(int verbose)
+        void switchToCoordinate(Dimension coord)
         {
-            m_randExplorer->setVerbose(verbose);
-            m_fullExplorer->setVerbose(verbose);
-        }
-
-        /**
-         * Switches the explorer to dimension \c dim.
-         */ 
-        void switchToDimension(Dimension dim)
-        {
-            if (dim < m_maxFullDimension)
+            m_currentCoord = coord;
+            if (coord < m_nbFullCoordinates)
             {
-                return m_fullExplorer->switchToDimension(dim);
+                return m_fullExplorer->switchToCoordinate(coord);
             }
             else
             {
-                return m_randExplorer->switchToDimension(dim);
+                return m_randExplorer->switchToCoordinate(coord);
             } 
         }; 
 
+        size_t size() const
+        {
+            if (m_currentCoord < m_nbFullCoordinates)
+            {
+                return m_fullExplorer->size();
+            }
+            else
+            {
+                return m_randExplorer->size();
+            } 
+        }
+
+        size_t count() const
+        {
+            if (m_currentCoord < m_nbFullCoordinates)
+            {
+                return m_fullExplorer->count();
+            }
+            else
+            {
+                return m_randExplorer->count();
+            } 
+        }
+
     private:
         Dimension m_dimension;
-        unsigned int m_maxFullDimension;
-        std::unique_ptr<RandomCBCExplorer<NC>> m_randExplorer;
-        std::unique_ptr<FullCBCExplorer<NC>> m_fullExplorer;
+        Dimension m_currentCoord;
+        unsigned int m_nbFullCoordinates;
+        std::unique_ptr<RandomCBCExplorer<NC, ET>> m_randExplorer;
+        std::unique_ptr<FullCBCExplorer<NC, ET>> m_fullExplorer;
 };
 
 }}

@@ -217,7 +217,7 @@ int main(int argc, const char *argv[])
 }
 
 
-    // auto vecGenValues = ConstructionMethod::genValueSpaceDim(s+1);    
+    // auto vecGenValues = ConstructionMethod::genValueSpaceCoord(s+1);    
 
     // for (int i=0; i<vecGenValues.size(); i++){
     //     auto weights1 = std::make_unique<LatticeTester::OrderDependentWeights>(0.1);

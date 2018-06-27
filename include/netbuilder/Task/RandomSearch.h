@@ -26,8 +26,8 @@ namespace NetBuilder { namespace Task {
  * Template template parameter EXPLORER must implement the following:
  * 
  */ 
-template < NetConstruction NC>
-class RandomSearch : public Search<NC>
+template < NetConstruction NC, EmbeddingType ET>
+class RandomSearch : public Search<NC, ET>
 {
     typedef NetConstructionTraits<NC> ConstructionMethod;
 
@@ -47,7 +47,7 @@ class RandomSearch : public Search<NC>
                         unsigned nbTries,
                         int verbose = 0,
                         bool earlyAbortion = true):
-            Search<NC>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
             m_nbTries(nbTries),
             m_randomGenValueGenerator(this->m_designParameter)
         {};

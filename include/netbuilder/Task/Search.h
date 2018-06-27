@@ -31,8 +31,9 @@ namespace NetBuilder { namespace Task {
 /**
  * Virtual base class for search task.
  * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...).
+ * @tparam ET Embedding type (UNILEVEL or MULTILEVEL)
  */ 
-template <NetConstruction NC> 
+template <NetConstruction NC, EmbeddingType ET> 
 class Search : public Task {
 
 public:
@@ -58,10 +59,10 @@ public:
 
     /// Signal emitted when a net has been selected.
 
-    typedef boost::signals2::signal<void (const Search<NC>&)> OnNetSelected;
+    typedef boost::signals2::signal<void (const Search<NC, ET>&)> OnNetSelected;
 
     /// Signal emitted when the search has failed.
-    typedef boost::signals2::signal<void (const Search<NC>&)> OnFailedSearch;
+    typedef boost::signals2::signal<void (const Search<NC, ET>&)> OnFailedSearch;
 
     /**
      * Constructor.

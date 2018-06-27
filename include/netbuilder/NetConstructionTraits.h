@@ -27,6 +27,7 @@
 #include "netbuilder/GeneratingMatrix.h"
 
 #include "latbuilder/GenSeq/GeneratingValues.h"
+#include "latbuilder/SeqCombiner.h"
 #include "latbuilder/UniformUIntDistribution.h"
 
 #include <string>
@@ -59,9 +60,9 @@ namespace NetBuilder {
  * create a generating matrix using the generating value and the design parameter, storing computation data in \c computationData.
  *  - <CODE>static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter))</CODE>: returns a vector of default generating values
  *  (one for each coordinates lower than dimension)
- *  - <CODE>static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter)</CODE>: returns a vector of all the possible generating values
+ *  - <CODE>static std::vector<GenValue> genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)</CODE>: returns a vector of all the possible generating values
  *  for the given dimension
- *  - <CODE> static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter) </CODE>: returns a vector of all the possible combination 
+ *  - <CODE> static std::vector<std::vector<GenValue>> genValueSpace(Dimension dimension , const DesignParameter& designParameter) </CODE>: returns a vector of all the possible combination 
  *  of the generating values for dimensions lower than \c dimension
  * \n and the following class template:
  *  - <CODE> template<typename RAND> class RandomGenValueGenerator </CODE>: a class template where template parameter RAND implements
@@ -83,7 +84,7 @@ template<>
 struct NetConstructionTraits<NetConstruction::SOBOL>
 {
     public:
-        typedef std::pair<unsigned int, std::vector<uInteger>> GenValue ;
+        typedef std::pair<Dimension, std::vector<uInteger>> GenValue ;
 
         typedef unsigned int DesignParameter;
 
@@ -106,13 +107,69 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             unsigned int nCols,
             std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
             std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData);
-            
 
+        class GenValueSpaceCoordSeq
+        {
+            public:
+
+                typedef GenValue value_type;
+                typedef size_t size_type;
+
+                GenValueSpaceCoordSeq(Dimension coord);
+
+                class const_iterator:
+                public boost::iterators::iterator_facade<const_iterator,
+                const GenValue,
+                boost::iterators::forward_traversal_tag>
+                {
+                    public:
+                        struct end_tag {};
+
+                        explicit const_iterator(const GenValueSpaceCoordSeq& seq);
+
+                        const_iterator(const GenValueSpaceCoordSeq& seq, end_tag);
+
+                    private:
+                        friend class boost::iterators::iterator_core_access;
+
+                        bool equal(const const_iterator& other) const;
+
+                        const value_type& dereference() const;
+
+                        void increment();
+
+                        Dimension m_coord;
+
+                        LatBuilder::SeqCombiner<std::vector<uInteger>,LatBuilder::CartesianProduct>::const_iterator m_underlyingIterator;
+
+                        value_type m_value;
+
+                };
+
+                const_iterator begin() const;;
+
+                const_iterator end() const;
+
+                Dimension coord() const;
+
+                size_t size() const;
+
+                const LatBuilder::SeqCombiner<std::vector<uInteger>,LatBuilder::CartesianProduct>& underlyingSeq() const;
+
+            private:
+                Dimension m_coord;
+                LatBuilder::SeqCombiner<std::vector<uInteger>,LatBuilder::CartesianProduct> m_underlyingSeq;
+
+                static std::vector<std::vector<uInteger>> underlyingSeqs(Dimension coord);
+        };
+
+        typedef LatBuilder::SeqCombiner<GenValueSpaceCoordSeq, LatBuilder::CartesianProduct> GenValueSpaceSeq;
+        
         static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter);
+        static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter);
 
-        static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter);
+        static GenValueSpaceSeq genValueSpace(Dimension dimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator
@@ -124,16 +181,16 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                     m_unif(0, 1)
                 {};
                 
-                GenValue operator()(Dimension dimension)
+                GenValue operator()(Dimension coord)
                 {
                     unsigned int size;
-                    if (dimension==0)
+                    if (coord==0)
                     {
                         return GenValue(0, {0});
                     }
                     else
                     {
-                        size = nthPrimitivePolynomialDegree(dimension);
+                        size = nthPrimitivePolynomialDegree(coord);
                     }
                     std::vector<unsigned long> res(size);
                     unsigned long upperBound = 0;
@@ -143,7 +200,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
                         res[k] = 2 * m_unif(m_randomGen) + 1 ;
                         upperBound = 2 * (upperBound + 1) - 1; 
                     }
-                    return GenValue(dimension,std::move(res));
+                    return GenValue(coord,std::move(res));
                 }
 
             private:
@@ -176,6 +233,10 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
         typedef short GeneratingMatrixComputationData;
 
+        typedef LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE> GenValueSpaceCoordSeq;
+
+        typedef LatBuilder::SeqCombiner<GenValueSpaceCoordSeq, LatBuilder::CartesianProduct> GenValueSpaceSeq;
+
         static constexpr bool isSequenceViewable = false;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
@@ -188,9 +249,9 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
     
         static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter);
+        static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter);
 
-        static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter);
+        static GenValueSpaceSeq genValueSpace(Dimension dimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator
@@ -236,6 +297,8 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
         typedef short GeneratingMatrixComputationData;
 
+        typedef std::vector<GenValue> GenValueSpaceCoordSeq;
+
         static constexpr bool isSequenceViewable = false;
 
         static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
@@ -248,9 +311,9 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
     
         static std::vector<GenValue> defaultGenValues(Dimension dimension, const DesignParameter& designParameter);
 
-        static std::vector<GenValue> genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter);
+        static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter);
 
-        static std::vector<std::vector<GenValue>> genValueSpace(Dimension maxDimension , const DesignParameter& designParameter);
+        static std::vector<GenValueSpaceCoordSeq> genValueSpace(Dimension dimension , const DesignParameter& designParameter);
 
         template<typename RAND>
         class RandomGenValueGenerator

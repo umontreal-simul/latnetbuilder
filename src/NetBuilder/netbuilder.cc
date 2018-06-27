@@ -93,8 +93,8 @@ makeOptionsDescription()
     "  random:<r>\n"
     "  full-CBC\n"
     "  random-CBC:<r>\n"
-    "  mixed-CBC:<r>:<d_max>\n"
-    "where <r> is the number of randomizations, and <d_max> the maximum dimension for full CBC exploration.")
+    "  mixed-CBC:<r>:<nb_full>\n"
+    "where <r> is the number of randomizations, and <nb_full> the number of coordinates for which full CBC exploration is used.")
     ("dimension,d", po::value<std::string>(),
     "(required) net dimension\n")
     ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
@@ -113,7 +113,7 @@ makeOptionsDescription()
     ("add-figure,a", po::value< std::vector<std::string> >()->composing(),
     "(at least one required) add one type of figure of merits. If several, specify a figure combiner.\n"
     "Syntax pattern:\n"
-    "rt \n" // TODO
+    " \n" // TODO
     "where name can take the following values:\n"
     "resolution-gap, t-value, A-Property, A'-Property and \n"
     "P<alpha> with the optional \"CU:\" prefix to switch to the coordinate-uniform evaluation algorithm\n")

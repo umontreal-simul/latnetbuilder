@@ -80,49 +80,29 @@ namespace NetBuilder {
         return res;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceDim(Dimension dimension, const DesignParameter& designParameter)
+    typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)
     {
-        if (dimension==0)
+        if (coord==0)
         {
-            return std::vector<GenValue>(1,GenValue(1));
+            Polynomial fakeModulus;
+            SetX(fakeModulus);
+            return GenValueSpaceCoordSeq(fakeModulus);
         }
         else
         {
-            LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL,LatBuilder::Compress::NONE,LatBuilder::Traversal::Forward> tmp(designParameter);
-            std::vector<GenValue>(res);
-            res.reserve(tmp.size());
-            for(const auto& foo : tmp)
-            {
-                res.push_back(std::move(foo));
-            }
-            return res;
+           return GenValueSpaceCoordSeq(designParameter);
         }
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpace(Dimension maxDimension, const DesignParameter& designParameter)
+    typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValueSpaceSeq NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpace(Dimension dimension, const DesignParameter& designParameter)
     {
-        if (maxDimension==0)
+        std::vector<GenValueSpaceCoordSeq> seqs;
+        seqs.reserve(dimension);
+        for(Dimension coord = 0; coord < dimension; ++coord)
         {
-            return std::vector<std::vector<GenValue>>{genValueSpaceDim(0, designParameter)};
+            seqs.push_back(genValueSpaceCoord(coord, designParameter));
         }
-        else
-        {
-            std::vector<std::vector<GenValue>> seqs;
-            seqs.reserve(maxDimension);
-            seqs.push_back(genValueSpaceDim(1,designParameter));
-            std::vector<GenValue> primes = genValueSpaceDim(maxDimension, designParameter);
-            for(Dimension dim = 1; dim < maxDimension; ++dim)
-            {
-                seqs.push_back(primes);
-            }
-            LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
-            std::vector<std::vector<GenValue>> res;
-            for(const auto& foo : tmp)
-            {
-                res.push_back(foo);
-            }
-            return res;
-        }
+        return GenValueSpaceSeq(seqs);
     }
 
     std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
