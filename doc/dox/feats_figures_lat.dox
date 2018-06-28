@@ -18,7 +18,7 @@
 
 \section feats_figures_lat_ord Ordinary lattices
 
-LatNetBuilder supports the following figures of merit for ordinary rank-1 lattices:
+%LatBuilder supports the following figures of merit for ordinary rank-1 lattices:
 
 - The spectral figure of merit TODO cite, using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:
@@ -93,7 +93,7 @@ LatNetBuilder supports the following figures of merit for ordinary rank-1 lattic
 
 \section feats_figures_lat_poly Polynomial lattices
 
-LatNetBuilder supports the following figures of merit for polynomial rank-1 lattices:
+LatNet Builder supports the following figures of merit for polynomial rank-1 lattices:
 
 - The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha=2\f$ , using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:

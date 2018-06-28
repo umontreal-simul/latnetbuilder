@@ -42,7 +42,7 @@ namespace Parser
 {
 namespace lbp = LatBuilder::Parser;
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid exploration method.
  */
 class BadExplorationMethod : public lbp::ParserError
 {
@@ -53,7 +53,7 @@ class BadExplorationMethod : public lbp::ParserError
 };
 
 /**
- * Parser for figure parameters.
+ * Parser for exploration methods.
  */
 template<NetConstruction NC, EmbeddingType ET>
 struct ExplorationMethodParser

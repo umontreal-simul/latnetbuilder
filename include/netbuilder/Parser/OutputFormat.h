@@ -39,16 +39,15 @@ class BadOutputFormat : public lbp::ParserError
 
 /**
  * Class for output-poly parameters
- * Defining parameters:
- * - doOutput wether to do the output or not;
- * - file file in which the output will be written
- * - outputFormat output format
- *
- * 
+ * TODO move this to a better place
  */
-class OutputFormatParameters
+struct OutputFormatParameters
 {
-    public:
+    /**
+     * Constructor.
+     * @param file Log file for outputs.
+     * @param outputFormat Output format.
+     */ 
       OutputFormatParameters(std::string file = "", OutputFormat outputFormat = OutputFormat::CLI) : 
             m_file(std::move(file)),
             m_outputFormat(outputFormat)
@@ -62,7 +61,7 @@ class OutputFormatParameters
       OutputFormat m_outputFormat;
 };
 
-// parse output parameters
+/** Parser for output formats. */ 
 struct OutputFormatParser
 {
       static std::vector<OutputFormatParameters> parse(const std::vector<string> &vec){

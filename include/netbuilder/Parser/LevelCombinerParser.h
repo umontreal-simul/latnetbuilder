@@ -30,7 +30,7 @@ namespace lbp = LatBuilder::Parser;
 using namespace NetBuilder::LevelCombiner;
 
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid combiner.
  */
 class BadLevelCombiner : public lbp::ParserError {
 public:
@@ -40,7 +40,7 @@ public:
 };
 
 /**
- * Parser for construction parameters.
+ * Parser for combiners.
  */
 template <NetConstruction NC, NetBuilder::EmbeddingType ET>
 struct LevelCombinerParser {};

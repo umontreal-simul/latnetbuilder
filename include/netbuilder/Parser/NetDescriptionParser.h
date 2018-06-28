@@ -29,7 +29,7 @@
 
 namespace NetBuilder { namespace Parser {
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid net description.
  */
 class BadNetDescription : public lbp::ParserError {
 public:
@@ -39,7 +39,7 @@ public:
 };
 
 /**
- * Parser for construction parameters.
+ * Parser for net descriptions.
  */
 template<NetConstruction NC, EmbeddingType ET>
 struct NetDescriptionParser {};

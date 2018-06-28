@@ -25,7 +25,7 @@
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid construction type.
  */
 class BadNetConstruction : public lbp::ParserError {
 public:
@@ -35,7 +35,7 @@ public:
 };
 
 /**
- * Parser for construction parameters.
+ * Parser for construction types.
  */
 template <EmbeddingType ET>
 struct NetConstructionParser {};

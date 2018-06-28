@@ -21,7 +21,7 @@
 The <code>latnet</code> executable supports the following command-line
 options:
 <dl>
-	<dt><code>\--set-type</code><code>-T</code></dt>
+	<dt><code>\--set-type</code> / <code>-T</code></dt>
 	<dd><em> Required.</em>
 		Specifies the type of point set.
 		Takes one of the following values:
@@ -30,10 +30,43 @@ options:
     - <code>net</code>
       to search for digital nets.
 	</dd>		
+  <dt><code>\--construction</code> / <code>-L</code></dt>
+  <dd><em>Optional (default: ordinary).</em>
+    Specifies the construction type.
+    Takes one of the following values:
+		- For lattices (<code>--set-type lattice</code>):
+			- <code>ordinary</code>
+				to search for ordinary lattices; or
+			- <code>polynomial</code>
+				to search for polynomial lattices.
+		- For digital nets (<code>--set-type net</code>):
+			- <code>sobol</code>
+				to search for Sobol' nets; or
+			- <code>sobol</code>
+				to search for polynomial digital nets; or
+			- <code>explicit</code>
+				to search for digital nets with explicit generating matrices.
+
+		See \ref feats_pointsets and \ref cmdtut_pointsets for additional details.
+  </dd>
 	<dt><code>\--dimension</code> / <code>-d</code></dt>
 	<dd><em>Required.</em>
 		Specifies the dimension.
 		Takes an integer argument.
+	</dd>
+	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
+	<dd><em>Required.</em>
+  Specifies the size parameter of the point sets.
+  Takes an argument of either form:
+	- For lattices (<code>--set-type lattice</code>):
+		- <code>--size-parameter <var>modulus</var></code>; or
+		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>.
+	- For digital nets (<code>--set-type net</code>):
+		- <code>--size-parameter 2^<var>k</var></code>; or
+		- <code>--size-parameter <var>modulus</var></code> (only for polynomial digital nets); or
+		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code> (only for polynomial digital nets).
+
+	See \ref cmdtut_pointsets for additional details.
 	</dd>
 	<dt><code>\--exploration-method</code> / <code>-E</code></dt>
 	<dd><em>Required.</em>
@@ -50,7 +83,7 @@ options:
 		  component-by-component search with <code><var>samples</var></code>
 		  random samples per coordinate;
 
-		\n Specific to <code>--set-type lattice </code>:
+		\n Specific to lattices (<code>--set-type lattice </code>):
 			- <code>Korobov</code> for a Korobov search;
 			- <code>random-Korobov:<var>samples</var></code> for a random Korobov
 				search with <code><var>samples</var></code> random samples;
@@ -58,7 +91,7 @@ options:
 										coordinate-uniform implementation of the selected figure of
 										merit);
 
-				Recall that the implementation of the fast CBC algorithm in LatBuilder
+				Recall that the implementation of the fast CBC algorithm in %LatBuilder
 				supports only modulus that are a power of a prime base in the ordinary case and 
 				irreducible modulus in the polynomial case.
 
@@ -69,10 +102,11 @@ options:
 				of integers/polynomials. See \ref cmdtut_pointsets for details about 
 				<code><var>genVec</var></code>.
 
-		\n Specific to <code>--set-type net </code>:
+		\n Specific to digital nets (<code>--set-type net </code>):
 			- <code>mixed-CBC:<var>samples</var>:<var>nbFull</var></code> for a full-CBC search for the first 
 			<code><var>nbFull</var></code> coordinates and then a random-CBC search with <code><var>samples</var></code> 
 			random samples for the remaining coordinates.
+
 			When the random variant of a search is used with a filters
 	    (see the <code>\--filters</code> option below), the
 	    candidate samples that are rejected by the filter pipeline are
@@ -80,13 +114,104 @@ options:
 	    number of random samples corresponds to only the number
 	    of accepted candidates.
 	</dd>
+	<dt><code>\--figure-of-merit</code> / <code>-m</code></dt>
+	<dd><em>Required.</em>
+		TODO
+		Specifies the figure of merit to be used.
+		Takes an argument of either of the following forms:
+		- <code><var>figure</var></code>
+		- <code>CU:<var>figure</var></code>
+                where the optional prefix <code>CU:</code> indicates that a
+                coordinate-uniform implementation of the evaluation algorithm
+                should be used (only available for <code>P2</code>, <code>R1</code> and <code>R</code>);
+
+		and where <code><var>figure</var></code> is one of:
+		- <code>P<var>alpha</var></code> for the weighted \f$\mathcal
+			P_\alpha\f$ figure of merit in the case of ordinary lattices
+			or \f$\mathcal P_{\alpha,PLR}\f$ figure of merit in the 
+			case of polynomial lattices with
+			\f$\alpha=\f$<code><var>alpha</var></code>;
+		- <code>spectral</code> for the spectral figure
+			of merit (only available with ordinary lattice rules);
+		- <code>R<var>alpha</var></code> for the weighted \f$\mathcal
+			R_\alpha\f$ figure of merit with
+			\f$\alpha=\f$<code><var>alpha</var></code> (only available with ordinary lattice rules); or
+		- <code>R</code> for the weighted \f$\mathcal
+			R\f$ figure of merit (only available with polynomial lattice rules).
+
+		See \ref feats_figures and \ref cmdtut_figures for additional details.
+	</dd>
+	<dt><code>\--norm-type</code> / <code>-p</code></dt>
+	<dd><em>Required.</em>
+		Specifies the type of the \f$\ell_q\f$ norm to combine the merit
+		values across projections.
+		Takes an argument of the form:
+		- <code><var>realNumber</var></code> for a finite positive number;
+		- <code>inf</code> for infinity.
+
+		See \ref feats_figures for additional details.
+	</dd>
+	<dt><code>\--weights</code> / <code>-w</code></dt>
+	<dd><em>Required.</em>
+		Specifies the type(s) of weights and their values.
+                Takes a whitespace-separated list of arguments, each of which
+                specifying a type of weights with its values. 
+                (The actual weights are the sum of these.)
+		Takes argument of the form:
+		- <code>product:<var>default</var>:<var>list</var></code>
+		  for product weights with the weights for the first coordinates
+		  specified by the comma-separated list of weights
+		  <code><var>list</var></code>, and with weight
+		  <code><var>default</var></code> for the other coordinates;
+		- <code>order-dependent:<var>default</var>:<var>list</var></code>
+		  for order-dependent weights with the weights for the first orders
+		  specified by the comma-separated list of weights
+		  <code><var>list</var></code> (starting at order 1), and with weight
+		  <code><var>default</var></code> for the other orders;
+		- <code>projection-dependent:<var>filename</var></code> for
+		  projection-dependent weights specified in the file named
+		  <code><var>filename</var></code>.
+                - <code>POD:<var>default1</var>:<var>list1</var>:<var>default2</var>:<var>list2</var></code>
+                  for POD weights, where <code><var>default1</var></code> and
+                  <code><var>list1</var></code> specify the default and
+                  individual order-dependent weights, and where
+                  <code><var>default2</var></code> and
+                  <code><var>list2</var></code> specify the default and
+                  individual product weights.
+
+		For projection-dependent weights, the file containing the weights must
+		consist of lines of the form:
+		- <code><var>coordinates</var>: <var>weight</var></code>
+		  to assign the weight <code><var>weight</var></code> to the projection
+		  defined by the comma-separated list of coordinates
+		  <code><var>coordinates</var></code>;
+		- <code>order <var>order</var>: <var>weight</var></code>
+		  to assign the weight <code><var>weight</var></code> to all other
+		  projections of order <code><var>order</var></code>;
+		- <code>default: <var>weight</var></code>
+		  to assign the weight <code><var>weight</var></code> to all other
+		  projections;
+		- <code>#<var>comment</var></code> to ignore
+		  <code><var>comment</var></code>.
+		
+		See \ref feats_weights and \ref cmdtut_weights for additional details.
+	</dd>
+	<dt><code>\--weights-power</code> / <code>-o</code></dt>
+	<dd><em>Optional (default: same value as for the <code>--norm-type</code> option).</em>
+		Specificies that the weights passed by option
+		<code>--weights</code> have already been elevated to that power.
+	
+		By default, the weights are assumed to have been elevated to the same power
+		as specified by option <code> --norm-type</code>. A value of <code>inf</code> is mapped to 1.
+		See \ref cmdtut_weights for additional details.
+	</dd>
 	<dt><code>\--multilevel</code> / <code>-l</code></dt>
 	<dd><em>Optional (default: false).</em>
 		Specifies if the searched point set is multilevel.
 		Takes one of the following values:
 		- <code>false</code>
 			to search for unilevel point sets; or
-		- <code>embedded</code>
+		- <code>true</code>
 			to search for multilevel point sets.
 	</dd>
 	<dt><code>\--combiner</code> / <code>-b</code></dt>
@@ -147,6 +272,16 @@ options:
 	<dd><em>Optional.</em>
 		TODO describe option
 	</dd>
+	<dt><code>\--no-early-abort</code> / <code>-e</code></dt>
+	<dd><em>Optional (default false).</em>
+		Specifies if the early-abortion of useless computations should be disabled.
+		Only available for digital nets.
+		Takes one of the following values:
+		- <code>false</code>
+			to enable early-abortion; or
+		- <code>true</code>
+			to disable early-abortion.
+	</dd>
 	<dt><code>\--version</code> / <code>-V</code></dt>
 	<dd><em>Optional.</em>
 		Shows the version of the software.
@@ -154,152 +289,6 @@ options:
 	<dt><code>\--help</code> / <code>-h</code></dt>
 	<dd><em>Optional.</em>
 		Shows a light version of this page in the console.
-	</dd>
-	<dt>Specific to <code>--set-type lattice </code>:</dt>
-  <dt><code>\--construction</code> / <code>-L</code></dt>
-  <dd><em>Optional (default: ordinary).</em>
-    Specifies the lattice type.
-    Takes one of the following values:
-    - <code>ordinary</code>
-      to search for ordinary lattices; or
-    - <code>polynomial</code>
-      to search for polynomial lattices.
-  </dd>
-	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
-	<dd><em>Required.</em>
-  Specifies the lattice modulus.
-  Takes an argument of either form:
-    --size-parameter<code> <var>modulus</var></code>; or
-    --size-parameter<code> <var>primeBase</var>^<var>power</var></code>.
-
-	See \ref cmdtut_pointsets for details about modulus.
-	</dd>
-	<dt><code>\--figure-of-merit</code> / <code>-m</code></dt>
-	<dd><em>Required.</em>
-		Specifies the figure of merit to be used.
-		Takes an argument of either of the following forms:
-		- <code><var>figure</var></code>
-		- <code>CU:<var>figure</var></code>
-                where the optional prefix <code>CU:</code> indicates that a
-                coordinate-uniform implementation of the evaluation algorithm
-                should be used (only available for <code>P2</code>, <code>R1</code> and <code>R</code>);
-
-		and where <code><var>figure</var></code> is one of:
-		- <code>P<var>alpha</var></code> for the weighted \f$\mathcal
-			P_\alpha\f$ figure of merit in the case of ordinary lattices
-			or \f$\mathcal P_{\alpha,PLR}\f$ figure of merit in the 
-			case of polynomial lattices with
-			\f$\alpha=\f$<code><var>alpha</var></code>;
-		- <code>spectral</code> for the spectral figure
-			of merit (only available with ordinary lattice rules);
-		- <code>R<var>alpha</var></code> for the weighted \f$\mathcal
-			R_\alpha\f$ figure of merit with
-			\f$\alpha=\f$<code><var>alpha</var></code> (only available with ordinary lattice rules); or
-		- <code>R</code> for the weighted \f$\mathcal
-			R\f$ figure of merit (only available with polynomial lattice rules).
-
-		See \ref feats_figures and \ref cmdtut_figures for additional details.
-	</dd>
-	<dt><code>\--weights</code> / <code>-w</code></dt>
-	<dd><em>Required.</em>
-		Specifies the type(s) of weights and their values.
-                Takes a whitespace-separated list of arguments, each of which
-                specifying a type of weights with its values. 
-                (The actual weights are the sum of these.)
-		Takes argument of the form:
-		- <code>product:<var>default</var>:<var>list</var></code>
-		  for product weights with the weights for the first coordinates
-		  specified by the comma-separated list of weights
-		  <code><var>list</var></code>, and with weight
-		  <code><var>default</var></code> for the other coordinates;
-		- <code>order-dependent:<var>default</var>:<var>list</var></code>
-		  for order-dependent weights with the weights for the first orders
-		  specified by the comma-separated list of weights
-		  <code><var>list</var></code> (starting at order 1), and with weight
-		  <code><var>default</var></code> for the other orders;
-		- <code>projection-dependent:<var>filename</var></code> for
-		  projection-dependent weights specified in the file named
-		  <code><var>filename</var></code>.
-                - <code>POD:<var>default1</var>:<var>list1</var>:<var>default2</var>:<var>list2</var></code>
-                  for POD weights, where <code><var>default1</var></code> and
-                  <code><var>list1</var></code> specify the default and
-                  individual order-dependent weights, and where
-                  <code><var>default2</var></code> and
-                  <code><var>list2</var></code> specify the default and
-                  individual product weights.
-
-		For projection-dependent weights, the file containing the weights must
-		consist of lines of the form:
-		- <code><var>coordinates</var>: <var>weight</var></code>
-		  to assign the weight <code><var>weight</var></code> to the projection
-		  defined by the comma-separated list of coordinates
-		  <code><var>coordinates</var></code>;
-		- <code>order <var>order</var>: <var>weight</var></code>
-		  to assign the weight <code><var>weight</var></code> to all other
-		  projections of order <code><var>order</var></code>;
-		- <code>default: <var>weight</var></code>
-		  to assign the weight <code><var>weight</var></code> to all other
-		  projections;
-		- <code>#<var>comment</var></code> to ignore
-		  <code><var>comment</var></code>.
-		
-		See \ref feats_weights and \ref cmdtut_weights for additional details.
-	</dd>
-	<dt><code>\--norm-type</code> / <code>-p</code></dt>
-	<dd><em>Optional (default: 2).</em>
-		Specifies the type of <em>L_p</em> norm to combine the merit
-		values across projections.
-		Takes an argument of the form:
-		- <code><var>realNumber</var></code> for a finite number;
-		- <code>inf</code> for infinity.
-
-		See \ref feats_figures for additional details.
-	</dd>
-	<dt>Specific to <code>--set-type net </code>:</dt>
-	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
-	<dd><em>Optional (default: 2).</em>
-		Specifies the size of a digital net.
-		Takes an argument of the form: TODO
-		- <code>2^<var>k</var></code> for <code><var> k </var></code>a finite number; or
-		- <code><var>N</var></code> for <code><var> N </var> </code> a power of 2.
-	</dd>
-	<dt><code>\--construction</code> / <code>-c</code></dt>
-	<dd><em>Required.</em>
-		Specifies the digital net construction to use.
-		TODO fill
-	</dd>
-	<dt><code>\--add-figure</code> / <code>-a</code></dt>
-	<dd><em>Required.</em>
-		Specifies a figure of merit to add. 
-		For digital nets, figures of merit can be combined using the <code>\--add-figure</code> option.
-		Takes an argument of either of the following form:
-		<code><var>figure</var>/<var>importance</var>/<var>norm-type</var>/<var><weights-description></var></code> where:
-		- <code><var>figure</var></code> is the figure name (see \ref cmdtut_figures);
-		- <code><var>importance</var></code> is the importance of the figure (if required);
-		- <code><var>norm-type</var></code> is the norm-type for the figure (if required);
-		<code><var><weight-description></var></code> is a description of the weights used for the figure (see \ref cmdtut_weights) (if required).
-
-		See \ref feats_figures and \ref cmdtut_figures for additional details.
-	</dd>
-	<dt><code>\--figure-combiner</code> / <code>-B</code></dt>
-	<dd><em>Optional (default max).</em>
-		Specifies the combiner used to combine the different figures of merit.
-		Takes one of the following values:
-		- <code>sum</code>
-			to sum the merit values across all the figures; or
-		- <code>max</code>
-			to select the maximum merit value across all the figures.
-
-		See \ref feats_figures for additional details.
-	</dd>
-	<dt><code>\--no-early-abort</code> / <code>-e</code></dt>
-	<dd><em>Optional (default false).</em>
-		Specifies if the early-abortion of useless computations should be disabled.
-		Takes one of the following values:
-		- <code>false</code>
-			to enable early-abortion; or
-		- <code>embedded</code>
-			to disable early-abortion.
 	</dd>
 </dl>
 */

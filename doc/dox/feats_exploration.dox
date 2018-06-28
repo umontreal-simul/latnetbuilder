@@ -33,8 +33,8 @@ methods:
   \n Point sets are constructed component-by-component (CBC) in a greedy procedure. For each coordinate, a random sample of coordinate values
 are evaluated and the best choice in line with the previous coordinates is made.
 
-Additionally, some exploration method are only supported either by LatBuilder (for lattices)  or NetBuilder (for digital nets):
-- LatBuilder:
+Additionally, some exploration method are only supported either by %LatBuilder (for lattices)  or %NetBuilder (for digital nets):
+- %LatBuilder:
     - <b>extend</b>: 
       \n Extend the size of a rank-1 lattice up to a specific modulus.
     - <b>fast-CBC</b>: 
@@ -45,7 +45,7 @@ Additionally, some exploration method are only supported either by LatBuilder (f
       and \f$ N \f$ its modulus.
     - <b>random Korobov</b>: 
       \n Same as Korobov except that only a random sample of integers coprime with \f$ N \f$ is explored.
-- NetBuilder:
+- %NetBuilder:
     - <b>mixed-CBC</b>:
       \n This algorithm mixes the full-CBC and the random-CBC algorithms. For the first coordinates, the full-CBC exploration is used
       and then, it is replaced with the random-CBC exploration. All in all, component-by-component, all the possible coordinate values are tested for the first dimensions

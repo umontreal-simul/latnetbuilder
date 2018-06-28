@@ -128,7 +128,9 @@ across all levels, with a decreasing weights on the 2-dimensional projections:
     --size-parameter 2^20 \
     --dimension 10 \
     --exploration-method random-CBC:100 \
-    --add-figure t-value/1/1/POD:0:0,1:0.8 \
+    --figure-of-merit t-value
+    --weight-power inf
+    --weights POD:0:0,1:0.8 \
     --combiner max
 \endverbatim
 */

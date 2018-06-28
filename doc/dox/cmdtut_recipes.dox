@@ -97,8 +97,12 @@ Consider the following basic example:
  --size-parameter 2^10 \
  --dimension 20 \
  --exploration-method random:1000  \
- --add-figure CU:P2/1/2/order-dependent:0:1,2,3
+ --figure-of-merit CU:P2
+ --weight-power 2
+ --weights order-dependent:0:1,2,3
 \endverbatim
+
+\todo refactor this section
 
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
@@ -106,6 +110,7 @@ Some arguments consists of several tokens, separated by a colon.
 - The argument <code>\--construction sobol</code> indicates that we seek a Sobol net.
 - The argument <code>\--multilevel false</code> indicates that we seek a
   unilevel point set.
+
 
 - The argument <code>\--size-parameter 2^10</code> indicates that we seek digital net with \f$2^10 = 1024 \f$ points.
 

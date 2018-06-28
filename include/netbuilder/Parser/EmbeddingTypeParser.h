@@ -23,7 +23,7 @@
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid embedding type.
  */
 class BadEmbeddingType : public lbp::ParserError {
 public:

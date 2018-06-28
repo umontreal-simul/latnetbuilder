@@ -16,7 +16,7 @@
 
 /** \page feats_figures_net Figures of merit for digital nets
 
-LatNetBuilder supports the following figures of merit for digital nets. 
+LatNet Builder supports the following figures of merit for digital nets. 
 
 Two of these figures are derived from 
 those used for polynomial lattice rules:
@@ -62,12 +62,5 @@ If each rectangle contains exactly the same number of points, we say that the ne
   The resolution of a net is the biggest \f$r\f$ such that the net is \f$(r,\dots,r)\f$-equidistributed.
   The resolution of the projection of a net with \f$2^k\f$ points on \f$\mathfrak u\f$ is always smaller than \f$\lfloor \frac{k}{|\mathfrak u|} \rfloor \f$.
   The resolution-gap of a projection is the difference between this upper-bound and its actual resolution.
-
-- The \f$r\f$-bit equidistribution property with weight \f$w\f$ for a positive integer \f$r\f$ and a positive real \f$w\f$:
-    \n this figure equals 0 if the digital net is \f$(r,\dots,r)\f$-equidistributed
-    and \f$w\f$ otherwise. 
-
-
-
 */
 vim: ft=doxygen spelllang=en spell

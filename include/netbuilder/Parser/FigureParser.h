@@ -59,7 +59,7 @@ class BadFigure : public lbp::ParserError
 };
 
 /**
- * Parser for figure parameters.
+ * Parser for figures.
  */
 template<NetConstruction NC, EmbeddingType ET>
 struct FigureParser

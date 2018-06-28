@@ -55,7 +55,7 @@ The tutorial is divided into the following sections:
 
 /** \page libtut_lat_textstream Text Output
 
-LatBuilder provides overloads of the stream operator \c << that recognize
+%LatBuilder provides overloads of the stream operator \c << that recognize
 iterable data types.  For example, the following code from \ref
 tutorial/TextStream.cc :
 \snippet tutorial/TextStream.cc cout
@@ -73,7 +73,7 @@ outputs:
 
 /** \page libtut_lat_polynomial Implementaion of Polynomials
 
-LatBuilder uses the implementation of % NTL library to represents polynomials over \f$\mathbb{Z}_2\f$
+%LatBuilder uses the implementation of % NTL library to represents polynomials over \f$\mathbb{Z}_2\f$
 The Input/Output format used is the same as in NTL: The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ is represented by [\f$a_0\f$...\f$a_n\f$].
 In the examples shown here, we construct polynomial from integers using a binary conversion. The integer \f$ i = \sum a_j2^j \f$ is seen as the polynomial \f$ i(z) = \sum a_jz^j \f$
 \snippet tutorial/Polynomials.cc main
@@ -86,8 +86,8 @@ outputs
 
 /** \page libtut_lat_latdef Lattice Types and Definitions
 
-LatBuilder supports two lattice: ordinary lattices and polynomial lattices. For each, two types of lattices are supported: simple and embedded.
-Their representation in LatBuilder differs by the type of their size
+%LatBuilder supports two lattice: ordinary lattices and polynomial lattices. For each, two types of lattices are supported: simple and embedded.
+Their representation in %LatBuilder differs by the type of their size
 parameter.
 The size of a simple ordinary lattice (of type SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>) is specified by
 a single integer: the number of points in the lattice \f$n\f$.
@@ -184,7 +184,7 @@ SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(32)
 
 Search for a good generating vector involves enumerating the values its
 components can take.
-The representation of search spaces in LatBuilder is based on sequences of
+The representation of search spaces in %LatBuilder is based on sequences of
 possible values for the components of the generating vector.
 
 \sa GenSeq
@@ -586,7 +586,7 @@ The current example, however, illustrates the basic ideas and can be found in
 
 \section libtut_lat_figures_storage Storage
 
-In LatBuilder, the algorithms that evaluate figures of merit all store and
+In %LatBuilder, the algorithms that evaluate figures of merit all store and
 operate on some data internally, whose representation may vary depending on the lattice (ordinary/polynomial), the
 type of lattice (simple/embedded) and of figure of merit under consideration.
 
@@ -622,7 +622,7 @@ Finally, the size parameter of the lattice directly affects the length of the
 internal data vector.
 
 To account for these three different aspects, the internal representation of
-vectors in LatBuilder is specified by a Storage instance.
+vectors in %LatBuilder is specified by a Storage instance.
 These classes perform time-critical operations (such as permutation) and for
 that reason are not polymorphic.
 
@@ -912,7 +912,7 @@ BEST LATTICE: PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) with merit v
 
 Iterating through a sequence of lattice definitions and evaluating a figure of
 merit for each element, as in \ref libtut_lat_figures, is a common task when
-searching for good lattice parameters.  LatBuilder abstracts out this
+searching for good lattice parameters.  %LatBuilder abstracts out this
 process by providing sequences of (computed) merit values.
 
 \sa MeritSeq
@@ -1044,7 +1044,7 @@ The complete example can be found in \ref tutorial/MeritSeqFastCBC.cc.
 
 \section libtut_lat_meritseq_noncbc Non-CBC Construction Methods
 
-In LatBuilder, sequences of merit values for non-CBC exploration methods
+In %LatBuilder, sequences of merit values for non-CBC exploration methods
 are available only as a wrapper of the CBC exploration applied independently to
 each lattice definition, by replacing the sequences of candidate lattice
 definitions by singletons that contain only the candidate lattice being
@@ -1212,7 +1212,7 @@ BEST LATTICE: lattice(2^8, [1, 45, 69]) with merit value 0.302157
 \endverbatim
 Notice that the base merit value is now a vector of per-level merit values.
 
-For polynomial lattices, no adapted normalizers are implemented. The normalizers PAlphaSL10 and PAlphaDPW8 are conceived for ordinary lattices, but LatBuilder does not forbid using them for polynomial lattices:
+For polynomial lattices, no adapted normalizers are implemented. The normalizers PAlphaSL10 and PAlphaDPW8 are conceived for ordinary lattices, but %LatBuilder does not forbid using them for polynomial lattices:
 
 \verbatim
 figure of merit: CoordUniformFigureOfMerit(kernel=P2_PLR, weights=ProductWeights([], default=0.7))
@@ -1346,7 +1346,7 @@ after, of course, adding the new header with:
 \snippet custom-weights.patch.cc parser header
 We also need to add a conditional block in Parser::Weights::parse:
 \snippet custom-weights.patch.cc parser if
-Then, after recompiling LatBuilder, the new weights should be available to
+Then, after recompiling LatNet Builder, the new weights should be available to
 use by invoking \c latnet with the option <code>--weights
 MyWeights:1.5</code>, for example.
 

@@ -64,9 +64,9 @@ makeOptionsDescription()
    ("verbose,v", po::value<int>()->default_value(0),
    "specify the verbosity of the program\n")
   //  ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
-   ("construction,c", po::value<std::string>()->default_value("ordinary"),
+   ("construction,c", po::value<std::string>(),
    "lattice construction; possible values:\n"
-   "  ordinary (default)\n"
+   "  ordinary\n"
    "  polynomial\n")
    ("multilevel,m", po::value<std::string>()->default_value("false"),
     "multilevel point set; possible values:\n"
@@ -168,16 +168,17 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
+   for (const auto x : {"construction", "size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
+      if (opt.count(x) != 1)
+         throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
+   }
+
   if (opt.count("combiner") < 1 && opt["multilevel"].as<std::string>() == "true"){
     throw std::runtime_error("--combiner must be specified for multilevel set type (try --help)");
   }
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
-      if (opt.count(x) != 1)
-         throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
-   }
 
    return opt;
 }

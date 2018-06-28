@@ -45,5 +45,12 @@ of weights have been proposed. LatNet Builder implements the following:
     \Gamma_{|\mathfrak u|}
     \prod_{j \in \mathfrak u} \gamma_j.
   \f]
+- <b>combined weights</b>:
+  \n With combined weights, the weight associated to the
+  projection onto the coordinates in \f$\mathfrak u\f$ is
+  a sum of weights of different types.
+  LatNet Builder does not handle these weights as projection-dependent weights
+  but as a specific type of weight for efficiency purpose in coordinate-uniform 
+  evaluation methods.
 */
 vim: ft=doxygen spelllang=en spell
