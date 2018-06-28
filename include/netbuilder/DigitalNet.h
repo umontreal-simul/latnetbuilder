@@ -137,7 +137,7 @@ class DigitalNet
 
 /** Derived class of DigitalNet designed to implement specific construction methods. The available construction methods
  * are described by the NetConstruction enumeration which is a non-type template parameter of the DigitalNetConstruction 
- * class. @see NetBuilder::NetConstructionTraits. Construction methods are based on two parameters: a design parameter which is 
+ * class. @see NetBuilder::NetConstructionTraits. Construction methods are based on two parameters: a size parameter which is 
  * shared by all coordinates and a sequence of generating values, each of them being associated to one coordinate.
  */ 
 template <NetConstruction NC>
@@ -150,28 +150,28 @@ class DigitalNetConstruction : public DigitalNet
         /// Type of the generating values of the method.
         typedef typename ConstructionMethod::GenValue GenValue;
 
-        /// Type of the design parameter of the method.
-        typedef typename ConstructionMethod::DesignParameter DesignParameter;
+        /// Type of the size parameter of the method.
+        typedef typename ConstructionMethod::SizeParameter SizeParameter;
 
 
         /** 
          * Constructor.
          * @param dimension Dimension of the net.
-         * @param designParameter Design parameter of the net.
+         * @param sizeParameter Size parameter of the net.
          * @param genValues Sequence of generating values to create the net.
          */
         DigitalNetConstruction(
             Dimension dimension,
-            DesignParameter designParameter, 
+            SizeParameter sizeParameter, 
             std::vector<GenValue> genValues):
-                DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
-                m_designParameter(std::move(designParameter))
+                DigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter)),
+                m_sizeParameter(std::move(sizeParameter))
         {
             m_genValues.reserve(m_dimension);
             for(const auto& genValue : genValues)
             {
                 // construct the generating matrix and store them and the generating values
-                m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_designParameter)));
+                m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_sizeParameter)));
                 m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
             }
         }
@@ -179,13 +179,13 @@ class DigitalNetConstruction : public DigitalNet
         /** 
          * Constructor for placeholder nets.
          * @param dimension Dimension of the net.
-         * @param designParameter Design parameter of the net.
+         * @param sizeParameter Size parameter of the net.
          */
         DigitalNetConstruction(
             Dimension dimension = 0,
-            DesignParameter designParameter = DesignParameter()):
-                DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter)),
-                m_designParameter(std::move(designParameter))
+            SizeParameter sizeParameter = SizeParameter()):
+                DigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter)),
+                m_sizeParameter(std::move(sizeParameter))
         {}
 
         /**
@@ -201,7 +201,7 @@ class DigitalNetConstruction : public DigitalNet
          */ 
         std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue) const 
         {
-            std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(newGenValue,m_designParameter));
+            std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(newGenValue,m_sizeParameter));
 
             // copy the vector of pointers to matrices and add the new matrix
             auto genMats = m_generatingMatrices; 
@@ -212,7 +212,7 @@ class DigitalNetConstruction : public DigitalNet
             genVals.push_back(std::shared_ptr<GenValue>(new GenValue(newGenValue)));
 
             // instantiate the new net and return the unique pointer to it
-            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>(m_dimension+1, m_designParameter, std::move(genVals), std::move(genMats)));
+            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>(m_dimension+1, m_sizeParameter, std::move(genVals), std::move(genMats)));
         }
 
 
@@ -264,7 +264,7 @@ class DigitalNetConstruction : public DigitalNet
                 return out.str();
             }
 
-            std::string res = ConstructionMethod::format(m_genValues,m_designParameter,outputFormat);
+            std::string res = ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat);
             if (outputFormat==OutputFormat::GUI)
             {
                 std::ostringstream stream;
@@ -287,26 +287,26 @@ class DigitalNetConstruction : public DigitalNet
             return ConstructionMethod::isSequenceViewable;
         }
 
-        DesignParameter designParameter() const { return m_designParameter ; }
+        SizeParameter sizeParameter() const { return m_sizeParameter ; }
     
     private:
 
-        DesignParameter m_designParameter; // design parameter of the net
+        SizeParameter m_sizeParameter; // size parameter of the net
         mutable std::vector<std::shared_ptr<GenValue>> m_genValues; // vector of shared pointers to the generating values of the net TODO change mutable
 
         /** Most general constructor.
          * @param dimension Dimension of the net.
-         * @param designParameter Design parameter of the net.
+         * @param sizeParameter Size parameter of the net.
          * @param genValues Vector of shared pointers to the generating values of each coordinate.
          * @param genMatrices Vector of shared pointers to the generating matrices of each coordinate.
         */ 
         DigitalNetConstruction(
             Dimension dimension,
-            DesignParameter designParameter,
+            SizeParameter sizeParameter,
             std::vector<std::shared_ptr<GenValue>> genValues,
             std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
-                DigitalNet(dimension, ConstructionMethod::nRows(designParameter), ConstructionMethod::nCols(designParameter), std::move(genMatrices)),
-                m_designParameter(std::move(designParameter)),
+                DigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter), std::move(genMatrices)),
+                m_sizeParameter(std::move(sizeParameter)),
                 m_genValues(std::move(genValues))
         {};
 };

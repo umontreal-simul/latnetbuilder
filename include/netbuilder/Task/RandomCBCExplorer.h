@@ -39,14 +39,14 @@ class RandomCBCExplorer
 
         /** Constructor.
          * @param dimension Number of coordinates of the explorer.
-         * @param designParameter Design parameter of the search space.
+         * @param sizeParameter Size parameter of the search space.
          * @param nbTries Number of random choices of generating values by dimension.
          */
-        RandomCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries):
+        RandomCBCExplorer(Dimension dimension, typename ConstructionMethod::SizeParameter sizeParameter, unsigned int nbTries):
             m_dimension(dimension),
             m_currentCoord(0),
             m_nbTries(nbTries),
-            m_randomGenValueGenerator(std::move(designParameter)),
+            m_randomGenValueGenerator(std::move(sizeParameter)),
             m_countTries(0)
         {};
 

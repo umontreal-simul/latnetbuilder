@@ -196,12 +196,12 @@ struct FigureParser
         }
         else if (name == "CU:P2"){
             auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
-            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), commandLine.m_sizeParam, kernel, commandLine.m_combiner);
+            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), commandLine.m_sizeParamLatTrick, kernel, commandLine.m_combiner);
             vecFigures.push_back(std::move(coordUnifFigure));
         }
         else if (name == "CU:R"){
             auto kernel = LatBuilder::Kernel::RPLR();
-            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), commandLine.m_sizeParam, kernel, commandLine.m_combiner);
+            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), commandLine.m_sizeParamLatTrick, kernel, commandLine.m_combiner);
             vecFigures.push_back(std::move(coordUnifFigure));
         }
         else{

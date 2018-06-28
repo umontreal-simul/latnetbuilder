@@ -36,16 +36,16 @@ class MixedCBCExplorer
 
         /** Constructor.
          * @param dimension Number of coordinates of the explorer.
-         * @param designParameter Design parameter of the search space.
+         * @param sizeParameter Size parameter of the search space.
          * @param nbFullCoordinates Number of coordinates for which the search is exhaustive.
          * @param nbTries Number of random choices of generating values.
          */
-        MixedCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbFullCoordinates, unsigned int nbTries):
+        MixedCBCExplorer(Dimension dimension, typename ConstructionMethod::SizeParameter sizeParameter, unsigned int nbFullCoordinates, unsigned int nbTries):
             m_dimension(dimension),
             m_currentCoord(0),
             m_nbFullCoordinates(nbFullCoordinates),
-            m_randExplorer(new RandomCBCExplorer<NC, ET>(dimension, designParameter, nbTries)),
-            m_fullExplorer(new FullCBCExplorer<NC, ET>(nbFullCoordinates, designParameter))
+            m_randExplorer(new RandomCBCExplorer<NC, ET>(dimension, sizeParameter, nbTries)),
+            m_fullExplorer(new FullCBCExplorer<NC, ET>(nbFullCoordinates, sizeParameter))
         {};
 
         /**

@@ -30,9 +30,9 @@ namespace NetBuilder {
 
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
-    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
+    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::SizeParameter SizeParameter;
 
-    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
+    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const SizeParameter& sizeParameter)
     {
         auto dimension = genValue.first;
 
@@ -59,9 +59,9 @@ namespace NetBuilder {
         return true;
     }
 
-    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nRows(const DesignParameter& param) { return (unsigned int) param; }
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nRows(const SizeParameter& param) { return (unsigned int) param; }
 
-    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nCols(const DesignParameter& param) { return (unsigned int) param; }
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nCols(const SizeParameter& param) { return (unsigned int) param; }
 
     static const std::array<unsigned int,21200> degrees =
     {{
@@ -118,9 +118,9 @@ namespace NetBuilder {
         reg.push_back(std::move(newDirNum));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam)
     {
-        unsigned int m  = nCols(designParam);
+        unsigned int m  = nCols(sizeParam);
         Dimension coord = genValue.first;
 
         if (coord==0) // special case for the first dimension
@@ -249,23 +249,23 @@ namespace NetBuilder {
         }
     }
 
-    typename NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)
+    typename NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
     {
         return GenValueSpaceCoordSeq(coord);
     }
 
-    typename NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceSeq NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(Dimension dimension, const DesignParameter& designParameter)
+    typename NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceSeq NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(Dimension dimension, const SizeParameter& sizeParameter)
     {
         std::vector<GenValueSpaceCoordSeq> seqs;
         seqs.reserve(dimension);
         for(Dimension coord = 0; coord < dimension; ++coord)
         {
-            seqs.push_back(genValueSpaceCoord(coord, designParameter));
+            seqs.push_back(genValueSpaceCoord(coord, sizeParameter));
         }
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat)
     {
         std::string res;
         res += "SobolDigitalNet(\n  Direction numbers = \n";

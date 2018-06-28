@@ -76,13 +76,13 @@ makeOptionsDescription()
    ("construction,c", po::value<std::string>()->default_value("sobol"),
    "digital net; possible constructions:\n"
    "  sobol (default)\n"
-   "  polynomial:<modulus>\n"
-   "  explicit:<matrix-size>\n")
+   "  polynomial\n"
+   "  explicit\n")
    ("multilevel,m", po::value<std::string>()->default_value("false"),
     "multilevel point set; possible values:\n"
    "  false (default)\n"
    "  true\n")
-   ("size,s", po::value<std::string>(),
+   ("size-parameter,s", po::value<std::string>(),
     "(required) size of the net; possible values:\n"
    "  <size>\n"
    "  2^<max-power>\n")
@@ -160,7 +160,7 @@ parse(int argc, const char* argv[])
 
    if (opt.count("add-figure") < 1)
       throw std::runtime_error("--add-figure must be specified (try --help)");
-   for (const auto x : {"size", "exploration-method", "dimension"}) {
+   for (const auto x : {"size-parameter", "exploration-method", "dimension"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
@@ -177,10 +177,9 @@ parse(int argc, const char* argv[])
 #define BUILD_TASK(net_construction, point_set_type)\
 NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, NetBuilder::EmbeddingType::point_set_type> cmd;\
 \
-cmd.s_designParameter = designParameterString;\
 cmd.s_verbose = opt["verbose"].as<std::string>();\
 cmd.s_explorationMethod = opt["exploration-method"].as<std::string>();\
-cmd.s_size = opt["size"].as<std::string>();\
+cmd.s_size = opt["size-parameter"].as<std::string>();\
 cmd.s_dimension = opt["dimension"].as<std::string>();\
 cmd.s_figures = opt["add-figure"].as<std::vector<std::string>>();\
 if (opt.count("figure-combiner") < 1){\
@@ -241,20 +240,16 @@ int main(int argc, const char *argv[])
         std::string s_construction = opt["construction"].as<std::string>();
         NetBuilder::EmbeddingType embeddingType = NetBuilder::Parser::EmbeddingTypeParser::parse(s_multilevel);
 
-        std::pair<NetBuilder::NetConstruction,std::string> netConstructionPair;
+        NetBuilder::NetConstruction netConstruction;
 
         if (embeddingType==NetBuilder::EmbeddingType::UNILEVEL)
         {
-          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::UNILEVEL>::parse(s_construction);
+          netConstruction =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::UNILEVEL>::parse(s_construction);
         }
         else
         {
-          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::MULTILEVEL>::parse(s_construction);
+          netConstruction =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::MULTILEVEL>::parse(s_construction);
         }
-
-        NetBuilder::NetConstruction netConstruction = netConstructionPair.first;
-
-        std::string designParameterString = netConstructionPair.second;
 
         std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
@@ -271,22 +266,23 @@ int main(int argc, const char *argv[])
        }
       //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
       //     BUILD_TASK(POLYNOMIAL, MULTILEVEL)
-      //  }
+      //  } 
         if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
       //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
       //     BUILD_TASK(EXPLICIT, MULTILEVEL)
       //  }
+
       for (unsigned i=0; i<repeat; i++){
-      t0 = high_resolution_clock::now();\
-      task->execute();\
-      t1 = high_resolution_clock::now();\
-      TaskOutput(*task, outputFormatParameters);
-      auto dt = duration_cast<duration<double>>(t1 - t0);
-      std::cout << std::endl;
-      std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-      task.reset();
+        t0 = high_resolution_clock::now();\
+        task->execute();\
+        t1 = high_resolution_clock::now();\
+        TaskOutput(*task, outputFormatParameters);
+        auto dt = duration_cast<duration<double>>(t1 - t0);
+        std::cout << std::endl;
+        std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
+        task.reset();
       }
    }
    catch (LatBuilder::Parser::ParserError& e) {

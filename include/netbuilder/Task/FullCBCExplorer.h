@@ -37,13 +37,13 @@ class FullCBCExplorer
         /**
          * Constructor.
          * @param dimension Number of coordinates of the explorer.
-         * @param designParameter Design parameter of the search space.
+         * @param sizeParameter Size parameter of the search space.
          */ 
-        FullCBCExplorer(Dimension dimension, typename ConstructionMethod::DesignParameter designParameter):
+        FullCBCExplorer(Dimension dimension, typename ConstructionMethod::SizeParameter sizeParameter):
             m_dimension(dimension),
             m_currentCoord(0),
-            m_designParameter(std::move(designParameter)),
-            m_data(ConstructionMethod::genValueSpaceCoord(m_currentCoord,  m_designParameter)),
+            m_sizeParameter(std::move(sizeParameter)),
+            m_data(ConstructionMethod::genValueSpaceCoord(m_currentCoord,  m_sizeParameter)),
             m_state(m_data.begin()),
             m_count(0)
         {};
@@ -82,7 +82,7 @@ class FullCBCExplorer
         {
             m_currentCoord = coord;
             m_count = 0;
-            m_data = ConstructionMethod::genValueSpaceCoord(m_currentCoord,  m_designParameter);
+            m_data = ConstructionMethod::genValueSpaceCoord(m_currentCoord,  m_sizeParameter);
             m_state = m_data.begin();
         }
 
@@ -99,7 +99,7 @@ class FullCBCExplorer
     private:
         Dimension m_dimension;
         Dimension m_currentCoord;
-        typename ConstructionMethod::DesignParameter m_designParameter;
+        typename ConstructionMethod::SizeParameter m_sizeParameter;
         typename ConstructionMethod::GenValueSpaceCoordSeq m_data;
         typename ConstructionMethod::GenValueSpaceCoordSeq::const_iterator m_state;
         size_t m_count;

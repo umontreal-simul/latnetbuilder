@@ -40,11 +40,11 @@ class MinimumObserver
 
         /** 
          * Constructor. 
-         * @param designParameter Design parameter of the searched net.
+         * @param sizeParameter Size parameter of the searched net.
          * @param verbose Verbosity level.
         */
-        MinimumObserver(typename NetConstructionTraits<NC>::DesignParameter designParameter, int verbose = 0):
-            m_bestNet(new DigitalNetConstruction<NC>(0,designParameter)),
+        MinimumObserver(typename NetConstructionTraits<NC>::SizeParameter sizeParameter, int verbose = 0):
+            m_bestNet(new DigitalNetConstruction<NC>(0,sizeParameter)),
             m_verbose(verbose)
         {
             reset();

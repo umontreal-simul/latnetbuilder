@@ -39,19 +39,19 @@ class CBCSearch : public Search<NC, ET>
 
         /** Constructor.
          * @param dimension Dimension of the searched net.
-         * @param designParameter Design parameter of the searched net.
+         * @param sizeParameter Size parameter of the searched net.
          * @param figure Figure of merit used to compare nets.
          * @param explorer Explorer to search for nets.
          * @param verbose Verbosity level.
          * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
          */
         CBCSearch(  Dimension dimension, 
-                    typename NetConstructionTraits<NC>::DesignParameter designParameter,
+                    typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
                     bool earlyAbortion = true):
-            Search<NC, ET>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, sizeParameter, std::move(figure), verbose, earlyAbortion),
             m_explorer(std::move(explorer))
         {};
 

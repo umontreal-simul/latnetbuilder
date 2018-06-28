@@ -68,7 +68,7 @@ struct NetDescriptionParser<NetConstruction::SOBOL, ET>
                dirNumbersValues.push_back(boost::lexical_cast<uInteger>(numStr));
            }
            GenValue genVal = GenValue(dim,std::move(dirNumbersValues));
-           if(!NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(genVal, commandLine.m_designParameter))
+           if(!NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                 throw BadNetDescription("bad Sobol' direction numbers.");
            }
@@ -98,7 +98,7 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, ET>
        for(const auto& polyString : netDescriptionStrings)
        {
            GenValue genVal = polynomialParserHelper(polyString);
-           if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_designParameter))
+           if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating polynomial.");
            }
@@ -145,7 +145,7 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
                std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
                genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);
            }
-           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_designParameter))
+           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating matrix size.");
            }

@@ -19,16 +19,16 @@
 \todo build page
 
 We can construct polynomial lattices by setting the argument <code>\--construction </code> to <code>polynomial</code>, 
-and by specifying a polynomial as the modulus parameter to the argument <code>\--modulus </code>. 
+and by specifying a polynomial as the modulus parameter to the argument <code>\--size-parameter </code>. 
 The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.
 Optionally, we can print the generator matrices of the the retained polynomial lattice (as a digital net in base 2) in a specified file and using a specified format, by adding the argument  <code>\--output-poly </code> with the value <code>file:<var>file.txt</var>,format:<var>format</var></code>.
-For example, changing the arguments <code>\--construction </code>, <code>\--modulus </code> to
+For example, changing the arguments <code>\--construction </code>, <code>\--size-parameter </code> to
 \verbatim
---construction polynomial --modulus 1011 
+--construction polynomial --size-parameter 1011 
 \endverbatim
 and adding
 \verbatim
---output-poly file:outFile.txt,format:ssj 
+--output-poly file:outFile.txt,format:ssj
 \endverbatim
 means that we seek a polynomial lattice rule with modulus \f$1+z^2+z^3\f$ 
 and we want to print its generator matrices in  <code>outFile.txt</code> in 

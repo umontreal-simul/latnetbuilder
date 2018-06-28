@@ -38,7 +38,6 @@ namespace NetBuilder { namespace Parser {
 template <NetConstruction NC, EmbeddingType ET>
 struct CommandLine {
    std::string s_explorationMethod;
-   std::string s_designParameter;
    std::string s_size;
    std::string s_dimension;
    std::vector<std::string> s_figures;
@@ -49,8 +48,8 @@ struct CommandLine {
    bool m_earlyAbort;
    bool m_hasWeightPower;
    Real m_weightPower;
-   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParam;
-   typename NetConstructionTraits<NC>::DesignParameter m_designParameter;
+   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParamLatTrick;
+   typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;
    Combiner m_combiner;
    Dimension m_dimension;
    std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
@@ -61,9 +60,7 @@ struct CommandLine {
 
 }
 }
-#include "latbuilder/Parser/SizeParam.h"
-
-#include "netbuilder/Parser/DesignParameterParser.h"
+#include "netbuilder/Parser/SizeParameterParser.h"
 #include "netbuilder/Parser/FigureParser.h"
 #include "netbuilder/Parser/ExplorationMethodParser.h"
 
@@ -73,8 +70,8 @@ std::unique_ptr<NetBuilder::Task::Task>
 CommandLine<NC, ET>::parse()
 {
       namespace lbp = LatBuilder::Parser;
-      m_sizeParam = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(s_size);
-      m_designParameter = DesignParameterParser<NC,ET>::parse(*this);
+      
+      SizeParameterParser<NC,ET>::parse(*this);
       m_dimension = boost::lexical_cast<Dimension>(s_dimension);
       m_verbose = boost::lexical_cast<int>(s_verbose);
       m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized as a side effect

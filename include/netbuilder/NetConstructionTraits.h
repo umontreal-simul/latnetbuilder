@@ -47,7 +47,7 @@ namespace NetBuilder {
  *  Specialization of this class must define:
  * \n the following types:
  *  - \c GenValue: type of the value required to construct a generating matrix (specific to a coordinate)
- *  - \c DesignParameter: type of the parameter used to construct a net (shared by all coordinates)
+ *  - \c SizeParameter: type of the parameter used to construct a net (shared by all coordinates)
  *  - \c GenValueSpaceCoordSeq: type used to represent the sequence of all possible generating values for a coordinate
  *  - \c GenValueSpaceSeq: type used to represent the sequence of all the possible combinations of generating values
  * \n the following static variables:
@@ -55,18 +55,18 @@ namespace NetBuilder {
  *  - \c hasSpecialFirstCoordinate: a bool indicating whether the first coordinate is a special case and can only take one value
  * \n the following static functions:
  *  - <CODE> static \c bool \c checkGenValue(const GenValue& genValue) </CODE>: checks whether a generating value is correct
- *  - <CODE> static \c unsigned int \c nRows(const GenValue& genValue) </CODE>: computes the number of rows associated to the design parameter
- *  - <CODE> static \c unsigned int \c nCols(const GenValue& genValue) </CODE>: computes the number of columns associated to the design parameter
- *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, DesignParameter designParameter)</CODE>: 
- * create a generating matrix using the generating value and the design parameter.
- *  - <CODE>static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter)</CODE>: returns the sequence of all the possible generating values
+ *  - <CODE> static \c unsigned int \c nRows(const GenValue& genValue) </CODE>: computes the number of rows associated to the size parameter
+ *  - <CODE> static \c unsigned int \c nCols(const GenValue& genValue) </CODE>: computes the number of columns associated to the size parameter
+ *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, SizeParameter sizeParameter)</CODE>: 
+ * create a generating matrix using the generating value and the size parameter.
+ *  - <CODE>static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)</CODE>: returns the sequence of all the possible generating values
  *  for coordinate \c coord.
- *  - <CODE> static GenValueSpaceSeq genValueSpace(Dimension dimension , const DesignParameter& designParameter) </CODE>: returns the sequence of all the possible combinations
+ *  - <CODE> static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter) </CODE>: returns the sequence of all the possible combinations
  *  of generating values for a net in dimension \c dimension.
  * \n and the following class template:
  *  - <CODE> template<typename RAND> class RandomGenValueGenerator </CODE>: a class template where template parameter RAND implements
  *  a C++11 type PRNG. This is a random generator of generating values. This class template must define a constructor 
- *  <CODE> RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()) </CODE> and an the member function <CODE>GenValue operator()(Dimension coord)</CODE> returning
+ *  <CODE> RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()) </CODE> and an the member function <CODE>GenValue operator()(Dimension coord)</CODE> returning
  *  a generating value for coordinate \c coord.
  */ 
 template <NetConstruction NC>
@@ -77,19 +77,19 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 {
     typedef std::pair<Dimension, std::vector<uInteger>> GenValue ;
 
-    typedef unsigned int DesignParameter;
+    typedef unsigned int SizeParameter;
 
     static constexpr bool isSequenceViewable = true;
 
     static constexpr bool hasSpecialFirstCoordinate = true;
 
-    static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+    static bool checkGenValue(const GenValue& genValue, const SizeParameter& sizeParam);
 
-    static unsigned int nRows(const DesignParameter& param);
+    static unsigned int nRows(const SizeParameter& param);
 
-    static unsigned int nCols(const DesignParameter& param);
+    static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam);
 
     class GenValueSpaceCoordSeq
     {
@@ -148,16 +148,16 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
     typedef LatBuilder::SeqCombiner<GenValueSpaceCoordSeq, LatBuilder::CartesianProduct> GenValueSpaceSeq;
 
-    static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter);
+    static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
-    static GenValueSpaceSeq genValueSpace(Dimension dimension , const DesignParameter& designParameter);
+    static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
 
     template<typename RAND>
     class RandomGenValueGenerator
     {
         public:
-            RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
-                m_designParameter(std::move(designParameter)),
+            RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
+                m_sizeParameter(std::move(sizeParameter)),
                 m_randomGen(std::move(randomGen)),
                 m_unif(0, 1)
             {};
@@ -185,12 +185,12 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             }
 
         private:
-            DesignParameter m_designParameter;
+            SizeParameter m_sizeParameter;
             RAND m_randomGen;
             LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
+    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat);
 
     typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
@@ -204,7 +204,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 {
     typedef Polynomial GenValue ;
 
-    typedef Polynomial DesignParameter;
+    typedef Polynomial SizeParameter;
 
     typedef LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE> GenValueSpaceCoordSeq;
 
@@ -214,25 +214,25 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
     static constexpr bool hasSpecialFirstCoordinate = true;
 
-    static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+    static bool checkGenValue(const GenValue& genValue, const SizeParameter& sizeParam);
 
-    static unsigned int nRows(const DesignParameter& param);
+    static unsigned int nRows(const SizeParameter& param);
 
-    static unsigned int nCols(const DesignParameter& param);
+    static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam);
 
-    static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter);
+    static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
-    static GenValueSpaceSeq genValueSpace(Dimension dimension , const DesignParameter& designParameter);
+    static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
 
     template<typename RAND>
     class RandomGenValueGenerator
     {
         public:
-            RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
+            RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
                 m_randomGen(std::move(randomGen)),
-                m_generatingValues(LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE>(std::move(designParameter))),
+                m_generatingValues(LatBuilder::GenSeq::GeneratingValues<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE>(std::move(sizeParameter))),
                 m_totient(m_generatingValues.size()),
                 m_unif(0, m_totient - 1)
             {}
@@ -255,7 +255,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
             LatBuilder::UniformUIntDistribution<size_t, RAND> m_unif;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
+    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat);
 };
 
 template<>
@@ -263,7 +263,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 {
     typedef GeneratingMatrix GenValue ;
 
-    typedef std::pair<unsigned int, unsigned int> DesignParameter;
+    typedef std::pair<unsigned int, unsigned int> SizeParameter;
     
     typedef std::vector<GenValue> GenValueSpaceCoordSeq;
 
@@ -271,47 +271,47 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
     static constexpr bool hasSpecialFirstCoordinate = false;
 
-    static bool checkGenValue(const GenValue& genValue, const DesignParameter& designParam);
+    static bool checkGenValue(const GenValue& genValue, const SizeParameter& sizeParam);
 
-    static unsigned int nRows(const DesignParameter& param);
+    static unsigned int nRows(const SizeParameter& param);
 
-    static unsigned int nCols(const DesignParameter& param);
+    static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam);
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam);
 
-    static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const DesignParameter& designParameter);
+    static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
-    static std::vector<GenValueSpaceCoordSeq> genValueSpace(Dimension dimension , const DesignParameter& designParameter);
+    static std::vector<GenValueSpaceCoordSeq> genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
 
     template<typename RAND>
     class RandomGenValueGenerator
     {
         public:
-            RandomGenValueGenerator(DesignParameter designParameter, RAND randomGen = RAND()):
-                m_designParameter(std::move(designParameter)),
+            RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
+                m_sizeParameter(std::move(sizeParameter)),
                 m_randomGen(std::move(randomGen)),
-                m_unif(0, (1 << m_designParameter.second) - 1)
+                m_unif(0, (1 << m_sizeParameter.second) - 1)
             {};
             
             GenValue operator()(Dimension dimension)
             {
                 std::vector<uInteger> init;
-                init.reserve(m_designParameter.first);
-                for(unsigned int i = 0; i < m_designParameter.second; ++i)
+                init.reserve(m_sizeParameter.first);
+                for(unsigned int i = 0; i < m_sizeParameter.second; ++i)
                 {
                     init.push_back(m_unif(m_randomGen));
                 }
-                return GeneratingMatrix(m_designParameter.first, m_designParameter.second, std::move(init));
+                return GeneratingMatrix(m_sizeParameter.first, m_sizeParameter.second, std::move(init));
             }
         private:
-            DesignParameter m_designParameter;
+            SizeParameter m_sizeParameter;
             RAND m_randomGen;
             LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
             std::vector<GenValue> m_primes;
             uInteger m_totient;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat);
+    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat);
 };
 
 }

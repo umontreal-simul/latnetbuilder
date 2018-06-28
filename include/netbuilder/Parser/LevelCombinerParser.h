@@ -83,12 +83,12 @@ struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::MULTILEVEL> {
                 unsigned int level;
                 if (combinerStrings[1] == "max")
                 {
-                    level = commandLine.m_sizeParam.log2NumPoints();
+                    level = commandLine.m_sizeParamLatTrick.log2NumPoints();
                 }
                 else
                 {
                     level = boost::lexical_cast<unsigned int>(combinerStrings[1]);
-                    if (level > commandLine.m_sizeParam.log2NumPoints() || level == 0)
+                    if (level > commandLine.m_sizeParamLatTrick.log2NumPoints() || level == 0)
                     {
                        throw BadLevelCombiner("incompatible combiner level and size.");
                     }  

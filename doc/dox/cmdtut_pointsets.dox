@@ -48,8 +48,8 @@ by a comma-separated list of integers or polynomials, depending on whether the l
 
 Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by
 <code>101001</code>. A polynomial generating vector is a comma-separated list of such polynomial specificiations. 
-In the case of polynomial lattices, the <code>--modulus</code> option is also specified this way, with the additionnal possibility to
-raise the polynomial to an integer power. For instance <code>--modulus 01^8</code> tells LatNet Builder that the modulus of the lattice is
+In the case of polynomial lattices, the <code>--size-parameter</code> option is also specified this way, with the additionnal possibility to
+raise the polynomial to an integer power. For instance <code>--size-parameter 01^8</code> tells LatNet Builder that the modulus of the lattice is
 \f$z^8\f$.
 
 In the Command-Line Tutorial, every occurence of <code><var>genVec</var></code> or <code><var><point-set-description></var></code> can be 
@@ -82,7 +82,7 @@ to have square matrices of size <code><var>k</var></code> of by <code><var>r</va
 <code><var>r</var></code> rows and <code><var>k</var></code> columns.
 
 In any case,  <code><var>k</var></code> should be compatible with the specified size of the nets
-(the option <code>--size 2^<var>k</var></code> must be set).
+(the option <code>--size-parameter 2^<var>k</var></code> must be set).
 
 Specifying a specific digital net depends on its construction method. In the Command-Line Tutorial, any occurence of
 <code><var><point-set-description></var></code> or <code><var><net-description></var></code> can be replaced as follows:

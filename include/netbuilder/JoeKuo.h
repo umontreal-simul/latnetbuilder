@@ -35,7 +35,7 @@ namespace JoeKuo {
 typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue DirectionNumbers;
 
 /// Size of generating matrices
-typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter MatrixSize;
+typedef typename NetConstructionTraits<NetConstruction::SOBOL>::SizeParameter MatrixSize;
 
 /**
  * Weights used by Joe and Kuo in \cite rJOE08a.

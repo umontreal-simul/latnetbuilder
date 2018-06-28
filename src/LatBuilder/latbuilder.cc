@@ -72,13 +72,13 @@ makeOptionsDescription()
     "multilevel point set; possible values:\n"
    "  false (default)\n"
    "  true\n")
-   ("modulus,s", po::value<std::string>(),
+   ("size-parameter,s", po::value<std::string>(),
     "(required) modulus of the lattice; possible values:\n"
    "  <modulus>\n"
    "  <base>^<max-power>\n"
    "  input format :\n"
    "  ordinary lattice rules: integer (decimal reprisentation)\n"
-   "  polynomial lattice rules: polynomial : list of coefficients : 1011 stands for 1 + X^2 + X^3\n")
+   "  polynomial lattice rules: polynomial (list of coefficients: 1011 stands for 1 + X^2 + X^3)\n")
    ("exploration-method,E", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
     "  evaluation:<a1>,...,<as>\n" // TODO change name to evaluation (and in python-wrapper)
@@ -174,7 +174,7 @@ parse(int argc, const char* argv[])
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"modulus", "exploration-method", "dimension", "figure-of-merit"}) {
+   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
@@ -335,7 +335,7 @@ int main(int argc, const char *argv[])
             
 
             cmd.construction  = opt["exploration-method"].as<std::string>();
-            cmd.size          = opt["modulus"].as<std::string>();
+            cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
@@ -387,7 +387,7 @@ int main(int argc, const char *argv[])
             
 
             cmd.construction  = opt["exploration-method"].as<std::string>();
-            cmd.size          = opt["modulus"].as<std::string>();
+            cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();

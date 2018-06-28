@@ -43,39 +43,40 @@ struct NetConstructionParser {};
 template<>
 struct NetConstructionParser<EmbeddingType::UNILEVEL>
 {
-   typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
+   typedef NetBuilder::NetConstruction result_type;
 
    static result_type parse(const std::string& str)
    {
       if (str == "sobol")
       {
-        return result_type(NetBuilder::NetConstruction::SOBOL,std::string());
+        return NetBuilder::NetConstruction::SOBOL;
       }
-      std::vector<std::string> constructionStrings;
-      boost::split(constructionStrings, str, boost::is_any_of(":"));
-      if (constructionStrings.size()==2 && constructionStrings[0] == "polynomial")
+      else if (str == "polynomial")
       {
-        return result_type(NetBuilder::NetConstruction::POLYNOMIAL,constructionStrings[1]);
+        return NetBuilder::NetConstruction::POLYNOMIAL;
       }
-      if (constructionStrings.size()==2 && constructionStrings[0] == "explicit")
+      else if (str == "explicit")
       {
-        return result_type(NetBuilder::NetConstruction::EXPLICIT,constructionStrings[1]);
+        return NetBuilder::NetConstruction::EXPLICIT;
       }
-      throw BadNetConstruction("missing design parameter; see --help.");
+      else
+      {
+        throw BadNetConstruction(str);
+      }
    }
 };
 
 template<>
 struct NetConstructionParser<EmbeddingType::MULTILEVEL>
 {
-   typedef std::pair<NetBuilder::NetConstruction,std::string> result_type;
+   typedef NetBuilder::NetConstruction result_type;
 
    static result_type parse(const std::string& str)
    {
 
       result_type tmp = NetConstructionParser<EmbeddingType::UNILEVEL>::parse(str);
 
-      if (tmp.first!=NetConstruction::SOBOL)
+      if (tmp !=NetConstruction::SOBOL)
       {
         throw BadNetConstruction("incompatible point set type and construction.");
       }

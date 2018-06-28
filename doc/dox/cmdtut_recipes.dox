@@ -36,7 +36,7 @@ Consider the following basic example:
 --set-type lattice \
  --construction ordinary \
  --multilevel false \
- --modulus 2053 \
+ --size-parameter 2053 \
  --dimension 5 \
  --exploration-method full-CBC  \
  --figure-of-merit CU:P2 \
@@ -51,7 +51,7 @@ Some arguments consists of several tokens, separated by a colon.
 - The argument <code>\--multilevel false</code> indicates that we seek a
   simple (in contrast to embedded) rank-1 lattice rule.
 
-- The argument <code>\--modulus 2053</code> indicates that we seek a lattice rule
+- The argument <code>\--size-parameter 2053</code> indicates that we seek a lattice rule
   with modulus 2053.
 
 - The argument <code>\--dimension 5</code> specifies that we seek a lattice point
@@ -94,7 +94,7 @@ Consider the following basic example:
 --set-type net \
  --construction sobol \
  --multilevel false \
- --size 2^10 \
+ --size-parameter 2^10 \
  --dimension 20 \
  --exploration-method random:1000  \
  --add-figure CU:P2/1/2/order-dependent:0:1,2,3
@@ -107,7 +107,7 @@ Some arguments consists of several tokens, separated by a colon.
 - The argument <code>\--multilevel false</code> indicates that we seek a
   unilevel point set.
 
-- The argument <code>\--size 2^10</code> indicates that we seek digital net with \f$2^10 = 1024 \f$ points.
+- The argument <code>\--size-parameter 2^10</code> indicates that we seek digital net with \f$2^10 = 1024 \f$ points.
 
 - The argument <code>\--dimension 10</code> specifies that we seek a point
   set of dimension 20. 

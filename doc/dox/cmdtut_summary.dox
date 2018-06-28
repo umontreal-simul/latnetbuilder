@@ -165,12 +165,12 @@ options:
     - <code>polynomial</code>
       to search for polynomial lattices.
   </dd>
-	<dt><code>\--modulus</code> / <code>-s</code></dt>
+	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
 	<dd><em>Required.</em>
   Specifies the lattice modulus.
   Takes an argument of either form:
-    --modulus<code> <var>modulus</var></code>; or
-    --modulus<code> <var>primeBase</var>^<var>power</var></code>.
+    --size-parameter<code> <var>modulus</var></code>; or
+    --size-parameter<code> <var>primeBase</var>^<var>power</var></code>.
 
 	See \ref cmdtut_pointsets for details about modulus.
 	</dd>
@@ -256,10 +256,10 @@ options:
 		See \ref feats_figures for additional details.
 	</dd>
 	<dt>Specific to <code>--set-type net </code>:</dt>
-	<dt><code>\--size</code> / <code>-s</code></dt>
+	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
 	<dd><em>Optional (default: 2).</em>
 		Specifies the size of a digital net.
-		Takes an argument of the form:
+		Takes an argument of the form: TODO
 		- <code>2^<var>k</var></code> for <code><var> k </var></code>a finite number; or
 		- <code><var>N</var></code> for <code><var> N </var> </code> a power of 2.
 	</dd>

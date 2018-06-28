@@ -45,7 +45,7 @@ For instance to search for embedded ordinary lattices with the full-CBC explorat
     --set-type lattice
     --construction ordinary \
     --multilevel true \
-    --modulus 2^16 \
+    --size-parameter 2^16 \
     --dimension 5 \
     --exploration-method full-CBC \
     --figure-of-merit spectral \
@@ -54,8 +54,8 @@ For instance to search for embedded ordinary lattices with the full-CBC explorat
   \endverbatim
 
   The modulus of the lattice with the largest number of points can be specified
-  with the <code>\--modulus b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
-  simply with <code>\--modulus 65536</code>, where \f$65,536 = 2^{16}\f$.
+  with the <code>\--size-parameter b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
+  simply with <code>\--size-parameter 65536</code>, where \f$65,536 = 2^{16}\f$.
   The spectral merit is evaluated for each nested level, and the maximum value
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
@@ -71,7 +71,7 @@ To build embedded ordinary lattices with fast CBC exploration in dimension 10 wi
     --set-type lattice \
     --construction ordinary \
     --multilevel true \
-    --modulus 2^16 \
+    --size-parameter 2^16 \
     --dimension 10 \
     --exploration-method fast-CBC \
     --figure-of-merit CU:P2 \
@@ -98,7 +98,7 @@ To build embedded polynomial lattices with CBC exploration in dimension 5 with
     --set-type lattice \
     --construction polynomial \
     --multilevel true \
-    --modulus 01^8 \
+    --size-parameter 01^8 \
     --dimension 5 \
     --exploration-method full-CBC \
     --figure-of-merit CU:P2 \
@@ -106,8 +106,8 @@ To build embedded polynomial lattices with CBC exploration in dimension 5 with
     --combiner max
   \endverbatim
   The modulus of the lattice with the largest number of points can be specified
-  with the <code>\--modulus b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
-  simply with <code>\--modulus 000000001</code>, where 00000001 represents \f$z^{8}\f$.
+  with the <code>\--size-parameter b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
+  simply with <code>\--size-parameter 000000001</code>, where 00000001 represents \f$z^{8}\f$.
   The \f$\mathcal P_{2,PLR}\f$ merit is evaluated for each nested level, and the maximum value
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
@@ -125,7 +125,7 @@ across all levels, with a decreasing weights on the 2-dimensional projections:
     --set-type net \
     --construction sobol \
     --multilevel true \
-    --size 2^20 \
+    --size-parameter 2^20 \
     --dimension 10 \
     --exploration-method random-CBC:100 \
     --add-figure t-value/1/1/POD:0:0,1:0.8 \

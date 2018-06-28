@@ -74,12 +74,12 @@ struct ExplorationMethodParser
                 throw BadExplorationMethod("net description must be specified; see --help");
             }
             auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, explorationDescriptionStrings[1]);
-            auto net = std::make_unique<DigitalNetConstruction<NC>>(commandLine.m_dimension, commandLine.m_designParameter, std::move(genValues));
+            auto net = std::make_unique<DigitalNetConstruction<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));
             return std::make_unique<Task::Eval>(std::move(net), std::move(commandLine.m_figure), commandLine.m_verbose);
         }
         else if (name == "exhaustive"){
             return std::make_unique<Task::ExhaustiveSearch<NC, ET>>(commandLine.m_dimension,
-                                                        commandLine.m_designParameter,
+                                                        commandLine.m_sizeParameter,
                                                         std::move(commandLine.m_figure),
                                                         commandLine.m_verbose);
         }
@@ -90,7 +90,7 @@ struct ExplorationMethodParser
             unsigned int r = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[1]);
             if (name == "random")
                 return std::make_unique<Task::RandomSearch<NC, ET>>(commandLine.m_dimension,
-                                                        commandLine.m_designParameter,
+                                                        commandLine.m_sizeParameter,
                                                         std::move(commandLine.m_figure),
                                                         r,
                                                         commandLine.m_verbose,
@@ -98,9 +98,9 @@ struct ExplorationMethodParser
             
             if (name == "random-CBC"){
                 return std::make_unique<Task::CBCSearch<NC, ET, Task::RandomCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_designParameter,
+                                                                commandLine.m_sizeParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::RandomCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_designParameter, r),
+                                                                std::make_unique<Task::RandomCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, r),
                                                                 commandLine.m_verbose,
                                                                 commandLine.m_earlyAbort);
             }
@@ -112,18 +112,18 @@ struct ExplorationMethodParser
                 unsigned int nbFullCoordinates = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[2]);
 
                 return std::make_unique<Task::CBCSearch<NC, ET, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_designParameter,
+                                                                commandLine.m_sizeParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::MixedCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_designParameter, nbFullCoordinates, r), 
+                                                                std::make_unique<Task::MixedCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, nbFullCoordinates, r), 
                                                                 commandLine.m_verbose,
                                                                 commandLine.m_earlyAbort);
             }
         }
         else if (name == "full-CBC"){
             return std::make_unique<Task::CBCSearch<NC, ET,  Task::FullCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_designParameter,
+                                                                commandLine.m_sizeParameter,
                                                                 std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::FullCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_designParameter),
+                                                                std::make_unique<Task::FullCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter),
                                                                 commandLine.m_verbose,
                                                                 commandLine.m_earlyAbort);
         }

@@ -35,21 +35,21 @@ class RandomSearch : public Search<NC, ET>
     
         /** Constructor.
          * @param dimension Dimension of the searched net.
-         * @param designParameter Design parameter of the searched net.
+         * @param sizeParameter Size parameter of the searched net.
          * @param nbTries Number of nets to evaluated.
          * @param figure Figure of merit used to compare nets.
          * @param verbose Verbosity level.
          * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
          */
         RandomSearch(   Dimension dimension, 
-                        typename NetConstructionTraits<NC>::DesignParameter designParameter,
+                        typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                         unsigned nbTries,
                         int verbose = 0,
                         bool earlyAbortion = true):
-            Search<NC, ET>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, sizeParameter, std::move(figure), verbose, earlyAbortion),
             m_nbTries(nbTries),
-            m_randomGenValueGenerator(this->m_designParameter)
+            m_randomGenValueGenerator(this->m_sizeParameter)
         {};
     
 
@@ -88,7 +88,7 @@ class RandomSearch : public Search<NC, ET>
                     auto tmp = m_randomGenValueGenerator(dim);
                     genVals.push_back(std::move(tmp));
                 }
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_designParameter, std::move(genVals));
+                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_sizeParameter, std::move(genVals));
                 double merit = (*evaluator)(*net,this->m_verbose-3);
                 this->m_minimumObserver->observe(std::move(net),merit);
             }
