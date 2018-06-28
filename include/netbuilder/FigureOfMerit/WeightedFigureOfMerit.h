@@ -113,15 +113,12 @@ class WeightedFigureOfMerit : public FigureOfMerit
                 virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     using namespace LatticeTester;
-                    std::cout << "hi"<<std::endl;
                     auto projections = m_figure->projDepMerit().projections(dimension);
-                    std::cout << "ho"<<std::endl;
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
                     for (auto cit = projections.begin (); cit != projections.end (); ++cit) // for each coordinate
                     {
                         const Coordinates& proj = *cit;
-                        std::cout << "projection: " << proj << std::endl;
                         Real weight = m_figure->weights().getWeight(proj); // get the weight
 
                         if (weight == 0.0) { 

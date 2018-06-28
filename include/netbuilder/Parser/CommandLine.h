@@ -40,13 +40,14 @@ struct CommandLine {
    std::string s_explorationMethod;
    std::string s_size;
    std::string s_dimension;
-   std::vector<std::string> s_figures;
+   std::string s_figure;
+   std::vector<std::string> s_weights;
    std::string s_figureCombiner;
    std::string s_combiner;
    std::string s_verbose;
    
    bool m_earlyAbort;
-   bool m_hasWeightPower;
+   Real m_normType;
    Real m_weightPower;
    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParamLatTrick;
    typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;
@@ -58,8 +59,8 @@ struct CommandLine {
    std::unique_ptr<Task::Task> parse();
 };
 
-}
-}
+}}
+
 #include "netbuilder/Parser/SizeParameterParser.h"
 #include "netbuilder/Parser/FigureParser.h"
 #include "netbuilder/Parser/ExplorationMethodParser.h"

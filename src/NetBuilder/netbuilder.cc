@@ -20,6 +20,7 @@
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <limits>
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/CommandLine.h"
@@ -83,7 +84,7 @@ makeOptionsDescription()
    "  false (default)\n"
    "  true\n")
    ("size-parameter,s", po::value<std::string>(),
-    "(required) size of the net; possible values:\n"
+    "(required) size of the net; possible values: TODO\n"
    "  <size>\n"
    "  2^<max-power>\n")
    ("exploration-method,E", po::value<std::string>(),
@@ -99,23 +100,32 @@ makeOptionsDescription()
     "(required) net dimension\n")
     ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n")
+    ("weights,w", po::value<std::vector<std::string>>()->multitoken(),
+    "(required) whitespace-separated list of weights specifications (the actual weights are the sum of these); possible values:\n"
+    "  product:<default>:<coord1-weight>[,...]\n"
+    "  order-dependent:<default>:<order-1-weight>,...,<order-s-weight>\n"
+    "  POD:<default>:<order-1-weight>,...,<order-s-weight>:<default>:<coord1-weight>[,...]\n"
+    "  projection-dependent:<proj-1>:<weight-1>[:<proj-2>:<weight-2>[:...]]\n"
+    "    where <proj-n> is a comma-separated list of coordinates\n"
+    "  file:\"<file>\"\n"
+    "    line format in <file>:\n"
+    "      <i1>,<i2>,...: <weight>\n"
+    "      order <x>: <weight>\n"
+    "      default: <weight>\n"
+    "    if <file> is `-' data is read from standard input\n")
    ("weights-power,o", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
+   ("norm-type,p", po::value<std::string>(),
+    "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
+    "    <p>: a real number corresponding the l_<p> norm\n"
+    "    inf: corresponding to the `max' norm\n")
     ("combiner,b", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
     "  level:{<level>|max}\n")
-    ("figure-combiner,B", po::value<std::string>()->default_value("max"),
-    "combiner for combined figure of merit; possible values: \n"
-    "  sum\n"
-    "  max (default)\n")
-    ("add-figure,a", po::value< std::vector<std::string> >()->composing(),
-    "(at least one required) add one type of figure of merits. If several, specify a figure combiner.\n"
-    "Syntax pattern:\n"
-    " \n" // TODO
-    "where name can take the following values:\n"
-    "resolution-gap, t-value,  and CU:P2\n")
+   ("figure-of-merit,M", po::value<std::string>(),
+    "(required) type of figure of merit; TODO\n")
   //  ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
   //   "whitespace-separated list of filters for merit values; possible values:\n"
   //   "  norm:P<alpha>-{SL10|DPW08}\n"
@@ -158,17 +168,15 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-   if (opt.count("add-figure") < 1)
-      throw std::runtime_error("--add-figure must be specified (try --help)");
-   for (const auto x : {"size-parameter", "exploration-method", "dimension"}) {
+   if (opt.count("weights") < 1)
+      throw std::runtime_error("--weights must be specified (try --help)");
+   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
-   if (opt.count("add-figure") >= 2 && opt.count("figure-combiner") != 1)
-      throw std::runtime_error("--figure-combiner must be specified (try --help)");
 
-    if (opt["set-type"].as<std::string>() == "sequence" && ! opt.count("combiner")){
-      throw std::runtime_error("--combiner must be specified for sequence set type (try --help)");
+    if (opt["multilevel"].as<std::string>() == "true" && ! opt.count("combiner")){
+      throw std::runtime_error("--combiner must be specified for multilevel set type (try --help)");
     }
    return opt;
 }
@@ -181,13 +189,9 @@ cmd.s_verbose = opt["verbose"].as<std::string>();\
 cmd.s_explorationMethod = opt["exploration-method"].as<std::string>();\
 cmd.s_size = opt["size-parameter"].as<std::string>();\
 cmd.s_dimension = opt["dimension"].as<std::string>();\
-cmd.s_figures = opt["add-figure"].as<std::vector<std::string>>();\
-if (opt.count("figure-combiner") < 1){\
-  cmd.s_figureCombiner = "";\
-}\
-else{\
-  cmd.s_figureCombiner = opt["figure-combiner"].as<std::string>();\
-}\
+cmd.s_figure = opt["figure-of-merit"].as<std::string>();\
+cmd.s_weights       = opt["weights"].as<std::vector<std::string>>();\
+cmd.m_normType = boost::lexical_cast<Real>(opt["norm-type"].as<std::string>());\
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\
 }\
@@ -201,11 +205,17 @@ else{\
   cmd.m_earlyAbort = true;\
 }\
 if (opt.count("weight-power") == 1 ){\
-  cmd.m_hasWeightPower = true; \
   cmd.m_weightPower = boost::lexical_cast<Real>(opt["weight-power"].as<std::string>());\
 }\
 else{\
-  cmd.m_hasWeightPower = false;\
+  if (cmd.m_normType < std::numeric_limits<Real>::infinity())\
+  {\
+    cmd.m_weightPower = cmd.m_normType;\
+  }\
+  else\
+  {\
+    cmd.m_weightPower = 1;\
+  }\
 }\
 task = cmd.parse();
 

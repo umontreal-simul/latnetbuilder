@@ -107,7 +107,7 @@ makeOptionsDescription()
     "    if <file> is `-' data is read from standard input\n")
    ("weights-power,o", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
-   ("norm-type,p", po::value<std::string>()->default_value("2"),
+   ("norm-type,p", po::value<std::string>(),
     "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
     "    <p>: a real number corresponding the l_<p> norm\n"
     "    inf: corresponding to the `max' norm\n")
@@ -169,12 +169,12 @@ parse(int argc, const char* argv[])
    }
 
   if (opt.count("combiner") < 1 && opt["multilevel"].as<std::string>() == "true"){
-    throw std::runtime_error("--combiner must be specified for embedded (try --help)");
+    throw std::runtime_error("--combiner must be specified for multilevel set type (try --help)");
   }
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit"}) {
+   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
