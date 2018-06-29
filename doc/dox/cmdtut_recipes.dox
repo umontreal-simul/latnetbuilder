@@ -40,6 +40,7 @@ Consider the following basic example:
  --dimension 5 \
  --exploration-method full-CBC  \
  --figure-of-merit CU:P2 \
+ --norm-type 2 \
  --weights product:0.7
 \endverbatim
 
@@ -91,14 +92,14 @@ self-explanatory.
 Consider the following basic example:
 \verbatim
 ./latnet \ 
---set-type net \
+ --set-type net \
  --construction sobol \
  --multilevel false \
  --size-parameter 2^10 \
  --dimension 20 \
  --exploration-method random:1000  \
  --figure-of-merit CU:P2
- --weight-power 2
+ --norm-type 2
  --weights order-dependent:0:1,2,3
 \endverbatim
 
@@ -127,6 +128,9 @@ Some arguments consists of several tokens, separated by a colon.
   The token <code>2</code> indicates that we use an \f$\ell_2\f$ norm for the figure of merit. 
   THe token <code>order-dependent:0:0,2,1</code> indicates that the weight associated with the figure of merit are order-dependent weights
   with weights 0, 2 and 1 on 1-dimensional, 2 dimensional and 3-dimensional projections respectively.
+
+- The argument <code>\--norm-type 2</code> indicates that the \f$\ell_2\f$ norm should be use to accumulate the merit values
+  of the projections. This is required by the coordinate-uniform evaluation algorithm.
 
 To summarize, this command executes a random method with 1000 tries for a digital, univelevel, net
 with 1024 points in 20 dimensions, using the weighted \f$\mathcal P_2\f$ figure

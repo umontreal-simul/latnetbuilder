@@ -18,6 +18,8 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Util.h"
 
+#include <fstream>
+
 #include "netbuilder/Types.h"
 
 namespace LatBuilder { namespace Parser {
@@ -52,10 +54,17 @@ SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>::parse(c
 {
    
    auto n = splitPair<std::string, Level>(str, '^', 0);
-   std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
    try {
+      if (n.first == "2")
+      {
+            unsigned int degree = (unsigned int) n.second;
+            std::string polyString = LatBuilder::getDefaultPolynomial(degree);
+            std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(polyString);
+            Polynomial defaultPoly = boost::lexical_cast<Polynomial>(str_NTLInput);
+            return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(defaultPoly);
+      }
+      std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
       Polynomial base = boost::lexical_cast<Polynomial>(str_NTLInput);
-      
       // try b^p form first
       
       if (n.second == 0)

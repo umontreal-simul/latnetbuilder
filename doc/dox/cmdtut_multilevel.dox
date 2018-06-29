@@ -42,13 +42,14 @@ For instance to search for embedded ordinary lattices with the full-CBC explorat
   spectral merit across all levels, with the same weight for all projections:
   \verbatim
   ./latnet \
-    --set-type lattice
+    --set-type lattice \
     --construction ordinary \
     --multilevel true \
     --size-parameter 2^16 \
     --dimension 5 \
     --exploration-method full-CBC \
     --figure-of-merit spectral \
+    --norm-type 2 \
     --weights product:1.0 \
     --combiner max
   \endverbatim
@@ -75,6 +76,7 @@ To build embedded ordinary lattices with fast CBC exploration in dimension 10 wi
     --dimension 10 \
     --exploration-method fast-CBC \
     --figure-of-merit CU:P2 \
+    --norm-type 2 \
     --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0 \
     --weights product:0.1 \
     --combiner sum
@@ -102,6 +104,7 @@ To build embedded polynomial lattices with CBC exploration in dimension 5 with
     --dimension 5 \
     --exploration-method full-CBC \
     --figure-of-merit CU:P2 \
+    --norm-type 2 \
     --weights product:1.0 \
     --combiner max
   \endverbatim
@@ -129,7 +132,7 @@ across all levels, with a decreasing weights on the 2-dimensional projections:
     --dimension 10 \
     --exploration-method random-CBC:100 \
     --figure-of-merit t-value
-    --weight-power inf
+    --norm-type inf
     --weights POD:0:0,1:0.8 \
     --combiner max
 \endverbatim

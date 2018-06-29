@@ -17,7 +17,7 @@
 #include "latbuilder/Util.h"
 #include <cmath>
 #include <cstdlib>
-
+#include <fstream>
 namespace LatBuilder
 {
 
@@ -154,6 +154,53 @@ uInteger log2Int(unsigned int n){
     }
     return res;
 }
+
 //================================================================================
+
+const char* ws = " \t\n\r\f\v";
+
+// trim from end (right)
+inline std::string& rtrim(std::string& s, const char* t = ws)
+{
+      s.erase(s.find_last_not_of(t) + 1);
+      return s;
+}
+
+// trim from beginning (left)
+inline std::string& ltrim(std::string& s, const char* t = ws)
+{
+      s.erase(0, s.find_first_not_of(t));
+      return s;
+}
+
+// trim from both ends (left & right)
+inline std::string& trim(std::string& s, const char* t = ws)
+{
+      return ltrim(rtrim(s, t), t);
+}    
+
+std::string getDefaultPolynomial(unsigned int degree)
+{
+    if (degree <= 32)
+    {
+        std::ifstream file("../share/latnetbuilder/data/default_polys.csv");
+        std::string sent;
+        do
+        {
+        getline(file,sent);
+        trim(sent);
+        }
+        while (sent != "###");
+    
+        getline(file,sent);
+
+        for(unsigned int d = 0; d <= degree; ++d)
+        {
+            getline(file,sent);
+        }
+        return sent;
+    }
+    return "";
+}
 
 } // namespace LatBuilder

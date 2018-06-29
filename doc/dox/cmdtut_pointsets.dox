@@ -56,12 +56,13 @@ For instance, to specify an ordinary lattice rule with \f$6977\f$ points, use <c
 It is also possible to specify the number of points as a power of a base. For instance <code>--size-parameter 3^10</code> is also a valid expression.
 
 For polynomial lattice rules, the number of points equals two to the power of the degree of its modulus. 
-The number of points will thus always be a power of two. One can specify the number of points of the polynomial 
+The number of points will thus always be a power of two. 
+In the case of unilevel point sets, one can specify the number of points of the polynomial 
 lattice rules to equal \f$2^k\f$ with <code>--size-parameter 2^<var>k</var></code>. In this case, a predefined polynomial with degree 
 \f$k\f$ will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used
 with the fast-CBC exploration method.
 
-One can also specify a custom polynomial modulus. The number of points will be two to the power of its degree.
+Otherwise, one can also specify a custom polynomial modulus. The number of points will be two to the power of its degree.
 Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by
 <code>101001</code>. 
 Additionally, one can raise the polynomial to an integer power. For instance <code>--size-parameter 01^8</code> tells LatNet Builder that the modulus of the polynomial lattice is

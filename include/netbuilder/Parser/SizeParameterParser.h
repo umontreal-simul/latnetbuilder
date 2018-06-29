@@ -22,6 +22,8 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 
+#include "latbuilder/Util.h"
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
@@ -76,16 +78,19 @@ struct SizeParameterParser<NetConstruction::POLYNOMIAL, ET>
          boost::split(sizeParamStrings, commandLine.s_size, boost::is_any_of("^"));
          if (sizeParamStrings.size() == 2 && sizeParamStrings.front() == "2")
          {
-               throw BadSizeParameter("default polynomial modulus not yet implemented.");
-            //    commandLine.m_sizeParameter = boost::lexical_cast<result_type>(sizeParamStrings.back()
-            //    commandLine.m_sizeParamLatTrick = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(commandLine.s_size);
+               unsigned int degree = boost::lexical_cast<unsigned int>(sizeParamStrings.back());
+               if (degree <= 32)
+               {
+                  commandLine.s_size = LatBuilder::getDefaultPolynomial(degree);
+               }
+               else
+               {
+                  throw BadSizeParameter("default polynomials are not available for degree " + std::to_string(degree) + ".");
+               }
          }
-         else
-         {
-            commandLine.m_sizeParameter = polynomialParserHelper(commandLine.s_size);
-            std::string fakeString = "2^" + std::to_string(NTL::deg(commandLine.m_sizeParameter));
-            commandLine.m_sizeParamLatTrick = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(fakeString);
-         }
+         commandLine.m_sizeParameter = polynomialParserHelper(commandLine.s_size);
+         std::string fakeString = "2^" + std::to_string(NTL::deg(commandLine.m_sizeParameter));
+         commandLine.m_sizeParamLatTrick = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(fakeString);
    }
 };
 
