@@ -292,7 +292,7 @@ class DigitalNetConstruction : public DigitalNet
     private:
 
         SizeParameter m_sizeParameter; // size parameter of the net
-        mutable std::vector<std::shared_ptr<GenValue>> m_genValues; // vector of shared pointers to the generating values of the net TODO change mutable
+        std::vector<std::shared_ptr<GenValue>> m_genValues; // vector of shared pointers to the generating values of the net
 
         /** Most general constructor.
          * @param dimension Dimension of the net.

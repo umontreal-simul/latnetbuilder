@@ -63,7 +63,6 @@ makeOptionsDescription()
    ("version,V", "show version")
    ("verbose,v", po::value<int>()->default_value(0),
    "specify the verbosity of the program\n")
-  //  ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
    ("construction,c", po::value<std::string>(),
    "lattice construction; possible values:\n"
    "  ordinary\n"
@@ -81,7 +80,7 @@ makeOptionsDescription()
    "  polynomial lattice rules: polynomial (list of coefficients: 1011 stands for 1 + X^2 + X^3)\n")
    ("exploration-method,E", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
-    "  evaluation:<a1>,...,<as>\n" // TODO change name to evaluation (and in python-wrapper)
+    "  evaluation:<a1>,...,<as>\n"
     "  exhaustive\n"
     "  random:<r>\n"
     "  Korobov\n"
