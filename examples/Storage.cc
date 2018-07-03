@@ -18,7 +18,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 #include "latbuilder/Storage.h"
 #include "latbuilder/LatSeq/Combiner.h"   
@@ -31,7 +31,7 @@ using TextStream::operator<<;
 
 
 
-template <LatticeType LA, PointSetType L, Compress C, PerLevelOrder PLO>
+template <LatticeType LA, EmbeddingType L, Compress C, PerLevelOrder PLO>
 void test(const Storage<LA, L, C, PLO>& storage, typename LatticeTraits<LA>::GenValue stride_param)
 {
    std::cout << "==> storage / compression: " << Storage<LA, L, C, PLO>::name() << std::endl;
@@ -48,15 +48,15 @@ void test(const Storage<LA, L, C, PLO>& storage, typename LatticeTraits<LA>::Gen
 int main(int argc, const char *argv[])
 {
 
-   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE     >(12), 3);
-   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(12), 3);
-   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE     >(16), 3);
-   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC>(16), 3); 
-   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE     ,PerLevelOrder::BASIC>(16), 3);
-   test(Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC,PerLevelOrder::BASIC>(16), 3); 
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE     >(12), 3);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC>(12), 3);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE     >(16), 3);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC>(16), 3); 
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE     ,PerLevelOrder::BASIC>(16), 3);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC,PerLevelOrder::BASIC>(16), 3); 
 
-   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
-   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
-   test(Storage<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC>(PolynomialFromInt(13)), PolynomialFromInt(3)); //irreductible modulus
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE>(PolynomialFromInt(13)), PolynomialFromInt(3));
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC>(PolynomialFromInt(13)), PolynomialFromInt(3)); //irreductible modulus
    return 0;
 }

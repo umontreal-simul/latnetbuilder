@@ -25,37 +25,35 @@ namespace NetBuilder { namespace Task {
  * Class for CBC Search tasks.
  * Template template parameter EXPLORER must implement the following member functions:
  * - <CODE> void setVerbose() </CODE>: set the verbosity level of the explorer.
- * - <CODE> void reset(unsigned int dim) </CODE>: reset to its initial state the explorer.
- * - <CODE> void switchToDimension(unsigned int dim) </CODE>: switch the explorer to dimension \c dim.
- * - <CODE> typename NetConstructionTraits<NC>::GenValue nextGenValue(unsigned int dim) </CODE>: return the next generating value for dimension \c dim.
- * - <CODE> bool isOver(unsigned int dim) </CODE>: indicate whether the exploration of dimension \c dim is over.
+ * - <CODE> void reset() </CODE>: reset to its initial state the explorer.
+ * - <CODE> void switchToCoordinate(Dimension coord) </CODE>: switch the explorer to coordinate \c coord.
+ * - <CODE> typename NetConstructionTraits<NC>::GenValue nextGenValue() </CODE>: return the next generating value.
+ * - <CODE> bool isOver() </CODE>: indicate whether the exploration of the current coordinate is over.
  * where NC is the template parameter of EXPLORER.
  */ 
-template < NetConstruction NC, template <NetConstruction> class EXPLORER>
-class CBCSearch : public Search<NC>
+template < NetConstruction NC, EmbeddingType ET, template <NetConstruction, EmbeddingType> class EXPLORER>
+class CBCSearch : public Search<NC, ET>
 {
     public:
-        typedef EXPLORER<NC> Explorer;
+        typedef EXPLORER<NC, ET> Explorer;
 
         /** Constructor.
          * @param dimension Dimension of the searched net.
-         * @param designParameter Design parameter of the searched net.
+         * @param sizeParameter Size parameter of the searched net.
          * @param figure Figure of merit used to compare nets.
          * @param explorer Explorer to search for nets.
          * @param verbose Verbosity level.
          * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
          */
         CBCSearch(  Dimension dimension, 
-                    typename NetConstructionTraits<NC>::DesignParameter designParameter,
+                    typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
                     std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
                     bool earlyAbortion = true):
-            Search<NC>(dimension, designParameter, std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, sizeParameter, std::move(figure), verbose, earlyAbortion),
             m_explorer(std::move(explorer))
-        {
-            m_explorer->setVerbose(this->m_verbose-1);
-        };
+        {};
 
         /** Constructor.
          * @param dimension Dimension of the searched net.
@@ -71,11 +69,9 @@ class CBCSearch : public Search<NC>
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
                     bool earlyAbortion = true):
-            Search<NC>(dimension, std::move(baseNet), std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, std::move(baseNet), std::move(figure), verbose, earlyAbortion),
             m_explorer(std::move(explorer))
-        {
-            m_explorer->setVerbose(this->m_verbose-1);
-        };
+        {};
 
         /** 
          *  Default move constructor. 
@@ -100,10 +96,10 @@ class CBCSearch : public Search<NC>
             // compute the merit of the base net is one was provided
             Real merit = 0; 
 
-            for(unsigned int dim = 1; dim <= this->minimumObserver().bestNet().dimension(); ++dim)
+            for(Dimension coord = 0; coord < this->minimumObserver().bestNet().dimension(); ++coord)
             {
                 evaluator->prepareForNextDimension();
-                merit = (*evaluator)(this->minimumObserver().bestNet(), dim, merit) ;
+                merit = (*evaluator)(this->minimumObserver().bestNet(), coord, merit) ;
                 evaluator->lastNetWasBest();
             }
 
@@ -113,21 +109,24 @@ class CBCSearch : public Search<NC>
                 evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
             }
 
-            m_explorer->switchToDimension(this->minimumObserver().bestNet().dimension() + 1); // to to the first dimension to explore
+            m_explorer->switchToCoordinate(this->minimumObserver().bestNet().dimension()); // to to the first dimension to explore
 
-            for(unsigned int dim = this->minimumObserver().bestNet().dimension() + 1; dim <= this->dimension(); ++dim) // for each dimension to explore
+            for(Dimension coord = this->minimumObserver().bestNet().dimension() ; coord < this->dimension(); ++coord) // for each dimension to explore
             {
                 evaluator->prepareForNextDimension();
-                if(this->m_verbose==1)
+                if(this->m_verbose>=1)
                 {
-                    std::cout << "CBC dimension: " << dim << "/" << this->dimension() << std::endl;
+                    std::cout << "Coordinate: " << coord + 1 << "/" << this->dimension() << std::endl;
                 }
-
                 auto net = this->m_minimumObserver->bestNet(); // base net of the search
-                while(!m_explorer->isOver(dim)) // for each generating values provided by the explorer
+                while(!m_explorer->isOver()) // for each generating values provided by the explorer
                 {
-                    auto newNet = net.extendDimension(m_explorer->nextGenValue(dim));
-                    double newMerit = (*evaluator)(*newNet,dim,merit, this->m_verbose-3); // evaluate the net
+                    auto newNet = net.extendDimension(m_explorer->nextGenValue());
+                    if (this->m_verbose>=2)
+                    {
+                        std::cout << "net " << m_explorer->count() << "/" << m_explorer->size() << std::endl;
+                    }
+                    double newMerit = (*evaluator)(*newNet,coord,merit, this->m_verbose-3); // evaluate the net
                     if (this->m_minimumObserver->observe(std::move(newNet),newMerit)) // give it to the observer
                     {
                         evaluator->lastNetWasBest();
@@ -140,9 +139,9 @@ class CBCSearch : public Search<NC>
                 }
                 ++m_lastDimension;
                 merit = this->m_minimumObserver->bestMerit();
-                if (dim < this->dimension()){ // if at least one dimension remains unexplored
+                if (coord + 1 < this->dimension()){ // if at least one dimension remains unexplored
                     this->m_minimumObserver->reset();
-                    m_explorer->switchToDimension(dim+1);
+                    m_explorer->switchToCoordinate(coord+1);
                 }
             }
             this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
@@ -154,7 +153,7 @@ class CBCSearch : public Search<NC>
          */         
         virtual void reset() override
         {
-            Search<NC>::reset();
+            Search<NC, ET>::reset();
             m_explorer->reset();
         }
 

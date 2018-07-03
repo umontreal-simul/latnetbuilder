@@ -28,10 +28,10 @@ namespace LatBuilder {
  * - maximum embedding level (power of the base for the last lattice in the sequence).
  */
 template <LatticeType LR>
-class SizeParam<LR,PointSetType::MULTILEVEL> :
-   public BasicSizeParam<SizeParam<LR,PointSetType::MULTILEVEL>> {
+class SizeParam<LR,EmbeddingType::MULTILEVEL> :
+   public BasicSizeParam<SizeParam<LR,EmbeddingType::MULTILEVEL>> {
 
-    typedef SizeParam<LR, PointSetType::UNILEVEL> self_type;
+    typedef SizeParam<LR, EmbeddingType::UNILEVEL> self_type;
 
 public:
 

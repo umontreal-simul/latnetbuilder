@@ -27,33 +27,33 @@
 
 namespace LatBuilder { namespace Task {
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct KorobovTag {};
 
 
 /// Korobov search.
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Korobov =
-   LatSeqBasedSearch<KorobovTag<LR, PST, COMPRESS, PLO, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Korobov =
+   LatSeqBasedSearch<KorobovTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Korobov search.
-template <class FIGURE, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-Korobov<LR, PST, COMPRESS, PLO, FIGURE> korobov(
-      Storage<LR, PST, COMPRESS, PLO> storage,
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+Korobov<LR, ET, COMPRESS, PLO, FIGURE> korobov(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return Korobov<LR, PST, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return Korobov<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
-struct LatSeqBasedSearchTraits<KorobovTag<LR, PST, COMPRESS, PLO, FIGURE>> {
-   typedef LatBuilder::Task::Search<LR, PST> Search;
-   typedef LatBuilder::Storage<LR, PST, COMPRESS, PLO> Storage;
-   typedef typename LatBuilder::Storage<LR, PST, COMPRESS, PLO>::SizeParam SizeParam;
-   typedef typename CBCSelector<LR, PST, COMPRESS, PLO, FIGURE>::CBC CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct LatSeqBasedSearchTraits<KorobovTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
    typedef GenSeq::GeneratingValues<LR, COMPRESS> GenSeqType;
-   typedef LatSeq::Korobov<LR, PST, GenSeqType> LatSeqType;
+   typedef LatSeq::Korobov<LR, ET, GenSeqType> LatSeqType;
 
    virtual ~LatSeqBasedSearchTraits() {}
 
@@ -69,7 +69,7 @@ struct LatSeqBasedSearchTraits<KorobovTag<LR, PST, COMPRESS, PLO, FIGURE>> {
    std::string name() const
    { return FIGURE::evaluationName() + " Korobov search"; }
 
-   void init(LatBuilder::Task::Korobov<LR, PST, COMPRESS, PLO, FIGURE>& search) const
+   void init(LatBuilder::Task::Korobov<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 

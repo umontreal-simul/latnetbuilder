@@ -18,7 +18,7 @@
 #define LATBUILDER__INDEXED_ITERATOR_H
 
 #include <boost/iterator/iterator_facade.hpp>
-#include <random>
+#include <latbuilder/UniformUIntDistribution.h>
 
 namespace LatBuilder {
 
@@ -127,6 +127,7 @@ public:
       m_rand(std::move(rand))
    { increment(); }
 
+      // this constructor should not be used
    Random(const Seq& seq, size_type end):
       Random::iterator_facade_(),
       m_seq(&seq),
@@ -134,6 +135,7 @@ public:
       m_index(0)
    { }
 
+      // this constructor should not be used
    Random():
       Random::iterator_facade_(),
       m_seq(nullptr),
@@ -177,7 +179,7 @@ private:
    const Seq* m_seq;
    size_type m_count;
    size_type m_index;
-   std::uniform_int_distribution<size_type> m_unif;
+   UniformUIntDistribution<size_type, RandomGenerator> m_unif;
    RandomGenerator m_rand;
    value_type m_value;
 };

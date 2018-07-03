@@ -46,7 +46,7 @@ void simulate(const LatticePoints<LA>& lat)
 template<LatBuilder::LatticeType LA>
 LatticePoints<LA> search()
 {
-   LatBuilder::Parser::CommandLine<LA, LatBuilder::PointSetType::UNILEVEL> cmd;
+   LatBuilder::Parser::CommandLine<LA, LatBuilder::EmbeddingType::UNILEVEL> cmd;
    cmd.construction  = "fast-CBC";
    cmd.size          = "2^8"; // for example "1011" for polynomial lattice
    cmd.dimension     = "10";

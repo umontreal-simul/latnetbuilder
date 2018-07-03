@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+def build(ctx):
+    test_dir = ctx.path
+
+    # data files
+    for test_src in test_dir.ant_glob('*.cc'):
+        ctx.install_files("${PREFIX}/test/", test_src)

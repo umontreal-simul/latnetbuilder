@@ -19,7 +19,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -31,8 +31,8 @@ using TextStream::operator<<;
 template <LatticeType LA>
 void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
    typedef GenSeq::GeneratingValues<LA, Compress::NONE> Seq;
-   SizeParam<LA, PointSetType::UNILEVEL> n(modulus);      // lattice size
-   SizeParam<LA, PointSetType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
    Dimension dim = 3;
    //! [VectorCreator]
    auto vec = GenSeq::VectorCreator<Seq>::create(n, dim);
@@ -49,9 +49,9 @@ void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
 //! [random]
 template <LatticeType LA>
 void RandomSeqVector(typename LatticeTraits<LA>::Modulus modulus){
-   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR113>> RandomSeq;
-   SizeParam<LA, PointSetType::UNILEVEL> n(modulus);      // lattice size
-   SizeParam<LA, PointSetType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR258>> RandomSeq;
+   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
    Dimension dim = 3;
   
    auto randVec = GenSeq::VectorCreator<RandomSeq>::create(n, dim, 5);

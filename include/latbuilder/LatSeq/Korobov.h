@@ -28,16 +28,16 @@ namespace LatBuilder { namespace LatSeq {
 /**
  * Sequence of Korobov lattices.
  *
- * \tparam PST       Type of lattice.
+ * \tparam ET       Type of lattice.
  * \tparam GENSEQ    Type of sequence of sequences of generator values.
  *
  * \sa GenSeqSeq
  */
-template <LatticeType LR, PointSetType PST, class GENSEQ>
+template <LatticeType LR, EmbeddingType ET, class GENSEQ>
 class Korobov :
    public Combiner<
       LR,
-      PST,
+      ET,
       GenSeq::PowerSeq<GENSEQ>,
       Zip> {
 
@@ -50,17 +50,17 @@ public:
     * \param latDimension  Dimension of the lattices in the sequence.
     */
    Korobov(
-         const SizeParam<LR, PST>& sizeParam,
+         const SizeParam<LR, ET>& sizeParam,
          const GENSEQ& genSeq,
          Dimension latDimension):
-      Combiner<LR, PST, GenSeq::PowerSeq<GENSEQ>, Zip>(
+      Combiner<LR, ET, GenSeq::PowerSeq<GENSEQ>, Zip>(
             sizeParam,
             makeGenSeqs(sizeParam, genSeq, latDimension))
    {}
 
 private:
    static std::vector<GenSeq::PowerSeq<GENSEQ>> makeGenSeqs(
-         const SizeParam<LR, PST>& sizeParam,
+         const SizeParam<LR, ET>& sizeParam,
          const GENSEQ& genSeq,
          Dimension dimension)
    {
@@ -76,14 +76,14 @@ private:
 };
 
 /// Creates a Korobov lattice sequence.
-template <LatticeType LR, PointSetType PST, class GENSEQ>
-Korobov<LR, PST, GENSEQ>
+template <LatticeType LR, EmbeddingType ET, class GENSEQ>
+Korobov<LR, ET, GENSEQ>
 korobov(
-      const SizeParam<LR, PST>& size,
+      const SizeParam<LR, ET>& size,
       const GENSEQ& genSeqs,
       Dimension dimension
       ) {
-   return Korobov<LR, PST, GENSEQ>(size, genSeqs, dimension);
+   return Korobov<LR, ET, GENSEQ>(size, genSeqs, dimension);
 }
 
 }}

@@ -49,13 +49,13 @@ typedef boost::numeric::ublas::vector<Real> RealVector;
 typedef Real MeritValue;
 
 /// Scalar integer type for dimension.
-typedef unsigned int Dimension;
+typedef size_t Dimension;
 
-/// Type for the size of nets
-typedef size_t size_type;
+// /// Type for the size of nets
+// typedef size_t size_type;
 
 /// Type of nets
-typedef LatBuilder::PointSetType PointSetType;
+typedef LatBuilder::EmbeddingType EmbeddingType;
 
 /// Net construction methods
 enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};

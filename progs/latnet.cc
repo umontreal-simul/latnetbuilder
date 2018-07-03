@@ -33,8 +33,8 @@ makeOptionsDescription()
     desc.add_options()
     ("help,h", "produce help message")
     ("version,V", "show version")
-    ("main-construction,C", po::value<std::string>(),
-        "(required) main construction type; possible values:\n"
+    ("set-type,T", po::value<std::string>(),
+        "(required) point set type; possible values:\n"
         "  lattice\n"
         "  net\n");
 
@@ -54,7 +54,7 @@ int main(int argc, const char *argv[])
         po::store(po::command_line_parser(argc, argv).options(desc).allow_unregistered().run(), opt);
         po::notify(opt);
 
-        if (opt.count("main-construction") < 1 && opt.count("help"))
+        if (opt.count("help") && opt.count("set-type") < 1)
         {
             std::cout << desc << std::endl;
             std::exit(0);
@@ -66,21 +66,21 @@ int main(int argc, const char *argv[])
             std::exit(0);
         }
 
-        if (opt.count("main-construction") < 1)
+        if (opt.count("set-type") < 1)
         {
-            throw std::runtime_error("main construction type must be specified; see --help");
+            throw std::runtime_error("point set type must be specified; see --help");
         }
-        if (opt["main-construction"].as<std::string>() == "lattice")
+        if (opt["set-type"].as<std::string>() == "lattice")
         {
             LatBuilder::main(argc, argv);
         }
-        else if (opt["main-construction"].as<std::string>() == "net")
+        else if (opt["set-type"].as<std::string>() == "net")
         {
             NetBuilder::main(argc, argv);
         }
         else
         {
-            throw std::runtime_error("main construction type not recognized; see --help");
+            throw std::runtime_error("point set type not recognized; see --help");
         }
     }
     catch (std::exception& e) {

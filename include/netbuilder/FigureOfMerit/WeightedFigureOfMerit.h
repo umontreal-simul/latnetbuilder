@@ -27,7 +27,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
  * parameter. 
  * 
  * @tparam PROJDEP The type of the projection dependent merit. This type should implement the following methods:
- *  - container<LatticeTester::Coordinates> projections(unsigned int dimension) which returns an iterable container of the projections to consider for the 
+ *  - container<LatticeTester::Coordinates> projections(Dimension dimension) which returns an iterable container of the projections to consider for the 
  *  given dimension. \n 
  *  - Real operator()(const DigitalNet& net, LatticeTester::Coordinates) which returns the projection-dependent merit of the net for the given projection. \n
  *  
@@ -72,7 +72,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         { return Accumulator(std::move(initialValue), m_normType); }
 
         /**
-         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {
@@ -110,18 +110,15 @@ class WeightedFigureOfMerit : public FigureOfMerit
                  *  @param initialValue Initial value of the merit.
                  *  @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     using namespace LatticeTester;
-
                     auto projections = m_figure->projDepMerit().projections(dimension);
-
                     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
                     for (auto cit = projections.begin (); cit != projections.end (); ++cit) // for each coordinate
                     {
                         const Coordinates& proj = *cit;
-
                         Real weight = m_figure->weights().getWeight(proj); // get the weight
 
                         if (weight == 0.0) { 

@@ -32,15 +32,15 @@
 #include "latbuilder/Functor/binary.h"
 
 #define TASK_ADD_ARG_PARAMETERS_LATTICE_ORDINARY(func, ...) \
-   func(__VA_ARGS__,LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC); \
-   func(__VA_ARGS__,LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC); \
-   func(__VA_ARGS__,LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC); \
-   func(__VA_ARGS__,LatticeType::ORDINARY, PointSetType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC)
+   func(__VA_ARGS__,LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC); \
+   func(__VA_ARGS__,LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC)
 
 #define TASK_ADD_ARG_PARAMETERS_LATTICE_POLYNOMIAL(func, ...) \
-   func(__VA_ARGS__,LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC); \
-   func(__VA_ARGS__,LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC); \
-   func(__VA_ARGS__,LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC)
+   func(__VA_ARGS__,LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC); \
+   func(__VA_ARGS__,LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC)
 
 
 

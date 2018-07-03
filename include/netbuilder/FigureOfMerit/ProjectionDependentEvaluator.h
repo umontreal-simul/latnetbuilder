@@ -40,8 +40,8 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          */ 
         ProjectionDependentEvaluator(WeightedFigureOfMerit<PROJDEP>* figure):
                     m_figure(figure),
-                    m_dimension(0),
-                    m_maxDimension(0),
+                    m_numCoordinates(0),
+                    m_maxNumCoordinates(0),
                     m_maxCardinal(m_figure->projDepMerit().maxCardinal())
         {};
 
@@ -49,7 +49,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          * Destructor. */
         ~ProjectionDependentEvaluator()
         {
-            for(unsigned int dim = 0; dim < m_maxDimension; ++dim)
+            for(Dimension dim = 0; dim < m_maxNumCoordinates; ++dim)
             {
                 ProjectionNode* it = m_roots[dim];
                 ProjectionNode* nextIt = nullptr;
@@ -71,13 +71,13 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          *  @param initialValue Initial value of the merit.
          *  @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
+        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
         {
             unsigned int nLevels = PROJDEP::numLevels(net); // determine the number of levels
 
             auto acc = m_figure->accumulator(std::move(initialValue));
 
-            ProjectionNode* it = m_roots[dimension-1]; // iterator over the nodes
+            ProjectionNode* it = m_roots[dimension]; // iterator over the nodes
             do
             {   
                 Real weight = it->getWeight();
@@ -118,14 +118,14 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
         /**     
          * Resets the evaluator and prepare it to evaluate a new net.
          */ 
-        virtual void reset() override { m_dimension=0; }
+        virtual void reset() override { m_numCoordinates=0; }
 
         /**
          * Tells the evaluator that the last net was the best so far and store the relevant information
          */
         virtual void lastNetWasBest() override
         {
-            saveMerits(m_dimension);
+            saveMerits(m_numCoordinates-1);
         }
 
         /**
@@ -135,16 +135,16 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          */ 
         virtual void prepareForNextDimension() override
         {
-            if (m_dimension<m_maxDimension)
+            if (m_numCoordinates<m_maxNumCoordinates)
             {
-                ++m_dimension;
+                ++m_numCoordinates;
             }
-            else if (m_dimension==m_maxDimension)
+            else if (m_numCoordinates==m_maxNumCoordinates)
             {
                 extend();
-                ++m_dimension;
+                ++m_numCoordinates;
             }
-            else if (m_dimension > m_maxDimension)
+            else if (m_numCoordinates > m_maxNumCoordinates)
             {
                 throw std::runtime_error("In projection-dependent figure of merit evaluator: evaluator is ill-formed.");
             }
@@ -170,7 +170,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
              * @param cardinal Cardinal of the projection.
              * @param weight Importance of the projection in the figure of merit.
              */ 
-            ProjectionNode(unsigned int dimension, unsigned int cardinal, double weight):
+            ProjectionNode(Dimension dimension, unsigned int cardinal, double weight):
                 m_weight(weight),
                 m_dimension(dimension),
                 m_cardinal(cardinal)
@@ -179,12 +179,12 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             /** 
              * Returns the cardinal of the projection represented by the node.
              */ 
-            unsigned getCardinal() const { return m_cardinal; }
+            unsigned int getCardinal() const { return m_cardinal; }
 
             /** 
              * Returns the maximum dimension, that is the highest coordinate in all the projections of the layer.
              */ 
-            unsigned int getMaxDimension() const { return m_dimension; }
+            Dimension getMaxDimension() const { return m_dimension; }
 
             /** Returns a pointer to the next projection to evaluate. May be null.
              */ 
@@ -299,7 +299,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             }
 
             double m_weight; // weight of the projection
-            unsigned int m_dimension; // last dimension (highest coordinate in the projection)
+            Dimension m_dimension; // last dimension (highest coordinate in the projection)
             unsigned int m_cardinal; // cardinal of the projection
 
             ProjectionNode* m_nextNode = nullptr; // pointer to the next projection to evaluate
@@ -312,7 +312,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
 
             void accumulateProjectionRepresentation(LatticeTester::Coordinates& projection) const
             {
-                projection.insert(m_dimension-1);
+                projection.insert(m_dimension);
                 if(m_cardinal>1)
                 {
                     m_mothersNodes[0]->accumulateProjectionRepresentation(projection);
@@ -325,18 +325,18 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          * while evaluating figures of merits.
          */ 
         void extend(){
-            ++m_maxDimension; // increase maximal dimension
+            ++m_maxNumCoordinates; // increase maximal number of coordinates
             std::vector<ProjectionNode*> newNodes; // to store new nodes
 
             std::map<LatticeTester::Coordinates,ProjectionNode*> mapsToNodes; // map between new projections and new nodes
 
-            // create projection {m_dimension} 
+            // create projection {m_numCoordinates} 
             LatticeTester::Coordinates proj1DRep;
-            proj1DRep.insert(m_maxDimension-1);
+            proj1DRep.insert(m_maxNumCoordinates-1);
             double weight = m_figure->weights().getWeight(proj1DRep);
-            ProjectionNode* proj1D = new ProjectionNode(m_maxDimension, (unsigned int) proj1DRep.size(), weight);
+            ProjectionNode* proj1D = new ProjectionNode(m_maxNumCoordinates-1, (unsigned int) proj1DRep.size(), weight);
 
-            if(m_maxDimension==1){
+            if(m_maxNumCoordinates==1){
                 m_roots.push_back(proj1D);
                 return;
             }
@@ -346,16 +346,16 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             mapsToNodes.insert(std::pair<LatticeTester::Coordinates,ProjectionNode*>(std::move(proj1DRep),proj1D));
 
 
-            for(unsigned int i = 0; i < m_maxDimension-1; ++i) // for each previous dimensions
+            for(unsigned int i = 0; i < m_maxNumCoordinates-1; ++i) // for each previous dimensions
             {
                 ProjectionNode* it = m_roots[i];
                 do
                 {   if (it->getCardinal() <= m_maxCardinal-1)
                     {
                         LatticeTester::Coordinates projectionRep = it->getProjectionRepresentation(); // consider the projection
-                        projectionRep.insert(m_maxDimension-1);
+                        projectionRep.insert(m_maxNumCoordinates-1);
                         double weight =  m_figure->weights().getWeight(projectionRep);
-                        ProjectionNode* newNode = new ProjectionNode(m_maxDimension, (unsigned int) projectionRep.size() , weight); // create the node
+                        ProjectionNode* newNode = new ProjectionNode(m_maxNumCoordinates-1, (unsigned int) projectionRep.size() , weight); // create the node
                         newNode->addMother(it);
                         mapsToNodes.insert(std::pair<LatticeTester::Coordinates,ProjectionNode*>(std::move(projectionRep),newNode));
                         newNodes.push_back(newNode);
@@ -377,7 +377,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
             for (ProjectionNode* node : newNodes) // for each new nodes
             {   
                 LatticeTester::Coordinates tmp = node->getProjectionRepresentation();
-                for(unsigned int i = 0; i < m_maxDimension-1; ++i) // link to mothers which contains m_dimension
+                for(unsigned int i = 0; i < m_maxNumCoordinates-1; ++i) // link to mothers which contains m_numCoordinates
                 {
                     if (tmp.find(i) != tmp.end())
                     {
@@ -393,9 +393,9 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
         /** Save the merits of all the nodes corresponding to the \c dimension.
          * @param dimension Dimension of the nodes.
          */  
-        void saveMerits(unsigned int dimension)
+        void saveMerits(Dimension dimension)
         {
-            ProjectionNode* it = m_roots[dimension-1];
+            ProjectionNode* it = m_roots[dimension];
             do
             {
                 it->saveMerit();
@@ -409,7 +409,7 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
          */ 
         void saveMerits()
         {
-            for(unsigned int i = 1; i <= m_dimension; ++i)
+            for(unsigned int i = 0; i < m_numCoordinates; ++i)
             {
                 saveMerits(i);
             }
@@ -417,8 +417,8 @@ class ProjectionDependentEvaluator : public FigureOfMeritEvaluator
 
         WeightedFigureOfMerit<PROJDEP> * m_figure;
 
-        unsigned int m_dimension; 
-        unsigned int m_maxDimension;
+        Dimension m_numCoordinates; 
+        Dimension m_maxNumCoordinates;
         unsigned int m_maxCardinal; 
         std::vector<ProjectionNode*> m_roots; // pointer to the first node of each layer (one by dimension)
 };

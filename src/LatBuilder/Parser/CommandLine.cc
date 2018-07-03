@@ -30,9 +30,9 @@ namespace {
 
    template<LatticeType LR>
    static void setFilters(
-         LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::UNILEVEL>& filters,
-         const CommandLine<LR, LatBuilder::PointSetType::UNILEVEL>& args,
-         const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::UNILEVEL>& size,
+         LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::UNILEVEL>& filters,
+         const CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL>& args,
+         const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::UNILEVEL>& size,
          const LatticeTester::Weights& weights,
          Real normType
          )
@@ -48,9 +48,9 @@ namespace {
 
    template<LatticeType LR>
    static void setFilters(
-         LatBuilder::MeritFilterList<LR, LatBuilder::PointSetType::MULTILEVEL>& filters,
-         const CommandLine<LR, LatBuilder::PointSetType::MULTILEVEL>& args,
-         const LatBuilder::SizeParam<LR, LatBuilder::PointSetType::MULTILEVEL>& size,
+         LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL>& filters,
+         const CommandLine<LR, LatBuilder::EmbeddingType::MULTILEVEL>& args,
+         const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& size,
          const LatticeTester::Weights& weights,
          Real normType
          )
@@ -66,35 +66,35 @@ namespace {
             );
    }
 
-   template <LatBuilder::LatticeType LR, LatBuilder::PointSetType PST>
+   template <LatBuilder::LatticeType LR, LatBuilder::EmbeddingType ET>
    class Parse {
    private:
-      const CommandLine<LR, PST>& m_args;
-      std::unique_ptr<LatBuilder::Task::Search<LR, PST>> m_search;
+      const CommandLine<LR, ET>& m_args;
+      std::unique_ptr<LatBuilder::Task::Search<LR, ET>> m_search;
 
    public:
 
-      Parse(const CommandLine<LR, PST>& args_): m_args(args_)
+      Parse(const CommandLine<LR, ET>& args_): m_args(args_)
       {}
 
 
-      std::unique_ptr<LatBuilder::Task::Search<LR, PST>> search()
+      std::unique_ptr<LatBuilder::Task::Search<LR, ET>> search()
       {
          Parser::FigureOfMerit<LR>::parse(
                m_args.normType,
                m_args.figure,
                Parser::CombinedWeights::parse(m_args.weights, m_args.weightsPowerScale),
                *this,
-               Parser::SizeParam<LR, PST>::parse(m_args.size),
+               Parser::SizeParam<LR, ET>::parse(m_args.size),
                boost::lexical_cast<Dimension>(m_args.dimension)
                );
          return std::move(m_search);
       }
 
       template <class FIGURE>
-      void operator()(FIGURE figure, LatBuilder::SizeParam<LR, PST> size, Dimension dimension)
+      void operator()(FIGURE figure, LatBuilder::SizeParam<LR, ET> size, Dimension dimension)
       {
-         m_search = Parser::Search<LR, PST>::parse(
+         m_search = Parser::Search<LR, ET>::parse(
                m_args.construction,
                size,
                dimension,
@@ -111,30 +111,30 @@ namespace {
 }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>>
-CommandLine<LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>::parse() const
-{ return Parse<LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::ORDINARY, LatBuilder::EmbeddingType::UNILEVEL>>
+CommandLine<LatticeType::ORDINARY, LatBuilder::EmbeddingType::UNILEVEL>::parse() const
+{ return Parse<LatticeType::ORDINARY, LatBuilder::EmbeddingType::UNILEVEL>(*this).search(); }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>>
-CommandLine<LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>::parse() const
-{ return Parse<LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::ORDINARY, LatBuilder::EmbeddingType::MULTILEVEL>>
+CommandLine<LatticeType::ORDINARY, LatBuilder::EmbeddingType::MULTILEVEL>::parse() const
+{ return Parse<LatticeType::ORDINARY, LatBuilder::EmbeddingType::MULTILEVEL>(*this).search(); }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>>
-CommandLine<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>::parse() const
-{ return Parse<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>>
+CommandLine<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>::parse() const
+{ return Parse<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(*this).search(); }
 
 template<>
-std::unique_ptr<LatBuilder::Task::Search<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>>
-CommandLine<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>::parse() const
-{ return Parse<LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>(*this).search(); }
+std::unique_ptr<LatBuilder::Task::Search<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>>
+CommandLine<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>::parse() const
+{ return Parse<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>(*this).search(); }
 
 /*
-template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::PointSetType::UNILEVEL>;
-template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::PointSetType::MULTILEVEL>;
-template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::PointSetType::UNILEVEL>;
-template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::PointSetType::MULTILEVEL>;
+template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::EmbeddingType::UNILEVEL>;
+template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::EmbeddingType::MULTILEVEL>;
+template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>;
+template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>;
 */
 
 }}

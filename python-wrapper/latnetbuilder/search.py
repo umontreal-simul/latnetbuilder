@@ -215,9 +215,9 @@ class SearchLattice(Search):
 
         from . import LATBUILDER
         command = [LATBUILDER,
-                   '--main-construction', 'lattice',
-                   '--lattice-type', self.lattice_type,
-                   '--embedded-lattice', str(self.embedded_lattice).lower(),
+                   '--set-type', 'lattice',
+                   '--construction', self.lattice_type,
+                   '--multilevel', str(self.embedded_lattice).lower(),
                    '--modulus', self.modulus,
                    '--figure-of-merit', self.figure_of_merit,
                    '--norm-type', self.figure_power,
@@ -258,7 +258,7 @@ class SearchNet(Search):
 
         from . import LATBUILDER
         command = [LATBUILDER,
-                   '--main-construction', 'net',
+                   '--set-type', 'net',
                    '--construction', self.construction,
                    '--set-type', self.set_type,
                    '--size', self.modulus,

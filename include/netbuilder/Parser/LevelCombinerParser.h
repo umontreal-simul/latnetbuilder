@@ -30,7 +30,7 @@ namespace lbp = LatBuilder::Parser;
 using namespace NetBuilder::LevelCombiner;
 
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid combiner.
  */
 class BadLevelCombiner : public lbp::ParserError {
 public:
@@ -40,26 +40,26 @@ public:
 };
 
 /**
- * Parser for construction parameters.
+ * Parser for combiners.
  */
-template <NetConstruction NC, NetBuilder::PointSetType PST>
+template <NetConstruction NC, NetBuilder::EmbeddingType ET>
 struct LevelCombinerParser {};
 
 template <NetConstruction NC>
-struct LevelCombinerParser<NC, NetBuilder::PointSetType::UNILEVEL> {
+struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::UNILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::UNILEVEL>& commandLine)
+   static result_type parse(const CommandLine<NC,NetBuilder::EmbeddingType::UNILEVEL>& commandLine)
    {
        return result_type();
    }
 };
 
 template <NetConstruction NC>
-struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
+struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::MULTILEVEL> {
    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::PointSetType::MULTILEVEL>& commandLine)
+   static result_type parse(const CommandLine<NC,NetBuilder::EmbeddingType::MULTILEVEL>& commandLine)
    {
        std::string str = commandLine.s_combiner;
        if (str=="sum")
@@ -69,10 +69,6 @@ struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
        else if (str=="max")
        {
            return result_type(MaxCombiner());
-       }
-       else if (str=="JoeKuoD6")
-       {
-           return result_type(JoeKuoD6Combiner());
        }
        else
        {
@@ -87,12 +83,12 @@ struct LevelCombinerParser<NC, NetBuilder::PointSetType::MULTILEVEL> {
                 unsigned int level;
                 if (combinerStrings[1] == "max")
                 {
-                    level = commandLine.m_sizeParam.log2NumPoints();
+                    level = commandLine.m_sizeParamLatTrick.log2NumPoints();
                 }
                 else
                 {
                     level = boost::lexical_cast<unsigned int>(combinerStrings[1]);
-                    if (level > commandLine.m_sizeParam.log2NumPoints() || level == 0)
+                    if (level > commandLine.m_sizeParamLatTrick.log2NumPoints() || level == 0)
                     {
                        throw BadLevelCombiner("incompatible combiner level and size.");
                     }  

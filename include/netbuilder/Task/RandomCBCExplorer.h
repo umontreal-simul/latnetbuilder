@@ -30,7 +30,7 @@ namespace NetBuilder { namespace Task {
 /**
  * Class to explorer randomly a search space using the CBC search algorithm. 
  */ 
-template <NetConstruction NC>
+template <NetConstruction NC, EmbeddingType ET>
 class RandomCBCExplorer
 {
     typedef NetConstructionTraits<NC> ConstructionMethod;
@@ -38,71 +38,72 @@ class RandomCBCExplorer
     public:
 
         /** Constructor.
-         * @param dimension Maximal dimension of the explorer.
-         * @param designParameter Design parameter of the search space.
+         * @param dimension Number of coordinates of the explorer.
+         * @param sizeParameter Size parameter of the search space.
          * @param nbTries Number of random choices of generating values by dimension.
-         * @param verbose Verbosity level.
          */
-        RandomCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, unsigned int nbTries, int verbose = 0):
+        RandomCBCExplorer(Dimension dimension, typename ConstructionMethod::SizeParameter sizeParameter, unsigned int nbTries):
             m_dimension(dimension),
+            m_currentCoord(0),
             m_nbTries(nbTries),
-            m_randomGenValueGenerator(std::move(designParameter)),
-            m_countTries(dimension,0),
-            m_verbose(verbose)
+            m_randomGenValueGenerator(std::move(sizeParameter)),
+            m_countTries(0)
         {};
 
         /**
-         * Returns whether the dimension \c dim is fully explored
+         * Returns whether current coordinate is fully explored
          */ 
-        bool isOver(unsigned int dim) 
+        bool isOver() 
         {
-            return m_countTries[dim-1]>=m_nbTries;
+            return size() == count();
         }
 
         /**
          * Returns the next generating values of dimension \c dim
          */
-        typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
+        typename ConstructionMethod::GenValue nextGenValue()
         {
-            m_countTries[dim-1] += 1;
-            if(this->m_verbose>0)
-            {
-                std::cout << "Dimension: " << dim << "/" << m_dimension <<  " - ";
-                std::cout << "net " << m_countTries[dim-1] << "/" << m_nbTries << std::endl;
-            }
-            return m_randomGenValueGenerator(dim);
+            m_countTries+= 1;
+            return m_randomGenValueGenerator(m_currentCoord);
         }
 
-
         /**
-         * Resets the explorer to the first dimension
+         * Resets the explorer to the first coordinate.
          */ 
         void reset()
         {
-            std::fill(m_countTries.begin(),m_countTries.end(), 0);
+           switchToCoordinate(0);
         }
 
         /**
-         * Sets the verbosity level of the explorer.
+         * Switches the explorer to coordinate \c coord.
          */ 
-        void setVerbose(int verbose)
+        void switchToCoordinate(Dimension coord)
         {
-            m_verbose = verbose;
+            m_currentCoord = coord;
+            m_countTries = 0;
+        };
+
+        size_t size() const
+        {
+            if (NetConstructionTraits<NC>::hasSpecialFirstCoordinate && m_currentCoord == 0)
+            {
+                return 1;
+            }
+            return m_nbTries;
         }
 
-        /**
-         * Switches the explorer to dimension \c dim.
-         */ 
-        void switchToDimension(unsigned int dim)
-        {};
+        size_t count() const
+        {
+            return m_countTries;
+        }
 
     private:
-        unsigned int m_dimension;
+        Dimension m_dimension;
+        Dimension m_currentCoord;
         unsigned int m_nbTries;
         typename ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> m_randomGenValueGenerator;
-        std::vector<unsigned int> m_countTries;
-        int m_verbose;
-
+        unsigned int m_countTries;
 };
 
 }}

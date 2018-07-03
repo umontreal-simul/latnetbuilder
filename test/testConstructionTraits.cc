@@ -51,7 +51,7 @@ int main(int argc, const char *argv[])
 
     for(unsigned int dim = 1; dim < 10; ++dim)
     {
-        auto foo = DigitalNetConstruction<NetConstruction::SOBOL>::ConstructionMethod::genValueSpaceDim(dim);
+        auto foo = DigitalNetConstruction<NetConstruction::SOBOL>::ConstructionMethod::genValueSpaceCoord(dim);
 
         std::cout << foo.size() << std::endl; 
     }

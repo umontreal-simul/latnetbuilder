@@ -31,8 +31,9 @@ namespace NetBuilder { namespace Task {
 /**
  * Virtual base class for search task.
  * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...).
+ * @tparam ET Embedding type (UNILEVEL or MULTILEVEL)
  */ 
-template <NetConstruction NC> 
+template <NetConstruction NC, EmbeddingType ET> 
 class Search : public Task {
 
 public:
@@ -52,47 +53,47 @@ public:
     virtual void reset() override
     {
         m_minimumObserver.reset();
-        m_bestNet = DigitalNetConstruction<NC>(0,m_designParameter);
+        m_bestNet = DigitalNetConstruction<NC>(0,m_sizeParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
 
     /// Signal emitted when a net has been selected.
 
-    typedef boost::signals2::signal<void (const Search<NC>&)> OnNetSelected;
+    typedef boost::signals2::signal<void (const Search<NC, ET>&)> OnNetSelected;
 
     /// Signal emitted when the search has failed.
-    typedef boost::signals2::signal<void (const Search<NC>&)> OnFailedSearch;
+    typedef boost::signals2::signal<void (const Search<NC, ET>&)> OnFailedSearch;
 
     /**
      * Constructor.
      * @param dimension Dimension of the searched net.
-     * @param designParameter Design parameter of the searched net.
+     * @param sizeParameter Size parameter of the searched net.
      * @param figure Figure of merit used to compare nets.
      * @param verbose Verbosity level.
      * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
      */
     Search( Dimension dimension, 
-            typename NetConstructionTraits<NC>::DesignParameter designParameter,
+            typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
             int verbose = 0,
             bool earlyAbortion = true ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
-        m_designParameter(designParameter),
-        m_nRows(NetConstructionTraits<NC>::nRows(m_designParameter)),
-        m_nCols(NetConstructionTraits<NC>::nCols(m_designParameter)),
+        m_sizeParameter(sizeParameter),
+        m_nRows(NetConstructionTraits<NC>::nRows(m_sizeParameter)),
+        m_nCols(NetConstructionTraits<NC>::nCols(m_sizeParameter)),
         m_figure(std::move(figure)),
-        m_bestNet(0, m_designParameter),
+        m_bestNet(0, m_sizeParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
-        m_minimumObserver(new MinimumObserver<NC>(designParameter, verbose-2)),
+        m_minimumObserver(new MinimumObserver<NC>(sizeParameter, verbose-2)),
         m_verbose(verbose),
         m_earlyAbortion(earlyAbortion)
         {};
 
     /**
      * Constructor.
-     * @param dimension Dimension of the net to search.
+     * @param dimension Dimension of the searched net.
      * @param baseNet Net from which to start the search.
      * @param figure Figure of merit used to compare nets.
      * @param verbose Verbosity level.
@@ -106,11 +107,11 @@ public:
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
-        m_designParameter(baseNet->designParameter()),
-        m_nRows(NetConstructionTraits<NC>::nRows(m_designParameter)),
-        m_nCols(NetConstructionTraits<NC>::nCols(m_designParameter)),
+        m_sizeParameter(baseNet->sizeParameter()),
+        m_nRows(NetConstructionTraits<NC>::nRows(m_sizeParameter)),
+        m_nCols(NetConstructionTraits<NC>::nCols(m_sizeParameter)),
         m_figure(std::move(figure)),
-        m_bestNet(0, m_designParameter),
+        m_bestNet(0, m_sizeParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
         m_minimumObserver(new MinimumObserver<NC>(std::move(baseNet), verbose-2)),
         m_verbose(verbose),
@@ -216,9 +217,9 @@ public:
     }
 
     /** 
-     * Returns a const qualified reference to the design parameter of the search.
+     * Returns a const qualified reference to the size parameter of the search.
      */ 
-    const typename NetConstructionTraits<NC>::DesignParameter& designParameter() const {return m_designParameter;}
+    const typename NetConstructionTraits<NC>::SizeParameter& sizeParameter() const {return m_sizeParameter;}
 
     protected:
 
@@ -235,7 +236,7 @@ public:
         std::unique_ptr<OnNetSelected> m_onNetSelected; // onNetSelected signal
         std::unique_ptr<OnFailedSearch> m_onFailedSearch; // onFailedSearch signal
         Dimension m_dimension; // dimension of the search
-        typename NetConstructionTraits<NC>::DesignParameter m_designParameter; // design parameter of the search
+        typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter; // size parameter of the search
         unsigned int m_nRows; // number of rows of the generating matrices
         unsigned int m_nCols; // number of columns of the generating matrices
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure; // figure of merit

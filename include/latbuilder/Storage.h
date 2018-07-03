@@ -32,35 +32,35 @@ namespace LatBuilder {
  *  default per level value depending on the lattice (ordinary/polynomial) and the lattice type (ordinary/embedded).
  *
  */
-template <LatticeType LR, PointSetType PST>
+template <LatticeType LR, EmbeddingType ET>
 struct defaultPerLevelOrder;
 
 template <>
-struct defaultPerLevelOrder<LatticeType::ORDINARY, PointSetType::UNILEVEL>{
+struct defaultPerLevelOrder<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 template <>
-struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>{
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::ORDINARY, PointSetType::MULTILEVEL>{
+struct defaultPerLevelOrder<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::CYCLIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>{
+struct defaultPerLevelOrder<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::UNILEVEL>{
+struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::UNILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
 template <>
-struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::MULTILEVEL>{
+struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL>{
    static const PerLevelOrder Order = PerLevelOrder::BASIC;
 };
 
@@ -95,7 +95,7 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::MULTILEVEL>{
  * the \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ blocks. 
  * The elements within each block can be ordered according to the inversed cyclic order of \f$U_{p^k}\f$. i.e the block (ordered) elements are
  * \f$\{p^{m-k}g^{-l}, l=0..\varphi(p^k)-1 \}\f$ with \f$g\f$ a generator of  \f$U_{p^k}\f$.
- * This order permits to do fast CBC construction.  This order can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
+ * This order permits to do fast CBC exploration.  This order can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
  * One can set PerLevelOrder to PerLevelOrder::BASIC, in this case, elements within each block are ordered in the non-decreasing order.
  * PerLevelOrder::CYCLIC is set as the default order, the basic order was introduced especially for polynomial lattices, where the cyclic structure does not apply if \f$m>1\f$.
  *
@@ -107,14 +107,14 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, PointSetType::MULTILEVEL>{
  * The \f$k^{\text{th}}\f$ level is the concatenation of the first \f$k\f$ blocks.
  * If \f$m=1\f$, we have two block with sizes 1 and \f$2^{\deg(b(z))}-1\f$ and the elements within the second block can be ordered according to the inversed cyclic order of \f$(\mathbb{Z}_2[z]/(b(z)))^*\f$.
  * i.e the block (ordered) elements are \f$\{g^{-l}, l=0..\varphi(b(z))-1 \}\f$ with \f$g\f$ a generator of \f$(\mathbb{Z}_2[z]/(b(z)))^*\f$.
- * This order permits to do fast CBC construction, and can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
+ * This order permits to do fast CBC exploration, and can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
  * If \f$m>1\f$, the cyclic structure does not apply and we have to set PerLevelOrder to PerLevelOrder::BASIC.
  * In this case, elements of \f$(\mathbb{Z}_2[z]/(b(z)^k))^*\f$ are ordered according to the order given by the class GeneratingValues.
  * 
  * The output from \ref Storage.cc gives an intuition of how this works for
  * different combination of lattice type and of compression.
  */
-template <LatticeType LR, PointSetType PST, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, PST>::Order > class Storage;
+template <LatticeType LR, EmbeddingType ET, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, ET>::Order > class Storage;
 
 /**
  * Storage traits.

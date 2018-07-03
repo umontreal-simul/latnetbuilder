@@ -123,6 +123,8 @@ struct LatticeParametersParseHelper<LatticeType::POLYNOMIAL> {
       uInteger size = str.size();
       std::string str_NTLInput(2*size -1,' ');
       for(uInteger i = 0; i<size ; i++){
+         if (str[i] != '0' && str[i] != '1')
+            throw LatBuilder::Parser::ParserError("cannot interpret \"" + str + "\" as a polynomial"); 
          str_NTLInput[2*i] = str[i];
       }
       str_NTLInput = "[" + str_NTLInput + "]" ; 
@@ -134,6 +136,8 @@ struct LatticeParametersParseHelper<LatticeType::POLYNOMIAL> {
       uInteger size = str.size();
       std::string str_NTLInput(2*size -1,' ');
       for(uInteger i = 0; i<size ; i++){
+          if (str[i] != '0' && str[i] != '1')
+            throw LatBuilder::Parser::ParserError("cannot interpret \"" + str + "\" as a polynomial"); 
          str_NTLInput[2*i] = str[i];
       }
       str_NTLInput = "[" + str_NTLInput + "]" ; 

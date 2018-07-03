@@ -65,29 +65,6 @@ namespace NetBuilder {
         };
 
         /**
-         * Combiner used by Joe and Kuo. Corresponds to \f$ D^{(6)} \f$ in 
-         * S. Joe and F. Y. Kuo, <EM> Constructing Sobol sequences with better two-dimensional projections </EM>, 
-         * SIAM J. Sci. Comput. <B> 30 </B>, 2635-2654 (2008). // TODO
-         */ 
-        struct JoeKuoD6Combiner
-        {
-            /** 
-             * Combines the merits.
-             */ 
-            Real operator()(const RealVector& merits)
-            {
-                Real res = 0;
-                unsigned int level = 0;
-                for(Real merit : merits)
-                {
-                    ++level;
-                    res = std::max(res, intPow(merit,6)/(level-merit+1));
-                }
-                return res;
-            }
-        };
-
-        /**
          * Level selector combiner. Selects the merit value corresponding to a specific level.
          */ 
         class LevelSelectorCombiner
@@ -112,6 +89,8 @@ namespace NetBuilder {
             private:   
                 unsigned int m_level;
         };
+
+        
 }}
 
 #endif

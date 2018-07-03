@@ -30,32 +30,32 @@ namespace {
 
    template <LatticeType LR, class NORM>
    void setLevelWeights(
-         Norm::Normalizer<LR, PointSetType::UNILEVEL, NORM>&,
+         Norm::Normalizer<LR, EmbeddingType::UNILEVEL, NORM>&,
          const std::string&,
-         const LatBuilder::SizeParam<LR, PointSetType::UNILEVEL>&
+         const LatBuilder::SizeParam<LR, EmbeddingType::UNILEVEL>&
          )
    {}
 
    template <LatticeType LR, class NORM>
    void setLevelWeights(
-         Norm::Normalizer<LR, PointSetType::MULTILEVEL, NORM>& normalizer,
+         Norm::Normalizer<LR, EmbeddingType::MULTILEVEL, NORM>& normalizer,
          const std::string& levelWeights,
-         const LatBuilder::SizeParam<LR, PointSetType::MULTILEVEL>& sizeParam
+         const LatBuilder::SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam
          )
    { normalizer.setWeights(LevelWeights<LR>::parse(levelWeights, sizeParam)); }
 
-   template <LatticeType LR, class NORM, PointSetType PST>
-   std::unique_ptr<BasicMeritFilter<LR, PST>> createNormalizer(
+   template <LatticeType LR, class NORM, EmbeddingType ET>
+   std::unique_ptr<BasicMeritFilter<LR, ET>> createNormalizer(
          unsigned int alpha,
-         const LatBuilder::SizeParam<LR, PST>& sizeParam,
+         const LatBuilder::SizeParam<LR, ET>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType,
          const std::string& levelWeights
          )
    {
-      auto normalizer = new LatBuilder::Norm::Normalizer<LR, PST, NORM>(NORM(alpha, weights, normType));
+      auto normalizer = new LatBuilder::Norm::Normalizer<LR, ET, NORM>(NORM(alpha, weights, normType));
       setLevelWeights(*normalizer, levelWeights, sizeParam);
-      return std::unique_ptr<BasicMeritFilter<LR, PST>>(normalizer);
+      return std::unique_ptr<BasicMeritFilter<LR, ET>>(normalizer);
    }
 
    /**
@@ -63,10 +63,10 @@ namespace {
     *
     * Example strings: \c P2-SL10, \c P4-SL10, \c P2-DPW08, \c P4-DPW08
     */
-   template <LatticeType LR, PointSetType PST>
-   std::unique_ptr<BasicMeritFilter<LR, PST>> parseNormalizer(
+   template <LatticeType LR, EmbeddingType ET>
+   std::unique_ptr<BasicMeritFilter<LR, ET>> parseNormalizer(
          const std::string& str,
-         const LatBuilder::SizeParam<LR, PST>& sizeParam,
+         const LatBuilder::SizeParam<LR, ET>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType
          )
@@ -78,9 +78,9 @@ namespace {
             if (strSplit.first[0] == 'P') {
                const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(1));
                if (strSplit.second == "SL10")
-                  return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, PST>(alpha, sizeParam, weights, normType, args.second);
+                  return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
                else if (strSplit.second == "DPW08")
-                  return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, PST>(alpha, sizeParam, weights, normType, args.second);
+                  return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);
             }
          }
          catch (boost::bad_lexical_cast&) {}
@@ -90,11 +90,11 @@ namespace {
    }
 }
 
-template <LatticeType LR, PointSetType PST>
-std::unique_ptr<BasicMeritFilter<LR, PST>>
-MeritFilter<LR,PST>::parse(
+template <LatticeType LR, EmbeddingType ET>
+std::unique_ptr<BasicMeritFilter<LR, ET>>
+MeritFilter<LR,ET>::parse(
       const std::string& str,
-      const LatBuilder::SizeParam<LR, PST>& sizeParam,
+      const LatBuilder::SizeParam<LR, ET>& sizeParam,
       const LatticeTester::Weights& weights,
       Real normType
       )
@@ -104,31 +104,31 @@ MeritFilter<LR,PST>::parse(
       return parseNormalizer(x.second, sizeParam, weights, normType);
    else if (x.first == "low-pass") {
       auto threshold = boost::lexical_cast<Real>(x.second);
-      return std::unique_ptr<BasicMeritFilter<LR, PST>>(new LatBuilder::MeritFilter<LR, PST>(Functor::LowPass<Real>(threshold), str));
+      return std::unique_ptr<BasicMeritFilter<LR, ET>>(new LatBuilder::MeritFilter<LR, ET>(Functor::LowPass<Real>(threshold), str));
    }
    throw BadFilter(x.first);
 }
 
-template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, PointSetType::UNILEVEL> ;
-template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, PointSetType::MULTILEVEL> ;
-template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, PointSetType::UNILEVEL> ;
-template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, EmbeddingType::UNILEVEL> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, EmbeddingType::MULTILEVEL> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL> ;
+template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL> ;
 
 
 /*
 template
-std::unique_ptr<BasicMeritFilter<PointSetType::UNILEVEL>>
+std::unique_ptr<BasicMeritFilter<EmbeddingType::UNILEVEL>>
 MeritFilter::parse(
       const std::string&,
-      const LatBuilder::SizeParam<PointSetType::UNILEVEL>&,
+      const LatBuilder::SizeParam<EmbeddingType::UNILEVEL>&,
       const LatticeTester::Weights&,
       Real);
 
 template
-std::unique_ptr<BasicMeritFilter<PointSetType::MULTILEVEL>>
+std::unique_ptr<BasicMeritFilter<EmbeddingType::MULTILEVEL>>
 MeritFilter::parse(
       const std::string&,
-      const LatBuilder::SizeParam<PointSetType::MULTILEVEL>&,
+      const LatBuilder::SizeParam<EmbeddingType::MULTILEVEL>&,
       const LatticeTester::Weights&,
       Real);
 */

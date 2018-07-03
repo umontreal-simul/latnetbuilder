@@ -73,7 +73,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         FigureOfMerit* pointerToFigure(unsigned int num) const { return m_figures[num].get() ; }
 
         /**
-         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
         {
@@ -116,7 +116,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
                  *  @param initialValue Initial value of the merit.
                  *  @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     auto acc = m_figure->accumulator(0); // create the accumulator from the initial value
 

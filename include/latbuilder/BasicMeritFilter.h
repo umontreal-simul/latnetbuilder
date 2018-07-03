@@ -28,13 +28,13 @@ namespace LatBuilder {
  * It defines MeritValue as the type of merit value associated to a given type
  * of lattice.
  */
-template <PointSetType>
+template <EmbeddingType>
 struct MeritFilterTraits;
 
 /**
  * Abstract base class for filters.
  */
-template <LatticeType LR, PointSetType PST, PointSetType OUT = PST>
+template <LatticeType LR, EmbeddingType ET, EmbeddingType OUT = ET>
 struct BasicMeritFilter;
 
 /**
@@ -46,11 +46,11 @@ struct LatticeRejectedException : std::exception {};
 //========================================================================
 
 
-template <LatticeType LR, PointSetType PST, PointSetType OUT>
+template <LatticeType LR, EmbeddingType ET, EmbeddingType OUT>
 struct BasicMeritFilter {
-   typedef typename MeritFilterTraits<PST>::MeritValue InputMeritValue;
+   typedef typename MeritFilterTraits<ET>::MeritValue InputMeritValue;
    typedef typename MeritFilterTraits<OUT>::MeritValue OutputMeritValue;
-   typedef LatBuilder::LatDef<LR, PST> LatDef;
+   typedef LatBuilder::LatDef<LR, ET> LatDef;
    virtual ~BasicMeritFilter() {}
    virtual OutputMeritValue operator() (const InputMeritValue&, const LatDef&) const = 0;
    virtual std::string name() const = 0;
@@ -60,11 +60,11 @@ struct BasicMeritFilter {
 //========================================================================
 
 
-template <> struct MeritFilterTraits<PointSetType::UNILEVEL> {
+template <> struct MeritFilterTraits<EmbeddingType::UNILEVEL> {
    typedef Real MeritValue;
 };
 
-template <> struct MeritFilterTraits<PointSetType::MULTILEVEL> {
+template <> struct MeritFilterTraits<EmbeddingType::MULTILEVEL> {
    typedef RealVector MeritValue;
 };
 

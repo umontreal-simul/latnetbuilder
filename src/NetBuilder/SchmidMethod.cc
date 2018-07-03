@@ -42,7 +42,7 @@ unsigned int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices,
 
     if (s==1){ return 0; } 
 
-    size_type upperLimit = (1<<(m-maxTValuesSubProj))-1;
+    uInteger upperLimit = (1<<(m-maxTValuesSubProj))-1;
     std::vector<unsigned int> flipingOrder(upperLimit);
     for(uInteger r = 0; r < upperLimit; ++r)
     {
@@ -57,7 +57,7 @@ unsigned int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices,
             std::vector<unsigned int> comp = compMaker.currentComposition();
             std::vector<GeneratingMatrix::Row*> tmp(k);
             unsigned int idx = 0;
-            for(unsigned int coord = 0; coord < s; ++coord)
+            for(Dimension coord = 0; coord < s; ++coord)
             {
                 for(int j = 0; j < comp[coord]; ++j)
                 {
@@ -87,7 +87,7 @@ std::vector<unsigned int> SchmidMethod::computeTValue(std::vector<GeneratingMatr
 
     if (s==1){ return std::vector<unsigned int>(m, 0); } 
 
-    size_type upperLimit ;
+    uInteger upperLimit ;
     std::vector<unsigned int> res = maxTValuesSubProj;
 
     upperLimit= (1<<(m-maxTValuesSubProj.back()))-1;
@@ -107,7 +107,7 @@ std::vector<unsigned int> SchmidMethod::computeTValue(std::vector<GeneratingMatr
             std::vector<unsigned int> comp = compMaker.currentComposition();
             std::vector<GeneratingMatrix::Row*> tmp(k);
             unsigned int idx = 0;
-            for(unsigned int coord = 0; coord < s; ++coord)
+            for(Dimension coord = 0; coord < s; ++coord)
             {
                 for(int j = 0; j < comp[coord]; ++j)
                 {

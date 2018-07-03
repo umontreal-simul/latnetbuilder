@@ -78,9 +78,9 @@ public:
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-   Evaluator<CoordUniform, LR, PST, COMPRESS, PLO> evaluator(Storage<LR, PST, COMPRESS, PLO> storage) const
-   { return Evaluator<CoordUniform, LR, PST, COMPRESS, PLO>(std::move(storage), kernel().valuesVector(storage)); }
+   template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+   Evaluator<CoordUniform, LR, ET, COMPRESS, PLO> evaluator(Storage<LR, ET, COMPRESS, PLO> storage) const
+   { return Evaluator<CoordUniform, LR, ET, COMPRESS, PLO>(std::move(storage), kernel().valuesVector(storage)); }
 
 private:
    KERNEL m_kernel;
@@ -89,13 +89,13 @@ private:
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class KERNEL, LatticeType LR, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO>
-class Evaluator<CoordUniform<KERNEL>, LR, PST, COMPRESS, PLO> {
+template <class KERNEL, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+class Evaluator<CoordUniform<KERNEL>, LR, ET, COMPRESS, PLO> {
 public:
-   typedef typename Storage<LR, PST, COMPRESS, PLO>::MeritValue MeritValue;
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
 
    Evaluator(
-      Storage<LR, PST, COMPRESS, PLO> storage,
+      Storage<LR, ET, COMPRESS, PLO> storage,
       RealVector kernelValues
       ):
       m_storage(std::move(storage)),
@@ -107,7 +107,7 @@ public:
     * \c projection.
     */
    MeritValue operator() (
-         const LatDef<LR, PST>& lat,
+         const LatDef<LR, ET>& lat,
          const LatticeTester::Coordinates& projection
          ) const
    {
@@ -142,7 +142,7 @@ public:
    }
 
 private:
-   Storage<LR, PST, COMPRESS, PLO> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    RealVector m_kernelValues;
 };
 

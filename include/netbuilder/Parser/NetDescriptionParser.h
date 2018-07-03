@@ -29,7 +29,7 @@
 
 namespace NetBuilder { namespace Parser {
 /**
- * Exception thrown when trying to parse an invalid size parameter.
+ * Exception thrown when trying to parse an invalid net description.
  */
 class BadNetDescription : public lbp::ParserError {
 public:
@@ -39,22 +39,22 @@ public:
 };
 
 /**
- * Parser for construction parameters.
+ * Parser for net descriptions.
  */
-template<NetConstruction NC, PointSetType PST>
+template<NetConstruction NC, EmbeddingType ET>
 struct NetDescriptionParser {};
 
-template<PointSetType PST>
-struct NetDescriptionParser<NetConstruction::SOBOL, PST>
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::SOBOL, ET>
 {
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
    typedef std::vector<GenValue> result_type;
 
-   static result_type parse(CommandLine<NetConstruction::SOBOL, PST>& commandLine, const std::string& str)
+   static result_type parse(CommandLine<NetConstruction::SOBOL, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
-       unsigned int dim = 1;
+       Dimension dim = 1;
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
        for(const auto& dirNumsString : netDescriptionStrings)
@@ -68,7 +68,7 @@ struct NetDescriptionParser<NetConstruction::SOBOL, PST>
                dirNumbersValues.push_back(boost::lexical_cast<uInteger>(numStr));
            }
            GenValue genVal = GenValue(dim,std::move(dirNumbersValues));
-           if(!NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(genVal, commandLine.m_designParameter))
+           if(!NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                 throw BadNetDescription("bad Sobol' direction numbers.");
            }
@@ -83,13 +83,13 @@ struct NetDescriptionParser<NetConstruction::SOBOL, PST>
    }
 };
 
-template<PointSetType PST>
-struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::POLYNOMIAL, ET>
 {
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValue GenValue;
     typedef std::vector<GenValue> result_type;
 
-   static result_type parse(CommandLine<NetConstruction::POLYNOMIAL, PST>& commandLine, const std::string& str)
+   static result_type parse(CommandLine<NetConstruction::POLYNOMIAL, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
@@ -98,7 +98,7 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
        for(const auto& polyString : netDescriptionStrings)
        {
            GenValue genVal = polynomialParserHelper(polyString);
-           if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_designParameter))
+           if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating polynomial.");
            }
@@ -112,13 +112,13 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, PST>
    }
 };
 
-template<PointSetType PST>
-struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
 {
     typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::GenValue GenValue;
     typedef std::vector<GenValue> result_type;
 
-   static result_type parse(CommandLine<NetConstruction::EXPLICIT, PST>& commandLine, const std::string& str)
+   static result_type parse(CommandLine<NetConstruction::EXPLICIT, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("/"));
@@ -145,7 +145,7 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, PST>
                std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
                genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);
            }
-           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_designParameter))
+           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating matrix size.");
            }

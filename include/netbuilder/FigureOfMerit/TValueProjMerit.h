@@ -30,10 +30,10 @@ namespace NetBuilder { namespace FigureOfMerit {
 using LatticeTester::Coordinates;
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection.
- *  @tparam PST Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::PointSetType.
+ *  @tparam ET Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::EmbeddingType.
  *  @tparam METHOD Computation method of the t-value. @see TValueComputation
  */ 
-template <PointSetType PST, typename METHOD = GaussMethod>
+template <EmbeddingType ET, typename METHOD = GaussMethod>
 class TValueProjMerit
 {};
 
@@ -41,7 +41,7 @@ class TValueProjMerit
  *  in the case of unilevel nets. @see NetBuilder::TValueProjMerit.
  */ 
 template <typename METHOD>
-class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
+class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
 {
     public:
 
@@ -90,7 +90,7 @@ class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
             {
-                mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
+                mats.push_back(net.generatingMatrix(dim));
             }
             return METHOD::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
@@ -151,7 +151,7 @@ class TValueProjMerit<PointSetType::UNILEVEL, METHOD>
  *  in the case of multilevel nets. @see NetBuilder::TValueProjMerit.
  */ 
 template <typename METHOD>
-class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
+class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
 {
     public:
 
@@ -201,7 +201,7 @@ class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
             {
-                mats.push_back(net.generatingMatrix((unsigned int) (dim+1)));
+                mats.push_back(net.generatingMatrix(dim));
             }
             return METHOD::computeTValue(std::move(mats), maxMeritsSubProj, 0);
         }
@@ -278,11 +278,11 @@ class TValueProjMerit<PointSetType::MULTILEVEL, METHOD>
  * in the case of unilevel nets.
  */ 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>>
+class WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL, GaussMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<EmbeddingType::UNILEVEL, GaussMethod>>
 {
     public:
 
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>>* figure):
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL, GaussMethod>>* figure):
             ProjectionDependentEvaluator(figure)
         {}
 };
@@ -292,11 +292,11 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, GaussMethod>
  * in the case of multilevel nets.
  */ 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, GaussMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::MULTILEVEL, GaussMethod>>
+class WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::MULTILEVEL, GaussMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<EmbeddingType::MULTILEVEL, GaussMethod>>
 {
     public:
 
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, GaussMethod>>* figure):
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::MULTILEVEL, GaussMethod>>* figure):
             ProjectionDependentEvaluator(figure)
         {}
 };
@@ -306,11 +306,11 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, GaussMetho
  * in the case of unilevel nets.
  */ 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod>>
+class WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL, SchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<EmbeddingType::UNILEVEL, SchmidMethod>>
 {
     public:
 
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod>>* figure):
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL, SchmidMethod>>* figure):
             ProjectionDependentEvaluator(figure)
         {}
 };
@@ -320,11 +320,11 @@ class WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL, SchmidMethod
  * in the case of multilevel nets.
  */ 
 template<>
-class WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, SchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<PointSetType::MULTILEVEL, SchmidMethod>>
+class WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::MULTILEVEL, SchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueProjMerit<EmbeddingType::MULTILEVEL, SchmidMethod>>
 {
     public:
 
-        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<PointSetType::MULTILEVEL, SchmidMethod>>* figure):
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::MULTILEVEL, SchmidMethod>>* figure):
             ProjectionDependentEvaluator(figure)
         {}
 };

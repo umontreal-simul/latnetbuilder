@@ -20,13 +20,9 @@
 #include "latbuilder/SeqCombiner.h"
 #include "latbuilder/Traversal.h"
 
-#include <string>
-#include <fstream>
-#include <boost/algorithm/string.hpp>
 #include <boost/dynamic_bitset.hpp>
 #include <vector>
 #include <list>
-#include <assert.h>
 
 #include "latbuilder/TextStream.h"
 
@@ -34,15 +30,13 @@ namespace NetBuilder {
 
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
-    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::DesignParameter DesignParameter;
+    typedef typename NetConstructionTraits<NetConstruction::SOBOL>::SizeParameter SizeParameter;
 
-    DesignParameter NetConstructionTraits<NetConstruction::SOBOL>::defaultDesignParameter = 1;
-
-    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
+    bool NetConstructionTraits<NetConstruction::SOBOL>::checkGenValue(const GenValue& genValue, const SizeParameter& sizeParameter)
     {
         auto dimension = genValue.first;
 
-        if (dimension==1)
+        if (dimension==0)
         {
             return (genValue.second.size()==1 && genValue.second.front()==0);
         }
@@ -65,9 +59,9 @@ namespace NetBuilder {
         return true;
     }
 
-    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nRows(const DesignParameter& param) { return (unsigned int) param; }
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nRows(const SizeParameter& param) { return (unsigned int) param; }
 
-    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nCols(const DesignParameter& param) { return (unsigned int) param; }
+    unsigned int NetConstructionTraits<NetConstruction::SOBOL>::nCols(const SizeParameter& param) { return (unsigned int) param; }
 
     static const std::array<unsigned int,21200> degrees =
     {{
@@ -79,7 +73,7 @@ namespace NetBuilder {
         #include "../data/primitive_polynomials_representations.csv"
     }};
 
-    NetConstructionTraits<NetConstruction::SOBOL>::PrimitivePolynomial  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomial(unsigned int n)
+    NetConstructionTraits<NetConstruction::SOBOL>::PrimitivePolynomial  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomial(Dimension n)
     {
         // primitive polynomials are hard-coded because their computation is really complex.
         if (n>0 && n <= 21200)
@@ -89,7 +83,7 @@ namespace NetBuilder {
         }
     }
 
-    unsigned int  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomialDegree(unsigned int n)
+    unsigned int  NetConstructionTraits<NetConstruction::SOBOL>::nthPrimitivePolynomialDegree(Dimension n)
     {
         // primitive polynomials are hard-coded because their computation is really complex.
         if (n>0 && n <= 21200)
@@ -124,12 +118,12 @@ namespace NetBuilder {
         reg.push_back(std::move(newDirNum));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParam, std::shared_ptr<GeneratingMatrixComputationData>& computationData)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam)
     {
-        unsigned int m  = nCols(designParam);
-        unsigned int coord = genValue.first;
+        unsigned int m  = nCols(sizeParam);
+        Dimension coord = genValue.first;
 
-        if (coord==1) // special case for the first dimension
+        if (coord==0) // special case for the first dimension
         {
             GeneratingMatrix* tmp = new GeneratingMatrix(m,m);
             for(unsigned int k = 0; k<m; ++k){
@@ -139,15 +133,12 @@ namespace NetBuilder {
         }
 
         // compute the vector defining the linear recurrence on the columns of the matrix
-
-        PrimitivePolynomial p = nthPrimitivePolynomial(coord-1);
+        PrimitivePolynomial p = nthPrimitivePolynomial(coord);
         auto degree = p.first;
         auto poly_rep = p.second;
         boost::dynamic_bitset<> mask(degree,(poly_rep << 1) + 1);
-
         unsigned int matrixSize = std::max(degree,m);
         GeneratingMatrix* tmp = new GeneratingMatrix(matrixSize, matrixSize);
-
         std::list<boost::dynamic_bitset<>> reg;
         unsigned int k = 1;
         for(auto dirNum : genValue.second)
@@ -159,280 +150,122 @@ namespace NetBuilder {
             }
             ++k;
         }
-
         while (k<=matrixSize)
         {
-            makeIteration(*tmp,reg, mask, k);
+            makeIteration(*tmp, reg, mask, k);
             ++k;
         }
-        computationData = std::make_shared<GeneratingMatrixComputationData>(k, std::move(mask), std::move(reg));
         return tmp;
     }
 
-    
-    const char* ws = " \t\n\r\f\v";
+   NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::GenValueSpaceCoordSeq(Dimension coord):
+    m_coord(coord),
+    m_underlyingSeq(underlyingSeqs(coord))
+    {};
 
-    // trim from end (right)
-    inline std::string& rtrim(std::string& s, const char* t = ws)
-    {
-        s.erase(s.find_last_not_of(t) + 1);
-        return s;
+
+    NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator::const_iterator(const GenValueSpaceCoordSeq& seq):
+        m_coord(seq.coord()),
+        m_underlyingIterator(seq.underlyingSeq().begin()),
+        m_value(GenValue(m_coord, *m_underlyingIterator))
+    {};
+
+    NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator::const_iterator(const GenValueSpaceCoordSeq& seq, end_tag):
+        m_coord(seq.coord()),
+        m_underlyingIterator(seq.underlyingSeq().end())
+    {};
+
+    bool NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator::equal(const const_iterator& other) const
+    { 
+        return m_underlyingIterator == other.m_underlyingIterator;
     }
 
-    // trim from beginning (left)
-    inline std::string& ltrim(std::string& s, const char* t = ws)
-    {
-        s.erase(0, s.find_first_not_of(t));
-        return s;
+    const NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator::value_type& NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator::dereference() const
+    { 
+        return m_value;
     }
 
-    // trim from both ends (left & right)
-    inline std::string& trim(std::string& s, const char* t = ws)
+    void NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator::increment()
     {
-        return ltrim(rtrim(s, t), t);
-    }    
-
-    std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::readJoeKuoDirectionNumbers(unsigned int dimension)
-    {
-        assert(dimension >= 1 && dimension <= 21201);
-        std::ifstream file("../share/latbuilder/data/JoeKuoSobolNets.csv");
-        std::vector<std::vector<uInteger>> res(dimension);
-        std::string sent;
-
-        do
+        if (m_underlyingIterator != m_underlyingIterator.seq().end())
         {
-            getline(file,sent);
-            trim(sent);
-        }
-        while (sent != "###");
-
-        getline(file,sent);
-
-        for(unsigned int i = 1; i <= dimension; ++i)
-        {
-            if(getline(file,sent))
-            {
-                std::vector<std::string> fields;
-                boost::split( fields, sent, boost::is_any_of( ";" ) );
-                for( const auto& token : fields)
-                {
-                    res[i-1].push_back(std::stol(token));
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-        return res;
-    }
-
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter){
-        std::vector<std::vector<uInteger>> tmp = readJoeKuoDirectionNumbers(dimension);
-        std::vector<GenValue> res(dimension);
-        for(unsigned int j = 0; j < dimension; ++j)
-        {
-            res[j] = GenValue(j+1,tmp[j]);
-        }
-        return res;
-    }
-
-    template <class TRAV = LatBuilder::Traversal::Forward>
-    class SobolDirectionNumbers : public LatBuilder::Traversal::Policy<SobolDirectionNumbers<TRAV>, TRAV> 
-    {
-
-        typedef SobolDirectionNumbers<TRAV> self_type;
-        typedef LatBuilder::Traversal::Policy<self_type, TRAV> TraversalPolicy;
-
-        public:
-
-            /**
-            * Size type.
-            */
-            typedef size_t size_type;
-
-            typedef unsigned long value_type;
-
-            /**
-                * Traversal type.
-                */
-            typedef TRAV Traversal;
-
-            static std::string name()
-            { return std::string("Direction numbers / ") + " / " + Traversal::name(); }
-
-            /**
-            * Constructor.
-            *
-            * \param nbBits    Maximal size of the numbers in bits
-            * \param trav       Traversal instance.
-            */
-            SobolDirectionNumbers(unsigned int nbBits, Traversal trav = Traversal());
-
-            /**
-            * Cross-traversal copy-constructor.
-            */
-            template <class TRAV2>
-            SobolDirectionNumbers(
-                    const SobolDirectionNumbers<TRAV2>& other,
-                    Traversal trav = Traversal()):
-                TraversalPolicy(std::move(trav)),
-                m_nbBits(other.m_nbBits),
-                m_size(other.m_size),
-                m_data(other.m_data)
-            {}
-
-            /**
-            * Rebinds the traversal type.
-            */
-            template <class TRAV2>
-            struct RebindTraversal {
-                typedef SobolDirectionNumbers<TRAV2> Type;
-            };
-
-            /**
-            * Returns a copy of this object, but using a different traversal policy.
-            */
-            template <class TRAV2>
-            typename RebindTraversal<TRAV2>::Type rebind(TRAV2 trav) const
-            { return typename RebindTraversal<TRAV2>::Type{*this, std::move(trav)}; }
-
-            /**
-            * Returns the maximal number of bits in the direction numbers.
-            */
-            value_type nbBits() const
-            { return m_nbBits; }
-
-            /**
-            * Returns the size of the sequence.
-            *
-            * The size is the value of Euler's totient function.
-            */
-            size_type size() const
-            { return m_size; }
-
-            /**
-            * Returns the element at index \c i.
-            */
-            value_type operator[](size_type i) const;
-
-        private:
-
-            template <class> friend class SobolDirectionNumbers;
-
-            unsigned int m_nbBits;
-            size_type m_size;
-            std::vector<value_type> m_data;
-    };
-
-
-    //========================================================================
-    // IMPLEMENTATION
-    //========================================================================
-
-    template <class TRAV>
-    SobolDirectionNumbers<TRAV>::SobolDirectionNumbers(unsigned int nbBits, Traversal trav):
-    TraversalPolicy(std::move(trav)),
-    m_nbBits(nbBits),
-    m_size(intPow(2,nbBits-1)),
-    m_data(m_size)
-    {
-        size_type i = 0;
-        for(unsigned long k = 1; k < 2*m_size; k+=2)
-        {
-            m_data[i] = k;
-            ++i;
+            ++m_underlyingIterator;
+            m_value = GenValue(m_coord, *m_underlyingIterator);
         }
     }
 
-    template <class TRAV>
-    auto SobolDirectionNumbers<TRAV>::operator[](size_type i) const -> value_type
+    NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::begin() const
     {
-    return m_data[i];
+        return const_iterator(*this);
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
+    NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::const_iterator NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::end() const
     {
-        unsigned int size;
-        if (dimension==1)
+        return const_iterator(*this, typename const_iterator::end_tag{} );
+    }
+
+    Dimension NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::coord() const
+    {
+        return m_coord;
+    }
+
+    size_t  NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::size() const
+    {
+        return m_underlyingSeq.size();
+    }
+
+    const LatBuilder::SeqCombiner<std::vector<uInteger>,LatBuilder::CartesianProduct>& NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::underlyingSeq() const
+    {
+        return m_underlyingSeq;
+    }
+
+    std::vector<std::vector<uInteger>> NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq::underlyingSeqs(Dimension coord)
+    {
+        if (coord == 0)
         {
-            return std::vector<GenValue>{GenValue(1,{0})};
-            size = 1;
+            return {{0}};
         }
         else
         {
-            size = nthPrimitivePolynomialDegree(dimension-1);
-        }
-        std::vector<SobolDirectionNumbers<>> seqs;
-        seqs.reserve(size);
-        for(unsigned int i = 0; i < size; ++i)
-        {
-            seqs.push_back(SobolDirectionNumbers<>(i+1));
-        }
-        LatBuilder::SeqCombiner<SobolDirectionNumbers<>,LatBuilder::CartesianProduct> tmp(seqs);
+            unsigned int size = nthPrimitivePolynomialDegree(coord);
+            std::vector<uInteger> dirNums{1};
+            dirNums.reserve( (1 << (size - 1))  - 1);
 
-        std::vector<GenValue> res;
-        for(const auto& x : tmp)
-        {
-            res.push_back(GenValue(dimension,x));
-        }
-        return res;
-    }
+            std::vector<std::vector<uInteger>> seqs;
+            seqs.reserve(size);
+            seqs.push_back(dirNums);
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
-    {
-        std::vector<std::vector<GenValue>> seqs;
-        seqs.reserve(maxDimension);
-        for(unsigned int i = 0; i < maxDimension; ++i)
-        {
-            seqs.push_back(genValueSpaceDim(i+1,designParameter));
-        }
-        LatBuilder::SeqCombiner<std::vector<GenValue>, LatBuilder::CartesianProduct> tmp(seqs);
-        std::vector<std::vector<GenValue>> res;
-        for(const auto& foo : tmp)
-        {
-            res.push_back(foo);
-        }
-        return res;
-    }
-
-    void NetConstructionTraits<NetConstruction::SOBOL>::extendGeneratingMatrices( 
-            unsigned int nRows,
-            unsigned int nCols,
-            std::vector<std::shared_ptr<GeneratingMatrix>>& genMats, 
-            std::vector<std::shared_ptr<GeneratingMatrixComputationData>>& computationData)
-    {
-        unsigned int s = (unsigned int) genMats.size();
-        for(unsigned int k = 0; k < s; ++k)
-        {
-            if (nCols > genMats[k]->nCols())
+            uInteger upperBound = 2;
+            for(unsigned int i = 1; i < size; ++i)
             {
-                unsigned int oldNCols = genMats[k]->nCols();
-                genMats[k]->resize(nRows,nCols);
-                if(k==0)
+                upperBound = 2 * upperBound;
+                for(uInteger k = dirNums.back() + 2; k < upperBound; k += 2)
                 {
-                    {
-                        for(unsigned int i = oldNCols; i < nCols; ++i)
-                        {
-                            genMats[k]->flip(i,i);
-                        }
-                    }
+                    dirNums.push_back(k);
                 }
-                else
-                {
-                    unsigned int col = std::get<0>(*computationData[k]);
-                    while (col<= nCols)
-                    {
-                        makeIteration(*genMats[k],std::get<2>(*computationData[k]),std::get<1>(*computationData[k]),col);
-                        ++col;
-                    }
-                    std::get<0>(*computationData[k]) = col;
-                }
+                seqs.push_back(dirNums);
             }
+            return seqs;
         }
     }
 
-    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
+    typename NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::SOBOL>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
+    {
+        return GenValueSpaceCoordSeq(coord);
+    }
+
+    typename NetConstructionTraits<NetConstruction::SOBOL>::GenValueSpaceSeq NetConstructionTraits<NetConstruction::SOBOL>::genValueSpace(Dimension dimension, const SizeParameter& sizeParameter)
+    {
+        std::vector<GenValueSpaceCoordSeq> seqs;
+        seqs.reserve(dimension);
+        for(Dimension coord = 0; coord < dimension; ++coord)
+        {
+            seqs.push_back(genValueSpaceCoord(coord, sizeParameter));
+        }
+        return GenValueSpaceSeq(seqs);
+    }
+
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat)
     {
         std::string res;
         res += "SobolDigitalNet(\n  Direction numbers = \n";

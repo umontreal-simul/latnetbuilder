@@ -33,7 +33,7 @@
 #include "latbuilder/GenSeq/Creator.h"
 
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/Functor/MinElement.h"
 
 #include "latbuilder/TextStream.h"
@@ -49,10 +49,10 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 //! [Observer]
-template <LatticeType LA, PointSetType PST>
+template <LatticeType LA, EmbeddingType ET>
 class Observer {
 public:
-   typedef LatBuilder::LatDef<LA, PST> LatDef;
+   typedef LatBuilder::LatDef<LA, ET> LatDef;
 
    Observer(int maxCount) { m_maxCount = maxCount; m_count = m_totalCount = 0; }
    void onStart() { m_count = m_totalCount = 0; }
@@ -68,7 +68,7 @@ private:
 //! [Observer]
 
 
-template <LatticeType LA, PointSetType L, Compress C>
+template <LatticeType LA, EmbeddingType L, Compress C>
 void test(const Storage<LA, L, C>& storage, Dimension dimension, int samples)
 {
    //! [figure]
@@ -92,7 +92,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension, int samples)
 
 
    //! [Coprime]
-   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
+   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
    auto genSeq  = GenSeq::Creator<Coprime>::create(storage.sizeParam());
    //! [Coprime]
    auto genSeq0 = GenSeq::Creator<Coprime>::create(SizeParam<LA,L>(LatticeTraits<LA>::TrivialModulus));
@@ -169,11 +169,11 @@ int main()
    Dimension dim = 3;
    int samples = 15;
    //! [storage]
-   test(Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, Compress::SYMMETRIC>(257), dim, samples);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC>(257), dim, samples);
    //! [storage]
    /*
    //! [pstorage]
-   test(Storage<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim, samples);
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE>(PolynomialFromInt(115)), dim, samples);
    //! [pstorage]
    */
    return 0;

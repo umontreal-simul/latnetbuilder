@@ -71,10 +71,10 @@ int main(int argc, const char *argv[])
     unsigned int r = 20;
     auto weights = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    // auto projDep = std::make_unique<ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(3,combiner);
-    auto projDep = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(3);
+    // auto projDep = std::make_unique<ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>>(3,combiner);
+    auto projDep = std::make_unique<TValueProjMerit<EmbeddingType::UNILEVEL>>(3);
 
-    auto fig = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
+    auto fig = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL>>>(1, std::move(weights), std::move(projDep));
 
     auto explorer = std::make_unique<Task::RandomCBCExplorer<NetConstruction::SOBOL>>(s,designParam,r);
     auto search = Task::CBCSearch<NetConstruction::SOBOL,Task::RandomCBCExplorer>(s,designParam, std::move(fig), std::move(explorer), verbose);
@@ -115,8 +115,8 @@ int main(int argc, const char *argv[])
                 auto netExpl = std::make_unique<DigitalNetConstruction<NetConstruction::EXPLICIT>>(s, designParamExplicit, generatingMatrices2);
 
                 auto weights2 = std::make_unique<LatticeTester::UniformWeights>(1);
-                auto projDep2 = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(3);
-                auto fig2 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
+                auto projDep2 = std::make_unique<TValueProjMerit<EmbeddingType::UNILEVEL>>(3);
+                auto fig2 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
                 
                 auto eval = Task::Eval(std::move(netExpl), std::move(fig2), verbose);
 
@@ -141,10 +141,10 @@ int main(int argc, const char *argv[])
     // r = 18;
     auto weights3 = std::make_unique<LatticeTester::UniformWeights>(1);
 
-    // auto projDep = std::make_unique<ResolutionGapProjMerit<PointSetType::MULTILEVEL>>(3,combiner);
-    auto projDep3 = std::make_unique<TValueProjMerit<PointSetType::UNILEVEL>>(3);
+    // auto projDep = std::make_unique<ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>>(3,combiner);
+    auto projDep3 = std::make_unique<TValueProjMerit<EmbeddingType::UNILEVEL>>(3);
 
-    auto fig3 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights3), std::move(projDep3));
+    auto fig3 = std::make_unique<WeightedFigureOfMerit<TValueProjMerit<EmbeddingType::UNILEVEL>>>(1, std::move(weights3), std::move(projDep3));
 
     auto explorer3 = std::make_unique<Task::RandomCBCExplorer<NetConstruction::SOBOL>>(s,designParam,r);
     auto search3 = Task::CBCSearch<NetConstruction::SOBOL,Task::RandomCBCExplorer>(s,designParam, std::move(fig3), std::move(explorer3), verbose);

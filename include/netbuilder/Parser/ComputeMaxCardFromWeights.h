@@ -82,9 +82,17 @@ unsigned int ComputeMaxCardFromWeights<LatticeTester::ProductWeights>::operator(
 unsigned int ComputeMaxCardFromWeights<LatticeTester::PODWeights>::operator()(const LatticeTester::PODWeights& w) const{
     const LatticeTester::OrderDependentWeights& ordDepWeights = w.getOrderDependentWeights();
     const LatticeTester::ProductWeights& prodWeights = w .getProductWeights();
-    auto computer1 = ComputeMaxCardFromWeights<LatticeTester::OrderDependentWeights>();
-    auto computer2 = ComputeMaxCardFromWeights<LatticeTester::ProductWeights>();
-    return std::max(computer1(ordDepWeights),computer2(prodWeights));
+    unsigned int maxCardOD, maxCardPD;
+    maxCardOD = ComputeMaxCardFromWeights<LatticeTester::OrderDependentWeights>()(ordDepWeights);
+    try
+    {
+        maxCardPD = ComputeMaxCardFromWeights<LatticeTester::ProductWeights>()(prodWeights);
+        return std::min(maxCardOD, maxCardPD);
+    }
+    catch (std::invalid_argument e)
+    {
+        return maxCardOD;
+    }
 }
 
 /**

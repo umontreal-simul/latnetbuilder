@@ -24,55 +24,43 @@ namespace NetBuilder {
     
     typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::GenValue GenValue;
 
-    typedef NetConstructionTraits<NetConstruction::EXPLICIT>::DesignParameter DesignParameter;
+    typedef NetConstructionTraits<NetConstruction::EXPLICIT>::SizeParameter SizeParameter;
 
-    DesignParameter NetConstructionTraits<NetConstruction::EXPLICIT>::defaultDesignParameter(0,0);
-
-    bool NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(const GenValue& genValue, const DesignParameter& designParameter)
+    bool NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(const GenValue& genValue, const SizeParameter& sizeParameter)
     {
-        return genValue.nRows() == nRows(designParameter) && genValue.nCols() == nCols(designParameter);
+        return genValue.nRows() == nRows(sizeParameter) && genValue.nCols() == nCols(sizeParameter);
     }
 
-    unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nRows(const DesignParameter& designParameter) {return (unsigned int) designParameter.first; }
+    unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nRows(const SizeParameter& sizeParameter) {return (unsigned int) sizeParameter.first; }
 
-    unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(const DesignParameter& designParameter) {return (unsigned int) designParameter.second; }
+    unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(const SizeParameter& sizeParameter) {return (unsigned int) sizeParameter.second; }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const DesignParameter& designParameter, std::shared_ptr<GeneratingMatrixComputationData>& computationData)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter)
     {
         GeneratingMatrix* genMat = new GeneratingMatrix(genValue);
-        genMat->resize(nRows(designParameter),nCols(designParameter));
+        genMat->resize(nRows(sizeParameter),nCols(sizeParameter));
         return genMat;
     }
 
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::defaultGenValues(unsigned int dimension, const DesignParameter& designParameter)
-    {
-        GeneratingMatrix identity(nRows(designParameter), nCols(designParameter));
-        for(unsigned int i = 0; i < nRows(designParameter); ++i)
-        {
-            identity.flip(i,i);
-        }
-        return std::vector<GeneratingMatrix>(dimension,identity);
-    }
-
-    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpaceDim(unsigned int dimension, const DesignParameter& designParameter)
+    std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
     {
         throw std::logic_error("The space of all matrices is far too big to be exhautively explored.");
         return std::vector<GenValue>{};
     }
 
-    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpace(unsigned int maxDimension, const DesignParameter& designParameter)
+    std::vector<std::vector<GenValue>> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpace(Dimension dimension, const SizeParameter& sizeParameter)
     {
         throw std::logic_error("The space of all matrices is far too big to be exhautively explored.");
         return std::vector<std::vector<GenValue>>{};
     }
 
-    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const DesignParameter& designParameter, OutputFormat outputFormat)
+    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat)
     {
         std::string res;
         
         std::ostringstream stream;
         res += "ExplicitDigitalNet(\n  Matrix size = \n";
-        stream << designParameter.first << " " << designParameter.second;
+        stream << sizeParameter.first << " " << sizeParameter.second;
         res+="  ";
         res += stream.str();
         stream.str(std::string());

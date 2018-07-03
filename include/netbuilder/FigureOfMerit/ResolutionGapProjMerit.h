@@ -28,9 +28,9 @@ namespace NetBuilder { namespace FigureOfMerit {
  * The resolution gap is defined as follows. Let \f$ l \f$ be the maximal integer such that the net is \f$ (l, \dots, l) \f$ equidistributed.
  * We have a natural upper-bound on \f$ l \f$ given by \f$ \frac{m}{s} \f$ where \f$ m \f$ is the number of columns of the generating matrices and
  * \f$ s \f$ is the order of the projection. \f$ l \f$ is called the resolution of the net and the resolution-gap is defined by the difference \f$ \frac{m}{s} - l \f$.
- * @tparam PST Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::PointSetType.
+ * @tparam ET Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::EmbeddingType.
  */ 
-template <PointSetType PST>
+template <EmbeddingType ET>
 class ResolutionGapProjMerit
 {};
 
@@ -38,7 +38,7 @@ class ResolutionGapProjMerit
  *  in the case of unilevel nets. @see NetBuilder::ResolutionGapProjMerit.
  */ 
 template <>
-class ResolutionGapProjMerit<PointSetType::UNILEVEL>
+class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
 {
     public:
 
@@ -78,7 +78,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
-            unsigned int dimension = (unsigned int) projection.size();
+            Dimension dimension = projection.size();
             unsigned int numCols = net.numColumns();
 
             m_rowReducer.reset(numCols);
@@ -89,7 +89,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution, 0, 1,numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix(coord)->subMatrix(resolution, 0, 1,numCols));
                 }
                 if(m_rowReducer.computeRank() == m_rowReducer.numRows())
                 {
@@ -107,7 +107,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
          * Returns the projections to include in the figure of merit partial computation for dimension \c dimension.
          * @param dimension Dimension of the partial computation.
          */ 
-        CBCCoordinateSet projections(unsigned int dimension) const
+        CBCCoordinateSet projections(Dimension dimension) const
         {
             return CBCCoordinateSet(dimension, m_maxCardinal);
         }
@@ -122,7 +122,7 @@ class ResolutionGapProjMerit<PointSetType::UNILEVEL>
  *  in the case of multilevel nets. @see NetBuilder::ResolutionGapProjMerit.
  */ 
 template <>
-class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
+class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
 {
     public:
 
@@ -163,7 +163,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
          */ 
         Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
-            unsigned int dimension = (unsigned int) projection.size();
+            Dimension dimension = projection.size();
 
             unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
@@ -183,7 +183,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix((unsigned int) (coord+1))->subMatrix(resolution, 0,  1, numCols));
+                    m_rowReducer.addRow(net.pointerToGeneratingMatrix(coord)->subMatrix(resolution, 0,  1, numCols));
                 }
                 std::vector<unsigned int> ranks = m_rowReducer.computeRanks(0,numCols);
                 for(unsigned int m = 1; m <= numCols; ++m)
@@ -206,7 +206,7 @@ class ResolutionGapProjMerit<PointSetType::MULTILEVEL>
          * Returns the projections to include in the figure of merit partial computation for dimension \c dimension.
          * @param dimension Dimension of the partial computation.
          */ 
-        CBCCoordinateSet projections(unsigned int dimension) const
+        CBCCoordinateSet projections(Dimension dimension) const
         {
             return CBCCoordinateSet(dimension, m_maxCardinal);
         }

@@ -27,98 +27,84 @@ namespace NetBuilder { namespace Task {
 /**
  * Class to explorer exhaustively a search space using the CBC search algorithm. 
  */ 
-template <NetConstruction NC>
+template <NetConstruction NC, EmbeddingType ET>
 class FullCBCExplorer
 {
     typedef NetConstructionTraits<NC> ConstructionMethod;
 
     public:
 
-
         /**
          * Constructor.
-         * @param dimension Maximal dimension of the explorer.
-         * @param designParameter Design parameter of the search space.
-         * @param verbose Verbosity level.
+         * @param dimension Number of coordinates of the explorer.
+         * @param sizeParameter Size parameter of the search space.
          */ 
-        FullCBCExplorer(unsigned int dimension, typename ConstructionMethod::DesignParameter designParameter, int verbose = 0):
+        FullCBCExplorer(Dimension dimension, typename ConstructionMethod::SizeParameter sizeParameter):
             m_dimension(dimension),
-            m_designParameter(std::move(designParameter)),
-            m_currentDim(0),
-            m_state(0),
-            m_verbose(verbose)
+            m_currentCoord(0),
+            m_sizeParameter(std::move(sizeParameter)),
+            m_data(ConstructionMethod::genValueSpaceCoord(m_currentCoord,  m_sizeParameter)),
+            m_state(m_data.begin()),
+            m_count(0)
         {};
 
         /**
-         * Returns whether the dimension \c dim is fully explored
+         * Returns whether the current coordinate is fully explored
          */ 
-        bool isOver(unsigned int dim) 
+        bool isOver() 
         {
-            return m_state==m_data.size() && m_currentDim<=m_dimension;
+            return size() == count();
         }
 
         /**
-         * Returns the next generating values of dimension \c dim
+         * Returns the next generating value for the current coordinate.
          */ 
-        typename ConstructionMethod::GenValue nextGenValue(unsigned int dim)
+        typename ConstructionMethod::GenValue nextGenValue()
         {
-            m_state+=1;
-            if(this->m_verbose>0)
-            {
-                std::cout << "Dimension: " << dim << "/" << m_dimension <<  " - ";
-                std::cout << "net " << m_state << "/" << m_data.size() << std::endl;
-            }
-            return m_data[m_state-1];
+            auto val = *m_state;
+            m_state++;
+            m_count++;
+            return val;
         }
 
         /**
-         * Resets the explorer to the first dimension
+         * Resets the explorer to the first coordinate.
          */ 
         void reset()
         {
-            switchToDimension(1);
+            switchToCoordinate(0);
         }
 
         /**
-         * Sets the verbosity level of the explorer.
+         * Switches the explorer to coordinate \c coord.
          */ 
-        void setVerbose(int verbose)
+        void switchToCoordinate(Dimension coord)
         {
-            m_verbose = verbose;
+            m_currentCoord = coord;
+            m_count = 0;
+            m_data = ConstructionMethod::genValueSpaceCoord(m_currentCoord,  m_sizeParameter);
+            m_state = m_data.begin();
         }
 
-        /**
-         * Switches the explorer to dimension \c dim.
-         */ 
-        void switchToDimension(unsigned int dim)
+        size_t size() const
         {
-            m_currentDim = dim;
-            m_data = ConstructionMethod::genValueSpaceDim(m_currentDim,  m_designParameter);
-            m_state = 0;
+            return m_data.size();
+        }
+
+        size_t count() const
+        {
+            return m_count;
         }
 
     private:
-        unsigned int m_dimension;
-        typename ConstructionMethod::DesignParameter m_designParameter;
-        unsigned int m_currentDim;
-        std::vector<typename ConstructionMethod::GenValue> m_data;
-        size_t m_state;
+        Dimension m_dimension;
+        Dimension m_currentCoord;
+        typename ConstructionMethod::SizeParameter m_sizeParameter;
+        typename ConstructionMethod::GenValueSpaceCoordSeq m_data;
+        typename ConstructionMethod::GenValueSpaceCoordSeq::const_iterator m_state;
+        size_t m_count;
         int m_verbose;
 };
-
-template<> void FullCBCExplorer<NetConstruction::POLYNOMIAL>::switchToDimension(unsigned int dim)
-{
-    if(m_currentDim == 1 && dim != 1)
-    {
-        m_data = ConstructionMethod::genValueSpaceDim(dim,  m_designParameter);
-    }
-    if(dim == 1 && m_currentDim != 1)
-    {
-        m_data = ConstructionMethod::genValueSpaceDim(dim,  m_designParameter);
-    }
-    m_state = 0;
-    m_currentDim = dim;
-}
 
 
 }}

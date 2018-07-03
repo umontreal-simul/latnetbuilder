@@ -34,23 +34,23 @@ namespace LatSeq {
  * components of the generating vectors taken from a user-specified vector of
  * sequences of generator values, one corresponding to each coordinate.
  *
- * \tparam PST       Type of lattice.
+ * \tparam ET       Type of lattice.
  * \tparam GENSEQ    Type of sequence of generator values.
  * \tparam POLICY    See SeqCombiner.
  */
 template <
    LatticeType LR,
-   PointSetType PST,
+   EmbeddingType ET,
    class GENSEQ,
    template <class> class POLICY>
 class Combiner :
    public BridgeSeq<
-      Combiner<LR, PST, GENSEQ, POLICY>,
+      Combiner<LR, ET, GENSEQ, POLICY>,
       SeqCombiner<GENSEQ, POLICY>,
-      LatDef<LR, PST>,
+      LatDef<LR, ET>,
       BridgeIteratorCached>
 {
-   typedef Combiner<LR, PST, GENSEQ, POLICY> self_type;
+   typedef Combiner<LR, ET, GENSEQ, POLICY> self_type;
 
 public:
 
@@ -67,7 +67,7 @@ public:
     *                      generating vector can take.
     */
    Combiner(
-         SizeParam<LR, PST> sizeParam,
+         SizeParam<LR, ET> sizeParam,
          std::vector<GenSeq> genSeqs
          ):
       self_type::BridgeSeq_(Base(std::move(genSeqs))),
@@ -77,7 +77,7 @@ public:
    /**
     * Returns the size parameter of the lattices in the sequence.
     */
-   const SizeParam<LR, PST>& sizeParam() const
+   const SizeParam<LR, ET>& sizeParam() const
    { return m_sizeParam; }
 
    /**
@@ -93,17 +93,17 @@ public:
    { return value_type(m_sizeParam, *it); }
 
 private:
-   SizeParam<LR, PST> m_sizeParam;
+   SizeParam<LR, ET> m_sizeParam;
 };
 
 /// Creates a lattice sequence based on a combination of sequences of generator values.
-template <template <class> class POLICY,LatticeType LR, PointSetType PST, class GENSEQ>
-Combiner<LR, PST, GENSEQ, POLICY>
+template <template <class> class POLICY,LatticeType LR, EmbeddingType ET, class GENSEQ>
+Combiner<LR, ET, GENSEQ, POLICY>
 combine(
-      SizeParam<LR, PST> size,
+      SizeParam<LR, ET> size,
       std::vector<GENSEQ> genSeqs
       ) {
-   return Combiner<LR, PST, GENSEQ, POLICY>(std::move(size), std::move(genSeqs));
+   return Combiner<LR, ET, GENSEQ, POLICY>(std::move(size), std::move(genSeqs));
 }
 
 }}

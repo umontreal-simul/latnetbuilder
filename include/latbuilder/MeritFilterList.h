@@ -31,43 +31,43 @@ namespace LatBuilder {
 /**
  * Container class for merit filters.
  */
-template <LatticeType LR, PointSetType PST>
+template <LatticeType LR, EmbeddingType ET>
 class BasicMeritFilterList;
 
 /**
  * Policy class template for MeritFilterList.
  */
-template <LatticeType, PointSetType>
+template <LatticeType, EmbeddingType>
 class MeritFilterListPolicy;
 
-template <LatticeType, PointSetType>
+template <LatticeType, EmbeddingType>
 class MeritFilterList;
 
 /**
  * Formats and outputs \c filters to \c os.
  */
 template< LatticeType LR>
-std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, PointSetType::UNILEVEL>&);
+std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, EmbeddingType::UNILEVEL>&);
 template< LatticeType LR>
-std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, PointSetType::MULTILEVEL>&);
+std::ostream& operator<<(std::ostream&, const BasicMeritFilterList<LR, EmbeddingType::MULTILEVEL>&);
 
 /**
  * Formats and outputs \c filters to \c os.
  */
 template< LatticeType LR>
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, PointSetType::UNILEVEL>& filters);
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, EmbeddingType::UNILEVEL>& filters);
 template< LatticeType LR>
-std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, PointSetType::MULTILEVEL>& filters);
+std::ostream& operator<<(std::ostream& os, const MeritFilterList<LR, EmbeddingType::MULTILEVEL>& filters);
 
 
 //========================================================================
 
 
-template <LatticeType LR, PointSetType PST>
+template <LatticeType LR, EmbeddingType ET>
 class BasicMeritFilterList {
 public:
 
-   typedef BasicMeritFilter<LR, PST> Filter;
+   typedef BasicMeritFilter<LR, ET> Filter;
    typedef typename Filter::InputMeritValue  MeritValue;
    typedef typename Filter::LatDef           LatDef;
    typedef std::list<std::unique_ptr<Filter>> FilterList;
@@ -122,10 +122,10 @@ private:
    FilterList m_filters;
 };
 
-extern template class BasicMeritFilterList<LatticeType::ORDINARY, PointSetType::UNILEVEL>;
-extern template class BasicMeritFilterList<LatticeType::ORDINARY, PointSetType::MULTILEVEL>;
-extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>;
-extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>;
+extern template class BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>;
+extern template class BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>;
+extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>;
+extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>;
 
 
 
@@ -170,12 +170,12 @@ extern template class BasicMeritFilterList<LatticeType::POLYNOMIAL, PointSetType
  * sequences of merit values but need to access the original sequence by calling
  * the member function \c base() would not know in advance how many times to
  * call \c base() to trace back the original sequence.  These are the main
- * reasons why there are filters in Lattice Builder.
+ * reasons why there are filters in LatBuilder.
  */
-template <LatticeType LR, PointSetType PST>
-class MeritFilterList : public MeritFilterListPolicy<LR, PST> {
+template <LatticeType LR, EmbeddingType ET>
+class MeritFilterList : public MeritFilterListPolicy<LR, ET> {
 public:
-   typedef MeritFilterListPolicy<LR, PST> Policy;
+   typedef MeritFilterListPolicy<LR, ET> Policy;
 
    /**
     * Output sequence from the filters.
@@ -225,7 +225,7 @@ public:
       value_type element(const typename Base::const_iterator& it, const IT& it2, const T&) const
       { return element(it, it2.base()); }
 
-      template <class IT, PointSetType L>
+      template <class IT, EmbeddingType L>
       value_type element(const typename Base::const_iterator& it, const IT& it2, const LatDef<LR, L>&) const
       { return m_parent.applyFilters(*it, *it2); }
    };
@@ -249,18 +249,18 @@ public:
  * Specialization of MeritFilterListPolicy for ordinary lattices.
  */
 template <LatticeType LR>
-class MeritFilterListPolicy<LR, PointSetType::UNILEVEL> :
-   public BasicMeritFilterList<LR, PointSetType::UNILEVEL> {
+class MeritFilterListPolicy<LR, EmbeddingType::UNILEVEL> :
+   public BasicMeritFilterList<LR, EmbeddingType::UNILEVEL> {
 
-   typedef BasicMeritFilterList<LR, PointSetType::UNILEVEL> OBase;
+   typedef BasicMeritFilterList<LR, EmbeddingType::UNILEVEL> OBase;
 
 public:
-   template <PointSetType L>
+   template <EmbeddingType L>
    typename OBase::OnReject& onReject() const
    { return OBase::onReject(); }
 
 protected:
-   Real applyFilters(Real merit, const LatDef<LR,PointSetType::UNILEVEL>& lat) const;
+   Real applyFilters(Real merit, const LatDef<LR,EmbeddingType::UNILEVEL>& lat) const;
 };
 
 
@@ -268,16 +268,16 @@ protected:
  * Specialization of MeritFilterListPolicy for embedded lattices.
  */
 template <LatticeType LR>
-class MeritFilterListPolicy<LR, PointSetType::MULTILEVEL> :
-   public BasicMeritFilterList<LR, PointSetType::UNILEVEL>,
-   public BasicMeritFilterList<LR, PointSetType::MULTILEVEL> {
+class MeritFilterListPolicy<LR, EmbeddingType::MULTILEVEL> :
+   public BasicMeritFilterList<LR, EmbeddingType::UNILEVEL>,
+   public BasicMeritFilterList<LR, EmbeddingType::MULTILEVEL> {
 
-   typedef BasicMeritFilterList<LR, PointSetType::UNILEVEL> OBase;
-   typedef BasicMeritFilterList<LR, PointSetType::MULTILEVEL> EBase;
+   typedef BasicMeritFilterList<LR, EmbeddingType::UNILEVEL> OBase;
+   typedef BasicMeritFilterList<LR, EmbeddingType::MULTILEVEL> EBase;
 
 public:
 
-   typedef BasicMeritFilter<LR, PointSetType::MULTILEVEL, PointSetType::UNILEVEL> Combiner;
+   typedef BasicMeritFilter<LR, EmbeddingType::MULTILEVEL, EmbeddingType::UNILEVEL> Combiner;
 
    /**
     * Returns \c true if and only if the list of filters is empty.
@@ -307,7 +307,7 @@ public:
 
    //@}
 
-   template <PointSetType L>
+   template <EmbeddingType L>
    typename BasicMeritFilterList<LR, L>::OnReject& onReject() const
    { return BasicMeritFilterList<LR, L>::onReject(); }
 
@@ -325,10 +325,10 @@ private:
    std::unique_ptr<Combiner> m_combiner;
 };
 
-extern template class MeritFilterListPolicy<LatticeType::ORDINARY, PointSetType::UNILEVEL>;
-extern template class MeritFilterListPolicy<LatticeType::ORDINARY, PointSetType::MULTILEVEL>;
-extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>;
-extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>;
+extern template class MeritFilterListPolicy<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>;
+extern template class MeritFilterListPolicy<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>;
+extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>;
+extern template class MeritFilterListPolicy<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>;
 
 }
 

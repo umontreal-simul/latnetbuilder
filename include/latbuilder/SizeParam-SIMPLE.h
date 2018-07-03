@@ -25,10 +25,10 @@ namespace LatBuilder {
  * Ordinary lattice size parameter.
  */
 template <LatticeType LR>
-class SizeParam<LR, PointSetType::UNILEVEL> :
-   public BasicSizeParam<SizeParam<LR, PointSetType::UNILEVEL>> {
+class SizeParam<LR, EmbeddingType::UNILEVEL> :
+   public BasicSizeParam<SizeParam<LR, EmbeddingType::UNILEVEL>> {
 
-    typedef SizeParam<LR, PointSetType::UNILEVEL> self_type;
+    typedef SizeParam<LR, EmbeddingType::UNILEVEL> self_type;
 
 public:
 
@@ -37,7 +37,7 @@ public:
 
    SizeParam(Modulus modulus = (Modulus)(0));
 
-   template <PointSetType L>
+   template <EmbeddingType L>
    SizeParam(const SizeParam<LR,L>& other): SizeParam(other.modulus())
    {}
 

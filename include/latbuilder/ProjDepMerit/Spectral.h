@@ -75,26 +75,26 @@ public:
    std::string name() const
    { std::ostringstream os; os << "spectral^" << power(); return os.str(); }
 
-   template <PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
-   static Storage<LatticeType::ORDINARY,PST, COMPRESS> asAcceptableStorage(Storage<LatticeType::ORDINARY,PST, COMPRESS, PLO> storage)
-   {return Storage<LatticeType::ORDINARY,PST, COMPRESS>(storage.sizeParam());}
+   template <EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
+   static Storage<LatticeType::ORDINARY,ET, COMPRESS> asAcceptableStorage(Storage<LatticeType::ORDINARY,ET, COMPRESS, PLO> storage)
+   {return Storage<LatticeType::ORDINARY,ET, COMPRESS>(storage.sizeParam());}
 
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <PointSetType PST, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LatticeType::ORDINARY, PST>::Order>
-   Evaluator<Spectral,LatticeType::ORDINARY, PST, COMPRESS, PLO> evaluator(Storage<LatticeType::ORDINARY,PST, COMPRESS, PLO> storage) const
-   { return Evaluator<Spectral,LatticeType::ORDINARY, PST, COMPRESS, PLO>(std::move(asAcceptableStorage<PST,COMPRESS,PLO>(storage)), power()); }
+   template <EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LatticeType::ORDINARY, ET>::Order>
+   Evaluator<Spectral,LatticeType::ORDINARY, ET, COMPRESS, PLO> evaluator(Storage<LatticeType::ORDINARY,ET, COMPRESS, PLO> storage) const
+   { return Evaluator<Spectral,LatticeType::ORDINARY, ET, COMPRESS, PLO>(std::move(asAcceptableStorage<ET,COMPRESS,PLO>(storage)), power()); }
 
 private:
    Real m_power;
 };
 
 namespace detail {
-   template <class NORM, Compress COMPRESS, PointSetType PST>
+   template <class NORM, Compress COMPRESS, EmbeddingType ET>
    Real spectralEval(
-            const Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, COMPRESS>& storage,
-            const LatDef<LatticeType::ORDINARY, PST>& lat,
+            const Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, COMPRESS>& storage,
+            const LatDef<LatticeType::ORDINARY, ET>& lat,
             const LatticeTester::Coordinates& projection,
             Real power
             )
@@ -181,10 +181,10 @@ namespace detail {
       return Real(pow(merit, power));
    }
 
-   template <class NORM, Compress COMPRESS, PointSetType PST>
+   template <class NORM, Compress COMPRESS, EmbeddingType ET>
    RealVector spectralEval(
-            const Storage<LatticeType::ORDINARY, PointSetType::MULTILEVEL, COMPRESS>& storage,
-            const LatDef<LatticeType::ORDINARY, PST>& lat,
+            const Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, COMPRESS>& storage,
+            const LatDef<LatticeType::ORDINARY, ET>& lat,
             const LatticeTester::Coordinates& projection,
             Real power
             )
@@ -194,8 +194,8 @@ namespace detail {
 
       for (Level level = 0; level <= storage.sizeParam().maxLevel(); level++) {
 
-         typename Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, COMPRESS>::SizeParam osize(storage.sizeParam().numPointsOnLevel(level));
-         Storage<LatticeType::ORDINARY, PointSetType::UNILEVEL, COMPRESS> ostorage(osize);
+         typename Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, COMPRESS>::SizeParam osize(storage.sizeParam().numPointsOnLevel(level));
+         Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, COMPRESS> ostorage(osize);
 
          auto olat = createLatDef(osize, lat.gen());
 
@@ -210,13 +210,13 @@ namespace detail {
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class NORM, PointSetType PST, Compress COMPRESS, PerLevelOrder PLO >
-class Evaluator<Spectral<NORM>,LatticeType::ORDINARY, PST, COMPRESS, PLO> {
+template <class NORM, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
+class Evaluator<Spectral<NORM>,LatticeType::ORDINARY, ET, COMPRESS, PLO> {
 public:
-   typedef typename Storage<LatticeType::ORDINARY, PST, COMPRESS>::MeritValue MeritValue;
+   typedef typename Storage<LatticeType::ORDINARY, ET, COMPRESS>::MeritValue MeritValue;
 
    Evaluator(
-      Storage<LatticeType::ORDINARY, PST, COMPRESS> storage,
+      Storage<LatticeType::ORDINARY, ET, COMPRESS> storage,
       Real power
       ):
       m_storage(std::move(storage)),
@@ -228,7 +228,7 @@ public:
     * \c projection.
     */
    MeritValue operator() (
-         const LatDef<LatticeType::ORDINARY, PST>& lat,
+         const LatDef<LatticeType::ORDINARY, ET>& lat,
          const LatticeTester::Coordinates& projection
          ) const
    {
@@ -248,7 +248,7 @@ public:
    }
 
 private:
-   Storage<LatticeType::ORDINARY, PST, COMPRESS> m_storage;
+   Storage<LatticeType::ORDINARY, ET, COMPRESS> m_storage;
    Real m_power;
 };
 

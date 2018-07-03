@@ -23,7 +23,7 @@
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/UniformityProperties.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
-#include "netbuilder/JoeKuoWeights.h"
+#include "netbuilder/JoeKuo.h"
 
 #include "netbuilder/Task/CBCSearch.h"
 #include "netbuilder/Task/Eval.h"
@@ -54,12 +54,12 @@ int main(int argc, const char *argv[])
         // Search step
 
         {
-            auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
+            auto weights = std::make_unique<NetBuilder::JoeKuo::Weights>();
 
             auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
-            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, LevelCombiner::JoeKuoD6Combiner());
-            auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
+            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<EmbeddingType::MULTILEVEL>>(2, JoeKuo::Combiner<6>());
+            auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<EmbeddingType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
 
             std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;
             
@@ -83,12 +83,12 @@ int main(int argc, const char *argv[])
         // Eval step
 
         {
-            auto weights = std::make_unique<NetBuilder::JoeKuoWeights>();
+            auto weights = std::make_unique<NetBuilder::JoeKuo::Weights>();
             auto fig1 = std::make_unique<FigureOfMerit::AProperty>();
 
-            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>(2, LevelCombiner::JoeKuoD6Combiner());
+            auto projDep = std::make_unique<FigureOfMerit::TValueProjMerit<EmbeddingType::MULTILEVEL>>(2, JoeKuo::Combiner<6>());
 
-            auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
+            auto fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<EmbeddingType::MULTILEVEL>>>(std::numeric_limits<Real>::infinity(), std::move(weights), std::move(projDep));
 
             std::vector<std::unique_ptr<FigureOfMerit::FigureOfMerit>> figures;
         

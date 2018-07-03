@@ -1,0 +1,55 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page feats_exploration Exploration methods
+
+Various exploration methods are supported by LatNet Builder. Exploration methods
+describe how the point sets search space is explored. LatNet Builder supports the following exploration
+methods:
+
+- <b>evaluation</b>:
+  \n Only the specified point set is evaluated.
+- <b>exhaustive</b>:
+  \n All the possible point sets are explored.
+- <b>random</b>:
+  \n A random sample of point sets are explored.
+- <b>full-CBC</b>:
+  \n Point sets are constructed component-by-component (CBC) in a greedy procedure. For each coordinate, all possible coordinate values
+  are evaluated and the best choice in line with the previous coordinates is made.
+- <b>random-CBC</b>:
+  \n Point sets are constructed component-by-component (CBC) in a greedy procedure. For each coordinate, a random sample of coordinate values
+are evaluated and the best choice in line with the previous coordinates is made.
+
+Additionally, some exploration method are only supported either by %LatBuilder (for lattices)  or %NetBuilder (for digital nets):
+- %LatBuilder:
+    - <b>extend</b>: 
+      \n Extend the size of a rank-1 lattice up to a specific modulus.
+    - <b>fast-CBC</b>: 
+      \n This exploration method can be used to fasten computation for the CBC exploration method when used with coordinate-uniform figures of merit (CU:P2, CU:R1 and CU:R).
+    This method uses a FFT to compute the merit values for all the possible values of the new component of the generating vector.
+    - <b>Korobov</b>: 
+      \n Restrict the shape of the generating vector to \f$ (1, a, a^2, \dots, a^{s-1}) \mod N \f$ with \f$a\f$ and \f$N\f$ coprimes where \f$ s \f$ is the dimension of the lattice 
+      and \f$ N \f$ its modulus.
+    - <b>random Korobov</b>: 
+      \n Same as Korobov except that only a random sample of integers coprime with \f$ N \f$ is explored.
+- %NetBuilder:
+    - <b>mixed-CBC</b>:
+      \n This algorithm mixes the full-CBC and the random-CBC algorithms. For the first coordinates, the full-CBC exploration is used
+      and then, it is replaced with the random-CBC exploration. All in all, component-by-component, all the possible coordinate values are tested for the first dimensions
+      but then only a random sample of fixed size is explored for the remaining coordinates. 
+
+*/
+vim: ft=doxygen spelllang=en spell

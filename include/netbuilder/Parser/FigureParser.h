@@ -17,12 +17,15 @@
 #ifndef NETBUILDER__PARSER__FIGURE_PARSER_H
 #define NETBUILDER__PARSER__FIGURE_PARSER_H
 
+#include <limits>
+
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Parser/Weights.h"
+#include "latbuilder/Parser/CombinedWeights.h"
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Kernel/RPLR.h"
@@ -35,7 +38,6 @@
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
-#include "netbuilder/FigureOfMerit/UniformityProperties.h"
 #include "netbuilder/FigureOfMerit/BitEquidistribution.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
@@ -57,183 +59,64 @@ class BadFigure : public lbp::ParserError
 };
 
 /**
- * Parser for figure parameters.
+ * Parser for figures.
  */
-template<NetConstruction NC, PointSetType PST>
+template<NetConstruction NC, EmbeddingType ET>
 struct FigureParser
 {
     typedef std::unique_ptr<FigureOfMerit::FigureOfMerit> result_type;
 
-    static result_type parse(Parser::CommandLine<NC, PST>& commandLine)
+    static result_type parse(Parser::CommandLine<NC, ET>& commandLine)
     {
-        std::vector<std::string> vecStrFigures = commandLine.s_figures;
-        std::string &strFigureCombiner = commandLine.s_figureCombiner;
 
-        commandLine.m_combiner = Parser::LevelCombinerParser<NC,PST>::parse(commandLine);
+        commandLine.m_combiner = Parser::LevelCombinerParser<NC,ET>::parse(commandLine);
 
-        unsigned int nbFigures = (unsigned int) vecStrFigures.size();
-        std::vector<result_type> vecFigures;
-        vecFigures.reserve(nbFigures);
-        std::vector<Real> vecWeights;
-        vecWeights.reserve(nbFigures);
-
-        for (const auto &str : vecStrFigures)
+        Real weightsPowerScale = 1;
+        if (commandLine.m_normType < std::numeric_limits<Real>::infinity())
         {
-            parse(str, vecFigures, vecWeights, commandLine);
+            weightsPowerScale = commandLine.m_normType / commandLine.m_weightPower;
         }
 
-        if (nbFigures == 1)
+        std::unique_ptr<LatticeTester::Weights> weights;
+        
+        if (commandLine.s_weights.size() == 1)
         {
-            return std::move(vecFigures[0]);
+            weights = LatBuilder::Parser::Weights::parse(commandLine.s_weights.front(), weightsPowerScale);
         }
         else
         {
-            Real normType = -1;
-            if (strFigureCombiner=="max")
-            {
-                normType = std::numeric_limits<Real>::infinity();
-            }
-            else if (strFigureCombiner=="sum")
-            {
-                normType = 1;
-            }
-            else
-            {
-                throw BadFigure("unrecognized figure combiner; see --help.");
-            }
-            return std::make_unique<FigureOfMerit::CombinedFigureOfMerit>(normType, std::move(vecFigures), std::move(vecWeights));
-        }
-    }
-
-    static void parse(std::string str, std::vector<result_type> &vecFigures, std::vector<Real> &vecWeights, CommandLine<NC, PST>& commandLine)
-    {
-        std::pair<result_type, Real> p;
-
-        // boost::algorithm::erase_all(str, " ");
-
-        std::vector<std::string> figureCharacteristicStrings;
-        boost::split(figureCharacteristicStrings, str, boost::is_any_of("/"));
-
-        unsigned int nbParam = (unsigned int) figureCharacteristicStrings.size();
-        for (unsigned int i=0; i<nbParam; i++){
-            std::vector<std::string> split;
-            boost::split(split, figureCharacteristicStrings[i], boost::is_any_of("="));
-            if (split.size() == 2){
-                figureCharacteristicStrings[i] = split[1];
-            }
-            // std::cout << figureCharacteristicStrings[i] << std::endl;
+            weights = LatBuilder::Parser::CombinedWeights::parse(commandLine.s_weights, weightsPowerScale);
         }
 
-        if (figureCharacteristicStrings.size()==0)
+        if (commandLine.s_figure == "CU:P2")
         {
-            throw BadFigure("figure name must be specified; see --help");
-        }
-
-        std::string name = figureCharacteristicStrings[0];
-
-        Real importance = std::numeric_limits<Real>::infinity(); 
-        if(figureCharacteristicStrings.size()>=2)
-        {
-            importance = boost::lexical_cast<Real>(figureCharacteristicStrings[1]);
-        }
-
-        if (name == "A-Property"){
-            if (NetConstructionTraits<NC>::isSequenceViewable)
-            {
-                vecFigures.push_back(std::make_unique<FigureOfMerit::AProperty>(importance));
-                vecWeights.push_back(1);
-                return;
-            }
-            else
-            {
-                throw BadFigure("A-Property not compatible with net construction.");
-            }
-        }
-        if (name == "A'-Property"){
-            if (NetConstructionTraits<NC>::isSequenceViewable)
-            {
-                vecFigures.push_back(std::make_unique<FigureOfMerit::APrimeProperty>(importance));
-                vecWeights.push_back(1);
-                return;
-            }
-            else
-            {
-                throw BadFigure("A'-Property not compatible with net construction.");
-            }
-        }
-
-        std::vector<std::string> nameParsing;
-        boost::split(nameParsing, name, boost::is_any_of(":"));
-
-        if (nameParsing.size()==2)
-        {
-            if (nameParsing[0] == "BitEquidistribution")
-            {
-                unsigned int nbBits = boost::lexical_cast<unsigned int>(nameParsing[1]);
-                vecFigures.push_back(std::make_unique<FigureOfMerit::BitEquidistribution<PST>>(nbBits, importance, std::numeric_limits<Real>::infinity(),  commandLine.m_combiner));
-                vecWeights.push_back(1);
-                return;
-            }
-        }
-
-        if(nbParam <=1)
-        {
-            throw BadFigure("importance must be specified; see -help.");
-        }
-
-        if(nbParam <=2)
-        {
-            throw BadFigure("norm-type must be specified; see -help.");
-        }
-
-        Real normType = boost::lexical_cast<Real>(figureCharacteristicStrings[2]);
-
-        if (nbParam <=3)
-        {
-            throw BadFigure("weights must be specified; see --help.");
-        }
-
-        vecWeights.push_back(importance);
-
-        std::string weightString = figureCharacteristicStrings[3];
-        
-        // TODO: comment
-        Real weightsPowerScale = 1.0;
-        if (nbParam >= 5) {
-            Real weightPower = boost::lexical_cast<Real>(figureCharacteristicStrings[4]);
-
-            if (normType < std::numeric_limits<Real>::infinity())
-                weightsPowerScale = normType;
-         // then scale down according to interpretation of input
-            weightsPowerScale /= weightPower;
-        }
-
-        std::unique_ptr<LatticeTester::Weights> weights = LatBuilder::Parser::Weights::parse(weightString, weightsPowerScale);
-        
-        if (name == "t-value"){
-            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<PST>>(maxCard, commandLine.m_combiner);
-            auto weightedFigureOfMerit = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PST>>>(normType, std::move(weights), std::move(projDepMerit));
-            vecFigures.push_back(std::move(weightedFigureOfMerit));
-        }
-        else if (name == "resolution-gap"){
-            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<PST>>(maxCard, commandLine.m_combiner);
-            auto weightedFigureOfMerit = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<PST>>>(normType, std::move(weights), std::move(projDepMerit));
-            vecFigures.push_back(std::move(weightedFigureOfMerit));
-        }
-        else if (name == "CU:P2"){
+            if(commandLine.m_normType != 2)
+                throw BadFigure("norm must be `2' for the coordinate-uniform implementation");
             auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
-            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, PST>>(std::move(weights), commandLine.m_sizeParam, kernel, commandLine.m_combiner);
-            vecFigures.push_back(std::move(coordUnifFigure));
+            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), commandLine.m_sizeParamLatTrick, kernel, commandLine.m_combiner);
         }
-        else if (name == "CU:R"){
+        else if (commandLine.s_figure == "CU:R")
+        {
+            if(commandLine.m_normType != 2)
+                throw BadFigure("norm must be `2' for the coordinate-uniform implementation");
             auto kernel = LatBuilder::Kernel::RPLR();
-            auto coordUnifFigure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, PST>>(std::move(weights), commandLine.m_sizeParam, kernel, commandLine.m_combiner);
-            vecFigures.push_back(std::move(coordUnifFigure));
+            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), commandLine.m_sizeParamLatTrick, kernel, commandLine.m_combiner);
         }
-        else{
-            throw BadFigure("figure name " + name + " does not exist.");
+        else if (commandLine.s_figure == "t-value")
+        {
+            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<ET>>(maxCard, commandLine.m_combiner);
+            return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
+        }
+        else if (commandLine.s_figure == "resolution-gap")
+        {
+            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
+            auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<ET>>(maxCard, commandLine.m_combiner);
+            return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
+        }
+        else
+        {
+            throw BadFigure(commandLine.s_figure);
         }
     }
 

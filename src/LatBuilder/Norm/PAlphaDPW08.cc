@@ -118,7 +118,7 @@ PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatticeTester::Weights& weigh
    m_weights(weights)
 {}
 
-template <LatticeType LR, PointSetType L>
+template <LatticeType LR, EmbeddingType L>
 Real PAlphaDPW08::value(
       Real lambda,
       const SizeParam<LR, L>& sizeParam,
@@ -142,10 +142,10 @@ Real PAlphaDPW08::value(
    return pow(norm * val, 1.0 / lambda);
 }
 
-template Real PAlphaDPW08::value<LatticeType::ORDINARY, PointSetType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, PointSetType::UNILEVEL>&, Dimension, Real) const;
-template Real PAlphaDPW08::value<LatticeType::ORDINARY, PointSetType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, PointSetType::MULTILEVEL>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
-template Real PAlphaDPW08::value<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, PointSetType::UNILEVEL>&, Dimension, Real) const;
-template Real PAlphaDPW08::value<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real PAlphaDPW08::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
 }}

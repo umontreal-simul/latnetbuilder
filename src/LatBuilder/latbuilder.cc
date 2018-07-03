@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/Parser/PointSetType.h"
+#include "latbuilder/Parser/EmbeddingType.h"
 #include "latbuilder/Parser/Lattice.h"
 #include "latbuilder/Parser/CommandLine.h"   
 #include "latbuilder/TextStream.h"
@@ -32,8 +32,8 @@ using TextStream::operator<<;
 
 static unsigned int merit_digits_displayed = 0; 
 
-template <LatticeType LR, PointSetType PST>
-void onLatticeSelected(const Task::Search<LR, PST>& s)
+template <LatticeType LR, EmbeddingType ET>
+void onLatticeSelected(const Task::Search<LR, ET>& s)
    {
    unsigned int old_precision = (unsigned int) std::cout.precision();
    if (merit_digits_displayed)
@@ -55,8 +55,8 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
-   ("main-construction,C", po::value<std::string>(),
-    "(required) main construction type; possible values:\n"
+   ("set-type,T", po::value<std::string>(),
+    "(required) point set type; possible values:\n"
     "  lattice\n"
     "  net\n")
    ("help,h", "produce help message")
@@ -64,29 +64,29 @@ makeOptionsDescription()
    ("verbose,v", po::value<int>()->default_value(0),
    "specify the verbosity of the program\n")
   //  ("quiet,q", "show compact output (single line with number of points, generating vector and merit value)")
-   ("lattice-type,l", po::value<std::string>()->default_value("ordinary"),
-   "lattice; possible values:\n"
-   "  ordinary (default)\n"
+   ("construction,c", po::value<std::string>(),
+   "lattice construction; possible values:\n"
+   "  ordinary\n"
    "  polynomial\n")
-   ("embedded-lattice,e", po::value<std::string>()->default_value("false"),
-    "type of lattice; possible values:\n"
+   ("multilevel,m", po::value<std::string>()->default_value("false"),
+    "multilevel point set; possible values:\n"
    "  false (default)\n"
    "  true\n")
-   ("modulus,s", po::value<std::string>(),
+   ("size-parameter,s", po::value<std::string>(),
     "(required) modulus of the lattice; possible values:\n"
    "  <modulus>\n"
    "  <base>^<max-power>\n"
    "  input format :\n"
    "  ordinary lattice rules: integer (decimal reprisentation)\n"
-   "  polynomial lattice rules: polynomial : list of coeifficients : 1011 stands for 1 + X^2 + X^3\n")
-   ("construction,c", po::value<std::string>(),
-    "(required) construction type; possible values:\n"
-    "  explicit:<a1>,...,<as>\n"
+   "  polynomial lattice rules: polynomial (list of coefficients: 1011 stands for 1 + X^2 + X^3)\n")
+   ("exploration-method,E", po::value<std::string>(),
+    "(required) exploration method; possible values:\n"
+    "  evaluation:<a1>,...,<as>\n" // TODO change name to evaluation (and in python-wrapper)
     "  exhaustive\n"
     "  random:<r>\n"
     "  Korobov\n"
     "  random-Korobov:<r>\n"
-    "  CBC\n"
+    "  full-CBC\n"
     "  random-CBC:<r>\n"
     "  fast-CBC\n"
     "  extend:<num-points>:<a1>,...,<as>\n"
@@ -107,11 +107,11 @@ makeOptionsDescription()
     "    if <file> is `-' data is read from standard input\n")
    ("weights-power,o", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
-   ("norm-type,p", po::value<std::string>()->default_value("2"),
+   ("norm-type,p", po::value<std::string>(),
     "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
     "    <p>: a real number corresponding the l_<p> norm\n"
     "    inf: corresponding to the `max' norm\n")
-   ("figure-of-merit,m", po::value<std::string>(),
+   ("figure-of-merit,M", po::value<std::string>(),
     "(required) type of figure of merit; format: [CU:]<merit>\n"
     "  where the optional \"CU:\" prefix switches on the coordinate-uniform evaluation algorithm,\n"
     "  and where <merit> is one of:\n"
@@ -136,8 +136,8 @@ makeOptionsDescription()
     "  max\n"
     "  level:{<level>|max}\n")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
-    "(optional) number of times the construction must be executed\n"
-   "(can be useful to obtain different results from random constructions)\n")
+    "(optional) number of times the exploration must be executed\n"
+   "(can be useful to obtain different results from random exploration)\n")
     ("output-format,g", po::value< std::vector<std::string> >()->composing(),
     "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
    "  file:\"<file>\":format\n"
@@ -168,23 +168,24 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-  if (opt.count("combiner") < 1 && opt["embedded-lattice"].as<std::string>() == "true"){
-    throw std::runtime_error("--combiner must be specified for embedded (try --help)");
+   for (const auto x : {"construction", "size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
+      if (opt.count(x) != 1)
+         throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
+   }
+
+  if (opt.count("combiner") < 1 && opt["multilevel"].as<std::string>() == "true"){
+    throw std::runtime_error("--combiner must be specified for multilevel set type (try --help)");
   }
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"modulus", "construction", "dimension", "figure-of-merit"}) {
-      if (opt.count(x) != 1)
-         throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
-   }
 
    return opt;
 }
 
 
-template <PointSetType PST>
-void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd, int verbose, unsigned int repeat)
+template <EmbeddingType ET>
+void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, int verbose, unsigned int repeat)
 {
    const LatticeType LR = LatticeType::ORDINARY ;
    using namespace std::chrono;
@@ -194,7 +195,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
    if (verbose > 0) {
-      search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
+      search->onLatticeSelected().connect(onLatticeSelected<LR,ET>);
       search->setObserverVerbosity(verbose-1);
       std::cout << *search << std::endl;
    }
@@ -238,8 +239,8 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, PST>& cmd,
 }
 
 
-template <PointSetType PST>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& cmd, int verbose, unsigned int repeat, const std::vector<NetBuilder::Parser::OutputFormatParameters>& vecOutputFormatParameters)
+template <EmbeddingType ET>
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, const std::vector<NetBuilder::Parser::OutputFormatParameters>& vecOutputFormatParameters)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -249,7 +250,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
    const std::string separator = "\n--------------------------------------------------------------------------------\n";
 
    if (verbose > 0) {
-      search->onLatticeSelected().connect(onLatticeSelected<LR,PST>);
+      search->onLatticeSelected().connect(onLatticeSelected<LR,ET>);
       search->setObserverVerbosity(verbose-1);
       std::cout << *search << std::endl;
    }
@@ -284,7 +285,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, PST>& 
         }
         
         if (i == 0){ 
-          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net(lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
+          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
 
           for (NetBuilder::Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
             std::string fileName = outputFormatParameters.file();
@@ -326,16 +327,16 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
-       LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["lattice-type"].as<std::string>());
+       LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["construction"].as<std::string>());
 
        if(lattice == LatticeType::ORDINARY){
 
-            Parser::CommandLine<LatticeType::ORDINARY, PointSetType::MULTILEVEL> cmd;
+            Parser::CommandLine<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL> cmd;
 
             
 
-            cmd.construction  = opt["construction"].as<std::string>();
-            cmd.size          = opt["modulus"].as<std::string>();
+            cmd.construction  = opt["exploration-method"].as<std::string>();
+            cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
@@ -367,27 +368,27 @@ int main(int argc, const char *argv[])
             if (opt.count("multilevel-filters") >= 1)
                cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
-            PointSetType latType = Parser::PointSetType::parse(opt["embedded-lattice"].as<std::string>());
+            EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
-            if (latType == PointSetType::UNILEVEL){
+            if (latType == EmbeddingType::UNILEVEL){
 
-               executeOrdinary<PointSetType::UNILEVEL> (cmd, verbose, repeat);
+               executeOrdinary<EmbeddingType::UNILEVEL> (cmd, verbose, repeat);
                
              }
             else{
-               executeOrdinary<PointSetType::MULTILEVEL> (cmd, verbose, repeat);
+               executeOrdinary<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat);
                
              }
       }
 
       else if(lattice == LatticeType::POLYNOMIAL){
 
-            Parser::CommandLine<LatticeType::POLYNOMIAL, PointSetType::MULTILEVEL> cmd;
+            Parser::CommandLine<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL> cmd;
 
             
 
-            cmd.construction  = opt["construction"].as<std::string>();
-            cmd.size          = opt["modulus"].as<std::string>();
+            cmd.construction  = opt["exploration-method"].as<std::string>();
+            cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
@@ -419,7 +420,7 @@ int main(int argc, const char *argv[])
             if (opt.count("multilevel-filters") >= 1)
                cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
-            PointSetType latType = Parser::PointSetType::parse(opt["embedded-lattice"].as<std::string>());
+            EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
             std::vector<NetBuilder::Parser::OutputFormatParameters> outPoly;
             if (opt.count("output-format") >= 1){
@@ -429,12 +430,12 @@ int main(int argc, const char *argv[])
               outPoly = {};
             }
 
-            if (latType == PointSetType::UNILEVEL){
-               executePolynomial< PointSetType::UNILEVEL> (cmd, verbose, repeat, outPoly);
+            if (latType == EmbeddingType::UNILEVEL){
+               executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outPoly);
                
              }
             else{
-               executePolynomial<PointSetType::MULTILEVEL> (cmd, verbose, repeat, outPoly);
+               executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outPoly);
                
              }
       }

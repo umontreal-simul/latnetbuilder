@@ -94,7 +94,7 @@ class FigureOfMeritEvaluator
          *  @param initialValue Initial value of the merit.
          *  @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, unsigned int dimension, MeritValue initialValue, int verbose = 0) = 0;
+        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) = 0;
 
         /** 
          * Computes the figure of merit for the given \c net for all the dimensions (full computation).
@@ -104,7 +104,7 @@ class FigureOfMeritEvaluator
         MeritValue operator() (const DigitalNet& net, int verbose = 0)
         {
             MeritValue merit = 0; // start from a merit equal to zero
-            for(unsigned int dim = 1; dim <= net.dimension(); ++dim) // for each dimension
+            for(Dimension dim = 0; dim < net.dimension(); ++dim) // for each dimension
             {
                 prepareForNextDimension(); // prepare the evaluator for the next dimension
                 if (verbose>0)
@@ -165,7 +165,7 @@ class FigureOfMerit{
         virtual ~FigureOfMerit() = default;
 
         /**
-         * Returns a std::unique_ptr to an evaluator for the figure of merit. 
+         * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() = 0  ;
 

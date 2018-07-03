@@ -18,11 +18,13 @@
 #include <fstream>
 #include <chrono>
 #include <boost/program_options.hpp>
+#include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <limits>
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/CommandLine.h"
-#include "netbuilder/Parser/PointSetTypeParser.h"
+#include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
 #include "netbuilder/Parser/OutputFormat.h"
 #include "netbuilder/Task/Task.h"
@@ -64,8 +66,8 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
-    ("main-construction,C", po::value<std::string>(),
-    "(required) main construction type; possible values:\n"
+    ("set-type,T", po::value<std::string>(),
+    "(required) point set type; possible values:\n"
     "  lattice\n"
     "  net\n")
    ("help,h", "produce help message")
@@ -73,67 +75,57 @@ makeOptionsDescription()
    ("verbose,v", po::value<std::string>()->default_value("0"),
    "specify the verbosity of the program\n")
    ("construction,c", po::value<std::string>()->default_value("sobol"),
-   "digital-net; possible constructions:\n"
+   "digital net; possible constructions:\n"
    "  sobol (default)\n"
-   "  polynomial:<modulus>\n"
-   "  explicit:<matrix-size>\n")
-   ("set-type,t", po::value<std::string>()->default_value("net"),
-    "type of point set; possible values:\n"
-   "  net (default)\n"
-   "  sequence\n")
-   ("size,s", po::value<std::string>(),
-    "(required) size of the net; possible values:\n"
+   "  polynomial\n"
+   "  explicit\n")
+   ("multilevel,m", po::value<std::string>()->default_value("false"),
+    "multilevel point set; possible values:\n"
+   "  false (default)\n"
+   "  true\n")
+   ("size-parameter,s", po::value<std::string>(),
+    "(required) size of the net; possible values: TODO\n"
    "  <size>\n"
    "  2^<max-power>\n")
-   ("exploration-method,e", po::value<std::string>(),
+   ("exploration-method,E", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
     "  evaluation:<net_description>\n" 
     "  exhaustive\n"
     "  random:<r>\n"
     "  full-CBC\n"
     "  random-CBC:<r>\n"
-    "  mixed-CBC:<r>:<d_max>\n"
-    "where <r> is the number of randomizations, and <d_max> the maximum dimension for full CBC exploration.")
+    "  mixed-CBC:<r>:<nb_full>\n"
+    "where <r> is the number of randomizations, and <nb_full> the number of coordinates for which full CBC exploration is used.")
     ("dimension,d", po::value<std::string>(),
     "(required) net dimension\n")
     ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n")
-  //  ("weights,w", po::value<std::vector<std::string>>()->multitoken(),
-  //   "(required) whitespace-separated list of weights specifications (the actual weights are the sum of these); possible values:\n"
-  //   "  product:<default>:<coord1-weight>[,...]\n"
-  //   "  order-dependent:<default>:<order-1-weight>,...,<order-s-weight>\n"
-  //   "  POD:<default>:<order-1-weight>,...,<order-s-weight>:<default>:<coord1-weight>[,...]\n"
-  //   "  projection-dependent:<proj-1>:<weight-1>[:<proj-2>:<weight-2>[:...]]\n"
-  //   "    where <proj-n> is a comma-separated list of coordinates\n"
-  //   "  file:\"<file>\"\n"
-  //   "    line format in <file>:\n"
-  //   "      <i1>,<i2>,...: <weight>\n"
-  //   "      order <x>: <weight>\n"
-  //   "      default: <weight>\n"
-  //   "    if <file> is `-' data is read from standard input\n")
-  //  ("weights-power,o", po::value<Real>(),
-  //   "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
-  //  ("norm-type,p", po::value<std::string>()->default_value("2"),
-  //   "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
-  //   "    <p>: a real number corresponding the l_<p> norm\n"
-  //   "    inf: corresponding to the `max' norm\n")
+    ("weights,w", po::value<std::vector<std::string>>()->multitoken(),
+    "(required) whitespace-separated list of weights specifications (the actual weights are the sum of these); possible values:\n"
+    "  product:<default>:<coord1-weight>[,...]\n"
+    "  order-dependent:<default>:<order-1-weight>,...,<order-s-weight>\n"
+    "  POD:<default>:<order-1-weight>,...,<order-s-weight>:<default>:<coord1-weight>[,...]\n"
+    "  projection-dependent:<proj-1>:<weight-1>[:<proj-2>:<weight-2>[:...]]\n"
+    "    where <proj-n> is a comma-separated list of coordinates\n"
+    "  file:\"<file>\"\n"
+    "    line format in <file>:\n"
+    "      <i1>,<i2>,...: <weight>\n"
+    "      order <x>: <weight>\n"
+    "      default: <weight>\n"
+    "    if <file> is `-' data is read from standard input\n")
+   ("weights-power,o", po::value<Real>(),
+    "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
+   ("norm-type,p", po::value<std::string>(),
+    "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
+    "    <p>: a real number corresponding the l_<p> norm\n"
+    "    inf: corresponding to the `max' norm\n")
     ("combiner,b", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
-    "  level:{<level>|max}\n"
-    "  JoeKuoD6\n")
-    ("figure-combiner,f", po::value<std::string>(),
-    "combiner for combined figure of merit; possible values: \n"
-    "  sum\n"
-    "  max (default)\n")
-    ("add-figure,a", po::value< std::vector<std::string> >()->composing(),
-    "(at least one required) add one type of figure of merits. If several, specify a figure combiner.\n"
-    "Syntax pattern:\n"
-    "rt \n"
-    "where name can take the following values:\n"
-    "resolution-gap, t-value, A-Property, A'-Property and \n"
-    "P<alpha> with the optional \"CU:\" prefix to switch to the coordinate-uniform evaluation algorithm\n")
+    "  level:{<level>|max}\n")
+   ("figure-of-merit,M", po::value<std::string>(),
+    "(required) type of figure of merit; TODO\n")
   //  ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
   //   "whitespace-separated list of filters for merit values; possible values:\n"
   //   "  norm:P<alpha>-{SL10|DPW08}\n"
@@ -176,37 +168,30 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-   if (opt.count("add-figure") < 1)
-      throw std::runtime_error("--add-figure must be specified (try --help)");
-   for (const auto x : {"size", "exploration-method", "dimension"}) {
+   if (opt.count("weights") < 1)
+      throw std::runtime_error("--weights must be specified (try --help)");
+   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
-   if (opt.count("add-figure") >= 2 && opt.count("figure-combiner") != 1)
-      throw std::runtime_error("--figure-combiner must be specified (try --help)");
 
-    if (opt["set-type"].as<std::string>() == "sequence" && ! opt.count("combiner")){
-      throw std::runtime_error("--combiner must be specified for sequence set type (try --help)");
+    if (opt["multilevel"].as<std::string>() == "true" && ! opt.count("combiner")){
+      throw std::runtime_error("--combiner must be specified for multilevel set type (try --help)");
     }
    return opt;
 }
 
 
 #define BUILD_TASK(net_construction, point_set_type)\
-NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, NetBuilder::PointSetType::point_set_type> cmd;\
+NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, NetBuilder::EmbeddingType::point_set_type> cmd;\
 \
-cmd.s_designParameter = designParameterString;\
 cmd.s_verbose = opt["verbose"].as<std::string>();\
 cmd.s_explorationMethod = opt["exploration-method"].as<std::string>();\
-cmd.s_size = opt["size"].as<std::string>();\
+cmd.s_size = opt["size-parameter"].as<std::string>();\
 cmd.s_dimension = opt["dimension"].as<std::string>();\
-cmd.s_figures = opt["add-figure"].as<std::vector<std::string>>();\
-if (opt.count("figure-combiner") < 1){\
-  cmd.s_figureCombiner = "";\
-}\
-else{\
-  cmd.s_figureCombiner = opt["figure-combiner"].as<std::string>();\
-}\
+cmd.s_figure = opt["figure-of-merit"].as<std::string>();\
+cmd.s_weights       = opt["weights"].as<std::vector<std::string>>();\
+cmd.m_normType = boost::lexical_cast<Real>(opt["norm-type"].as<std::string>());\
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\
 }\
@@ -218,6 +203,19 @@ if (opt.count("no-early-abort") >= 1){\
 }\
 else{\
   cmd.m_earlyAbort = true;\
+}\
+if (opt.count("weight-power") == 1 ){\
+  cmd.m_weightPower = boost::lexical_cast<Real>(opt["weight-power"].as<std::string>());\
+}\
+else{\
+  if (cmd.m_normType < std::numeric_limits<Real>::infinity())\
+  {\
+    cmd.m_weightPower = cmd.m_normType;\
+  }\
+  else\
+  {\
+    cmd.m_weightPower = 1;\
+  }\
 }\
 task = cmd.parse();
 
@@ -248,56 +246,53 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
-        std::string s_setType = opt["set-type"].as<std::string>();
+        std::string s_multilevel = opt["multilevel"].as<std::string>();
         std::string s_construction = opt["construction"].as<std::string>();
-        NetBuilder::PointSetType setType = NetBuilder::Parser::PointSetTypeParser::parse(s_setType);
+        NetBuilder::EmbeddingType embeddingType = NetBuilder::Parser::EmbeddingTypeParser::parse(s_multilevel);
 
-        std::pair<NetBuilder::NetConstruction,std::string> netConstructionPair;
+        NetBuilder::NetConstruction netConstruction;
 
-        if (setType==NetBuilder::PointSetType::UNILEVEL)
+        if (embeddingType==NetBuilder::EmbeddingType::UNILEVEL)
         {
-          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::PointSetType::UNILEVEL>::parse(s_construction);
+          netConstruction =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::UNILEVEL>::parse(s_construction);
         }
         else
         {
-          netConstructionPair =  NetBuilder::Parser::NetConstructionParser<NetBuilder::PointSetType::MULTILEVEL>::parse(s_construction);
+          netConstruction =  NetBuilder::Parser::NetConstructionParser<NetBuilder::EmbeddingType::MULTILEVEL>::parse(s_construction);
         }
-
-        NetBuilder::NetConstruction netConstruction = netConstructionPair.first;
-
-        std::string designParameterString = netConstructionPair.second;
 
         std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
 
-        if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::UNILEVEL){
+        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::SOBOL && setType == NetBuilder::PointSetType::MULTILEVEL){
+       if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(SOBOL, MULTILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::UNILEVEL){
+       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && setType == NetBuilder::PointSetType::MULTILEVEL){
+      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
       //     BUILD_TASK(POLYNOMIAL, MULTILEVEL)
-      //  }
-        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::UNILEVEL){
+      //  } 
+        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && setType == NetBuilder::PointSetType::MULTILEVEL){
+      //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
       //     BUILD_TASK(EXPLICIT, MULTILEVEL)
       //  }
+
       for (unsigned i=0; i<repeat; i++){
-      t0 = high_resolution_clock::now();\
-      task->execute();\
-      t1 = high_resolution_clock::now();\
-      TaskOutput(*task, outputFormatParameters);
-      auto dt = duration_cast<duration<double>>(t1 - t0);
-      std::cout << std::endl;
-      std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-      task.reset();
+        t0 = high_resolution_clock::now();\
+        task->execute();\
+        t1 = high_resolution_clock::now();\
+        TaskOutput(*task, outputFormatParameters);
+        auto dt = duration_cast<duration<double>>(t1 - t0);
+        std::cout << std::endl;
+        std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
+        task.reset();
       }
    }
    catch (LatBuilder::Parser::ParserError& e) {

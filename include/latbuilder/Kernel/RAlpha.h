@@ -74,7 +74,7 @@ namespace LatBuilder { namespace Kernel {
  * r_{\alpha,n}(h)\f$ at \f$h=0,\dots,n-1\f$.  This is how #valuesVector()
  * computes these values.
  *
- * \tparam PST          Type of lattice.
+ * \tparam ET          Type of lattice.
  */
 class RAlpha : public Base<RAlpha> {
 public:
@@ -112,7 +112,7 @@ public:
     *
     * Creates a new vector of kernel values using fast Fourier transforms.
     */
-   template <LatticeType LR, PointSetType L, Compress C, PerLevelOrder P >
+   template <LatticeType LR, EmbeddingType L, Compress C, PerLevelOrder P >
    RealVector valuesVector(
          const Storage<LR, L, C, P>& storage
          ) const

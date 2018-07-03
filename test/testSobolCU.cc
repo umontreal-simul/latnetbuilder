@@ -119,7 +119,7 @@ int main(int argc, const char *argv[])
 
     auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
 
-    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::PointSetType::UNILEVEL> param(intPow(2, m));
+    LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, LatBuilder::EmbeddingType::UNILEVEL> param(intPow(2, m));
     
     typedef NetConstructionTraits<NetConstruction::SOBOL> ConstructionMethod;
 
@@ -169,7 +169,7 @@ int main(int argc, const char *argv[])
         // for(int dim=1; dim<=s; dim++){
         //     myfile << net->generatingMatrix(dim) << std::endl;
         // }
-        auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::UNILEVEL>>(std::move(weights1), m, param, kernel);
+        auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::EmbeddingType::UNILEVEL>>(std::move(weights1), m, param, kernel);
         auto task = Task::Eval(std::move(net),std::move(fig1));
         task.execute();
         myfile << task.meritValue() << std::endl;
@@ -177,8 +177,8 @@ int main(int argc, const char *argv[])
         // std::cout << "3" << std::endl;
 
         auto weights2 = std::make_unique<LatticeTester::ProductWeights>(0.1);
-        auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>(3);
-        auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<PointSetType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
+        auto projDep2 = std::make_unique<FigureOfMerit::TValueProjMerit<EmbeddingType::UNILEVEL>>(3);
+        auto  fig2 = std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<EmbeddingType::UNILEVEL>>>(1, std::move(weights2), std::move(projDep2));
         auto task2 = Task::Eval(std::move(net2),std::move(fig2));
         task2.execute();
         myfile << task2.meritValue() << std::endl;
@@ -217,7 +217,7 @@ int main(int argc, const char *argv[])
 }
 
 
-    // auto vecGenValues = ConstructionMethod::genValueSpaceDim(s+1);    
+    // auto vecGenValues = ConstructionMethod::genValueSpaceCoord(s+1);    
 
     // for (int i=0; i<vecGenValues.size(); i++){
     //     auto weights1 = std::make_unique<LatticeTester::OrderDependentWeights>(0.1);
@@ -226,7 +226,7 @@ int main(int argc, const char *argv[])
     //     auto net2 = net->extendDimension(vecGenValues[i]);
     //     std::cout << net2->generatingMatrix(s+1) << std::endl;
 
-    //     auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::PointSetType::UNILEVEL>>(std::move(weights1), m, param, kernel);
+    //     auto fig1 = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, LatBuilder::EmbeddingType::UNILEVEL>>(std::move(weights1), m, param, kernel);
     //     std::cout << "merit value: ";
     //     auto task = Task::Eval(std::move(net2),std::move(fig1));
     //     task.execute();

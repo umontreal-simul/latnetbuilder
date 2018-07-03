@@ -16,7 +16,7 @@
 
 /**
  * \file 
- * This file contains the definition of a sequence of coordinates used by CBC construction.
+ * This file contains the definition of a sequence of coordinates used by CBC exploration.
  */ 
 
 #ifndef NETBUILDER__CBC_COORDINATE_SET_H
@@ -44,11 +44,11 @@ class CBCCoordinateSet
          * @param maxCoordinate Maximal coordinate of the subsets. Corresponds to \f$ d \f$.
          * @param maxOrder Maximal order of subsets. Corresponds to \f$ k \f$.
          */ 
-        CBCCoordinateSet(int maxCoordinate, int maxOrder):
-            m_dimension(maxCoordinate),
+        CBCCoordinateSet(Dimension maxCoordinate, unsigned int maxOrder):
+            m_dimension(maxCoordinate+1),
             m_maxOrder(maxOrder),
-            m_base(0, std::min(maxOrder-1,maxCoordinate-1), 0, std::max(maxCoordinate-2,0)),
-            m_addCoordinate(m_base, maxCoordinate-1)
+            m_base(0, std::min(maxOrder-1, (unsigned int) (maxCoordinate)), 0, std::max((unsigned int) (maxCoordinate),(unsigned int) 1)- 1),
+            m_addCoordinate(m_base, maxCoordinate)
         {};
 
         /**
@@ -68,7 +68,7 @@ class CBCCoordinateSet
         }
 
     private:
-        unsigned int m_dimension;
+        Dimension m_dimension;
         unsigned int m_maxOrder;
         LatticeTester::CoordinateSets::FromRanges m_base;
         LatticeTester::CoordinateSets::AddCoordinate<LatticeTester::CoordinateSets::FromRanges> m_addCoordinate;

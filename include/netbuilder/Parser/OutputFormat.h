@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,23 +32,22 @@ namespace lbp = LatBuilder::Parser;
 class BadOutputFormat : public lbp::ParserError
 {
   public:
-    BadOutputFormat(const std::string &message) : lbp::ParserError("cannot interpret \"" + message + "\" as an output format")
+    BadOutputFormat(const std::string &message) : lbp::ParserError("cannot interpret \"" + message + "\" as an output format.")
     {
     }
 };
 
 /**
  * Class for output-poly parameters
- * Defining parameters:
- * - doOutput wether to do the output or not;
- * - file file in which the output will be written
- * - outputFormat output format
- *
- * 
+ * TODO move this to a better place
  */
-class OutputFormatParameters
+struct OutputFormatParameters
 {
-    public:
+    /**
+     * Constructor.
+     * @param file Log file for outputs.
+     * @param outputFormat Output format.
+     */ 
       OutputFormatParameters(std::string file = "", OutputFormat outputFormat = OutputFormat::CLI) : 
             m_file(std::move(file)),
             m_outputFormat(outputFormat)
@@ -62,7 +61,7 @@ class OutputFormatParameters
       OutputFormat m_outputFormat;
 };
 
-// parse output parameters
+/** Parser for output formats. */ 
 struct OutputFormatParser
 {
       static std::vector<OutputFormatParameters> parse(const std::vector<string> &vec){
