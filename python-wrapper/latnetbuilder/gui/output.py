@@ -1,4 +1,5 @@
 import csv
+import time
 import ipywidgets as widgets
 from matplotlib import pyplot as plt
 import numpy as np
@@ -15,7 +16,8 @@ env = Environment(
 def transform_to_c(List):
     return str(List).replace('[', ' { ').replace(']', ' } ')
 
-def create_output(output, create_graph=True):
+def create_output(output, create_graph=True, in_thread=False):
+    output.output.layout.display = 'flex'
     result_obj = output.result_obj
     if create_graph and not ('polynomial' in result_obj.search_type and result_obj.getMaxLevel() > 15):
 
@@ -29,6 +31,8 @@ def create_output(output, create_graph=True):
         pt_x = result_obj.getNet(0, b3.value)
         pt_y = result_obj.getNet(1, b3.value)
         fig = widgets.Output(layout=widgets.Layout(width='600px', height='500px'))
+        # if in_thread:
+        time.sleep(1)
         with fig:
             plt.figure(figsize=(8,8))
             plt.xlim(0, 1)
@@ -39,17 +43,17 @@ def create_output(output, create_graph=True):
         plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3, widgets.HTML('<p>Warning: the plot lags for 2^15 points and more. </p> <p>Level restricted to be less than 15.</p>')])], 
                 layout=widgets.Layout(align_items='center'))
 
-        def change_graph(b):
-            if b['name'] == 'value':
-                if b['owner'] == b1:
-                    pt_x = result_obj.getNet(b['new']-1, b3.value)
+        def change_graph(change):
+            if change['name'] == 'value':
+                if change['owner'] == b1:
+                    pt_x = result_obj.getNet(change['new']-1, b3.value)
                     pt_y = result_obj.getNet(b2.value-1, b3.value)
-                if b['owner'] == b2:
+                if change['owner'] == b2:
                     pt_x = result_obj.getNet(b1.value-1, b3.value)
-                    pt_y = result_obj.getNet(b['new']-1, b3.value)
-                if b['owner'] == b3:
-                    pt_x = result_obj.getNet(b1.value-1, b['new'])
-                    pt_y = result_obj.getNet(b2.value-1, b['new'])
+                    pt_y = result_obj.getNet(change['new']-1, b3.value)
+                if change['owner'] == b3:
+                    pt_x = result_obj.getNet(b1.value-1, change['new'])
+                    pt_y = result_obj.getNet(b2.value-1, change['new'])
                 fig.clear_output()
                 with fig:
                     plt.figure(figsize=(8,8))
@@ -60,6 +64,7 @@ def create_output(output, create_graph=True):
         b1.observe(change_graph)
         b2.observe(change_graph)
         b3.observe(change_graph)
+        # 
     else:
         plot = widgets.HTML('No plot to show.')
 
@@ -157,7 +162,6 @@ def create_output(output, create_graph=True):
         output.output.set_title(1, 'C++11 code')
         output.output.set_title(2, 'Python code')
     
-    output.output.layout.display = 'flex'
 
 
 def output():

@@ -11,21 +11,21 @@ constr_data = {
 }
 
 
-def change_constr_modulus(b, gui):
-    if b['name'] != 'value':
+def change_constr_modulus(change, gui):
+    if change['name'] != 'value':
         return
     try:
-        poly_str = parse_polynomial(b['new'])
+        poly_str = parse_polynomial(change['new'])
         gui.construction_method.construction_modulus_pretty.value = '\\(' + \
             poly_str + '\\)'
     except:
         return
 
 
-def change_constr_choice(b, gui):
-    if b['name'] != 'value':
+def change_constr_choice(change, gui):
+    if change['name'] != 'value':
         return
-    new_choice = b['new']
+    new_choice = change['new']
     gui.construction_method.constr_info.value = constr_data[new_choice]
 
     if new_choice == 'polynomial':

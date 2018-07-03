@@ -3,11 +3,11 @@ import numpy as np
 
 from .common import style_default, parse_polynomial, INITIAL_DIM, BaseGUIElement, trigger_display
 
-def change_modulus(b, gui):
-    if b['name'] != 'value' or gui.main_tab.selected_index != 0:
+def change_modulus(change, gui):
+    if change['name'] != 'value' or gui.main_tab.selected_index != 0:
         return
     try:
-        poly_str = parse_polynomial(b['new'])
+        poly_str = parse_polynomial(change['new'])
         gui.properties.modulus_pretty.value = '\\(' + poly_str + '\\)'
     except:
         return
@@ -26,10 +26,10 @@ def update(form, dim, defaut_value):
     form.children = new_children
 
 # callback for dimension change
-def change_dimension(b, gui):
-    if b['name'] != 'value':
+def change_dimension(change, gui):
+    if change['name'] != 'value':
         return
-    dim = b['new']
+    dim = change['new']
     VBOX_of_weights = gui.weights.VBOX_of_weights
     for k in range(len(VBOX_of_weights.children)):
         weight = VBOX_of_weights.children[k]
@@ -50,7 +50,7 @@ def change_dimension(b, gui):
 
     update(gui.exploration_method.generating_vector.children[0], dim+1, '1')
     update(gui.exploration_method.generating_vector_simple, dim+1, '1')
-    gui.exploration_method.mixed_CBC_level.max = b['new']
+    gui.exploration_method.mixed_CBC_level.max = change['new']
 
 
 def properties():

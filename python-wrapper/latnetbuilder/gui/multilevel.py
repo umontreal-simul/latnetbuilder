@@ -2,10 +2,10 @@ import ipywidgets as widgets
 
 from .common import style_default, BaseGUIElement, trigger_display
 
-def change_combiner_options(b, gui):
-    # print(b)
-    if b['name'] == 'value':
-        if b['new'] == 'level:':
+def change_combiner_options(change, gui):
+    # print(change)
+    if change['name'] == 'value':
+        if change['new'] == 'level:':
             gui.multi_level.combiner_level.layout.display = 'flex'
         else:
             gui.multi_level.combiner_level.layout.display = 'none'

@@ -7,10 +7,10 @@ type_data = {
     'polynomial': 'TBC'
 }
 
-def change_lattice_type(b, gui):
-    if b['name'] != 'value':
+def change_lattice_type(change, gui):
+    if change['name'] != 'value':
         return
-    new_choice = b['new']
+    new_choice = change['new']
     gui.lattice_type.type_info.value = type_data[new_choice]
 
     if new_choice == 'ordinary':

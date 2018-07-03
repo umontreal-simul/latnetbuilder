@@ -143,7 +143,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
 
       //! [minElement call]
       obs.reset();
-      auto best = minElement(filteredSeq.begin(), filteredSeq.end());
+      auto best = minElement(filteredSeq.begin(), filteredSeq.end(), 0);
       //! [minElement call]
       //! [select]
       cbc.select(best.base());
