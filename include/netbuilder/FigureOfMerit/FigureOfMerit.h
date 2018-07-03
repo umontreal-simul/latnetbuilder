@@ -128,12 +128,6 @@ class FigureOfMerit{
             return createEvaluator();
         }
 
-        /**
-         * Creates a new accumulator.
-         * @param initialValue Initial accumulator value.
-         */
-        virtual Accumulator accumulator(Real initialValue) const = 0 ;
-
     private:
 
         virtual std::unique_ptr<FigureOfMeritEvaluator> createEvaluator() = 0;
@@ -219,6 +213,12 @@ class CBCFigureOfMerit:
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
         virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() = 0;
+
+        /**
+         * Creates a new accumulator.
+         * @param initialValue Initial accumulator value.
+         */
+        virtual Accumulator accumulator(Real initialValue) const = 0 ;
 
     private:
 

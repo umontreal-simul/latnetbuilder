@@ -123,13 +123,18 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     }
 
     std::vector<unsigned int> result = maxSubProj;
+
     unsigned int diff = 0;
     if (mMin < s-1){
         diff = (s-1-mMin);
+        if (nLevel <= (s - 1 - mMin))
+        {
+            return result;
+        }
         nLevel -= (s-1-mMin);
         mMin = s-1;
     }
-    for (unsigned int i=0; i<nLevel; i++){
+    for (unsigned int i = 0; i < nLevel; i++){
         result[i+diff] = std::max(nCols-(nLevel-1-i)-s+1, maxSubProj[i+diff]);
     }
     unsigned int previousIndSmallestInvertible = nLevel;
