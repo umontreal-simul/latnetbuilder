@@ -7,7 +7,7 @@ from .parse_input import parse_input
 from .output import create_output
 from .common import ParsingException, BaseGUIElement
 
-def build_command_line(b, gui):
+def build_command_line(change, gui):
     try:
         s = parse_input(gui)
         command = s.construct_command_line()
@@ -17,45 +17,60 @@ def build_command_line(b, gui):
     except Exception as e:
         gui.output.command_line_out.value = '<span style="color:red"> ERROR: ' + str(e) + '</span>'
 
-def abort_process(b, process):
-    if b['name'] == 'value' and b['new'] == True:
-        process.kill()
-        # os.killpg(os.getpgid(process.pid), signal.SIGTERM)
+def abort_process(change, process):
+    '''Callback fired when the user clicks the Abort button.
+    
+    The second argument is the subprocess instance which is terminated if the Abort toggle button is set to True.'''
 
-def on_click_search(b, gui):
+    if change['name'] == 'value' and change['new'] == True:
+        process.kill()
+
+def on_click_search(change, gui):
+    '''Callback fired when the user clicks the Search button.'''
+
     try:
-        s = parse_input(gui)
+        s = parse_input(gui)    # returns a Search instance
     except ParsingException as e:
         gui.output.result_html.value = '<span style="color:red"> PARSING ERROR: ' + str(e) + '</span>'
         return
-    except:
+    except:     # unknown error, should not happen (means there is a bug in the Python code)
         gui.output.result_html.value = '<span style="color:red"> ERROR: Something went wrong in the parsing of the input. Please double-check. </span>'
         return
 
     gui.search = s
 
-    if 'digital' in s.search_type():    # TEMPORARY
-        if 'CBC' in s.exploration_method:
-            gui.progress_bars.progress_bar_dim.value = 0
-            gui.progress_bars.progress_bar_dim.layout.display = 'flex'
-        else:
-            gui.progress_bars.progress_bar_dim.layout.display = 'none'
-        if 'explicit' not in s.exploration_method:
-            gui.progress_bars.progress_bar_nets.value = 0
-            gui.progress_bars.progress_bar_nets.layout.display = 'flex'
+    # display the progress bars
+    if 'CBC' in s.exploration_method:
+        gui.progress_bars.progress_bar_dim.value = 0
+        gui.progress_bars.progress_bar_dim.layout.display = 'flex'
+    else:
+        gui.progress_bars.progress_bar_dim.layout.display = 'none'
+    if 'explicit' not in s.exploration_method:
+        gui.progress_bars.progress_bar_nets.value = 0
+        gui.progress_bars.progress_bar_nets.layout.display = 'flex'
 
+    # reset output and button box to sensible values
     gui.output.command_line_out.value = ''
     gui.output.result_html.value = ''
     gui.output.output.layout.display = 'none' 
     gui.button_box.abort.disabled = False
     gui.button_box.abort.button_style = 'warning'
     gui.button_box.abort.value = False
-    stdout_file = open('cpp_outfile.txt', 'w')
-    stderr_file = open('cpp_errfile.txt', 'w')
+
+    stdout_filename = 'cpp_outfile.txt'
+    stderr_filename = 'cpp_errfile.txt'
+    stdout_file = open(stdout_filename, 'w')
+    stderr_file = open(stderr_filename, 'w')
+
+    # call the LatNetBuilder executable and returns a subprocess instance
     process = s._launch_subprocess(stdout_file, stderr_file)
     gui.process = process
-    gui.button_box.abort.observe(lambda b: abort_process(b, process))
-    thread = threading.Thread(target=s._monitor_process, args=(process, gui))
+
+    # register the callback to abort the process
+    gui.button_box.abort.observe(lambda change: abort_process(change, process))
+
+    # launch the thread that will monitor the process, and update the GUI accordingly
+    thread = threading.Thread(target=s._monitor_process, args=(process, stdout_filename, stderr_filename, gui, False, True))
     thread.start()
 
 
@@ -67,6 +82,7 @@ def button_box():
                                 disabled=False, layout=widgets.Layout(width='200px'))
     button_box_wrapper = widgets.HBox([go, abort, command_line],
                             layout=widgets.Layout(margin='30px 0px 0px 0px'))
+
     return BaseGUIElement(go=go,
                             abort=abort,
                             command_line=command_line,
@@ -74,8 +90,3 @@ def button_box():
                             _callbacks={},
                             _on_click_callbacks={'go': on_click_search,
                                                  'command_line': build_command_line})
-
-# # for debug
-# def display_output(b, gui):
-#     if b['name'] == 'value' and b['new'] == True:
-#         create_output(gui)

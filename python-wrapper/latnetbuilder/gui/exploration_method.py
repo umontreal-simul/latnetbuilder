@@ -30,10 +30,10 @@ explr_data = {
     </p>'
 }
 
-def change_explr_choice(b, gui):
-    if b['name'] != 'value':
+def change_explr_choice(change, gui):
+    if change['name'] != 'value':
         return
-    new_choice = b['new']
+    new_choice = change['new']
     gui.exploration_method.explr_info.value = explr_data[new_choice]
 
     if 'explicit' in new_choice:
@@ -69,20 +69,20 @@ def change_explr_choice(b, gui):
             gui.exploration_method.from_previous_search.layout.display = 'none'
             
 
-def trigger_is_random(b, gui):
-    if b['name'] != 'value':
+def trigger_is_random(change, gui):
+    if change['name'] != 'value':
         return
-    new_choice = b['new']
+    new_choice = change['new']
     gui.exploration_method.mixed_CBC_level.disabled = not new_choice
     if new_choice:
         gui.exploration_method.number_samples.layout.display = 'flex'
     else:
         gui.exploration_method.number_samples.layout.display = 'none'
 
-def automatic_generating_numbers_sobol(b, gui):
+def automatic_generating_numbers_sobol(change, gui):
     gui.exploration_method.generating_numbers_sobol.value = '\n'.join(JoeKuoSobolNets[:gui.properties.dimension.value])
 
-def fill_from_previous_search(b, gui):
+def fill_from_previous_search(change, gui):
     if gui.output.result_obj.latnet is None:
         return
     else:

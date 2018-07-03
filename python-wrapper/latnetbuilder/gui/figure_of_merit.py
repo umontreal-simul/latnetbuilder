@@ -1,39 +1,44 @@
 import ipywidgets as widgets
 
+# style_default tells the navigator not to crop the description of the ipywidgets if it's too long. 
 from .common import style_default, BaseGUIElement
 
-def change_figure_type(b, gui):
-    if b['new'] == 'Spectral':
+def change_figure_type(change, gui):
+    # depending on the new value of the figure type, we update the GUI
+    if change['new'] == 'Spectral':
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
         gui.figure_of_merit.coord_unif.disabled = True
         gui.figure_of_merit.coord_unif.value = False
         gui.figure_of_merit.coord_unif.layout.display = 'flex'
         gui.figure_of_merit.figure_power.value = '2'
-    elif b['new'] in ['Ralpha', 'Palpha']:
+    elif change['new'] in ['Ralpha', 'Palpha']:
         gui.figure_of_merit.figure_alpha.layout.display = 'flex'
         gui.figure_of_merit.coord_unif.disabled = False
         gui.figure_of_merit.coord_unif.layout.display = 'flex'
         gui.figure_of_merit.figure_power.value = '2'
-    elif b['new'] == 'R':
+    elif change['new'] == 'R':
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
         gui.figure_of_merit.coord_unif.disabled = False
         gui.figure_of_merit.coord_unif.layout.display = 'flex'
         gui.figure_of_merit.figure_power.value = '2'
-    elif b['new'] in ['t-value', 'resolution-gap']:
+    elif change['new'] in ['t-value', 'resolution-gap']:
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
         gui.figure_of_merit.coord_unif.value = False
         gui.figure_of_merit.coord_unif.layout.display = 'none'
         gui.figure_of_merit.figure_power.value = '1'
 
-def change_evaluation_method(b, gui):
-    if b['new'] == True:
+def change_coord_unif(change, gui):
+    # depending on the new value of the coord unif checkbox, we update the GUI
+    if change['new'] == True:
         gui.figure_of_merit.figure_power.disabled = True
         gui.figure_of_merit.figure_power.value = '2'
-    elif b['new'] == False:
+    elif change['new'] == False:
         gui.figure_of_merit.figure_power.disabled = False
 
 
 def figure_of_merit():
+    # first create all the individual widgets, and initialize them with default values.
+    # The initialization part is important, and the initialization of all widgets must be consistent. 
     figure_type = widgets.Dropdown(
         options=['Palpha', 'Ralpha', 'Spectral'],
         value='Palpha', description='Figure:',
@@ -55,6 +60,9 @@ def figure_of_merit():
                             <li> The \\(P_\\alpha \\) method requires \\( \\alpha \\in \\{ 2, 4, 6 \\} \\) </li> \
                         </ul>')
 
+    # then wrap the widgets inside containers: the containters are nested, because this allows for a compact
+    # visualization for the user. See #TODO: link for information about containers and their layout.
+    # The outmost container is always an Accordion.
     figure_of_merit_wrapper = widgets.Accordion([
         widgets.VBox([
             figure_of_merit_expl,
@@ -65,6 +73,12 @@ def figure_of_merit():
 
     figure_of_merit_wrapper.set_title(0, 'Figure of Merit')
 
+    # Instanciate and return the BaseGUIElement which encapsulates all the widgets created above.
+    # Add each widget as an attribute of the Element. 
+    # We almost always use the same name for the widget (local name in the function) and the attribute (global name that will be accessible everywhere)
+    # To register callbacks, use the _callbacks dictionary where the key is the widget launching the callback and
+    # the value is the callback function itself.
+    # See the BaseGUIElement class for more information.
     return BaseGUIElement(figure_type=figure_type,
                           figure_alpha=figure_alpha,
                           coord_unif=coord_unif,
@@ -72,4 +86,4 @@ def figure_of_merit():
                           figure_of_merit_expl=figure_of_merit_expl,
                           main=figure_of_merit_wrapper,
                           _callbacks={'figure_type': change_figure_type,
-                                      'coord_unif': change_evaluation_method})
+                                      'coord_unif': change_coord_unif})

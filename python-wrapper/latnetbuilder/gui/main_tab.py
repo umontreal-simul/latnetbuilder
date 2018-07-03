@@ -1,9 +1,10 @@
 import ipywidgets as widgets
 
-def change_lattype(b, gui):
+def change_maintab(change, gui):
+    '''Callback when the selected index of the main_tab attribute of the GUI changes'''
     gui.properties.modulus.value = ''
 
-    if b['new'] == 0:   # lattice
+    if change['new'] == 0:   # new index = lattice
         gui.lattice_type.main.layout.display = 'flex'    
         gui.construction_method.main.layout.display = 'none'      
         gui.properties.is_multilevel.description = 'Embedded'
@@ -21,9 +22,11 @@ def change_lattype(b, gui):
         gui.multi_level.mult_normalization.disabled = False
         gui.multi_level.mult_low_pass_filter.disabled = False
 
+        # call the change_lattice_type callback with current value of gui.lattice_type.type_choice
+        # in order to update the properties and figure of merit elements.
         gui.lattice_type._callbacks[gui.lattice_type.type_choice]({'name':'value', 'new':gui.lattice_type.type_choice.value}, gui)
 
-    elif b['new'] == 1:       # net
+    elif change['new'] == 1:   # new index = net
         gui.lattice_type.main.layout.display = 'none' 
         gui.construction_method.main.layout.display = 'flex'
         gui.properties.modulus_pretty.layout.display = 'none'

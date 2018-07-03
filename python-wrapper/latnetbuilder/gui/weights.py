@@ -21,15 +21,15 @@ placeholder_set_all = {'Order-Dependent': '0.8^k * (k <= 3)', 'Product': '0.8'}
 
 
 
-def remove_button_clicked(b, gui):
-    weight_to_remove = gui.weights.weights_button_id[b.model_id]
+def remove_button_clicked(change, gui):
+    weight_to_remove = gui.weights.weights_button_id[change.model_id]
     gui.weights.VBOX_of_weights.children = [weight for weight in gui.weights.VBOX_of_weights.children if weight != weight_to_remove]
 
-def set_all_weights(b, nb, gui, type_weights):
-    if b['name'] != 'value':
+def set_all_weights(change, nb, gui, type_weights):
+    if change['name'] != 'value':
         return
 
-    expr = b['new'].replace('^', '**')
+    expr = change['new'].replace('^', '**')
     coord = np.arange(1, gui.properties.dimension.value+1)
     try:
         expr_evaluated = ne.evaluate(expr, local_dict={'j': coord, 'k': coord})
@@ -37,7 +37,7 @@ def set_all_weights(b, nb, gui, type_weights):
     except:
         valid = False
 
-    weights = gui.weights.weights_set_all_id[b['owner']]
+    weights = gui.weights.weights_set_all_id[change['owner']]
     form = weights.children[0].children[1]
     set_all = weights.children[1]
     if valid:
@@ -62,7 +62,7 @@ def create_elem_weights(type_weights, dimension_int, gui):
                             description='OR set all at once with (valid Python) expression: %s =' %(math_strings[type_weights]),
                             disabled=False, layout=widgets.Layout(margin='0px 0px 0px 80px', width='550px'), style=style_default)
     weights = widgets.VBox([widgets.HBox([widgets.HTMLMath(title_strings[type_weights], layout=widgets.Layout(width='170px')), form]), set_all])
-    set_all.observe(lambda b: set_all_weights(b, 1, gui, type_weights))
+    set_all.observe(lambda change: set_all_weights(change, 1, gui, type_weights))
     weights_set_all_id[set_all] = weights
     return weights
 
@@ -71,7 +71,7 @@ def create_full_weight(type_weights, dimension_int, gui):
     title = widgets.HTML('<b> %s Weights </b>' % type_weights)
 
     remove_button = widgets.Button(description='Remove', disabled=False, tooltip='Remove this type of weights')
-    remove_button.on_click(lambda b: remove_button_clicked(b, gui))
+    remove_button.on_click(lambda change: remove_button_clicked(change, gui))
     description = widgets.HBox([], layout=widgets.Layout(justify_content='space-around'))
     main = widgets.VBox([], layout=widgets.Layout(margin='30px 0px 0px 0px'))
 
@@ -104,13 +104,13 @@ def create_full_weight(type_weights, dimension_int, gui):
 
 
 # add weight observe
-def func_add_weights(b, gui):
-    if b['name'] == '_property_lock' and b['new'] == {}:
-        b['owner'].value = 'None'
+def func_add_weights(change, gui):
+    if change['name'] == '_property_lock' and change['new'] == {}:
+        change['owner'].value = 'None'
         return
-    if b['name'] != 'label':
+    if change['name'] != 'label':
         return
-    name = b['new']
+    name = change['new']
     if name == 'Select type of weights':
         return
     VBOX_of_weights = gui.weights.VBOX_of_weights
