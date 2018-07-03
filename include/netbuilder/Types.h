@@ -26,6 +26,7 @@
 #include <boost/numeric/ublas/vector.hpp>
 #include <functional>
 #include <NTL/GF2X.h>
+#include <NTL/ZZX.h>
 #include "latbuilder/Types.h"
 
 
@@ -65,6 +66,8 @@ typedef std::function<Real (const RealVector&)> Combiner;
 
 /// polynomial over Z/2Z type 
 typedef LatBuilder::Polynomial Polynomial;
+
+typedef NTL::ZZX IntPolynomial;
 
 enum class OutputFormat { GUI, CLI, SSJ};
 

@@ -53,7 +53,7 @@ struct CommandLine {
    typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;
    Combiner m_combiner;
    Dimension m_dimension;
-   std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
+   std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> m_figure;
    int m_verbose;
 
    std::unique_ptr<Task::Task> parse();

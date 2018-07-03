@@ -47,11 +47,12 @@ class CBCSearch : public Search<NC, ET>
          */
         CBCSearch(  Dimension dimension, 
                     typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
-                    std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
+                    std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
                     bool earlyAbortion = true):
-            Search<NC, ET>(dimension, sizeParameter, std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
+            m_figure(std::move(figure)),
             m_explorer(std::move(explorer))
         {};
 
@@ -65,11 +66,12 @@ class CBCSearch : public Search<NC, ET>
          */
         CBCSearch(  Dimension dimension, 
                     std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
-                    std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
+                    std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
                     bool earlyAbortion = true):
-            Search<NC, ET>(dimension, std::move(baseNet), std::move(figure), verbose, earlyAbortion),
+            Search<NC, ET>(dimension, std::move(baseNet), verbose, earlyAbortion),
+            m_figure(std::move(figure)),
             m_explorer(std::move(explorer))
         {};
 
@@ -157,7 +159,16 @@ class CBCSearch : public Search<NC, ET>
             m_explorer->reset();
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        virtual const FigureOfMerit::CBCFigureOfMerit& figureOfMerit() const override
+        {
+            return *m_figure;
+        }
+
     private:
+        std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> m_figure;
         std::unique_ptr<Explorer> m_explorer;
         unsigned int m_lastDimension = 0;
 };

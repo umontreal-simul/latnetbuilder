@@ -36,7 +36,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
      * parameter. 
      */  
     template <class KERNEL, LatBuilder::EmbeddingType ET>
-    class CoordUniformFigureOfMerit : public FigureOfMerit
+    class CoordUniformFigureOfMerit : public CBCFigureOfMerit
     {
         public:
             /**
@@ -107,7 +107,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
             /**
              * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
              */
-            virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
+            virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
             {
                 return std::make_unique<CoordUniformFigureOfMeritEvaluator>(this);
             }
@@ -130,7 +130,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
                 /** 
                  * Class which describes how the figure of merit is computed. 
                  */
-                class CoordUniformFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+                class CoordUniformFigureOfMeritEvaluator : public FigureOfMeritCBCEvaluator
                 {
                     template <LatBuilder::LatticeType LR, LatBuilder::Compress COMPRESS >
                     using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSeq::CoordUniformState<LR, ET, COMPRESS, LatBuilder::defaultPerLevelOrder<LR, ET>::Order>>>;

@@ -27,7 +27,7 @@ using LatBuilder::Functor::AllOf;
 /** 
  * Aggregation of figures of merit computed in a specific order.
  */ 
-class CombinedFigureOfMerit : public FigureOfMerit{
+class CombinedFigureOfMerit : public CBCFigureOfMerit{
 
     public:
 
@@ -37,7 +37,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
          * @param figures Vector of figures of merit
          * @param weights Vector of weights
          */ 
-        CombinedFigureOfMerit(Real normType, std::vector<std::unique_ptr<FigureOfMerit>> figures, std::vector<Real> weights):
+        CombinedFigureOfMerit(Real normType, std::vector<std::unique_ptr<CBCFigureOfMerit>> figures, std::vector<Real> weights):
             m_normType(normType),
             m_figures(std::move(figures)),
             m_size((unsigned int) m_figures.size()),
@@ -70,12 +70,12 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         /** 
          Returns a pointer to the figure in position \c num. 
          */
-        FigureOfMerit* pointerToFigure(unsigned int num) const { return m_figures[num].get() ; }
+        CBCFigureOfMerit* pointerToFigure(unsigned int num) const { return m_figures[num].get() ; }
 
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
+        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
         {
             return std::make_unique<CombinedFigureOfMeritEvaluator>(this);
         }
@@ -90,7 +90,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         /** 
          * Evaluator class for CombinedFigureOfMerit. 
          */
-        class CombinedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+        class CombinedFigureOfMeritEvaluator : public FigureOfMeritCBCEvaluator
         {
             public:
                 /**
@@ -210,7 +210,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
 
             private:
                 CombinedFigureOfMerit* m_figure; // pointer to the figure
-                std::vector<std::unique_ptr<FigureOfMeritEvaluator>> m_evaluators; // evaluators
+                std::vector<std::unique_ptr<FigureOfMeritCBCEvaluator>> m_evaluators; // evaluators
                 std::vector<Real> m_oldMerits; // merits for the best net of the previous dimension
                 std::vector<Real> m_bestNewMerits; // best merits for the best net so far for the current dimension
                 std::vector<Real> m_newMerits; // merits of the latest evaluated net 
@@ -218,7 +218,7 @@ class CombinedFigureOfMerit : public FigureOfMerit{
         };
 
         Real m_normType; // norm type of the figure
-        std::vector<std::unique_ptr<FigureOfMerit>> m_figures; // vector of aggregated figures
+        std::vector<std::unique_ptr<CBCFigureOfMerit>> m_figures; // vector of aggregated figures
         unsigned int m_size; // number of figures
         std::vector<Real> m_weights; // individual weight of each aggregated figure
         Real m_expNorm; // exponent used in accumulation

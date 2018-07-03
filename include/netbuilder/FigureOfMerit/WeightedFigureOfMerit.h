@@ -33,7 +33,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
  *  
  */  
 template<typename PROJDEP>
-class WeightedFigureOfMerit : public FigureOfMerit
+class WeightedFigureOfMerit : public CBCFigureOfMerit
 {
     public:
 
@@ -74,7 +74,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
+        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
         {
             return std::make_unique<WeightedFigureOfMeritEvaluator>(this);
         }
@@ -94,7 +94,7 @@ class WeightedFigureOfMerit : public FigureOfMerit
         /** 
          * Class which describes how the figure of merit is computed. 
          */
-        class WeightedFigureOfMeritEvaluator : public FigureOfMeritEvaluator
+        class WeightedFigureOfMeritEvaluator : public FigureOfMeritCBCEvaluator
         {
             public:
                 /** Constructs the evaluator */

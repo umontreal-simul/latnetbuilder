@@ -87,21 +87,72 @@ class FigureOfMeritEvaluator
         //@}
 
         /** 
-         * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
-         * starting from the initial value \c initialValue.
-         *  @param net Net to evaluate.
-         *  @param dimension Dimension to compute.
-         *  @param initialValue Initial value of the merit.
-         *  @param verbose Verbosity level.
-         */ 
-        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) = 0;
-
-        /** 
          * Computes the figure of merit for the given \c net for all the dimensions (full computation).
          * @param net Net to evaluate.
          * @param verbose Verbosity level.
          */ 
-        MeritValue operator() (const DigitalNet& net, int verbose = 0)
+        virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) = 0;
+
+        /**     
+         * Resets the evaluator and prepare it to evaluate a new net.
+         */ 
+        virtual void reset() = 0;
+
+    private:
+        std::unique_ptr<OnProgress> m_onProgress; 
+        std::unique_ptr<OnAbort> m_onAbort;
+};
+
+
+
+
+/** 
+ * Virtual class to represent any figure of merit. Derived classes should implement
+ * the evaluator() member function returning a unique pointer to an instance of a concrete evaluator class 
+ * which derives from FigureOfMeritEvaluator.
+ */ 
+class FigureOfMerit{
+
+    public:
+
+        /** 
+         * Virtual default destructor. 
+         */
+        virtual ~FigureOfMerit() = default;
+
+        /**
+         * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
+         */
+        std::unique_ptr<FigureOfMeritEvaluator> evaluator()
+        {
+            return createEvaluator();
+        }
+
+        /**
+         * Creates a new accumulator.
+         * @param initialValue Initial accumulator value.
+         */
+        virtual Accumulator accumulator(Real initialValue) const = 0 ;
+
+    private:
+
+        virtual std::unique_ptr<FigureOfMeritEvaluator> createEvaluator() = 0;
+};
+
+/** 
+ * Evaluator abstract class to evaluate figure of merit for a net in a CBC way.
+ */ 
+class FigureOfMeritCBCEvaluator:
+    public FigureOfMeritEvaluator
+{
+    public:
+
+        virtual ~FigureOfMeritCBCEvaluator() = default;
+
+        /** 
+         * @{inheritDoc}
+         */ 
+        virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) override
         {
             MeritValue merit = 0; // start from a merit equal to zero
             for(Dimension dim = 0; dim < net.dimension(); ++dim) // for each dimension
@@ -128,10 +179,15 @@ class FigureOfMeritEvaluator
             return merit; 
         }
 
-        /**     
-         * Resets the evaluator and prepare it to evaluate a new net.
+        /** 
+         * Computes the figure of merit for the given \c net for the given \c dimension (partial computation), 
+         *  starting from the initial value \c initialValue. Intended to be specialized based on template parameter ET.
+         *  @param net Net to evaluate.
+         *  @param dimension Dimension to compute.
+         *  @param initialValue Initial value of the merit.
+         *  @param verbose Verbosity level.
          */ 
-        virtual void reset() = 0;
+        virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) = 0;
 
         /**
          * Tells the evaluator that no more net will be evaluate for the current dimension,
@@ -145,35 +201,31 @@ class FigureOfMeritEvaluator
          */
         virtual void lastNetWasBest() = 0;
 
-    private:
-        std::unique_ptr<OnProgress> m_onProgress; 
-        std::unique_ptr<OnAbort> m_onAbort;
 };
 
-/** 
- * Virtual class to represent any figure of merit. Derived classes should implement
- * the evaluator() member function returning a unique pointer to an instance of a concrete evaluator class 
- * which derives from FigureOfMeritEvaluator.
+/**
+ * Abstract class for figure of merit which can be evaluated in a CBC way
  */ 
-class FigureOfMerit{
-
+class CBCFigureOfMerit:
+    public FigureOfMerit
+{
     public:
-
         /** 
          * Virtual default destructor. 
          */
-        virtual ~FigureOfMerit() = default;
+        virtual ~CBCFigureOfMerit() = default;
 
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() = 0  ;
+        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() = 0;
 
-        /**
-         * Creates a new accumulator.
-         * @param initialValue Initial accumulator value.
-         */
-        virtual Accumulator accumulator(Real initialValue) const = 0 ;
+    private:
+
+        virtual std::unique_ptr<FigureOfMeritEvaluator> createEvaluator()
+        {
+            return evaluator();
+        }
 };
 
 }}

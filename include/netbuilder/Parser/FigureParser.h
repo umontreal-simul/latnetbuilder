@@ -64,7 +64,7 @@ class BadFigure : public lbp::ParserError
 template<NetConstruction NC, EmbeddingType ET>
 struct FigureParser
 {
-    typedef std::unique_ptr<FigureOfMerit::FigureOfMerit> result_type;
+    typedef std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> result_type;
 
     static result_type parse(Parser::CommandLine<NC, ET>& commandLine)
     {

@@ -29,7 +29,7 @@ namespace NetBuilder { namespace FigureOfMerit {
  *  Figure of merit which penalizes digital nets for which the first bits are not equidistributed.
  */ 
 template <EmbeddingType ET>
-class BitEquidistribution : public FigureOfMerit{
+class BitEquidistribution : public CBCFigureOfMerit{
 
     public:
 
@@ -63,7 +63,7 @@ class BitEquidistribution : public FigureOfMerit{
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritEvaluator> evaluator() override
+        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
         {
             return std::make_unique<BitEquidistributionEvaluator>(this);
         }
@@ -96,7 +96,7 @@ class BitEquidistribution : public FigureOfMerit{
         /** 
          * Evaluator class for BitEquidistribution. 
          */
-        class BitEquidistributionEvaluator : public FigureOfMeritEvaluator
+        class BitEquidistributionEvaluator : public FigureOfMeritCBCEvaluator
         {
             public:
                 /**

@@ -41,7 +41,8 @@ class ExhaustiveSearch : public Search<NC, ET>
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                             int verbose = 0,
                             bool earlyAbortion = true):
-            Search<NC, ET>(dimension, sizeParameter, std::move(figure), verbose, earlyAbortion)
+            Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
+            m_figure(std::move(figure))
         {};
 
         /** 
@@ -87,6 +88,17 @@ class ExhaustiveSearch : public Search<NC, ET>
             }
             this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
         }
+
+        /**
+         * {@inheritDoc}
+         */ 
+        virtual const FigureOfMerit::FigureOfMerit& figureOfMerit() const override
+        {
+            return *m_figure;
+        }
+
+    private:
+        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
 };
 
 }}

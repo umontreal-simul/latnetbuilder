@@ -68,13 +68,11 @@ public:
      * Constructor.
      * @param dimension Dimension of the searched net.
      * @param sizeParameter Size parameter of the searched net.
-     * @param figure Figure of merit used to compare nets.
      * @param verbose Verbosity level.
      * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
      */
     Search( Dimension dimension, 
             typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
-            std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
             int verbose = 0,
             bool earlyAbortion = true ):
         m_onNetSelected(new OnNetSelected),
@@ -83,7 +81,6 @@ public:
         m_sizeParameter(sizeParameter),
         m_nRows(NetConstructionTraits<NC>::nRows(m_sizeParameter)),
         m_nCols(NetConstructionTraits<NC>::nCols(m_sizeParameter)),
-        m_figure(std::move(figure)),
         m_bestNet(0, m_sizeParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
         m_minimumObserver(new MinimumObserver<NC>(sizeParameter, verbose-2)),
@@ -95,13 +92,11 @@ public:
      * Constructor.
      * @param dimension Dimension of the searched net.
      * @param baseNet Net from which to start the search.
-     * @param figure Figure of merit used to compare nets.
      * @param verbose Verbosity level.
      * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
      */
     Search( Dimension dimension, 
             std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
-            std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
             int verbose = 0,
             bool earlyAbortion = true ):
         m_onNetSelected(new OnNetSelected),
@@ -110,7 +105,6 @@ public:
         m_sizeParameter(baseNet->sizeParameter()),
         m_nRows(NetConstructionTraits<NC>::nRows(m_sizeParameter)),
         m_nCols(NetConstructionTraits<NC>::nCols(m_sizeParameter)),
-        m_figure(std::move(figure)),
         m_bestNet(0, m_sizeParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
         m_minimumObserver(new MinimumObserver<NC>(std::move(baseNet), verbose-2)),
@@ -211,10 +205,7 @@ public:
     /** 
      * Returns a const qualified reference to the figure of merit. 
      */
-    const FigureOfMerit::FigureOfMerit& figureOfMerit() const 
-    {
-            return *m_figure;
-    }
+    virtual const FigureOfMerit::FigureOfMerit& figureOfMerit() const = 0;
 
     /** 
      * Returns a const qualified reference to the size parameter of the search.
@@ -239,7 +230,6 @@ public:
         typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter; // size parameter of the search
         unsigned int m_nRows; // number of rows of the generating matrices
         unsigned int m_nCols; // number of columns of the generating matrices
-        std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure; // figure of merit
         DigitalNetConstruction<NC> m_bestNet; // best net 
         Real m_bestMerit; // best merit
         std::unique_ptr<MinimumObserver<NC>> m_minimumObserver; // minimum observer
