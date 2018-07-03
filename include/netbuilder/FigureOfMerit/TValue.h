@@ -76,7 +76,9 @@ class TValue : public FigureOfMerit
                  */ 
                 TValueEvaluator(TValue* figure):
                     m_figure(figure),
-                    m_kernelValues(0)
+                    m_kernelValues(0),
+                    m_dimension(0),
+                    m_numLevels(0)
                 {
                     updateDimensionAndNbLevels(1, 1);
                 };
@@ -137,6 +139,9 @@ class TValue : public FigureOfMerit
                 Dimension m_dimension;
                 unsigned int m_numLevels;
                 IntPolynomial m_auxPoly;
+                TValue* m_figure;
+                std::unique_ptr<Storage> m_storage; // storage for the kernel values
+                boost::numeric::ublas::vector<uInteger> m_kernelValues;
 
                 typedef LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> SizeParam;
 
@@ -145,16 +150,7 @@ class TValue : public FigureOfMerit
                  */ 
                 void updateDimensionAndNbLevels(Dimension s, unsigned int m)
                 {
-                    if (s == m_dimension && m <= m_numLevels)
-                    {
-                        return;
-                    }
-                    else if (s != m_dimension && m <= m_numLevels)
-                    {
-                        m_dimension = s;
-                        updateAuxPoly();
-                    }
-                    else
+                    if (s != m_dimension || m != m_numLevels)
                     {
                         m_dimension = s;
                         m_numLevels = m;
@@ -169,8 +165,6 @@ class TValue : public FigureOfMerit
                  */ 
                 void updateAuxPoly()
                 {
-                    // m_dimension = s;
-                    // m_numLevels = m;
                     m_auxPoly = IntPolynomial(1);
                     IntPolynomial base(1);
                     for (unsigned int j = 1; j <= m_numLevels; ++j)
@@ -211,10 +205,6 @@ class TValue : public FigureOfMerit
                     return m_kernelValues;
                 }
 
-                TValue* m_figure;
-                std::unique_ptr<Storage> m_storage; // storage for the kernel values
-                boost::numeric::ublas::vector<uInteger> m_kernelValues;
-                Combiner m_combiner;
         };
 
         Combiner m_combiner;
