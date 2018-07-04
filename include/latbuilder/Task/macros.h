@@ -49,7 +49,7 @@
    func(__VA_ARGS__, Functor::Max)
 
 #define TASK_ADD_ARG_PROJDEP_LATTICE_ORDINARY(func, ...) \
-   func(__VA_ARGS__, ProjDepMerit::Spectral<LatticeTester::NormaBestLat>); \
+   func(__VA_ARGS__, ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>>); \
    func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::PAlpha>); \
    func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::RAlpha>)
 

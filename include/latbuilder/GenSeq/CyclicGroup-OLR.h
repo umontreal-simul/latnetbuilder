@@ -227,7 +227,7 @@ CyclicGroup<LatticeType::ORDINARY,COMPRESS, TRAV, ORDER>::smallestGenerator(Modu
    if (base < 2)
       throw std::invalid_argument("smallestGenerator(): base must be >= 2");
 
-   if (checkPrime and LatticeTester::IntFactor::isPrime(base, 0) == LatticeTester::COMPOSITE)
+   if (checkPrime and LatticeTester::IntFactor<std::int64_t>::isPrime(base, 0) == LatticeTester::COMPOSITE)
       throw std::invalid_argument("smallestGenerator(): n must be prime");
 
    auto factors = primeFactors(base - 1);

@@ -22,7 +22,6 @@ def options(ctx):
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (and tests them)')
 
 def configure(ctx):
-    ctx.options.ntltypes = 'LLDD'   # TODO
     ctx.options.nested = True
 
     ctx.recurse('latticetester')

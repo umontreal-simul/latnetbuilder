@@ -29,7 +29,7 @@ SizeParam<LatticeType::ORDINARY,EmbeddingType::MULTILEVEL>::SizeParam(uInteger p
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
-   if (primeBase >= 2 and LatticeTester::IntFactor::isPrime(primeBase, 0) == LatticeTester::COMPOSITE)
+   if (primeBase >= 2 and LatticeTester::IntFactor<std::int64_t>::isPrime(primeBase, 0) == LatticeTester::COMPOSITE)
       throw std::invalid_argument("SizeParam: primeBase is not prime");
 }
 
@@ -50,7 +50,7 @@ SizeParam<LatticeType::DIGITAL,EmbeddingType::MULTILEVEL>::SizeParam(uInteger pr
    m_base(primeBase),
    m_maxLevel(maxLevel)
 {
-   if (primeBase >= 2 and LatticeTester::IntFactor::isPrime(primeBase, 0) == LatticeTester::COMPOSITE)
+   if (primeBase >= 2 and LatticeTester::IntFactor<std::int64_t>::isPrime(primeBase, 0) == LatticeTester::COMPOSITE)
       throw std::invalid_argument("SizeParam: primeBase is not prime");
 }
 

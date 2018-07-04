@@ -121,7 +121,7 @@ namespace detail {
       // throw std::invalid_argument("projection order must be >= 2");
 
       // extract projection of the generating vector
-      MVect gen(projection.size());
+      NTL::vector<std::int64_t> gen(projection.size());
       {
          // first component is not used
          size_t j = 0;
@@ -137,7 +137,7 @@ namespace detail {
 #endif
 
       // prepare lattice and basis reduction
-      LatticeTester::Rank1Lattice lattice(
+      LatticeTester::Rank1Lattice<std::int64_t, NTL::vector<std::int64_t>, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real> lattice(
             lat.sizeParam().numPoints(),
             gen,
             static_cast<int>(projection.size()),
@@ -145,7 +145,7 @@ namespace detail {
       lattice.buildBasis (static_cast<int>(projection.size()));
       lattice.dualize ();
 
-      LatticeTester::Reducer reducer(lattice);
+      LatticeTester::Reducer<std::int64_t, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real, NTL::vector<Real>, NTL::matrix<Real>> reducer(lattice);
 
       reducer.preRedDieter((int) projection.size());
 
