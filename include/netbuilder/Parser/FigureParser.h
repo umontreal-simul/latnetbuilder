@@ -93,14 +93,14 @@ struct FigureParser
             if(commandLine.m_normType != 2)
                 throw BadFigure("norm must be `2' for the coordinate-uniform implementation");
             auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
-            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), commandLine.m_sizeParamLatTrick, kernel, commandLine.m_combiner);
+            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
         }
         else if (commandLine.s_figure == "CU:R")
         {
             if(commandLine.m_normType != 2)
                 throw BadFigure("norm must be `2' for the coordinate-uniform implementation");
             auto kernel = LatBuilder::Kernel::RPLR();
-            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), commandLine.m_sizeParamLatTrick, kernel, commandLine.m_combiner);
+            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
         }
         else if (commandLine.s_figure == "t-value")
         {

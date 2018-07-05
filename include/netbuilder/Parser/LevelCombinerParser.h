@@ -20,6 +20,7 @@
 #include "latbuilder/Parser/Common.h"
 #include "netbuilder/Types.h"
 #include "netbuilder/LevelCombiner.h"
+#include "netbuilder/NetConstructionTraits.h"
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -83,12 +84,12 @@ struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::MULTILEVEL> {
                 unsigned int level;
                 if (combinerStrings[1] == "max")
                 {
-                    level = commandLine.m_sizeParamLatTrick.log2NumPoints();
+                    level = NetConstructionTraits<NC>::nCols(commandLine.m_sizeParameter);
                 }
                 else
                 {
                     level = boost::lexical_cast<unsigned int>(combinerStrings[1]);
-                    if (level > commandLine.m_sizeParamLatTrick.log2NumPoints() || level == 0)
+                    if (level > NetConstructionTraits<NC>::nCols(commandLine.m_sizeParameter) || level == 0)
                     {
                        throw BadLevelCombiner("incompatible combiner level and size.");
                     }  

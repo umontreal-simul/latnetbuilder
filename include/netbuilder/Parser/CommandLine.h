@@ -49,7 +49,6 @@ struct CommandLine {
    bool m_earlyAbort;
    Real m_normType;
    Real m_weightPower;
-   LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParamLatTrick;
    typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;
    Combiner m_combiner;
    Dimension m_dimension;

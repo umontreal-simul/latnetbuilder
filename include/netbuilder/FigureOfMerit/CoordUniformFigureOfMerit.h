@@ -44,19 +44,16 @@ namespace NetBuilder{ namespace FigureOfMerit {
             *
             * @param weights    See LatBuilder::WeightedFigureOfMerit::WeightedFigureOfMerit for
             *                   details about this parameter.
-            * @param sizeParam  Digital size param corresponding to the size of the nets to be evaluated.
             * @param kernel     Kernel (\f$\omega\f$ in the reference paper).  See
             *                   the LatBuilder::Kernel namespace for examples.
             * @param combiner   Combiner used to combine multilevel merits into a single value merit. Not used is ET is UNILEVEL.
             */
-            CoordUniformFigureOfMerit(  std::unique_ptr<LatticeTester::Weights> weights, 
-                                        LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> sizeParam,
+            CoordUniformFigureOfMerit(  std::unique_ptr<LatticeTester::Weights> weights,
                                         KERNEL kernel = KERNEL(),
                                         Combiner combiner = Combiner()
             ):
             m_weights(std::move(weights)),
             m_kernel(std::move(kernel)),
-            m_sizeParam(sizeParam),
             m_combiner(std::move(combiner))
             {}
 
@@ -70,12 +67,6 @@ namespace NetBuilder{ namespace FigureOfMerit {
             */
             const KERNEL& kernel() const
             { return m_kernel; }
-
-            /**
-            * Returns the coordinate-uniform kernel.
-            */
-            const LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> sizeParam() const 
-            { return m_sizeParam; }
 
             /** 
              * Returns the name of the figure of merit
@@ -124,7 +115,6 @@ namespace NetBuilder{ namespace FigureOfMerit {
 
                 std::unique_ptr<LatticeTester::Weights> m_weights;
                 KERNEL m_kernel;
-                LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> m_sizeParam;
                 Combiner m_combiner;
 
                 /** 
@@ -142,7 +132,9 @@ namespace NetBuilder{ namespace FigureOfMerit {
                          */
                         CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMerit* figure):
                             m_figure(figure),
-                            m_storage(LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> {m_figure->sizeParam()}),
+                            m_numLevels(0),
+                            m_sizeParam(SizeParam(1)),
+                            m_storage(m_sizeParam),
                             m_innerProd(m_storage, m_figure->kernel()),
                             m_memStates(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights())),
                             m_tmpStates(LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights()))
@@ -209,6 +201,8 @@ namespace NetBuilder{ namespace FigureOfMerit {
                         {
                             using namespace LatticeTester;
 
+                            updateSizeParam(net.numColumns());
+
                             MeritValue acc = initialValue; // create the accumulator from the initial value
 
                             lastMatrix = net.generatingMatrix(dimension);
@@ -219,7 +213,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
                             auto merit = *(prodSeq.begin());
                             // std::cout << "1" << std::endl;
                             // merit /= intPow(2, M.nCols());
-                            m_figure->sizeParam().normalize(merit);
+                            m_sizeParam.normalize(merit);
                             acc += combine(merit);
 
                             if (! onProgress()(acc)) // if someone is listening, may tell that the computation is useless
@@ -252,6 +246,19 @@ namespace NetBuilder{ namespace FigureOfMerit {
                             }
                         }
 
+                        void updateSizeParam(unsigned int m)
+                        {
+                            if (m != m_numLevels)
+                            {
+                                m_numLevels = m;
+                                m_sizeParam = SizeParam(1 << m);
+                                m_storage = Storage(m_sizeParam);
+                                m_innerProd = InnerProd(m_storage, m_figure->kernel());
+                                m_memStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
+                                m_tmpStates = LatBuilder::MeritSeq::CoordUniformStateCreator::create(m_innerProd.internalStorage(), m_figure->weights());
+                            }
+                        }
+
                         // CoordUniformFigureOfMeritEvaluator(CoordUniformFigureOfMeritEvaluator&&) = default;
 
                         // const CoordUniformFigureOfMerit& figure() const
@@ -261,14 +268,22 @@ namespace NetBuilder{ namespace FigureOfMerit {
 
                     private:
 
+                        typedef LatBuilder::Storage<LatBuilder::LatticeType::DIGITAL, ET,  KERNEL::suggestedCompression()> Storage;
+                        typedef LatBuilder::SizeParam<LatBuilder::LatticeType::DIGITAL, ET> SizeParam;
+                        typedef LatBuilder::MeritSeq::CoordUniformInnerProd<LatBuilder::LatticeType::DIGITAL, ET,  KERNEL::suggestedCompression(), LatBuilder::PerLevelOrder::BASIC > InnerProd;
+                        typedef CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> StateList;
+ 
+
                         CoordUniformFigureOfMerit* m_figure; // pointer to the figure
+                        unsigned int m_numLevels;
 
-                        LatBuilder::Storage<LatBuilder::LatticeType::DIGITAL, ET,  KERNEL::suggestedCompression()> m_storage; // storage for the kernel values
+                        SizeParam m_sizeParam;
+                        Storage m_storage; // storage for the kernel values
 
-                        LatBuilder::MeritSeq::CoordUniformInnerProd<LatBuilder::LatticeType::DIGITAL, ET,  KERNEL::suggestedCompression(), LatBuilder::PerLevelOrder::BASIC > m_innerProd; // used to compute inner products 
+                        InnerProd m_innerProd; // used to compute inner products 
+                        StateList m_memStates; // states for the best net for the previous dimension
+                        StateList m_tmpStates; // states for the best net so far for the current dimension
 
-                        CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_memStates; // states for the best net for the previous dimension
-                        CoordUniformStateList<LatBuilder::LatticeType::DIGITAL, KERNEL::suggestedCompression()> m_tmpStates; // states for the best net so far for the current dimension
 
                         GeneratingMatrix lastMatrix; // last matrix of latets evaluated net for the current dimension
 

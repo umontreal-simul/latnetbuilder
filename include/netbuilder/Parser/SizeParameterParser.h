@@ -58,7 +58,6 @@ struct SizeParameterParser<NetConstruction::SOBOL, ET>
          {
                unsigned int nCols = boost::lexical_cast<unsigned int>(sizeParamStrings.back());
                commandLine.m_sizeParameter = result_type(nCols);
-               commandLine.m_sizeParamLatTrick = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(commandLine.s_size);
          }
          else
          {
@@ -89,8 +88,6 @@ struct SizeParameterParser<NetConstruction::POLYNOMIAL, ET>
                }
          }
          commandLine.m_sizeParameter = polynomialParserHelper(commandLine.s_size);
-         std::string fakeString = "2^" + std::to_string(NTL::deg(commandLine.m_sizeParameter));
-         commandLine.m_sizeParamLatTrick = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(fakeString);
    }
 };
 
@@ -107,7 +104,6 @@ struct SizeParameterParser<NetConstruction::EXPLICIT, ET>
          {
                unsigned int nCols = boost::lexical_cast<unsigned int>(sizeParamStrings.back());
                commandLine.m_sizeParameter = result_type(nCols,nCols);
-               commandLine.m_sizeParamLatTrick = lbp::SizeParam<LatBuilder::LatticeType::DIGITAL, ET>::parse(commandLine.s_size);
          }
          else
          {
