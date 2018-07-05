@@ -87,8 +87,8 @@ the following directory structure:
 * `include`: contains the C++ header files necessary to use the LatNet Builder
   library;
 * `lib`: contains the binary LatNet Builder library;
-* `share/doc/html`: contains the HTML documentation;
-* `share/doc/examples`: contains examples on using the LatNet Builder library.
+* `share/latnetbuilder/html`: contains the HTML documentation;
+* `share/latnetbuilder/examples`: contains examples on using the LatNet Builder library.
 
 ## Compiling the Source Code
 
@@ -155,6 +155,7 @@ If you obtained the source code from the ZIP archive, the directory should be
 named `latnetbuilder-master` instead of `latnetbuilder`.
 At the root of the source tree lies the `waf` script, manages the build
 process.
+
 Try:
 
 	./waf --help

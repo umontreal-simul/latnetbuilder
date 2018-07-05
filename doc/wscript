@@ -54,5 +54,5 @@ def build(ctx):
     ctx.add_group()
     html = ctx.path.find_dir('.').get_bld().find_dir('html')
     if html:
-        ctx.install_files('${DOCDIR}/html', html.ant_glob('**/*') , cwd=html, relative_trick=True)
-        ctx.install_files('${DOCDIR}', ctx.path.find_node('index.html'))
+        ctx.install_files('${DOCDIR}/latnetbuilder/html', html.ant_glob('**/*') , cwd=html, relative_trick=True)
+        ctx.install_files('${DOCDIR}/latnetbuilder', ctx.path.find_node('index.html'))
