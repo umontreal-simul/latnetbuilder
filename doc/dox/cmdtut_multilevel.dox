@@ -41,7 +41,7 @@ For instance to search for embedded ordinary lattices with the full-CBC explorat
   \f$n=2^m\f$ points with \f$m=1,\dots,16\f$ using the maximum value of the
   spectral merit across all levels, with the same weight for all projections:
   \verbatim
-  ./latnet \
+  ./latnetbuilder \
     --set-type lattice \
     --construction ordinary \
     --multilevel true \
@@ -68,7 +68,7 @@ To build embedded ordinary lattices with fast CBC exploration in dimension 10 wi
   normalized merit value larger than unity, as proposed in \cite vDIC08c , with
   even weights across levels 8 to 16:
   \verbatim
-  ./latnet \
+  ./latnetbuilder \
     --set-type lattice \
     --construction ordinary \
     --multilevel true \
@@ -96,7 +96,7 @@ To build embedded polynomial lattices with CBC exploration in dimension 5 with
   \f$P(z)=z^m\f$ with \f$m=1,\dots,8\f$ using the maximum value of the
   \f$\mathcal P_{2,PLR}\f$ merit across all levels, with the same weight for all projections:
   \verbatim
-  ./latnet \
+  ./latnetbuilder \
     --set-type lattice \
     --construction polynomial \
     --multilevel true \
@@ -124,7 +124,7 @@ To build Sobol' digital nets with the random CBC method with 100 random samples 
 \f$2^1\f$ to \f$2^{20}\f$ points using the maximum value fo the projection-dependent t-value merit 
 across all levels, with a decreasing weights on the 2-dimensional projections:
 \verbatim
-  ./latnet \
+  ./latnetbuilder \
     --set-type net \
     --construction sobol \
     --multilevel true \

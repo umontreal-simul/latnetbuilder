@@ -37,7 +37,7 @@ class Search():
 
         command = self.construct_command_line()
         process = subprocess.Popen(['exec ' + ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
-        # The exec keyword is essential as it allows to kill the latnet process using process.kill()
+        # The exec keyword is essential as it allows to kill the latnetbuilder process using process.kill()
         # This syntax may not work without the exec keyword.
         return process
 
@@ -132,11 +132,11 @@ class Search():
                     gui.output.result_html.value = "<span> <b> Lattice Size </b>: %s </span> \
                     <p> <b> Generating Vector </b>: %s </p>\
                     <p> <b> Merit value </b>: %s </p>\
-                    <p> <b> CPU Time </b>: %s s </p>" % (str(my_result_obj.latnet.size), str(my_result_obj.latnet.gen), str(my_result_obj.merit), str(my_result_obj.seconds))
+                    <p> <b> CPU Time </b>: %s s </p>" % (str(my_result_obj.latnetbuilder.size), str(my_result_obj.latnetbuilder.gen), str(my_result_obj.merit), str(my_result_obj.seconds))
                     create_output(gui.output, in_thread=in_thread)
                 else:
                     print("Result:\nLattice Size: %s \nGenerating Vector: %s \nMerit value: %s \nCPU Time: %s s" 
-                    % (str(my_result_obj.latnet.size), str(my_result_obj.latnet.gen), str(my_result_obj.merit), str(my_result_obj.seconds)))
+                    % (str(my_result_obj.latnetbuilder.size), str(my_result_obj.latnetbuilder.gen), str(my_result_obj.merit), str(my_result_obj.seconds)))
 
             else:   # an error occured in the C++ process
                 with open(stderr_filename) as f:

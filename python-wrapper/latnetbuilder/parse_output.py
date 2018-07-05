@@ -78,42 +78,42 @@ class SizeParam:
 
 
 class Result:
-    def __init__(self, latnet=None, seconds=None, search_type=None, matrices=None, merit=None):
-        self.latnet = latnet
+    def __init__(self, latnetbuilder=None, seconds=None, search_type=None, matrices=None, merit=None):
+        self.latnetbuilder = latnetbuilder
         self.seconds = seconds
         self.search_type = search_type
         self.matrices = matrices
         self.merit = merit
     def __str__(self):
-        return '{} : {} ({} s)'.format(self.latnet, self.merit, self.seconds)
+        return '{} : {} ({} s)'.format(self.latnetbuilder, self.merit, self.seconds)
     def __repr__(self):
         return str(self)
 
     def getDim(self):
-        if self.latnet is None:
+        if self.latnetbuilder is None:
             return 0
-        elif self.latnet.gen is not None:
-            return self.latnet._getDim()
+        elif self.latnetbuilder.gen is not None:
+            return self.latnetbuilder._getDim()
         else:
             return len(self.matrices)
 
     def getMaxLevel(self):
-        return int(math.log2(self.latnet.size.nb_points))
+        return int(math.log2(self.latnetbuilder.size.nb_points))
 
     def matrix(self, coord):
         return self.matrices[coord]
 
     def getNet(self, coord, level=None):
-        if self.latnet is None:
+        if self.latnetbuilder is None:
             return np.array([])
         if level is None:
-            nb_points = self.latnet.size.nb_points
+            nb_points = self.latnetbuilder.size.nb_points
         else:
             nb_points = 2**level
         assert coord < self.getDim()
 
         if self.search_type == 'ordinary':
-            return np.array([self.latnet.gen.gen_vector[coord]*i/nb_points % 1 for i in range(nb_points)])
+            return np.array([self.latnetbuilder.gen.gen_vector[coord]*i/nb_points % 1 for i in range(nb_points)])
 
         else:
             points = []
@@ -152,7 +152,7 @@ def parse_output(console_output, file_output, result_obj, search_type):
                 size = SizeParam(match.group('size'), search_type)
                 gen = GenParam(match.group('gen'), search_type)
                 merit = float(match.group('merit'))
-                latnet = LatNet(size, self_type='lattice', gen=gen)
+                latnetbuilder = LatNet(size, self_type='lattice', gen=gen)
                 continue
 
     matrices = []
@@ -193,7 +193,7 @@ def parse_output(console_output, file_output, result_obj, search_type):
                 break
         gen = GenParam(direction_numbers, search_type)
         size = SizeParam(str(2**len(matrices[0])), search_type)
-        latnet = LatNet(size, self_type='net', gen=gen)
+        latnetbuilder = LatNet(size, self_type='net', gen=gen)
 
     if 'digital-polynomial' in search_type:
         lines = console_output.split('\n')
@@ -209,19 +209,19 @@ def parse_output(console_output, file_output, result_obj, search_type):
                 merit = float(lines[k].split(':')[1].strip(' \n'))
                 break
         
-        latnet = LatNet(size, self_type='net', gen=GenParam(gen, search_type))
+        latnetbuilder = LatNet(size, self_type='net', gen=GenParam(gen, search_type))
 
     if 'digital-explicit' in search_type:
         lines = console_output.split('\n')
         size = SizeParam('2^' + str(len(matrices[0])), search_type)
-        latnet = LatNet(size, self_type='net')
+        latnetbuilder = LatNet(size, self_type='net')
         for k in range(len(lines)-1, -1, -1):
             if 'merit:' in lines[k]:
                 merit = float(lines[k].split(':')[1].strip(' \n'))
                 break
         
 
-    result_obj.latnet = latnet
+    result_obj.latnetbuilder = latnetbuilder
     result_obj.merit = merit
     result_obj.seconds = seconds
     result_obj.search_type = search_type

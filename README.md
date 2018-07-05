@@ -61,10 +61,10 @@ The easiest way to use LatNet Builder is to:
 4. Navigate to the directory named `latnetbuilder` in the unpacked archive, then
    to the subdirectory named `bin`.
 5. To use the
-   [LatNet Builder GUI](#the-latnet-builder-graphical-user-interface), TODO
+   [LatNet Builder GUI](#the-latnetbuilder-builder-graphical-user-interface), TODO
 5. To use
-   [LatNet Builder CLI](#the-latnet-builder-command-line-interface),
-   invoke the `latnet` (or `latnet.exe` for Windows users) program with
+   [LatNet Builder CLI](#the-latnetbuilder-builder-command-line-interface),
+   invoke the `latnetbuilder` (or `latnetbuilder.exe` for Windows users) program with
    appropriate arguments.
 
 
@@ -72,7 +72,7 @@ The easiest way to use LatNet Builder is to:
 
 [Binary (pre-compiled) releases](link)
 of LatNet Builder are available for ??? platforms.
-These include the executable `latnet` program, library and documentation,
+These include the executable `latnetbuilder` program, library and documentation,
 together with the Graphical User Interface.
 
 Interfaces with Python and R ???
@@ -80,10 +80,10 @@ Interfaces with Python and R ???
 The binary distribution packages, under the `latnetbuilder` base directory, have
 the following directory structure:
 
-* `bin`: contains the executable `latnet` program
-  ([the Command Line Interface](#the-latnet-builder-command-line-interface))
-  and the `latnet-gui.ipynb` Jupyter notebook (that launches
-  [the Graphical User Interface](#the-latnet-builder-graphical-user-interface));
+* `bin`: contains the executable `latnetbuilder` program
+  ([the Command Line Interface](#the-latnetbuilder-builder-command-line-interface))
+  and the `latnetbuilder-gui.ipynb` Jupyter notebook (that launches
+  [the Graphical User Interface](#the-latnetbuilder-builder-graphical-user-interface));
 * `include`: contains the C++ header files necessary to use the LatNet Builder
   library;
 * `lib`: contains the binary LatNet Builder library;
@@ -219,7 +219,7 @@ during the configuration step, with:
 
 	./waf install
 
-The LatNet Builder executable can be found at `$HOME/latnetsoft/bin/latnet`
+The LatNet Builder executable can be found at `$HOME/latnetsoft/bin/latnetbuilder`
 (with an additional `.exe` extension under Windows systems).
 
 Before executing the LatNet Builder program, it may be necessary to
@@ -240,12 +240,12 @@ under Linux, or
 under MacOS.
 
 **Microsoft Windows** users might need to copy the Boost, NTL and GMP FFTW DLLs into the
-same directory (`$HOME/latnetsoft/bin`, for example) as the `latnet`
+same directory (`$HOME/latnetsoft/bin`, for example) as the `latnetbuilder`
 executable program.
 
 To check that the program installed correctly, run:
 
-	$HOME/latnetsoft/bin/latnet --version
+	$HOME/latnetsoft/bin/latnetbuilder --version
 
 which should report the current LatNet Builder version.
 Help on usage can be obtained by replacing the `--version` switch with the
@@ -259,14 +259,14 @@ Help on usage can be obtained by replacing the `--version` switch with the
 Information on using the LatNet Builder program is given in the
 [LatNet Builder command line tutorial](link) TODO
 that can also be found in `TODO`.
-Compact usage information can also be obtained with `bin/latnet --help`.
+Compact usage information can also be obtained with `bin/latnetbuilder --help`.
 
 The below command line assumes that the current working directory is that which
 contains the `bin` subdirectory.  If you installed a binary package, it is the
 `latnetbuilder` directory at the root of the package.
 
-**Microsoft Windows** users should replace `bin/latnet` with
-`bin\latnet.exe` in what follows.
+**Microsoft Windows** users should replace `bin/latnetbuilder` with
+`bin\latnetbuilder.exe` in what follows.
 
 #### Constructing rank-1 lattice rules
 
@@ -275,7 +275,7 @@ lattice rule with 8191 points in 5 dimensions using the P<sub>α</sub> criterion
 $\alpha = 2$ and with uniform product weights with value 0.8, issue the following
 command (from the installation directory):
 
-	bin/latnet -T lattice -c ordinary -s 8191 -d 5 -M CU:P2 -w product:0.8 -E CBC
+	bin/latnetbuilder -T lattice -c ordinary -s 8191 -d 5 -M CU:P2 -w product:0.8 -E CBC
 
 #### Constructing digital nets
 
@@ -283,7 +283,7 @@ Likewise, to construct, using the component-by-component (CBC) algorithm, Sobol'
 $\alpha = 2$ and with uniform product weights with value 0.8, issue the following
 command (from the installation directory):
 
-  bin/latnet -T net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -E random:1000
+  bin/latnetbuilder -T net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -E random:1000
 
 
 ### The LatNet Builder Graphical User Interface
@@ -294,7 +294,7 @@ A connection to the Internet is also necessary to display the mathematical
 symbols.
 The local web server can be started by typing the following commands in a terminal
   source activate latnetbuilder
-	jupyter notebook latnet-gui.ipynb
+	jupyter notebook latnetbuilder-gui.ipynb
 
 It requires the LatNet Builder program above to be working properly.
 
@@ -380,7 +380,7 @@ the same weight of 0.1 to every coordinate (this means a weight of
 10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections
 of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
 
-	./latnet -T lattice -c ordinary -s 2^16 -d 100 -M CU:P2 -w product:0.1 -E fast-CBC
+	./latnetbuilder -T lattice -c ordinary -s 2^16 -d 100 -M CU:P2 -w product:0.1 -E fast-CBC
 
 The above search is for n=2<sup>16</sup>=65,536 points in dimension 100.  LatNet Builder
 does that very quickly.

@@ -32,7 +32,7 @@ Additional details concerning the command-line options can be found in \ref cmdt
 
 Consider the following basic example:
 \verbatim
-./latnet \ 
+./latnetbuilder \ 
 --set-type lattice \
  --construction ordinary \
  --multilevel false \
@@ -82,7 +82,7 @@ such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
 \verbatim
-./latnet -T lattice -c ordinary -m false -s 2053 -d 5 -E CBC -M CU:P2 -w product:0.7
+./latnetbuilder -T lattice -c ordinary -m false -s 2053 -d 5 -E CBC -M CU:P2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
@@ -91,7 +91,7 @@ self-explanatory.
 
 Consider the following basic example:
 \verbatim
-./latnet \ 
+./latnetbuilder \ 
  --set-type net \
  --construction sobol \
  --multilevel false \

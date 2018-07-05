@@ -1316,7 +1316,7 @@ Also make sure to add the relevant include file in
 \c include/latbuilder/Parser/Kernel.h:
 \snippet custom-figure.patch.cc parser header
 Then it should work out of the box if you recompile LatNet Builder, then run
-\c latnet with the option <code>--figure-of-merit CU:my-figure</code>.
+\c latnetbuilder with the option <code>--figure-of-merit CU:my-figure</code>.
 
 
 \section libtut_lat_extending_weights Implementing Custom Weights
@@ -1347,7 +1347,7 @@ after, of course, adding the new header with:
 We also need to add a conditional block in Parser::Weights::parse:
 \snippet custom-weights.patch.cc parser if
 Then, after recompiling LatNet Builder, the new weights should be available to
-use by invoking \c latnet with the option <code>--weights
+use by invoking \c latnetbuilder with the option <code>--weights
 MyWeights:1.5</code>, for example.
 
 */

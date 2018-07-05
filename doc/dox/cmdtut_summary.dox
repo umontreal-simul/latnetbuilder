@@ -18,7 +18,7 @@
 
 
 
-The <code>latnet</code> executable supports the following command-line
+The <code>latnetbuilder</code> executable supports the following command-line
 options:
 <dl>
 	<dt><code>\--set-type</code> / <code>-T</code></dt>

@@ -73,17 +73,17 @@ def create_output(output, create_graph=True, in_thread=False):
     if result_obj.search_type == 'ordinary':
         template = env.get_template('ordinary_C.txt')
         code_C = widgets.Textarea(value= 
-            template.render(n=result_obj.latnet.size.nb_points, s=result_obj.getDim(), a=transform_to_c(result_obj.latnet.gen)),
+            template.render(n=result_obj.latnetbuilder.size.nb_points, s=result_obj.getDim(), a=transform_to_c(result_obj.latnetbuilder.gen)),
             layout=widgets.Layout(width='600px', height='200px'))
 
         template = env.get_template('ordinary_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(n=result_obj.latnet.size.nb_points, a=result_obj.latnet.gen),
+            template.render(n=result_obj.latnetbuilder.size.nb_points, a=result_obj.latnetbuilder.gen),
             layout=widgets.Layout(width='600px', height='100px'))
 
         template = env.get_template('ordinary_matlab.txt')
         code_matlab = widgets.Textarea(value= 
-            template.render(n=result_obj.latnet.size.nb_points, a=result_obj.latnet.gen),
+            template.render(n=result_obj.latnetbuilder.size.nb_points, a=result_obj.latnetbuilder.gen),
             layout=widgets.Layout(width='600px', height='130px'))
 
     
@@ -95,19 +95,19 @@ def create_output(output, create_graph=True, in_thread=False):
 
     
     elif 'polynomial' in result_obj.search_type:
-        if result_obj.latnet.size.power == 1:
-            modulus = result_obj.latnet.size.base
+        if result_obj.latnetbuilder.size.power == 1:
+            modulus = result_obj.latnetbuilder.size.base
         else:
-            modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.latnet.size.base, axis=0)))**result_obj.latnet.size.power).c % 2, axis=0)
+            modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.latnetbuilder.size.base, axis=0)))**result_obj.latnetbuilder.size.power).c % 2, axis=0)
 
         template = env.get_template('polynomial_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(mod=modulus, genvec=result_obj.latnet.gen.gen_vector),
+            template.render(mod=modulus, genvec=result_obj.latnetbuilder.gen.gen_vector),
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('polynomial_Cpp.txt')
         code_cpp = widgets.Textarea(value= 
-            template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.latnet.gen.gen_vector)),
+            template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.latnetbuilder.gen.gen_vector)),
             layout=widgets.Layout(width='600px', height='700px'))
         
         output.output.children = [plot, code_cpp, code_python]
@@ -127,7 +127,7 @@ def create_output(output, create_graph=True, in_thread=False):
         code_python = widgets.Textarea(value= 
             template.render(s=result_obj.getDim(), 
                             m=len(result_obj.matrix(0)), 
-                            init_numbers=result_obj.latnet.gen.gen_vector,
+                            init_numbers=result_obj.latnetbuilder.gen.gen_vector,
                             prim_polys=prim_polys.tolist()),   
             layout=widgets.Layout(width='600px', height='700px'))
 
@@ -135,7 +135,7 @@ def create_output(output, create_graph=True, in_thread=False):
         code_cpp = widgets.Textarea(value= 
             template.render(s=result_obj.getDim(), 
                             m=len(result_obj.matrix(0)),
-                            genvec=transform_to_c(result_obj.latnet.gen.gen_vector),
+                            genvec=transform_to_c(result_obj.latnetbuilder.gen.gen_vector),
                             degrees=str(prim_polys[:, 0].tolist()).strip('[]'),
                             representations=str(prim_polys[:, 1].tolist()).strip('[]')),
             layout=widgets.Layout(width='600px', height='700px'))

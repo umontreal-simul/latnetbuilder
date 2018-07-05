@@ -19,11 +19,11 @@
 This tutorial teaches how to use the LatNet Builder command-line tool to
 search for highly uniform point sets.
 
-It is assumed in the examples that the <code>latnet</code>
+It is assumed in the examples that the <code>latnetbuilder</code>
 executable program can be found by the user's shell.  If it is not the case, the
 full path to the executable program, for example
-<code>/path/to/latnet</code>, should be used in the place of just
-<code>latnet</code>.
+<code>/path/to/latnetbuilder</code>, should be used in the place of just
+<code>latnetbuilder</code>.
 
 Alternatively, the \ref gui can be used to construct a command line, to
 invoke the command-line tool and to see the results.

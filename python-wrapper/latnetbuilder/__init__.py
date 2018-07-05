@@ -7,7 +7,7 @@ and a Graphical-User Interface through the instance gui.
 The GUI works in a Jupyter notebook, and can be displayed by displaying latnetbuilder.gui
 """
 
-LATBUILDER = 'latnet'
+LATBUILDER = 'latnetbuilder'
 '''str: path to the latbuilder executable
 
 If you installed this module through conda, you don't have to modify the path.

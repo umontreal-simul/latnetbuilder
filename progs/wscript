@@ -12,6 +12,6 @@ def build(ctx):
             includes=[inc_dir, lc_inc_dir],
             lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_NTL + ctx.env.LIB_GMP,
             stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_CHRONO + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
-            target='bin/latnet',
+            target='bin/latnetbuilder',
             use=['latnetbuilder', 'latticetester'],
             install_path='${BINDIR}')
