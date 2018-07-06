@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__JOE_KUO_JOE_KUO_H
-#define NET_BUILDER__JOE_KUO_JOE_KUO_H
+#ifndef NET_BUILDER__JOE_KUO_H
+#define NET_BUILDER__JOE_KUO_H
 
 #include "latticetester/Weights.h"
 

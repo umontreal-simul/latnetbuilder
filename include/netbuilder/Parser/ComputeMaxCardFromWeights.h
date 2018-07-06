@@ -17,10 +17,15 @@
 #ifndef NETBUILDER__COMPUTE_MAX_CARD_FROM_WEIGHTS_H
 #define NETBUILDER__COMPUTE_MAX_CARD_FROM_WEIGHTS_H
 
+#include "latticetester/Weights.h"
+#include "latbuilder/CombinedWeights.h"
 #include "latticetester/OrderDependentWeights.h"
 #include "latticetester/ProductWeights.h"
 #include "latticetester/PODWeights.h"
 #include "latticetester/ProjectionDependentWeights.h"
+
+#include <sstream>
+#include <string>
 
 namespace NetBuilder { namespace Parser {
 
@@ -32,7 +37,9 @@ template <typename WEIGHTS>
 struct ComputeMaxCardFromWeights {
     unsigned int operator()(const WEIGHTS& w) const
     { 
-        throw std::invalid_argument("weights cannot be of type " + w.name() );
+        std::ostringstream myStream;
+        myStream << w;
+        throw std::invalid_argument("The figure of merit does not support " + myStream.str() + ".");
         return 0;
     }
 };
@@ -55,7 +62,9 @@ struct ComputeMaxCardFromWeights {
  */ 
 unsigned int ComputeMaxCardFromWeights<LatticeTester::OrderDependentWeights>::operator()(const LatticeTester::OrderDependentWeights& w) const{
     if (w.getDefaultWeight() > 0){
-        throw std::invalid_argument("default weight must be zero to use this figure." );
+        std::ostringstream myStream;
+        myStream << w;
+        throw std::invalid_argument("The figure of merit does not support " + myStream.str() + ": \ndefault weight must be zero.");
     }
     unsigned int maxCard = 0;
     for (unsigned int i=1; i<w.getSize(); i++){
@@ -71,7 +80,9 @@ unsigned int ComputeMaxCardFromWeights<LatticeTester::OrderDependentWeights>::op
  */ 
 unsigned int ComputeMaxCardFromWeights<LatticeTester::ProductWeights>::operator()(const LatticeTester::ProductWeights& w) const{
     if (w.getDefaultWeight() > 0){
-        throw std::invalid_argument("default weight must be zero to use this figure." );
+        std::ostringstream myStream;
+        myStream << w;
+        throw std::invalid_argument("The figure of merit does not support " + myStream.str() + ": \ndefault weight must be zero.");
     }
     return (unsigned int) w.getWeights().size();
 }

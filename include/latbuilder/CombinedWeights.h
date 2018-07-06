@@ -49,7 +49,7 @@ public:
     */
    virtual LatticeTester::Weight getWeight (const LatticeTester::Coordinates & projection) const;
 
-   virtual std::string name() const { return "combined"; }
+//    virtual std::string name() const { return "combined"; }
 
    /**
     * Adds a weight specification to the set of combined weights.
@@ -102,12 +102,5 @@ protected:
  */
 std::istream& operator>> (std::istream& is, CombinedWeights& weights);
 #endif
-
-/**
- * \relates CombinedWeights
- * Outputs the projection-dependent weights to \c os in a format readable.
- */
-std::ostream& operator<< (std::ostream& os, const CombinedWeights& weights);
-
 }
 #endif

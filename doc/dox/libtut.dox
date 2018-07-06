@@ -1213,6 +1213,7 @@ BEST LATTICE: lattice(2^8, [1, 45, 69]) with merit value 0.302157
 Notice that the base merit value is now a vector of per-level merit values.
 
 For polynomial lattices, no adapted normalizers are implemented. The normalizers PAlphaSL10 and PAlphaDPW8 are conceived for ordinary lattices, but %LatBuilder does not forbid using them for polynomial lattices:
+\todo implement such normalization
 
 \verbatim
 figure of merit: CoordUniformFigureOfMerit(kernel=P2_PLR, weights=ProductWeights([], default=0.7))
