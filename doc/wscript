@@ -35,7 +35,8 @@ def build(ctx):
             DOCDIR=ctx.path.abspath(),
             LCDOCDIR=ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/doc').abspath(),
             TOPDIR=ctx.top_dir,
-            OUTDIR=doc_dir.abspath())
+            OUTDIR=doc_dir.abspath(),
+            LATNETBUILDER_VERSION = ctx.set_version("latnetbuilder"))
 
     # Doxygen
     dox = doxygen(env=ctx.env)
