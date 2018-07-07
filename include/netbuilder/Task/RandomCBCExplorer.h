@@ -102,7 +102,7 @@ class RandomCBCExplorer
         Dimension m_dimension;
         Dimension m_currentCoord;
         unsigned int m_nbTries;
-        typename ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> m_randomGenValueGenerator;
+        typename ConstructionMethod:: template RandomGenValueGenerator <ET> m_randomGenValueGenerator;
         unsigned int m_countTries;
 };
 

@@ -36,7 +36,7 @@ int main(int argc, const char *argv[])
 
     typedef NetConstructionTraits<NetConstruction::EXPLICIT> ConstructionMethod;
 
-    typedef ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> randomGenValueGenerator;
+    typedef ConstructionMethod:: template RandomGenValueGenerator <EmbeddingType::UNILEVEL> randomGenValueGenerator;
     // randomGenValueGenerator randomGen = randomGenValueGenerator(Polynomial(INIT_MONO, 30, 1));
     // auto net = std::make_unique<DigitalNetConstruction<NetConstruction::POLYNOMIAL>>(0, Polynomial(INIT_MONO, 30, 1));
     

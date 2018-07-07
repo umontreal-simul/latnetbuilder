@@ -76,7 +76,7 @@ struct NetConstructionParser<EmbeddingType::MULTILEVEL>
 
       result_type tmp = NetConstructionParser<EmbeddingType::UNILEVEL>::parse(str);
 
-      if (tmp !=NetConstruction::SOBOL)
+      if (tmp != NetConstruction::SOBOL && tmp != NetConstruction::EXPLICIT)
       {
         throw BadNetConstruction("incompatible point set type and construction.");
       }

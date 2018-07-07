@@ -112,7 +112,7 @@ class RandomSearch : public Search<NC, ET>
     private:
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
         unsigned int m_nbTries;
-        typename ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> m_randomGenValueGenerator;
+        typename ConstructionMethod:: template RandomGenValueGenerator <ET> m_randomGenValueGenerator;
 };
 
 }}

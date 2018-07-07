@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     unsigned int k_max = std::atoi(argv[2]);
     unsigned int r_max = std::atoi(argv[3]);
 
-    typename NetConstructionTraits<NetConstruction::SOBOL>::RandomGenValueGenerator<LatBuilder::LFSR258> randomGen(0);
+    typename NetConstructionTraits<NetConstruction::SOBOL>::RandomGenValueGenerator<> randomGen(0);
 
     auto tValueDMFig = std::make_unique<FigureOfMerit::TValue<EmbeddingType::UNILEVEL>>();
     auto evalDM = tValueDMFig->evaluator();

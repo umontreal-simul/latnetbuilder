@@ -25,10 +25,12 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/GeneratingMatrix.h"
+#include "netbuilder/ProgressiveRowReducer.h"
 
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/SeqCombiner.h"
 #include "latbuilder/UniformUIntDistribution.h"
+#include "latbuilder/LFSR258.h"
 
 #include <string>
 #include <list>
@@ -64,8 +66,9 @@ namespace NetBuilder {
  *  - <CODE> static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter) </CODE>: returns the sequence of all the possible combinations
  *  of generating values for a net in dimension \c dimension.
  * \n and the following class template:
- *  - <CODE> template<typename RAND> class RandomGenValueGenerator </CODE>: a class template where template parameter RAND implements
- *  a C++11 type PRNG. This is a random generator of generating values. This class template must define a constructor 
+ *  - <CODE> template<EmbeddingType ET, typename RAND = LatBuilder::LFSR258> class RandomGenValueGenerator </CODE>: a class template where template parameter ET correspond
+ *  to the embedding type of the point set and template parameter RAND implements
+ *  a C++11-style PRNG. This is a random generator of generating values. This class template must define a constructor 
  *  <CODE> RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()) </CODE> and an the member function <CODE>GenValue operator()(Dimension coord)</CODE> returning
  *  a generating value for coordinate \c coord.
  */ 
@@ -152,7 +155,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
     static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
 
-    template<typename RAND>
+    template<EmbeddingType ET, typename RAND = LatBuilder::LFSR258>
     class RandomGenValueGenerator
     {
         public:
@@ -226,7 +229,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
     static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
 
-    template<typename RAND>
+    template<EmbeddingType  ET, typename RAND = LatBuilder::LFSR258>
     class RandomGenValueGenerator
     {
         public:
@@ -267,7 +270,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
     
     typedef std::vector<GenValue> GenValueSpaceCoordSeq;
 
-    static constexpr bool isSequenceViewable = false;
+    static constexpr bool isSequenceViewable = true;
 
     static constexpr bool hasSpecialFirstCoordinate = false;
 
@@ -283,8 +286,11 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
     static std::vector<GenValueSpaceCoordSeq> genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
 
+    template<EmbeddingType  ET, typename RAND = LatBuilder::LFSR258>
+    class RandomGenValueGenerator;
+
     template<typename RAND>
-    class RandomGenValueGenerator
+    class RandomGenValueGenerator<EmbeddingType::UNILEVEL, RAND>
     {
         public:
             RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
@@ -295,14 +301,77 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             
             GenValue operator()(Dimension dimension)
             {
-                std::vector<uInteger> init;
-                init.reserve(m_sizeParameter.first);
-                for(unsigned int i = 0; i < m_sizeParameter.second; ++i)
-                {
-                    init.push_back(m_unif(m_randomGen));
+                GeneratingMatrix matrix(0, m_sizeParameter.second);
+
+                ProgressiveRowReducer rowReducer(m_sizeParameter.second);
+
+                for (unsigned int i = 1; i <= m_sizeParameter.second; i++){
+                    bool goToNext = false;
+                    while (! goToNext){
+                        GeneratingMatrix newRow(1, m_sizeParameter.second, {m_unif(m_randomGen)});
+                        ProgressiveRowReducer rowReducerTemp = rowReducer;
+                        rowReducerTemp.addRow(newRow);
+
+                        if (rowReducerTemp.computeRank() == i){
+                            goToNext = true;
+                            rowReducer = rowReducerTemp;
+                            matrix.stackBelow(newRow);
+                        }
+                    }
                 }
-                return GeneratingMatrix(m_sizeParameter.first, m_sizeParameter.second, std::move(init));
+                return matrix;
             }
+
+        private:
+            SizeParameter m_sizeParameter;
+            RAND m_randomGen;
+            LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
+            std::vector<GenValue> m_primes;
+            uInteger m_totient;
+    };
+
+    template<typename RAND>
+    class RandomGenValueGenerator<EmbeddingType::MULTILEVEL, RAND>
+    {
+        public:
+            RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
+                m_sizeParameter(std::move(sizeParameter)),
+                m_randomGen(std::move(randomGen)),
+                m_unif(0, (1 << m_sizeParameter.second) - 1)
+            {};
+            
+            GenValue operator()(Dimension dimension)
+            {
+                GeneratingMatrix matrix(1, 1, {1});
+
+                ProgressiveRowReducer rowReducer(1);
+                rowReducer.addRow(matrix);
+
+                for (unsigned int i = 2; i <= m_sizeParameter.second; i++){
+                    GeneratingMatrix newCol(i-1, 1);
+                    auto randomNumber = m_randomGen();
+                    for (unsigned int k = 0; k < i - 1; k++){
+                        newCol(k, 0) = (randomNumber >> k) & 1;
+                    }
+                    matrix.stackRight(newCol);
+                    rowReducer.addColumn(newCol);
+
+                    bool goToNext = false;
+                    while (! goToNext){
+                        GeneratingMatrix newRow(1, i, {m_unif(m_randomGen)});
+                        ProgressiveRowReducer rowReducerTemp = rowReducer;
+                        rowReducerTemp.addRow(newRow);
+
+                        if (rowReducerTemp.computeRank() == i){
+                            goToNext = true;
+                            rowReducer = rowReducerTemp;
+                            matrix.stackBelow(newRow);
+                        }
+                    }
+                }
+                return matrix;
+            }
+
         private:
             SizeParameter m_sizeParameter;
             RAND m_randomGen;

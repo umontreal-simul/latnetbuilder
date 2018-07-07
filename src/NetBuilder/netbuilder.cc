@@ -280,9 +280,9 @@ int main(int argc, const char *argv[])
         if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
-      //     BUILD_TASK(EXPLICIT, MULTILEVEL)
-      //  }
+       if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+          BUILD_TASK(EXPLICIT, MULTILEVEL)
+       }
 
       for (unsigned i=0; i<repeat; i++){
         t0 = high_resolution_clock::now();\

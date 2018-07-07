@@ -130,7 +130,7 @@ int main(int argc, const char *argv[])
     myfile << "nTries=" << nTries << endl;
 
 
-    typedef ConstructionMethod:: template RandomGenValueGenerator <LatBuilder::LFSR258> randomGenValueGenerator;
+    typedef ConstructionMethod:: template RandomGenValueGenerator <EmbeddingType::UNILEVEL> randomGenValueGenerator;
     randomGenValueGenerator randomGen = randomGenValueGenerator();
 
     clock_t t1,t2; 
