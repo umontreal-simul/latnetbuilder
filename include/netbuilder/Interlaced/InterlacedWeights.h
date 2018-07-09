@@ -17,8 +17,11 @@
 #ifndef NET_BUILDER__INTERLACED__INTERLACED_WEIGHTS
 #define NET_BUILDER__INTERLACED__INTERLACED_WEIGHTS
 
+#include "latticetester/Coordinates.h"
 #include "latticetester/Weights.h"
 #include "latticetester/Util.h"
+
+#include "netbuilder/Util.h"
 
 #include <memory>
 #include <cmath>

@@ -83,10 +83,11 @@ namespace {
          Parser::FigureOfMerit<LR>::parse(
                m_args.normType,
                m_args.figure,
+               boost::lexical_cast<unsigned int>(m_args.interlacingFactor),
                Parser::CombinedWeights::parse(m_args.weights, m_args.weightsPowerScale),
                *this,
                Parser::SizeParam<LR, ET>::parse(m_args.size),
-               boost::lexical_cast<Dimension>(m_args.dimension)
+               boost::lexical_cast<Dimension>(m_args.dimension) * boost::lexical_cast<unsigned int>(m_args.interlacingFactor)
                );
          return std::move(m_search);
       }

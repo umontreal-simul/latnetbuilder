@@ -67,7 +67,8 @@ public:
    /**
     * Returns the one-dimensional function evaluated at \c x.
     */
-   result_type operator()(const value_type& x, uInteger n = 0) const
+   template<typename MODULUS>
+   result_type operator()(const value_type& x, MODULUS n = 0) const
    { 
       if (x < std::numeric_limits<double>::epsilon()){
          return 1 / m_denom; 

@@ -39,14 +39,15 @@ struct FigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
+         unsigned int interlacingFactor,
          std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
       auto strCS = splitPair<>(str, ':');
       if (strCS.first == "CU")
-         CoordUniformFigureOfMerit<LR>::parse(strNorm, strCS.second, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         CoordUniformFigureOfMerit<LR>::parse(strNorm, strCS.second, interlacingFactor, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
       else
-         WeightedFigureOfMerit<LR>::parse(strNorm, str, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         WeightedFigureOfMerit<LR>::parse(strNorm, str, interlacingFactor, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
    }
 };
 

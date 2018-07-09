@@ -66,19 +66,25 @@ struct CoordUniformFigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
+         unsigned int interlacingFactor,
          std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
 
       try {
          const auto norm = boost::lexical_cast<Real>(strNorm);
-         if (norm == 2) {
-            Kernel<LR>::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         if (norm == 2 && interlacingFactor == 1) {
+            Kernel<LR>::parse(str, interlacingFactor, std::move(weights), ParseKernel(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+            return;
+         }
+         else if (norm == 1 && interlacingFactor > 1)
+         {
+            Kernel<LR>::parse(str, interlacingFactor, std::move(weights), ParseKernel(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
             return;
          }
       }
       catch (boost::bad_lexical_cast&) {}
-      throw BadCoordUniformFigureOfMerit("norm must be `2' for the coordinate-uniform implementation");
+      throw BadCoordUniformFigureOfMerit("incompatibility between norm type, coordinate implementation and interlacement.");
    }
 };
 

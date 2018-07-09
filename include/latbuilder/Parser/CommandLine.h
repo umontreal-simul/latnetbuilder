@@ -38,6 +38,7 @@ struct CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
    std::string dimension;
    std::string normType;
    std::string figure;
+   std::string interlacingFactor;
    std::vector<std::string> weights;
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;

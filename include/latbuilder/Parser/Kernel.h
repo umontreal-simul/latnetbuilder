@@ -22,6 +22,10 @@
 #include "latbuilder/Kernel/PAlpha.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Kernel/RPLR.h"
+#include "latbuilder/Kernel/AIDNAlpha.h"
+#include "latbuilder/Kernel/BIDN.h"
+
+#include "netbuilder/Interlaced/InterlacedWeights.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -39,7 +43,8 @@ public:
  * Parser for kernels for coordinate-uniform figures of merit.
  */
 template <LatticeType LR>
-struct Kernel {
+struct Kernel
+{
    /**
     * Parses a string specifying a kernel for the coordinate-uniform figure of
     * merit, like the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R_\alpha\f$
@@ -50,25 +55,23 @@ struct Kernel {
     * \return A shared pointer to a newly created object or \c nullptr on failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args);
-   
+   static void parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights>,  FUNC&& func, ARGS&&... args);
 };
-
 
 
 template<>
 template <typename FUNC, typename... ARGS>
-   void Kernel<LatticeType::ORDINARY>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void Kernel<LatticeType::ORDINARY>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
       try {
              if (str[0] == 'P') {
                 auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
-                func(LatBuilder::Kernel::PAlpha(alpha), std::forward<ARGS>(args)...);
+                func(LatBuilder::Kernel::PAlpha(alpha), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }
              else if (str[0] == 'R') {
                 auto alpha = boost::lexical_cast<Real>(str.substr(1));
-                func(LatBuilder::Kernel::RAlpha(alpha), std::forward<ARGS>(args)...);
+                func(LatBuilder::Kernel::RAlpha(alpha), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }
           }
@@ -78,17 +81,29 @@ template <typename FUNC, typename... ARGS>
    
 template<>
 template <typename FUNC, typename... ARGS>
-   void Kernel<LatticeType::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void Kernel<LatticeType::POLYNOMIAL>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
       try {
              if (str[0] == 'P') {
                 auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
-                func(LatBuilder::Kernel::PAlphaPLR(alpha), std::forward<ARGS>(args)...);
+                func(LatBuilder::Kernel::PAlphaPLR(alpha), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }
              else if (str[0] == 'R') {
                 
-                func(LatBuilder::Kernel::RPLR(), std::forward<ARGS>(args)...);
+                func(LatBuilder::Kernel::RPLR(), std::move(weights), std::forward<ARGS>(args)...);
+                return;
+             }
+            else if (str[0] == 'A')
+            {
+                auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
+                weights = std::make_unique<NetBuilder::Interlaced::InterlacedWeightsA>(std::move(weights), interlacingFactor, alpha);
+                func(LatBuilder::Kernel::AIDNAlpha(alpha, interlacingFactor), std::move(weights), std::forward<ARGS>(args)...);
+                return;
+            }
+            else if (str[0] == 'B') {
+                weights = std::make_unique<NetBuilder::Interlaced::InterlacedWeightsB>(std::move(weights), interlacingFactor);
+                func(LatBuilder::Kernel::BIDN(interlacingFactor), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }
           }

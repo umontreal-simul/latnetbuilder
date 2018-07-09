@@ -119,6 +119,11 @@ makeOptionsDescription()
     "    R<alpha>\n")
    ("dimension,d", po::value<std::string>(),
     "(required) lattice dimension\n")
+    ("interlacing-factor,i", po::value<std::string>()->default_value("1"),
+    "(default: 1) interlacing factor. If larger than one, the constructed"
+    "point set is an interlaced polynomial lattice rule. In this case, the figure of merit must be"
+    "specific to interlaced polynomial lattice rules. Option construction must be set to"
+    "polynomial.\n")
    ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
     "whitespace-separated list of filters for merit values; possible values:\n"
     "  norm:P<alpha>-{SL10|DPW08}\n"
@@ -347,6 +352,15 @@ int main(int argc, const char *argv[])
               cmd.combiner = "level:max";
             }
 
+            if (opt["interlacing-factor"].as<std::string>() != "1")
+            {
+              throw std::runtime_error("Interlacing can only be used with polynomial lattice rules.");
+            }
+            else
+            {
+              cmd.interlacingFactor = "1";
+            }
+
             cmd.weightsPowerScale = 1.0;
             if (opt.count("weights-power") >= 1) {
                // assume 1.0 if norm-type is `inf' or anything else
@@ -392,6 +406,7 @@ int main(int argc, const char *argv[])
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
             cmd.weights       = opt["weights"].as<std::vector<std::string>>();
+            cmd.interlacingFactor = opt["interlacing-factor"].as<std::string>();
             if (opt.count("combiner") == 1){
               cmd.combiner      = opt["combiner"].as<std::string>();
             }

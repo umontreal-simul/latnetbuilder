@@ -48,11 +48,12 @@ struct ProjDepMerit {
       template <class KERNEL, typename FUNC, typename... ARGS>
       void operator()(
             KERNEL kernel,
+            std::unique_ptr<LatticeTester::Weights> weights,
             FUNC&& func, ARGS&&... args
             ) const
       {
          func(
-               LatBuilder::ProjDepMerit::CoordUniform<KERNEL>(std::move(kernel)),
+               LatBuilder::ProjDepMerit::CoordUniform<KERNEL>(std::move(kernel)), std::move(weights),
                std::forward<ARGS>(args)...
              );
       }
@@ -66,7 +67,7 @@ struct ProjDepMerit {
     * \throws BadProjDepMerit On failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args);
+   static void parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args);
    
 };
 
@@ -75,11 +76,11 @@ struct ProjDepMerit {
 
 template<>
 template <typename FUNC, typename... ARGS>
-   void ProjDepMerit<LatticeType::ORDINARY>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void ProjDepMerit<LatticeType::ORDINARY>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
       // try coordinate-uniform
       try {
-         Kernel<LatticeType::ORDINARY>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<LatticeType::ORDINARY>::parse(str, interlacingFactor, std::move(weights), ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
@@ -88,6 +89,7 @@ template <typename FUNC, typename... ARGS>
         if (str == "spectral") {
            func(
                  LatBuilder::ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>>(2.0),
+                 std::move(weights),
                  std::forward<ARGS>(args)...
                );
            return;
@@ -99,11 +101,11 @@ template <typename FUNC, typename... ARGS>
 
 template<>
 template <typename FUNC, typename... ARGS>
-   void ProjDepMerit<LatticeType::POLYNOMIAL>::parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   void ProjDepMerit<LatticeType::POLYNOMIAL>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
       // try coordinate-uniform
       try {
-         Kernel<LatticeType::POLYNOMIAL>::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<LatticeType::POLYNOMIAL>::parse(str, interlacingFactor, std::move(weights), ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
