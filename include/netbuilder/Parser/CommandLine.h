@@ -54,6 +54,7 @@ struct CommandLine {
    Dimension m_dimension;
    std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> m_figure;
    int m_verbose;
+   unsigned int m_interlacingFactor;
 
    std::unique_ptr<Task::Task> parse();
 };
@@ -72,7 +73,7 @@ CommandLine<NC, ET>::parse()
       namespace lbp = LatBuilder::Parser;
       
       SizeParameterParser<NC,ET>::parse(*this);
-      m_dimension = boost::lexical_cast<Dimension>(s_dimension);
+      m_dimension = boost::lexical_cast<Dimension>(s_dimension) * m_interlacingFactor;
       m_verbose = boost::lexical_cast<int>(s_verbose);
       m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized as a side effect
       return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task

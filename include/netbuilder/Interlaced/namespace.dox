@@ -1,0 +1,6 @@
+namespace NetBuilder {
+/**
+ * Features used for interlaced digital nets.
+ */
+namespace Interlaced {
+}}

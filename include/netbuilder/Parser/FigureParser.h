@@ -29,6 +29,8 @@
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Kernel/RPLR.h"
+#include "latbuilder/Kernel/AIDNAlpha.h"
+#include "latbuilder/Kernel/BIDN.h"
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -41,6 +43,7 @@
 #include "netbuilder/FigureOfMerit/BitEquidistribution.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
+#include "netbuilder/Interlaced/InterlacedWeights.h"
 
 namespace NetBuilder
 {
@@ -88,19 +91,55 @@ struct FigureParser
             weights = LatBuilder::Parser::CombinedWeights::parse(commandLine.s_weights, weightsPowerScale);
         }
 
-        if (commandLine.s_figure == "CU:P2")
+        std::vector<std::string> figureDescriptionStrings;
+        boost::split(figureDescriptionStrings, commandLine.s_figure, boost::is_any_of(":"));
+
+        if (figureDescriptionStrings.size() == 2 && figureDescriptionStrings.front() == "CU" )
         {
-            if(commandLine.m_normType != 2)
-                throw BadFigure("norm must be `2' for the coordinate-uniform implementation");
-            auto kernel = LatBuilder::Kernel::PAlphaPLR(2);
-            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
-        }
-        else if (commandLine.s_figure == "CU:R")
-        {
-            if(commandLine.m_normType != 2)
-                throw BadFigure("norm must be `2' for the coordinate-uniform implementation");
-            auto kernel = LatBuilder::Kernel::RPLR();
-            return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+            if (figureDescriptionStrings.back() == "R")
+            {
+                if(commandLine.m_normType != 2)
+                    throw BadFigure("norm must be `2' for this coordinate-uniform implementation");
+                if (commandLine.m_interlacingFactor != 1)
+                    throw BadFigure("interlacing factor must be `1' for " + commandLine.s_figure + ".");
+                auto kernel = LatBuilder::Kernel::RPLR();
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+            }
+            else if (figureDescriptionStrings.back() == "B")
+            {
+                if(commandLine.m_normType != 1)
+                    throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
+                if (commandLine.m_interlacingFactor == 1)
+                    throw BadFigure("interlacing factor must be larger than `1` for " + commandLine.s_figure + ".");
+                auto kernel = LatBuilder::Kernel::BIDN(commandLine.m_interlacingFactor);
+                weights = std::make_unique<Interlaced::InterlacedWeightsB>(std::move(weights), commandLine.m_interlacingFactor);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::BIDN, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+            }
+            else if (figureDescriptionStrings.back().front() == 'P')
+            {
+                if(commandLine.m_normType != 2)
+                    throw BadFigure("norm must be `2' for this coordinate-uniform implementation");
+                if (commandLine.m_interlacingFactor != 1)
+                    throw BadFigure("interlacing factor must be `1'(default) for " + commandLine.s_figure + ".");
+                unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
+                auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+            }
+            else if (figureDescriptionStrings.back().front() == 'A')
+            {
+                if(commandLine.m_normType != 1)
+                    throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
+                if (commandLine.m_interlacingFactor == 1)
+                    throw BadFigure("interlacing factor must be larger than `1`(default) for " + commandLine.s_figure + ".");
+                unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
+                auto kernel = LatBuilder::Kernel::AIDNAlpha(alpha, commandLine.m_interlacingFactor);
+                weights = std::make_unique<Interlaced::InterlacedWeightsA>(std::move(weights), commandLine.m_interlacingFactor, alpha);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::AIDNAlpha, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+            }
+            else
+            {
+             throw BadFigure(figureDescriptionStrings.back() + " does not name a kernel.");   
+            }
         }
         else if (commandLine.s_figure == "t-value")
         {
@@ -119,8 +158,6 @@ struct FigureParser
             throw BadFigure(commandLine.s_figure);
         }
     }
-
-
 };
 }
 }

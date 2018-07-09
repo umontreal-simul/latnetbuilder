@@ -126,6 +126,10 @@ makeOptionsDescription()
     "  level:{<level>|max}\n")
    ("figure-of-merit,M", po::value<std::string>(),
     "(required) type of figure of merit; TODO\n")
+    ("interlacing-factor,i", po::value<unsigned int>()->default_value(1),
+    "(default: 1) interlacing factor. If larger than one, the constructed"
+    "point set is an interlaced digital net. In this case, the figure of merit must be"
+    "specific to interlaced digital nets.\n")
   //  ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
   //   "whitespace-separated list of filters for merit values; possible values:\n"
   //   "  norm:P<alpha>-{SL10|DPW08}\n"
@@ -192,6 +196,7 @@ cmd.s_dimension = opt["dimension"].as<std::string>();\
 cmd.s_figure = opt["figure-of-merit"].as<std::string>();\
 cmd.s_weights       = opt["weights"].as<std::vector<std::string>>();\
 cmd.m_normType = boost::lexical_cast<Real>(opt["norm-type"].as<std::string>());\
+cmd.m_interlacingFactor = opt["interlacing-factor"].as<unsigned int>(); \
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\
 }\
