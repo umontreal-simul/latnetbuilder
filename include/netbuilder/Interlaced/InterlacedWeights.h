@@ -17,6 +17,9 @@
 #ifndef NET_BUILDER__INTERLACED__INTERLACED_WEIGHTS
 #define NET_BUILDER__INTERLACED__INTERLACED_WEIGHTS
 
+#include "latbuilder/Kernel/AIDNAlpha.h"
+#include "latbuilder/Kernel/BIDN.h"
+
 #include "latticetester/Coordinates.h"
 #include "latticetester/Weights.h"
 #include "latticetester/Util.h"
@@ -31,15 +34,19 @@ namespace NetBuilder { namespace Interlaced
 using LatticeTester::Weights;
 using LatticeTester::Coordinates;
 
-class InterlacedWeightsA:
-    public Weights
+template <class KERNEL>
+class InterlacedWeights: public Weights
+ {};
+
+template <>
+class InterlacedWeights<LatBuilder::Kernel::AIDNAlpha>: public Weights
 {
     public:
 
-        InterlacedWeightsA(std::unique_ptr<Weights> weights, unsigned int interlacingFactor, unsigned int alpha):
+        InterlacedWeights(std::unique_ptr<Weights> weights, const LatBuilder::Kernel::AIDNAlpha& kernel):
             m_baseWeights(std::move(weights)),
-            m_interlacingFactor(interlacingFactor),
-            m_alpha(alpha),
+            m_interlacingFactor(kernel.interlacingFactor()),
+            m_alpha(kernel.alpha()),
             m_correctionFactor(sqrt((double) (1 << (m_alpha * (2 * m_interlacingFactor - 1)))))
         {}
 
@@ -74,14 +81,15 @@ class InterlacedWeightsA:
         double m_correctionFactor;
 };
 
-class InterlacedWeightsB:
+template<>
+class InterlacedWeights<LatBuilder::Kernel::BIDN>:
     public Weights
 {
     public:
 
-        InterlacedWeightsB(std::unique_ptr<Weights> weights, unsigned int interlacingFactor):
+        InterlacedWeights(std::unique_ptr<Weights> weights, const LatBuilder::Kernel::BIDN& kernel):
             m_baseWeights(std::move(weights)),
-            m_interlacingFactor(interlacingFactor)
+            m_interlacingFactor(kernel.interlacingFactor())
         {}
 
         /**

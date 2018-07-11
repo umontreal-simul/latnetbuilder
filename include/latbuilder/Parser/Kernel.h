@@ -25,7 +25,7 @@
 #include "latbuilder/Kernel/AIDNAlpha.h"
 #include "latbuilder/Kernel/BIDN.h"
 
-#include "netbuilder/Interlaced/InterlacedWeights.h"
+#include "netbuilder/Interlaced/WeightsInterlacer.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -78,6 +78,13 @@ template <typename FUNC, typename... ARGS>
           catch (boost::bad_lexical_cast&) {}
           throw BadKernel(str);
    }
+
+template <typename WEIGHTS>
+using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::AIDNAlpha>::WeightsInterlacer<WEIGHTS>;
+
+template <typename WEIGHTS>
+using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::BIDN>::WeightsInterlacer<WEIGHTS>;
+
    
 template<>
 template <typename FUNC, typename... ARGS>
@@ -97,13 +104,15 @@ template <typename FUNC, typename... ARGS>
             else if (str[0] == 'A')
             {
                 auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
-                weights = std::make_unique<NetBuilder::Interlaced::InterlacedWeightsA>(std::move(weights), interlacingFactor, alpha);
-                func(LatBuilder::Kernel::AIDNAlpha(alpha, interlacingFactor), std::move(weights), std::forward<ARGS>(args)...);
+                LatBuilder::Kernel::AIDNAlpha kernel(alpha, interlacingFactor);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacerA>(std::move(weights), kernel);
+                func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                 return;
             }
             else if (str[0] == 'B') {
-                weights = std::make_unique<NetBuilder::Interlaced::InterlacedWeightsB>(std::move(weights), interlacingFactor);
-                func(LatBuilder::Kernel::BIDN(interlacingFactor), std::move(weights), std::forward<ARGS>(args)...);
+                LatBuilder::Kernel::BIDN kernel(interlacingFactor);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacerB>(std::move(weights), kernel);
+                func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }
           }

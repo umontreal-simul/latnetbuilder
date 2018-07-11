@@ -59,7 +59,7 @@ unsigned int SchmidMethod::computeTValue(std::vector<GeneratingMatrix> matrices,
             unsigned int idx = 0;
             for(Dimension coord = 0; coord < s; ++coord)
             {
-                for(int j = 0; j < comp[coord]; ++j)
+                for(unsigned int j = 0; j < comp[coord]; ++j)
                 {
                     tmp[idx] = &(matrices[coord][j]);
                     ++idx;
@@ -109,7 +109,7 @@ std::vector<unsigned int> SchmidMethod::computeTValue(std::vector<GeneratingMatr
             unsigned int idx = 0;
             for(Dimension coord = 0; coord < s; ++coord)
             {
-                for(int j = 0; j < comp[coord]; ++j)
+                for(unsigned int j = 0; j < comp[coord]; ++j)
                 {
                     tmp[idx] = &(matrices[coord][j]);
                     ++idx;

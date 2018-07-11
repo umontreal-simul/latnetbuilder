@@ -17,9 +17,16 @@
 #ifndef LATBUILDER__KERNEL__AIDN_ALPHA_H
 #define LATBUILDER__KERNEL__AIDN_ALPHA_H
 
+#include <memory>
+
 #include "latbuilder/Kernel/Base.h"
 #include "latbuilder/Kernel/FunctorAdaptor.h"
 #include "latbuilder/Functor/AIDNAlpha.h"
+
+#include "netbuilder/Interlaced/IPODWeights.h"
+
+#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/Coordinates.h"
 
 namespace LatBuilder { namespace Kernel {
 
@@ -36,6 +43,22 @@ public:
    {
        return functor().interlacingFactor();
    }
+
+   struct CorrectionProductWeights{
+       CorrectionProductWeights(const AIDNAlpha& kernel){}
+
+       double getWeight(const LatticeTester::Coordinates & projection) const{
+           return 1;
+       }
+       double getWeightForCoordinate (LatticeTester::Coordinates::size_type coordinate) const  {
+           return 1;
+       }
+   };
+
+    void correctPODWeights(NetBuilder::Interlaced::IPODWeights<AIDNAlpha>& weights) const{
+        weights.getProductWeights().multiplyWeights(sqrt((double) (1 << (alpha() * (2 * interlacingFactor() - 1)))));
+    }
+
 };
 
 }}
