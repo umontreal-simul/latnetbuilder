@@ -61,11 +61,11 @@ class BadFigure : public lbp::ParserError
     }
 };
 
-template <typename WEIGHTS>
-using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::AIDNAlpha>::WeightsInterlacer<WEIGHTS>;
+// template <typename WEIGHTS>
+// using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::AIDNAlpha>::WeightsInterlacer<WEIGHTS>;
 
-template <typename WEIGHTS>
-using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::BIDN>::WeightsInterlacer<WEIGHTS>;
+// template <typename WEIGHTS>
+// using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::BIDN>::WeightsInterlacer<WEIGHTS>;
 
 
 /**
@@ -119,7 +119,7 @@ struct FigureParser
                 if (commandLine.m_interlacingFactor == 1)
                     throw BadFigure("interlacing factor must be larger than `1` for " + commandLine.s_figure + ".");
                 auto kernel = LatBuilder::Kernel::BIDN(commandLine.m_interlacingFactor);
-                weights = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacerB>(std::move(weights), kernel);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                 return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::BIDN, ET>>(std::move(weights), kernel, commandLine.m_combiner);
             }
             else if (figureDescriptionStrings.back().front() == 'P')
@@ -140,7 +140,7 @@ struct FigureParser
                     throw BadFigure("interlacing factor must be larger than `1`(default) for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
                 auto kernel = LatBuilder::Kernel::AIDNAlpha(alpha, commandLine.m_interlacingFactor);
-                weights = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacerA>(std::move(weights), kernel);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                 return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::AIDNAlpha, ET>>(std::move(weights), kernel, commandLine.m_combiner);
             }
             else

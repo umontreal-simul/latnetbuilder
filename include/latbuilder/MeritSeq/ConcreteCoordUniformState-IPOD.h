@@ -19,8 +19,6 @@
 
 #include "latbuilder/MeritSeq/CoordUniformState.h"
 #include "latbuilder/Storage.h"
-#include "latbuilder/Kernel/AIDNAlpha.h"
-#include "latbuilder/Kernel/BIDN.h"
 
 #include "netbuilder/Interlaced/IPODWeights.h"
 
@@ -34,8 +32,8 @@ template <LatticeType LR, EmbeddingType ET, Compress COMPRESS , PerLevelOrder PL
 /**
  * Implementation of CoordUniformState for POD weights.
  */
-template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
-class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<KERNEL>> :
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>> :
    public CoordUniformState<LR, ET, COMPRESS, PLO> {
 public:
    /**
@@ -47,14 +45,17 @@ public:
     * \param storage       Storage configuration.
     * \param weights       POD weights
     */
-   ConcreteCoordUniformState(
+  //  ConcreteCoordUniformState(
+  //        const Storage<LR, ET, COMPRESS, PLO>& storage,
+  //        const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>& weights
+  //        ):
+  //     CoordUniformState<LR, ET, COMPRESS, PLO>(storage),
+  //     m_weights(weights)
+  //  { reset(); }
+     ConcreteCoordUniformState(
          const Storage<LR, ET, COMPRESS, PLO>& storage,
-         const NetBuilder::Interlaced::IPODWeights<KERNEL>& weights
-         ):
-      CoordUniformState<LR, ET, COMPRESS, PLO>(storage),
-      m_weights(weights),
-      m_interlacingFactor(m_weights.getInterlacingFactor())
-   { reset();}
+         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>& weights
+         );
 
    void reset();
 
@@ -92,31 +93,29 @@ public:
    { return std::unique_ptr<CoordUniformState<LR, ET, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
-   const NetBuilder::Interlaced::IPODWeights<KERNEL>& m_weights;
+   const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>& m_weights;
    unsigned int m_interlacingFactor;
 
-   // m_state[level](i)
    RealVector m_ElemPolySum;
    RealVector m_ODSum;
+   RealVector m_waitingKernelValues;
    std::vector<RealVector> m_state;
 };
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>;
-
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>;
-
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>>;
 
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
 
 }}
 

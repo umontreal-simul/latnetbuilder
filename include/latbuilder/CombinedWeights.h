@@ -60,6 +60,10 @@ public:
    const WeightsList& list() const
    { return m_weights; }
 
+   WeightsList giveWeights(){
+       return std::move(m_weights);
+   }
+
 protected:
    virtual void format(std::ostream& os) const;
 

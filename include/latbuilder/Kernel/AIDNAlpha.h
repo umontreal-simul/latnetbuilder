@@ -23,9 +23,7 @@
 #include "latbuilder/Kernel/FunctorAdaptor.h"
 #include "latbuilder/Functor/AIDNAlpha.h"
 
-#include "netbuilder/Interlaced/IPODWeights.h"
-
-#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/PODWeights.h"
 #include "latticetester/Coordinates.h"
 
 namespace LatBuilder { namespace Kernel {
@@ -55,7 +53,7 @@ public:
        }
    };
 
-    void correctPODWeights(NetBuilder::Interlaced::IPODWeights<AIDNAlpha>& weights) const{
+    void correctPODWeights(LatticeTester::PODWeights& weights) const{
         weights.getProductWeights().multiplyWeights(sqrt((double) (1 << (alpha() * (2 * interlacingFactor() - 1)))));
     }
 

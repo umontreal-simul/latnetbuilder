@@ -17,14 +17,15 @@
 #ifndef NET_BUILDER__INTERLACED__IPOD_WEIGHTS_H
 #define NET_BUILDER__INTERLACED__IPOD_WEIGHTS_H
 
+#include "latbuilder/Kernel/AIDNAlpha.h"
+#include "latbuilder/Kernel/BIDN.h"
+
 #include "latticetester/Coordinates.h"
 #include "latticetester/Weights.h"
 #include "latticetester/ProductWeights.h"
 #include "latticetester/OrderDependentWeights.h"
 #include "latticetester/PODWeights.h"
-#include "latticetester/Util.h"
 
-#include "netbuilder/Util.h"
 
 #include <memory>
 #include <cmath>
@@ -39,55 +40,20 @@ class IPODWeights:
 {
     public:
 
-        IPODWeights(std::unique_ptr<LatticeTester::ProductWeights> weights, const KERNEL& kernel):
-        m_correctionProductWeights(kernel)
-        {
-            getOrderDependentWeights().setDefaultWeight(1);
-            getProductWeights() = *weights;
-            kernel.correctPODWeights(*this);
-            m_interlacingFactor = kernel.interlacingFactor();
-        }
+        IPODWeights(std::unique_ptr<LatticeTester::ProductWeights> weights, const KERNEL& kernel);
 
-        IPODWeights(std::unique_ptr<LatticeTester::OrderDependentWeights> weights, const KERNEL& kernel):
-        m_correctionProductWeights(kernel)
-        {
-            getOrderDependentWeights() = *weights;
-            getProductWeights().setDefaultWeight(1);
-            kernel.correctPODWeights(*this);
-            m_interlacingFactor = kernel.interlacingFactor();
-        }
+        IPODWeights(std::unique_ptr<LatticeTester::OrderDependentWeights> weights, const KERNEL& kernel);
 
-        IPODWeights(std::unique_ptr<LatticeTester::PODWeights> weights, const KERNEL& kernel):
-        m_correctionProductWeights(kernel)
-        {
-            getOrderDependentWeights() = weights->getOrderDependentWeights();
-            getProductWeights() = weights->getProductWeights();
-            kernel.correctPODWeights(*this);
-            m_interlacingFactor = kernel.interlacingFactor();
-        }
+        IPODWeights(std::unique_ptr<LatticeTester::PODWeights> weights, const KERNEL& kernel);
 
         /**
          * Returns the double of the projection specified by `projection`.
          */
-        virtual double getWeight (const Coordinates & projection) const override
-        {
-            Coordinates realProjection;
-            for(Dimension coord : projection)
-            {
-                realProjection.insert( coord / m_interlacingFactor );
-            }
-            return getWeight(realProjection) * m_correctionProductWeights.getWeight(projection);
-        }
+        virtual double getWeight (const Coordinates & projection) const override;
 
-        unsigned int getInterlacingFactor() const
-        {
-            return m_interlacingFactor;
-        }
+        unsigned int getInterlacingFactor() const;
 
-        double getCorrectionProductWeightForCoordinate (Coordinates::size_type coordinate) const
-        {
-            return m_correctionProductWeights->getWeightForCoordinate(coordinate);
-        }
+        double getCorrectionProductWeightForCoordinate (Coordinates::size_type coordinate) const;
 
     protected:
         /**
@@ -95,16 +61,17 @@ class IPODWeights:
          *
          * \remark Deriving classes should identify themselves in the output.
          */
-        virtual void format(std::ostream& os) const override
-        {
-            os << "IPOD(" << m_interlacingFactor << ", " << static_cast<LatticeTester::PODWeights>(*this) << ")";
-        }
+        virtual void format(std::ostream& os) const override;
 
     private:
         typename KERNEL::CorrectionProductWeights m_correctionProductWeights;
         unsigned int m_interlacingFactor;
 };
 
+extern template class IPODWeights<LatBuilder::Kernel::AIDNAlpha>;
+extern template class IPODWeights<LatBuilder::Kernel::BIDN>;
+
+// class IPODWeightsA: public IPODWeights<LatBuilder::Kernel::AIDNAlpha>{};
 }}
 
 #endif

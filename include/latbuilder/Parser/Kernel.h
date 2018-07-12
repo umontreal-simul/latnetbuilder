@@ -79,11 +79,11 @@ template <typename FUNC, typename... ARGS>
           throw BadKernel(str);
    }
 
-template <typename WEIGHTS>
-using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::AIDNAlpha>::WeightsInterlacer<WEIGHTS>;
+// template <typename WEIGHTS>
+// using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::AIDNAlpha>::WeightsInterlacer<WEIGHTS>;
 
-template <typename WEIGHTS>
-using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::BIDN>::WeightsInterlacer<WEIGHTS>;
+// template <typename WEIGHTS>
+// using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::BIDN>::WeightsInterlacer<WEIGHTS>;
 
    
 template<>
@@ -105,13 +105,13 @@ template <typename FUNC, typename... ARGS>
             {
                 auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
                 LatBuilder::Kernel::AIDNAlpha kernel(alpha, interlacingFactor);
-                weights = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacerA>(std::move(weights), kernel);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<NetBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                 func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                 return;
             }
             else if (str[0] == 'B') {
                 LatBuilder::Kernel::BIDN kernel(interlacingFactor);
-                weights = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacerB>(std::move(weights), kernel);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<NetBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                 func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }

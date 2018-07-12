@@ -24,6 +24,8 @@
 #include "latbuilder/Storage.h"
 #include "latbuilder/ClonePtr.h"
 
+#include <iostream>
+
 namespace LatBuilder { namespace MeritSeq {
 
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
@@ -75,6 +77,7 @@ private:
          CoordUniformStateList<LA, L, C, P>& list
          )
    {
+      std::cout << weights << std::endl;
       list.push_back(ClonePtr<MeritSeq::CoordUniformState<LA, L, C, P>>(
                new MeritSeq::ConcreteCoordUniformState<LA, L, C, P, WEIGHTS>(storage, weights)
                ));

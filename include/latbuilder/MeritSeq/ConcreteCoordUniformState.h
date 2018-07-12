@@ -185,5 +185,7 @@ private:
 #include "latbuilder/MeritSeq/ConcreteCoordUniformState-OD.h"
 #include "latbuilder/MeritSeq/ConcreteCoordUniformState-P.h"
 #include "latbuilder/MeritSeq/ConcreteCoordUniformState-POD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-IPOD.h"
+// #include "latbuilder/MeritSeq/ConcreteCoordUniformState-IPOD.h"
 
 #endif

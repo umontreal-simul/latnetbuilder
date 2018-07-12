@@ -21,10 +21,7 @@
 #include "latbuilder/Kernel/FunctorAdaptor.h"
 #include "latbuilder/Functor/BIDN.h"
 
-#include "netbuilder/Interlaced/IPODWeights.h"
-
-#include "latticetester/ProductWeights.h"
-#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/PODWeights.h"
 
 namespace LatBuilder { namespace Kernel {
 
@@ -67,7 +64,7 @@ public:
 
    };
 
-    void correctPODWeights(NetBuilder::Interlaced::IPODWeights<BIDN>& weights) const{
+    void correctPODWeights(LatticeTester::PODWeights& weights) const{
     }
 
 };
