@@ -26,7 +26,7 @@ namespace LatBuilder { namespace Functor {
 
 /**
  * One-dimensional merit function for the \f$\mathcal B_{\alpha, d, \gamma, (1)}\f$ discrepancy in base 2.
- * This merit function coincides with \f$ \phi_{\alpha, d, (1)} \f$ in \cite rGOD15a.
+ * This merit function equals \f$ \phi_{\alpha, d, (1)} \f$ in \cite rGOD15a.
  *
  * This merit function is defined as
  * \f[
@@ -51,13 +51,13 @@ public:
       m_alpha(alpha),
       m_interlacingFactor(interlacingFactor),
       m_min(std::min(m_alpha, m_interlacingFactor)),
-      m_denom((sqrt( 1 << (m_alpha + 2)) * ( (1 << (m_min - 1)) -1 )))
-   {
+      m_denom(sqrt( intPow(2.0, m_alpha + 2)) * ( (intPow(2.0, m_min - 1) - 1.0 )))
+    {
        if (m_alpha < 2)
         throw std::runtime_error("A-IDN kernel requires alpha > 1");
        if (m_interlacingFactor < 2)
-        throw std::runtime_error("AIDN kernel requires d > 1");
-   }
+        throw std::runtime_error("A-IDN kernel requires d > 1");
+    }
 
    unsigned int alpha() const
    { return m_alpha; }
@@ -78,15 +78,15 @@ public:
    result_type operator()(const value_type& x, MODULUS n = 0) const
    { 
       if (x < std::numeric_limits<double>::epsilon()){
-         return 1 / m_denom; 
+         return 1.0 / m_denom; 
       }
       else{
-         return (1 - ( (double) (1 << m_min) - 1) / (1 << ( - (m_min - 1 ) * (int) std::floor(std::log2(x)) ))) / m_denom;
+         return (1.0 - (intPow(2.0, m_min) - 1.0) / intPow(2.0, - (m_min - 1 ) * (int) std::floor(std::log2(x)) ))   / m_denom;
       }
    }
 
    std::string name() const
-   { std::ostringstream os; os << "A-IDN" << alpha() << "-d" << interlacingFactor() ; return os.str(); }
+   { std::ostringstream os; os << "A-IDN - alpha:" << alpha() << " - interlacing: " << interlacingFactor() ; return os.str(); }
 
 private:
    unsigned int m_alpha;

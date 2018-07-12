@@ -18,6 +18,7 @@
 #define LATBUILDER__FUNCTOR__BIDN_H
 
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 
 #include <cmath>
 #include <sstream>
@@ -26,7 +27,7 @@ namespace LatBuilder { namespace Functor {
 
 /**
  * One-dimensional merit function for the \f$\mathcal B_{d, \gamma, (2)}\f$ discrepancy in base 2.
- * This merit function coincides with \f$ \phi_{d, (2)} \f$ in \cite rGOD15a.
+ * This merit function equals \f$ \phi_{d, (2)} \f$ in \cite rGOD15a.
  *
  * This merit function is defined as
  * \f[
@@ -47,11 +48,11 @@ public:
     */
    BIDN(unsigned int interlacingFactor):
       m_interlacingFactor(interlacingFactor),
-      m_factor( (double) (1 << (m_interlacingFactor - 1)) / ((1 << (m_interlacingFactor - 1)) - 1))
-   {}
-
-   unsigned int alpha() const
-   { return m_alpha; }
+      m_factor(intPow(2.0, m_interlacingFactor - 1) / (intPow(2.0, m_interlacingFactor - 1) - 1.0))
+   {
+        if (m_interlacingFactor < 2)
+            throw std::runtime_error("B-IDN kernel requires d > 1");
+   }
 
     unsigned int interlacingFactor() const
    { return m_interlacingFactor; }
@@ -73,7 +74,7 @@ public:
          return m_factor; 
       }
       else{
-         return m_factor * (1 -  (double) ( (1 << m_interlacingFactor) - 1) / (1 << ( - (m_interlacingFactor - 1 ) * (int) std::floor(std::log2(x)) )));
+         return m_factor * (1.0 -  ( intPow(2.0, m_interlacingFactor) - 1.0) / intPow(2.0, - (m_interlacingFactor - 1 ) * (int) std::floor(std::log2(x)) ));
       }
    }
 
@@ -81,7 +82,6 @@ public:
    { std::ostringstream os; os << "B-IDN" << "-d" << interlacingFactor() ; return os.str(); }
 
 private:
-   unsigned int m_alpha;
    unsigned int m_interlacingFactor;
    unsigned int m_min;
    result_type m_factor;

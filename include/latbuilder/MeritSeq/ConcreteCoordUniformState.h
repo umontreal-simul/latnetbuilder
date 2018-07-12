@@ -87,7 +87,7 @@ public:
    /**
     * Updates the current state using the specified row of the permuted matrix      
     * of kernel values.           
-    * This corresponds to appending a component \f$a_j\f$ to the generating      
+    * For lattices, this corresponds to appending a component \f$a_j\f$ to the generating      
     * vector \f$\boldsymbol a = (a_1, \dots, a_{j-1})\f$.      
     * To each possible value of \f$a_j\f$ corresponds a distinct row of the      
     * matrix \f$\boldsymbol\Omega\f$ of kernel values.           
@@ -185,5 +185,7 @@ private:
 #include "latbuilder/MeritSeq/ConcreteCoordUniformState-OD.h"
 #include "latbuilder/MeritSeq/ConcreteCoordUniformState-P.h"
 #include "latbuilder/MeritSeq/ConcreteCoordUniformState-POD.h"
+#include "latbuilder/MeritSeq/ConcreteCoordUniformState-IPOD.h"
+// #include "latbuilder/MeritSeq/ConcreteCoordUniformState-IPOD.h"
 
 #endif

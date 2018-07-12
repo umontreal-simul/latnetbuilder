@@ -24,6 +24,8 @@
 #include "latbuilder/Storage.h"
 #include "latbuilder/ClonePtr.h"
 
+#include <iostream>
+
 namespace LatBuilder { namespace MeritSeq {
 
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >

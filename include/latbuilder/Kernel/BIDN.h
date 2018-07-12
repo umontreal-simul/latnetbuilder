@@ -21,6 +21,8 @@
 #include "latbuilder/Kernel/FunctorAdaptor.h"
 #include "latbuilder/Functor/BIDN.h"
 
+#include "latticetester/PODWeights.h"
+
 namespace LatBuilder { namespace Kernel {
 
 class BIDN : public FunctorAdaptor<Functor::BIDN> {
@@ -33,6 +35,51 @@ public:
    {
        return functor().interlacingFactor();
    }
+
+    /**
+     * This class mimicks the LatticeTester::ProductWeights class.
+     * It is used to interlace weights of dimension \f$s\f$ into weights
+     * of dimension \f$ d s \f$. See Corollary 3. and Remark 1. of \cite rGOD15a.
+     * In the case of the \B_{d, \gamma, (2)}, the weights equal \f$ 2^{-l}\f$ for the
+     * \f$l\f$-th interlaced component. If \f$ j\f$ is a coordinate in the \f$ d s \f$-dimensional
+     * hypercube, the corresponding interlaced component equals \f j \mod d \f$.
+     */ 
+   struct CorrectionProductWeights{
+       
+    CorrectionProductWeights(const BIDN& kernel):
+        m_interlacingFactor(kernel.interlacingFactor())
+    {}
+
+    double getWeight(const LatticeTester::Coordinates & projection) const{
+        if (projection.empty())
+            return 0;
+
+        double w = 1.0;
+        LatticeTester::Coordinates::const_iterator it = projection.begin();
+        while (it != projection.end()) {
+            w *= getWeightForCoordinate(*it);
+            ++it;
+        }
+        return w;
+    }
+
+    double getWeightForCoordinate (LatticeTester::Coordinates::size_type coordinate) const  {
+        return (double) 1 / (1 << ((coordinate + 1) % m_interlacingFactor));
+    }
+
+    private:
+        unsigned int m_interlacingFactor;
+
+   };
+
+    /**
+     * Corrects POD weights in dimension \f$s\f$. In the case of this kernel, there is nothing to do. See
+     * Theorem 3. \in \cite rGOD13a.
+     */ 
+    void correctPODWeights(LatticeTester::PODWeights& weights) const{
+        return;
+    }
+
 };
 
 }}

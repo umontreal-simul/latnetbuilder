@@ -42,7 +42,7 @@ namespace NetBuilder {
 
     void expandSeries(const GenValue& genValue, const SizeParameter& sizeParameter, std::vector<unsigned int>& expansion, unsigned int expansion_limit){
         int m = (int) deg(sizeParameter); 
-        for(int l = 1; l<= expansion_limit ; l++){
+        for(int l = 1; l<= (int) expansion_limit ; l++){
             int res =  (m-l >=0 && IsOne(coeff(genValue, m-l)))? 1 : 0;
             int start = (l-m > 1) ? (l-m) : 1;
             for( int p = start; p < l; p++){
