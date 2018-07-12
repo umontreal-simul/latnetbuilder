@@ -77,7 +77,6 @@ private:
          CoordUniformStateList<LA, L, C, P>& list
          )
    {
-      std::cout << weights << std::endl;
       list.push_back(ClonePtr<MeritSeq::CoordUniformState<LA, L, C, P>>(
                new MeritSeq::ConcreteCoordUniformState<LA, L, C, P, WEIGHTS>(storage, weights)
                ));

@@ -66,12 +66,12 @@ class IPODWeights:
     private:
         typename KERNEL::CorrectionProductWeights m_correctionProductWeights;
         unsigned int m_interlacingFactor;
+        std::string m_KernelName;
 };
 
 extern template class IPODWeights<LatBuilder::Kernel::AIDNAlpha>;
 extern template class IPODWeights<LatBuilder::Kernel::BIDN>;
 
-// class IPODWeightsA: public IPODWeights<LatBuilder::Kernel::AIDNAlpha>{};
 }}
 
 #endif

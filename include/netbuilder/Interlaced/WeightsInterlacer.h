@@ -18,7 +18,7 @@
 #define NETBUILDER__INTERLACED__WEIGHTS_INTERLACER_H
 
 #include "latbuilder/WeightsDispatcher.h"
-#include "netbuilder/Interlaced/InterlacedWeights.h"
+#include "netbuilder/Interlaced/IPDWeights.h"
 #include <iostream>
 
 namespace NetBuilder { namespace Interlaced {
@@ -32,7 +32,17 @@ template<typename KERNEL, typename WEIGHTS>
 struct WeightsInterlacerHelper {
     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<WEIGHTS> w, const KERNEL& kernel) const
     { 
-        return std::make_unique<InterlacedWeights<KERNEL>>(std::move(w), kernel);
+        throw runtime_error("General weights cannot be interlaced.");
+        std::unique_ptr<LatticeTester::Weights> res;
+        return std::move(res);
+    }
+};
+
+template<typename KERNEL>
+struct WeightsInterlacerHelper<KERNEL, LatticeTester::ProjectionDependentWeights> {
+    std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<LatticeTester::ProjectionDependentWeights> w, const KERNEL& kernel) const
+    { 
+        return std::make_unique<IPDWeights<KERNEL>>(std::move(w), kernel);
     }
 };
 
@@ -40,7 +50,6 @@ template <typename KERNEL>
 struct WeightsInterlacerHelper<KERNEL, LatticeTester::ProductWeights> {
     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<LatticeTester::ProductWeights> w, const KERNEL& kernel) const
     { 
-        std::cout << "in weight interlacer helper - product" << std::endl;
         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);
     }
 };
@@ -81,79 +90,6 @@ std::unique_ptr<LatticeTester::Weights> WeightsInterlacer<WEIGHTS>:: operator()(
     return WeightsInterlacerHelper<KERNEL, WEIGHTS>()(std::move(w), kernel);
 }
 
-
-// template <typename KERNEL>
-// std::unique_ptr<LatticeTester::Weights> WeightsInterlacerContainer<KERNEL>:: template<> WeightsInterlacer<LatticeTester::ProductWeights>::operator()(std::unique_ptr<LatticeTester::ProductWeights> w, const KERNEL& kernel) const
-//     { 
-//         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);
-//     }
-
-// template <typename KERNEL>
-// std::unique_ptr<LatticeTester::Weights> WeightsInterlacerContainer<KERNEL>:: template<> WeightsInterlacer<LatticeTester::OrderDependentWeights>:: operator()(std::unique_ptr<LatticeTester::OrderDependentWeights> w, const KERNEL& kernel) const
-//     { 
-//         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);
-//     }
-
-// template <typename KERNEL>
-// std::unique_ptr<LatticeTester::Weights> WeightsInterlacerContainer<KERNEL>:: template<> WeightsInterlacer<LatticeTester::PODWeights>::operator()(std::unique_ptr<LatticeTester::PODWeights> w, const KERNEL& kernel) const
-//     { 
-//         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);
-//     }
-
-
-
-
-
-// #define WEIGHTS_INTERLACER(KERNEL)\
-// template <typename WEIGHTS>\
-// struct WeightsInterlacer {\
-//     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<WEIGHTS> w, const KERNEL& kernel) const\
-//     { \
-//         return std::make_unique<InterlacedWeights<KERNEL>>(std::move(w), kernel);\
-//     }\
-// };\
-// \
-// template <>\
-// struct WeightsInterlacer<LatticeTester::ProductWeights, KERNEL> {\
-//     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<LatticeTester::ProductWeights> w, const KERNEL& kernel) const\
-//     { \
-//         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);\
-//     }\
-// };\
-// \
-// template <>\
-// struct WeightsInterlacer<LatticeTester::OrderDependentWeights, KERNEL> {\
-//     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<LatticeTester::OrderDependentWeights> w, const KERNEL& kernel) const\
-//     { \
-//         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);\
-//     }\
-// };\
-// \
-// template <>\
-// struct WeightsInterlacer<LatticeTester::PODWeights, KERNEL> {\
-//     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<LatticeTester::PODWeights> w, const KERNEL& kernel) const\
-//     { \
-//         return std::make_unique<IPODWeights<KERNEL>>(std::move(w), kernel);\
-//     }\
-// };\
-// \
-// template <>\
-// struct WeightsInterlacer<LatBuilder::CombinedWeights> {\
-//     std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<LatBuilder::CombinedWeights> cw, const KERNEL& kernel) const\
-//     { \
-//         auto res = std::make_unique<LatBuilder::CombinedWeights>();\
-//         for (auto& w: cw->list()){\
-//             auto foo = LatBuilder::WeightsDispatcher::dispatchPtr<WeightsInterlacer>(std::move(w), kernel);\
-//             res->add(std::move(foo));\
-//         }\
-//         return std::move(res);\
-//     }\
-// };\
-
-// WEIGHTS_INTERLACER(LatBuilder::Kernel::AIDNAlpha);
-// WEIGHTS_INTERLACER(LatBuilder::Kernel::BIDN);
-
-// #undef WEIGHTS_INTERLACER
 
 }}
 

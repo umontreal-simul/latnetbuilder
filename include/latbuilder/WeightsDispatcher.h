@@ -24,7 +24,6 @@
 #include "latticetester/OrderDependentWeights.h"
 #include "latticetester/ProductWeights.h"
 #include "latticetester/PODWeights.h"
-// #include "netbuilder/Interlaced/FakePODWeights.h"
 #include "netbuilder/Interlaced/IPODWeights.h"
 
 namespace LatBuilder {
@@ -41,12 +40,10 @@ public:
    dispatch(const LatticeTester::Weights& weights, ARGS&&... args)
    {
       try { return tryDispatch<F, CombinedWeights                      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      // try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeightsA      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::ProductWeights            >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::OrderDependentWeights     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      // try { return tryDispatch<F, NetBuilder::Interlaced::FakePODWeights<LatBuilder::Kernel::AIDNAlpha>                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::PODWeights                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::ProjectionDependentWeights>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::Weights                   >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
@@ -63,12 +60,10 @@ public:
    dispatchPtr(std::unique_ptr<LatticeTester::Weights> weights, ARGS&&... args)
    {
       try { return tryDispatchPtr<F, CombinedWeights                      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      // try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeightsA      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::ProductWeights            >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::OrderDependentWeights     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      // try { return tryDispatchPtr<F, NetBuilder::Interlaced::FakePODWeights<LatBuilder::Kernel::AIDNAlpha>                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::PODWeights                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::ProjectionDependentWeights>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::Weights                   >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}

@@ -24,7 +24,8 @@ namespace NetBuilder { namespace Interlaced
 using LatticeTester::Coordinates;
 
 template<typename KERNEL> IPODWeights<KERNEL>:: IPODWeights(std::unique_ptr<LatticeTester::ProductWeights> weights, const KERNEL& kernel):
-m_correctionProductWeights(kernel)
+m_correctionProductWeights(kernel),
+m_KernelName(kernel.name())
 {
     getOrderDependentWeights().setDefaultWeight(1);
     getProductWeights() = *weights;
@@ -33,7 +34,8 @@ m_correctionProductWeights(kernel)
 }
 
 template<typename KERNEL> IPODWeights<KERNEL>:: IPODWeights(std::unique_ptr<LatticeTester::OrderDependentWeights> weights, const KERNEL& kernel):
-m_correctionProductWeights(kernel)
+m_correctionProductWeights(kernel),
+m_KernelName(kernel.name())
 {
     getOrderDependentWeights() = *weights;
     getProductWeights().setDefaultWeight(1);
@@ -42,7 +44,8 @@ m_correctionProductWeights(kernel)
 }
 
 template<typename KERNEL> IPODWeights<KERNEL>:: IPODWeights(std::unique_ptr<LatticeTester::PODWeights> weights, const KERNEL& kernel):
-m_correctionProductWeights(kernel)
+m_correctionProductWeights(kernel),
+m_KernelName(kernel.name())
 {
     getOrderDependentWeights() = weights->getOrderDependentWeights();
     getProductWeights() = weights->getProductWeights();
@@ -72,7 +75,7 @@ template<typename KERNEL> double IPODWeights<KERNEL>::getCorrectionProductWeight
 
 template<typename KERNEL> void IPODWeights<KERNEL>::format(std::ostream& os) const
 {
-    os << "IPOD(" << m_interlacingFactor << ", " << static_cast<LatticeTester::PODWeights>(*this) << ")";
+    os << "IPODWeights(" << m_KernelName << ", " << static_cast<LatticeTester::PODWeights>(*this) << ")";
 }
 
 

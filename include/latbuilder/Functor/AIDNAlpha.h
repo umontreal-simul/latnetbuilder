@@ -49,7 +49,7 @@ public:
       m_alpha(alpha),
       m_interlacingFactor(interlacingFactor),
       m_min(std::min(m_alpha, m_interlacingFactor)),
-      m_denom((sqrt( 1 << (m_alpha + 2)) * ( (1 << (m_min - 1)) -1 )))
+      m_denom(sqrt( intPow(2.0, m_alpha + 2)) * ( (intPow(2.0, m_min - 1) - 1.0 )))
    {}
 
    unsigned int alpha() const
@@ -71,15 +71,15 @@ public:
    result_type operator()(const value_type& x, MODULUS n = 0) const
    { 
       if (x < std::numeric_limits<double>::epsilon()){
-         return 1 / m_denom; 
+         return 1.0 / m_denom; 
       }
       else{
-         return (1 - ( (double) (1 << m_min) - 1) / (1 << ( - (m_min - 1 ) * (int) std::floor(std::log2(x)) ))) / m_denom;
+         return (1.0 - (intPow(2.0, m_min) - 1.0) / intPow(2.0, - (m_min - 1 ) * (int) std::floor(std::log2(x)) ))   / m_denom;
       }
    }
 
    std::string name() const
-   { std::ostringstream os; os << "A-IDN" << alpha() << "-d" << interlacingFactor() ; return os.str(); }
+   { std::ostringstream os; os << "A-IDN - alpha:" << alpha() << " - interlacing: " << interlacingFactor() ; return os.str(); }
 
 private:
    unsigned int m_alpha;

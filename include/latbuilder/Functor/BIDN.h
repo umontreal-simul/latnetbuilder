@@ -18,6 +18,7 @@
 #define LATBUILDER__FUNCTOR__BIDN_H
 
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 
 #include <cmath>
 #include <sstream>
@@ -47,7 +48,7 @@ public:
     */
    BIDN(unsigned int interlacingFactor):
       m_interlacingFactor(interlacingFactor),
-      m_factor( (double) (1 << (m_interlacingFactor - 1)) / ((1 << (m_interlacingFactor - 1)) - 1))
+      m_factor(intPow(2.0, m_interlacingFactor - 1) / (intPow(2.0, m_interlacingFactor - 1) - 1.0))
    {}
 
    unsigned int alpha() const
@@ -73,7 +74,7 @@ public:
          return m_factor; 
       }
       else{
-         return m_factor * (1 -  (double) ( (1 << m_interlacingFactor) - 1) / (1 << ( - (m_interlacingFactor - 1 ) * (int) std::floor(std::log2(x)) )));
+         return m_factor * (1.0 -  ( intPow(2.0, m_interlacingFactor) - 1.0) / intPow(2.0, - (m_interlacingFactor - 1 ) * (int) std::floor(std::log2(x)) ));
       }
    }
 
