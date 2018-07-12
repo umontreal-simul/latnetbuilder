@@ -25,15 +25,16 @@
 namespace LatBuilder { namespace Functor {
 
 /**
- * One-dimensional merit function for the \f$\mathcal P_\alpha\f$ discrepancy. TODO
+ * One-dimensional merit function for the \f$\mathcal B_{d, \gamma, (2)}\f$ discrepancy in base 2.
+ * This merit function coincides with \f$ \phi_{d, (2)} \f$ in \cite rGOD15a.
  *
  * This merit function is defined as
  * \f[
- *    \omega(x) =
- *    -\frac{(-4\pi^2)^{\alpha/2}}{\alpha!} \, B_\alpha(x),
+ *    \phi_{\d, (2)}(x) =
+ *    \frac{2^{d-1}(1 - 2^{(d -1) \lfloor \log_2(x) \rfloor} (2^{d} -1))}{(2^{d - 1} -1) }
  * \f]
- * for even integers \f$\alpha\f$, where \f$B_\alpha(x)\f$ is the Bernoulli
- * polynomial of degree \f$\alpha\f$.
+ * with \f$ d \geq 2 \f$ where we set \f$2^{\lfloor \log_2(0) \rfloor}
+ = 0\f$.
  */
 class BIDN {
 public:
@@ -42,8 +43,7 @@ public:
 
    /**
     * Constructor.
-    *
-    * \param alpha     Value of \f$\alpha\f$.
+    * \param interlacingFactor Value of \f$d\d$.
     */
    BIDN(unsigned int interlacingFactor):
       m_interlacingFactor(interlacingFactor),

@@ -25,15 +25,16 @@
 namespace LatBuilder { namespace Functor {
 
 /**
- * One-dimensional merit function for the \f$\mathcal P_\alpha\f$ discrepancy. TODO
+ * One-dimensional merit function for the \f$\mathcal B_{\alpha, d, \gamma, (1)}\f$ discrepancy in base 2.
+ * This merit function coincides with \f$ \phi_{\alpha, d, (1)} \f$ in \cite rGOD15a.
  *
  * This merit function is defined as
  * \f[
- *    \omega(x) =
- *    -\frac{(-4\pi^2)^{\alpha/2}}{\alpha!} \, B_\alpha(x),
+ *    \phi_{\alpha, d, (1)}(x) =
+ *    \frac{1 - 2^{(\min(\alpha, d) -1) \lfloor \log_2(x) \rfloor} (2^{\min(\alpha, d)} -1)}{2^{(\alpha+2)/2} (2^{\min(\alpha, d) - 1} -1) }
  * \f]
- * for even integers \f$\alpha\f$, where \f$B_\alpha(x)\f$ is the Bernoulli
- * polynomial of degree \f$\alpha\f$.
+ * with \f$ \alpha \geq 2 \f$ and \f$ d \geq 2 \f$ where we set \f$2^{\lfloor \log_2(0) \rfloor}
+ = 0\f$.
  */
 class AIDNAlpha {
 public:
@@ -44,13 +45,19 @@ public:
     * Constructor.
     *
     * \param alpha     Value of \f$\alpha\f$.
+    * \param interlacingFactor Value of \f$d\f$.
     */
    AIDNAlpha(unsigned int alpha, unsigned int interlacingFactor):
       m_alpha(alpha),
       m_interlacingFactor(interlacingFactor),
       m_min(std::min(m_alpha, m_interlacingFactor)),
       m_denom((sqrt( 1 << (m_alpha + 2)) * ( (1 << (m_min - 1)) -1 )))
-   {}
+   {
+       if (m_alpha < 2)
+        throw std::runtime_error("A-IDN kernel requires alpha > 1");
+       if (m_interlacingFactor < 2)
+        throw std::runtime_error("AIDN kernel requires d > 1");
+   }
 
    unsigned int alpha() const
    { return m_alpha; }
