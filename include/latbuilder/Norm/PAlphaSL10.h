@@ -17,7 +17,7 @@
 #ifndef LATBUILDER__NORM__PALPHA_SL10_H
 #define LATBUILDER__NORM__PALPHA_SL10_H
 
-#include "latbuilder/Norm/PAlphaBase.h"
+#include "latbuilder/Norm/NormAlphaBase.h"
 #include "latbuilder/Types.h"
 #include "latbuilder/CombinedWeights.h"
 
@@ -31,7 +31,7 @@ namespace LatBuilder { namespace Norm {
 /**
  * Bound on the weighted \f$\mathcal P_\alpha\f$ discrepancy.
  *
- * This is the general bound derived in Theorem 3 of \cite rSIN11a for
+ * This is the general bound derived in Theorem 3 of \cite rSIN12a for
  * projection-dependent weights.
  * The theorem states that, for \f$\mathcal D^2(\boldsymbol a_s, n)
  * = \mathcal P_\alpha(\boldsymbol a_s, n)\f$, there exists a generating vector
@@ -110,7 +110,7 @@ namespace LatBuilder { namespace Norm {
  * for \f$\ell \geq 1\f$ and \f$y_0(\lambda) = 1\f$.
  *
  */
-class PAlphaSL10 : public PAlphaBase<PAlphaSL10> {
+class PAlphaSL10 : public NormAlphaBase<PAlphaSL10> {
 public:
    /**
     * Constructor.

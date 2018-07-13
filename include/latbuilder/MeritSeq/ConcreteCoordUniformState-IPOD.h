@@ -32,13 +32,13 @@ template <LatticeType LR, EmbeddingType ET, Compress COMPRESS , PerLevelOrder PL
 /**
  * Implementation of CoordUniformState for IPOD weights.
  * For this type of weights, the information used to compute the weighted state \f$\boldsymbol q_s\f$ can be stored in:
- * \[
+ * \f[
  *  \boldsymbol p_{j,l} = \sum_{\substack{\mathfrak{u} \subset \{1, \dots, jd\} \\ |w(u)|=l }} \delta_\mathfrak{u} \gamma_\mathfrak{u} \boldsymbol p_\mathfrak{u}.
-   \]
+   \f]
  * Recall that \f$d\f$ is the interlacing factor and \f$ s \f$ the dimension of the point set.
  */
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
-class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>> :
+class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>> :
    public CoordUniformState<LR, ET, COMPRESS, PLO> {
 public:
    /**
@@ -52,7 +52,7 @@ public:
     */
      ConcreteCoordUniformState(
          const Storage<LR, ET, COMPRESS, PLO>& storage,
-         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>& weights
+         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>& weights
          );
 
    void reset();
@@ -92,7 +92,7 @@ public:
    { return std::unique_ptr<CoordUniformState<LR, ET, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
-   const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>& m_weights;
+   const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>& m_weights;
    unsigned int m_interlacingFactor;
 
    RealVector m_elemPolySum;
@@ -104,12 +104,12 @@ private:
 
 
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
-class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>> :
+class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>> :
    public CoordUniformState<LR, ET, COMPRESS, PLO> {
 public:
      ConcreteCoordUniformState(
          const Storage<LR, ET, COMPRESS, PLO>& storage,
-         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>& weights
+         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>& weights
          );
 
    void reset();
@@ -119,7 +119,7 @@ public:
    { return std::unique_ptr<CoordUniformState<LR, ET, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
 
 private:
-   const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>& m_weights;
+   const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>& m_weights;
    unsigned int m_interlacingFactor;
 
    RealVector m_elemPolySum; // equals the left sum in the formula for the weighted state q
@@ -127,36 +127,36 @@ private:
    std::vector<RealVector> m_state;
 };
 
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
 
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::AIDNAlpha>>;
-
-
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
 
 
-extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
 
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
-extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::BIDN>>;
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
 
 }}
 

@@ -29,8 +29,8 @@
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Kernel/PAlphaPLR.h"
 #include "latbuilder/Kernel/RPLR.h"
-#include "latbuilder/Kernel/AIDNAlpha.h"
-#include "latbuilder/Kernel/BIDN.h"
+#include "latbuilder/Kernel/IAAlpha.h"
+#include "latbuilder/Kernel/IB.h"
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -62,10 +62,10 @@ class BadFigure : public lbp::ParserError
 };
 
 // template <typename WEIGHTS>
-// using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::AIDNAlpha>::WeightsInterlacer<WEIGHTS>;
+// using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IAAlpha>::WeightsInterlacer<WEIGHTS>;
 
 // template <typename WEIGHTS>
-// using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::BIDN>::WeightsInterlacer<WEIGHTS>;
+// using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IB>::WeightsInterlacer<WEIGHTS>;
 
 
 /**
@@ -112,15 +112,15 @@ struct FigureParser
                 auto kernel = LatBuilder::Kernel::RPLR();
                 return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
             }
-            else if (figureDescriptionStrings.back() == "B")
+            else if (figureDescriptionStrings.back() == "IB")
             {
                 if(commandLine.m_normType != 1)
                     throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
                 if (commandLine.m_interlacingFactor == 1)
                     throw BadFigure("interlacing factor must be larger than `1` for " + commandLine.s_figure + ".");
-                auto kernel = LatBuilder::Kernel::BIDN(commandLine.m_interlacingFactor);
+                auto kernel = LatBuilder::Kernel::IB(commandLine.m_interlacingFactor);
                 weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::BIDN, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IB, ET>>(std::move(weights), kernel, commandLine.m_combiner);
             }
             else if (figureDescriptionStrings.back().front() == 'P')
             {
@@ -132,16 +132,16 @@ struct FigureParser
                 auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
                 return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
             }
-            else if (figureDescriptionStrings.back().front() == 'A')
+            else if (figureDescriptionStrings.back().substr(0,2) == "IA")
             {
                 if(commandLine.m_normType != 1)
                     throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
                 if (commandLine.m_interlacingFactor == 1)
                     throw BadFigure("interlacing factor must be larger than `1`(default) for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
-                auto kernel = LatBuilder::Kernel::AIDNAlpha(alpha, commandLine.m_interlacingFactor);
+                auto kernel = LatBuilder::Kernel::IAAlpha(alpha, commandLine.m_interlacingFactor);
                 weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::AIDNAlpha, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IAAlpha, ET>>(std::move(weights), kernel, commandLine.m_combiner);
             }
             else
             {

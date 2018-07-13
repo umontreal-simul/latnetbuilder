@@ -29,7 +29,7 @@ Figures of merit implemented by LatNet Builder have the following form:
     D(P_n)^q = \sum_{\emptyset \neq \mathfrak u \subseteq {1, \dots, s}}\left(\gamma_{\mathfrak u} D_{\mathfrak u}(P_n)\right)^q.
 \f]
 
-where \f$D(P_n)\f is the merit value of the point set \f$P_n\f$ and \f$ D_{\mathfrak u}(P_n) \f$ its projection-dependent merit value.
+where \f$D(P_n)\f$ is the merit value of the point set \f$P_n\f$ and \f$ D_{\mathfrak u}(P_n) \f$ its projection-dependent merit value.
 
 LatNet Builder implements various projection-dependent merit which depends on the point set type. 
 

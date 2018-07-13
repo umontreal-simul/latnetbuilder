@@ -17,8 +17,8 @@
 #ifndef NET_BUILDER__INTERLACED__IPOD_WEIGHTS_H
 #define NET_BUILDER__INTERLACED__IPOD_WEIGHTS_H
 
-#include "latbuilder/Kernel/AIDNAlpha.h"
-#include "latbuilder/Kernel/BIDN.h"
+#include "latbuilder/Kernel/IAAlpha.h"
+#include "latbuilder/Kernel/IB.h"
 
 #include "latticetester/Coordinates.h"
 #include "latticetester/Weights.h"
@@ -36,7 +36,7 @@ using LatticeTester::Coordinates;
 
 /**
  * Class to represent interlaced POD weights.
- * Uses operator \f$w\f$ defined in Corollary 1. of \cite rGOD15a to transform weights in dimension \f$s\f$ into weights
+ * Uses operator \f$w\f$ defined in Corollary 1. of \cite rGOD13a to transform weights in dimension \f$s\f$ into weights
  * in dimension \f$ds\f$. 
  * If \f$ \mathfrak u \subseteq \{1, \dots, ds\},\f$, \f$w(\mathfrak u) = \{ \lceil j/d \rceil, j \in \mathfrak u\}\f$.
  * Additionally, depending on the kernel, corrections must be made. This corresponds to the correction product weights \f$\delta\f$
@@ -83,7 +83,7 @@ class IPODWeights:
         /**
          * Returns the interlacing factor.
          */ 
-        unsigned int interlacingFactor() const;
+        virtual unsigned int interlacingFactor() const override;
 
         /**
          * Returns the correction product weight \f$\delta_j\f$.
@@ -94,9 +94,9 @@ class IPODWeights:
         /**
          * Returns a const reference to the corrected base weights.
          * More precisely these weights equal: 
-         * \[
+         * \f[
          *  \{1, \dots, s \} \supseteq \mathfrak u \mapsto gamma_{\mathfrak u} \Gamma_{|\mathfrak u|}
-         * \]
+         * \f]
          */ 
         const LatticeTester::PODWeights& getBaseWeights() const;
 
@@ -119,8 +119,8 @@ class IPODWeights:
         std::string m_kernelName;
 };
 
-extern template class IPODWeights<LatBuilder::Kernel::AIDNAlpha>;
-extern template class IPODWeights<LatBuilder::Kernel::BIDN>;
+extern template class IPODWeights<LatBuilder::Kernel::IAAlpha>;
+extern template class IPODWeights<LatBuilder::Kernel::IB>;
 
 }}
 

@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NET_BUILDER__INTERLACED__INTERLACED_WEIGHTS
-#define NET_BUILDER__INTERLACED__INTERLACED_WEIGHTS
+#ifndef NET_BUILDER__INTERLACED__IPD_WEIGHTS_H
+#define NET_BUILDER__INTERLACED__IPD_WEIGHTS_H
 
-#include "latbuilder/Kernel/AIDNAlpha.h"
-#include "latbuilder/Kernel/BIDN.h"
+#include "latbuilder/Kernel/IAAlpha.h"
+#include "latbuilder/Kernel/IB.h"
 
 #include "latticetester/Coordinates.h"
 #include "latticetester/ProjectionDependentWeights.h"
@@ -32,7 +32,7 @@ namespace NetBuilder { namespace Interlaced
 
 /**
  * Class to represent interlaced projection-dependent weights.
- * Uses operator \f$w\f$ defined in Corollary 1. of \cite rGOD15a to transform weights in dimension \f$s\f$ into weights
+ * Uses operator \f$w\f$ defined in Corollary 1. of \cite rGOD13a to transform weights in dimension \f$s\f$ into weights
  * in dimension \f$ds\f$. 
  * If \f$ \mathfrak u \subseteq \{1, \dots, ds\},\f$, \f$w(\mathfrak u) = \{ \lceil j/d \rceil, j \in \mathfrak u\}\f$.
  * Additionally, depending on the kernel, corrections must be made. This corresponds to the correction product weights \f$\delta\f$
@@ -52,6 +52,7 @@ class IPDWeights: public LatticeTester::ProjectionDependentWeights
         /**
          * Constructor.
          * @param weights Projection dependent weights to interlace.
+         * @param kernel Interlaced kernel.
          */ 
         IPDWeights(std::unique_ptr<LatticeTester::ProjectionDependentWeights> weights, const KERNEL& kernel);
 
@@ -64,16 +65,16 @@ class IPDWeights: public LatticeTester::ProjectionDependentWeights
         /**
          * Returns a const reference to the corrected base weights.
          * More precisely these weights equal: 
-         * \[
+         * \f[
          *  \{1, \dots, s \} \supseteq \mathfrak u \mapsto gamma_{\mathfrak u} \Gamma_{|\mathfrak u|}
-         * \]
+         * \f]
          */ 
         const LatticeTester::ProjectionDependentWeights& getBaseWeights() const;
 
         /**
          * Returns the interlacing factor.
          */ 
-        unsigned int interlacingFactor() const;
+        virtual unsigned int interlacingFactor() const override;
 
     private:
         unsigned int m_interlacingFactor;
@@ -90,8 +91,8 @@ class IPDWeights: public LatticeTester::ProjectionDependentWeights
 
 };
 
-extern template class IPDWeights<LatBuilder::Kernel::AIDNAlpha>;
-extern template class IPDWeights<LatBuilder::Kernel::BIDN>;
+extern template class IPDWeights<LatBuilder::Kernel::IAAlpha>;
+extern template class IPDWeights<LatBuilder::Kernel::IB>;
 
 }}
 

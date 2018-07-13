@@ -31,7 +31,7 @@ namespace LatBuilder { namespace Norm {
  * Base class for bounds on the \f$\mathcal P_\alpha\f$ values.
  */
 template <class DERIVED>
-class PAlphaBase
+class NormAlphaBase
 {
 public:
    /// Maximum number of iterations to be used with the minimizer.
@@ -46,7 +46,7 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaBase(unsigned int alpha, Real normType):
+   NormAlphaBase(unsigned int alpha, Real normType):
       m_alpha(alpha), m_normType(normType)
    {
       // bounds for minimization domain
@@ -113,7 +113,7 @@ public:
       boost::uintmax_t iter = MINIMIZER_MAX_ITER;
 
       std::pair<Real, Real> result = boost::math::tools::brent_find_minima(
-            std::bind(&PAlphaBase::value<LR, L>, this,
+            std::bind(&NormAlphaBase::value<LR, L>, this,
                std::placeholders::_1, sizeParam, dimension, norm),
             minExp(),
             maxExp(),

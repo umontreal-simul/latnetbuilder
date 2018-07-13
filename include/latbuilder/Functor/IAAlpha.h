@@ -14,11 +14,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__FUNCTOR__BIDN_H
-#define LATBUILDER__FUNCTOR__BIDN_H
+#ifndef LATBUILDER__FUNCTOR__IAALPHA_H
+#define LATBUILDER__FUNCTOR__IAALPHA_H
 
 #include "latbuilder/Types.h"
-#include "latbuilder/Util.h"
 
 #include <cmath>
 #include <sstream>
@@ -26,37 +25,45 @@
 namespace LatBuilder { namespace Functor {
 
 /**
- * One-dimensional merit function for the \f$\mathcal B_{d, \gamma, (2)}\f$ discrepancy in base 2.
- * This merit function equals \f$ \phi_{d, (2)} \f$ in \cite rGOD15a.
+ * One-dimensional merit function for the \f$\mathcal B_{\alpha, d, \gamma, (1)}\f$ discrepancy in base 2.
+ * This merit function equals \f$ \phi_{\alpha, d, (1)} \f$ in \cite rGOD13a.
  *
  * This merit function is defined as
  * \f[
- *    \phi_{\d, (2)}(x) =
- *    \frac{2^{d-1}(1 - 2^{(d -1) \lfloor \log_2(x) \rfloor} (2^{d} -1))}{(2^{d - 1} -1) }
+ *    \phi_{\alpha, d, (1)}(x) =
+ *    \frac{1 - 2^{(\min(\alpha, d) -1) \lfloor \log_2(x) \rfloor} (2^{\min(\alpha, d)} -1)}{2^{(\alpha+2)/2} (2^{\min(\alpha, d) - 1} -1) }
  * \f]
- * with \f$ d \geq 2 \f$ where we set \f$2^{\lfloor \log_2(0) \rfloor}
+ * with \f$ \min(\alpha, d) > 1 \f$ where we set \f$2^{\lfloor \log_2(0) \rfloor}
  = 0\f$.
  */
-class BIDN {
+class IAAlpha {
 public:
    typedef Real value_type;
    typedef Real result_type;
 
    /**
     * Constructor.
-    * \param interlacingFactor Value of \f$d\d$.
+    *
+    * \param alpha     Value of \f$\alpha\f$.
+    * \param interlacingFactor Value of \f$d\f$.
     */
-   BIDN(unsigned int interlacingFactor):
+   IAAlpha(unsigned int alpha, unsigned int interlacingFactor):
+      m_alpha(alpha),
       m_interlacingFactor(interlacingFactor),
-      m_factor(intPow(2.0, m_interlacingFactor - 1) / (intPow(2.0, m_interlacingFactor - 1) - 1.0))
-   {
-        if (m_interlacingFactor < 2)
-            throw std::runtime_error("B-IDN kernel requires d > 1");
-   }
+      m_min(std::min(m_alpha, m_interlacingFactor)),
+      m_denom(sqrt( intPow(2.0, m_alpha + 2)) * ( (intPow(2.0, m_min - 1) - 1.0 )))
+    {
+       if (m_alpha < 2)
+        throw std::runtime_error("Interlaced A alpha kernel requires alpha > 1");
+       if (m_interlacingFactor < 2)
+        throw std::runtime_error("Interlaced A alpha kernel requires interlacing factor > 1");
+    }
 
-    unsigned int interlacingFactor() const
+   unsigned int alpha() const
+   { return m_alpha; }
+
+   unsigned int interlacingFactor() const
    { return m_interlacingFactor; }
-
 
    bool symmetric() const
    { return false; }
@@ -71,20 +78,21 @@ public:
    result_type operator()(const value_type& x, MODULUS n = 0) const
    { 
       if (x < std::numeric_limits<double>::epsilon()){
-         return m_factor; 
+         return 1.0 / m_denom; 
       }
       else{
-         return m_factor * (1.0 -  ( intPow(2.0, m_interlacingFactor) - 1.0) / intPow(2.0, - (m_interlacingFactor - 1 ) * (int) std::floor(std::log2(x)) ));
+         return (1.0 - (intPow(2.0, m_min) - 1.0) / intPow(2.0, - (m_min - 1 ) * (int) std::floor(std::log2(x)) ))   / m_denom;
       }
    }
 
    std::string name() const
-   { std::ostringstream os; os << "B-IDN" << "-d" << interlacingFactor() ; return os.str(); }
+   { std::ostringstream os; os << "IA - alpha: " << alpha() << " - interlacing: " << interlacingFactor() ; return os.str(); }
 
 private:
+   unsigned int m_alpha;
    unsigned int m_interlacingFactor;
    unsigned int m_min;
-   result_type m_factor;
+   result_type m_denom;
 
 };
 
@@ -92,7 +100,7 @@ private:
  * Formats \c functor and outputs it on \c os.
  */
 inline
-std::ostream& operator<<(std::ostream& os, const BIDN& functor)
+std::ostream& operator<<(std::ostream& os, const IAAlpha& functor)
 { return os << functor.name(); }
 
 }}

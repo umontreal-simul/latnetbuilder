@@ -25,6 +25,7 @@
 #include "latticetester/ProductWeights.h"
 #include "latticetester/PODWeights.h"
 #include "netbuilder/Interlaced/IPODWeights.h"
+#include "netbuilder/Interlaced/IPDWeights.h"
 
 namespace LatBuilder {
 
@@ -39,10 +40,11 @@ public:
    typename std::result_of<F<LatticeTester::Weights>(const LatticeTester::Weights&, ARGS&&...)>::type
    dispatch(const LatticeTester::Weights& weights, ARGS&&... args)
    {
-      try { return tryDispatch<F, CombinedWeights                      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      // The two following weights must be tried before PODWeights because of the inheritance structure of weights.
-      try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, CombinedWeights                                       >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeights<Kernel::IAAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, NetBuilder::Interlaced::IPODWeights<Kernel::IB>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, NetBuilder::Interlaced::IPDWeights<Kernel::IAAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, NetBuilder::Interlaced::IPDWeights<Kernel::IB>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::ProductWeights                         >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::OrderDependentWeights                  >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::PODWeights                             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
@@ -61,9 +63,10 @@ public:
    dispatchPtr(std::unique_ptr<LatticeTester::Weights> weights, ARGS&&... args)
    {
       try { return tryDispatchPtr<F, CombinedWeights                                       >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-            // The two following weights must be tried before PODWeights because of the inheritance structure of weights.
-      try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeights<Kernel::AIDNAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeights<Kernel::BIDN>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeights<Kernel::IAAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPODWeights<Kernel::IB>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPDWeights<Kernel::IAAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, NetBuilder::Interlaced::IPDWeights<Kernel::IB>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::ProductWeights                         >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::OrderDependentWeights                  >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::PODWeights                             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}

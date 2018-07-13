@@ -101,6 +101,6 @@ template<typename KERNEL> void IPODWeights<KERNEL>::format(std::ostream& os) con
 }
 
 
-template class IPODWeights<LatBuilder::Kernel::AIDNAlpha>;
-template class IPODWeights<LatBuilder::Kernel::BIDN>;
+template class IPODWeights<LatBuilder::Kernel::IAAlpha>;
+template class IPODWeights<LatBuilder::Kernel::IB>;
 }}

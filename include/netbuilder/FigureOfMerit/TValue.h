@@ -31,7 +31,7 @@ namespace NetBuilder { namespace FigureOfMerit {
  * Note that this algorithm has strong similiarities with
  * the coordinate-uniform evaluation algorithm used for kernel-based
  * figures. That is why the Storage class from LatBuilder is used here,
- * with the same trick as for as CoordUniformFigureOfMerit.
+ * with the same trick as for CoordUniformFigureOfMerit.
  */
 template <EmbeddingType ET>
 class TValue : public FigureOfMerit

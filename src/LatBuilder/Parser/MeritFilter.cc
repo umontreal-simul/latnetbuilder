@@ -20,6 +20,8 @@
 #include "latbuilder/Norm/Normalizer.h"
 #include "latbuilder/Norm/PAlphaSL10.h"
 #include "latbuilder/Norm/PAlphaDPW08.h"
+#include "latbuilder/Norm/IAAlphaG15.h"
+#include "latbuilder/Norm/IBG15.h"
 #include "latbuilder/Functor/LowPass.h"
 
 #include <boost/lexical_cast.hpp>
@@ -81,6 +83,18 @@ namespace {
                   return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
                else if (strSplit.second == "DPW08")
                   return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);
+            }
+            if (strSplit.first[0] == 'I')
+            {
+                  if (strSplit.first[1] == 'A')
+                  {
+                        const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(2));
+                        return createNormalizer<LR, LatBuilder::Norm::IAAlphaG15, ET>(alpha, sizeParam, weights, normType, args.second);
+                  }
+                  if (strSplit.first[1] == 'B')
+                  {
+                        return createNormalizer<LR, LatBuilder::Norm::IBG15, ET>(weights.interlacingFactor(), sizeParam, weights, normType, args.second);
+                  }
             }
          }
          catch (boost::bad_lexical_cast&) {}

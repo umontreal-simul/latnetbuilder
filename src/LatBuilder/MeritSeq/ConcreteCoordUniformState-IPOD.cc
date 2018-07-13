@@ -127,8 +127,8 @@ template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UN
 template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
 
 
-CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::AIDNAlpha);
-CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::BIDN);
+CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::IAAlpha);
+CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::IB);
 
 #undef CONCRETE_COORD_UNIF_STATE
 

@@ -114,7 +114,7 @@ namespace {
 }
 
 PAlphaDPW08::PAlphaDPW08(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
-   PAlphaBase<PAlphaDPW08>(alpha, normType),
+   NormAlphaBase<PAlphaDPW08>(alpha, normType),
    m_weights(weights)
 {}
 

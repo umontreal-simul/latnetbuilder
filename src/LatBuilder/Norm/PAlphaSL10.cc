@@ -218,7 +218,7 @@ namespace {
 }
 
 PAlphaSL10::PAlphaSL10(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
-   PAlphaBase<PAlphaSL10>(alpha, normType),
+   NormAlphaBase<PAlphaSL10>(alpha, normType),
    m_weights(weights)
 {}
 

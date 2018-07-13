@@ -82,7 +82,7 @@ void IPDWeights<KERNEL>::format(std::ostream& os) const
     os << "IPDWeights(" << m_kernelName << ", " << static_cast<LatticeTester::ProjectionDependentWeights>(*this) << ")"; // TODO
 }
 
-template class IPDWeights<LatBuilder::Kernel::AIDNAlpha>;
-template class IPDWeights<LatBuilder::Kernel::BIDN>;
+template class IPDWeights<LatBuilder::Kernel::IAAlpha>;
+template class IPDWeights<LatBuilder::Kernel::IB>;
 
 }}

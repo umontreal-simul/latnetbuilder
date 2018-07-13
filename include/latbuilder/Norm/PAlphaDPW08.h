@@ -17,7 +17,7 @@
 #ifndef LATBUILDER__NORM__PALPHA_DICK08_H
 #define LATBUILDER__NORM__PALPHA_DICK08_H
 
-#include "latbuilder/Norm/PAlphaBase.h"
+#include "latbuilder/Norm/NormAlphaBase.h"
 #include "latbuilder/Types.h"
 
 #include "latticetester/ProductWeights.h"
@@ -34,7 +34,7 @@ namespace LatBuilder { namespace Norm {
  * \f]
  * from Theorem 10 (with the minimization step proposed in Algorithm 2) in \cite vDIC08c .
  */
-class PAlphaDPW08 : public PAlphaBase<PAlphaDPW08> {
+class PAlphaDPW08 : public NormAlphaBase<PAlphaDPW08> {
 public:
    /**
     * Constructor.

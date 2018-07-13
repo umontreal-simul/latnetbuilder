@@ -14,20 +14,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__KERNEL__BIDN_H
-#define LATBUILDER__KERNEL__BIDN_H
+#ifndef LATBUILDER__KERNEL__IB_H
+#define LATBUILDER__KERNEL__IB_H
 
 #include "latbuilder/Kernel/Base.h"
 #include "latbuilder/Kernel/FunctorAdaptor.h"
-#include "latbuilder/Functor/BIDN.h"
+#include "latbuilder/Functor/IB.h"
+#include "latbuilder/Util.h"
 
 #include "latticetester/PODWeights.h"
 
 namespace LatBuilder { namespace Kernel {
 
-class BIDN : public FunctorAdaptor<Functor::BIDN> {
+class IB : public FunctorAdaptor<Functor::IB> {
 public:
-   BIDN(unsigned int interlacingFactor):
+   IB(unsigned int interlacingFactor):
 	  FunctorAdaptor<Functor>(Functor(interlacingFactor))
    {}
 
@@ -39,14 +40,14 @@ public:
     /**
      * This class mimicks the LatticeTester::ProductWeights class.
      * It is used to interlace weights of dimension \f$s\f$ into weights
-     * of dimension \f$ d s \f$. See Corollary 3. and Remark 1. of \cite rGOD15a.
-     * In the case of the \B_{d, \gamma, (2)}, the weights equal \f$ 2^{-l}\f$ for the
-     * \f$l\f$-th interlaced component. If \f$ j\f$ is a coordinate in the \f$ d s \f$-dimensional
-     * hypercube, the corresponding interlaced component equals \f j \mod d \f$.
+     * of dimension \f$ d s \f$. See Corollary 3. and Remark 1. of \cite rGOD13a.
+     * In the case of the \f$\B_{d, \gamma, (2)}\f$, the weights equal \f$ 2^{-l}\f$ for the
+     * \f$l\f$-th interlaced component. This corresponds to \f$\delta_l \f$ in
+     * the interlaced weights (@see NetBuilder::Interlaced::IPDWeights).
      */ 
    struct CorrectionProductWeights{
        
-    CorrectionProductWeights(const BIDN& kernel):
+    CorrectionProductWeights(const IB& kernel):
         m_interlacingFactor(kernel.interlacingFactor())
     {}
 
@@ -64,7 +65,7 @@ public:
     }
 
     double getWeightForCoordinate (LatticeTester::Coordinates::size_type coordinate) const  {
-        return (double) 1 / (1 << ((coordinate + 1) % m_interlacingFactor));
+        return intPow(.5,((coordinate + 1) % m_interlacingFactor) + 1);
     }
 
     private:
@@ -74,7 +75,9 @@ public:
 
     /**
      * Corrects POD weights in dimension \f$s\f$. In the case of this kernel, there is nothing to do. See
-     * Theorem 3. \in \cite rGOD13a.
+     * Theorem 3. in \cite rGOD13a.
+     * This corresponds to \f$\Gamma\f$ in
+     * the interlaced weights (@see NetBuilder::Interlaced::IPDWeights).
      */ 
     void correctPODWeights(LatticeTester::PODWeights& weights) const{
         return;

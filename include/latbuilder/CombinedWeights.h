@@ -64,6 +64,20 @@ public:
        return std::move(m_weights);
    }
 
+    /**
+     * {@inheritDoc}
+     */ 
+   virtual unsigned int interlacingFactor() const{
+       if (m_weights.size() == 0)
+       {
+           return 1;
+       }
+       else
+       {
+           return m_weights.front()->interlacingFactor();
+       }
+   }
+
 protected:
    virtual void format(std::ostream& os) const;
 

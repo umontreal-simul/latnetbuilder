@@ -68,9 +68,8 @@ namespace NetBuilder {
 
     /**
      * Class to compute the t-value of a projection of a digital net in base 2.
-     * This class uses the algorithm described in THE EXACT QUALITY PARAMETER OF NETS DERIVED FROM SOBOL’ AND NIEDERREITER SEQUENCES WOLFGANG CH. SCHMID 
-     * Recent Advances in Numerical Methods and Applications II. July 1999, 296-304, which consists , for each compositions of matrices, in enumerating all the combinations of the rows of the rows in the
-     * Gray code order, looking for a linear dependence between the columns. TODO
+     * This class uses the algorithm described in \cite rSCH99a, which consists, for each compositions of matrices, in enumerating all the combinations of the rows of the rows in the
+     * Gray code order, looking for a linear dependence between the columns.
      */  
     struct SchmidMethod
     {
