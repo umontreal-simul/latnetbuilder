@@ -59,7 +59,7 @@
   \endverbatim
 
 - The normalized \f$\mathcal P_\alpha\f$ discrepancy with \f$\alpha=2\f$, using
-  the bound from \cite rSIN11a :
+  the bound from \cite rSIN12a :
   \verbatim
     --figure-of-merit CU:P2 --filters norm:P2-SL10
   \endverbatim
@@ -98,7 +98,7 @@ figure of merit, or to reject bad values.
 Multiple filters can be chained together by specifying multiple filter
 arguments separated by whitespace.
 
-- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite rSIN11a with
+- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite rSIN12a with
   \f$\alpha=2\f$:
   \verbatim
     --filters norm:P2-SL10

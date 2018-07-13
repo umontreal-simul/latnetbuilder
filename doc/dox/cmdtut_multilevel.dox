@@ -114,7 +114,6 @@ To build embedded polynomial lattices with CBC exploration in dimension 5 with
   The \f$\mathcal P_{2,PLR}\f$ merit is evaluated for each nested level, and the maximum value
   across all level is selected as the compound merit value, as specified with the
   argument <code>\--combiner max</code>.
-  \todo check if this really works ? Check before Pierre's changes to polynomial ?
 
 \section cmdtut_multilevel_net Constructing multilevel digital nets
 

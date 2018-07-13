@@ -1108,7 +1108,7 @@ normalizing the merit values and by applying a low-pass filter.
 We add a normalizer to our MeritFilterList instance with:
 \snippet tutorial/FilteredCBC.cc normalizer
 This Norm::Normalizer instance uses the bound on the \f$\mathcal P_\alpha\f$
-discrepancy derived in \cite rSIN11a implemented by Norm::PAlphaSL10.
+discrepancy derived in \cite rSIN12a implemented by Norm::PAlphaSL10.
 Then, we add a low-pass filter to reject candidate lattice with a normalized
 merit value larger than unity:
 \snippet tutorial/FilteredCBC.cc low-pass

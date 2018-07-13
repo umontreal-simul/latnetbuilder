@@ -19,12 +19,26 @@
 Figures of merit are the quality measures used to evaluate point sets. Figures of merit are most often derived
 from Kolsma-Hlakka inequalities: the merit value somehow bounds the integration error.
 
-LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them
-can be parametrized by a norm-type and a weights. <b>Note that the figure of merit actually computed
-by LatNet Builder is not the \f$\ell_q\f$ norm but the \f$\ell_q\f$ norm raised to power \f$ q \f$.</b> \todo check if this is true ?
+LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them can be parametrized by a norm-type and weights.
+
+Let \f$P_n\f$ denote a point set in dimension \f$s\f$ with \f$n\f$ points, \f$ q \leq +\infty \f$ a norm type and \f$\gamma_{\mathfrak u}\f$ some general weights.
+
+Figures of merit implemented by LatNet Builder have the following form:
+
+\f[
+    D(P_n)^q = \sum_{\emptyset \neq \mathfrak u \subseteq {1, \dots, s}}\left(\gamma_{\mathfrak u} D_{\mathfrak u}(P_n)\right)^q.
+\f]
+
+where \f$D(P_n)\f is the merit value of the point set \f$P_n\f$ and \f$ D_{\mathfrak u}(P_n) \f$ its projection-dependent merit value.
+
+LatNet Builder implements various projection-dependent merit which depends on the point set type. 
+
+<b>Note that the figure of merit actually computed
+by LatNet Builder is not the \f$\ell_q\f$ norm but rather the \f$\ell_q\f$ norm raised to power \f$ q \f$.</b>
 
 - \subpage feats_figures_lat
 - \subpage feats_figures_net
+- \subpage feats_figures_interlaced
 
 */
 vim: ft=doxygen spelllang=en spell

@@ -34,7 +34,8 @@ The merit of the subprojections is aggregated using a given (weighted) norm \f$ 
 
 LatNet Builder can use various exploration methods to construct the point sets such as the exhaustive, the random sampling or the component-by-component (CBC) methods.
 
-Additionally LatNet Builder contains more advanced features such as multilevel point sets, extensible point sets, normalizations, and filters.
+Additionally LatNet Builder contains more advanced features such as multilevel point sets, extensible point sets, interlaced point sets,
+normalizations, and filters.
 
 
 \todo references to features
@@ -73,7 +74,7 @@ Additionally LatNet Builder contains more advanced features such as multilevel p
   <tr align="center">
     <td class="tg-uys7"> \subpage feats_multilevel </td>
     <td class="tg-uys7" colspan="2">embedded lattices</td>
-    <td class="tg-uys7">digital sequence</td>
+    <td class="tg-uys7">digital sequences</td>
   </tr>
   <tr align="center">
     <td class="tg-uys7"> \subpage feats_filters </td>
@@ -83,8 +84,14 @@ Additionally LatNet Builder contains more advanced features such as multilevel p
   <tr align="center">
     <td class="tg-uys7">Extensible point sets</td>
     <td class="tg-uys7">yes</td>
-    <td class="tg-uys7">TODO is it possible to extend PLR</td>
+    <td class="tg-uys7">yes</td>
     <td class="tg-uys7">no</td>
+  </tr>
+    <tr align="center">
+    <td class="tg-uys7">\subpage feats_interlaced</td>
+    <td class="tg-uys7">not applicable</td>
+    <td class="tg-uys7">interlaced polynomial lattice rules</td>
+    <td class="tg-uys7">interlaced digital nets</td>
   </tr>
 </table>
 */

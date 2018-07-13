@@ -20,20 +20,16 @@
 
 %LatBuilder supports the following figures of merit for ordinary rank-1 lattices:
 
-- The spectral figure of merit TODO cite, using a
+- The spectral figure of merit \cite vLEC00b, using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:
   \f[
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            \bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)
+            \bar{\mathcal D}_{\mathfrak u}(P_n)
         \right]^q\right)^{1/q}
   \f] 
-  where \f$s\f$ is the dimension,
-  \f$n\f$ is the number of points,
-  \f$\boldsymbol a\f$ is the generating vector (to be found),
-  the constants \f$\gamma_{\mathfrak u}\f$ are generic weights,
-  and \f$\bar{\mathcal L}_{\mathfrak u}(n, \boldsymbol a)\f$ is the normalized
+  where \f$\bar{\mathcal D}_{\mathfrak u}(P_n)\f$ is the normalized
   maximum distance between two successive parallel hyperplanes.
 
 - The \f$\mathcal P_\alpha\f$ discrepancy \cite vSLO94a, \cite vHIC98a, \cite rNUY14a with \f$\alpha \in \{2, 4, 6, 8\}\f$, using a
@@ -42,16 +38,12 @@
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(n, \boldsymbol a)
+            \mathcal{D}_{\mathfrak u}(P_n)
         \right]^q\right)^{1/q}
     \f] 
-  where \f$s\f$ is the dimension,
-  \f$n\f$ is the number of points,
-  \f$\boldsymbol a\f$ is the generating vector (to be found),
-  the constants \f$\gamma_{\mathfrak u}\f$ are generic weights,
-  and \f$\mathcal{D}_{\mathfrak u}(n, \boldsymbol a)\f$ is defined by:
+  where \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
-        \mathcal{D}^2_{\mathfrak u}(n, \boldsymbol a) = \frac{1}{n} \sum_{i = 0}^n 
+        \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} p_{\alpha}((i a_j / n) \mod 1),
     \f]
     where
@@ -69,16 +61,16 @@
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(n, \boldsymbol a)
+            \mathcal{D}_{\mathfrak u}(P_n)
         \right]^q\right)^{1/q}
     \f] 
   where \f$s\f$ is the dimension,
   \f$n\f$ is the number of points,
   \f$\boldsymbol a\f$ is the generating vector (to be found),
   the constants \f$\gamma_{\mathfrak u}\f$ are generic weights,
-  and \f$\mathcal{D}_{\mathfrak u}(n, \boldsymbol a)\f$ is defined by:
+  and \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
-        \mathcal{D}^2_{\mathfrak u}(n, \boldsymbol a) = \frac{1}{n} \sum_{i = 0}^n 
+        \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} r_{\alpha, n}((i a_j / n) \mod 1),
     \f]
     where
@@ -101,16 +93,16 @@ LatNet Builder supports the following figures of merit for polynomial rank-1 lat
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(n, \boldsymbol a)
+            \mathcal{D}_{\mathfrak u}(P_n)
         \right]^q\right)^{1/q}
     \f] 
   where \f$s\f$ is the dimension,
   \f$n\f$ is the number of points,
   \f$\boldsymbol a\f$ is the generating vector (to be found),
   the constants \f$\gamma_{\mathfrak u}\f$ are generic weights,
-  and \f$\mathcal{D}_{\mathfrak u}(n, \boldsymbol a)\f$ is defined by:
+  and \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
-        \mathcal{D}^2_{\mathfrak u}(n, \boldsymbol a) = \frac{1}{n} \sum_{i = 0}^n 
+        \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} \omega_{\alpha}(x_{i,j}),
     \f]
     where
@@ -122,24 +114,22 @@ LatNet Builder supports the following figures of merit for polynomial rank-1 lat
   If \f$ q = 2\f$, a coordinate-uniform evaluation algorithm can be used. This algorithm
   drastically reduces the computation time.
 
-  \todo check possible values for alpha
-
 - The \f$\mathcal R\f$ criterion \cite rNIE03a, using
   term-by-term evaluation with an \f$\ell_q\f$ norm:
     \f[
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(n, \boldsymbol a)
+            \mathcal{D}_{\mathfrak u}(P_n)
         \right]^q\right)^{1/q}
     \f] 
   where \f$s\f$ is the dimension,
   \f$n\f$ is the number of points,
   \f$\boldsymbol a\f$ is the generating vector (to be found),
   the constants \f$\gamma_{\mathfrak u}\f$ are generic weights,
-  and \f$\mathcal{D}_{\mathfrak u}(n, \boldsymbol a)\f$ is defined by:
+  and \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
-        \mathcal{D}^2_{\mathfrak u}(n, \boldsymbol a) = \frac{1}{n} \sum_{i = 0}^n 
+        \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} \phi'_m(x_{i,j}),
     \f]
     where \f$m\f$ is the degree of the modulus and 
