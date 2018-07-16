@@ -20,6 +20,7 @@
 #include "latbuilder/Norm/Normalizer.h"
 #include "latbuilder/Norm/PAlphaSL10.h"
 #include "latbuilder/Norm/PAlphaDPW08.h"
+#include "latbuilder/Norm/PAlphaPLR.h"
 #include "latbuilder/Norm/IAAlphaG15.h"
 #include "latbuilder/Norm/IBG15.h"
 #include "latbuilder/Functor/LowPass.h"
@@ -83,6 +84,8 @@ namespace {
                   return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
                else if (strSplit.second == "DPW08")
                   return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);
+               else if (strSplit.second == "PLR")
+                  return createNormalizer<LR, LatBuilder::Norm::PAlphaPLR, ET>(alpha, sizeParam, weights, normType, args.second);
             }
             if (strSplit.first[0] == 'I')
             {

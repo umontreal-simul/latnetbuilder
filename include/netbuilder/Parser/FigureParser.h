@@ -39,6 +39,7 @@
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
+#include "netbuilder/FigureOfMerit/TValueTransformedProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/BitEquidistribution.h"
 #include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
@@ -153,6 +154,12 @@ struct FigureParser
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
             auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<ET>>(maxCard, commandLine.m_combiner);
             return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
+        }
+        else if (commandLine.s_figure == "t-value-transformed")
+        {
+            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueTransformedProjMerit<ET>>(maxCard, commandLine.m_combiner);
+            return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueTransformedProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
         }
         else if (commandLine.s_figure == "resolution-gap")
         {
