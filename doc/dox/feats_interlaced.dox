@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page feats_pointsets Interlaced point sets
+/** \page feats_interlaced Interlaced point sets
 
 */
 vim: ft=doxygen spelllang=en spell

@@ -32,9 +32,10 @@ namespace NetBuilder {
 /** 
  * CBC sequence of coordinate sets.
  * 
- * This class implements a sequence of coordinates (@see LatticeTester::CoordinateSets) which can be used in the CBC
+ * This class implements a sequence of coordinates which can be used in the CBC
  * evaluation of figures of merit. More precisely, this class is meant to represent all the non empty subsets of \f$ \{0, \dots, d-1\} \f$
  * with order lower than \f$ \k \in \mathbb{N} \f$ which contain \f$ d-1 \f$.
+ * @see LatticeTester::CoordinateSets
  */ 
 class CBCCoordinateSet
 {

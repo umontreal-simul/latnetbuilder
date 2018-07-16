@@ -28,14 +28,14 @@ namespace NetBuilder { namespace FigureOfMerit {
  * The resolution gap is defined as follows. Let \f$ l \f$ be the maximal integer such that the net is \f$ (l, \dots, l) \f$ equidistributed.
  * We have a natural upper-bound on \f$ l \f$ given by \f$ \frac{m}{s} \f$ where \f$ m \f$ is the number of columns of the generating matrices and
  * \f$ s \f$ is the order of the projection. \f$ l \f$ is called the resolution of the net and the resolution-gap is defined by the difference \f$ \frac{m}{s} - l \f$.
- * @tparam ET Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::EmbeddingType.
+ * @tparam ET Type of point set : UNILEVEL or MULTILEVEL.
  */ 
 template <EmbeddingType ET>
 class ResolutionGapProjMerit
 {};
 
 /** Template specialization of the projection-dependent merit defined by the resolution-gap of the projection
- *  in the case of unilevel nets. @see NetBuilder::ResolutionGapProjMerit.
+ *  in the case of unilevel nets. @see NetBuilder::ResolutionGapProjMerit
  */ 
 template <>
 class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
@@ -119,7 +119,7 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
 };
 
 /** Template specialization of the projection-dependent merit defined by the resolution-gap of the projection
- *  in the case of multilevel nets. @see NetBuilder::ResolutionGapProjMerit.
+ *  in the case of multilevel nets. @see NetBuilder::ResolutionGapProjMerit
  */ 
 template <>
 class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>

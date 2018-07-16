@@ -25,10 +25,8 @@
 namespace LatBuilder { namespace Functor {
 
 /**
- * One-dimensional merit function for the \f$\mathcal B_{\alpha, d, \gamma, (1)}\f$ discrepancy in base 2.
- * This merit function equals \f$ \phi_{\alpha, d, (1)} \f$ in \cite rGOD13a.
- *
- * This merit function is defined as
+ * One-dimensional merit function for the interlaced \f$\mathcal B_{\alpha, d, \gamma, (1)}\f$ discrepancy in base 2 \cite rGOD13a.
+ * This merit function is defined as:
  * \f[
  *    \phi_{\alpha, d, (1)}(x) =
  *    \frac{1 - 2^{(\min(\alpha, d) -1) \lfloor \log_2(x) \rfloor} (2^{\min(\alpha, d)} -1)}{2^{(\alpha+2)/2} (2^{\min(\alpha, d) - 1} -1) }

@@ -26,10 +26,8 @@
 namespace LatBuilder { namespace Functor {
 
 /**
- * One-dimensional merit function for the \f$\mathcal B_{d, \gamma, (2)}\f$ discrepancy in base 2.
- * This merit function equals \f$ \phi_{d, (2)} \f$ in \cite rGOD13a.
- *
- * This merit function is defined as
+ * One-dimensional merit function for the interlaced \f$\mathcal B_{d, \gamma, (2)}\f$ discrepancy in base 2 \cite rGOD13a.
+ * This merit function is defined as:
  * \f[
  *    \phi_{\d, (2)}(x) =
  *    \frac{2^{d-1}(1 - 2^{(d -1) \lfloor \log_2(x) \rfloor} (2^{d} -1))}{(2^{d - 1} -1) }
@@ -43,7 +41,7 @@ public:
 
    /**
     * Constructor.
-    * \param interlacingFactor Value of \f$d\d$.
+    * \param interlacingFactor Value of \f$d\f$.
     */
    IB(unsigned int interlacingFactor):
       m_interlacingFactor(interlacingFactor),

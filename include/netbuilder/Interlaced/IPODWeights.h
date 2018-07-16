@@ -35,15 +35,18 @@ namespace NetBuilder { namespace Interlaced
 using LatticeTester::Coordinates;
 
 /**
- * Class to represent interlaced POD weights.
+ * Class to represent interlaced projection-dependent weights.
  * Uses operator \f$w\f$ defined in Corollary 1. of \cite rGOD13a to transform weights in dimension \f$s\f$ into weights
  * in dimension \f$ds\f$. 
- * If \f$ \mathfrak u \subseteq \{1, \dots, ds\},\f$, \f$w(\mathfrak u) = \{ \lceil j/d \rceil, j \in \mathfrak u\}\f$.
+ * If \f$ \mathfrak u \subseteq \{1, \dots, ds\}\f$:
+ * \f[
+ *  w(\mathfrak u) = \{ \lceil j/d \rceil, j \in \mathfrak u\}.
+ * \f]
  * Additionally, depending on the kernel, corrections must be made. This corresponds to the correction product weights \f$\delta\f$
  * and the correction order-dependent weight \f$\Gamma\f$. The kernel implements methods to compute these correction weights.
- * To wrap it up, the formula for the interlaced weights \f$\hat{\gamma}\f$ is as follows:
+ * To wrap it up, the formula for the interlaced weights \f$\bar{\gamma}\f$ is as follows:
  * \f[
- * \hat{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} \prod_{j \in \mathfrak u} \delta_j \Gamma_{|w(\mathfrak u)|}.
+ * \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} \prod_{j \in \mathfrak u} \delta_j \Gamma_{|w(\mathfrak u)|}.
  * \f]
  * for \f$ \mathfrak u \subseteq \{1, \dots, d s\} \f$.
  * @tparam KERNEL Kernel.

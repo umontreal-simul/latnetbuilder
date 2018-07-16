@@ -137,8 +137,9 @@ class DigitalNet
 
 /** Derived class of DigitalNet designed to implement specific construction methods. The available construction methods
  * are described by the NetConstruction enumeration which is a non-type template parameter of the DigitalNetConstruction 
- * class. @see NetBuilder::NetConstructionTraits. Construction methods are based on two parameters: a size parameter which is 
+ * class. Construction methods are based on two parameters: a size parameter which is 
  * shared by all coordinates and a sequence of generating values, each of them being associated to one coordinate.
+ * @see NetBuilder::NetConstructionTraits
  */ 
 template <NetConstruction NC>
 class DigitalNetConstruction : public DigitalNet

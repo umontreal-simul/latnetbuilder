@@ -16,16 +16,53 @@
 
 /** \page feats_figures_net Figures of merit for digital nets
 
-LatNet Builder supports the following figures of merit for digital nets. 
+LatNet Builder supports the following figures of merit for digital nets:
 
-Two of these figures are derived from 
-those used for polynomial lattice rules:
 
-- The \f$\mathcal P_{\alpha}\f$ discrepancy with \f$\alpha=2\f$ , using a
-  coordinate-uniform evaluation algorithm with the \f$\ell_2\f$ norm:
+- The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha=2, 4, 6, 8\f$, using a
+  coordinate-uniform evaluation algorithm with an \f$\ell_2\f$ norm:
+  \f[
+    D(P_{2^k}) = 
+    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
+        \left[
+            \gamma_{\mathfrak u}
+            \mathcal{D}_{\mathfrak u}(P_{2^k})
+        \right]^2\right)
+    \f] 
+  where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ is defined by:
+    \f[
+        \mathcal{D}^2_{\mathfrak u}(P_{2^k}) = \frac{1}{{2^k}} \sum_{i = 0}^{2^k} 
+        \prod_{j \in \mathfrak u} \omega_{\alpha}(x_{i,j}),
+    \f]
+    where
+    \f[
+        \omega_{\alpha}(x) = \mu(\alpha) - 2^{(1+\lfloor \log_2(x) \rfloor) (\alpha - 1)}(\mu(\alpha) + 1),
+    \f]
+    where \f$ \mu(\alpha) = (1 - 2^{1- \alpha})^{-1} \f$ for even \f$ \alpha \f$.
 
-- The \f$\mathcal R\f$ criterion, using a
-  coordinate-uniform evaluation algorithm with the \f$\ell_2\f$ norm. 
+- The \f$\mathcal R\f$ criterion \cite rNIE03a, using a
+  coordinate-uniform evaluation algorithm with an \f$\ell_2\f$ norm:
+    \f[
+    D(P_{2^k}) = 
+    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
+        \left[
+            \gamma_{\mathfrak u}
+            \mathcal{D}_{\mathfrak u}(P_{2^k})
+        \right]^2\right)
+    \f] 
+    where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ is defined by:
+    \f[
+        \mathcal{D}^2_{\mathfrak u}(P_{2^k}) = \frac{1}{{2^k}} \sum_{i = 0}^{2^k} 
+        \prod_{j \in \mathfrak u} \phi'_m(x_{i,j}),
+    \f]
+    where \f$m\f$ is the degree of the modulus and 
+    \f[
+        \phi'_m(x) = 
+        \begin{cases}
+        \frac{1}{2}i_0 & \textrm{ if } x = \sum_{i= i_0}^{\infty} \xi_i 2^{-i}, 1 \leq i_0 \leq m, \xi_{i_0} \neq 0 \\
+        1 + \frac{1}{2}m & \textrm{otherwise.}
+        \end{cases}
+    \f]
 
 LatNet Builder also supports figures of merit based on the equidistribution of points.
 Take a digital net \f$P_{2^k} \f$ in dimension \f$s\f$ with \f$2^k\f$ points.
@@ -34,33 +71,33 @@ Suppose we divide axis \f$j\f$ in \f$2^{q_j}\f$ equal parts for some integer \f$
 If each rectangle contains exactly the same number of points, we say that the net is 
 \f$(q_1,\dots,q_s)\f$-equidistributed. 
 
-- The projection-dependent t-value \cite rDIC10a, using state-of-the art algorithms,
+- The projection-dependent t-value \cite rDIC10a, \cite rJOE08a using state-of-the art algorithms,
   with an \f$\ell_q\f$ norm:
     \f[
+    D(P_{2^k}) = 
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            t_{\mathfrak u}(P_{2^k})
-        \right]^q\right)^{1/q}
+            \mathcal{D}_{\mathfrak u}(P_{2^k})
+        \right]^q\right)
   \f] 
-  where \f$t_{\mathfrak u}(P_{2^k})\f$ denotes the t-value of the projection of \f$P_{2^k} \f$
+  where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ denotes the t-value of the projection of \f$P_{2^k} \f$
   on \f$\mathfrak u\f$.
   The t-value of a net with \f$2^k\f$ points is the smallest \f$t\f$ such that the net is \f$(q_1,\dots,q_s)\f$-equidistributed
   whenever \f$q_1+\dots+q_s = k-t \f$.
-  The t-value of the projection of a net is t-value of the net defined by the generating matrices corresponding to the projection.
 
 - The projection-dependent resolution-gap \cite rLEC04b, with an \f$\ell_q\f$ norm: 
     \f[
+    D(P_{2^k}) = 
     \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
         \left[
             \gamma_{\mathfrak u}
-            r^{gap}_{\mathfrak u}(P_{2^k})
-        \right]^q\right)^{1/q}
+            \mathcal{D}_{\mathfrak u}(P_{2^k})
+        \right]^q\right)
    \f] 
-  where \f$ r^{gap}_{\mathfrak u}(P_{2^k})\f$ denotes the resolution-gap of the projection of \f$P_{2^k} \f$
+  where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ denotes the resolution-gap of the projection of \f$P_{2^k} \f$
   on \f$\mathfrak u\f$.
   The resolution of a net is the biggest \f$r\f$ such that the net is \f$(r,\dots,r)\f$-equidistributed.
-  The resolution of the projection of a net with \f$2^k\f$ points on \f$\mathfrak u\f$ is always smaller than \f$\lfloor \frac{k}{|\mathfrak u|} \rfloor \f$.
-  The resolution-gap of a projection is the difference between this upper-bound and its actual resolution.
+  The resolution-gap of a net is the difference between this upper-bound and its actual resolution.
 */
 vim: ft=doxygen spelllang=en spell

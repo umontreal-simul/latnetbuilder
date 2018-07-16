@@ -16,19 +16,51 @@
 
 /** \page feats_filters Normalizations and filters
 
-\todo list of filters and normalization
-
 Filters are optional and can be used to transform the computed values of a
 figure of merit, or to reject bad values. Various types of filters exist:
 
-- Normalizations using a bound on the figure of merit,
-
-- Projection-dependent normalizations related to Koksma-Hlawka inequalities,
+- Normalizations using a bound on the figure of merit.
 
 - Low-pass filters to reject point sets having a merit value larger than a threshold
-(should be used with the previous type of normalization).
+  (should be used with the previous type of normalization). 
+  When the random variant of a search is used with a filter, the
+  candidate samples that are rejected by the filter pipeline are
+  not considered as valid samples, meaning that the
+  number of random samples corresponds to the number
+  of accepted candidates.
+ 
 
-In the case of multilevel point sets, normalizations and filters can either be applied 
-individually to each embedding level or to the combined merit value.
+\section feats_filters_norms List of available normalizations
+
+Currently, the following normalizations are available:
+
+- for the \f$P_\alpha\f$ discrepancy of ordinary lattices:
+    - \f$P_\alpha\f$-SL10: the general bound derived in Theorem 3 of \cite rSIN12a for projection-dependent weights,
+    - \f$P_\alpha\f$-DPW08: the bound derived in Theorem 10 of \cite vDIC08c for product weights.
+- for the \f$P_\alpha\f$ discrepancy of polynomial lattice rules:
+    - \f$P_\alpha\f$-DKLP15: the bound derived in Theorem 3 of \cite rDIC15a for projection-dependent weights.
+- for the interlaced \f$ B_{\alpha, d, \gamma, (1)\f$ discrepancy from \cite rGOD13a:
+    - \f$B_{\alpha, d, \gamma, (1)\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
+- for the interlaced \f$ B_{d, \gamma, (2) \f$ discrepancy from \cite rGOD13a:
+    - \f$B_{d, \gamma, (2)\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
+
+These bounds are actually parametrized by a parameter \f$\lambda\f$ which is tuned using the Brent minimizer.
+
+These bounds actually state the existence of a point set constructed in a CBC-way achieving a merit value lower than a bound. Hence the bound
+does not hold for all point sets by only for at least one point set constructed in a CBC-way. If the point set is constructed this way, 
+then its normalized merit value is guaranteed to be lower than \f$1\f$.
+
+
+\section feats_filters_multilevel Normalizations and filters for multilevel point sets
+
+For multilevel point sets, normalizations using a bound on the figure of merit should be applied
+individually to each embedding level. Once the merit value of each level has been normalized, they can be aggregated,
+either by taking their maximum or their sum. Additionally, one can select only a range of levels. In this case, 
+the maximum or the sum is then replaced by a weighted maximum or sum, with even weights for the selected levels 
+and zero weights for the other levels.
+
+In contrast, filters can either be applied individually to each embedding level or to the combined merit value.
+
+
 */
 vim: ft=doxygen spelllang=en spell

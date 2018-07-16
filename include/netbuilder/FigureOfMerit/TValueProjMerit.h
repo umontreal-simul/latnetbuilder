@@ -30,8 +30,9 @@ namespace NetBuilder { namespace FigureOfMerit {
 using LatticeTester::Coordinates;
 
 /** Template class representing a projection-dependent merit defined by the t-value of the projection.
- *  @tparam ET Type of point set : UNILEVEL or MULTILEVEL, @see NetBuilder::EmbeddingType.
- *  @tparam METHOD Computation method of the t-value. @see TValueComputation
+ *  @tparam ET Type of point set : UNILEVEL or MULTILEVEL.
+ *  @tparam METHOD Computation method of the t-value. 
+ * @see TValueComputation
  */ 
 template <EmbeddingType ET, typename METHOD = GaussMethod>
 class TValueProjMerit

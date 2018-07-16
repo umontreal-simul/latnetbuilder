@@ -18,7 +18,7 @@ A Command Line Interface (CLI) is available as an alternative.
 The software can also be used as a C++ library. Interfaces with Python and R are also provided. Finally, the software can be used directly from the simulation software [SSJ](http://simul.iro.umontreal.ca/ssj/indexe.html).
 
 LatNet Builder comprises two interdependent pieces called LatBuilder and NetBuilder.
-*Lat Builder* focuses on the construction of rank-1 ordinary and polynomial lattice rules whereas *NetBuilder* supports the construction of digital nets in base 2. The quality of point sets are assessed using various measures of (non)uniformity of the points. 
+*LatBuilder* focuses on the construction of rank-1 ordinary and polynomial lattice rules whereas *NetBuilder* supports the construction of digital nets in base 2. The quality of point sets are assessed using various measures of (non)uniformity of the points. 
 
 The implemented quality measures include, for the LatBuilder part, the weighted P<sub>α</sub> square discrepancy, the R<sub>α</sub> criterion, and figures of merit based on the spectral test, and for the NetBuilder part, the weighted P<sub>2</sub> square discrepancy, the R<sub>1</sub> criterion and bit equidistribution quality measures such as the t-value and the resolution-gap.
 

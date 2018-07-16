@@ -27,7 +27,7 @@ namespace NetBuilder { namespace Interlaced {
  * Class to interlace weights in dimension \f$s\f$ into weights in dimension \f$d s\f$ using the \f$w\f$ operator defined in
  * Corollary 1. in \cite rGOD13a. This operation depends on the kernel.
  * @tparam WEIGHTS Type of weights to interlace.
- * This class is designed to be used with LatBuider::WeightsDispatcher::dispatchPtr.
+ * @see LatBuider::WeightsDispatcher::dispatchPtr
  */ 
 template<typename WEIGHTS> struct WeightsInterlacer{
     /**

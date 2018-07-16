@@ -48,7 +48,7 @@ public:
      * of dimension \f$ d s \f$. See Corollary 2. and Remark 1. of \cite rGOD13a.
      * In the case of the \f$\B_{d, \gamma, (1)}\f$, the weights are even equal to 1 for all
      * the interlaced components. This corresponds to \f$\delta_l \f$ in
-     * the interlaced weights (@see NetBuilder::Interlaced::IPDWeights).
+     * the interlaced weights (see NetBuilder::Interlaced::IPDWeights).
      */ 
    struct CorrectionProductWeights{
        CorrectionProductWeights(const IAAlpha& kernel){}
@@ -67,7 +67,7 @@ public:
      *  \tilde{\gamma}_{\mathfrak u} = \gamma_{\mathfrak u} 2^{\alpha (2 d - 1) |\mathfrak u| / 2}.
      * \f]
      * This corresponds to \f$\Gamma\f$ in
-     * the interlaced weights (@see NetBuilder::Interlaced::IPDWeights).
+     * the interlaced weights (see NetBuilder::Interlaced::IPDWeights).
      */ 
     void correctPODWeights(LatticeTester::PODWeights& weights) const{
         weights.getProductWeights().multiplyWeights(sqrt((double) (1 << (alpha() * (2 * interlacingFactor() - 1)))));

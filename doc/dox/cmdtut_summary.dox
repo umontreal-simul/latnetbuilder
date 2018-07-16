@@ -107,7 +107,7 @@ options:
 			<code><var>nbFull</var></code> coordinates and then a random-CBC search with <code><var>samples</var></code> 
 			random samples for the remaining coordinates.
 
-			When the random variant of a search is used with a filters
+			When the random variant of a search is used with a filter
 	    (see the <code>\--filters</code> option below), the
 	    candidate samples that are rejected by the filter pipeline are
 	    not considered as valid samples, meaning that the user-specified
