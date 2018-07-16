@@ -73,6 +73,8 @@ public:
         weights.getProductWeights().multiplyWeights(sqrt((double) (1 << (alpha() * (2 * interlacingFactor() - 1)))));
     }
 
+    static constexpr Real CUPower = 1;
+
 };
 
 }}

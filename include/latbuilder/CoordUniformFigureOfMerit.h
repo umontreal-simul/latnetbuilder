@@ -76,7 +76,7 @@ public:
    { return "coordinate-uniform"; }
 
    Real normType() const
-   { return 2.0; }
+   { return KERNEL::CUPower; }
 
 protected:
    std::ostream& format(std::ostream& os) const

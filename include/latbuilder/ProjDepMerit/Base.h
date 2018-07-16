@@ -75,6 +75,9 @@ public:
    const DERIVED& derived() const
    { return static_cast<const DERIVED&>(*this); }
 
+   Real power() const
+   { return derived().power(); }
+
 private:
    template <class D>
    friend std::ostream& operator<<(std::ostream&, const Base<D>&);

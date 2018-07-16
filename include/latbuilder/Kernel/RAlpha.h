@@ -149,6 +149,8 @@ public:
    std::string name() const
    { std::ostringstream os; os << "R" << alpha(); return os.str(); }
 
+   static constexpr Real CUPower = 2;
+
 private:
    Real m_alpha;
 };

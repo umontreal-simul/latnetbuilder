@@ -31,6 +31,8 @@ public:
 
    unsigned int alpha() const
    { return functor().alpha(); }
+
+   static constexpr Real CUPower = 2;
 };
 
 }}

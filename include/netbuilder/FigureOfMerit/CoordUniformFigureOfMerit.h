@@ -108,7 +108,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
              * @param initialValue Initial accumulator value.
              */
             virtual Accumulator accumulator(Real initialValue) const override
-            { return Accumulator(std::move(initialValue), 2); }
+            { return Accumulator(std::move(initialValue), KERNEL::CUPower); }
 
 
             private:
@@ -206,13 +206,9 @@ namespace NetBuilder{ namespace FigureOfMerit {
                             MeritValue acc = initialValue; // create the accumulator from the initial value
 
                             lastMatrix = net.generatingMatrix(dimension);
-                            // std::cout << M << std::endl;
                             std::vector<GeneratingMatrix> genSeq {lastMatrix};
                             auto prodSeq = m_innerProd.prodSeq(genSeq, weightedState());
-                            // std::cout << "2" << std::endl;
                             auto merit = *(prodSeq.begin());
-                            // std::cout << "1" << std::endl;
-                            // merit /= intPow(2, M.nCols());
                             m_sizeParam.normalize(merit);
                             acc += combine(merit);
 

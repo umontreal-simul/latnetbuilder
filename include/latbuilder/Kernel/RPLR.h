@@ -29,6 +29,8 @@ public:
 	  FunctorAdaptor<Functor>(Functor())
    {}
 
+   static constexpr Real CUPower = 2;
+
    };
 
 }}

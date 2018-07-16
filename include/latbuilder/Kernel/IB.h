@@ -83,6 +83,8 @@ public:
         return;
     }
 
+    static constexpr Real CUPower = 1;
+
 };
 
 }}

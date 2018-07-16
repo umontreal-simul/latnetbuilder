@@ -277,11 +277,11 @@ public:
          std::cout << "    weighted:  " << (weight * merit) << std::endl;
 #endif
 
-         // divide q by two because the merit is assumed to be a squared value
-         acc.accumulate(weight, merit, m_figure.normType() / 2);
+         // divide q by the normType of the kernel
+         acc.accumulate(weight, merit, m_figure.normType() / m_figure.projDepMerit().power());
 
          if (!onProgress()(acc.value())) {
-            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / 2);
+            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / m_figure.projDepMerit().power());
             onAbort()(lat);
 #ifdef DEBUG
             std::cout << "    aborting" << std::endl;

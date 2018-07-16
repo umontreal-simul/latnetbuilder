@@ -127,7 +127,7 @@ struct FigureParser
                 if(commandLine.m_normType != 2)
                     throw BadFigure("norm must be `2' for this coordinate-uniform implementation");
                 if (commandLine.m_interlacingFactor != 1)
-                    throw BadFigure("interlacing factor must be `1'(default) for " + commandLine.s_figure + ".");
+                    throw BadFigure("interlacing factor must be `1' for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
                 auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
                 return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
@@ -137,7 +137,7 @@ struct FigureParser
                 if(commandLine.m_normType != 1)
                     throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
                 if (commandLine.m_interlacingFactor == 1)
-                    throw BadFigure("interlacing factor must be larger than `1`(default) for " + commandLine.s_figure + ".");
+                    throw BadFigure("interlacing factor must be larger than `1` for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
                 auto kernel = LatBuilder::Kernel::IAAlpha(alpha, commandLine.m_interlacingFactor);
                 weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);

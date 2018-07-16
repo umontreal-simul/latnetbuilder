@@ -75,6 +75,9 @@ public:
    std::string name() const
    { return kernel().name(); }
 
+   Real power() const
+   { return KERNEL::CUPower; }
+
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
