@@ -41,7 +41,7 @@ namespace NetBuilder {
             return (genValue.second.size()==1 && genValue.second.front()==0);
         }
 
-        unsigned int degree = nthPrimitivePolynomialDegree(dimension-1);
+        unsigned int degree = nthPrimitivePolynomialDegree(dimension);
 
         if (genValue.second.size() != degree){
             return false;

@@ -142,7 +142,7 @@ makeOptionsDescription()
   //   "  even[:<min-level>[:<max-level>]] (default)\n")
    ("no-early-abort,e", "(optional) disable early abortion in computations.")
     ("output-format,g", po::value< std::vector<std::string> >()->composing(),
-    "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
+    "(optional) output generating matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
    "  file:\"<file>\":format\n"
    "  available output formats\n"
    "  - ssj \n"

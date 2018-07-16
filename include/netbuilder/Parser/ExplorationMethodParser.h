@@ -25,6 +25,8 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/NetDescriptionParser.h"
 
+#include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+
 #include "netbuilder/Task/Task.h"
 #include "netbuilder/Task/CBCSearch.h"
 #include "netbuilder/Task/Eval.h"
@@ -68,6 +70,9 @@ struct ExplorationMethodParser
         boost::split(explorationDescriptionStrings, str, boost::is_any_of(":"));
 
         std::string name = explorationDescriptionStrings[0];
+
+        unsigned int r = 0;
+
         if (name == "evaluation"){
             if (explorationDescriptionStrings.size() < 2)
             {
@@ -87,42 +92,56 @@ struct ExplorationMethodParser
             if (explorationDescriptionStrings.size() < 2){
                 throw BadExplorationMethod("nb of random tries required; see --help");
             }
-            unsigned int r = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[1]);
-            if (name == "random")
-                return std::make_unique<Task::RandomSearch<NC, ET>>(commandLine.m_dimension,
-                                                        commandLine.m_sizeParameter,
-                                                        std::move(commandLine.m_figure),
-                                                        r,
-                                                        commandLine.m_verbose,
-                                                        commandLine.m_earlyAbort);
+            r = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[1]);
+        }
+        if (name == "random")
+            return std::make_unique<Task::RandomSearch<NC, ET>>(commandLine.m_dimension,
+                                                    commandLine.m_sizeParameter,
+                                                    std::move(commandLine.m_figure),
+                                                    r,
+                                                    commandLine.m_verbose,
+                                                    commandLine.m_earlyAbort);
+
+
+        std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure;
+        try{
+            auto pfigure = commandLine.m_figure.release();
+            figure = std::unique_ptr<FigureOfMerit::CBCFigureOfMerit>(dynamic_cast<FigureOfMerit::CBCFigureOfMerit*> (pfigure));
+            if (not(figure))
+            {
+                throw std::bad_cast();
+            }
+        } catch (std::bad_cast&)
+        {
+            throw BadExplorationMethod("the figure of merit cannot be used with CBC explorations.");
+        }
             
-            if (name == "random-CBC"){
-                return std::make_unique<Task::CBCSearch<NC, ET, Task::RandomCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_sizeParameter,
-                                                                std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::RandomCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, r),
-                                                                commandLine.m_verbose,
-                                                                commandLine.m_earlyAbort);
-            }
+        if (name == "random-CBC"){
+            return std::make_unique<Task::CBCSearch<NC, ET, Task::RandomCBCExplorer>>(commandLine.m_dimension, 
+                                                            commandLine.m_sizeParameter,
+                                                            std::move(figure),
+                                                            std::make_unique<Task::RandomCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, r),
+                                                            commandLine.m_verbose,
+                                                            commandLine.m_earlyAbort);
+        }
 
-            if (name == "mixed-CBC"){
-                if (explorationDescriptionStrings.size() < 3){
-                throw BadExplorationMethod("number of fully explored coordinate required; see --help");
-                }
-                unsigned int nbFullCoordinates = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[2]);
-
-                return std::make_unique<Task::CBCSearch<NC, ET, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
-                                                                commandLine.m_sizeParameter,
-                                                                std::move(commandLine.m_figure),
-                                                                std::make_unique<Task::MixedCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, nbFullCoordinates, r), 
-                                                                commandLine.m_verbose,
-                                                                commandLine.m_earlyAbort);
+        if (name == "mixed-CBC"){
+            if (explorationDescriptionStrings.size() < 3){
+            throw BadExplorationMethod("number of fully explored coordinate required; see --help");
             }
+            unsigned int nbFullCoordinates = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[2]);
+
+            return std::make_unique<Task::CBCSearch<NC, ET, Task::MixedCBCExplorer>>(commandLine.m_dimension, 
+                                                            commandLine.m_sizeParameter,
+                                                            std::move(figure),
+                                                            std::make_unique<Task::MixedCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, nbFullCoordinates, r), 
+                                                            commandLine.m_verbose,
+                                                            commandLine.m_earlyAbort);
         }
         else if (name == "full-CBC"){
             return std::make_unique<Task::CBCSearch<NC, ET,  Task::FullCBCExplorer>>(commandLine.m_dimension, 
                                                                 commandLine.m_sizeParameter,
-                                                                std::move(commandLine.m_figure),
+                                                                std::move(figure),
                                                                 std::make_unique<Task::FullCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter),
                                                                 commandLine.m_verbose,
                                                                 commandLine.m_earlyAbort);

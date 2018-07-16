@@ -52,7 +52,7 @@ struct CommandLine {
    typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;
    Combiner m_combiner;
    Dimension m_dimension;
-   std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> m_figure;
+   std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
    int m_verbose;
    unsigned int m_interlacingFactor;
 

@@ -75,10 +75,10 @@ class TValue : public FigureOfMerit
                  * @param figure Pointer to the figure of merit.
                  */ 
                 TValueEvaluator(TValue* figure):
-                    m_figure(figure),
-                    m_kernelValues(0),
                     m_dimension(0),
-                    m_numLevels(0)
+                    m_numLevels(0),
+                    m_figure(figure),
+                    m_kernelValues(0)
                 {
                     updateDimensionAndNbLevels(1, 1);
                 };
@@ -92,7 +92,6 @@ class TValue : public FigureOfMerit
                 {
                     Dimension s = net.dimension();
                     unsigned int k = net.numColumns();
-                    unsigned int n = net.numRows();
 
                     updateDimensionAndNbLevels(s, k);  // update the pre-computed quantities according to dimension and size of the net
 
@@ -218,7 +217,6 @@ MeritValue TValue<EmbeddingType::MULTILEVEL>::TValueEvaluator::operator()(const 
 {
     Dimension s = net.dimension();
     unsigned int k = net.numColumns();
-    unsigned int n = net.numRows();
 
     updateDimensionAndNbLevels(s, k); 
 

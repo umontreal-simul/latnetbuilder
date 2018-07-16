@@ -53,14 +53,14 @@ struct NetDescriptionParser<NetConstruction::SOBOL, ET>
    static result_type parse(CommandLine<NetConstruction::SOBOL, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
-       boost::split(netDescriptionStrings, str, boost::is_any_of(","));
-       Dimension dim = 1;
+       boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
+       Dimension dim = 0;
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
        for(const auto& dirNumsString : netDescriptionStrings)
        {
            std::vector<std::string> dirNumbersStrings;
-           boost::split(dirNumbersStrings, dirNumsString, boost::is_any_of("/"));
+           boost::split(dirNumbersStrings, dirNumsString, boost::is_any_of(","));
            std::vector<uInteger> dirNumbersValues;
            dirNumbersValues.reserve(dirNumbersStrings.size());
            for (auto numStr : dirNumbersStrings)
@@ -92,7 +92,7 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, ET>
    static result_type parse(CommandLine<NetConstruction::POLYNOMIAL, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
-       boost::split(netDescriptionStrings, str, boost::is_any_of(","));
+       boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
        for(const auto& polyString : netDescriptionStrings)
@@ -121,13 +121,13 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
    static result_type parse(CommandLine<NetConstruction::EXPLICIT, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
-       boost::split(netDescriptionStrings, str, boost::is_any_of(","));
+       boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
        for(const auto& matrixString : netDescriptionStrings)
        {
            std::vector<std::string> rowsStrings;
-           boost::split(rowsStrings, matrixString, boost::is_any_of("/"));
+           boost::split(rowsStrings, matrixString, boost::is_any_of(","));
            if (rowsStrings.size()==0)
            {
                throw BadNetDescription("bad matrix.");

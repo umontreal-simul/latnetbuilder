@@ -34,11 +34,11 @@ namespace{
      * @param s size of the projection
      * 
      */
-    Real h(unsigned int t, unsigned int m, unsigned int s){
+    Real h(uInteger t, uInteger m, uInteger s){
         Real res = 0.0;
         Real binom_coeff = 1.0;
         
-        for (unsigned int i=0; i < std::min(s, m-t+1); i++){
+        for (uInteger i=0; i < std::min(s, m-t+1); i++){
             res += binom_coeff;
             binom_coeff *= (Real) (m-t-i) / (i+1);
         }

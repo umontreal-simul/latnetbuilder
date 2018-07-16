@@ -101,6 +101,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
         {
             return (Real) merit;
         }
+
         /** Updates the combination of merit \c subProjCombination using \c merit.
          * @param merit Merit used to update.
          * @param subProjCombination  Combination of merit to update. 
@@ -212,6 +213,8 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
         /** 
          * Combines the projection-dependent multilevel merits into a single value merit.
          * @param merits Multilevel merits.
+         * @param net Digital net.
+         * @param projection Projection.
          */ 
         virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) const {
             RealVector tmp(merits.size());
