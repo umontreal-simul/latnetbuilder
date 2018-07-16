@@ -68,9 +68,9 @@ Polynomials are specified as a sequence of coefficients (ordered by increasing d
 Additionally, one can raise the polynomial to an integer power. For instance <code>--size-parameter 01^8</code> tells LatNet Builder that the modulus of the polynomial lattice is
 \f$z^8\f$.
 
-\subsection cmdtut_pointsets_lat_specify Specifying a specific lattice 
+\subsection cmdtut_pointsets_lat_specify Specifying a lattice 
 
-To specify a specific rank-1 lattice, for instance to evalute its merit value or to extend it,
+To specify a rank-1 lattice, for instance to evalute its merit value or to extend it,
 one must specify its generating vector. %LatBuilder uses the following convention: a generating vector is described
 by a comma-separated list of integers or polynomials, depending on whether the lattice is ordinary or polynomial.
 
@@ -110,20 +110,20 @@ For polynomial digital nets, a default (irreducible) modulus corresponding to th
 To choose a specific modulus, one can use <code>--size-parameter</code> the same way as to specify a modulus for a 
 polynomial lattice rule (see \ref cmdtut_pointsets_lat). 
 
-\subsection cmdtut_pointsets_net_specify Specifying a specific net 
+\subsection cmdtut_pointsets_net_specify Specifying a net 
 
-Specifying a specific digital net depends on its construction method. In the Command-Line Tutorial, any occurence of
+Specifying a digital net depends on its construction method. In the Command-Line Tutorial, any occurence of
 <code><var><point-set-description></var></code> or <code><var><net-description></var></code> can be replaced as follows:
 
 - for Sobol' nets:
-  a list of direction numbers. Direction numbers are specified as a slash-separated list of comma-separated lists of 
+  a list of direction numbers. Direction numbers are specified as a comma-separated list of slash-separated lists of 
   integers. Each comma-separated list correspond to a coordinate. Details on direction numbers can be find in \ref feats_pointsets.
   Note that a dummy direction number equal to zero must be specified for the first coordinate. 
 - for polynomial digital nets:
   a generating vector. See <code><var>genVec</var></code> in \ref cmdtut_pointsets_lat.
-- for explicit digital nets. A slash separated list of comma-seperated lists of rows. Each comma-separated list
+- for explicit digital nets. A comma-separated  list of comma-seperated slash-separated lists of rows. Each comma-separated list
   correspond to a generating matrix. The rows are specified as a binary sequence without separators. For instance, 
-  <code>001,010,111/110,001,111/100,110,001</code> stands for the following generating matrices :
+  <code>001/010/111,110/001/111,100/110/001</code> stands for the following generating matrices :
 
   \f[ 
     \begin{pmatrix}

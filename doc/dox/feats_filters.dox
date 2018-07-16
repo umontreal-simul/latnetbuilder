@@ -39,9 +39,9 @@ Currently, the following normalizations are available:
     - \f$P_\alpha\f$-DPW08: the bound derived in Theorem 10 of \cite vDIC08c for product weights.
 - for the \f$P_\alpha\f$ discrepancy of polynomial lattice rules:
     - \f$P_\alpha\f$-DKLP15: the bound derived in Theorem 3 of \cite rDIC15a for projection-dependent weights.
-- for the interlaced \f$ B_{\alpha, d, \gamma, (1)\f$ discrepancy from \cite rGOD13a:
+- for the interlaced \f$ B_{\alpha, d, \gamma, (1)\f$ discrepancy from \cite rGOD13a :
     - \f$B_{\alpha, d, \gamma, (1)\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
-- for the interlaced \f$ B_{d, \gamma, (2) \f$ discrepancy from \cite rGOD13a:
+- for the interlaced \f$ B_{d, \gamma, (2) \f$ discrepancy from \cite rGOD13a :
     - \f$B_{d, \gamma, (2)\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
 
 These bounds are actually parametrized by a parameter \f$\lambda\f$ which is tuned using the Brent minimizer.
