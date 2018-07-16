@@ -30,7 +30,7 @@ options:
     - <code>net</code>
       to search for digital nets.
 	</dd>		
-  <dt><code>\--construction</code> / <code>-L</code></dt>
+  <dt><code>\--construction</code> / <code>-C</code></dt>
   <dd><em>Optional (default: ordinary).</em>
     Specifies the construction type.
     Takes one of the following values:
@@ -114,34 +114,48 @@ options:
 	    number of random samples corresponds to only the number
 	    of accepted candidates.
 	</dd>
-	<dt><code>\--figure-of-merit</code> / <code>-m</code></dt>
+	<dt><code>\--figure-of-merit</code> / <code>-M</code></dt>
 	<dd><em>Required.</em>
-		TODO
 		Specifies the figure of merit to be used.
 		Takes an argument of either of the following forms:
 		- <code><var>figure</var></code>
 		- <code>CU:<var>figure</var></code>
                 where the optional prefix <code>CU:</code> indicates that a
                 coordinate-uniform implementation of the evaluation algorithm
-                should be used (only available for <code>P2</code>, <code>R1</code> and <code>R</code>);
+                should be used (only available for <code>P<var>alpha</var></code>, <code>R1</code>, <code>R</code> with
+								<code>--norm-type 2</code> and <code>IA<var>alpha</var></code>, <code>IB</code> with
+								<code>--norm-type 1</code>)
 
 		and where <code><var>figure</var></code> is one of:
 		- <code>P<var>alpha</var></code> for the weighted \f$\mathcal
-			P_\alpha\f$ figure of merit in the case of ordinary lattices
-			or \f$\mathcal P_{\alpha,PLR}\f$ figure of merit in the 
-			case of polynomial lattices with
-			\f$\alpha=\f$<code><var>alpha</var></code>;
+			P_\alpha\f$ discrepancy with \f$\alpha=\f$<code><var>alpha</var></code>
+			(differs between ordinary lattice rules and polynomial lattice rules plus digital nets);
 		- <code>spectral</code> for the spectral figure
 			of merit (only available with ordinary lattice rules);
 		- <code>R<var>alpha</var></code> for the weighted \f$\mathcal
 			R_\alpha\f$ figure of merit with
 			\f$\alpha=\f$<code><var>alpha</var></code> (only available with ordinary lattice rules); or
 		- <code>R</code> for the weighted \f$\mathcal
-			R\f$ figure of merit (only available with polynomial lattice rules).
+			R\f$ figure of merit (only available with polynomial lattice rules and digital nets);
+		- <code>t-value</code> for the t-value merit (only available with digital nets and incompatible with CBC explorations);
+		- <code>projdep:t-value</code> for the projection-dependent t-value merit (only available wih digital nets);
+		- <code>projdep:resolution-gap</code> for the projection-dependent resolution-gap (only available wih digital nets);
+		- <code>IA<var>alpha</var></code> for the interlaced \f$B_{\alpha, d, (1)}\f$ discrepancy 
+		  with \f$\alpha=\f$<code><var>alpha</var></code> (only available for interlaced polynomial lattice rules and digital nets); or
+		- <code>IB</code> for the interlaced \f$B_{d, (2)}\f$ discrepancy (only available for interlaced polynomial lattice rules and digital nets).
 
 		See \ref feats_figures and \ref cmdtut_figures for additional details.
 	</dd>
-	<dt><code>\--norm-type</code> / <code>-p</code></dt>
+	<dt><code>\--interlacing-factor</code> / <code>-i</code></dt>
+	<dd><em>Optional (default:1).</em>
+		Specifies the interlacing factor.
+		Takes a positive integer value.
+		If set to a value greater than 1, the search point set
+		will be an interlaced point set. Requires to use the appopriate
+		figures of merit and the corresponding norm-type.
+		See \ref feats_interlaced for additional details.
+	</dd>
+	<dt><code>\--norm-type</code> / <code>-q</code></dt>
 	<dd><em>Required.</em>
 		Specifies the type of the \f$\ell_q\f$ norm to combine the merit
 		values across projections.
@@ -168,35 +182,36 @@ options:
 		  specified by the comma-separated list of weights
 		  <code><var>list</var></code> (starting at order 1), and with weight
 		  <code><var>default</var></code> for the other orders;
-		- <code>projection-dependent:<var>filename</var></code> for
-		  projection-dependent weights specified in the file named
-		  <code><var>filename</var></code>.
-                - <code>POD:<var>default1</var>:<var>list1</var>:<var>default2</var>:<var>list2</var></code>
-                  for POD weights, where <code><var>default1</var></code> and
-                  <code><var>list1</var></code> specify the default and
-                  individual order-dependent weights, and where
-                  <code><var>default2</var></code> and
-                  <code><var>list2</var></code> specify the default and
-                  individual product weights.
-
-		For projection-dependent weights, the file containing the weights must
-		consist of lines of the form:
-		- <code><var>coordinates</var>: <var>weight</var></code>
-		  to assign the weight <code><var>weight</var></code> to the projection
-		  defined by the comma-separated list of coordinates
-		  <code><var>coordinates</var></code>;
-		- <code>order <var>order</var>: <var>weight</var></code>
-		  to assign the weight <code><var>weight</var></code> to all other
-		  projections of order <code><var>order</var></code>;
-		- <code>default: <var>weight</var></code>
-		  to assign the weight <code><var>weight</var></code> to all other
-		  projections;
-		- <code>#<var>comment</var></code> to ignore
-		  <code><var>comment</var></code>.
+		- <code>POD:<var>default1</var>:<var>list1</var>:<var>default2</var>:<var>list2</var></code>
+			for POD weights, where <code><var>default1</var></code> and
+			<code><var>list1</var></code> specify the default and
+			individual order-dependent weights, and where
+			<code><var>default2</var></code> and
+			<code><var>list2</var></code> specify the default and
+			individual product weights.
+		- <code>projection-dependent:<var>proj</var>:<var>weight</var>:...:<var>proj</var>:<var>weight</var></code> for
+		  projection-dependent weights where <code><var>proj</var></code> is a projection (comma-separated list of coordinates)
+			and <code><var>weight</var></code> the associated weight.
+			\n Alternatively, a file containing the weights can be used:
+			<code>--weights file:<var>path_to_file</var></code>
+			where <code><var>path_to_file</var></code> is the path to the file containing the weights.
+			The file must consist of lines of the form:
+			- <code><var>coordinates</var>: <var>weight</var></code>
+				to assign the weight <code><var>weight</var></code> to the projection
+				defined by the comma-separated list of coordinates
+				<code><var>coordinates</var></code>;
+			- <code>order <var>order</var>: <var>weight</var></code>
+				to assign the weight <code><var>weight</var></code> to all other
+				projections of order <code><var>order</var></code>;
+			- <code>default: <var>weight</var></code>
+				to assign the weight <code><var>weight</var></code> to all other
+				projections;
+			- <code>#<var>comment</var></code> to ignore
+				<code><var>comment</var></code>.
 		
 		See \ref feats_weights and \ref cmdtut_weights for additional details.
 	</dd>
-	<dt><code>\--weights-power</code> / <code>-o</code></dt>
+	<dt><code>\--weights-power</code> / <code>-p</code></dt>
 	<dd><em>Optional (default: same value as for the <code>--norm-type</code> option).</em>
 		Specificies that the weights passed by option
 		<code>--weights</code> have already been elevated to that power.
@@ -205,7 +220,7 @@ options:
 		as specified by option <code> --norm-type</code>. A value of <code>inf</code> is mapped to 1.
 		See \ref cmdtut_weights for additional details.
 	</dd>
-	<dt><code>\--multilevel</code> / <code>-l</code></dt>
+	<dt><code>\--multilevel</code> / <code>-m</code></dt>
 	<dd><em>Optional (default: false).</em>
 		Specifies if the searched point set is multilevel.
 		Takes one of the following values:

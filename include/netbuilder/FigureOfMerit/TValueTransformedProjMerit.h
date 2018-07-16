@@ -25,13 +25,13 @@ using LatticeTester::Coordinates;
 
 namespace{
     /** Function implementing a transformation of the t-value to obtain a transformed t-value based figure of merit.
-     * This function implements the formula from TODO
-     * \f[
-     *   h(|\mathfrak{u}|, m, t) = 2^{t-m} \sum_{i=0}^{|\mathfrak{u}|-1} \binom{m-t}{i}.
-     * \f]
-     * @param t t-value of the projection
-     * @param m number of columns of the digital net matrices
-     * @param s size of the projection
+     *  This function implements the formula from Corollary 5.3 in \cite rDIC10a
+     *  \f[
+     *  h(|\mathfrak{u}|, m, t) = 2^{t-m} \sum_{i=0}^{|\mathfrak{u}|-1} \binom{m-t}{i}.
+     *  \f]
+     * @param t t-value of the projection.
+     * @param m Number of columns of the digital net matrices.
+     * @param s Size of the projection.
      * 
      */
     Real h(uInteger t, uInteger m, uInteger s){

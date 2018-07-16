@@ -35,8 +35,20 @@ must be added to the command line.
 
 \section cmdtut_weights_projdep Projection-Dependent Weights
 
-The projection-dependent weights cannot be specified directly on the command
-line.  They have to be written to a text file, say <tt>weights.txt</tt>, with a
+In that case, the value of the <code>--weights</code> option consists of 
+colon-separated tokens: the first is the type of weights (projecion-dependent); 
+the other tokens are optional and assign explicit weights to projections. Projections
+for which no weights have been explicitly assigned have a weight equal to zero.
+
+- Projection-depdent weights with \f$\gamma_{\{1,2,3\}} = 0.7\f$,
+  \f$\gamma_{\{1,2,4\}} = 0.5\f$, \f$\gamma_{\{2,3,4\}} = 0.3\f$ and
+  \f$\gamma_{\mathfrak u} = 0\f$ otherwise:
+  \verbatim
+  --weights projection-dependent:1,2,3:0.7:1,2,4:0.5:2,3,4:0.3
+  \endverbatim
+
+Alternatively, projection-dependent weights can be specified in a text file, 
+say <tt>weights.txt</tt>, with a
 content similar to the following:
 \verbatim
 # this is a comment
@@ -47,22 +59,19 @@ order 2:    1.0
 order 3:    0.1
 default:    1.0e-3
 \endverbatim
-This assigns the square weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
-\f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a square weight of 1.0 to
-every projection of order 2, a square weight of 0.1 to every projection of order
-3 other than the above three for which weights were explicitly assigned, then a
-square weight of \f$10^{-3}\f$ to every other projection.
+This assigns the weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
+\f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a weight of 1.0 to
+every projection of order 2, a weight of 0.1 to every projection of order
+3 other than the above three for which weights were explicitly assigned, then a weight of \f$10^{-3}\f$ to every other projection.
 The order of the lines in the file is not important.
 LatNet Builder must be told where to look for the weights by changing the 
 <code>--weights</code> option to 
-\todo check the syntax
 \verbatim
-  --weights projection-dependent:file:weights.txt
+  --weights file:weights.txt
 \endverbatim
-The first colon-separated token indicates the type (projection-dependent) of
-weights, and the second one, the name of the file from which the weights must be
-read.
-
+The first colon-separated token indicates that the weights
+should be read from a file, and the second one, the (relative or absolute) path to 
+the file to read.
 
 \section cmdtut_weights_orderdep Order-Dependent Weights
 

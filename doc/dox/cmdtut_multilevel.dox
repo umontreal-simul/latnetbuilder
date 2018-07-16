@@ -35,6 +35,9 @@ one of the following values:
     to select the individual merit value of the \f$m\f$th nested
     level.
 
+Ideally, normalizations (\ref feats_filters) should be used with multilevel point sets so that the merit value of each nested level
+ranges on the same scale.
+
 \section cmdtut_multilevel_lat Constructing embedded lattices
 
 For instance to search for embedded ordinary lattices with the full-CBC exploration method in dimension 5 with
@@ -117,7 +120,7 @@ To build embedded polynomial lattices with CBC exploration in dimension 5 with
 
 \section cmdtut_multilevel_net Constructing multilevel digital nets
 
-<b>Recall that multilevel digital nets are only available with Sobol' construction (<code> --construction sobol</code>)</b>.
+<b>Recall that multilevel digital nets are only available with the Sobol' and the explicit constructions (<code> --construction sobol</code> or <code> --construction explicit</code>)</b>.
 
 To build Sobol' digital nets with the random CBC method with 100 random samples for each coordinates with
 \f$2^1\f$ to \f$2^{20}\f$ points using the maximum value fo the projection-dependent t-value merit 

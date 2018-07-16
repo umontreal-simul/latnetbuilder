@@ -16,27 +16,28 @@
 
 /** \page feats_weights Weights
 
-\todo build page
-
 Most figures of merit implemented in LatNet Builder can be parametrized by weights.
 Weights are used to put more importance on specific projections of the point set. Various types
-of weights have been proposed. LatNet Builder implements the following:
+of weights have been proposed. LatNet Builder implements the following types of weights:
 - <b>projection-dependent weights</b>:
   \n With projection-dependent weights, the weight associated to the projection onto
   the coordinates in \f$\mathfrak u\f$ can be set to any non-negative constant
   \f$\gamma_{\mathfrak u}\f$.
+<br><br>
 - <b>order-dependent weights</b>:
   \n With order-dependent weights, the weight associated to the projection onto the
   coordinates in \f$\mathfrak u\f$ is
   \f[
     \gamma_{\mathfrak u} = \Gamma_{|\mathfrak u|}.
   \f]
+<br><br>
 - <b>product weights</b>:
   \n With product weights, the weight associated to the projection onto the
   coordinates in \f$\mathfrak u\f$ is
   \f[
     \gamma_{\mathfrak u} = \prod_{j \in \mathfrak u} \gamma_j.
   \f]
+<br><br>
 - <b>product and order dependent weights</b>:
   \n With product and order-dependent (POD) weights, the weight associated to the
   projection onto the coordinates in \f$\mathfrak u\f$ is
@@ -45,6 +46,7 @@ of weights have been proposed. LatNet Builder implements the following:
     \Gamma_{|\mathfrak u|}
     \prod_{j \in \mathfrak u} \gamma_j.
   \f]
+<br><br>
 - <b>combined weights</b>:
   \n With combined weights, the weight associated to the
   projection onto the coordinates in \f$\mathfrak u\f$ is
@@ -52,5 +54,7 @@ of weights have been proposed. LatNet Builder implements the following:
   LatNet Builder does not handle these weights as projection-dependent weights
   but as a specific type of weight for efficiency purpose in coordinate-uniform 
   evaluation methods.
+
+\todo add guidelines on choosing the weights
 */
 vim: ft=doxygen spelllang=en spell

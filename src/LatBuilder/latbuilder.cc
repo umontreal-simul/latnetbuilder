@@ -104,11 +104,11 @@ makeOptionsDescription()
     "      order <x>: <weight>\n"
     "      default: <weight>\n"
     "    if <file> is `-' data is read from standard input\n")
-   ("weights-power,o", po::value<Real>(),
+   ("weights-power,p", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
    ("norm-type,p", po::value<std::string>(),
     "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
-    "    <p>: a real number corresponding the l_<p> norm\n"
+    "    <q>: a real number corresponding the l_<q> norm\n"
     "    inf: corresponding to the `max' norm\n")
    ("figure-of-merit,M", po::value<std::string>(),
     "(required) type of figure of merit; format: [CU:]<merit>\n"
