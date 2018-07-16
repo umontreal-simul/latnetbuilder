@@ -59,6 +59,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
         TValueProjMerit(unsigned int maxCardinal, Combiner combiner=Combiner()):
             m_maxCardinal(maxCardinal)
         {};
+        virtual ~TValueProjMerit(){};
 
         /** 
          * Returns the maximum order of the subprojections to take into account.
@@ -95,7 +96,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
             return METHOD::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
 
-        Real combine(Merit merit)
+        virtual Real combine(Merit merit, const DigitalNet& net, const LatticeTester::Coordinates& projection)
         {
             return (Real) merit;
         }
@@ -141,7 +142,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
         }
 
 
-    private:
+    protected:
         std::string m_name = "t-value (unilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 
@@ -170,6 +171,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
             m_maxCardinal(maxCardinal),
             m_combiner(std::move(combiner))
         {};
+        virtual ~TValueProjMerit(){};
 
         /** 
          * Returns the maximum order of the subprojections to take into account.
@@ -210,7 +212,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
          * Combines the projection-dependent multilevel merits into a single value merit.
          * @param merits Multilevel merits.
          */ 
-        Real combine(const Merit& merits) const {
+        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) const {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
                 tmp[i] = (Real) merits[i];
@@ -265,7 +267,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
         }
 
 
-    private:
+    protected:
         std::string m_name = "t-value (multilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 

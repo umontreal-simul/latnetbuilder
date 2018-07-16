@@ -89,9 +89,11 @@ class ProjectionDependentEvaluator : public FigureOfMeritCBCEvaluator
 
                 it->updateSubProjCombination(); // update the subprojection combination
 
-                auto grossMerit = m_figure->projDepMerit()(net,it->getProjectionRepresentation(),it->getSubProjCombination()); // compute the merit of the projection
+                LatticeTester::Coordinates proj = it->getProjectionRepresentation();
 
-                Real merit = m_figure->projDepMerit().combine(grossMerit); // combine in a single merit value
+                auto grossMerit = m_figure->projDepMerit()(net, proj ,it->getSubProjCombination()); // compute the merit of the projection
+
+                Real merit = m_figure->projDepMerit().combine(grossMerit, net, proj); // combine in a single merit value
 
                 if(verbose>0)
                 {
