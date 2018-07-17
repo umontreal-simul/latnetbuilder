@@ -269,9 +269,9 @@ int main(int argc, const char *argv[])
         }
 
         std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
+        unsigned int interlacingFactor = 0;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
-        unsigned int interlacingFactor = 0;
 
         if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)
@@ -292,26 +292,30 @@ int main(int argc, const char *argv[])
           BUILD_TASK(EXPLICIT, MULTILEVEL)
        }
 
-      // if (verbose > 0){
-        std::cout << "====================\n       Input\n====================" << std::endl;
-        std::cout << task->format();
-      // }
-
       for (unsigned i=0; i<repeat; i++){
-        if (repeat > 1){
-          std::cout << "====================\n       Run "<< i << "\n====================" << std::endl;
+        if (i == 0){
+          std::cout << "====================\n       Input\n====================" << std::endl;
+          std::cout << task->format();
+          std::cout << std::endl;
         }
-        else{
-          std::cout << "====================\nRunning the task... \n====================" << std::endl;
-        }
-        t0 = high_resolution_clock::now();\
-        task->execute();\
-        t1 = high_resolution_clock::now();\
-        TaskOutput(*task, outputFormatParameters, interlacingFactor);
-        auto dt = duration_cast<duration<double>>(t1 - t0);
-        std::cout << std::endl;
-        std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-        task.reset();
+
+          if (repeat > 1){
+            std::cout << "====================\n       Run " << i+1 << "\n====================" << std::endl;
+          }
+          else{
+            std::cout << "====================\nRunning the task... \n====================" << std::endl;
+          }
+
+          t0 = high_resolution_clock::now();\
+          task->execute();\
+          t1 = high_resolution_clock::now();\
+
+          std::cout << std::endl;
+          TaskOutput(*task, outputFormatParameters, interlacingFactor);
+          auto dt = duration_cast<duration<double>>(t1 - t0);
+          std::cout << std::endl;
+          std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
+          task.reset();
       }
    }
    catch (LatBuilder::Parser::ParserError& e) {

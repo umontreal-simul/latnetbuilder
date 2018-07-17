@@ -270,7 +270,7 @@ namespace NetBuilder {
     std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
     {
         std::string res;
-        res += "SobolDigitalNet - Direction numbers = \n";
+        res += "Sobol Digital Net - Direction numbers = \n";
         for (unsigned int coord = 0; coord < genVals.size(); coord++){
             if (interlacingFactor > 1 && coord % interlacingFactor == 0){
                 res += "Coordinate " + std::to_string((coord / interlacingFactor) + 1)  + ":\n";

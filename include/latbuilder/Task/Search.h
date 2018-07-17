@@ -95,11 +95,16 @@ public:
       void stop()
       { m_lowPass.setThreshold(std::numeric_limits<Real>::max()); }
 
-      bool visited(const Real&)
+      bool visited(const Real& r)
       {
          m_totalCount++;
-         if (m_verbose && m_totalCount % 100 == 0){
-               std::cout << "dimension " << m_dimension-1 << "/" << m_totalDim <<  " - reached ";
+         if (m_verbose > 0 && m_totalCount % 100 == 0){
+               if (m_totalDim > 1){
+                std::cout << "Coordinate " << m_dimension-1 << "/" << m_totalDim <<  " - lattice ";
+               }
+               else{
+                std::cout << "Lattice ";
+               }
                if (m_maxAcceptedCount < std::numeric_limits<size_t>::max()){
                  std::cout << acceptedCount() << "/" << m_maxAcceptedCount << std::endl;
                }
@@ -164,7 +169,7 @@ public:
 
    private:
       Dimension m_dimension;
-      bool m_verbose;
+      int m_verbose;
       bool m_truncateSum;
       size_t m_maxAcceptedCount;
       size_t m_maxTotalCount;
@@ -191,7 +196,8 @@ public:
       m_dimension(dimension),
       m_bestLat(),
       m_bestMerit(0),
-      m_minObserver(new MinObserver())
+      m_minObserver(new MinObserver()),
+      m_verbose(0)
    { connectSignals(); }
 
    Search(Search&& other):
@@ -202,7 +208,8 @@ public:
       m_bestMerit(std::move(other.m_bestMerit)),
       m_minObserver(other.m_minObserver.release()),
       m_minElement(std::move(other.m_minElement)),
-      m_filters(std::move(other.m_filters))
+      m_filters(std::move(other.m_filters)),
+      m_verbose(other.m_verbose)
    {}
 
    virtual ~Search() {}
@@ -212,6 +219,11 @@ public:
     */
    Dimension dimension() const
    { return m_dimension; }
+
+   int verbose() const
+   { return m_verbose; }
+   void setVerbose(int verbose)
+   { m_verbose= verbose; }
 
    /**
     * Returns the filters of merit transformations.
@@ -290,18 +302,20 @@ protected:
 
    virtual void format(std::ostream& os) const
    {
-      os << "dimension: " << dimension() << std::endl;
-      os << "filters: " << filters();
+      os << "Dimension: " << dimension() << std::endl;
+      os << filters() << std::endl;
    }
 
    /**
-    * Selects a new best lattice and emits an OnLatticeSelected signal.
+    * Selects a new best lattice and emits an OnLatticeSelected signal, if quiet is set to false.
     */
-   void selectBestLattice(const LatDef<LR, ET>& lattice, Real merit)
+   void selectBestLattice(const LatDef<LR, ET>& lattice, Real merit, bool quiet)
    {
       m_bestLat = lattice;
       m_bestMerit = merit;
-      onLatticeSelected()(*this);
+      if (! quiet){
+        onLatticeSelected()(*this);
+      }
    }
 
 private:
@@ -313,6 +327,7 @@ private:
    std::unique_ptr<MinObserver> m_minObserver;
    Functor::MinElement<Real> m_minElement;
    MeritFilterList<LR, ET> m_filters;
+   int m_verbose;
 
    void connectSignals()
    {

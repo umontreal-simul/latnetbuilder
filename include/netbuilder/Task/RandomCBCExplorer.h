@@ -100,7 +100,7 @@ class RandomCBCExplorer
 
         std::string format() const
         {
-            return "Random CBC Explorer - " + std::to_string(m_nbTries) + " tries\n";
+            return "Random Explorer - " + std::to_string(m_nbTries) + " samples\n";
         }
 
     private:

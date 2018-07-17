@@ -148,21 +148,10 @@ private:
 
    std::ostream& format(std::ostream& os) const
    {
-      os << "WeightedFigureOfMerit("
-         << "accumulator=" << Accumulator<ACC, Real>::name() << ", "
-         << "norm-type=";
-      if (Accumulator<ACC, Real>::name() == "max") {
-         if (normType() == 1.0)
-            os << "inf";
-         else
-            os << "inf(" << normType() << ")";
-      }
-      else
-         os << normType();
-      os << ", "
-         << "projDepMerit=" << projDepMerit() << ", "
-         << "weights=" << weights()
-         << ")";
+      os << "Projection Dependent Merit: " << projDepMerit() 
+         << " - Accumulator: " << Accumulator<ACC, Real>::name() << std::endl
+         << "Norm Type: " << normType() << std::endl
+         << "Weights: " << weights();
       return os;
    }
 

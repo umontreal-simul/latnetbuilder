@@ -35,7 +35,7 @@ struct Sum {
    { return x + y; }
 
    static std::string name()
-   { return "sum"; }
+   { return "Sum"; }
 };
 
 /**
@@ -50,7 +50,7 @@ struct Max {
    { return std::max(x, y); }
 
    static std::string name()
-   { return "max"; }
+   { return "Max"; }
 };
 
 /**
@@ -64,7 +64,7 @@ struct Pow {
    { return std::pow(x, y); }
 
    static std::string name()
-   { return "pow"; }
+   { return "Pow"; }
 };
 
 }}

@@ -22,6 +22,15 @@
 
 namespace LatBuilder { namespace Task {
 
+static const char * LatticeTypeStrings[] = { "Ordinary", "Polynomial", "Digital" };
+namespace{
+    // to suppress unused warning
+    void detail(){
+        (void) LatticeTypeStrings;
+        return;
+    }
+}
+
 /**
  * Base base class for all tasks.
  */

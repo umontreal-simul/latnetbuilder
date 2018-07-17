@@ -99,7 +99,7 @@ class FullCBCExplorer
 
         std::string format() const
         {
-            return "Full CBC Explorer";
+            return "Full Explorer";
         }
 
     private:

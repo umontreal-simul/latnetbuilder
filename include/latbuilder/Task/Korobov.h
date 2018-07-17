@@ -67,7 +67,7 @@ struct LatSeqBasedSearchTraits<KorobovTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " Korobov search"; }
+   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: Korobov"; }
 
    void init(LatBuilder::Task::Korobov<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }

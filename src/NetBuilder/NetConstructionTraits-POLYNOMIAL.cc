@@ -99,7 +99,7 @@ namespace NetBuilder {
         std::string res;
         std::ostringstream stream;
 
-        stream << "PolynomialDigitalNet - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
+        stream << "Polynomial Digital Net - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
         for (unsigned int coord = 0; coord < genVals.size(); coord++){
             if (interlacingFactor > 1 && coord % interlacingFactor == 0){
                 stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;

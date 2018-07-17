@@ -66,7 +66,7 @@ public:
    { return m_norm; }
 
    std::string name() const
-   { return "normalizer(" + norm().name() + ")"; }
+   { return "normalizer: " + norm().name(); }
 
 private:
    /// Normalization function.
@@ -116,7 +116,7 @@ public:
    { return m_norm; }
 
    std::string name() const
-   { return "normalizer(" + norm().name() + ")"; }
+   { return "normalizer: " + norm().name(); }
 
    /**
     * Sets the per-level weights.

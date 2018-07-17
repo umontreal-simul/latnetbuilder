@@ -79,7 +79,7 @@ struct WeightedFigureOfMerit {
           FUNC&& func, ARGS&&... args)
    {
       if (strNorm == "inf") {
-         if(interlacingFactor == 1)
+         if(interlacingFactor > 1)
             throw BadNorm("interlacing requires norm type `1'");
          ProjDepMerit<LR>::parse(str, interlacingFactor, std::move(weights), ParseProjDepMerit<Functor::Max>(), 1.0, std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;

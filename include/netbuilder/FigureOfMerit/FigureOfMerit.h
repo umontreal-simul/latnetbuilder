@@ -156,7 +156,7 @@ class FigureOfMeritCBCEvaluator:
             for(Dimension dim = 0; dim < net.dimension(); ++dim) // for each dimension
             {
                 prepareForNextDimension(); // prepare the evaluator for the next dimension
-                if (verbose>0)
+                if (verbose>0 && dim > 0)
                 {
                     std::cout << "Begin coordinate: " << dim + 1 << "/" << net.dimension() << std::endl;
                 }

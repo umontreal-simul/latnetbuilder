@@ -73,7 +73,7 @@ class Eval : public Task
         {
             std::string res;
             std::ostringstream stream;
-            stream << "Task: NetBuilder Evaluate" << std::endl;
+            stream << "Task: NetBuilder Evaluation" << std::endl;
             stream << "Number of components: " << this->dimension() << std::endl;
             stream << "Evaluation of the net:" << std::endl;
             stream << m_net->format(OutputFormat::CLI, 1);

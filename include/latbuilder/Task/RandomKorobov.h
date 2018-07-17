@@ -81,7 +81,7 @@ struct LatSeqBasedSearchTraits<RandomKorobovTag<LR, ET, COMPRESS, PLO, FIGURE>> 
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " random Korobov search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: random Korobov - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
 
    void init(LatBuilder::Task::RandomKorobov<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    {

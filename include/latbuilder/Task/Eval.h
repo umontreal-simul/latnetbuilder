@@ -73,7 +73,10 @@ struct CBCBasedSearchTraits<EvalTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " evaluation"; }
+   {  using TextStream::operator<<;
+      std::ostringstream stream;
+      stream << "Task: LatBuilder Evaluation of the " << LatticeTypeStrings[(int) LR] << " lattice " << genVec ;
+      return stream.str(); }
 
    void init(LatBuilder::Task::Eval<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }

@@ -57,10 +57,8 @@ namespace NetBuilder {
 
     std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
     {
-        std::string res;
-        
         std::ostringstream stream;
-        stream << "ExplicitDigitalNet - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
+        stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
         for (unsigned int coord = 0; coord < genVals.size(); coord++){
             if (interlacingFactor == 1){
                 stream << "Coordinate " << coord+1 << ":" << std::endl;
@@ -73,8 +71,6 @@ namespace NetBuilder {
             }
             stream << *(genVals[coord]) << std::endl;
         }
-        res += stream.str();
-        stream.str(std::string());
-        return res;
+        return stream.str();
     }  
 }

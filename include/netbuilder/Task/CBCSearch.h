@@ -94,7 +94,7 @@ class CBCSearch : public Search<NC, ET>
             std::string res;
             std::ostringstream stream;
             stream << Search<NC, ET>::format();
-            stream << "Exploration method: CBC - explorer: " << m_explorer->format() << std::endl;
+            stream << "Exploration method: CBC - " << m_explorer->format() << std::endl;
             stream << "Figure of merit: " << m_figure->format() << std::endl;
             res += stream.str();
             stream.str(std::string());
@@ -131,7 +131,7 @@ class CBCSearch : public Search<NC, ET>
             for(Dimension coord = this->minimumObserver().bestNet().dimension() ; coord < this->dimension(); ++coord) // for each dimension to explore
             {
                 evaluator->prepareForNextDimension();
-                if(this->m_verbose>=1)
+                if(this->m_verbose>=1 && coord > 0)
                 {
                     std::cout << "Begin coordinate: " << coord + 1 << "/" << this->dimension() << std::endl;
                 }

@@ -57,7 +57,7 @@ public:
     * An element-visited signal is emitted after an element has been visited.
     */
    template <typename ForwardIterator>
-   ForwardIterator operator()(ForwardIterator first, ForwardIterator last, size_t maxAcceptedCount) const
+   ForwardIterator operator()(ForwardIterator first, ForwardIterator last, size_t maxAcceptedCount, int verbose) const
    {
       if (maxAcceptedCount == std::numeric_limits<size_t>::max()){
         onStart()( std::distance(first, last));
@@ -81,11 +81,24 @@ public:
       }
 
       while (++first != last) {
+         bool updated = false;
          if (*first < min) {
             min = *first;
             itmin = first;
             this->onMinUpdated()(min);
+            updated = true;
          }
+
+         if (verbose > 0){
+            if (updated) {
+              std::cout << "Current merit: " << *first << " (best) with lattice:" << std::endl;
+            }
+            else{
+              std::cout << "Current merit: " << *first << " (rejected) with lattice:" << std::endl;
+            }
+            std::cout << *first.base().base() << std::endl;
+         }
+
          if (!onElementVisited()(*first)) {
             onStop()();
             return itmin;

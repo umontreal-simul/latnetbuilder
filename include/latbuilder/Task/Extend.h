@@ -98,8 +98,8 @@ public:
       LatSeqType latSeq(storage().sizeParam(), std::move(gens));
 
       auto fseq = this->filters().apply(latSeqOverCBC().meritSeq(std::move(latSeq)));
-      const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount());
-      this->selectBestLattice(*itmin.base().base(), *itmin);
+      const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount(), this->verbose());
+      this->selectBestLattice(*itmin.base().base(), *itmin, true);
    }
 
    /**
@@ -135,11 +135,11 @@ public:
 protected:
    virtual void format(std::ostream& os) const
    {
-      std::string name = FIGURE::evaluationName() + " extension of the number of points";
-      os << "construction: " << name << std::endl;
-      os << "figure of merit: " << figureOfMerit() << std::endl;
-      os << "base lattice: " << baseLat() << std::endl;
-      os << "size parameter: " << storage().sizeParam() << std::endl;
+      os << "Task: LatBuilder Search for " << LatticeTypeStrings[(int) LR] << " lattices" << std::endl;
+      os << "Exploration method: extension of the number of points" << std::endl;
+      os << "Base Lattice: " << baseLat() << std::endl;
+      os << "Figure of merit: " << figureOfMerit() << std::endl;
+      os << "Size Parameter: " << storage().sizeParam() << std::endl;
       Search<LR, ET>::format(os);
    }
 

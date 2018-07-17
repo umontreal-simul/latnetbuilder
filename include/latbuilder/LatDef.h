@@ -21,6 +21,8 @@
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/TextStream.h"
 
+#include <boost/algorithm/string/erase.hpp>
+
 namespace LatBuilder
 {
 
@@ -116,16 +118,29 @@ template <EmbeddingType ET>
 std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::ORDINARY,ET>& lat)
 {
    using TextStream::operator<<;
-   os << "lattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
+   os << "Ordinary Lattice - Modulus = " << lat.sizeParam() << " - Generating vector = " << lat.gen() << std::endl;
    return os;
 }
 
 template <EmbeddingType ET>
 std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::POLYNOMIAL,ET>& lat)
 {
-   using TextStream::operator<<;
-   os << "PolynomialLattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
-   return os;
+      using TextStream::operator<<;
+      std::ostringstream stream;
+      std::string res;
+
+      os << "Polynomial Lattice - Modulus = " << lat.sizeParam() << " - Generating vector = " << std::endl;
+      auto vec = lat.gen();
+      for (unsigned int i=0; i<vec.size(); i++){
+      stream << "  " << vec[i] << std::endl;
+      }
+
+      res += stream.str();
+      boost::algorithm::erase_all(res, "[");
+      boost::algorithm::erase_all(res, "]");
+      os << res;
+
+      return os;
 }
 
 //====================================================================================

@@ -68,11 +68,21 @@ class RandomSearch : public Search<NC, ET>
             std::string res;
             std::ostringstream stream;
             stream << Search<NC, ET>::format();
-            stream << "Exploration method: random - " << m_nbTries << " tries" << std::endl;
+            stream << "Exploration method: random - " << m_nbTries << " samples" << std::endl;
             stream << "Figure of merit: " << m_figure->format() << std::endl;
             res += stream.str();
             stream.str(std::string());
             return res;
+        }
+
+        /**
+         * Resets the search.
+         */ 
+        virtual void reset() override
+        {
+            Search<NC, ET>::reset();
+            this->m_figure->evaluator()->reset();
+            std::cout << "in reset" << std::endl;
         }
 
         /**

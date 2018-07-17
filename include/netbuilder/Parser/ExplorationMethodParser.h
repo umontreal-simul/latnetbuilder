@@ -90,7 +90,7 @@ struct ExplorationMethodParser
         }
         else if (name == "random" || name == "random-CBC" || name == "mixed-CBC"){
             if (explorationDescriptionStrings.size() < 2){
-                throw BadExplorationMethod("nb of random tries required; see --help");
+                throw BadExplorationMethod("nb of random samples required; see --help");
             }
             r = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[1]);
         }

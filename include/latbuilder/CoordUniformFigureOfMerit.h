@@ -81,10 +81,9 @@ public:
 protected:
    std::ostream& format(std::ostream& os) const
    {
-      return os << "CoordUniformFigureOfMerit("
-         << "kernel=" << kernel() << ", "
-         << "weights=" << weights()
-         << ")";
+      return os << "Coordinate Uniform with Kernel: " << kernel() << std::endl
+         << "Weights: " << weights() << std::endl
+         << "Norm type: " << normType();
    }
 
 private:

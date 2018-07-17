@@ -35,17 +35,30 @@ static unsigned int merit_digits_displayed = 0;
 template <LatticeType LR, EmbeddingType ET>
 void onLatticeSelected(const Task::Search<LR, ET>& s)
    {
-   unsigned int old_precision = (unsigned int) std::cout.precision();
-   if (merit_digits_displayed)
-      std::cout.precision(merit_digits_displayed);
-   std::cout << "==> " << s.bestLattice() << ": " << s.bestMeritValue() << std::endl;
-   if (merit_digits_displayed)
-      std::cout.precision(old_precision);
-   const auto accepted = s.minObserver().acceptedCount();
-   const auto rejected = s.minObserver().rejectedCount();
-   const auto total = s.minObserver().totalCount();
-   std::cout << "    accepted/rejected/total: "
-      << accepted << "/" << rejected << "/" << total << std::endl; 
+     Dimension currentDim = s.bestLattice().dimension();
+     Dimension totalDim = s.dimension();
+      unsigned int old_precision = (unsigned int) std::cout.precision();
+      if (merit_digits_displayed){
+        std::cout.precision(merit_digits_displayed);
+      }
+      std::string lattice;
+      if (s.minObserver().totalCount() == 1){
+        lattice = " lattice";
+      }
+      else{
+        lattice = " lattices";
+      }
+      
+       std::cout << "End coordinate: " << currentDim << "/" << totalDim << " - "
+       << s.minObserver().totalCount() << lattice  << " explored (" << s.minObserver().acceptedCount() << " accepted)"
+       << " - partial merit value: " << s.bestMeritValue() << std::endl;
+     
+      if (merit_digits_displayed){
+        std::cout.precision(old_precision);
+      }
+      if (currentDim < totalDim){
+        std::cout << "Begin coordinate " << currentDim+1 << "/" << totalDim << std::endl;
+      }
    }
 
 boost::program_options::options_description
@@ -196,18 +209,24 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
    auto search = cmd.parse();
 
-   const std::string separator = "\n--------------------------------------------------------------------------------\n";
+   const std::string separator = "====================\n";
+  
+   std::cout << separator << "    Input" << std::endl << separator << *search << std::endl;
+   
 
    if (verbose > 0) {
       search->onLatticeSelected().connect(onLatticeSelected<LR,ET>);
       search->setObserverVerbosity(verbose-1);
-      std::cout << *search << std::endl;
+      search->setVerbose(verbose-2);
    }
 
    for (unsigned int i = 0; i < repeat; i++) {
-
-      if (verbose > 0)
-         std::cout << separator << std::endl;
+        if (repeat > 1){
+          std::cout << separator << "      Run " << i+1 << std::endl << separator;
+        }
+        else{
+          std::cout << separator << "Running the task..." << std::endl << separator;
+        }
 
       auto t0 = high_resolution_clock::now();
       search->execute();
@@ -218,18 +237,13 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
    std::cout.precision(merit_digits_displayed);
      const auto lat = search->bestLattice();
      
-      if (verbose > 0) {
    auto dt = duration_cast<duration<double>>(t1 - t0);
          std::cout << std::endl;
-         std::cout << "BEST LATTICE: " << search->bestLattice() << ": " << search->bestMeritValue() << std::endl;
-         std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-      }
-      else {
-         std::cout << lat.sizeParam().modulus();
-         for (const auto& a : lat.gen())
-            std::cout << "\t" << a;
-         std::cout << "\t" << search->bestMeritValue() << std::endl;
-      }
+         std::cout << separator << "      Result" << std::endl << separator;
+        std::cout << lat;
+        std::cout << "Merit: " << search->bestMeritValue() << std::endl;
+        std::cout << std::endl;
+         std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl << std::endl;
 
       
       if (merit_digits_displayed)
@@ -237,9 +251,6 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
       search->reset();
     }
-
-   if (verbose > 0)
-      std::cout << separator << std::endl;
 }
 
 
@@ -251,18 +262,24 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
 
    auto search = cmd.parse();
 
-   const std::string separator = "\n--------------------------------------------------------------------------------\n";
+   const std::string separator = "====================\n";
+  
+   std::cout << separator << "    Input" << std::endl << separator << *search << std::endl;
+   
 
    if (verbose > 0) {
       search->onLatticeSelected().connect(onLatticeSelected<LR,ET>);
       search->setObserverVerbosity(verbose-1);
-      std::cout << *search << std::endl;
+      search->setVerbose(verbose-2);
    }
 
    for (unsigned int i = 0; i < repeat; i++) {
-
-        if (verbose > 0)
-           std::cout << separator << std::endl;
+        if (repeat > 1){
+          std::cout << separator << "      Run " << i+1 << std::endl << separator;
+        }
+        else{
+          std::cout << separator << "Running the task..." << std::endl << separator;
+        }
 
         auto t0 = high_resolution_clock::now();
         search->execute();
@@ -274,19 +291,13 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
         }
        const auto lat = search->bestLattice();
       
-
-        if (verbose > 0) {
         auto dt = duration_cast<duration<double>>(t1 - t0);
            std::cout << std::endl;
-           std::cout << "BEST LATTICE: " << lat << ": " << search->bestMeritValue() << std::endl;
-           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-        }
-        else {
-           std::cout << lat.sizeParam().modulus();
-           for (const auto& a : lat.gen())
-              std::cout << "\t" << a;
-           std::cout << "\t" << search->bestMeritValue() << std::endl;
-        }
+           std::cout << separator << "    Result" << std::endl << separator;
+           std::cout << lat;
+           std::cout << "Merit: " << search->bestMeritValue() << std::endl;
+           std::cout << std::endl;
+           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl << std::endl;
         
         if (i == 0){ 
           NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
@@ -306,9 +317,6 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
           
         search->reset();
     }
-
-   if (verbose > 0)
-      std::cout << separator << std::endl;
 }
 
    

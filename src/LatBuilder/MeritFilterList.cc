@@ -64,62 +64,69 @@ namespace {
    template <typename LIST>
    void filtersFormatHelper(std::ostream& os, const LIST& list, const std::string& label)
    {
-      os << label << " = (";
-      auto it = list.begin();
-      if (it != list.end())
-         os << (*it)->name();
-      while (++it != list.end())
-         os << ", " << (*it)->name();
-      os << ")";
+      if (list.size() > 0){
+            os << label;
+            auto it = list.begin();
+            if (it != list.end())
+            os << (*it)->name();
+            while (++it != list.end())
+            os << ", " << (*it)->name();
+      }
    }
 }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& filters)
-{ filtersFormatHelper(os, filters.filters(), "scalar filters"); return os; }
+{ filtersFormatHelper(os, filters.filters(), "\nScalar filters: "); return os; }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& filters)
-{ filtersFormatHelper(os, filters.filters(), "multilevel filters"); return os; }
+{ filtersFormatHelper(os, filters.filters(), "\nMultilevel filters: "); return os; }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& filters)
-{ return os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&>(filters); return os; }
+{ 
+      os << "Embedding type: Unilevel";
+      os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&>(filters); 
+      return os;
+}
 
 template<>
 std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& filters)
 {
-   os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&>(filters);
-   os << ", ";
-   os << "combiner=" << filters.combiner().name();
-   os << ", ";
-   os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&>(filters);
-   return os;
+      os << "Embedding type: Multilevel";
+      os << "\nCombiner: " << filters.combiner().name();
+      os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&>(filters);
+      os << dynamic_cast<const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&>(filters);
+      return os;
 }
 
 //===============================================================================================================
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>& filters)
-{ filtersFormatHelper(os, filters.filters(), "scalar filters"); return os; }
+{ filtersFormatHelper(os, filters.filters(), "\nScalar filters: "); return os; }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>& filters)
-{ filtersFormatHelper(os, filters.filters(), "multilevel filters"); return os; }
+{ filtersFormatHelper(os, filters.filters(), "\nMultilevel filters: "); return os; }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>& filters)
-{ return os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&>(filters); return os; }
+{ 
+      os << "Embedding type: Unilevel";
+      os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&>(filters); 
+      return os; 
+}
 
 template<>
 std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>& filters)
 {
-   os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&>(filters);
-   os << ", ";
-   os << "combiner=" << filters.combiner().name();
-   os << ", ";
-   os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&>(filters);
-   return os;
+      os << "Embedding type: Multilevel";
+      os << "\nCombiner: " << filters.combiner().name();
+      os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&>(filters);
+      os << dynamic_cast<const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&>(filters);
+      return os;
 }
 
 
