@@ -95,18 +95,20 @@ class MinimumObserver
 
                     if (m_verbose>0)
                     {
-                        std::cout << m_bestNet->format(OutputFormat::CLI);
-                        std::cout << " <-- merit: "<< m_bestMerit << " (best)";
+                        std::cout << "Current merit: " << merit << " (best) with net:" << std::endl;
+                        std::cout << m_bestNet->format(OutputFormat::CLI, 1);
+                        std::cout << std::endl;
                         std::cout << std::endl;
                     }
                     return true;
                 }
                 else
                 {
-                    if (m_verbose>1)
+                    if (m_verbose>0)
                     {
-                        std::cout << net->format(OutputFormat::CLI);
-                        std::cout << " <-- rejected";
+                        std::cout << "Current merit: " << merit << " (rejected) with net:" << std::endl;
+                        std::cout << net->format(OutputFormat::CLI, 1);
+                        std::cout << std::endl;
                         std::cout << std::endl;
                     }
                     return false;

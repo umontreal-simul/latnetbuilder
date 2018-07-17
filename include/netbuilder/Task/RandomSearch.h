@@ -61,6 +61,21 @@ class RandomSearch : public Search<NC, ET>
         RandomSearch(RandomSearch&&) = default;
 
         /**
+         *  Returns information about the task
+         */
+        virtual std::string format() const override
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << Search<NC, ET>::format();
+            stream << "Exploration method: random - " << m_nbTries << " tries" << std::endl;
+            stream << "Figure of merit: " << m_figure->format() << std::endl;
+            res += stream.str();
+            stream.str(std::string());
+            return res;
+        }
+
+        /**
         * Executes the search task.
         * The best net and merit value are set in the process.
         */
@@ -78,7 +93,7 @@ class RandomSearch : public Search<NC, ET>
             
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {
-                if(this->m_verbose>0)
+                if(this->m_verbose>0 && attempt % 100 == 0)
                 {
                     std::cout << "Net " << attempt << "/" << m_nbTries << std::endl;
                 }

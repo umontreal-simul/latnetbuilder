@@ -41,7 +41,12 @@ public:
     /**
      * Outputs the resulting net of the task.
      */ 
-    virtual std::string outputNet(OutputFormat outputFormat) const = 0;
+    virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const = 0;
+
+    /**
+     * Output information about the task.
+     */ 
+    virtual std::string format() const = 0;    
 
     /**
      * Outputs the resulting merit value of the task.

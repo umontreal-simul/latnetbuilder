@@ -78,7 +78,7 @@ struct NetConstructionParser<EmbeddingType::MULTILEVEL>
 
       if (tmp != NetConstruction::SOBOL && tmp != NetConstruction::EXPLICIT)
       {
-        throw BadNetConstruction("incompatible point set type and construction.");
+        throw BadNetConstruction("Multilevel point sets only work with Sobol and explicit constructions.");
       }
       return tmp;
    }

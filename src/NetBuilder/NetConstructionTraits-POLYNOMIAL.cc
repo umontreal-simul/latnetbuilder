@@ -25,6 +25,7 @@
 
 namespace NetBuilder {
 
+    const string NetConstructionTraits<NetConstruction::POLYNOMIAL>::name = "Polynomial";
     
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValue GenValue;
 
@@ -93,26 +94,20 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat)
+    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
     {
         std::string res;
-        
         std::ostringstream stream;
-        res += "PolynomialDigitalNet(\n  Modulus = \n";
-        stream << sizeParameter;
-        res+="  ";
-        res += stream.str();
-        stream.str(std::string());
-        res += "\n  GeneratingVector = \n";
-        for(const auto& genVal : genVals)
-        {
-            res+="  ";
-            stream << *genVal;
-            res+= stream.str();
-            stream.str(std::string());
-            res+= "\n";
+
+        stream << "PolynomialDigitalNet - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
+        for (unsigned int coord = 0; coord < genVals.size(); coord++){
+            if (interlacingFactor > 1 && coord % interlacingFactor == 0){
+                stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;
+            }
+            stream << "  " << *(genVals[coord]) << std::endl;
         }
-        res+=")";
+
+        res += stream.str();
         boost::algorithm::erase_all(res, "[");
         boost::algorithm::erase_all(res, "]");
         return res;

@@ -51,6 +51,22 @@ class ExhaustiveSearch : public Search<NC, ET>
          */
         ExhaustiveSearch(ExhaustiveSearch&&) = default;
 
+
+        /**
+         *  Returns information about the task
+         */
+        virtual std::string format() const override
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << Search<NC, ET>::format();
+            stream << "Exploration method: exhaustive" << std::endl;
+            stream << "Figure of merit: " << m_figure->format() << std::endl;
+            res += stream.str();
+            stream.str(std::string());
+            return res;
+        }
+
         /**
         * Executes the search task.
         * The best net and merit value are set in the process.
@@ -72,7 +88,7 @@ class ExhaustiveSearch : public Search<NC, ET>
             uInteger nbNets = 1;
             for(const auto& genVal : searchSpace)
             {
-                if(this->m_verbose>0)
+                if(this->m_verbose>0 && nbNets % 100 == 0)
                 {
                     std::cout << "Net " << nbNets << "/" << searchSpace.size() << std::endl;
                 }

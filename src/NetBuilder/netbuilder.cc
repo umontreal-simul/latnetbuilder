@@ -38,19 +38,20 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParameters>& vecOutputFormatParameters)
+void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParameters>& vecOutputFormatParameters, unsigned int interlacingFactor)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
     std::cout.precision(merit_digits_displayed);
   }
-  std::cout << task.outputNet(OutputFormat::CLI) << "merit: " << task.outputMeritValue() << std::endl;
+  std::cout << "====================\n       Result\n====================" << std::endl;
+  std::cout << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
   for (Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
     ofstream outFile;
     std::string fileName = outputFormatParameters.file();
     outFile.open(fileName);
-    outFile << task.outputNet(outputFormatParameters.outputFormat());
+    outFile << task.outputNet(outputFormatParameters.outputFormat(), interlacingFactor);
     outFile.close();
   }
   
@@ -197,6 +198,7 @@ cmd.s_figure = opt["figure-of-merit"].as<std::string>();\
 cmd.s_weights       = opt["weights"].as<std::vector<std::string>>();\
 cmd.m_normType = boost::lexical_cast<Real>(opt["norm-type"].as<std::string>());\
 cmd.m_interlacingFactor = opt["interlacing-factor"].as<unsigned int>(); \
+interlacingFactor = cmd.m_interlacingFactor;\
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\
 }\
@@ -269,6 +271,7 @@ int main(int argc, const char *argv[])
         std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
+        unsigned int interlacingFactor = 0;
 
         if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)
@@ -289,11 +292,22 @@ int main(int argc, const char *argv[])
           BUILD_TASK(EXPLICIT, MULTILEVEL)
        }
 
+      // if (verbose > 0){
+        std::cout << "====================\n       Input\n====================" << std::endl;
+        std::cout << task->format();
+      // }
+
       for (unsigned i=0; i<repeat; i++){
+        if (repeat > 1){
+          std::cout << "====================\n       Run "<< i << "\n====================" << std::endl;
+        }
+        else{
+          std::cout << "====================\nRunning the task... \n====================" << std::endl;
+        }
         t0 = high_resolution_clock::now();\
         task->execute();\
         t1 = high_resolution_clock::now();\
-        TaskOutput(*task, outputFormatParameters);
+        TaskOutput(*task, outputFormatParameters, interlacingFactor);
         auto dt = duration_cast<duration<double>>(t1 - t0);
         std::cout << std::endl;
         std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;

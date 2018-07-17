@@ -97,7 +97,9 @@ template<typename KERNEL> double IPODWeights<KERNEL>::getCorrectionProductWeight
 
 template<typename KERNEL> void IPODWeights<KERNEL>::format(std::ostream& os) const
 {
-    os << "IPODWeights(" << m_kernelName << ", " << *m_baseWeights << ")";
+    os << "IPODWeights:" << std::endl; 
+    os << "    Kernel: " << m_kernelName << "," << std::endl;
+    os << "    Base Weights: " << *m_baseWeights;
 }
 
 

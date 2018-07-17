@@ -95,11 +95,6 @@ class ProjectionDependentEvaluator : public FigureOfMeritCBCEvaluator
 
                 Real merit = m_figure->projDepMerit().combine(grossMerit, net, proj); // combine in a single merit value
 
-                if(verbose>0)
-                {
-                    std::cout << *it << " - merit: " << merit << std::endl;
-                }
-
                 acc.accumulate(weight,merit,1);
 
                 if (!onProgress()(acc.value()))  // if someone is listening, may tell that the computation is useless

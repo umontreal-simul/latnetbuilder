@@ -42,12 +42,14 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
 {
     public:
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /** 
          * Constructs a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
-        ResolutionGapProjMerit(unsigned int maxCardinal,  Combiner combiner = Combiner()):
+        ResolutionGapProjMerit(unsigned int maxCardinal,  pCombiner combiner = std::make_unique<LevelCombiner::LevelCombiner>()):
             m_maxCardinal(maxCardinal)
         {};
 
@@ -56,20 +58,16 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
          */ 
         unsigned int maxCardinal() const { return m_maxCardinal; }
 
-        /** 
-         * Returns the name of the projection-dependent merit.
+        /**
+         * Output information about the figure of merit.
          */ 
-        std::string name() const { return m_name ;}
-
-        /**  
-         * Overloads of << operator to print the name of the the projection-dependent merit on the given output stream
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const ResolutionGapProjMerit& dt)
-        {
-            os << "Projection-dependent merit: " << dt.name();
-            return os;
-        } 
-
+        std::string format() const
+        {            
+            std::string res;
+            res += "resolution (unilevel nets)";
+            res += "\nEmbedding type: Unilevel";
+            return res;
+        }; 
 
         /** 
          * Computes the projection-dependent merit of the net \c net for the given projection.
@@ -113,7 +111,6 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
         }
 
     private:
-        std::string m_name = "resolution (unilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account
         ProgressiveRowReducer m_rowReducer; // use to compute the rank of matrices
 };
@@ -126,14 +123,16 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
 {
     public:
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /** 
          * Constructs a projection-dependent merit based on the resolution-gap of projections.
          * @param maxCardinal Maximum order of the subprojections.
-         * @param combiner Combiner used to combine multilevel merits.
+         * @param combiner LevelCombiner used to combine multilevel merits.
          */   
-        ResolutionGapProjMerit(unsigned int maxCardinal, Combiner combiner):
+        ResolutionGapProjMerit(unsigned int maxCardinal, pCombiner combiner = std::make_unique<LevelCombiner::LevelCombiner>()):
             m_maxCardinal(maxCardinal),
-            m_combiner(combiner)
+            m_combiner(std::move(combiner))
         {};
 
         /** 
@@ -141,19 +140,17 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
          */ 
         unsigned int maxCardinal() const { return m_maxCardinal; }
 
-        /** 
-         * Returns the name of the projection-dependent merit.
+        /**
+         * Output information about the figure of merit.
          */ 
-        std::string name() const { return m_name ;}
-
-        /**  
-         * Overloads of << operator to print the name of the the projection-dependent merit on the given output stream
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const ResolutionGapProjMerit& dt)
-        {
-            os << "Projection-dependent merit: " << dt.name();
-            return os;
-        } 
+        std::string format() const
+        {            
+            std::string res;
+            res += "resolution (multilevel nets)";
+            res += "\nEmbedding type: Multilevel";
+            res += "\nCombiner: " + this->m_combiner->format();
+            return res;
+        }; 
 
 
         /** 
@@ -222,13 +219,12 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
             {
                 tmp[i] = merits[i];
             }
-            return m_combiner(std::move(tmp));
+            return (*m_combiner)(std::move(tmp));
         }
 
     private:
-        std::string m_name = "resolution (multilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
-        Combiner m_combiner; 
+        pCombiner m_combiner; 
         ProgressiveRowReducer m_rowReducer;
 };
 

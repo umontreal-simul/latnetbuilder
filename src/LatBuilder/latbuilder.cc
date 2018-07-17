@@ -295,7 +295,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
             std::string fileName = outputFormatParameters.file();
             ofstream outFile;
             outFile.open(fileName);
-            outFile << net.format(outputFormatParameters.outputFormat());
+            outFile << net.format(outputFormatParameters.outputFormat(), 1);  // TODO
             outFile.close();
           }
         }

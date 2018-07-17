@@ -85,6 +85,19 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
          */ 
         Real expNorm() const { return m_expNorm; }
 
+        /**
+         * Output information about the figure of merit.
+         */ 
+        virtual std::string format() const override
+        {
+            std::string res;
+            res += "Combined figure of merit";
+            for (unsigned int i=0; i<m_figures.size(); i++){
+                res += "\n   Figure " + i + ": " + m_figures[i]->format();
+            }
+            return res;
+        }; 
+
     private:
 
         /** 
@@ -130,7 +143,7 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
                     {
                         if (verbose>0)
                         {
-                            std::cout << "Computing for figure n°" << i  << "..." << std::endl;
+                            std::cout << "Computing for figure num " << i  << "..." << std::endl;
                         }
 
                         weight = m_figure->weights()[i];

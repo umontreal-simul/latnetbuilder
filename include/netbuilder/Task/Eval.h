@@ -63,8 +63,25 @@ class Eval : public Task
         /**
         * Returns the best net found by the search task.
         */
-        virtual std::string outputNet(OutputFormat outputFormat) const
-        { return net().format(outputFormat); }
+        virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const
+        { return net().format(outputFormat, interlacingFactor); }
+
+        /**
+         *  Returns information about the task
+         */
+        virtual std::string format() const override
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << "Task: NetBuilder Evaluate" << std::endl;
+            stream << "Number of components: " << this->dimension() << std::endl;
+            stream << "Evaluation of the net:" << std::endl;
+            stream << m_net->format(OutputFormat::CLI, 1);
+            stream << "Figure of merit: " << m_figure->format() << std::endl;
+            res += stream.str();
+            stream.str(std::string());
+            return res;
+        }
 
         /**
         * Returns the best merit value found by the search task.

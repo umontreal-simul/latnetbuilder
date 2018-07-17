@@ -64,18 +64,31 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
         /// Type of the merit value
         typedef unsigned int Merit ;
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /** 
          * Constructs a transformed projection-dependent merit based on the t-value of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
-        TValueTransformedProjMerit(unsigned int maxCardinal, Combiner combiner=Combiner()): TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>(maxCardinal, combiner)
+        TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner=std::make_unique<LevelCombiner::LevelCombiner>()): TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>(maxCardinal, std::move(combiner))
         {}
 
         virtual Real combine(Merit merit, const DigitalNet& net, const LatticeTester::Coordinates& projection)
         {
             return h(merit, net.numColumns(), projection.size());
         }
+
+        /**
+         * Output information about the figure of merit.
+         */ 
+        virtual std::string format() const override
+        {
+            std::string res;
+            res += "Star discrepancy bounding t-value based figure of merit";
+            res += "\nEmbedding type: Unilevel";
+            return res;
+        }; 
 };
 
 /** Template specialization of the projection-dependent merit defined by the t-value of the projection
@@ -89,21 +102,35 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
         /// Type of the merit value
         typedef std::vector<unsigned int> Merit ;
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /** 
          * Constructs a transformed projection-dependent merit based on the t-value of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
-        TValueTransformedProjMerit(unsigned int maxCardinal, Combiner combiner): TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>(maxCardinal, combiner)
+        TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner): TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>(maxCardinal, std::move(combiner))
         {}
 
-        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) const {
+        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
                 tmp[i] = h(merits[i], net.numColumns(), projection.size());
             } 
-            return this->m_combiner(std::move(tmp)) ; 
+            return (*(this->m_combiner))(std::move(tmp)) ; 
         }
+
+        /**
+         * Output information about the figure of merit.
+         */ 
+        virtual std::string format() const override
+        {            
+            std::string res;
+            res += "Star discrepancy bounding t-value based figure of merit";
+            res += "\nEmbedding type: Multilevel";
+            res += "\nCombiner: " + this->m_combiner->format();
+            return res;
+        }; 
 };
 
 /**

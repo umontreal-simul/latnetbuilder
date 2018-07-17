@@ -87,6 +87,21 @@ class CBCSearch : public Search<NC, ET>
         ~CBCSearch() = default;
 
         /**
+         *  Returns information about the task
+         */
+        virtual std::string format() const override
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << Search<NC, ET>::format();
+            stream << "Exploration method: CBC - explorer: " << m_explorer->format() << std::endl;
+            stream << "Figure of merit: " << m_figure->format() << std::endl;
+            res += stream.str();
+            stream.str(std::string());
+            return res;
+        }
+
+        /**
          * Executes the search task.
          * The best net and merit value are set in the process.
          */
@@ -118,15 +133,15 @@ class CBCSearch : public Search<NC, ET>
                 evaluator->prepareForNextDimension();
                 if(this->m_verbose>=1)
                 {
-                    std::cout << "Coordinate: " << coord + 1 << "/" << this->dimension() << std::endl;
+                    std::cout << "Begin coordinate: " << coord + 1 << "/" << this->dimension() << std::endl;
                 }
                 auto net = this->m_minimumObserver->bestNet(); // base net of the search
                 while(!m_explorer->isOver()) // for each generating values provided by the explorer
                 {
                     auto newNet = net.extendDimension(m_explorer->nextGenValue());
-                    if (this->m_verbose>=2)
+                    if (this->m_verbose>=2 && m_explorer->count() % 100 == 0)
                     {
-                        std::cout << "net " << m_explorer->count() << "/" << m_explorer->size() << std::endl;
+                        std::cout << "Coordinate " << coord + 1 << "/" << this->dimension() << " - net " << m_explorer->count() << "/" << m_explorer->size() << std::endl;
                     }
                     double newMerit = (*evaluator)(*newNet,coord,merit, this->m_verbose-3); // evaluate the net
                     if (this->m_minimumObserver->observe(std::move(newNet),newMerit)) // give it to the observer
@@ -141,6 +156,17 @@ class CBCSearch : public Search<NC, ET>
                 }
                 ++m_lastDimension;
                 merit = this->m_minimumObserver->bestMerit();
+                if(this->m_verbose>=1)
+                {
+                    std::string netExplored;
+                    if (m_explorer->size() == 1){
+                        netExplored = "1 net";
+                    }
+                    else{
+                        netExplored = std::to_string(m_explorer->size()) + " nets";
+                    }
+                    std::cout << "End coordinate: " << coord + 1 << "/" << this->dimension() << " - " << netExplored << " explored - partial merit value: " << merit << std::endl;
+                }
                 if (coord + 1 < this->dimension()){ // if at least one dimension remains unexplored
                     this->m_minimumObserver->reset();
                     m_explorer->switchToCoordinate(coord+1);
