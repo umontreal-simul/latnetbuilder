@@ -50,7 +50,7 @@ class CBCSearch : public Search<NC, ET>
                     std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
-                    bool earlyAbortion = true):
+                    bool earlyAbortion = false):
             Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
             m_figure(std::move(figure)),
             m_explorer(std::move(explorer))
@@ -69,7 +69,7 @@ class CBCSearch : public Search<NC, ET>
                     std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
-                    bool earlyAbortion = true):
+                    bool earlyAbortion = false):
             Search<NC, ET>(dimension, std::move(baseNet), verbose, earlyAbortion),
             m_figure(std::move(figure)),
             m_explorer(std::move(explorer))

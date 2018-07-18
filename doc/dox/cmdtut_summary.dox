@@ -287,16 +287,6 @@ options:
 	<dd><em>Optional.</em>
 		TODO describe option
 	</dd>
-	<dt><code>\--no-early-abort</code> / <code>-e</code></dt>
-	<dd><em>Optional (default false).</em>
-		Specifies if the early-abortion of useless computations should be disabled.
-		Only available for digital nets.
-		Takes one of the following values:
-		- <code>false</code>
-			to enable early-abortion; or
-		- <code>true</code>
-			to disable early-abortion.
-	</dd>
 	<dt><code>\--version</code> / <code>-V</code></dt>
 	<dd><em>Optional.</em>
 		Shows the version of the software.

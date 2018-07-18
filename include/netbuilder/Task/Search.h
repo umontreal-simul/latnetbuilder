@@ -91,7 +91,7 @@ public:
     Search( Dimension dimension, 
             typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
             int verbose = 0,
-            bool earlyAbortion = true ):
+            bool earlyAbortion = false ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
@@ -115,7 +115,7 @@ public:
     Search( Dimension dimension, 
             std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
             int verbose = 0,
-            bool earlyAbortion = true ):
+            bool earlyAbortion = false ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),

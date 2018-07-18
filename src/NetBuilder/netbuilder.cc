@@ -140,7 +140,6 @@ makeOptionsDescription()
   //   "  low-pass:<threshold>\n"
   //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
   //   "  even[:<min-level>[:<max-level>]] (default)\n")
-   ("no-early-abort,e", "(optional) disable early abortion in computations.")
     ("output-folder,g", po::value<std::string>(),
     "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
@@ -198,12 +197,6 @@ if (opt.count("combiner") < 1){\
 }\
 else{\
   cmd.s_combiner = opt["combiner"].as<std::string>();\
-}\
-if (opt.count("no-early-abort") >= 1){\
-  cmd.m_earlyAbort = false;\
-}\
-else{\
-  cmd.m_earlyAbort = true;\
 }\
 if (opt.count("weight-power") == 1 ){\
   cmd.m_weightPower = boost::lexical_cast<Real>(opt["weight-power"].as<std::string>());\

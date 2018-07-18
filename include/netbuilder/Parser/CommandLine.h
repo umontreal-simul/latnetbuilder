@@ -47,7 +47,6 @@ struct CommandLine {
    std::string s_combiner;
    std::string s_verbose;
    
-   bool m_earlyAbort;
    Real m_normType;
    Real m_weightPower;
    typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;

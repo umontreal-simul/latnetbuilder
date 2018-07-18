@@ -46,7 +46,7 @@ class RandomSearch : public Search<NC, ET>
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                         unsigned nbTries,
                         int verbose = 0,
-                        bool earlyAbortion = true):
+                        bool earlyAbortion = false):
             Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
             m_figure(std::move(figure)),
             m_nbTries(nbTries),
