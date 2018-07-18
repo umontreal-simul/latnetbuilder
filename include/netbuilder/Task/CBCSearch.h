@@ -154,7 +154,6 @@ class CBCSearch : public Search<NC, ET>
                     this->onFailedSearch()(*this); // fails if the search has failed
                     return;
                 }
-                ++m_lastDimension;
                 merit = this->m_minimumObserver->bestMerit();
                 if(this->m_verbose>=1)
                 {
@@ -196,7 +195,6 @@ class CBCSearch : public Search<NC, ET>
     private:
         std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> m_figure;
         std::unique_ptr<Explorer> m_explorer;
-        unsigned int m_lastDimension = 0;
 };
 
 }}

@@ -139,7 +139,7 @@ protected:
       os << "Exploration method: extension of the number of points" << std::endl;
       os << "Base Lattice: " << baseLat() << std::endl;
       os << "Figure of merit: " << figureOfMerit() << std::endl;
-      os << "Size Parameter: " << storage().sizeParam() << std::endl;
+      os << "Modulus: " << storage().sizeParam() << std::endl;
       Search<LR, ET>::format(os);
    }
 

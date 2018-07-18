@@ -131,7 +131,7 @@ class MixedCBCExplorer
 
         std::string format() const
         {
-            return "Mixed Explorer - " + std::to_string(m_nbFullCoordinates) + " full coordinates - " + std::to_string(m_nbTries) + " samples for random coordinates\n";
+            return "Mixed Explorer - " + std::to_string(m_nbFullCoordinates) + " full coordinates - " + std::to_string(m_nbTries) + " samples for random coordinates";
         }
 
     private:

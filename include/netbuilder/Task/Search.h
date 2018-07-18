@@ -39,7 +39,7 @@ namespace{
     std::string output<NetConstruction::POLYNOMIAL>(typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::SizeParameter sizeParameter)
     {
         std::ostringstream stream;
-        stream << "Generating polynomial: " << sizeParameter << std::endl;
+        stream << "Modulus: " << sizeParameter << std::endl;
         return stream.str();
     }
 }
@@ -69,7 +69,7 @@ public:
      */ 
     virtual void reset() override
     {
-        m_minimumObserver.reset();
+        m_minimumObserver->fullReset();
         m_bestNet = DigitalNetConstruction<NC>(0,m_sizeParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }

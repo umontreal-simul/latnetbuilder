@@ -315,7 +315,7 @@ int main(int argc, const char *argv[])
           auto dt = duration_cast<duration<double>>(t1 - t0);
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-          task.reset();
+          task->reset();
       }
    }
    catch (LatBuilder::Parser::ParserError& e) {

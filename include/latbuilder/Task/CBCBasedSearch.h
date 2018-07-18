@@ -115,7 +115,7 @@ protected:
    {
       os << m_traits.name() << std::endl;
       CBCBasedSearchTraits<TAG>::Search::format(os);
-      os << "Size Parameter: " << storage().sizeParam() << std::endl;
+      os << "Modulus: " << storage().sizeParam() << std::endl;
       os << "Figure of merit: " << figureOfMerit() << std::endl;
    }
 
