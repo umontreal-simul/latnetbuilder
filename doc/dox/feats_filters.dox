@@ -17,20 +17,18 @@
 /** \page feats_filters Normalizations and filters
 
 Filters are optional and can be used to transform the computed values of a
-figure of merit, or to reject bad values. Various types of filters exist:
-
-- Normalizations using a bound on the figure of merit.
-
-- Low-pass filters to reject point sets having a merit value larger than a threshold
-  (should be used with the previous type of normalization). 
-  When the random variant of a search is used with a filter, the
-  candidate samples that are rejected by the filter pipeline are
-  not considered as valid samples, meaning that the
-  number of random samples corresponds to the number
-  of accepted candidates.
+figure of merit, or to reject bad values. Various types of filters exist.
  
+\section feats_filters_norms Normalizations
 
-\section feats_filters_norms List of available normalizations
+Normalizations are filters which transform the merit value by computing the ratio between 
+the merit value and a bound on the figure of merit. These bounds actually state the existence
+of a point set constructed in a CBC-way achieving a merit value lower than the bound. Hence the bound
+does not hold for all point sets but only for at least one point set constructed in a CBC-way. If the point set is constructed this way, 
+then its normalized merit value is guaranteed to be lower than \f$1\f$. 
+
+These bounds are actually parametrized by a parameter \f$\lambda\f$ which is tuned to minimize the bound 
+using the Brent minimizer.
 
 Currently, the following normalizations are available:
 
@@ -39,27 +37,30 @@ Currently, the following normalizations are available:
     - \f$P_\alpha\f$-DPW08: the bound derived in Theorem 10 of \cite vDIC08c for product weights.
 - for the \f$P_\alpha\f$ discrepancy of polynomial lattice rules:
     - \f$P_\alpha\f$-PLR: the bound derived in Theorem 3 of \cite rDIC15a for projection-dependent weights.
-- for the interlaced \f$ B_{\alpha, d, (1)}\f$ discrepancy from \cite rGOD13a :
+- for the \f$ B_{\alpha, d, (1)}\f$ interlaced discrepancy from \cite rGOD13a :
     - \f$B_{\alpha, d, (1)}\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
-- for the interlaced \f$ B_{d, (2)}\f$ discrepancy from \cite rGOD13a :
+- for the \f$ B_{d, (2)}\f$ interlaced discrepancy from \cite rGOD13a :
     - \f$B_{d, (2)}\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
 
-These bounds are actually parametrized by a parameter \f$\lambda\f$ which is tuned using the Brent minimizer.
+\section feats_filters_lowpassfilter Low-pass filters
 
-These bounds actually state the existence of a point set constructed in a CBC-way achieving a merit value lower than a bound. Hence the bound
-does not hold for all point sets by only for at least one point set constructed in a CBC-way. If the point set is constructed this way, 
-then its normalized merit value is guaranteed to be lower than \f$1\f$.
+Low-pass filters reject point sets having a merit value larger than a threshold.  
+When the random variant of a search is used with a filter, the candidate samples that are rejected 
+by the filter pipeline are not considered as valid samples, meaning that the number of random 
+samples corresponds to the number of accepted candidates.
 
+Low-pass filters are mainly designed to be used with normalization filters. 
+When one uses a full-CBC or fast-CBC exploration method,
+they can use of low-pass filter with a threshold equal to \f$1\f$ to reject point sets because the bound
+guarantees the existence of a point set constructed in a CBC-way whose merit value is lower than 1.
 
 \section feats_filters_multilevel Normalizations and filters for multilevel point sets
 
-For multilevel point sets, normalizations using a bound on the figure of merit should be applied
+For multilevel point sets, normalizations using a bound on the figure of merit are applied
 individually to each embedding level. Once the merit value of each level has been normalized, they can be aggregated,
 either by taking their maximum or their sum. Additionally, one can select only a range of levels. In this case, 
 the maximum or the sum is then replaced by a weighted maximum or sum, with even weights for the selected levels 
-and zero weights for the other levels.
-
-In contrast, filters can either be applied individually to each embedding level or to the combined merit value.
+and zero weights for the other levels. 
 
 
 */

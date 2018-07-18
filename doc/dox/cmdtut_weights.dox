@@ -14,10 +14,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_weights Specifying the weights
+/** \page cmdtut_weights Weights
 
 This page describes how 
-weights can be specified depending on their type.
+\ref feats_weights "weights" can be specified depending on their type.
 
 Note that the weights in the following examples are interpreted as weights
 elevated to a power \f$p\f$ because, by default, the numerical values read by LatNet Builder are
@@ -25,7 +25,7 @@ interpreted as the constants \f$\gamma_{\mathfrak u}^p\f$, i.e. the weights
 elevated to the power \f$p\f$ matching the choice of the \f$\ell_q\f$-norm.
 The choice of this norm is made using <code>--norm-type <var>q</var></code>.
 An exception to this occurs when using the infinity-norm, where they are
-interpreted as if \f$q = 1\f$.
+interpreted as if \f$p = 1\f$.
 To interpret the numerical values as another power of the weights, say 1, the
 option
 \verbatim
@@ -40,9 +40,9 @@ colon-separated tokens: the first is the type of weights (projecion-dependent);
 the other tokens are optional and assign explicit weights to projections. Projections
 for which no weights have been explicitly assigned have a weight equal to zero.
 
-- Projection-depdent weights with \f$\gamma_{\{1,2,3\}} = 0.7\f$,
-  \f$\gamma_{\{1,2,4\}} = 0.5\f$, \f$\gamma_{\{2,3,4\}} = 0.3\f$ and
-  \f$\gamma_{\mathfrak u} = 0\f$ otherwise:
+- Projection-dependent weights with \f$\gamma_{\{1,2,3\}}^p = 0.7\f$,
+  \f$\gamma_{\{1,2,4\}}^p = 0.5\f$, \f$\gamma_{\{2,3,4\}}^p = 0.3\f$ and
+  \f$\gamma_{\mathfrak u}^p = 0\f$ otherwise:
   \verbatim
   --weights projection-dependent:1,2,3:0.7:1,2,4:0.5:2,3,4:0.3
   \endverbatim
@@ -63,6 +63,7 @@ This assigns the weights 0.7, 0.5 and 0.3 to projections \f$\{1,2,3\}\f$,
 \f$\{1,2,4\}\f$ and \f$\{2,3,4\}\f$, respectively, a weight of 1.0 to
 every projection of order 2, a weight of 0.1 to every projection of order
 3 other than the above three for which weights were explicitly assigned, then a weight of \f$10^{-3}\f$ to every other projection.
+These numerical values are interpreted using the \f$p\f$ power mentioned above.
 The order of the lines in the file is not important.
 LatNet Builder must be told where to look for the weights by changing the 
 <code>--weights</code> option to 

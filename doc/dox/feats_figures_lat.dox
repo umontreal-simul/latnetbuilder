@@ -40,7 +40,7 @@ LatNet Builder supports the following figures of merit for ordinary rank-1 latti
   If \f$ q = 2\f$, a coordinate-uniform evaluation algorithm can be used. This algorithm
   drastically reduces the computation time.
 <br><br>
-- The \f$\mathcal R_\alpha\f$ criterion \cite rNIE92b, \cite vHIC03b with \f$\alpha=1\f$ , using a
+- The \f$\mathcal R_\alpha\f$ criterion \cite rNIE92b, \cite vHIC03b, with \f$\alpha \in \{1, 2, \dots, 9\}\f$,  using a
   term-by-term evaluation with an \f$\ell_q\f$ norm: 
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
@@ -60,7 +60,7 @@ LatNet Builder supports the following figures of merit for ordinary rank-1 latti
 
 LatNet Builder supports the following figures of merit for polynomial rank-1 lattices:
 
-- The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha=2\f$ , using a
+- The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha \in \{2, 4, 6, 8\}\f$ , using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
