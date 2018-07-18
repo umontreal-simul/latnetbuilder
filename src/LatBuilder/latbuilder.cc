@@ -139,13 +139,9 @@ makeOptionsDescription()
     "polynomial.\n")
    ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
     "whitespace-separated list of filters for merit values; possible values:\n"
-    "  norm:P<alpha>-{SL10|DPW08}\n"
-    "  low-pass:<threshold>\n")
-   ("multilevel-filters,F", po::value<std::vector<std::string>>()->multitoken(),
-    "whitespace-separated list of filters for multilevel merit values; possible values:\n"
-    "  norm:P<alpha>-{SL10|DPW08}[:<multilevel-weights>]\n"
+    "  norm:{P<alpha>-SL10|P<alpha>-DPW08|P<alpha>-PLR|IA<alpha>|IB}[:<multilevel-weights>]\n"
     "  low-pass:<threshold>\n"
-    "where <multilevel-weights> specifies the per-level weights; possible values:\n"
+    "where the optional parameter <multilevel-weights> specifies for multilevel lattices the per-level weights; possible values:\n"
     "  even[:<min-level>[:<max-level>]] (default)\n")
    ("combiner,b", po::value<std::string>(),
     "(required for embedded) combiner for (filtered) multilevel merit values; possible values:\n"
@@ -155,13 +151,8 @@ makeOptionsDescription()
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the exploration must be executed\n"
    "(can be useful to obtain different results from random exploration)\n")
-    ("output-format,g", po::value< std::vector<std::string> >()->composing(),
-    "(optional) output generator matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
-   "  file:\"<file>\":format\n"
-   "  available output formats\n"
-   "  - ssj \n"
-   "  - cli \n"
-   "  - gui \n")
+    ("output-folder,g", po::value< std::vector<std::string> >()->composing(),
+    "(optional) global path to the output folder. If none is given, no output is produced.")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -386,9 +377,6 @@ int main(int argc, const char *argv[])
             if (opt.count("filters") >= 1)
                cmd.filters = opt["filters"].as<std::vector<std::string>>();
 
-            if (opt.count("multilevel-filters") >= 1)
-               cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
-
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
             if (latType == EmbeddingType::UNILEVEL){
@@ -438,9 +426,6 @@ int main(int argc, const char *argv[])
 
             if (opt.count("filters") >= 1)
                cmd.filters = opt["filters"].as<std::vector<std::string>>();
-
-            if (opt.count("multilevel-filters") >= 1)
-               cmd.multilevelFilters = opt["multilevel-filters"].as<std::vector<std::string>>();
 
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 

@@ -231,7 +231,7 @@ Real PAlphaPLR::value(
       Real norm
       ) const
 {
-   norm = 2.0 / sizeParam.numPoints();
+   norm = 2.0 / (norm * sizeParam.numPoints());
    Real val = WeightsDispatcher::dispatch<SumHelper>(
          m_weights,
          this->normType(),

@@ -26,7 +26,6 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
-#include "netbuilder/Parser/OutputFormat.h"
 #include "netbuilder/Task/Task.h"
 
 #include "latbuilder/Parser/Common.h"
@@ -38,7 +37,7 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParameters>& vecOutputFormatParameters, unsigned int interlacingFactor)
+void TaskOutput(const Task::Task &task, std::string outputFile, unsigned int interlacingFactor)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
@@ -47,11 +46,11 @@ void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParamete
   std::cout << "====================\n       Result\n====================" << std::endl;
   std::cout << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
-  for (Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
+  if (outputFile != ""){
     ofstream outFile;
-    std::string fileName = outputFormatParameters.file();
+    std::string fileName = outputFile + "/output.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(outputFormatParameters.outputFormat(), interlacingFactor);
+    outFile << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
     outFile.close();
   }
   
@@ -142,13 +141,8 @@ makeOptionsDescription()
   //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
   //   "  even[:<min-level>[:<max-level>]] (default)\n")
    ("no-early-abort,e", "(optional) disable early abortion in computations.")
-    ("output-format,g", po::value< std::vector<std::string> >()->composing(),
-    "(optional) output generating matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
-   "  file:\"<file>\":format\n"
-   "  available output formats\n"
-   "  - ssj \n"
-   "  - cli \n"
-   "  - gui \n")
+    ("output-folder,g", po::value<std::string>(),
+    "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
    "(can be useful to obtain different results from random constructions)\n");
@@ -242,12 +236,17 @@ int main(int argc, const char *argv[])
         auto repeat = opt["repeat"].as<unsigned int>();
 
         // NetBuilder::OutputFormat outputFormat;
-        std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
-        if (opt.count("output-format") >= 1){
-          outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
-        }
-        else{
-          outputFormatParameters = {};
+        // std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
+        // if (opt.count("output-format") >= 1){
+        //   outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
+        // }
+        // else{
+        //   outputFormatParameters = {};
+        // }
+        std::string outputFolder = "";
+        if (opt.count("output-folder") >= 1){
+          std::cout << "found output folder" << std::endl;
+          outputFolder = opt["output-folder"].as<std::string>();
         }
         
         // global variable
@@ -297,6 +296,15 @@ int main(int argc, const char *argv[])
           std::cout << "====================\n       Input\n====================" << std::endl;
           std::cout << task->format();
           std::cout << std::endl;
+
+          if (outputFolder != ""){
+            ofstream outFile;
+            std::string fileName = outputFolder + "/input.txt";
+            std::cout << fileName << std::endl;
+            outFile.open(fileName);
+            outFile << task->format();
+            outFile.close();
+          }
         }
 
           if (repeat > 1){
@@ -311,7 +319,7 @@ int main(int argc, const char *argv[])
           t1 = high_resolution_clock::now();\
 
           std::cout << std::endl;
-          TaskOutput(*task, outputFormatParameters, interlacingFactor);
+          TaskOutput(*task, outputFolder, interlacingFactor);
           auto dt = duration_cast<duration<double>>(t1 - t0);
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;

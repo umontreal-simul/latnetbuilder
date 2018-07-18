@@ -61,6 +61,38 @@ namespace {
       return std::unique_ptr<BasicMeritFilter<LR, ET>>(normalizer);
    }
 
+   template <LatticeType LR, EmbeddingType ET> void correctLevelWeights(
+         const LatBuilder::SizeParam<LR, ET>& sizeParam, 
+         const std::string& combiner,
+         std::string& levelWeights);
+
+   template <LatticeType LR>
+   void correctLevelWeights(
+         const LatBuilder::SizeParam<LR, EmbeddingType::UNILEVEL>& sizeParam, 
+         const std::string& combiner,
+         std::string& levelWeights)
+      {}
+
+   template <LatticeType LR>
+   void correctLevelWeights(
+         const LatBuilder::SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam, 
+         const std::string& combiner,
+         std::string& levelWeights)
+      {
+            const auto strCombinerSplit = splitPair<>(combiner, ':');
+            if (strCombinerSplit.first == "level") {
+                  if (strCombinerSplit.second == "max"){
+                        levelWeights = "even:" + std::to_string(sizeParam.maxLevel());
+                  }
+                  else {
+                        try {
+                              levelWeights = "even:" + std::to_string(boost::lexical_cast<Level>(strCombinerSplit.second)) + "," + std::to_string(boost::lexical_cast<Level>(strCombinerSplit.second));
+                        }
+                        catch (boost::bad_lexical_cast&) {}
+                  }
+            }
+      }
+
    /**
     * Parses the bound PAlphaSL10.
     *
@@ -71,38 +103,40 @@ namespace {
          const std::string& str,
          const LatBuilder::SizeParam<LR, ET>& sizeParam,
          const LatticeTester::Weights& weights,
-         Real normType
+         Real normType,
+         std::string combiner
          )
    {
-      const auto args = splitPair(str, ':');
+      auto args = splitPair(str, ':');
       const auto strSplit = splitPair<>(args.first, '-');
-      //if(LR == LatticeType::ORDINARY){
-         try {
-            if (strSplit.first[0] == 'P') {
-               const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(1));
-               if (strSplit.second == "SL10")
-                  return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
-               else if (strSplit.second == "DPW08")
-                  return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);
-               else if (strSplit.second == "PLR")
-                  return createNormalizer<LR, LatBuilder::Norm::PAlphaPLR, ET>(alpha, sizeParam, weights, normType, args.second);
-            }
-            if (strSplit.first[0] == 'I')
+
+      correctLevelWeights(sizeParam, combiner, args.second);
+
+      try {
+      if (strSplit.first[0] == 'P') {
+            const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(1));
+            if (strSplit.second == "SL10")
+            return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
+            else if (strSplit.second == "DPW08")
+            return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);
+            else if (strSplit.second == "PLR")
+            return createNormalizer<LR, LatBuilder::Norm::PAlphaPLR, ET>(alpha, sizeParam, weights, normType, args.second);
+      }
+      if (strSplit.first[0] == 'I')
+      {
+            if (strSplit.first[1] == 'A')
             {
-                  if (strSplit.first[1] == 'A')
-                  {
-                        const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(2));
-                        return createNormalizer<LR, LatBuilder::Norm::IAAlphaG15, ET>(alpha, sizeParam, weights, normType, args.second);
-                  }
-                  if (strSplit.first[1] == 'B')
-                  {
-                        return createNormalizer<LR, LatBuilder::Norm::IBG15, ET>(weights.interlacingFactor(), sizeParam, weights, normType, args.second);
-                  }
+                  const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(2));
+                  return createNormalizer<LR, LatBuilder::Norm::IAAlphaG15, ET>(alpha, sizeParam, weights, normType, args.second);
             }
-         }
-         catch (boost::bad_lexical_cast&) {}
-         throw BadFilter("cannot parse norm: " + str);
-      //}
+            if (strSplit.first[1] == 'B')
+            {
+                  return createNormalizer<LR, LatBuilder::Norm::IBG15, ET>(weights.interlacingFactor(), sizeParam, weights, normType, args.second);
+            }
+      }
+      }
+      catch (boost::bad_lexical_cast&) {}
+      throw BadFilter("cannot parse norm: " + str);
       
    }
 }
@@ -113,12 +147,13 @@ MeritFilter<LR,ET>::parse(
       const std::string& str,
       const LatBuilder::SizeParam<LR, ET>& sizeParam,
       const LatticeTester::Weights& weights,
-      Real normType
+      Real normType,
+      std::string combiner
       )
 {
    const auto x = splitPair(str, ':');
    if (x.first == "norm")
-      return parseNormalizer(x.second, sizeParam, weights, normType);
+      return parseNormalizer(x.second, sizeParam, weights, normType, combiner);
    else if (x.first == "low-pass") {
       auto threshold = boost::lexical_cast<Real>(x.second);
       return std::unique_ptr<BasicMeritFilter<LR, ET>>(new LatBuilder::MeritFilter<LR, ET>(Functor::LowPass<Real>(threshold), str));

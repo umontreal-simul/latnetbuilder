@@ -56,7 +56,6 @@ struct MeritFilterList {
 
    static LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL> parse(
          const std::vector<std::string>& filters,
-         const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
@@ -64,14 +63,13 @@ struct MeritFilterList {
          )
    {
       LatBuilder::MeritFilterList<LR, EmbeddingType::MULTILEVEL> f;
-      parse(f, filters, multilevelFilters, combiner, sizeParam, weights, normType);
+      parse(f, filters, combiner, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
          LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL>& list,
          const std::vector<std::string>& filters,
-         const std::vector<std::string>& multilevelFilters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,

@@ -41,7 +41,6 @@ template <LatticeType LR>
 void MeritFilterList<LR>::parse(
       LatBuilder::MeritFilterList<LR, EmbeddingType::MULTILEVEL>& list,
       const std::vector<std::string>& filters,
-      const std::vector<std::string>& multilevelFilters,
       const std::string& combiner,
       const LatBuilder::SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam,
       const LatticeTester::Weights& weights,
@@ -49,10 +48,7 @@ void MeritFilterList<LR>::parse(
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, EmbeddingType::MULTILEVEL>::parse(arg, sizeParam, weights, normType));
-
-   for (const auto& arg : multilevelFilters)
-      list.add(MeritFilter<LR, EmbeddingType::MULTILEVEL>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, EmbeddingType::MULTILEVEL>::parse(arg, sizeParam, weights, normType, combiner));
 
    list.add(MeritCombiner<LR>::parse(combiner, sizeParam));
 }
