@@ -79,7 +79,9 @@ unsigned int IPDWeights<KERNEL>::interlacingFactor() const {
 template <class KERNEL>
 void IPDWeights<KERNEL>::format(std::ostream& os) const
 {
-    os << "IPDWeights(" << m_kernelName << ", " << static_cast<LatticeTester::ProjectionDependentWeights>(*this) << ")"; // TODO
+    os << "IPDWeights:" << std::endl; 
+    os << "    Kernel: " << m_kernelName << "," << std::endl;
+    os << "    Base Weights: " << static_cast<LatticeTester::ProjectionDependentWeights>(*this);
 }
 
 template class IPDWeights<LatBuilder::Kernel::IAAlpha>;

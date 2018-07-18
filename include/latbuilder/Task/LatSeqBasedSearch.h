@@ -79,8 +79,8 @@ public:
       this->setObserverTotalDim(1);
 
       auto fseq = this->filters().apply(latSeqOverCBC().meritSeq(std::move(latSeq)));
-      const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount());
-      this->selectBestLattice(*itmin.base().base(), *itmin);
+      const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount(), this->verbose());
+      this->selectBestLattice(*itmin.base().base(), *itmin, true);
    }
 
    /**
@@ -110,10 +110,10 @@ public:
 protected:
    virtual void format(std::ostream& os) const
    {
-      os << "construction: " << m_traits.name() << std::endl;
-      os << "figure of merit: " << figureOfMerit() << std::endl;
-      os << "size parameter: " << storage().sizeParam() << std::endl;
+      os << m_traits.name() << std::endl;
       LatSeqBasedSearchTraits<TAG>::Search::format(os);
+      os << "Modulus: " << storage().sizeParam() << std::endl;
+      os << "Figure of merit: " << figureOfMerit() << std::endl;
    }
 
 private:

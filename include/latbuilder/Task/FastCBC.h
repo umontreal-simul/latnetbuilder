@@ -63,7 +63,7 @@ struct CBCBasedSearchTraits<FastCBCTag<LR, ET, COMPRESS, PLO, CoordUniformFigure
    }
 
    std::string name() const
-   { return "fast CBC"; }
+   {  return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: CBC - Fast Explorer";}
 
    void init(LatBuilder::Task::FastCBC<LR, ET, COMPRESS, PLO, FigureOfMerit>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }

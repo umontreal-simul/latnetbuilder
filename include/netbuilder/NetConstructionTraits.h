@@ -54,6 +54,7 @@ namespace NetBuilder {
  *  - \c GenValueSpaceSeq: type used to represent the sequence of all the possible combinations of generating values
  * \n the following static variables:
  *  - \c isSequenceViewable: a bool indicating whether the net can be viewed as a sequence
+ *  - \c name: a string naming the specialization 
  *  - \c hasSpecialFirstCoordinate: a bool indicating whether the first coordinate is a special case and can only take one value
  * \n the following static functions:
  *  - <CODE> static \c bool \c checkGenValue(const GenValue& genValue) </CODE>: checks whether a generating value is correct
@@ -83,6 +84,8 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
     typedef unsigned int SizeParameter;
 
     static constexpr bool isSequenceViewable = true;
+
+    static const string name;
 
     static constexpr bool hasSpecialFirstCoordinate = true;
 
@@ -193,7 +196,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat);
+    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor);
 
     typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
@@ -214,6 +217,8 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
     typedef LatBuilder::SeqCombiner<GenValueSpaceCoordSeq, LatBuilder::CartesianProduct> GenValueSpaceSeq;
 
     static constexpr bool isSequenceViewable = false;
+
+    static const string name;
 
     static constexpr bool hasSpecialFirstCoordinate = true;
 
@@ -258,7 +263,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
             LatBuilder::UniformUIntDistribution<size_t, RAND> m_unif;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat);
+    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor);
 };
 
 template<>
@@ -271,6 +276,8 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
     typedef std::vector<GenValue> GenValueSpaceCoordSeq;
 
     static constexpr bool isSequenceViewable = true;
+
+    static const string name;
 
     static constexpr bool hasSpecialFirstCoordinate = false;
 
@@ -380,7 +387,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             uInteger m_totient;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat);
+    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor);
 };
 
 }

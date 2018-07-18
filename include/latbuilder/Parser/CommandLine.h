@@ -51,7 +51,6 @@ struct CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
  */
 template <LatBuilder::LatticeType LR>
 struct CommandLine<LR, LatBuilder::EmbeddingType::MULTILEVEL> : CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
-   std::vector<std::string> multilevelFilters;
    std::string combiner;
 
    std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::EmbeddingType::MULTILEVEL>> parse() const;

@@ -25,16 +25,35 @@
 namespace NetBuilder { 
 
     namespace LevelCombiner {
+        struct LevelCombiner
+        {
+            virtual ~LevelCombiner(){};
+
+            virtual std::string format() const
+            {
+                return "default combiner";
+            };
+            virtual Real operator()(const RealVector& merits)
+            {
+                return 0.0;
+            };          
+
+        };
 
         /** 
          * Maximum combiner. Combines merits using the maximum of the merits.
          */ 
-        struct MaxCombiner
+        struct MaxCombiner : public LevelCombiner
         {
+            virtual std::string format() const override
+            {
+                return "Maximum";
+            }
+
             /** 
              * Combines the merits.
              */ 
-            Real operator()(const RealVector& merits)
+            virtual Real operator()(const RealVector& merits) override
             {
                 Real res = merits[0];
                 for(unsigned int i = 1; i < merits.size(); ++i)
@@ -48,12 +67,17 @@ namespace NetBuilder {
         /**
          * Sum combiner. Combines merits using the sum of the merits.
          */ 
-        struct SumCombiner
+        struct SumCombiner : public LevelCombiner
         {
+            virtual std::string format() const override
+            {
+                return "Sum";
+            }
+
             /** 
              * Combines the merits.
              */ 
-            Real operator()(const RealVector& merits)
+            virtual Real operator()(const RealVector& merits) override
             {
                 Real res = 0;
                 for(Real merit: merits)
@@ -62,12 +86,13 @@ namespace NetBuilder {
                 }
                 return res;
             }
+            
         };
 
         /**
          * Level selector combiner. Selects the merit value corresponding to a specific level.
          */ 
-        class LevelSelectorCombiner
+        class LevelSelectorCombiner : public LevelCombiner
         {
             public:
 
@@ -78,10 +103,15 @@ namespace NetBuilder {
                     m_level(level)
                 {};
 
+                virtual std::string format() const override
+                {
+                    return "Selector at level " + std::to_string(m_level);
+                }
+
                 /** 
                 * Combines the merits.
                 */ 
-                Real operator()(const RealVector& merits)
+                virtual Real operator()(const RealVector& merits) override
                 {
                     return merits[m_level-1];
                 }

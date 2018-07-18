@@ -88,7 +88,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " random search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: random - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
 
    void init(LatBuilder::Task::Random<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    {

@@ -43,7 +43,6 @@
 #include "netbuilder/FigureOfMerit/TValueTransformedProjMerit.h"
 #include "netbuilder/FigureOfMerit/ResolutionGapProjMerit.h"
 #include "netbuilder/FigureOfMerit/BitEquidistribution.h"
-#include "netbuilder/FigureOfMerit/CombinedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 #include "netbuilder/Interlaced/WeightsInterlacer.h"
 
@@ -81,7 +80,7 @@ struct FigureParser
     static result_type parse(Parser::CommandLine<NC, ET>& commandLine)
     {
 
-        commandLine.m_combiner = Parser::LevelCombinerParser<NC,ET>::parse(commandLine);
+        commandLine.m_combiner = std::move(Parser::LevelCombinerParser<NC,ET>::parse(commandLine));
 
         Real weightsPowerScale = 1;
         if (commandLine.m_normType < std::numeric_limits<Real>::infinity())
@@ -112,7 +111,7 @@ struct FigureParser
                 if (commandLine.m_interlacingFactor != 1)
                     throw BadFigure("interlacing factor must be `1' for " + commandLine.s_figure + ".");
                 auto kernel = LatBuilder::Kernel::RPLR();
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::RPLR, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else if (figureDescriptionStrings.back() == "IB")
             {
@@ -122,7 +121,7 @@ struct FigureParser
                     throw BadFigure("interlacing factor must be larger than `1` for " + commandLine.s_figure + ".");
                 auto kernel = LatBuilder::Kernel::IB(commandLine.m_interlacingFactor);
                 weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IB, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IB, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else if (figureDescriptionStrings.back().front() == 'P')
             {
@@ -132,7 +131,7 @@ struct FigureParser
                     throw BadFigure("interlacing factor must be `1' for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
                 auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else if (figureDescriptionStrings.back().substr(0,2) == "IA")
             {
@@ -140,10 +139,10 @@ struct FigureParser
                     throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
                 if (commandLine.m_interlacingFactor == 1)
                     throw BadFigure("interlacing factor must be larger than `1' for " + commandLine.s_figure + ".");
-                unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
+                unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(2));
                 auto kernel = LatBuilder::Kernel::IAAlpha(alpha, commandLine.m_interlacingFactor);
                 weights = LatBuilder::WeightsDispatcher::dispatchPtr<Interlaced::WeightsInterlacer>(std::move(weights), kernel);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IAAlpha, ET>>(std::move(weights), kernel, commandLine.m_combiner);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IAAlpha, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else
             {
@@ -152,24 +151,24 @@ struct FigureParser
         }
         else if (commandLine.s_figure == "t-value")
         {
-            return std::make_unique<FigureOfMerit::TValue<ET>>(commandLine.m_combiner);
+            return std::make_unique<FigureOfMerit::TValue<ET>>(std::move(commandLine.m_combiner));
         }
         else if (commandLine.s_figure == "projdep:t-value")
         {
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<ET>>(maxCard, commandLine.m_combiner);
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueProjMerit<ET>>(maxCard, std::move(commandLine.m_combiner));
             return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
         }
         else if (commandLine.s_figure == "projdep:t-value:starDisc")
         {
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::TValueTransformedProjMerit<ET>>(maxCard, commandLine.m_combiner);
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueTransformedProjMerit<ET>>(maxCard, std::move(commandLine.m_combiner));
             return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueTransformedProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
         }
         else if (commandLine.s_figure == "projdep:resolution-gap")
         {
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<ET>>(maxCard, commandLine.m_combiner);
+            auto projDepMerit = std::make_unique<FigureOfMerit::ResolutionGapProjMerit<ET>>(maxCard, std::move(commandLine.m_combiner));
             return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::ResolutionGapProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
         }
         else

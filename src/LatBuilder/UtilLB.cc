@@ -18,6 +18,9 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
+
+#include <NTL/ZZ.h>
+
 namespace LatBuilder
 {
 
@@ -59,8 +62,10 @@ uInteger IndexOfPolynomial(Polynomial P)
 
 std::vector<uInteger> primeFactors(uInteger n, bool raise)
 {
+   PrimeSeq s;
+   unsigned long p;
+   p = s.next();
    std::vector<uInteger> factors;
-   uInteger p = 2;
    while (p <= n) {
       ldiv_t qr = std::ldiv(n, p);
       uInteger factor = 1;
@@ -73,10 +78,7 @@ std::vector<uInteger> primeFactors(uInteger n, bool raise)
       }
       if (factor > 1)
          factors.push_back(factor);
-      if (p == 2)
-         p = 3;
-      else
-         p += 2;
+      p = s.next();
    }
    return factors;
 }
@@ -85,8 +87,10 @@ std::vector<uInteger> primeFactors(uInteger n, bool raise)
 
 std::map<uInteger, uInteger> primeFactorsMap(uInteger n)
 {
+   PrimeSeq s;
+   unsigned long factor;
+   factor = s.next();
    std::map<uInteger, uInteger> factors;
-   uInteger factor = 2;
    while (factor <= n) {
       ldiv_t qr = std::ldiv(n, factor);
       while (qr.rem == 0) {
@@ -94,10 +98,7 @@ std::map<uInteger, uInteger> primeFactorsMap(uInteger n)
          factors[factor]++;
          qr = std::ldiv(n, factor);
       }
-      if (factor == 2)
-         factor = 3;
-      else
-         factor += 2;
+      factor = s.next();
    }
    return factors;
 }

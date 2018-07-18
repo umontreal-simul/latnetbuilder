@@ -26,7 +26,6 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
-#include "netbuilder/Parser/OutputFormat.h"
 #include "netbuilder/Task/Task.h"
 
 #include "latbuilder/Parser/Common.h"
@@ -38,19 +37,20 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::vector<Parser::OutputFormatParameters>& vecOutputFormatParameters)
+void TaskOutput(const Task::Task &task, std::string outputFile, unsigned int interlacingFactor)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
     std::cout.precision(merit_digits_displayed);
   }
-  std::cout << task.outputNet(OutputFormat::CLI) << "merit: " << task.outputMeritValue() << std::endl;
+  std::cout << "====================\n       Result\n====================" << std::endl;
+  std::cout << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
-  for (Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
+  if (outputFile != ""){
     ofstream outFile;
-    std::string fileName = outputFormatParameters.file();
+    std::string fileName = outputFile + "/output.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(outputFormatParameters.outputFormat());
+    outFile << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
     outFile.close();
   }
   
@@ -140,14 +140,8 @@ makeOptionsDescription()
   //   "  low-pass:<threshold>\n"
   //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
   //   "  even[:<min-level>[:<max-level>]] (default)\n")
-   ("no-early-abort,e", "(optional) disable early abortion in computations.")
-    ("output-format,g", po::value< std::vector<std::string> >()->composing(),
-    "(optional) output generating matrices of the resulting polynomial lattice as a digital net, in the indicated format; possible values:\n"
-   "  file:\"<file>\":format\n"
-   "  available output formats\n"
-   "  - ssj \n"
-   "  - cli \n"
-   "  - gui \n")
+    ("output-folder,g", po::value<std::string>(),
+    "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
    "(can be useful to obtain different results from random constructions)\n");
@@ -197,17 +191,12 @@ cmd.s_figure = opt["figure-of-merit"].as<std::string>();\
 cmd.s_weights       = opt["weights"].as<std::vector<std::string>>();\
 cmd.m_normType = boost::lexical_cast<Real>(opt["norm-type"].as<std::string>());\
 cmd.m_interlacingFactor = opt["interlacing-factor"].as<unsigned int>(); \
+interlacingFactor = cmd.m_interlacingFactor;\
 if (opt.count("combiner") < 1){\
   cmd.s_combiner = "";\
 }\
 else{\
   cmd.s_combiner = opt["combiner"].as<std::string>();\
-}\
-if (opt.count("no-early-abort") >= 1){\
-  cmd.m_earlyAbort = false;\
-}\
-else{\
-  cmd.m_earlyAbort = true;\
 }\
 if (opt.count("weight-power") == 1 ){\
   cmd.m_weightPower = boost::lexical_cast<Real>(opt["weight-power"].as<std::string>());\
@@ -240,12 +229,17 @@ int main(int argc, const char *argv[])
         auto repeat = opt["repeat"].as<unsigned int>();
 
         // NetBuilder::OutputFormat outputFormat;
-        std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
-        if (opt.count("output-format") >= 1){
-          outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
-        }
-        else{
-          outputFormatParameters = {};
+        // std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
+        // if (opt.count("output-format") >= 1){
+        //   outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
+        // }
+        // else{
+        //   outputFormatParameters = {};
+        // }
+        std::string outputFolder = "";
+        if (opt.count("output-folder") >= 1){
+          std::cout << "found output folder" << std::endl;
+          outputFolder = opt["output-folder"].as<std::string>();
         }
         
         // global variable
@@ -267,6 +261,7 @@ int main(int argc, const char *argv[])
         }
 
         std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
+        unsigned int interlacingFactor = 0;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
 
@@ -290,14 +285,38 @@ int main(int argc, const char *argv[])
        }
 
       for (unsigned i=0; i<repeat; i++){
-        t0 = high_resolution_clock::now();\
-        task->execute();\
-        t1 = high_resolution_clock::now();\
-        TaskOutput(*task, outputFormatParameters);
-        auto dt = duration_cast<duration<double>>(t1 - t0);
-        std::cout << std::endl;
-        std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
-        task.reset();
+        if (i == 0){
+          std::cout << "====================\n       Input\n====================" << std::endl;
+          std::cout << task->format();
+          std::cout << std::endl;
+
+          if (outputFolder != ""){
+            ofstream outFile;
+            std::string fileName = outputFolder + "/input.txt";
+            std::cout << fileName << std::endl;
+            outFile.open(fileName);
+            outFile << task->format();
+            outFile.close();
+          }
+        }
+
+          if (repeat > 1){
+            std::cout << "====================\n       Run " << i+1 << "\n====================" << std::endl;
+          }
+          else{
+            std::cout << "====================\nRunning the task... \n====================" << std::endl;
+          }
+
+          t0 = high_resolution_clock::now();\
+          task->execute();\
+          t1 = high_resolution_clock::now();\
+
+          std::cout << std::endl;
+          TaskOutput(*task, outputFolder, interlacingFactor);
+          auto dt = duration_cast<duration<double>>(t1 - t0);
+          std::cout << std::endl;
+          std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
+          task->reset();
       }
    }
    catch (LatBuilder::Parser::ParserError& e) {

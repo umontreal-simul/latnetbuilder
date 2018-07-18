@@ -38,12 +38,14 @@ class TValue : public FigureOfMerit
 {
     public:
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /**
          * Constructor.
          * @param combiner Combiner  multilevel merits. Only used when template parameter \c ET
          * equals <code>EmbeddingType::MULTILEVEL</code>.
          */ 
-        TValue(Combiner combiner = Combiner()):
+        TValue(pCombiner combiner = std::make_unique<LevelCombiner::LevelCombiner>()):
             m_combiner(std::move(combiner))
         {};
 
@@ -54,8 +56,14 @@ class TValue : public FigureOfMerit
 
         MeritValue combine(const RealVector& merits)
         {
-            return m_combiner(merits);
+            return (*m_combiner)(merits);
         }
+
+        virtual std::string format() const override
+        {
+            return "";
+        }
+
 
 
     private:
@@ -105,7 +113,7 @@ class TValue : public FigureOfMerit
                     }
 
                     IntPolynomial truncWeightPoly(0);
-                    for(size_t i = 0; i < (1 << k); ++i)
+                    for(size_t i = 0; i < (unsigned int) (1 << k); ++i)
                     {
                         IntPolynomial prod(1);
                         for(Dimension coord = 0; coord < s; ++coord)
@@ -206,8 +214,35 @@ class TValue : public FigureOfMerit
 
         };
 
-        Combiner m_combiner;
+        pCombiner m_combiner;
 };
+
+
+/**
+ * Template specialization of the output information about the figure of merit in the unilevel case.
+ */ 
+template <>
+std::string TValue<EmbeddingType::UNILEVEL>::format() const
+{            
+    std::string res;
+    res += "t-value";
+    res += "\nEmbedding type: Unilevel";
+    return res;
+}; 
+
+/**
+ * Template specialization of the output information about the figure of merit in the multilevel case.
+ */ 
+template <>
+std::string TValue<EmbeddingType::MULTILEVEL>::format() const
+{            
+    std::string res;
+    res += "t-value";
+    res += "\nEmbedding type: Multilevel";
+    res += "\nCombiner: " + this->m_combiner->format();
+    return res;
+}; 
+
 
 /**
  * Templace specialization of <code>operator()</code> of TValueEvaluator in the multilevel case.

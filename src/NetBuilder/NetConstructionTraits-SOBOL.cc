@@ -28,6 +28,8 @@
 
 namespace NetBuilder {
 
+    const string NetConstructionTraits<NetConstruction::SOBOL>::name = "Sobol";
+
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::SizeParameter SizeParameter;
@@ -265,14 +267,16 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat)
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
     {
         std::string res;
-        res += "SobolDigitalNet(\n  Direction numbers = \n";
-        for(const auto& genVal : genVals)
-        {
+        res += "Sobol Digital Net - Direction numbers = \n";
+        for (unsigned int coord = 0; coord < genVals.size(); coord++){
+            if (interlacingFactor > 1 && coord % interlacingFactor == 0){
+                res += "Coordinate " + std::to_string((coord / interlacingFactor) + 1)  + ":\n";
+            }            
             res+="  ";
-            for(const auto& dirNum : genVal->second)
+            for(const auto& dirNum : genVals[coord]->second)
             {
                 res+= std::to_string(dirNum);
                 res+= " ";
@@ -280,7 +284,6 @@ namespace NetBuilder {
             res.pop_back();
             res+="\n";
         }
-        res+=")";
         return res;
     }  
 }

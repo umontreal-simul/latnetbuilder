@@ -48,6 +48,7 @@ class FullCBCExplorer
             m_count(0)
         {};
 
+
         /**
          * Returns whether the current coordinate is fully explored
          */ 
@@ -96,6 +97,11 @@ class FullCBCExplorer
             return m_count;
         }
 
+        std::string format() const
+        {
+            return "Full Explorer";
+        }
+
     private:
         Dimension m_dimension;
         Dimension m_currentCoord;
@@ -104,6 +110,7 @@ class FullCBCExplorer
         typename ConstructionMethod::GenValueSpaceCoordSeq::const_iterator m_state;
         size_t m_count;
         int m_verbose;
+
 };
 
 

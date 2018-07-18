@@ -44,6 +44,7 @@ class MixedCBCExplorer
             m_dimension(dimension),
             m_currentCoord(0),
             m_nbFullCoordinates(nbFullCoordinates),
+            m_nbTries(nbTries),
             m_randExplorer(new RandomCBCExplorer<NC, ET>(dimension, sizeParameter, nbTries)),
             m_fullExplorer(new FullCBCExplorer<NC, ET>(nbFullCoordinates, sizeParameter))
         {};
@@ -128,12 +129,19 @@ class MixedCBCExplorer
             } 
         }
 
+        std::string format() const
+        {
+            return "Mixed Explorer - " + std::to_string(m_nbFullCoordinates) + " full coordinates - " + std::to_string(m_nbTries) + " samples for random coordinates";
+        }
+
     private:
         Dimension m_dimension;
         Dimension m_currentCoord;
         unsigned int m_nbFullCoordinates;
+        unsigned int m_nbTries;
         std::unique_ptr<RandomCBCExplorer<NC, ET>> m_randExplorer;
         std::unique_ptr<FullCBCExplorer<NC, ET>> m_fullExplorer;
+
 };
 
 }}

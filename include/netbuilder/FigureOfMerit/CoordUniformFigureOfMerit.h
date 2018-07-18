@@ -31,6 +31,39 @@
 
 namespace NetBuilder{ namespace FigureOfMerit { 
 
+    namespace{
+        template<LatBuilder::EmbeddingType ET> std::string output(std::string kernelName, const LatticeTester::Weights& weights, std::string combinerName);
+
+        template <>
+        std::string output<LatBuilder::EmbeddingType::UNILEVEL>(std::string kernelName, const LatticeTester::Weights& weights, std::string combinerName)
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << "Coordinate Uniform with Kernel: " << kernelName << std::endl;
+            stream << "Embedding type: Unilevel" << std::endl;
+            stream << "Weights: " << weights << std::endl;
+            stream << "Norm type: 2";
+            res += stream.str();
+            stream.str(std::string());
+            return res;                
+        }; 
+
+        template <>
+        std::string output<LatBuilder::EmbeddingType::MULTILEVEL>(std::string kernelName, const LatticeTester::Weights& weights, std::string combinerName)
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << "Coordinate Uniform with Kernel: " << kernelName << std::endl;
+            stream << "Embedding type: Multilevel" << std::endl;
+            stream << "Combiner: " + combinerName << std::endl;
+            stream << "Weights: " << weights << std::endl;
+            stream << "Norm type: 2";
+            res += stream.str();
+            stream.str(std::string());
+            return res;                
+        }; 
+    }
+
     /** 
      * Class which represents a coordinate uniform figure of merit based on a kernel which is the template
      * parameter. 
@@ -39,6 +72,8 @@ namespace NetBuilder{ namespace FigureOfMerit {
     class CoordUniformFigureOfMerit : public CBCFigureOfMerit
     {
         public:
+            typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
             /**
             * Constructor.
             *
@@ -50,7 +85,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
             */
             CoordUniformFigureOfMerit(  std::unique_ptr<LatticeTester::Weights> weights,
                                         KERNEL kernel = KERNEL(),
-                                        Combiner combiner = Combiner()
+                                        pCombiner combiner = std::make_unique<LevelCombiner::LevelCombiner>()
             ):
             m_weights(std::move(weights)),
             m_kernel(std::move(kernel)),
@@ -68,12 +103,6 @@ namespace NetBuilder{ namespace FigureOfMerit {
             const KERNEL& kernel() const
             { return m_kernel; }
 
-            /** 
-             * Returns the name of the figure of merit
-             */ 
-            std::string name() const
-            { return "CU:" + kernel().name(); }
-
             /**
              * Returns a bool indicating whether the kernel is symmetric.
              */ 
@@ -86,14 +115,14 @@ namespace NetBuilder{ namespace FigureOfMerit {
             static constexpr LatBuilder::Compress suggestedCompression()
             { return KERNEL::suggestedCompression(); }
 
-            /**  
-             * Overloads of << operator to print the name of the coord unif merit on the given output stream
+            /**
+             * Output information about the figure of merit.
              */ 
-            friend std::ostream& operator<<(std::ostream& os, const CoordUniformFigureOfMerit& cu_merit)
+            virtual std::string format() const override
             {
-            os << "Coord unif merit: " << cu_merit.name();
-            return os;
+                return output<ET>(kernel().name(), weights(), this->m_combiner->format());
             }
+
 
             /**
              * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
@@ -115,7 +144,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
 
                 std::unique_ptr<LatticeTester::Weights> m_weights;
                 KERNEL m_kernel;
-                Combiner m_combiner;
+                pCombiner m_combiner;
 
                 /** 
                  * Class which describes how the figure of merit is computed. 
@@ -185,7 +214,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
                          */ 
                         MeritValue combine(RealVector& merit) const 
                         {
-                            return m_figure->m_combiner(merit);
+                            return (*(m_figure->m_combiner))(merit);
                         }
 
 

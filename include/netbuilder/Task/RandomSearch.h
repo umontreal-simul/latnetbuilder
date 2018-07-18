@@ -46,7 +46,7 @@ class RandomSearch : public Search<NC, ET>
                         std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                         unsigned nbTries,
                         int verbose = 0,
-                        bool earlyAbortion = true):
+                        bool earlyAbortion = false):
             Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
             m_figure(std::move(figure)),
             m_nbTries(nbTries),
@@ -59,6 +59,31 @@ class RandomSearch : public Search<NC, ET>
          * Deletes the implicit copy constructor.
          */
         RandomSearch(RandomSearch&&) = default;
+
+        /**
+         *  Returns information about the task
+         */
+        virtual std::string format() const override
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << Search<NC, ET>::format();
+            stream << "Exploration method: random - " << m_nbTries << " samples" << std::endl;
+            stream << "Figure of merit: " << m_figure->format() << std::endl;
+            res += stream.str();
+            stream.str(std::string());
+            return res;
+        }
+
+        /**
+         * Resets the search.
+         */ 
+        virtual void reset() override
+        {
+            Search<NC, ET>::reset();
+            this->m_figure->evaluator()->reset();
+            std::cout << "in reset" << std::endl;
+        }
 
         /**
         * Executes the search task.
@@ -78,7 +103,7 @@ class RandomSearch : public Search<NC, ET>
             
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {
-                if(this->m_verbose>0)
+                if(this->m_verbose>0 && attempt % 100 == 0)
                 {
                     std::cout << "Net " << attempt << "/" << m_nbTries << std::endl;
                 }

@@ -98,12 +98,18 @@ class RandomCBCExplorer
             return m_countTries;
         }
 
+        std::string format() const
+        {
+            return "Random Explorer - " + std::to_string(m_nbTries) + " samples";
+        }
+
     private:
         Dimension m_dimension;
         Dimension m_currentCoord;
         unsigned int m_nbTries;
         typename ConstructionMethod:: template RandomGenValueGenerator <ET> m_randomGenValueGenerator;
         unsigned int m_countTries;
+
 };
 
 }}

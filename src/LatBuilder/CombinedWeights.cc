@@ -46,14 +46,18 @@ LatticeTester::Weight CombinedWeights::getWeight (const LatticeTester::Coordinat
 void CombinedWeights::format(ostream& os) const
 {
    using TextStream::operator<<;
-   os << "CombinedWeights(";
+   if (m_weights.size() > 1){
+      os << "CombinedWeights(";
+   }
    auto it = m_weights.begin();
    if (it != m_weights.end()) {
       os << **it;
       while (++it != m_weights.end())
          os << ", " << **it;
    }
-   os << ")";
+   if (m_weights.size() > 1){
+      os << ")";
+   }
 }
 
 //===========================================================================

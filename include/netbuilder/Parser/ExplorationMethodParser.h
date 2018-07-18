@@ -90,7 +90,7 @@ struct ExplorationMethodParser
         }
         else if (name == "random" || name == "random-CBC" || name == "mixed-CBC"){
             if (explorationDescriptionStrings.size() < 2){
-                throw BadExplorationMethod("nb of random tries required; see --help");
+                throw BadExplorationMethod("nb of random samples required; see --help");
             }
             r = boost::lexical_cast<unsigned int>(explorationDescriptionStrings[1]);
         }
@@ -100,7 +100,7 @@ struct ExplorationMethodParser
                                                     std::move(commandLine.m_figure),
                                                     r,
                                                     commandLine.m_verbose,
-                                                    commandLine.m_earlyAbort);
+                                                    true);
 
 
         std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure;
@@ -122,7 +122,7 @@ struct ExplorationMethodParser
                                                             std::move(figure),
                                                             std::make_unique<Task::RandomCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, r),
                                                             commandLine.m_verbose,
-                                                            commandLine.m_earlyAbort);
+                                                            true);
         }
 
         if (name == "mixed-CBC"){
@@ -136,7 +136,7 @@ struct ExplorationMethodParser
                                                             std::move(figure),
                                                             std::make_unique<Task::MixedCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter, nbFullCoordinates, r), 
                                                             commandLine.m_verbose,
-                                                            commandLine.m_earlyAbort);
+                                                            true);
         }
         else if (name == "full-CBC"){
             return std::make_unique<Task::CBCSearch<NC, ET,  Task::FullCBCExplorer>>(commandLine.m_dimension, 
@@ -144,7 +144,7 @@ struct ExplorationMethodParser
                                                                 std::move(figure),
                                                                 std::make_unique<Task::FullCBCExplorer<NC, ET>>(commandLine.m_dimension, commandLine.m_sizeParameter),
                                                                 commandLine.m_verbose,
-                                                                commandLine.m_earlyAbort);
+                                                                true);
         }
         else{
             throw BadExplorationMethod(name + " is not a valid exploration method; see --help");

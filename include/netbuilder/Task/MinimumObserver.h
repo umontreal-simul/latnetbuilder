@@ -45,10 +45,10 @@ class MinimumObserver
         */
         MinimumObserver(typename NetConstructionTraits<NC>::SizeParameter sizeParameter, int verbose = 0):
             m_bestNet(new DigitalNetConstruction<NC>(0,sizeParameter)),
+            m_foundBestNet(false),
+            m_bestMerit(std::numeric_limits<Real>::infinity()),
             m_verbose(verbose)
-        {
-            reset();
-        };
+        {};
 
         /** 
          * Constructor. 
@@ -59,12 +59,35 @@ class MinimumObserver
             m_bestNet(std::move(baseNet)),
             m_verbose(verbose)
         {
-            reset();
+            fullReset(std::move(baseNet));
         };
             
         /** 
+         * Initializes the best observed merit value to infinity, 
+         * sets the found net flag to \c false, and the starting net to the empty net. 
+         */
+        void fullReset() 
+        { 
+            m_bestMerit = std::numeric_limits<Real>::infinity();
+            m_foundBestNet = false;
+            m_bestNet = std::make_unique<DigitalNetConstruction<NC>>(0, m_bestNet->sizeParameter());
+        }
+
+        /** 
          * Initializes the best observed merit value to infinity and 
-         * set the foud net flag to \c false. 
+         * set the found net flag to \c false, and the starting net to baseNet. 
+         * @param baseNet The net from which the search starts.
+         */
+        void fullReset(std::unique_ptr<DigitalNetConstruction<NC>> baseNet) 
+        { 
+            m_bestMerit = std::numeric_limits<Real>::infinity();
+            m_foundBestNet = false;
+            m_bestNet = std::move(baseNet);
+        }
+
+        /** 
+         * Initializes the best observed merit value to infinity, 
+         * sets the found net flag to \c false, and the starting net to the empty net. 
          */
         void reset() 
         { 
@@ -95,18 +118,20 @@ class MinimumObserver
 
                     if (m_verbose>0)
                     {
-                        std::cout << m_bestNet->format(OutputFormat::CLI);
-                        std::cout << " <-- merit: "<< m_bestMerit << " (best)";
+                        std::cout << "Current merit: " << merit << " (best) with net:" << std::endl;
+                        std::cout << m_bestNet->format(OutputFormat::CLI, 1);
+                        std::cout << std::endl;
                         std::cout << std::endl;
                     }
                     return true;
                 }
                 else
                 {
-                    if (m_verbose>1)
+                    if (m_verbose>0)
                     {
-                        std::cout << net->format(OutputFormat::CLI);
-                        std::cout << " <-- rejected";
+                        std::cout << "Current merit: " << merit << " (rejected) with net:" << std::endl;
+                        std::cout << net->format(OutputFormat::CLI, 1);
+                        std::cout << std::endl;
                         std::cout << std::endl;
                     }
                     return false;

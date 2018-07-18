@@ -44,7 +44,8 @@ struct MeritFilter {
          const std::string& str,
          const LatBuilder::SizeParam<LR, ET>& sizeParam,
          const LatticeTester::Weights& weights,
-         Real normType);
+         Real normType,
+         std::string combiner = "");
 };
 
 extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, EmbeddingType::UNILEVEL> ;

@@ -28,6 +28,23 @@
 namespace NetBuilder { namespace Task {
 
 
+namespace{
+    template <NetConstruction NC> 
+    std::string output(typename NetConstructionTraits<NC>::SizeParameter sizeParameter)
+    {
+        return "";
+    };
+
+    template<>
+    std::string output<NetConstruction::POLYNOMIAL>(typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::SizeParameter sizeParameter)
+    {
+        std::ostringstream stream;
+        stream << "Modulus: " << sizeParameter << std::endl;
+        return stream.str();
+    }
+}
+
+
 /**
  * Virtual base class for search task.
  * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...).
@@ -52,7 +69,7 @@ public:
      */ 
     virtual void reset() override
     {
-        m_minimumObserver.reset();
+        m_minimumObserver->fullReset();
         m_bestNet = DigitalNetConstruction<NC>(0,m_sizeParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
@@ -74,7 +91,7 @@ public:
     Search( Dimension dimension, 
             typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
             int verbose = 0,
-            bool earlyAbortion = true ):
+            bool earlyAbortion = false ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
@@ -98,7 +115,7 @@ public:
     Search( Dimension dimension, 
             std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
             int verbose = 0,
-            bool earlyAbortion = true ):
+            bool earlyAbortion = false ):
         m_onNetSelected(new OnNetSelected),
         m_onFailedSearch(new OnFailedSearch),
         m_dimension(dimension),
@@ -153,8 +170,24 @@ public:
     /**
      *  Returns the best net found by the search task.
      */
-    virtual std::string outputNet(OutputFormat outputFormat) const override
-    { return bestNet().format(outputFormat); }
+    virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const override
+    { return bestNet().format(outputFormat, interlacingFactor); }
+
+    /**
+     *  Returns information about the task
+     */
+    virtual std::string format() const override
+    {
+        std::string res;
+        std::ostringstream stream;
+        stream << "Task: NetBuilder Search - Net Construction : " << NetConstructionTraits<NC>::name << std::endl;
+        stream << "Number of components: " << dimension() << std::endl;
+        stream << output<NC>(m_sizeParameter);
+        stream << "Number of rows: " << nRows() << " - Number of columns: " << nCols() << std::endl;
+        res += stream.str();
+        stream.str(std::string());
+        return res;
+    };
 
     /**
      * Returns the best merit value found by the search task.

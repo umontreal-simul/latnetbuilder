@@ -86,9 +86,9 @@ public:
       for (const auto& genSeq : genSeqs) {
          auto seq = cbc().meritSeq(genSeq);
          auto fseq = this->filters().apply(seq);
-         const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount());
+         const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount(), this->verbose());
          cbc().select(itmin.base());
-         this->selectBestLattice(cbc().baseLat(), *itmin);
+         this->selectBestLattice(cbc().baseLat(), *itmin, false);
       }
    }
 
@@ -113,10 +113,10 @@ public:
 protected:
    virtual void format(std::ostream& os) const
    {
-      os << "construction: " << m_traits.name() << std::endl;
-      os << "figure of merit: " << figureOfMerit() << std::endl;
-      os << "size parameter: " << storage().sizeParam() << std::endl;
+      os << m_traits.name() << std::endl;
       CBCBasedSearchTraits<TAG>::Search::format(os);
+      os << "Modulus: " << storage().sizeParam() << std::endl;
+      os << "Figure of merit: " << figureOfMerit() << std::endl;
    }
 
 private:

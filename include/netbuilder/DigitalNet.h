@@ -105,7 +105,7 @@ class DigitalNet
          * depends on \c outputFormat.
          * @param outputFormat Format to use to represent the net.
          */ 
-        virtual std::string format(OutputFormat outputFormat) const = 0;
+        virtual std::string format(OutputFormat outputFormat, unsigned int interlacingFactor) const = 0;
 
         /** 
          * Returns a bool indicating whether the net can be viewed as a digital sequence.
@@ -220,7 +220,7 @@ class DigitalNetConstruction : public DigitalNet
         /**
          * {@inheritDoc}
          */ 
-        virtual std::string format(OutputFormat outputFormat) const
+        virtual std::string format(OutputFormat outputFormat, unsigned int interlacingFactor) const
         {
             // TODO
             // if (outputFormat == OutputFormat::SSJ){
@@ -265,7 +265,7 @@ class DigitalNetConstruction : public DigitalNet
                 return out.str();
             }
 
-            std::string res = ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat);
+            std::string res = ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat, interlacingFactor);
             if (outputFormat==OutputFormat::GUI)
             {
                 std::ostringstream stream;

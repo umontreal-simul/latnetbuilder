@@ -46,14 +46,8 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& baseMatrices, unsigne
     }
 
     unsigned int smallestFullRankIndex = rowReducer.smallestFullRank() - 1;
-    if (verbose > 0){
-        std::cout << "after initialization, smallest invertible= " << smallestFullRankIndex << std::endl;
-    }
 
     if (smallestFullRankIndex == nCols){
-        if (verbose > 0){
-            std::cout << "end in initialization" << std::endl;
-        }
         return nCols;
     }
 
@@ -141,20 +135,11 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     
 
     for (unsigned int k=nRows-maxSubProj.back(); k >= s; k--){
-        if (verbose > 0){
-            std::cout << "begin iteration " << k << std::endl;
-        }
         unsigned int smallestFullRankIndex = iteration_on_k(baseMatrices, k, verbose-1);
-        if (verbose > 0){
-            std::cout << "after iteration " << k << ", smallestFullRankIndex : " << smallestFullRankIndex << std::endl;
-        }
         if (smallestFullRankIndex == nCols){
             continue;
         }
         for (unsigned int i= ((smallestFullRankIndex > mMin) ? smallestFullRankIndex-mMin: 0); i<previousIndSmallestInvertible; i++){
-            if (verbose > 0){
-                std::cout << "storing t-value of index " << i << std::endl;
-            }
             result[i+diff] = std::max(nCols-(nLevel-1-i)-k, maxSubProj[i+diff]);
         }
         if (smallestFullRankIndex <= mMin){

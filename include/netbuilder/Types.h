@@ -62,7 +62,7 @@ typedef LatBuilder::EmbeddingType EmbeddingType;
 enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};
 
 // Level combiner for multilevel nets
-typedef std::function<Real (const RealVector&)> Combiner;
+// typedef std::function<Real (const RealVector&)> Combiner;
 
 /// polynomial over Z/2Z type 
 typedef LatBuilder::Polynomial Polynomial;

@@ -46,6 +46,8 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
 {
     public:
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /// Type of the merit value
         typedef unsigned int Merit ;
 
@@ -57,7 +59,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
-        TValueProjMerit(unsigned int maxCardinal, Combiner combiner=Combiner()):
+        TValueProjMerit(unsigned int maxCardinal, pCombiner combiner=std::make_unique<LevelCombiner::LevelCombiner>()):
             m_maxCardinal(maxCardinal)
         {};
         virtual ~TValueProjMerit(){};
@@ -67,19 +69,16 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
          */ 
         unsigned int maxCardinal() const { return m_maxCardinal; }
 
-        /** 
-         * Returns the name of the projection-dependent merit.
+        /**
+         * Output information about the figure of merit.
          */ 
-        std::string name() const { return m_name ;}
-
-        /**  
-         * Overloads operator << to print the name of the the projection-dependent merit on the given output stream
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const TValueProjMerit& dt)
+        virtual std::string format() const
         {
-            os << "Projection-dependent merit: " << dt.name();
-            return os;
-        } 
+            std::string res;
+            res += "t-value based figure of merit";
+            res += "\nEmbedding type: Unilevel";
+            return res;
+        }; 
 
         /** 
          * Computes the projection-dependent merit of the net \c net for the given projection.
@@ -145,7 +144,6 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
 
 
     protected:
-        std::string m_name = "t-value (unilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
 
 };
@@ -158,6 +156,8 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
 {
     public:
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /// Type of the merit value
         typedef std::vector<unsigned int> Merit ;
 
@@ -169,7 +169,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Combiner used to combine multilevel merits.
          */  
-        TValueProjMerit(unsigned int maxCardinal, Combiner combiner):
+        TValueProjMerit(unsigned int maxCardinal, pCombiner combiner):
             m_maxCardinal(maxCardinal),
             m_combiner(std::move(combiner))
         {};
@@ -180,19 +180,17 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
          */ 
         unsigned int maxCardinal() const { return m_maxCardinal; }
 
-        /** 
-         * Returns the name of the projection-dependent merit.
+        /**
+         * Output information about the figure of merit.
          */ 
-        std::string name() const { return m_name;}
-
-        /**  
-         * Overloads operator << to print the name of the the projection-dependent merit on the given output stream.
-         */ 
-        friend std::ostream& operator<<(std::ostream& os, const TValueProjMerit& dt)
-        {
-            os << "Projection-dependent merit: " << dt.name();
-            return os;
-        } 
+        virtual std::string format() const
+        {            
+            std::string res;
+            res += "t-value based figure of merit";
+            res += "\nEmbedding type: Multilevel";
+            res += "\nCombiner: " + this->m_combiner->format();
+            return res;
+        }; 
 
         /** 
          * Computes the projection-dependent multilevel merits of the net for the given projection.
@@ -216,12 +214,12 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
          * @param net Digital net.
          * @param projection Projection.
          */ 
-        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) const {
+        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
                 tmp[i] = (Real) merits[i];
             } 
-            return m_combiner(std::move(tmp)) ; 
+            return (*m_combiner)(std::move(tmp)) ; 
         }
 
         /** Updates the combination of merit \c subProjCombination using \c merit.
@@ -272,10 +270,8 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
 
 
     protected:
-        std::string m_name = "t-value (multilevel nets)"; // name of the projection-dependent merit
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
-
-        Combiner m_combiner; 
+        pCombiner m_combiner; 
         // function wrapper which combines multilevel merits in a single value merit
 };
 

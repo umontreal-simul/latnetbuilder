@@ -21,6 +21,7 @@
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Task/Task.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+#include "netbuilder/LevelCombiner.h"
 
 #include "latbuilder/SizeParam.h"
 
@@ -46,11 +47,10 @@ struct CommandLine {
    std::string s_combiner;
    std::string s_verbose;
    
-   bool m_earlyAbort;
    Real m_normType;
    Real m_weightPower;
    typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter;
-   Combiner m_combiner;
+   std::unique_ptr<LevelCombiner::LevelCombiner> m_combiner;
    Dimension m_dimension;
    std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
    int m_verbose;
@@ -74,8 +74,14 @@ CommandLine<NC, ET>::parse()
       
       SizeParameterParser<NC,ET>::parse(*this);
       m_dimension = boost::lexical_cast<Dimension>(s_dimension) * m_interlacingFactor;
+      if (m_interlacingFactor > 1){
+            std::cout << "Warning: interlacing factor is > 1." << std::endl;
+            std::cout << "    Dimension: " <<  boost::lexical_cast<Dimension>(s_dimension) << std::endl;
+            std::cout << "    Interlacing factor: " << m_interlacingFactor << std::endl;
+            std::cout << "    Number of components: " << m_dimension << std::endl;
+      }
       m_verbose = boost::lexical_cast<int>(s_verbose);
-      m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized as a side effect
+      m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized and moved to m_figure as a side effect 
       return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task
 }
 

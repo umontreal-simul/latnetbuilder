@@ -65,7 +65,7 @@ struct LatSeqBasedSearchTraits<ExhaustiveTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " exhaustive search"; }
+   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: Exhaustive";}
 
    void init(LatBuilder::Task::Exhaustive<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }

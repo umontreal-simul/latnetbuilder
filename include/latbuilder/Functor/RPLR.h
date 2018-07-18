@@ -70,13 +70,11 @@ public:
     */
    result_type operator()(const value_type& x, Polynomial modulus) const{ 
     const uInteger m = deg(modulus) ;
-    // std::cout << m << std::endl;
     return (x < std::numeric_limits<double>::epsilon()) ? (1 + m/2.0) : (-std::floor(std::log2(x))/2.0) ;
   }
 
   result_type operator()(const value_type& x, unsigned long modulus) const{ 
     const uInteger m = log2Int( (unsigned int) modulus ) ;
-    // std::cout << m << std::endl;
     return (x < std::numeric_limits<double>::epsilon()) ? (1 + m/2.0) : (-std::floor(std::log2(x))/2.0) ;
   }
 

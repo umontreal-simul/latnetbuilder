@@ -128,8 +128,12 @@ class FigureOfMerit{
             return createEvaluator();
         }
 
-    private:
+        /**
+         * Output information about the figure of merit.
+         */ 
+        virtual std::string format() const = 0; 
 
+    private:
         virtual std::unique_ptr<FigureOfMeritEvaluator> createEvaluator() = 0;
 };
 
@@ -152,9 +156,9 @@ class FigureOfMeritCBCEvaluator:
             for(Dimension dim = 0; dim < net.dimension(); ++dim) // for each dimension
             {
                 prepareForNextDimension(); // prepare the evaluator for the next dimension
-                if (verbose>0)
+                if (verbose>0 && dim > 0)
                 {
-                    std::cout << "Computing for dimension: " << dim << "..." <<std::endl;
+                    std::cout << "Begin coordinate: " << dim + 1 << "/" << net.dimension() << std::endl;
                 }
                 merit = operator()(net, dim, merit, verbose-1); // evaluate the partial merit value
                 if (verbose>0)

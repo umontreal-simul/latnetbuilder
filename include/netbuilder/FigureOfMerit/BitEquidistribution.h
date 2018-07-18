@@ -33,14 +33,16 @@ class BitEquidistribution : public CBCFigureOfMerit{
 
     public:
 
+        typedef std::unique_ptr<LevelCombiner::LevelCombiner> pCombiner;
+
         /** 
          * Constructor.
          * @param nbBits Number of bits taken into account by the figure.
          * @param weight Weight of the figure of merit. Defaults to +inf.
          * @param normType Norm type of the figure of merit. Defaults to sup norm.
-         * @param combiner Combiner for the multilevel case. Default to the (non-callable) empty function.
+         * @param combiner LevelCombiner for the multilevel case. Default to the (non-callable) empty function.
          */ 
-        BitEquidistribution(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity(), Combiner combiner = Combiner()):
+        BitEquidistribution(unsigned int nbBits, Real weight = std::numeric_limits<Real>::infinity(), Real normType = std::numeric_limits<Real>::infinity(), pCombiner combiner =std::make_unique<LevelCombiner::LevelCombiner>()):
             m_nbBits(nbBits),
             m_weight(weight),
             m_normType(normType),
@@ -88,8 +90,17 @@ class BitEquidistribution : public CBCFigureOfMerit{
             {
                 tmp[i] = merits[i];
             }
-            return m_combiner(std::move(tmp));
+            return (*m_combiner)(std::move(tmp));
         }
+
+        /**
+         * Output information about the figure of merit.
+         */ 
+        virtual std::string format() const override
+        {
+            return "";
+        }        
+
 
     private:
 
@@ -163,7 +174,33 @@ class BitEquidistribution : public CBCFigureOfMerit{
         Real m_weight; // weight of the figure
         Real m_normType; // norm type of the figure
         Real m_expNorm; // exponent used in accumulation
-        Combiner m_combiner; // combiner used in the multilevel case
+        pCombiner m_combiner; // combiner used in the multilevel case
+};
+
+
+/**
+ * Template specialization of the output information about the figure of merit in the unilevel case.
+ */ 
+template <>
+std::string BitEquidistribution<EmbeddingType::UNILEVEL>::format() const
+{            
+    std::string res;
+    res += std::to_string(m_nbBits) + "-bit equidistribution\nNorm type: " + std::to_string(m_normType);
+    res += "\nEmbedding type: Unilevel";
+    return res;
+}; 
+
+/**
+ * Template specialization of the output information about the figure of merit in the multilevel case.
+ */ 
+template <>
+std::string BitEquidistribution<EmbeddingType::MULTILEVEL>::format() const
+{            
+    std::string res;
+    res += std::to_string(m_nbBits) + "-bit equidistribution\nNorm type: " + std::to_string(m_normType);
+    res += "\nEmbedding type: Multilevel";
+    res += "\nCombiner: " + this->m_combiner->format();
+    return res;
 };
 
 // template specialization for the unilevel case

@@ -79,6 +79,21 @@ class WeightedFigureOfMerit : public CBCFigureOfMerit
             return std::make_unique<WeightedFigureOfMeritEvaluator>(this);
         }
 
+        /**
+         * Output information about the figure of merit.
+         */ 
+        virtual std::string format() const override
+        {
+            std::string res;
+            std::ostringstream stream;
+            stream << m_projDepMerit->format() << std::endl;
+            stream << "Weights: " << *m_weights << std::endl;
+            stream << "Norm type: " << m_normType;
+            res += stream.str();
+            stream.str(std::string());
+            return res;
+        }; 
+
         /** 
          * Returns the exponent to use when accumulating merits
          */ 

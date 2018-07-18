@@ -69,7 +69,6 @@ bool CompositionMaker::goToNextComposition()
         index = m_master[index];
         count++;
     }
-    // std::cout << "count " << count << std::endl;
 
     if (index==0 && m_composition[index] == 1)
     {

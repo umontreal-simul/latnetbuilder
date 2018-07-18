@@ -28,7 +28,9 @@
 namespace NetBuilder { namespace Parser {
 namespace lbp = LatBuilder::Parser;
 
-using namespace NetBuilder::LevelCombiner;
+// using namespace NetBuilder::LevelCombiner;
+
+typedef LevelCombiner::LevelCombiner Combiner;
 
 /**
  * Exception thrown when trying to parse an invalid combiner.
@@ -48,28 +50,28 @@ struct LevelCombinerParser {};
 
 template <NetConstruction NC>
 struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::UNILEVEL> {
-   typedef Combiner result_type;
+//    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::EmbeddingType::UNILEVEL>& commandLine)
+   static std::unique_ptr<Combiner> parse(const CommandLine<NC,NetBuilder::EmbeddingType::UNILEVEL>& commandLine)
    {
-       return result_type();
+       return std::make_unique<Combiner>();
    }
 };
 
 template <NetConstruction NC>
 struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::MULTILEVEL> {
-   typedef Combiner result_type;
+//    typedef Combiner result_type;
 
-   static result_type parse(const CommandLine<NC,NetBuilder::EmbeddingType::MULTILEVEL>& commandLine)
+   static std::unique_ptr<Combiner> parse(const CommandLine<NC,NetBuilder::EmbeddingType::MULTILEVEL>& commandLine)
    {
        std::string str = commandLine.s_combiner;
        if (str=="sum")
        {
-           return result_type(SumCombiner());
+           return std::make_unique<LevelCombiner::SumCombiner>();
        }
        else if (str=="max")
        {
-           return result_type(MaxCombiner());
+           return std::make_unique<LevelCombiner::MaxCombiner>();
        }
        else
        {
@@ -94,11 +96,11 @@ struct LevelCombinerParser<NC, NetBuilder::EmbeddingType::MULTILEVEL> {
                        throw BadLevelCombiner("incompatible combiner level and size.");
                     }  
                 }
-                return LevelSelectorCombiner(level);
+                return std::make_unique<LevelCombiner::LevelSelectorCombiner>(level);
             }
        }
        throw BadLevelCombiner(str);
-       return result_type();
+       return std::make_unique<Combiner>();
    }
 };
 

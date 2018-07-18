@@ -200,7 +200,7 @@ Real IBG15::value(
       Real norm
       ) const
 {
-   norm = 1.0 / (sizeParam.numPoints() - 1.0);
+   norm = 1.0 / (norm * (sizeParam.numPoints() - 1.0));
    Real val = WeightsDispatcher::dispatch<SumHelper>(
          m_weights,
          lambda,
