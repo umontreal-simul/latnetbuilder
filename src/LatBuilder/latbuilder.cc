@@ -21,11 +21,11 @@
 #include "latbuilder/Types.h"
 
 #include "netbuilder/DigitalNet.h"
-#include "netbuilder/Parser/OutputFormat.h"
 #include "netbuilder/Types.h"
 
 #include <fstream>
 #include <chrono>
+#include <boost/filesystem.hpp>
 
 namespace LatBuilder{
 using TextStream::operator<<;
@@ -151,7 +151,7 @@ makeOptionsDescription()
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the exploration must be executed\n"
    "(can be useful to obtain different results from random exploration)\n")
-    ("output-folder,g", po::value< std::vector<std::string> >()->composing(),
+    ("output-folder,g", po::value<std::string>(),
     "(optional) global path to the output folder. If none is given, no output is produced.")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
@@ -193,7 +193,7 @@ parse(int argc, const char* argv[])
 
 
 template <EmbeddingType ET>
-void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, int verbose, unsigned int repeat)
+void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
 {
    const LatticeType LR = LatticeType::ORDINARY ;
    using namespace std::chrono;
@@ -203,7 +203,13 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
    const std::string separator = "====================\n";
   
    std::cout << separator << "    Input" << std::endl << separator << *search << std::endl;
-   
+    if (outputFolder != ""){
+      ofstream outFile;
+      std::string fileName = outputFolder + "/input.txt";
+      outFile.open(fileName);
+      outFile << *search;
+      outFile.close();
+    }
 
    if (verbose > 0) {
       search->onLatticeSelected().connect(onLatticeSelected<LR,ET>);
@@ -236,6 +242,21 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
         std::cout << std::endl;
          std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl << std::endl;
 
+      if (outputFolder != ""){
+          ofstream outFile;
+          std::string fileName = outputFolder + "/output.txt";
+          outFile.open(fileName);
+          outFile << lat << "Merit: " << search->bestMeritValue() << std::endl;
+          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
+          outFile.close();
+
+
+          fileName = outputFolder + "/outputMachine.txt";
+          outFile.open(fileName);
+          outFile << lat << "Merit: " << search->bestMeritValue() << std::endl;
+          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
+          outFile.close();
+      }
       
       if (merit_digits_displayed)
    std::cout.precision(old_precision);
@@ -246,17 +267,29 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
 
 template <EmbeddingType ET>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, const std::vector<NetBuilder::Parser::OutputFormatParameters>& vecOutputFormatParameters)
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
 
    auto search = cmd.parse();
+   
+   unsigned int interlacingFactor = 1;
+    try{
+      interlacingFactor = boost::lexical_cast<unsigned int>(cmd.interlacingFactor);
+    }
+    catch (boost::bad_lexical_cast&) {}
 
    const std::string separator = "====================\n";
   
    std::cout << separator << "    Input" << std::endl << separator << *search << std::endl;
-   
+    if (outputFolder != ""){
+      ofstream outFile;
+      std::string fileName = outputFolder + "/input.txt";
+      outFile.open(fileName);
+      outFile << *search;
+      outFile.close();
+    }
 
    if (verbose > 0) {
       search->onLatticeSelected().connect(onLatticeSelected<LR,ET>);
@@ -289,18 +322,25 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
            std::cout << "Merit: " << search->bestMeritValue() << std::endl;
            std::cout << std::endl;
            std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl << std::endl;
-        
-        if (i == 0){ 
-          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
 
-          for (NetBuilder::Parser::OutputFormatParameters outputFormatParameters : vecOutputFormatParameters){
-            std::string fileName = outputFormatParameters.file();
-            ofstream outFile;
-            outFile.open(fileName);
-            outFile << net.format(outputFormatParameters.outputFormat(), 1);  // TODO
-            outFile.close();
-          }
-        }
+      if (outputFolder != ""){
+          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
+          
+          ofstream outFile;
+          std::string fileName = outputFolder + "/output.txt";
+          outFile.open(fileName);
+          outFile << net.format(NetBuilder::OutputFormat::HUMAN, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
+          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
+          outFile.close();
+
+          fileName = outputFolder + "/outputMachine.txt";
+          outFile.open(fileName);
+          outFile << net.format(NetBuilder::OutputFormat::MACHINE, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
+          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
+          outFile.close();
+
+      }
+
         
         if (merit_digits_displayed){
           std::cout.precision(old_precision);
@@ -326,6 +366,14 @@ int main(int argc, const char *argv[])
         int verbose = opt["verbose"].as<int>();
         
         auto repeat = opt["repeat"].as<unsigned int>();
+
+        std::string outputFolder = "";
+        if (opt.count("output-folder") >= 1){
+          outputFolder = opt["output-folder"].as<std::string>();
+          std::cout << "Writing in output folder: " << outputFolder << std::endl;
+          boost::filesystem::remove_all(outputFolder);
+          boost::filesystem::create_directory(outputFolder);
+        }        
 
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
@@ -381,11 +429,11 @@ int main(int argc, const char *argv[])
 
             if (latType == EmbeddingType::UNILEVEL){
 
-               executeOrdinary<EmbeddingType::UNILEVEL> (cmd, verbose, repeat);
+               executeOrdinary<EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder);
                
              }
             else{
-               executeOrdinary<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat);
+               executeOrdinary<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder);
                
              }
       }
@@ -429,20 +477,12 @@ int main(int argc, const char *argv[])
 
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
-            std::vector<NetBuilder::Parser::OutputFormatParameters> outPoly;
-            if (opt.count("output-format") >= 1){
-              outPoly = NetBuilder::Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<string>>());
-            }
-            else{
-              outPoly = {};
-            }
-
             if (latType == EmbeddingType::UNILEVEL){
-               executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outPoly);
+               executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder);
                
              }
             else{
-               executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outPoly);
+               executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder);
                
              }
       }

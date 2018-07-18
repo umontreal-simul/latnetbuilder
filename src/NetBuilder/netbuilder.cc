@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <chrono>
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -37,20 +38,26 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::string outputFile, unsigned int interlacingFactor)
+void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int interlacingFactor)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
     std::cout.precision(merit_digits_displayed);
   }
   std::cout << "====================\n       Result\n====================" << std::endl;
-  std::cout << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+  std::cout << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
-  if (outputFile != ""){
+  if (outputFolder != ""){
     ofstream outFile;
-    std::string fileName = outputFile + "/output.txt";
+    std::string fileName = outputFolder + "/output.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile.close();
+
+
+    fileName = outputFolder + "/outputMachine.txt";
+    outFile.open(fileName);
+    outFile << task.outputNet(OutputFormat::MACHINE, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
     outFile.close();
   }
   
@@ -130,16 +137,6 @@ makeOptionsDescription()
     "(default: 1) interlacing factor. If larger than one, the constructed"
     "point set is an interlaced digital net. In this case, the figure of merit must be"
     "specific to interlaced digital nets.\n")
-  //  ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
-  //   "whitespace-separated list of filters for merit values; possible values:\n"
-  //   "  norm:P<alpha>-{SL10|DPW08}\n"
-  //   "  low-pass:<threshold>\n")
-  //  ("multilevel-filters,F", po::value<std::vector<std::string>>()->multitoken(),
-  //   "whitespace-separated list of filters for multilevel merit values; possible values:\n"
-  //   "  norm:P<alpha>-{SL10|DPW08}[:<multilevel-weights>]\n"
-  //   "  low-pass:<threshold>\n"
-  //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
-  //   "  even[:<min-level>[:<max-level>]] (default)\n")
     ("output-folder,g", po::value<std::string>(),
     "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
@@ -228,18 +225,12 @@ int main(int argc, const char *argv[])
 
         auto repeat = opt["repeat"].as<unsigned int>();
 
-        // NetBuilder::OutputFormat outputFormat;
-        // std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
-        // if (opt.count("output-format") >= 1){
-        //   outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
-        // }
-        // else{
-        //   outputFormatParameters = {};
-        // }
         std::string outputFolder = "";
         if (opt.count("output-folder") >= 1){
-          std::cout << "found output folder" << std::endl;
           outputFolder = opt["output-folder"].as<std::string>();
+          std::cout << "Writing in output folder: " << outputFolder << std::endl;
+          boost::filesystem::remove_all(outputFolder);
+          boost::filesystem::create_directory(outputFolder);
         }
         
         // global variable
@@ -274,9 +265,6 @@ int main(int argc, const char *argv[])
        if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
-      //     BUILD_TASK(POLYNOMIAL, MULTILEVEL)
-      //  } 
         if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
@@ -293,7 +281,6 @@ int main(int argc, const char *argv[])
           if (outputFolder != ""){
             ofstream outFile;
             std::string fileName = outputFolder + "/input.txt";
-            std::cout << fileName << std::endl;
             outFile.open(fileName);
             outFile << task->format();
             outFile.close();

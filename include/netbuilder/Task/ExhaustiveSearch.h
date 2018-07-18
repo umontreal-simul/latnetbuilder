@@ -40,7 +40,7 @@ class ExhaustiveSearch : public Search<NC, ET>
                             typename NetConstructionTraits<NC>::SizeParameter sizeParameter,
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                             int verbose = 0,
-                            bool earlyAbortion = true):
+                            bool earlyAbortion = false):
             Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
             m_figure(std::move(figure))
         {};

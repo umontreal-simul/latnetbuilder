@@ -77,7 +77,7 @@ namespace {
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& filters)
-{ filtersFormatHelper(os, filters.filters(), "\nScalar filters: "); return os; }
+{ filtersFormatHelper(os, filters.filters(), "\nUnilevel filters: "); return os; }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& filters)
@@ -105,7 +105,7 @@ std::ostream& operator<<(std::ostream& os, const MeritFilterList<LatticeType::OR
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>& filters)
-{ filtersFormatHelper(os, filters.filters(), "\nScalar filters: "); return os; }
+{ filtersFormatHelper(os, filters.filters(), "\nUnilevel filters: "); return os; }
 
 template<>
 std::ostream& operator<<(std::ostream& os, const BasicMeritFilterList<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>& filters)

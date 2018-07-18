@@ -76,7 +76,7 @@ class Eval : public Task
             stream << "Task: NetBuilder Evaluation" << std::endl;
             stream << "Number of components: " << this->dimension() << std::endl;
             stream << "Evaluation of the net:" << std::endl;
-            stream << m_net->format(OutputFormat::CLI, 1);
+            stream << m_net->format(OutputFormat::HUMAN, 1);
             stream << "Figure of merit: " << m_figure->format() << std::endl;
             res += stream.str();
             stream.str(std::string());

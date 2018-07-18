@@ -45,6 +45,17 @@ def configure(ctx):
     ctx_check(features='cxx cxxprogram',
             lib='boost_program_options',
             uselib_store='PROGRAM_OPTIONS')
+
+    ctx_check(features='cxx cxxprogram',
+            lib='boost_system',
+            uselib_store='SYSTEM')
+    ctx_check(features='cxx cxxprogram',
+            header_name='boost/filesystem.hpp',
+            lib='boost_system')
+    ctx_check(features='cxx cxxprogram',
+            lib='boost_filesystem',
+            uselib_store='FILESYSTEM')
+    
     # Boost Chrono
     # ctx_check(features='cxx cxxprogram',
     #         header_name='boost/chrono/chrono_io.hpp',
