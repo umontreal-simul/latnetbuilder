@@ -26,6 +26,8 @@
 
 #include <boost/program_options.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 
 namespace LatBuilder { namespace Parser {
 
@@ -96,6 +98,26 @@ std::vector<T> splitCSV(const std::string& input)
 }
 
 /**
+ * Splits a dash-separated list of values into a vector.
+ */
+template <typename T = std::string>
+std::vector<T> splitDash(const std::string& input)
+{
+   std::vector<T> vec;
+   std::vector<std::string> tmp;
+   boost::split(tmp, input, boost::is_any_of("-"));
+   for (const auto& token : tmp) {
+      try {
+         vec.push_back(boost::lexical_cast<T>(token));
+      }
+      catch (boost::bad_lexical_cast&) {
+         throw ParserError("cannot interpret \"" + token + "\" as " + TypeInfo<T>::name());
+      }
+   }
+   return vec;
+}
+
+/**
 *  convert lattice parameter strings to the appropriate input format  
 *
 */
@@ -113,7 +135,7 @@ struct LatticeParametersParseHelper<LatticeType::ORDINARY> {
    {return str ;}
 
    static typename LatticeTraits<LatticeType::ORDINARY>::GeneratingVector ParseGeneratingVector(const std::string& str)
-   {return splitCSV<uInteger>(str);}
+   {return splitDash<uInteger>(str);}
 };
 
 template <>
@@ -146,7 +168,7 @@ struct LatticeParametersParseHelper<LatticeType::POLYNOMIAL> {
 
    static typename LatticeTraits<LatBuilder::LatticeType::POLYNOMIAL>::GeneratingVector ParseGeneratingVector(const std::string& str)
    {
-      auto genVec_str = splitCSV<std::string>(str);
+      auto genVec_str = splitDash<std::string>(str);
       typename LatticeTraits<LatticeType::POLYNOMIAL>::GeneratingVector genVec ;
       for(const auto& gen_str: genVec_str) {
          std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableGenValue(gen_str);

@@ -25,7 +25,7 @@ The implemented quality measures include, for the LatBuilder part, the weighted 
 All these measures, which are called figures of merit, are parametrized with weights to give different importances to the projections of the point sets.
 
 The software supports exhaustive and random searches, as well as component-by-component
-(CBC) and random CBC constructions, for any number of points, and for various
+(CBC) and random CBC explorations, for any number of points, and for various
 measures of (non)uniformity of the points.
 
 The software also support the construction of multi-level point sets. A multi-level point set is actually a sequence of point sets whose points are embedded. Good multi-level point sets are highly uniform for their different embedding levels.

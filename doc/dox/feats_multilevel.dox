@@ -16,11 +16,14 @@
 
 /** \page feats_multilevel Multilevel point sets
 
+A multilevel point set is a finite sequence of nested point sets: each nested point set
+contains the previous ones. Each nested point set corresponds to an embedding level.
+
 Constructing multilevel point sets involves producing a compound merit value that
 accounts for the merit of each nested level.  This compound merit value is
 computed as follows:
 - the figure of merit is evaluated for each nested level;
-- optionally, multilevel filters are applied to the individual merit values of
+- optionally, multilevel filters (normalizations) are applied to the individual merit values of
   each nested level;
 - these filtered individual merit values are combined into a single value;
 - optionally filters are applied to this combined value to produce a final
@@ -34,7 +37,10 @@ to finite digital sequence.
 
 \section feats_multilevel_lat Embedded lattices
 
-\todo define embedded lattices
+Embedded lattices \cite vHIC01a with \f$m\f$ levels consist in taking a sequence of modulus \f$p_k = b^{k}\f$ for \f$1 \leq k \leq m\f$
+with \f$b\f$ a prime base for ordinary lattice rules or an irreducible polynomial for polynomial lattice rules. Then for each embedding level,
+we consider the associated lattice rule. The same generating vector is used for all the embedding levels. 
+The sequence of lattice rules forms a multilevel point set.
 
 \section feats_multilevel_net Multilevel digital nets
 
@@ -52,8 +58,9 @@ However, taking nested generating matrices is not sufficient to have an increasi
 The number of points doubles when the size increases by one
 only if all the nested generating matrices are full-rank.
 
-<b>Multilevel digital nets are only available with Sobol' construction.</b>
-Due to the previous constraint, searching multilevel digital nets requires to use the Sobol' construction
-as it is the only construction that produces nested full-rank generating matrices.
+<b>Multilevel digital nets are only available with the Sobol' and explicit constructions.</b>
+In the case of the Sobol' construction, the generating matrices are naturally nested full-rank. For the
+explicit construction, the search space is restricted to the subset of nested full-rank generating matrices.
+Recall that for this construction, only the random variants of the exploration methods are available.
 */
 vim: ft=doxygen spelllang=en spell

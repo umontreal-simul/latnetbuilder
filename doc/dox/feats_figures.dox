@@ -17,28 +17,29 @@
 /** \page feats_figures Figures of merit
 
 Figures of merit are the quality measures used to evaluate point sets. Figures of merit are most often derived
-from Kolsma-Hlakka inequalities: the merit value somehow bounds the integration error.
+from Kolsma-Hlawka inequalities: the merit value somehow bounds the integration error.
 
 LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them can be parametrized by a norm-type and weights.
 
-Let \f$P_n\f$ denote a point set in dimension \f$s\f$ with \f$n\f$ points, \f$ q \leq +\infty \f$ and \f$\gamma_{\mathfrak u}\f$ some general weights.
+Let \f$P_n = \left\{(x_{0,1}, \dots, x_{0, s}), \dots, (x_{n-1,1}, \dots, x_{n-1, s}) \right\}\f$ denote a point set in dimension \f$s\f$ with \f$n\f$ points, 
+\f$ q \leq +\infty \f$ and \f$\gamma_{\mathfrak u}\f$ some general weights.
 
 Figures of merit implemented by LatNet Builder have the following form:
 
 \f[
-    D(P_n)^q = \sum_{\emptyset \neq \mathfrak u \subseteq {1, \dots, s}}\left(\gamma_{\mathfrak u} D_{\mathfrak u}(P_n)\right)^q,
+    D(P_n)^q = \sum_{\emptyset \neq \mathfrak u \subseteq \{1, \dots, s\}}\left(\gamma_{\mathfrak u} D_{\mathfrak u}(P_n)\right)^q,
 \f]
 
 where \f$D(P_n)\f$ is the merit value of the point set \f$P_n\f$ and \f$ D_{\mathfrak u}(P_n) \f$ its projection-dependent merit value.
+Note that if \f$q = +\infty\f$, the sum in the above equation is replaced by a maximum and the exponent \f$q\f$ taken equal to \f$&\f$.
 
-LatNet Builder implements various projection-dependent merit which depends on the point set type. 
+LatNet Builder implements various projection-dependent merits depending on the point set type. 
 
 <b>Note that the figure of merit actually computed
-by LatNet Builder is not the \f$D(P_n)\f$ but rather the \f$D(P_n)^q\f$</b>.
+by LatNet Builder is not \f$D(P_n)\f$ but rather \f$D(P_n)^q\f$</b>.
 
 - \subpage feats_figures_lat
 - \subpage feats_figures_net
-- \subpage feats_figures_interlaced
 
 */
 vim: ft=doxygen spelllang=en spell

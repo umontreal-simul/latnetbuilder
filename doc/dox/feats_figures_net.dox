@@ -21,17 +21,8 @@ LatNet Builder supports the following figures of merit for digital nets:
 
 - The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha=2, 4, 6, 8\f$, using a
   coordinate-uniform evaluation algorithm with an \f$\ell_2\f$ norm:
-  \f[
-    D(P_{2^k}) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_{2^k})
-        \right]^2\right)
-    \f] 
-  where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ is defined by:
     \f[
-        \mathcal{D}^2_{\mathfrak u}(P_{2^k}) = \frac{1}{{2^k}} \sum_{i = 0}^{2^k} 
+        \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{{n}} \sum_{i = 0}^{n-1} 
         \prod_{j \in \mathfrak u} \omega_{\alpha}(x_{i,j}),
     \f]
     where
@@ -39,20 +30,11 @@ LatNet Builder supports the following figures of merit for digital nets:
         \omega_{\alpha}(x) = \mu(\alpha) - 2^{(1+\lfloor \log_2(x) \rfloor) (\alpha - 1)}(\mu(\alpha) + 1),
     \f]
     where \f$ \mu(\alpha) = (1 - 2^{1- \alpha})^{-1} \f$ for even \f$ \alpha \f$.
-
+<br><br>
 - The \f$\mathcal R\f$ criterion \cite rNIE03a, using a
   coordinate-uniform evaluation algorithm with an \f$\ell_2\f$ norm:
     \f[
-    D(P_{2^k}) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_{2^k})
-        \right]^2\right)
-    \f] 
-    where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ is defined by:
-    \f[
-        \mathcal{D}^2_{\mathfrak u}(P_{2^k}) = \frac{1}{{2^k}} \sum_{i = 0}^{2^k} 
+        \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{{n}} \sum_{i = 0}^{n-1} 
         \prod_{j \in \mathfrak u} \phi'_m(x_{i,j}),
     \f]
     where \f$m\f$ is the degree of the modulus and 
@@ -65,39 +47,90 @@ LatNet Builder supports the following figures of merit for digital nets:
     \f]
 
 LatNet Builder also supports figures of merit based on the equidistribution of points.
-Take a digital net \f$P_{2^k} \f$ in dimension \f$s\f$ with \f$2^k\f$ points.
+Take a digital net \f$P_n \f$ in dimension \f$s\f$ with \f$n = 2^k\f$ points.
 Suppose we divide axis \f$j\f$ in \f$2^{q_j}\f$ equal parts for some integer \f$q_j\f$, for each
 \f$j\f$. This determines a partition of \f$[0,1)^s\f$ into \f$2^{q_1+\dots+q_s}\f$ rectangles of equal sizes.
 If each rectangle contains exactly the same number of points, we say that the net is 
 \f$(q_1,\dots,q_s)\f$-equidistributed. 
 
-- The projection-dependent t-value \cite rDIC10a, \cite rJOE08a using state-of-the art algorithms,
+- The t-value \cite rDIC10a merit, using the fast algorithm from \cite rDIC13a, with
+  weights equal to \f$\gamma_{\mathfrak u} = \mathbb{1}_{|\mathfrak u| = s} \f$ and
+  an \f$\ell_1\f$ norm:
+    \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the t-value of the projection of \f$P_n \f$
+  on \f$\mathfrak u\f$.
+  The t-value of a net with \f$n = 2^k\f$ points is the smallest \f$t\f$ such that the net is \f$(q_1,\dots,q_s)\f$-equidistributed
+  whenever \f$q_1+\dots+q_s = k-t \f$.
+<br><br>
+- The projection-dependent t-value \cite rJOE08a using state-of-the art algorithms,
+  with an \f$\ell_q\f$ norm:
+    \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the t-value of the projection of \f$P_n \f$
+  on \f$\mathfrak u\f$.
+<br><br>
+- The projection-dependent t-value-based star discrepancy bound (Corollary 5.3 in \cite rDIC10a), using state-of-the art algorithms,
   with an \f$\ell_q\f$ norm:
     \f[
-    D(P_{2^k}) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_{2^k})
-        \right]^q\right)
-  \f] 
-  where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ denotes the t-value of the projection of \f$P_{2^k} \f$
+        \mathcal{D}_{\mathfrak u}(P_n) = 2^{t_{\mathfrak u}(P_n)-k} \sum_{i=0}^{|\mathfrak{u}|-1} \binom{k-t_{\mathfrak u}(P_n)}{i}
+    \f] 
+  where \f$t_{\mathfrak u}(P_n)\f$ is the t-value of the projection of \f$P_n \f$
   on \f$\mathfrak u\f$.
-  The t-value of a net with \f$2^k\f$ points is the smallest \f$t\f$ such that the net is \f$(q_1,\dots,q_s)\f$-equidistributed
-  whenever \f$q_1+\dots+q_s = k-t \f$.
-
+<br><br>
 - The projection-dependent resolution-gap \cite rLEC04b, with an \f$\ell_q\f$ norm: 
-    \f[
-    D(P_{2^k}) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_{2^k})
-        \right]^q\right)
-   \f] 
-  where \f$\mathcal{D}_{\mathfrak u}(P_{2^k})\f$ denotes the resolution-gap of the projection of \f$P_{2^k} \f$
-  on \f$\mathfrak u\f$.
+    \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the resolution-gap of the projection of \f$P_n \f$
+    on \f$\mathfrak u\f$.
   The resolution of a net is the biggest \f$r\f$ such that the net is \f$(r,\dots,r)\f$-equidistributed.
-  The resolution-gap of a net is the difference between this upper-bound and its actual resolution.
+  The resolution is always smaller than \f$\lfloor k/s\rfloor\f$. The resolution-gap of is the difference between 
+  this upper-bound and the actual resolution.
+
+\section feats_figures_net_interlaced Interlaced digital nets
+
+
+Figures of merit specific to interlaced digital nets \cite rGOD13a are also supported by LatNet Builder.
+
+These figures of merit for interlaced digital nets in dimension \f$s\f$ can be seen as figures of merit 
+for the underlying lattice rules in higher dimension \f$ds\f$, where \f$d\f$ is the interlacing factor.
+If \f$P_n\f$ is the interlaced lattice rule, let \f$\bar{P}_n = \left\{(z_{0,1}, \dots, z_{0, ds}), \dots, (z_{n-1,1}, \dots, z_{n-1, ds}) \right\}\f$ denote
+the underlying digital net in dimension \f$ds\f$.
+This point of view also requires to transform (or interlace) weights in dimension \f$s\f$ into weights in dimension \f$d s\f$. 
+Let \f$ \bar{\gamma} \f$ denote these interlaced weights.
+
+The figures of merit for interlaced digital nets supported by LatNet Builder have the following form:
+\f[
+    D(P_n) = \sum_{\emptyset \neq \mathfrak u \subseteq \{1, \dots, d s\}}\left(\bar{\gamma}_{\mathfrak u} D_{\mathfrak u}(\bar{P}_n)\right),
+\f]
+
+- The \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+
+    \f[
+        D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{\alpha, d, (1)}(z_{i, j}),
+    \f]
+    where \f$ \phi_{\alpha, d, (1)}(z) \f$ is defined by:
+    \f[
+        \phi_{\alpha, d, (1)}(z) =
+        \frac{1 - 2^{(\min(\alpha, d) -1) \lfloor \log_2(z) \rfloor} (2^{\min(\alpha, d)} -1)}{2^{(\alpha+2)/2} (2^{\min(\alpha, d) - 1} -1) }.
+    \f]
+    For this discrepancy, the interlaced weights are defined as:
+    \f[
+        \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} 2^{\alpha (2d-1) |w(\mathfrak u)| / 2},
+    \f]
+    where \f$w\f$ denotes the weights interlacing operator:
+    \f[
+        w(\mathfrak u) = \left\{ \left \lceil \frac{j}{d} \right\rceil, j \in \mathfrak u \right\}.
+    \f]
+<br><br>
+- The \f$B_{d, (2)}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+
+    \f[
+        D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{d, (2)}(z_{i, j}),
+    \f]
+    where \f$ \phi_{d, (2)}(z) \f$ is defined by:
+    \f[
+    \phi_{d, (2)}(z) =
+    \frac{2^{d-1}(1 - 2^{(d -1) \lfloor \log_2(z) \rfloor} (2^{d} -1))}{(2^{d - 1} -1) }.
+    \f]
+    For this discrepancy, the interlaced weights are defined as:
+    \f[
+        \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} \prod_{j \in \mathfrak u} 2^{- ( (j-1) \mod d) + 1},
+    \f]
+    where \f$w\f$ denotes the weights interlacing operator.
 */
 vim: ft=doxygen spelllang=en spell

@@ -33,19 +33,23 @@ methods:
   \n Point sets are constructed component-by-component (CBC) in a greedy procedure. For each coordinate, a random sample of coordinate values
 are evaluated and the best choice in line with the previous coordinates is made.
 
-Additionally, some exploration method are only supported either by %LatBuilder (for lattices)  or %NetBuilder (for digital nets):
-- %LatBuilder:
+Additionally, some exploration method are only supported either for lattices  or for digital nets:
+- lattices:
+\anchor feats_exploration_extend
     - <b>extend</b>: 
       \n Extend the size of a rank-1 lattice up to a specific modulus.
+\anchor feats_exploration_fast-CBC
     - <b>fast-CBC</b>: 
-      \n This exploration method can be used to fasten computation for the CBC exploration method when used with coordinate-uniform figures of merit (CU:P2, CU:R1 and CU:R).
-    This method uses a FFT to compute the merit values for all the possible values of the new component of the generating vector.
+      \n This exploration method can be used to fasten computation for the CBC exploration method when used with the following coordinate-uniform figures of merit:
+      - \f$\mathcal P_{\alpha}\f$, \f$\mathcal R_\alpha\f$ and \f$\mathcal R\f$ discrepancies with an \f$\ell_2\f$ norm; and
+      - \f$B_{\alpha, d, (1)}\f$ and \f$B_{d, (2)}\f$ interlaced discrepancies with an \f$\ell_1\f$ norm.
+    \n This method \cite vLEC16a uses a FFT to compute the merit values for all the possible values of the new component of the generating vector.
     - <b>Korobov</b>: 
       \n Restrict the shape of the generating vector to \f$ (1, a, a^2, \dots, a^{s-1}) \mod N \f$ with \f$a\f$ and \f$N\f$ coprimes where \f$ s \f$ is the dimension of the lattice 
       and \f$ N \f$ its modulus.
     - <b>random Korobov</b>: 
-      \n Same as Korobov except that only a random sample of integers coprime with \f$ N \f$ is explored.
-- %NetBuilder:
+      \n Same as Korobov except that only a random sample of integers/polynomials coprime with \f$ N \f$ is explored.
+- digital nets:
     - <b>mixed-CBC</b>:
       \n This algorithm mixes the full-CBC and the random-CBC algorithms. For the first coordinates, the full-CBC exploration is used
       and then, it is replaced with the random-CBC exploration. All in all, component-by-component, all the possible coordinate values are tested for the first dimensions

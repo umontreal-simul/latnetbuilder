@@ -16,23 +16,23 @@
 
 /** \page feats_poly Detailed guidelines for polynomial lattice rules
 
-\todo build page
+The first version of LatNet Builder only handled ordinary lattice rules. The polynomial lattice rules
+were later added to the software. This extension uses the lattice point of view for polynomial lattice rules.
+However, polynomial lattice rules are also digital nets and when this type of point set was added to the software,
+a polynomial construction of digital net was implemented. 
 
-We can construct polynomial lattices by setting the argument <code>\--construction </code> to <code>polynomial</code>, 
-and by specifying a polynomial as the modulus parameter to the argument <code>\--size-parameter </code>. 
-The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ corresponds to the input \f$a_0 \dots a_n\f$.
-Optionally, we can print the generator matrices of the the retained polynomial lattice (as a digital net in base 2) in a specified file and using a specified format, by adding the argument  <code>\--output-poly </code> with the value <code>file:<var>file.txt</var>,format:<var>format</var></code>.
-For example, changing the arguments <code>\--construction </code>, <code>\--size-parameter </code> to
-\verbatim
---construction polynomial --size-parameter 1011 
-\endverbatim
-and adding
-\verbatim
---output-poly file:outFile.txt,format:ssj
-\endverbatim
-means that we seek a polynomial lattice rule with modulus \f$1+z^2+z^3\f$ 
-and we want to print its generator matrices in  <code>outFile.txt</code> in 
-the input format of digital nets in base 2 for the library SSJ.
+As a consequence, polynomial lattice rules are available on both side of the software: %LatBuilder and %NetBuilder. 
+
+Choosing which piece of software to use depends on what one wants to achieve:
+
+- Generally, the digital net implementation (%NetBuilder) is faster than the lattice implementation;
+- This implementation provides more exploration methods and more figures of merit;
+- However, the fast-CBC algorithm and the embedded polynomial lattice rules are only
+  available in the lattice implementation (%LatBuilder);
+- To wrap it up: the lattice implementation should only be used in the following cases:
+    - for the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R\f$ discrepancies and \f$\ell_2\f$
+      <b>with the fast-CBC algorithm</b>,
+    - for embedded polynomial lattice rules.
 
 */
 vim: ft=doxygen spelllang=en spell

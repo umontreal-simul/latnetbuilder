@@ -16,34 +16,17 @@
 
 /** \page feats_figures_lat Figures of merit for rank-1 lattices
 
-\section feats_figures_lat_ord Ordinary lattices
+\section feats_figures_lat_ord Ordinary lattice rules
 
 LatNet Builder supports the following figures of merit for ordinary rank-1 lattices:
 
 - The spectral figure of merit \cite vLEC00b, \cite vLEC16a using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:
-  \f[
-    D(P_n) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal D_{\mathfrak u}(P_n)
-        \right]^q\right)
-  \f] 
-  where \f$\mathcal D_{\mathfrak u}(P_n)\f$ is the normalized
+  \n \f$\mathcal D_{\mathfrak u}(P_n)\f$ is the normalized
   maximum distance between two successive parallel hyperplanes.
-
+<br><br>
 - The \f$\mathcal P_\alpha\f$ discrepancy \cite vSLO94a, \cite vHIC98a, \cite rNUY14a with \f$\alpha \in \{2, 4, 6, 8\}\f$, using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:
-    \f[
-    D(P_n) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_n)
-        \right]^q\right)
-    \f] 
-  where \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} p_{\alpha}(x_{i,j}),
@@ -56,18 +39,9 @@ LatNet Builder supports the following figures of merit for ordinary rank-1 latti
 
   If \f$ q = 2\f$, a coordinate-uniform evaluation algorithm can be used. This algorithm
   drastically reduces the computation time.
-
+<br><br>
 - The \f$\mathcal R_\alpha\f$ criterion \cite rNIE92b, \cite vHIC03b with \f$\alpha=1\f$ , using a
   term-by-term evaluation with an \f$\ell_q\f$ norm: 
-    \f[
-    D(P_n) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_n)
-        \right]^q\right)
-    \f] 
-  where \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} r_{\alpha, n}(x_{i,j}),
@@ -82,21 +56,12 @@ LatNet Builder supports the following figures of merit for ordinary rank-1 latti
 
 
 
-\section feats_figures_lat_poly Polynomial lattices
+\section feats_figures_lat_poly Polynomial lattice rules
 
 LatNet Builder supports the following figures of merit for polynomial rank-1 lattices:
 
 - The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha=2\f$ , using a
   term-by-term evaluation with an \f$\ell_q\f$ norm:
-  \f[
-    D(P_n) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_n)
-        \right]^q\right)
-    \f] 
-  where \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} \omega_{\alpha}(x_{i,j}),
@@ -109,18 +74,9 @@ LatNet Builder supports the following figures of merit for polynomial rank-1 lat
 
   If \f$ q = 2\f$, a coordinate-uniform evaluation algorithm can be used. This algorithm
   drastically reduces the computation time.
-
+<br><br>
 - The \f$\mathcal R\f$ criterion \cite rNIE03a, using
   term-by-term evaluation with an \f$\ell_q\f$ norm:
-    \f[
-    D(P_n) = 
-    \left(\sum_{\emptyset \neq \mathfrak u \subseteq \{1,\dots,s\}}
-        \left[
-            \gamma_{\mathfrak u}
-            \mathcal{D}_{\mathfrak u}(P_n)
-        \right]^q\right)
-    \f] 
-    where \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is defined by:
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n 
         \prod_{j \in \mathfrak u} \phi'_m(x_{i,j}),
@@ -136,5 +92,56 @@ LatNet Builder supports the following figures of merit for polynomial rank-1 lat
 
   If \f$ q = 2\f$, a coordinate-uniform evaluation algorithm can be used. This algorithm
   drastically reduces the computation time.
+
+\subsection feats_figures_lat_interlaced Interlaced polynomial lattice rules
+
+Figures of merit specific to interlaced polynomial lattice rules \cite rGOD13a are also supported by LatNet Builder.
+
+These figures of merit for interlaced polynomial lattice rules in dimension \f$s\f$ can be seen as figures of merit 
+for the underlying lattice rules in higher dimension \f$ds\f$, where \f$d\f$ is the interlacing factor.
+If \f$P_n\f$ is the interlaced lattice rule, let \f$\bar{P}_n = \left\{(z_{0,1}, \dots, z_{0, ds}), \dots, (z_{n-1,1}, \dots, z_{n-1, ds}) \right\}\f$ denote
+the underlying polynomial lattice rule in dimension \f$ds\f$.
+This point of view also requires to transform (or interlace) weights in dimension \f$s\f$ into weights in dimension \f$d s\f$. 
+Let \f$ \bar{\gamma} \f$ denote these interlaced weights.
+
+The figures of merit for interlaced polynomial lattice rules supported by LatNet Builder have the following form:
+\f[
+    D(P_n) = \sum_{\emptyset \neq \mathfrak u \subseteq \{1, \dots, d s\}}\left(\bar{\gamma}_{\mathfrak u} D_{\mathfrak u}(\bar{P}_n)\right),
+\f]
+
+- The \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+
+    \f[
+        D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{\alpha, d, (1)}(z_{i, j}),
+    \f]
+    where \f$ \phi_{\alpha, d, (1)}(z) \f$ is defined by:
+    \f[
+        \phi_{\alpha, d, (1)}(z) =
+        \frac{1 - 2^{(\min(\alpha, d) -1) \lfloor \log_2(z) \rfloor} (2^{\min(\alpha, d)} -1)}{2^{(\alpha+2)/2} (2^{\min(\alpha, d) - 1} -1) }.
+    \f]
+    For this discrepancy, the interlaced weights are defined as:
+    \f[
+        \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} 2^{\alpha (2d-1) |w(\mathfrak u)| / 2},
+    \f]
+    where \f$w\f$ denotes the weights interlacing operator:
+    \f[
+        w(\mathfrak u) = \left\{ \left \lceil \frac{j}{d} \right\rceil, j \in \mathfrak u \right\}.
+    \f]
+<br><br>
+- The \f$B_{d, (2)}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+
+    \f[
+        D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{d, (2)}(z_{i, j}),
+    \f]
+    where \f$ \phi_{d, (2)}(z) \f$ is defined by:
+    \f[
+    \phi_{d, (2)}(z) =
+    \frac{2^{d-1}(1 - 2^{(d -1) \lfloor \log_2(z) \rfloor} (2^{d} -1))}{(2^{d - 1} -1) }.
+    \f]
+    For this discrepancy, the interlaced weights are defined as:
+    \f[
+        \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} \prod_{j \in \mathfrak u} 2^{- ( (j-1) \mod d) + 1},
+    \f]
+    where \f$w\f$ denotes the weights interlacing operator.
 */
 vim: ft=doxygen spelllang=en spell

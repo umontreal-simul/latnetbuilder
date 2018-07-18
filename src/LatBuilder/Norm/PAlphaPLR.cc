@@ -155,7 +155,7 @@ namespace {
          if (weight)
                // weights are assumed to already be to the power normType; map
                // them to power 2
-            val += boost::math::binomial_coefficient<double>(dimension, order) * std::pow(weight, lambda * 2 / normType) * intPow(mu, order);
+            val += boost::math::binomial_coefficient<double>((unsigned int)dimension, (unsigned int)order) * std::pow(weight, lambda * 2.0 / normType) * intPow(mu, order);
       }
       return val;
    }
