@@ -14,7 +14,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_figures Specifying the figure of merit
+/** \page cmdtut_figures Figures of merit
+
+This page describes how the various
+\ref feats_figures "figures of merit" can be specified.
+
+- the \f$\mathcal P_{\alpha}\f$ discrepancy:
+    \n <code>--figure-of-merit P<var>alpha</var></code> with \f$\alpha\f$=<code><var>alpha</var></code>;
+- the \f$\mathcal R_{\alpha}\f$ critetion:
+    \n <code>--figure-of-merit R<var>alpha</var></code> with \f$\alpha\f$=<code><var>alpha</var></code>;
+- the \f$\mathcal R\f$ criterion:
+    \n <code>--figure-of-merit R</code>
+- the t-value merit:
+    \n <code>--figure-of-merit t-value</code>
+- the projection-dependent t-value merit:
+    \n <code>--figure-of-merit projdep:t-value</code>
+- the projection-dependent t-value based star discrepancy bound merit
+    \n <code>--figure-of-merit projdep:t-value:starDisc</code>
+- the projection-dependent resolution-gap merit:
+    \n <code>--figure-of-merit projdep:resolution-gap</code>
+- the \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy:
+    \n <code>--figure-of-merit IA<var>alpha</var></code> with \f$\alpha\f$=<code><var>alpha</var></code>;
+- the \f$B_{d, (2)}\f$ interlaced discrepancy:
+    <code>--figure-of-merit IB</code>.
+
+Optionnally, the <code>CU</code> prefix can be added to fasten the computations by using the coordinate-uniform evaluation
+in the following cases:
+- with \f$\mathcal P_{\alpha}\f$, \f$\mathcal R_{\alpha}\f$ and \f$\mathcal R\f$ if <code>--norm-type 2</code> is set;
+- with \f$B_{\alpha, d, (1)}\f$ and \f$B_{d, (2)}\f$ if <code>--norm-type 1</code> is set.
 
 */
 vim: ft=doxygen spelllang=en spell

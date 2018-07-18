@@ -43,7 +43,7 @@ options:
 			- <code>sobol</code>
 				to search for Sobol' nets; or
 			- <code>sobol</code>
-				to search for polynomial digital nets; or
+				to search for polynomial lattice rules; or
 			- <code>explicit</code>
 				to search for digital nets with explicit generating matrices.
 
@@ -63,8 +63,8 @@ options:
 		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>.
 	- For digital nets (<code>--set-type net</code>):
 		- <code>--size-parameter 2^<var>k</var></code>; or
-		- <code>--size-parameter <var>modulus</var></code> (only for polynomial digital nets); or
-		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code> (only for polynomial digital nets).
+		- <code>--size-parameter <var>modulus</var></code> (only for polynomial lattice rules); or
+		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code> (only for polynomial lattice rules).
 
 	See \ref cmdtut_pointsets for additional details.
 	</dd>
@@ -72,9 +72,9 @@ options:
 	<dd><em>Required.</em>
 		Specifies the exploration method.
 		Takes an argument of the form:
-		- <code>evaluate:<var><point-set-description></var></code> to just compute the
-		  merit value of the point set described by <code> <var><point-set-description></var></code>. 
-			See \ref cmdtut_pointsets for details about <code><var><point-set-description></var></code>.
+		- <code>evaluate:<var>point-set-description</var></code> to just compute the
+		  merit value of the point set described by <code> <var>point-set-description</var></code>. 
+			See \ref cmdtut_pointsets for details about <code><var>point-set-description</var></code>.
 		- <code>exhaustive</code> for exhaustive search;
 		- <code>random:<var>samples</var></code> for a random search with
 		  <code><var>samples</var></code> random samples;
@@ -248,29 +248,21 @@ options:
 	<dt><code>\--filters</code> / <code>-f</code></dt>
 	<dd><em>Optional.</em>
 		Configures filters for merit values.
+		Only supported when <code>--set-type lattice </code> is set.
 		Takes a whitespace-separated list of arguments of the form:
 		- <code>norm:<var>type</var></code> for a normalizer of type 
 			specified by <code><var>type</var></code>;
 		- <code>low-pass:<var>threshold</var></code> for a low-pass
-		  filter with thresold value <code><var>threshold</var></code> 
-			(only supported when <code>--set-type lattice </code> is set);
+		  filter with thresold value <code><var>threshold</var></code>.
 		
-		See \ref feats_filters and \ref cmdtut_filters for details.
-	</dd>
-	<dt><code>\--multilevel-filters</code> / <code>-F</code></dt>
-	<dd><em>Optional.</em>
-		Configures filters for the individual merit values of each
-		nested level.
-		Takes the same values as the <code>\--filters</code> argument,
-		except that, in the case of a normalization filter, weights can
+		If the option <code>--multilevel true</code> is set, 
+		in the case of a normalization filter, weights can
 		be optionally specified by appending
 		<code>:even:<var>minLevel</var>,<var>maxLevel</var></code> to
 		the filter specification, which sets even weights across all
 		levels ranging from <code><var>minLevel</var></code> through
 		<code><var>maxLevel</var></code>, and a zero weight for other
-		levels. This option has no effect when 
-		<code> --multilevel false </code> is not set.
-    </dd>
+		levels.
 	<dt><code>\--merit-digits-displayed</code></dt>
 	<dd><em>Optional.</em>
                 Sets the number of significant figures to use when displaying

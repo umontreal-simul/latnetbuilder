@@ -19,7 +19,7 @@
 LatNet Builder supports the following figures of merit for digital nets:
 
 
-- The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha=2, 4, 6, 8\f$, using a
+- The \f$\mathcal P_{\alpha}\f$ discrepancy \cite vLEM03a with \f$\alpha \in \{2, 4, 6, 8\}\f$, using a
   coordinate-uniform evaluation algorithm with an \f$\ell_2\f$ norm:
     \f[
         \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{{n}} \sum_{i = 0}^{n-1} 
@@ -55,11 +55,12 @@ If each rectangle contains exactly the same number of points, we say that the ne
 
 - The t-value \cite rDIC10a merit, using the fast algorithm from \cite rDIC13a, with
   weights equal to \f$\gamma_{\mathfrak u} = \mathbb{1}_{|\mathfrak u| = s} \f$ and
-  an \f$\ell_1\f$ norm:
+  an \f$\ell_{\infty}\f$ norm:
     \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the t-value of the projection of \f$P_n \f$
   on \f$\mathfrak u\f$.
   The t-value of a net with \f$n = 2^k\f$ points is the smallest \f$t\f$ such that the net is \f$(q_1,\dots,q_s)\f$-equidistributed
   whenever \f$q_1+\dots+q_s = k-t \f$.
+  This figure is not available with CBC exploration methods as it cannot be computed in a CBC-way.
 <br><br>
 - The projection-dependent t-value \cite rJOE08a using state-of-the art algorithms,
   with an \f$\ell_q\f$ norm:

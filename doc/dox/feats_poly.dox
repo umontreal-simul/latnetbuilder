@@ -30,7 +30,7 @@ Choosing which piece of software to use depends on what one wants to achieve:
 - However, the fast-CBC algorithm and the embedded polynomial lattice rules are only
   available in the lattice implementation (%LatBuilder);
 - To wrap it up: the lattice implementation should only be used in the following cases:
-    - for the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R\f$ discrepancies and \f$\ell_2\f$
+    - for the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R\f$ discrepancies and the \f$\ell_2\f$ norm
       <b>with the fast-CBC algorithm</b>,
     - for embedded polynomial lattice rules.
 

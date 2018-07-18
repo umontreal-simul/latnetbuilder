@@ -14,7 +14,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_filters Filtering merit values
+/** \page cmdtut_filters Filters and normalizations
+
+This page describes how 
+\ref feats_filters "filters and normalizations" can be specified.
+
+The option <code>--filters</code> can take a space-separated list of normalizers and filters
+which must be specified as follows.
+
+\section cmdtut_filters_normalizations Normalizations
+
+Each normalization can be specified as follows:
+
+- for \f$P_\alpha\f$-SL10:
+    \n <code>norm:P<var>alpha</var>-SL10</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
+- for \f$P_\alpha\f$-DPW08 (only with product weights):
+    \n <code>norm:P<var>alpha</var>-DPW08</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
+- for \f$P_\alpha\f$-PLR:
+    \n <code>norm:P<var>alpha</var>-PLR</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
+- for the \f$B_{\alpha, d, (1)}\f$-G15: 
+    \n <code>norm:IA<var>alpha</var>-G15</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
+- for the \f$ B_{d, (2)}\f$:
+    \n <code>norm:IB-G15</code>.
+
+Optionally, if the option <code>--multilevel true </code> is set, weights (on the embedded levels)
+can be optionally specified by appending
+<code>:even:<var>minLevel</var>,<var>maxLevel</var></code> to
+the filter specification, which sets even weights across all
+levels ranging from <code><var>minLevel</var></code> through
+<code><var>maxLevel</var></code>, and a zero weight for other
+levels.
+
+\section cmdtut_filters_filters Filters
+
+Low-pass filters can be specified with <code>low-pass:<var>threshold</var></code> for a low-pass
+filter with thresold value <code><var>threshold</var></code>.
 
 */
 vim: ft=doxygen spelllang=en spell

@@ -137,7 +137,7 @@ latbuilder \
   --dimension 5 \
   --construction fast-CBC \
   --figure-of-merit CU:P2 \
-  --multilevel-filters norm:P2-DPW08 low-pass:1.0 \
+  --filters norm:P2-DPW08 low-pass:1.0 \
   --weights product:0.1 \
   --combiner sum
 \endverbatim

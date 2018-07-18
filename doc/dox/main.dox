@@ -25,7 +25,7 @@ in base 2.
 
 Reference paper:
 <blockquote>
-<a href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf>
+<a href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf">
 P. L'Ecuyer and D. Munger.
 <b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Lattice Rules.</b>
 ACM Trans. Math. Softw. 42, 2, Article 15 (May 2016), 30 pages.

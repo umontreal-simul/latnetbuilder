@@ -14,10 +14,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_exploration Specifying the exploration method
+/** \page cmdtut_exploration Exploration methods
 
-All the details on how to specify the exploration method can be found in the description
-of <code>--exploration-method</code> in \ref cmdtut_summary.
+This page describes how the various
+\ref feats_exploration "exploration methods" can be specified:
 
+- <b>evaluation</b>:
+  \n <code>--exploration-method evaluation:<var>point-set-description</var></code>
+  where <code><var>point-set-description</var></code> corresponds
+  to a \ref cmdtut_pointsets "point set description";
+- <b>exhaustive</b>:
+  \n <code>--exploration-method exhaustive</code>
+- <b>random</b>:
+  \n <code>--exploration-method random:<var>samples</var></code>
+  where <code><var>samples</var></code> is the number of random samples;
+- <b>full-CBC</b>:
+  \n <code>--exploration-method full-CBC</code>;
+- <b>random-CBC</b>:
+  \n <code>--exploration-method random-CBC:<var>samples</var></code>
+  where <code><var>samples</var></code> is the number of random samples per coordinate.
+
+Additionally, some exploration method are only supported either for lattice rules or for digital nets:
+- lattice rules:
+    - <b>extend</b>: 
+      \n <code>--exploration-method extend:<var>modulus</var>:<var>genVec</var></code>
+      where <code><var>modulus</var></code> is the modulus of the lattice to extend
+      and <code><var>genVec</var></code> its generating vector;
+    - <b>fast-CBC</b>: 
+      \n <code>--exploration-method fast-CBC</code>
+    - <b>Korobov</b>: 
+      \n <code>--exploration-method Korobov</code>
+    - <b>random Korobov</b>: 
+      \n <code>--exploration-method random-Korobov:<var>samples</var></code>
+      where <code><var>samples</var></code> is the number of random samples;
+- digital nets:
+    - <b>mixed-CBC</b>:
+      \n <code>--exploration-method mixed-CBC:<var>samples</var>:<var>nbFull</var></code>
+      where <code><var>samples</var></code> is the number of random samples and
+      <code><var>nbFull</var></code> is the number of coordinates which are fully
+      explored. 
 */
 vim: ft=doxygen spelllang=en spell

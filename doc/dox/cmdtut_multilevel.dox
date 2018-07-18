@@ -16,127 +16,27 @@
 
 /** \page cmdtut_multilevel Multilevel point sets
 
-One can enable the search of multilevel point sets in LatNet Builder by changing the value of the <code> --multilevel </code> option with:
+One can enable the search of \ref feats_multilevel "multilevel point sets" 
+in LatNet Builder by changing the value of the <code> --multilevel </code> option with:
 \verbatim
 --multilevel true
 \endverbatim
 
 The combiner used to combine the merit value of each nested level is specified with the option <code> --combiner </code> which can take
 one of the following values:
-- <code>sum</code>
+- <code>--combiner sum</code>
     to sum the individual merit values of all nested levels;
-- <code>max</code>
+- <code>--combiner max</code>
     to select the maximum individual merit value across all nested
     levels;
-- <code>level:max</code>
+- <code>--combiner level:max</code>
     to select the individual merit value of the nested level with
     the largest number of points (the highest level); or
-- <code>level:<var>m</var></code>
+- <code>--combiner level:<var>m</var></code>
     to select the individual merit value of the \f$m\f$th nested
     level.
 
-Ideally, normalizations (\ref feats_filters) should be used with multilevel point sets so that the merit value of each nested level
+Ideally, \ref cmdtut_filters "normalizations" should be used with multilevel point sets so that the merit value of each nested level
 ranges on the same scale.
-
-\section cmdtut_multilevel_lat Constructing embedded lattices
-
-For instance to search for embedded ordinary lattices with the full-CBC exploration method in dimension 5 with
-  \f$n=2^m\f$ points with \f$m=1,\dots,16\f$ using the maximum value of the
-  spectral merit across all levels, with the same weight for all projections:
-  \verbatim
-  ./latnetbuilder \
-    --set-type lattice \
-    --construction ordinary \
-    --multilevel true \
-    --size-parameter 2^16 \
-    --dimension 5 \
-    --exploration-method full-CBC \
-    --figure-of-merit spectral \
-    --norm-type 2 \
-    --weights product:1.0 \
-    --combiner max
-  \endverbatim
-
-  The modulus of the lattice with the largest number of points can be specified
-  with the <code>\--size-parameter b^m</code>, as above with \f$b=2\f$ and \f$m=16\f$, or
-  simply with <code>\--size-parameter 65536</code>, where \f$65,536 = 2^{16}\f$.
-  The spectral merit is evaluated for each nested level, and the maximum value
-  across all level is selected as the compound merit value, as specified with the
-  argument <code>\--combiner max</code>.
-  
-To build embedded ordinary lattices with fast CBC exploration in dimension 10 with
-  \f$n=2^m\f$ points with \f$m=8,\dots,16\f$, using a weighted sum of the
-  normalized values of the \f$\mathcal P_2\f$ figure of merit with product
-  weights, and rejecting any candidate lattice that has such an individual
-  normalized merit value larger than unity, as proposed in \cite vDIC08c , with
-  even weights across levels 8 to 16:
-  \verbatim
-  ./latnetbuilder \
-    --set-type lattice \
-    --construction ordinary \
-    --multilevel true \
-    --size-parameter 2^16 \
-    --dimension 10 \
-    --exploration-method fast-CBC \
-    --figure-of-merit CU:P2 \
-    --norm-type 2 \
-    --multilevel-filters norm:P2-DPW08:even:8,16 low-pass:1.0 \
-    --weights product:0.1 \
-    --combiner sum
-  \endverbatim
-  The <code>\--multilevel-filters</code> argument specifies filters that must be
-  applied individually to each embedded level.
-  The first filter is a normalization using the weighted bound on the
-  \f$\mathcal P_2\f$ figure of merit as derived in \cite vDIC08c , with even
-  weights across all levels from \f$m=8,\dots,16\f$, and no weight for other
-  levels.
-  If regular filters were also specified with the <code>\--filters</code>
-  argument, they would apply to the combined merit value.
-  Here the argument <code>\--combiner sum</code> indicates that the normalized
-  merit values should be added to produce the combined merit value.
-
-To build embedded polynomial lattices with CBC exploration in dimension 5 with
-  \f$P(z)=z^m\f$ with \f$m=1,\dots,8\f$ using the maximum value of the
-  \f$\mathcal P_{2,PLR}\f$ merit across all levels, with the same weight for all projections:
-  \verbatim
-  ./latnetbuilder \
-    --set-type lattice \
-    --construction polynomial \
-    --multilevel true \
-    --size-parameter 01^8 \
-    --dimension 5 \
-    --exploration-method full-CBC \
-    --figure-of-merit CU:P2 \
-    --norm-type 2 \
-    --weights product:1.0 \
-    --combiner max
-  \endverbatim
-  The modulus of the lattice with the largest number of points can be specified
-  with the <code>\--size-parameter b^m</code>, as above with \f$b=z\f$ and \f$m=8\f$, or
-  simply with <code>\--size-parameter 000000001</code>, where 00000001 represents \f$z^{8}\f$.
-  The \f$\mathcal P_{2,PLR}\f$ merit is evaluated for each nested level, and the maximum value
-  across all level is selected as the compound merit value, as specified with the
-  argument <code>\--combiner max</code>.
-
-\section cmdtut_multilevel_net Constructing multilevel digital nets
-
-<b>Recall that multilevel digital nets are only available with the Sobol' and the explicit constructions (<code> --construction sobol</code> or <code> --construction explicit</code>)</b>.
-
-To build Sobol' digital nets with the random CBC method with 100 random samples for each coordinates with
-\f$2^1\f$ to \f$2^{20}\f$ points using the maximum value fo the projection-dependent t-value merit 
-across all levels, with a decreasing weights on the 2-dimensional projections:
-\verbatim
-  ./latnetbuilder \
-    --set-type net \
-    --construction sobol \
-    --multilevel true \
-    --size-parameter 2^20 \
-    --dimension 10 \
-    --exploration-method random-CBC:100 \
-    --figure-of-merit t-value
-    --norm-type inf
-    --weights POD:0:0,1:0.8 \
-    --combiner max
-\endverbatim
 */
 vim: ft=doxygen spelllang=en spell
