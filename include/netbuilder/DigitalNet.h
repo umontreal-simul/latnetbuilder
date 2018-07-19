@@ -254,7 +254,6 @@ class DigitalNetConstruction : public DigitalNet
 
             if (outputFormat == OutputFormat::MACHINE){
                 std::ostringstream stream;
-                stream << "2  //Base" << std::endl;
                 stream << numColumns() << "  // Number of columns" << std::endl;
                 stream << numRows() << "  // Number of rows" << std::endl;
                 stream << numPoints() << "  // Number of points" << std::endl;

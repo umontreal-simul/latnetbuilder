@@ -83,22 +83,22 @@ def automatic_generating_numbers_sobol(change, gui):
     gui.exploration_method.generating_numbers_sobol.value = '\n'.join(JoeKuoSobolNets[:gui.properties.dimension.value])
 
 def fill_from_previous_search(change, gui):
-    if gui.output.result_obj.latnetbuilder is None:
+    if gui.output.result_obj is None:
         return
     else:
-        latnetbuilder = gui.output.result_obj.latnetbuilder
+        result = gui.output.result_obj
         if 'digital' in gui.search.search_type():
             if gui.main_tab.selected_index == 1:
                 if gui.search.search_type() == 'digital-polynomial' and gui.construction_method.construction_choice.value == 'polynomial':
                     for k in range(1, int(gui.search.dimension)+1):
-                        gui.exploration_method.generating_vector_simple.children[0].children[k].value = str(latnetbuilder.gen.gen_vector[k-1])
+                        gui.exploration_method.generating_vector_simple.children[0].children[k].value = str(result.gen_vector[k-1])
                 elif gui.search.search_type() == 'digital-sobol' and gui.construction_method.construction_choice.value == 'sobol':
-                    gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, latnetbuilder.gen.gen_vector[k]))) for k in range(len(latnetbuilder.gen.gen_vector))])
+                    gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, result.gen_vector[k]))) for k in range(result.dim)])
 
         else:
             if gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value==gui.search.search_type():
                 for k in range(1, int(gui.search.dimension)+1):
-                    gui.exploration_method.generating_vector.children[0].children[k].value = str(latnetbuilder.gen.gen_vector[k-1])
+                    gui.exploration_method.generating_vector.children[0].children[k].value = str(result.gen_vector[k-1])
 
 def exploration_method():
     exploration_choice = widgets.ToggleButtons(

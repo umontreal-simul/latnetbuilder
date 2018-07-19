@@ -191,6 +191,20 @@ parse(int argc, const char* argv[])
    return opt;
 }
 
+template <EmbeddingType ET>
+std::string helper(const SizeParam<LatticeType::ORDINARY, ET>& param);
+
+template<>
+std::string helper(const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& param)
+{
+  return std::to_string(param.base()) + "  // Base\n" + std::to_string(param.maxLevel()) + "  // Maximum level\n";
+}
+
+template<>
+std::string helper(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& param)
+{
+  return "0  // Base\n0  // Maximum level\n";
+}
 
 template <EmbeddingType ET>
 void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
@@ -253,7 +267,8 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
           fileName = outputFolder + "/outputMachine.txt";
           outFile.open(fileName);
-          outFile << "Ordinary  // Construction method\n" << lat.sizeParam() << "  // modulus\n";
+          outFile << "Ordinary  // Construction method\n" << lat.sizeParam().numPoints() << "  // Number of points\n" << lat.dimension() << "  // Dimension of points\n";
+          outFile << helper<ET>(lat.sizeParam());
           auto vec = lat.gen();
           for (unsigned int coord = 0; coord < vec.size(); coord++){
               outFile << vec[coord] << std::endl;
@@ -376,8 +391,7 @@ int main(int argc, const char *argv[])
         if (opt.count("output-folder") >= 1){
           outputFolder = opt["output-folder"].as<std::string>();
           std::cout << "Writing in output folder: " << outputFolder << std::endl;
-          boost::filesystem::remove_all(outputFolder);
-          boost::filesystem::create_directory(outputFolder);
+          boost::filesystem::create_directories(outputFolder);
         }        
 
         // global variable

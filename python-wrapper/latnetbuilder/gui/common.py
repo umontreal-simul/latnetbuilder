@@ -31,13 +31,8 @@ style_default = {'description_width': 'initial'}
 # corresponds to the widget whose display status will changed in the callback launched by the key widget.
 # For instance, it means that if the user checks the `is_multilevel` Checkbox, it will trigger
 # the display of the main widget of the multi_level GUI element.
-trigger_display_dic = {'is_multilevel': ['multi_level', 'main'], 
-                    'is_normalization': ['filters', 'normalization_box'],
-                    'low_pass_filter': ['filters', 'low_pass_filter_options'],
-                    'mult_normalization': ['multi_level', 'mult_normalization_options'],
-                    'mult_low_pass_filter': ['multi_level', 'mult_low_pass_filter_options'],
-                    'mult_combiner': ['multi_level', 'combiner_options'],
-                    'equidistribution_filter': ['filters', 'equidistribution_box']}
+trigger_display_dic = {'is_multilevel': ['filters', 'combiner_options'], 
+                    'low_pass_filter': ['filters', 'low_pass_filter_options']}
 
 def trigger_display(change, gui, owner):
     '''Change the display status of a widget.
