@@ -34,7 +34,7 @@ def parse_input_common(s, gui):
             norm = "norm:P" + gui.figure_of_merit.figure_alpha.value + '-' + \
                 gui.multi_level.mult_normalization_options.children[0].children[0].value.split(' ')[0]
             if gui.multi_level.minimum_level.value != '' and gui.multi_level.maximum_level.value != '':
-                norm += ':even:' + gui.multi_level.minimum_level.value + ',' + gui.multi_level.maximum_level.value
+                norm += ':select:' + gui.multi_level.minimum_level.value + ',' + gui.multi_level.maximum_level.value
             s.multilevel_filters.append(norm)
         if gui.multi_level.mult_low_pass_filter.value:
             s.multilevel_filters.append(
