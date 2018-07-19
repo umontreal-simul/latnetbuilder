@@ -1,0 +1,69 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_advanced_filters Filters and normalizations
+
+This page describes how 
+\ref feats_filters "filters and normalizations" can be specified.
+
+The option <code>--filters</code> can take a space-separated list of normalizers and filters
+which must be specified as follows.
+
+\section cmdtut_advanced_filters_normalizations Normalizations
+
+When a normalization is available with the selected figure of merit, one can simply use
+<code>norm</code> to tell LatNet Builder to use the default normalization.
+
+- Normalizations for the \f$P_\alpha\f$ discrepancy (ordinary lattice rules):
+    - <code>norm:P<var>alpha</var>-SL10</code> with \f$\alpha=\f$<code><var>alpha</var></code> (default),
+    - <code>norm:P<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code> (alias for SL10),
+    - <code>norm:P<var>alpha</var>-DPW08</code> with \f$\alpha=\f$<code><var>alpha</var></code> (only for product weights);
+
+- Normalizations for the \f$P_\alpha\f$ discrepancy (polynomial lattice rules):
+    - <code>norm:P<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code> (default);
+
+- Normalizations for the \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy: 
+    - <code>norm:IA<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code> (default);
+
+- Normalizations for the \f$B_{d, (2)}\f$ interlaced discrepancy: 
+    - <code>norm:IB</code> (default).
+
+\section cmdtut_advanced_filters_filters Filters
+
+Low-pass filters can be specified with <code>low-pass:<var>threshold</var></code> for a low-pass
+filter with threshold value <code><var>threshold</var></code>.
+
+\section cmdtut_advanced_filters_multilevel Using multilevel filters and normalizations
+
+\ref feats_filters_multilevel "Multilevel filters and normalizations" are specified the same way as unilevel filters and normalizations.
+Note however that their behavior is different as they apply to the individual merit value of 
+each embedding level and not to the combined merit value.
+
+As explained \ref feats_filters_multilevel "here", when one uses a normalization, some per-level weights are computed. 
+It is possible to select only a range of levels instead of all the levels. 
+This is done by appending <code>:select:<var>minLevel</var>,<var>maxLevel</var></code> to
+the filter specification, which sets positive weights across all levels ranging from 
+<code><var>minLevel</var></code> to <code><var>maxLevel</var></code>, and a zero weight for other
+levels.
+
+Note that when a level selector combiner (<code>--combiner level:<var>m</var></code> 
+or <code>--combiner level:max</code>) is used with a normalization,
+the software will automatically select the same level as the level selector combiner, overriding 
+any <code>select</code> token you may have appended to your normalization. This is required
+to have exactly the same behavior when one constructs a unilevel point set or a multilevel point set
+with a level selector combiner.
+*/
+vim: ft=doxygen spelllang=en spell

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_multilevel Multilevel point sets
+/** \page cmdtut_advanced_multilevel Multilevel point sets
 
 One can enable the search of \ref feats_multilevel "multilevel point sets" 
 in LatNet Builder by changing the value of the <code> --multilevel </code> option with:
@@ -36,7 +36,7 @@ one of the following values:
     to select the individual merit value of the \f$m\f$th nested
     level.
 
-Ideally, \ref cmdtut_filters "normalizations" should be used with multilevel point sets so that the merit value of each nested level
-ranges on the same scale.
+Ideally, \ref feats_filters_multilevel "multilevel normalizations" should be used with multilevel point sets so that the merit value of each nested level
+ranges on the same scale. You can look at this \ref cmdtut_advanced_filters_multilevel "page" to learn how to tell LatNet Builder to use such normalizations.
 */
 vim: ft=doxygen spelllang=en spell

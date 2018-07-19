@@ -19,7 +19,7 @@
 Figures of merit are the quality measures used to evaluate point sets. Figures of merit are most often derived
 from Kolsma-Hlawka inequalities: the merit value somehow bounds the integration error.
 
-LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them can be parametrized by a norm-type and weights.
+LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them can be parameterized by a norm-type and weights.
 
 Let \f$P_n = \left\{(x_{0,1}, \dots, x_{0, s}), \dots, (x_{n-1,1}, \dots, x_{n-1, s}) \right\}\f$ denote a point set in dimension \f$s\f$ with \f$n\f$ points, 
 \f$ q \leq +\infty \f$ and \f$\gamma_{\mathfrak u}\f$ some general weights.

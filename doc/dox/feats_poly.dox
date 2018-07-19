@@ -18,7 +18,7 @@
 
 The first version of LatNet Builder only handled ordinary lattice rules. The polynomial lattice rules
 were later added to the software. This extension uses the lattice point of view for polynomial lattice rules.
-However, polynomial lattice rules are also digital nets and when this type of point set was added to the software,
+However, polynomial lattice rules are also digital nets and when this point set type was added to the software,
 a polynomial construction of digital net was implemented. 
 
 As a consequence, polynomial lattice rules are available on both side of the software: %LatBuilder and %NetBuilder. 

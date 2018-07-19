@@ -71,7 +71,7 @@ outputs:
     This example shows how to use TextStream output stream operators.
 */
 
-/** \page libtut_lat_polynomial Implementaion of Polynomials
+/** \page libtut_lat_polynomial Implementation of Polynomials
 
 %LatBuilder uses the implementation of % NTL library to represents polynomials over \f$\mathbb{Z}_2\f$
 The Input/Output format used is the same as in NTL: The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ is represented by [\f$a_0\f$...\f$a_n\f$].
@@ -285,8 +285,8 @@ stopping condition in loops that iterate over the elements of the sequence.
 
 
 \section libtut_lat_genseq_cyclicgroup Cylic Groups
-For an integer \f$n\f$ power of prime base, the multiplicatif group of integers coprime with \f$n\f$ is a cyclic group (or a product of two cyclic groups if \f$8|n\f$).
-For an irreductile polynomial \f$P\f$, the multiplicatif group of polynomials coprime with \f$P\f$ is a cyclic group.
+For an integer \f$n\f$ power of prime base, the multiplicative group of integers coprime with \f$n\f$ is a cyclic group (or a product of two cyclic groups if \f$8|n\f$).
+For an irreducible polynomial \f$P\f$, the multiplicative group of polynomials coprime with \f$P\f$ is a cyclic group.
 
 In these cases, the class template GenSeq::CyclicGroup can be used to enumerate the elements of
 the cyclic group of integers modulo \f$n\f$ (respectively polynomials modulo \f$P\f$) in the natural

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_exploration Exploration methods
+/** \page cmdtut_advanced_exploration Exploration methods
 
 This page describes how the various
 \ref feats_exploration "exploration methods" can be specified:
@@ -22,7 +22,7 @@ This page describes how the various
 - <b>evaluation</b>:
   \n <code>--exploration-method evaluation:<var>point-set-description</var></code>
   where <code><var>point-set-description</var></code> corresponds
-  to a \ref cmdtut_pointsets "point set description";
+  to a \ref cmdtut_advanced_pointsets "point set description";
 - <b>exhaustive</b>:
   \n <code>--exploration-method exhaustive</code>
 - <b>random</b>:

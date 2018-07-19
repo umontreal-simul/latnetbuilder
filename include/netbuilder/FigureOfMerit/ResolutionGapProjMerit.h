@@ -28,7 +28,7 @@ namespace NetBuilder { namespace FigureOfMerit {
  * The resolution gap is defined as follows. Let \f$ l \f$ be the maximal integer such that the net is \f$ (l, \dots, l) \f$ equidistributed.
  * We have a natural upper-bound on \f$ l \f$ given by \f$ \frac{m}{s} \f$ where \f$ m \f$ is the number of columns of the generating matrices and
  * \f$ s \f$ is the order of the projection. \f$ l \f$ is called the resolution of the net and the resolution-gap is defined by the difference \f$ \frac{m}{s} - l \f$.
- * @tparam ET Type of point set : UNILEVEL or MULTILEVEL.
+ * @tparam ET Embedding type : UNILEVEL or MULTILEVEL.
  */ 
 template <EmbeddingType ET>
 class ResolutionGapProjMerit

@@ -85,7 +85,7 @@ If each rectangle contains exactly the same number of points, we say that the ne
 \section feats_figures_net_interlaced Figures of merit for interlaced digital nets
 
 
-Figures of merit specific to interlaced digital nets \cite rGOD13a are also supported by LatNet Builder.
+Figures of merit specific to \ref feats_interlaced "interlaced digital nets" \cite rGOD13a are also supported by LatNet Builder.
 
 These figures of merit for interlaced digital nets in dimension \f$s\f$ can be seen as figures of merit 
 for the underlying lattice rules in higher dimension \f$ds\f$, where \f$d\f$ is the interlacing factor.
