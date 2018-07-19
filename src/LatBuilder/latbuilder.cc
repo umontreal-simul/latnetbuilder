@@ -253,7 +253,13 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
           fileName = outputFolder + "/outputMachine.txt";
           outFile.open(fileName);
-          outFile << "Ordinary  // Construction method\n" << lat.sizeParam() << "  // modulus\n";
+          outFile << "Ordinary  // Construction method\n" << lat.sizeParam().numPoints() << "  // Number of points\n" << lat.dimension() << "  // Dimension of points\n";
+          try{
+            outFile << lat.sizeParam().base() << "  // Base\n" << lat.sizeParam().maxLevel() << "  // Maximum level\n";
+          }
+          catch (std::exception& e){
+            outFile << "0  // Base\n0  // Maximum level\n";
+          }
           auto vec = lat.gen();
           for (unsigned int coord = 0; coord < vec.size(); coord++){
               outFile << vec[coord] << std::endl;

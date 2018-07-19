@@ -15,6 +15,7 @@ class Search():
     def __init__(self):
         self.modulus = ''
         self.dimension = 0
+        self.multilevel = False
         self.multilevel_filters = []
         self.combiner = ''
         self.exploration_method = ''
@@ -86,7 +87,7 @@ class Search():
                 abort = gui.button_box.abort
                 my_progress_bars = gui.progress_bars
                 display_progress_bar = True
-                my_result_obj = gui.output.result_obj
+                output = gui.output
             else:
                 if display_progress_bar:
                     # create and display the progress bars
@@ -96,7 +97,7 @@ class Search():
                     display(my_progress_bars.progress_bar_nets)
                     display(my_progress_bars.progress_bar_dim)
                 self.output = output()
-                my_result_obj = self.output.result_obj
+                output = self.output
             
             while process.poll() is None:   # while the process is not finished
                 time.sleep(1)
@@ -119,24 +120,23 @@ class Search():
                 abort.disabled = True
 
             if process.poll() == 0:     # the C++ process has finished normally
-                with open(stdout_filename) as f:
-                    console_output = f.read()
                 try:
                     with open('output_latnet.txt') as f:
                         file_output = f.read()
                 except:
                     file_output = None
-                parse_output(console_output, file_output, my_result_obj, search_type)
+                parse_output(file_output, output, search_type)
+                result_obj = output.result_obj
 
                 if gui is not None:
-                    gui.output.result_html.value = "<span> <b> Lattice Size </b>: %s </span> \
+                    gui.output.result_html.value = "<span> <b> Number of points </b>: %s </span> \
                     <p> <b> Generating Vector </b>: %s </p>\
                     <p> <b> Merit value </b>: %s </p>\
-                    <p> <b> CPU Time </b>: %s s </p>" % (str(my_result_obj.latnetbuilder.size), str(my_result_obj.latnetbuilder.gen), str(my_result_obj.merit), str(my_result_obj.seconds))
-                    create_output(gui.output, in_thread=in_thread)
+                    <p> <b> CPU Time </b>: %s s </p>" % (str(result_obj.nb_points), str(result_obj.gen_vector), str(result_obj.merit), str(result_obj.time))
+                    create_output(gui.output)
                 else:
                     print("Result:\nLattice Size: %s \nGenerating Vector: %s \nMerit value: %s \nCPU Time: %s s" 
-                    % (str(my_result_obj.latnetbuilder.size), str(my_result_obj.latnetbuilder.gen), str(my_result_obj.merit), str(my_result_obj.seconds)))
+                    % (str(result_obj.nb_points), str(result_obj.gen_vector), str(result_obj.merit), str(result_obj.time)))
 
             else:   # an error occured in the C++ process
                 with open(stderr_filename) as f:
@@ -170,8 +170,9 @@ class Search():
         if self.output is None:
             print("Run self.execute() before outputing")
         else:
-            display(self.output.output)
+            display(self.output.result_obj)
             create_output(self.output)
+
 
     def points(self, verbose=0):
         '''Compute and return the QMC points of the Search result.
@@ -203,7 +204,6 @@ class SearchLattice(Search):
 
     def __init__(self):
         self.lattice_type = ''
-        self.embedded_lattice = False
         super(SearchLattice, self).__init__()   # calls the constructor of the parent class Search
 
     def __repr__(self):
@@ -217,7 +217,7 @@ class SearchLattice(Search):
         command = [LATBUILDER,
                    '--set-type', 'lattice',
                    '--construction', self.lattice_type,
-                   '--multilevel', str(self.embedded_lattice).lower(),
+                   '--multilevel', str(self.multilevel).lower(),
                    '--modulus', self.modulus,
                    '--figure-of-merit', self.figure_of_merit,
                    '--norm-type', self.figure_power,
@@ -249,7 +249,6 @@ class SearchNet(Search):
     '''Specialization of the Search class to search for nets'''
 
     def __init__(self):
-        self.set_type = 'net'
         self.construction = ''
         super(SearchNet, self).__init__()       # calls the constructor of the parent class Search
     
@@ -260,7 +259,7 @@ class SearchNet(Search):
         command = [LATBUILDER,
                    '--set-type', 'net',
                    '--construction', self.construction,
-                   '--set-type', self.set_type,
+                   '--multilevel', str(self.multilevel).lower(),
                    '--size', self.modulus,
                    '--exploration-method', self.exploration_method,
                    '--dimension', str(self.dimension),

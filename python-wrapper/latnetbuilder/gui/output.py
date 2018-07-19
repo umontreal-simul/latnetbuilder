@@ -16,23 +16,29 @@ env = Environment(
 def transform_to_c(List):
     return str(List).replace('[', ' { ').replace(']', ' } ')
 
-def create_output(output, create_graph=True, in_thread=False):
+def create_output(output, create_graph=True):
     output.output.layout.display = 'flex'
     result_obj = output.result_obj
-    if create_graph and not ('polynomial' in result_obj.search_type and result_obj.getMaxLevel() > 15):
+    if create_graph and not (result_obj.nb_points > 2**15):
 
-        b1 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=1, layout=widgets.Layout(width='180px'), description='Coordinate on x-axis', style=style_default)
-        b2 = widgets.BoundedIntText(max=result_obj.getDim(), min=1, value=2, layout=widgets.Layout(width='180px'), description='Coordinate on y-axis', style=style_default)
-        b3 = widgets.BoundedIntText(max=min(result_obj.getMaxLevel(), 15), min=1, value=min(result_obj.getMaxLevel(), 15), layout=widgets.Layout(width='150px'), description='Level')
+        b1 = widgets.BoundedIntText(max=result_obj.dim, min=1, value=1, layout=widgets.Layout(width='180px'), description='Coordinate on x-axis', style=style_default)
+        b2 = widgets.BoundedIntText(max=result_obj.dim, min=1, value=2, layout=widgets.Layout(width='180px'), description='Coordinate on y-axis', style=style_default)
         
+        if result_obj.max_level > 0:
+            b3 = widgets.BoundedIntText(max=result_obj.max_level, min=1, value=result_obj.max_level, layout=widgets.Layout(width='150px'), description='Level')
+        else:
+            class detail:
+                value = None
+            b3 = detail()
+            
+
         if 'polynomial' in result_obj.search_type:
             b3.disabled = True
 
         pt_x = result_obj.getNet(0, b3.value)
         pt_y = result_obj.getNet(1, b3.value)
         fig = widgets.Output(layout=widgets.Layout(width='600px', height='500px'))
-        # if in_thread:
-        time.sleep(1)
+
         with fig:
             plt.figure(figsize=(8,8))
             plt.xlim(0, 1)
@@ -40,7 +46,7 @@ def create_output(output, create_graph=True, in_thread=False):
             plt.scatter(pt_x, pt_y, s=0.8)
             plt.show()
 
-        plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3, widgets.HTML('<p>Warning: the plot lags for 2^15 points and more. </p> <p>Level restricted to be less than 15.</p>')])], 
+        plot = widgets.HBox([fig, widgets.VBox([b1, b2, b3])], 
                 layout=widgets.Layout(align_items='center'))
 
         def change_graph(change):
@@ -64,26 +70,26 @@ def create_output(output, create_graph=True, in_thread=False):
         b1.observe(change_graph)
         b2.observe(change_graph)
         b3.observe(change_graph)
-        # 
+        
     else:
-        plot = widgets.HTML('No plot to show.')
+        plot = widgets.HTML('Too many points to display graph.')
 
 
 
     if result_obj.search_type == 'ordinary':
         template = env.get_template('ordinary_C.txt')
         code_C = widgets.Textarea(value= 
-            template.render(n=result_obj.latnetbuilder.size.nb_points, s=result_obj.getDim(), a=transform_to_c(result_obj.latnetbuilder.gen)),
+            template.render(n=result_obj.nb_points, s=result_obj.dim, a=transform_to_c(result_obj.gen_vector)),
             layout=widgets.Layout(width='600px', height='200px'))
 
         template = env.get_template('ordinary_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(n=result_obj.latnetbuilder.size.nb_points, a=result_obj.latnetbuilder.gen),
+            template.render(n=result_obj.nb_points, a=result_obj.gen_vector),
             layout=widgets.Layout(width='600px', height='100px'))
 
         template = env.get_template('ordinary_matlab.txt')
         code_matlab = widgets.Textarea(value= 
-            template.render(n=result_obj.latnetbuilder.size.nb_points, a=result_obj.latnetbuilder.gen),
+            template.render(n=result_obj.nb_points, a=result_obj.gen_vector),
             layout=widgets.Layout(width='600px', height='130px'))
 
     
@@ -117,15 +123,15 @@ def create_output(output, create_graph=True, in_thread=False):
 
     elif result_obj.search_type == 'digital-sobol':
         
-        prim_polys = np.zeros((result_obj.getDim(),2),dtype=np.int)
+        prim_polys = np.zeros((result_obj.dim,2),dtype=np.int)
         polys_list = _primPolyRaw.split('\r\n')
-        for i in range(result_obj.getDim()):
+        for i in range(result_obj.dim):
             prim_polys[i,0] = int(polys_list[i].split(',')[0])
             prim_polys[i,1] = int(polys_list[i].split(',')[1])
 
         template = env.get_template('sobol_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(s=result_obj.getDim(), 
+            template.render(s=result_obj.dim, 
                             m=len(result_obj.matrix(0)), 
                             init_numbers=result_obj.latnetbuilder.gen.gen_vector,
                             prim_polys=prim_polys.tolist()),   
@@ -133,7 +139,7 @@ def create_output(output, create_graph=True, in_thread=False):
 
         template = env.get_template('sobol_Cpp.txt')
         code_cpp = widgets.Textarea(value= 
-            template.render(s=result_obj.getDim(), 
+            template.render(s=result_obj.dim, 
                             m=len(result_obj.matrix(0)),
                             genvec=transform_to_c(result_obj.latnetbuilder.gen.gen_vector),
                             degrees=str(prim_polys[:, 0].tolist()).strip('[]'),
@@ -166,13 +172,10 @@ def create_output(output, create_graph=True, in_thread=False):
 
 def output():
     result_html = widgets.HTML(description='<b> Result: </b>', value='', layout=widgets.Layout(width='900px'), disabled=False)
-    # result2 = widgets.Textarea(description='Result2', value='', layout=widgets.Layout(width='900px'), disabled=False)
-
     command_line_out = widgets.HTML(description='<b> Command line: </b>', layout=widgets.Layout(width='900px'), disabled=False, style=style_default)
-    result_obj = Result()
+    result_obj = None
     output = widgets.Tab(layout=widgets.Layout(display='none'))
     return BaseGUIElement(result_html=result_html,
-                          # result2=result2,
                           result_obj=result_obj,
                           output=output,
                           command_line_out=command_line_out)

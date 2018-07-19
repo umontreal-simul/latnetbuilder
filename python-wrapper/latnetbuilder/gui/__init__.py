@@ -5,7 +5,6 @@ from IPython.display import display
 from .properties import properties
 from .filters import filters
 from .figure_of_merit import figure_of_merit
-from .multilevel import multilevel
 from .exploration_method import exploration_method
 from .construction_method import construction_method
 from .weights import weights, func_add_weights
@@ -33,7 +32,6 @@ class GUI():
                  weights,
                  construction_method,
                  exploration_method,
-                 multi_level,
                  button_box,
                  output,
                  progress_bars):
@@ -44,7 +42,6 @@ class GUI():
         self.weights = weights
         self.construction_method = construction_method
         self.exploration_method = exploration_method
-        self.multi_level = multi_level
         self.button_box = button_box
         self.output = output
         self.progress_bars = progress_bars
@@ -62,7 +59,6 @@ class GUI():
         self.construction_method.link_callbacks(self)
         self.exploration_method.link_callbacks(self)
         self.exploration_method.link_on_click_callbacks(self)
-        self.multi_level.link_callbacks(self)
         self.button_box.link_callbacks(self)
         self.button_box.link_on_click_callbacks(self)
 
@@ -73,7 +69,7 @@ class GUI():
         display(self.main_tab)
 
 gui = GUI(lattice_type(), properties(), filters(), figure_of_merit(), weights(),
-          construction_method(), exploration_method(), multilevel(), button_box(), output(), progress_bars())
+          construction_method(), exploration_method(), button_box(), output(), progress_bars())
 
 # add default order-dependent weights in the interface at start up.
 func_add_weights({'name':'label', 'new':'Order-Dependent'}, gui)
@@ -82,7 +78,6 @@ func_add_weights({'name':'label', 'new':'Order-Dependent'}, gui)
 inside_tab = widgets.VBox([gui.lattice_type.main,
                 gui.construction_method.main,
                 gui.properties.main, 
-                gui.multi_level.main,
                 gui.exploration_method.main,
                 gui.figure_of_merit.main, 
                 gui.weights.main,  

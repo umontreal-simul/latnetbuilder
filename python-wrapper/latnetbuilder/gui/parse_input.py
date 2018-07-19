@@ -29,6 +29,8 @@ def parse_input_common(s, gui):
 
     s.dimension = gui.properties.dimension.value
 
+    s.multilevel = gui.properties.is_multilevel.value
+
     if gui.properties.is_multilevel.value:
         if gui.multi_level.mult_normalization.value:
             norm = "norm:P" + gui.figure_of_merit.figure_alpha.value + '-' + \
@@ -106,6 +108,12 @@ def parse_input_common(s, gui):
     else:
         s.weights_power = 1
 
+    if gui.filters.is_normalization.value:
+        s.filters.append("norm:P" + gui.figure_of_merit.figure_alpha.value + '-' +
+                         gui.filters.normalization_options.value.split(' ')[0])
+    if gui.filters.low_pass_filter.value:
+        s.filters.append("low-pass:" + gui.filters.low_pass_filter_options.value)
+
 def parse_input_net(gui):
     s = SearchNet()
     parse_input_common(s, gui)
@@ -120,11 +128,6 @@ def parse_input_net(gui):
         if gui.construction_method.construction_modulus.value == '' :
             raise ParsingException('Modulus must be specified')
         s.construction += ':' + gui.construction_method.construction_modulus.value
-
-    if gui.filters.equidistribution_filter.value:
-        equi_value = 'equidistribution:' + str(gui.filters.equidistribution_weight.value) + '/'
-        equi_value += str(gui.filters.equidistribution_options.value)
-        s.filters.append(equi_value)
 
     if s.exploration_method == 'net-explicit:':
         s.exploration_method = 'evaluation:'
@@ -152,8 +155,6 @@ def parse_input_lattice(gui):
 
     s.lattice_type = gui.lattice_type.type_choice.value
 
-    s.embedded_lattice = gui.properties.is_multilevel.value
-
     if s.exploration_method == 'explicit:':
         modulus = gui.exploration_method.generating_vector.children[1].value
         if modulus != '':
@@ -162,11 +163,5 @@ def parse_input_lattice(gui):
             s.exploration_method += gui.exploration_method.generating_vector.children[0].children[k].value
             if k != int(s.dimension):
                 s.exploration_method += ','
-
-    if gui.filters.is_normalization.value:
-        s.filters.append("norm:P" + gui.figure_of_merit.figure_alpha.value + '-' +
-                         gui.filters.normalization_options.value.split(' ')[0])
-    if gui.filters.low_pass_filter.value:
-        s.filters.append("low-pass:" + gui.filters.low_pass_filter_options.value)
 
     return s
