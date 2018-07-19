@@ -38,7 +38,7 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int interlacingFactor)
+void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int interlacingFactor, Real time)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
@@ -52,12 +52,14 @@ void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int i
     std::string fileName = outputFolder + "/output.txt";
     outFile.open(fileName);
     outFile << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile << "ELAPSED CPU TIME: " << time << " seconds" << std::endl;
     outFile.close();
 
 
     fileName = outputFolder + "/outputMachine.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::MACHINE, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(OutputFormat::MACHINE, interlacingFactor) << task.outputMeritValue() << "  // Merit" << std::endl;
+    outFile << time << "  // Time" << std::endl;
     outFile.close();
   }
   
@@ -294,13 +296,13 @@ int main(int argc, const char *argv[])
             std::cout << "====================\nRunning the task... \n====================" << std::endl;
           }
 
-          t0 = high_resolution_clock::now();\
-          task->execute();\
-          t1 = high_resolution_clock::now();\
+          t0 = high_resolution_clock::now();
+          task->execute();
+          t1 = high_resolution_clock::now();
+          auto dt = duration_cast<duration<double>>(t1 - t0);
 
           std::cout << std::endl;
-          TaskOutput(*task, outputFolder, interlacingFactor);
-          auto dt = duration_cast<duration<double>>(t1 - t0);
+          TaskOutput(*task, outputFolder, interlacingFactor, dt.count());
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
           task->reset();

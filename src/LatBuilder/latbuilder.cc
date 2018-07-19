@@ -253,8 +253,13 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
           fileName = outputFolder + "/outputMachine.txt";
           outFile.open(fileName);
-          outFile << lat << "Merit: " << search->bestMeritValue() << std::endl;
-          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
+          outFile << "Ordinary  // Construction method\n" << lat.sizeParam() << "  // modulus\n";
+          auto vec = lat.gen();
+          for (unsigned int coord = 0; coord < vec.size(); coord++){
+              outFile << vec[coord] << std::endl;
+          }          
+          outFile << search->bestMeritValue() << "  // Merit" << std::endl;
+          outFile << dt.count() << "  // Time" << std::endl;
           outFile.close();
       }
       
@@ -335,8 +340,8 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
 
           fileName = outputFolder + "/outputMachine.txt";
           outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::MACHINE, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
-          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
+          outFile << net.format(NetBuilder::OutputFormat::MACHINE, interlacingFactor) << search->bestMeritValue() << "  // Merit" << std::endl;
+          outFile << dt.count() << "  // Time" << std::endl;
           outFile.close();
 
       }

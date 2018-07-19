@@ -58,19 +58,26 @@ namespace NetBuilder {
     std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
     {
         std::ostringstream stream;
-        stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
-        for (unsigned int coord = 0; coord < genVals.size(); coord++){
-            if (interlacingFactor == 1){
-                stream << "Coordinate " << coord+1 << ":" << std::endl;
-            }
-            else{
-                if (coord % interlacingFactor == 0){
-                    stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;
+        
+        if (outputFormat == OutputFormat::HUMAN){
+            stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
+            for (unsigned int coord = 0; coord < genVals.size(); coord++){
+                if (interlacingFactor == 1){
+                    stream << "Coordinate " << coord+1 << ":" << std::endl;
                 }
-                stream << "    Component " << (coord % interlacingFactor) + 1  << ":" << std::endl;
+                else{
+                    if (coord % interlacingFactor == 0){
+                        stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;
+                    }
+                    stream << "    Component " << (coord % interlacingFactor) + 1  << ":" << std::endl;
+                }
+                stream << *(genVals[coord]) << std::endl;
             }
-            stream << *(genVals[coord]) << std::endl;
         }
+        else{
+            stream << "Explicit  // Construction method" << std::endl;
+        }
+
         return stream.str();
     }  
 }

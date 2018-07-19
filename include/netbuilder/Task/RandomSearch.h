@@ -82,7 +82,6 @@ class RandomSearch : public Search<NC, ET>
         {
             Search<NC, ET>::reset();
             this->m_figure->evaluator()->reset();
-            std::cout << "in reset" << std::endl;
         }
 
         /**

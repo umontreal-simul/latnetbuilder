@@ -249,34 +249,33 @@ class DigitalNetConstruction : public DigitalNet
             //     }
             //     return out.str();
             // }
-            // if (outputFormat == OutputFormat::MACHINE){
-            //     std::ostringstream out;
-            //     out << "2  //Base" << std::endl;
-            //     out << numColumns() << "  //Number of columns" << std::endl;
-            //     out << numRows() << "  //Number of rows" << std::endl;
-            //     out << numPoints() << "  //Number of points" << std::endl;
-            //     out << dimension() << "  //dimension of points" << std::endl;
-            //     out << std::endl;
-            //     for(Dimension dim = 0; dim < m_dimension; ++dim)
-            //     {
-            //         out << "//dim = " << dim << std::endl;
-            //         out << generatingMatrix(dim) << std::endl;
-            //     }
-            //     return out.str();
-            // }
+            
+            std::string res;
 
-            std::string res = ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat, interlacingFactor);
+            if (outputFormat == OutputFormat::MACHINE){
+                std::ostringstream stream;
+                stream << "2  //Base" << std::endl;
+                stream << numColumns() << "  // Number of columns" << std::endl;
+                stream << numRows() << "  // Number of rows" << std::endl;
+                stream << numPoints() << "  // Number of points" << std::endl;
+                stream << dimension() << "  // Dimension of points" << std::endl;
+                stream << interlacingFactor << "  // Interlacing factor" << std::endl;
+                res+=stream.str();
+            }
+
+            res += ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat, interlacingFactor);
+
             if (outputFormat==OutputFormat::MACHINE)
             {
                 std::ostringstream stream;
                 for(Dimension dim = 0; dim < m_dimension; ++dim)
                 {
                     stream << "//dim = " << dim << std::endl;
-                    stream << generatingMatrix(dim) << std::endl;
+                    stream << generatingMatrix(dim);
                 }
-                res+="\n\n";
                 res+=stream.str();
             }
+
             return res;
         }
 
