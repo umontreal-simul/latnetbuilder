@@ -16,8 +16,6 @@
 
 /** \page feats_interlaced Interlaced point sets
 
-\section feats_interlaced_def Definition
-
 LatNet Builder supports the construction of interlaced polynomial lattice rules and interlaced digital nets.
 
 We adapt the definition of interlaced polynomial lattice rules from Definition 4. in \cite rGOD13a to
@@ -33,9 +31,9 @@ Define the digit interlacing function \f$D_d: [0,1)^d \rightarrow [0,1)\f$ by:
 \f[
 D_d(z_1, \dots, z_d) = \sum_{a = 1}^{\infty} \sum_{r = 1}^d z_{r,a} 2^{-r-(a-1)d},
 \f]
-where we denote the \f$2\f$-adic expansion of \f$z_i\f$ by \f$z_i = z_{i,1} 2^{-1} + z_{i,2} 2^{-2} + \dots\f$
+where we denote the 2-adic expansion of \f$z_i\f$ by \f$z_i = z_{i,1} 2^{-1} + z_{i,2} 2^{-2} + \dots\f$
 for \f$1 \leq i \leq d\f$ and where we assume that the expansion is unique in the sense that infinitely many digits
-are different from \f$1\f$.
+are different from 1.
 
 Then define \f$\boldsymbol x_i = (D_d(z_{i,1}, \dots, z_{i,d}), \dots, D_d(z_{i,(s-1)d + 1}, \dots, z_{i,sd}) )\f$ for \f$0 \leq i < n\f$.
 

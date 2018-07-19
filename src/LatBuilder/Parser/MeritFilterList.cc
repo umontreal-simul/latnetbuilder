@@ -27,6 +27,7 @@ namespace LatBuilder { namespace Parser {
 template <LatticeType LR>
 void MeritFilterList<LR>::parse(
       LatBuilder::MeritFilterList<LR, EmbeddingType::UNILEVEL>& list,
+      const std::string& figure,
       const std::vector<std::string>& filters,
       const LatBuilder::SizeParam<LR, EmbeddingType::UNILEVEL>& sizeParam,
       const LatticeTester::Weights& weights,
@@ -34,12 +35,13 @@ void MeritFilterList<LR>::parse(
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, EmbeddingType::UNILEVEL>::parse(arg, sizeParam, weights, normType));
+      list.add(MeritFilter<LR, EmbeddingType::UNILEVEL>::parse(arg, figure, sizeParam, weights, normType));
 }
 
 template <LatticeType LR>
 void MeritFilterList<LR>::parse(
       LatBuilder::MeritFilterList<LR, EmbeddingType::MULTILEVEL>& list,
+      const std::string& figure,
       const std::vector<std::string>& filters,
       const std::string& combiner,
       const LatBuilder::SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam,
@@ -48,7 +50,7 @@ void MeritFilterList<LR>::parse(
       )
 {
    for (const auto& arg : filters)
-      list.add(MeritFilter<LR, EmbeddingType::MULTILEVEL>::parse(arg, sizeParam, weights, normType, combiner));
+      list.add(MeritFilter<LR, EmbeddingType::MULTILEVEL>::parse(arg, figure, sizeParam, weights, normType, combiner));
 
    list.add(MeritCombiner<LR>::parse(combiner, sizeParam));
 }

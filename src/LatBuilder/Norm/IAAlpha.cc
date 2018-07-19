@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/Norm/IAAlphaG15.h"
+#include "latbuilder/Norm/IAAlpha.h"
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Util.h"
 
@@ -37,13 +37,13 @@ namespace {
             unsigned int alpha
             ) const
       {
-         throw std::runtime_error("IAAlphaG15 normalization not implemented for these weights.");
+         throw std::runtime_error("IAAlpha normalization not implemented for these weights.");
          return 1.;
       }
    };
 
 
-#define DECLARE_IAALPHAG15_SUM(weight_type) \
+#define DECLARE_IAALPHA_SUM(weight_type) \
       template <> \
       class SumHelper<weight_type> { \
       public: \
@@ -55,11 +55,11 @@ namespace {
                ) const; \
       }\
 
-   DECLARE_IAALPHAG15_SUM(LatBuilder::CombinedWeights);
-   DECLARE_IAALPHAG15_SUM(NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>);
-   DECLARE_IAALPHAG15_SUM(NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>);
+   DECLARE_IAALPHA_SUM(LatBuilder::CombinedWeights);
+   DECLARE_IAALPHA_SUM(NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>);
+   DECLARE_IAALPHA_SUM(NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>);
 
-#undef DECLARE_IAALPHAG15_SUM
+#undef DECLARE_IAALPHA_SUM
 
    //===========================================================================
    // combined weights
@@ -165,13 +165,13 @@ namespace {
 
 }
 
-IAAlphaG15::IAAlphaG15(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
-   NormAlphaBase<IAAlphaG15>(alpha, normType),
+IAAlpha::IAAlpha(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
+   NormAlphaBase<IAAlpha>(alpha, normType),
    m_weights(weights)
 {}
 
 template <LatticeType LR, EmbeddingType L>
-Real IAAlphaG15::value(
+Real IAAlpha::value(
       Real lambda,
       const SizeParam<LR, L>& sizeParam,
       Dimension dimension,
@@ -189,10 +189,10 @@ Real IAAlphaG15::value(
    return pow(val * norm, 1.0 / lambda);
 }
 
-template Real IAAlphaG15::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
-template Real IAAlphaG15::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
+template Real IAAlpha::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real IAAlpha::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
-template Real IAAlphaG15::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
-template Real IAAlphaG15::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
+template Real IAAlpha::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real IAAlpha::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
 }}

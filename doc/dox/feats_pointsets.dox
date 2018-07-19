@@ -118,7 +118,7 @@ M_{j} =
   \end{bmatrix}.
 \f]
 
-The first coordinate is a special case for which all the \f$m_{r,1}\f$ equal \f$1\f$. The corresponding matrix is therefore the identity matrix.
+The first coordinate is a special case for which all the \f$m_{r,1}\f$ equal 1. The corresponding matrix is therefore the identity matrix.
 
 Note that as the Sobol' matrices are upper triangular with ones on the main diagonal, they are full-rank and consequently a Sobol' net is always fully projection-regular.
 

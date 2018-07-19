@@ -21,8 +21,8 @@
 #include "latbuilder/Norm/PAlphaSL10.h"
 #include "latbuilder/Norm/PAlphaDPW08.h"
 #include "latbuilder/Norm/PAlphaPLR.h"
-#include "latbuilder/Norm/IAAlphaG15.h"
-#include "latbuilder/Norm/IBG15.h"
+#include "latbuilder/Norm/IAAlpha.h"
+#include "latbuilder/Norm/IB.h"
 #include "latbuilder/Functor/LowPass.h"
 
 #include <boost/lexical_cast.hpp>
@@ -101,37 +101,83 @@ namespace {
    template <LatticeType LR, EmbeddingType ET>
    std::unique_ptr<BasicMeritFilter<LR, ET>> parseNormalizer(
          const std::string& str,
+         const std::string& figure,
          const LatBuilder::SizeParam<LR, ET>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType,
          std::string combiner
          )
    {
-      auto args = splitPair(str, ':');
+      auto figureSplit = splitPair(figure, ':');
+      std::string figureString = (figureSplit.second == "") ? figure : figureSplit.second;
+      std::set<std::string> admissibleNormalizations;
+      if (figureString[0] == 'P') {
+            admissibleNormalizations.insert("P" + figureString.substr(1));
+            if (LR == LatticeType::ORDINARY)
+            {
+                  admissibleNormalizations.insert("P" + figureString.substr(1) + "-SL10");
+                  admissibleNormalizations.insert("P" + figureString.substr(1) + "-DPW08");
+            }
+      }
+      else if (figureString[0] == 'I')
+      {
+            if (figureString[1] == 'A')
+            {
+                  admissibleNormalizations.insert("IA" + figureString.substr(2));
+            }
+            else if (figureString[1] == 'B') {
+                  admissibleNormalizations.insert("IB");
+            }
+      }
+
+      std::string newNormString = str;
+      if (admissibleNormalizations.size() == 0)
+            throw BadFilter("No normalizations are available with figure " + figure + ".");
+
+      if ( (str.size() >= 4 && str.substr(0,4)=="even") || str.size() == 0)
+      {
+            newNormString =  *admissibleNormalizations.begin() + ":" + newNormString;
+      }
+
+      auto args = splitPair(newNormString, ':');
+      if (admissibleNormalizations.find(args.first) == admissibleNormalizations.end())
+      {
+            throw BadFilter("Normalization " + str + " is incompatible with figure" + figure + ( (LR == LatticeType::POLYNOMIAL) ? " with lattice type polynomial." : "."));
+      } 
       const auto strSplit = splitPair<>(args.first, '-');
 
       correctLevelWeights(sizeParam, combiner, args.second);
 
+      
       try {
       if (strSplit.first[0] == 'P') {
             const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(1));
+            if (strSplit.second == "")
+            {
+                  if (LR == LatticeType::ORDINARY)
+                  {
+                        return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
+                  }
+                  else if (LR == LatticeType::POLYNOMIAL)
+                  {
+                        return createNormalizer<LR, LatBuilder::Norm::PAlphaPLR, ET>(alpha, sizeParam, weights, normType, args.second);
+                  }
+            }
             if (strSplit.second == "SL10")
             return createNormalizer<LR, LatBuilder::Norm::PAlphaSL10, ET>(alpha, sizeParam, weights, normType, args.second);
             else if (strSplit.second == "DPW08")
-            return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);
-            else if (strSplit.second == "PLR")
-            return createNormalizer<LR, LatBuilder::Norm::PAlphaPLR, ET>(alpha, sizeParam, weights, normType, args.second);
+            return createNormalizer<LR, LatBuilder::Norm::PAlphaDPW08, ET>(alpha, sizeParam, weights, normType, args.second);   
       }
       if (strSplit.first[0] == 'I')
       {
             if (strSplit.first[1] == 'A')
             {
                   const auto alpha = boost::lexical_cast<unsigned int>(strSplit.first.substr(2));
-                  return createNormalizer<LR, LatBuilder::Norm::IAAlphaG15, ET>(alpha, sizeParam, weights, normType, args.second);
+                  return createNormalizer<LR, LatBuilder::Norm::IAAlpha, ET>(alpha, sizeParam, weights, normType, args.second);
             }
             if (strSplit.first[1] == 'B')
             {
-                  return createNormalizer<LR, LatBuilder::Norm::IBG15, ET>(weights.interlacingFactor(), sizeParam, weights, normType, args.second);
+                  return createNormalizer<LR, LatBuilder::Norm::IB, ET>(weights.interlacingFactor(), sizeParam, weights, normType, args.second);
             }
       }
       }
@@ -145,6 +191,7 @@ template <LatticeType LR, EmbeddingType ET>
 std::unique_ptr<BasicMeritFilter<LR, ET>>
 MeritFilter<LR,ET>::parse(
       const std::string& str,
+      const std::string& figure,
       const LatBuilder::SizeParam<LR, ET>& sizeParam,
       const LatticeTester::Weights& weights,
       Real normType,
@@ -153,7 +200,7 @@ MeritFilter<LR,ET>::parse(
 {
    const auto x = splitPair(str, ':');
    if (x.first == "norm")
-      return parseNormalizer(x.second, sizeParam, weights, normType, combiner);
+      return parseNormalizer(x.second, figure, sizeParam, weights, normType, combiner);
    else if (x.first == "low-pass") {
       auto threshold = boost::lexical_cast<Real>(x.second);
       return std::unique_ptr<BasicMeritFilter<LR, ET>>(new LatBuilder::MeritFilter<LR, ET>(Functor::LowPass<Real>(threshold), str));

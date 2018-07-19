@@ -75,12 +75,12 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
-    ("set-type,T", po::value<std::string>(),
+    ("set-type,t", po::value<std::string>(),
     "(required) point set type; possible values:\n"
     "  lattice\n"
     "  net\n")
    ("help,h", "produce help message")
-   ("version,V", "show version")
+   ("version", "show version")
    ("verbose,v", po::value<std::string>()->default_value("0"),
    "specify the verbosity of the program\n")
    ("construction,c", po::value<std::string>()->default_value("sobol"),
@@ -88,7 +88,7 @@ makeOptionsDescription()
    "  sobol (default)\n"
    "  polynomial\n"
    "  explicit\n")
-   ("multilevel,m", po::value<std::string>()->default_value("false"),
+   ("multilevel,M", po::value<std::string>()->default_value("false"),
     "multilevel point set; possible values:\n"
    "  false (default)\n"
    "  true\n")
@@ -96,7 +96,7 @@ makeOptionsDescription()
     "(required) size of the net; possible values: TODO\n"
    "  <size>\n"
    "  2^<max-power>\n")
-   ("exploration-method,E", po::value<std::string>(),
+   ("exploration-method,e", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
     "  evaluation:<net_description>\n" 
     "  exhaustive\n"
@@ -122,24 +122,24 @@ makeOptionsDescription()
     "      order <x>: <weight>\n"
     "      default: <weight>\n"
     "    if <file> is `-' data is read from standard input\n")
-   ("weights-power,o", po::value<Real>(),
+   ("weights-power,p", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
    ("norm-type,q", po::value<std::string>(),
     "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
     "    <q>: a real number corresponding the l_<q> norm\n"
     "    inf: corresponding to the `max' norm\n")
-    ("combiner,b", po::value<std::string>(),
+    ("combiner,C", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
     "  level:{<level>|max}\n")
-   ("figure-of-merit,M", po::value<std::string>(),
+   ("figure-of-merit,f", po::value<std::string>(),
     "(required) type of figure of merit; TODO\n")
     ("interlacing-factor,i", po::value<unsigned int>()->default_value(1),
     "(default: 1) interlacing factor. If larger than one, the constructed"
     "point set is an interlaced digital net. In this case, the figure of merit must be"
     "specific to interlaced digital nets.\n")
-    ("output-folder,g", po::value<std::string>(),
+    ("output-folder,o", po::value<std::string>(),
     "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"

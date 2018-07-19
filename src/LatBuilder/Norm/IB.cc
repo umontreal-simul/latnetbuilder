@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/Norm/IBG15.h"
+#include "latbuilder/Norm/IB.h"
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Util.h"
 
@@ -37,13 +37,13 @@ namespace {
             unsigned int alpha
             ) const
       {
-         throw std::runtime_error("IBG15 normalization not implemented for these weights.");
+         throw std::runtime_error("IB normalization not implemented for these weights.");
          return 1.;
       }
    };
 
 
-#define DECLARE_IBG15_SUM(weight_type) \
+#define DECLARE_IB_SUM(weight_type) \
       template <> \
       class SumHelper<weight_type> { \
       public: \
@@ -55,11 +55,11 @@ namespace {
                ) const; \
       }\
 
-   DECLARE_IBG15_SUM(LatBuilder::CombinedWeights);
-   DECLARE_IBG15_SUM(NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>);
-   DECLARE_IBG15_SUM(NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>);
+   DECLARE_IB_SUM(LatBuilder::CombinedWeights);
+   DECLARE_IB_SUM(NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>);
+   DECLARE_IB_SUM(NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>);
 
-#undef DECLARE_IBG15_SUM
+#undef DECLARE_IB_SUM
 
    //===========================================================================
    // combined weights
@@ -187,13 +187,13 @@ namespace {
 
 }
 
-IBG15::IBG15(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
-   NormAlphaBase<IBG15>(alpha, normType),
+IB::IB(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
+   NormAlphaBase<IB>(alpha, normType),
    m_weights(weights)
 {}
 
 template <LatticeType LR, EmbeddingType L>
-Real IBG15::value(
+Real IB::value(
       Real lambda,
       const SizeParam<LR, L>& sizeParam,
       Dimension dimension,
@@ -211,10 +211,10 @@ Real IBG15::value(
    return pow(val * norm, 1.0 / lambda);
 }
 
-template Real IBG15::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
-template Real IBG15::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
+template Real IB::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real IB::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
-template Real IBG15::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
-template Real IBG15::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
+template Real IB::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real IB::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
 }}
