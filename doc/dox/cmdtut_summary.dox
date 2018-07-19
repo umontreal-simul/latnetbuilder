@@ -21,7 +21,7 @@
 The <code>latnetbuilder</code> executable supports the following command-line
 options:
 <dl>
-	<dt><code>\--set-type</code> / <code>-T</code></dt>
+	<dt><code>\--set-type</code> / <code>-t</code></dt>
 	<dd><em> Required.</em>
 		Specifies the type of point set.
 		Takes one of the following values:
@@ -114,7 +114,7 @@ options:
 	    number of random samples corresponds to only the number
 	    of accepted candidates.
 	</dd>
-	<dt><code>\--figure-of-merit</code> / <code>-M</code></dt>
+	<dt><code>\--figure-of-merit</code> / <code>-F</code></dt>
 	<dd><em>Required.</em>
 		Specifies the figure of merit to be used.
 		Takes an argument of either of the following forms:
@@ -259,7 +259,7 @@ options:
 		in the case of a normalization filter, weights can
 		be optionally specified by appending
 		<code>:even:<var>minLevel</var>,<var>maxLevel</var></code> to
-		the filter specification, which sets even weights across all
+		the filter specification, which sets even positive across all
 		levels ranging from <code><var>minLevel</var></code> through
 		<code><var>maxLevel</var></code>, and a zero weight for other
 		levels.

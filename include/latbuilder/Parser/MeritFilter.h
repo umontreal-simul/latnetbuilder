@@ -42,6 +42,7 @@ struct MeritFilter {
    
    static std::unique_ptr<BasicMeritFilter<LR, ET>> parse(
          const std::string& str,
+         const std::string& figure,
          const LatBuilder::SizeParam<LR, ET>& sizeParam,
          const LatticeTester::Weights& weights,
          Real normType,

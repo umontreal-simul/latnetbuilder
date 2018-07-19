@@ -16,26 +16,19 @@
 
 /** \page cmdtut_recipes Quick recipes
 
-In this section, we present basic examples which we use to introduce the
-different command-line options. 
+\section cmdtut_recipes_first-example First example
 
-Two types of point sets are supported by the software: rank-1 lattices and digital nets in base 2.
-The switch between these two types of point sets can be operated using the <code>--set-type</code> option which supports
-two values : <code> lattice </code> and <code> net </code>. The Command-Line Interface do not differ a lot from one type of points
-to another but for sake of clarity, these recipes are divided into two parts, each corresponding to a type of point sets:
-- \subpage cmdtut_recipes_lat
-- \subpage cmdtut_recipes_net
-
-Additional details concerning the command-line options can be found in \ref cmdtut_summary and \ref cmdtut_spec.
-
-\section cmdtut_recipes_lat Rank-1 lattice rules
+In this section, we start with a basic example to perform a standard
+component-by-component (CBC) method for an ordinary lattice rule, 
+which we use to introduce the different command-line options.
+After, we extend that example in various ways to show how to achieve
+more elaborated tasks.
 
 Consider the following basic example:
 \verbatim
 ./latnetbuilder \ 
---set-type lattice \
+ --set-type lattice \
  --construction ordinary \
- --multilevel false \
  --size-parameter 2053 \
  --dimension 5 \
  --exploration-method full-CBC  \
@@ -46,11 +39,11 @@ Consider the following basic example:
 
 The order in which the arguments are specified is not important.
 Some arguments consists of several tokens, separated by a colon.
+
 - The argument <code>--set-type lattice </code> indicates that we seek a rank-1 lattice rule.
+
 - The argument <code>\--construction ordinary</code> indicates that we seek an ordinary
   (in contrast to polynomial) rank-1 lattice rule.
-- The argument <code>\--multilevel false</code> indicates that we seek a
-  simple (in contrast to embedded) rank-1 lattice rule.
 
 - The argument <code>\--size-parameter 2053</code> indicates that we seek a lattice rule
   with modulus 2053.
@@ -59,84 +52,339 @@ Some arguments consists of several tokens, separated by a colon.
   set of dimension 5. 
 
 - The argument <code>\--exploration-method full-CBC</code> specifies that the CBC method
-  should be used.  Specifying other exploration methods is explained in
-  \ref cmdtut_exploration.
+  should be used.
 
 - The argument <code>\--figure-of-merit CU:P2</code> consists of two colon-separated
   tokens.
   It tells LatNet Builder to use the specialized coordinate-uniform
-  evaluation algorithm, whence the first \c CU token,  for the \f$\mathcal P_2\f$
-  discrepancy. The list of available figures of merit can be found in \ref feats_figures 
-  and the way to specify them in \ref cmdtut_figures. 
+  evaluation algorithm, whence the first \c CU token, for the \f$\mathcal P_2\f$
+  discrepancy.
+
+- The argument <code>--norm-type 2</code> indicates that the \f$\ell_2\f$
+  norm is used to accumulate the merit of all projections. As we are
+  using the \f$\mathcal P_2\f$ discrepancy with the coordinate-uniform evaluation algorithm,
+  this is the only possible norm.
 
 - The argument <code>\--weights product:0.7</code> assigns product weights to the
-  figure of merit,  with the same weight (0.7) for every coordinate.  Specifying
-  different types of weights is explained in \ref
-  cmdtut_weights.
+  figure of merit, with the same weight (0.7) for every coordinate.
 
-To summarize, this command executes a CBC method for an ordinary, simple lattice
+To summarize, this command executes a CBC method for an ordinary lattice rule
 with 2053 points in 5 dimensions, using the weighted \f$\mathcal P_2\f$ figure
-of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with product weights
-such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$.
+of merit with an \f$\ell_2\f$ norm abd product weights
+such that \f$\gamma_j^2 = 0.7\f$ for all \f$j\f$. The evaluation uses
+the coordinate-uniform algorithm.
 
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
 \verbatim
-./latnetbuilder -T lattice -c ordinary -m false -s 2053 -d 5 -E CBC -M CU:P2 -w product:0.7
+./latnetbuilder -t lattice -C ordinary -s 2053 -d 5 -E CBC -F CU:P2 -q 2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
 
-\section cmdtut_recipes_net Digital nets
+For the sake of conciseness, in the derived examples, we often only show the
+command-line parameters that need to be changed, or added; other parameters
+should be left as in the basic example.
 
-Consider the following basic example:
+
+\section cmdtut_recipes_explorations Exploring the search space with other methods
+
+LatNet Builder supports a variety of exploration methods. The <code>--exploration-method</code> option
+controls which one is used to explore the search space.
+
+To fasten computation, it is recommended to use the fast-CBC algorithm whenever possible, that is when
+the coordinate-uniform evaluation algorithm (<code>CU</code> token) can be used. 
+This is done by using the following option:
+\n <code>--exploration-method fast-CBC</code>.
+
+Using the fast-CBC method does not really change the exploration method but reduces the computation time. 
+However, other methods, such as the random exploration method, are really different. For instance, to select the best
+point set among 100 random point sets, one can use the following option:
+\n <code>--exploration-method random:100</code>. 
+
+All the available exploration methods and the usage restrictions can be found \ref cmdtut_exploration "here".
+
+\section cmdtut_recipes_figures Using different figures of merit
+
+\ref feats_figures "Figures of merit" are constructed using the following ingredients:
+- a projection-dependent merit \f$D_{\mathfrak u}\f$;
+- weights \f$\gamma_{\mathfrak u}\f$; and
+- a norm-type \f$\ell_q\f$.
+
+By changing the value of the options corresponding to these three ingredients, one can explore the various figures of merit which
+are supported by LatNet Builder.
+
+To use another projection-dependent merit than the \f$\mathcal P_2\f$ discrepancy, one should change the value
+of the <code>--figure-of-merit</code> option. For instance, to use the \f$\mathcal R_1\f$ criterion,
+with the coordinate-uniform evaluation algorithm, the following option should be used:
+\n <code>--figure-of-merit CU:R1</code>
+
+The different projection-dependent merits which are available and their usage restrictions
+are listed \ref cmdtut_figures "here".
+
+Alternatively, one can change the type of weights. This can be done by changing the value of the 
+<code>--weights</code> option. For instance:
+\n <code>--weights order-dependent:1</code> 
+
+will tell LatNet Builder
+to use weights equal to 1 for all projections. Details on the possible value for 
+the <code>--weights</code> option can be found \ref cmdtut_weights "here".
+
+Finally, the \f$\ell_2\f$ can be replaced by another norm.
+For instance to use the \f$\mathcal P_2\f$ discrepancy will an \f$\ell_3\f$ norm, use the following options:
+\n <code>--figure-of-merit P2 --norm-type 3</code>.
+
+Note that the <code>CU</code> token has disappeared: only a specific norm-type is compatible with
+the coordinate-uniform evaluation algorithm. Consequently, changing the norm-type will often lead to longer computations.
+One can also use the \f$\ell_\infty\f$ norm, for instance with the spectral projection-dependent merit:
+\n <code>--figure-of-merit spectral --norm-type 3</code>.
+
+\section cmdtut_recipes_pointsets Constructing polynomial lattice rules and digital nets
+
+As explained \ref feats_figures "here", the figures
+of merit we can use depend on the type of the point set we want to construct. 
+Now that we know how to change the figure of merit, we can 
+construct digital nets and polynomial lattice rules.
+
+Let's start with digital nets. Say we want to construct digital nets with random generating matrices.
+and that we want the digital net to have \f$2^{10}\f$ points. We will look at a hundred nets.
+
+Then the following options should be used:
+\n <code>--set-type net --construction explicit --size-parameter 2^10 --random:100</code>.
+
+We now need a figure of merit to evaluate the net. We can for instance use the maximum of 
+the t-value of the subprojections of order lower than 3:
+\n <code>--figure-of-merit projdep:t-value --norm-type inf --weights order-dependent:0,1,1,1</code>.
+
+Again the possible figures of merit are listed \ref cmdtut_figures "here". 
+It is really easy to use the Sobol' construciton instead of random matrices. You just 
+have to change <code>--construction explicit</code> to <code>--construction sobol</code>.
+
+Polynomial lattice rules are a bit trickier because they can be constructed either with
+<code>--set-type lattice --construction polynomial</code> or <code>--set-type net --construction polynomial</code>.
+There is a huge performance gap between these two approaches depending on what you precisely want to do.
+Happily, \ref feats_poly "detailed guidelines" are available to pull through. 
+But here we will just compare the two following examples:
+
+\verbatim
+./latnetbuilder \ 
+ --set-type lattice \
+ --construction polynomial \
+ --size-parameter 2^10 \
+ --dimension 5 \
+ --exploration-method fast-CBC  \
+ --figure-of-merit CU:R \
+ --norm-type 2 \
+ --weights product:0.7
+\endverbatim
+
+
 \verbatim
 ./latnetbuilder \ 
  --set-type net \
- --construction sobol \
- --multilevel false \
+ --construction polynomial \
  --size-parameter 2^10 \
- --dimension 20 \
- --exploration-method random:1000  \
- --figure-of-merit CU:P2
- --norm-type 2
- --weights order-dependent:0:1,2,3
+ --dimension 5 \
+ --exploration-method random-CBC:70  \
+ --figure-of-merit CU:R \
+ --norm-type 2 \
+ --weights product:0.7
 \endverbatim
 
-\todo refactor this section
+The only difference between these two examples it that the first performs a fast-CBC exploration with the \f$\mathcal R\f$ criterion
+(note the <code>CU</code> token) whereas the second uses a random-CBC exploration with 70 samples per coordinate. For now, just retain the general idea that
+that the lattice approach (first example) should only be used with the fast-CBC construction. In all the other cases, the net approach (second example)
+is most efficient. 
 
-The order in which the arguments are specified is not important.
-Some arguments consists of several tokens, separated by a colon.
-- The argument <code>--set-type net </code> indicates that we seek a digital net.
-- The argument <code>\--construction sobol</code> indicates that we seek a Sobol net.
-- The argument <code>\--multilevel false</code> indicates that we seek a
-  unilevel point set.
+\section cmdtut_recipes_filters Applying filters and normalizations
+
+The general idea behind filters and normalizations is explained \ref feats_filters "here".
+Filters are optional and can be used to transform the computed values of a
+figure of merit, or to reject bad values.
+Multiple filters can be chained together by specifying multiple filter
+arguments separated by whitespace.
+
+- Normalization using a bound on \f$\mathcal P_\alpha\f$ from \cite rSIN11a with
+  \f$\alpha=2\f$:
+  \verbatim
+    --filters norm:P2-SL10
+  \endverbatim
+  The first colon-separated token (\c norm) indicates that we want to apply a
+  normalization.  The second one is the type of normalization (here, a
+  particular bound on \f$\mathcal P_2\f$.
+
+- Rejecting candidate lattices that have a normalized merit value larger than
+  unity:
+  \verbatim
+    --filters norm:P2-SL10 low-pass:1.0
+  \endverbatim
+  The first filter is explained above.
+  The second filter consists of two colon-separated tokens: the first one (\c
+  low-pass) indicates that we want to apply a low-pass filter on merit values;
+  the second one specifies the threshold value of this low-pass filter.
+
+For usage with embedded lattices, see \ref cmdtut_recipes_embedded.
+Additional details how to use filters and normalizations can be found \ref cmdtut_filters "here"
+
+\section cmdtut_recipes_embedded Constructing embbeded point sets
+
+For \ref feats_multilevel "multilevel point sets", a merit value is computed
+for each embedding level. Optionally, \ref feats_filters_multilevel "multilevel filters and normalizations" are
+applied to the merit value of each level. Then the merits are combined using a sum or a maximum.
+
+Let us start by giving an example with the Sobol' construction. 
+We search for a multilevel digital net in dimension 7
+with \f$2^{15}\f$ points for the maximum embbedding level.
+We will use the projection-dependent t-value-based star discrepancy bound merit,
+with an \f$\ell_{\infty}\f$ norm and order-dependent weights equal to \f$0.9\f$ on the 2-dimensional 
+projections, \f$0.3\f$ on the three-dimensional projections and \f$0.2\f$ on the four-dimensional projections. 
+To combine the merit values, we will 
+use the maximum, which is more compatible with the star discrepancy (which is itself a maximum)
+than a sum.
+The search will be based on the full-CBC exporation method. 
+\verbatim
+./latnetbuilder \
+--set-type net \
+--construction sobol \
+--size-parameter 2^15 \
+--dimension 7 \
+--exploration-method full-CBC  \
+--figure-of-merit projdep:t-value:starDisc \
+--norm-type inf \
+--weights order-dependent:0:0,.9,.3,.2 \
+--multilevel true \
+--combiner max
+\endverbatim
+
+Note the <code>--multilevel true</code> option: it tells LatNet Builder that we search for an embbedded point set.
+The combiner is specified with the <code>--combiner</code> option.
 
 
-- The argument <code>\--size-parameter 2^10</code> indicates that we seek digital net with \f$2^10 = 1024 \f$ points.
+Now we give another example for embedded ordinary lattice rules with a 
+\ref feats_filters_multilevel "multilevel normalization". We search
+for an embedded lattice rule in dimension 10, with \f$2^17\f$ points. We use
+the \f$\mathcal P_2\f$ discrepancy with an \f$\ell_2\f$ norm, enabling the coordinate-uniform
+evaluation algorithm. The weights are order-dependent weights. The combiner is a sum. We use the fast-CBC
+algorithm to fasten the computations.
+We add the \ref norm_SL10 "SL10 normalization" (<code>--filters norm:P2-SL10:even:10,17</code>).  
+Note the <code>even:10,17</code> token which tells LatNet Builder to put positive weights 
+for the embbedding levels 10 to 17, and a zero weight for the other embbedding level.
 
-- The argument <code>\--dimension 10</code> specifies that we seek a point
-  set of dimension 20. 
+\verbatim
+./latnetbuilder \
+--set-type lattice \
+--construction ordinary \
+--size-parameter 2^17 \
+--dimension 10 \
+--exploration-method fast-CBC  \
+--figure-of-merit CU:P2 \
+--norm-type 2 \
+--weights order-dependent:.1:0,.8,.3,.2 \
+--multilevel true \
+--combiner sum \
+--filters norm:P2-SL10:even:10,17
+\endverbatim
 
-- The argument <code>\--exploration-method random:1000</code> specifies that the random exploration method (explore 1000 nets)
-  should be used.
+\section cmdtut_recipes_eval Evaluating figures of merit for a specific point set
 
-- The argument <code>\--add-figure CU:P2/1/2/order-dependent:0:1,2,3</code> consists of four slash-separated
-  tokens. It telles LatNet Builder to use the following figure of merit. 
-  The token <code>CU:P2</code> indicates to use the coordinate-uniform evaluation algorithm for the \f$P_2\f$ criterion.
-  The token <code>1</code> indicates the importance of the figure of merit. 
-  The token <code>2</code> indicates that we use an \f$\ell_2\f$ norm for the figure of merit. 
-  THe token <code>order-dependent:0:0,2,1</code> indicates that the weight associated with the figure of merit are order-dependent weights
-  with weights 0, 2 and 1 on 1-dimensional, 2 dimensional and 3-dimensional projections respectively.
+In this section we focus on the evaluation of a figure of merit for a specific point set.
+Evaluation is not a real exploration method as the search space is limited to only one point set.
+It is meant to compute the quality of only one point set.
 
-- The argument <code>\--norm-type 2</code> indicates that the \f$\ell_2\f$ norm should be use to accumulate the merit values
-  of the projections. This is required by the coordinate-uniform evaluation algorithm.
+First, we must be able to tell LatNet Builder which point set we want to evaluate. 
+We will juste give an example for ordinary lattice rules.
 
-To summarize, this command executes a random method with 1000 tries for a digital, univelevel, net
-with 1024 points in 20 dimensions, using the weighted \f$\mathcal P_2\f$ figure
-of merit with an \f$\ell_2\f$ norm, in coordinate-uniform with order-dependent weights
-such that \f$\gamma_2^2 = 2\f$, \f$\gamma_3^2 = 1\f$ and \f$\gamma_k^2 = 0\f$  for all other \f$k\f$.
+Say we want to evaluate the \f$\mathcal R_1\f$ criterion with product weights equal to \f$0.9\f$ and an \f$\ell_2\f$
+norm for the lattice rule with modulus \f$11,551\f$ and generating vector 
+\f$(1, 5396, 2285, 484, 5355, 20, 249, 4237, 4919, 3622)\f$. 
+The following command-line will do the job:
+\verbatim
+./latnetbuilder \
+--set-type lattice \
+--construction ordinary \
+--size-parameter 11551 \
+--dimension 10 \
+--exploration-method evaluation:1-5396-2285-484-5355-20-249-4237-4919-3622  \
+--figure-of-merit CU:R1 \
+--norm-type 2 \
+--weights product:.9
+\endverbatim
 
+The way we specify
+the other types of point sets is explained \ref cmdtut_pointsets "here".
+
+\section cmdtut_recipes_interlaced Constructing interlaced point sets
+
+In this section, we explain how to construct good \ref feats_interlaced "interlaced polynomial lattice rules".
+\ref feats_figures_lat_interlaced "Specific figures of merit" must be used for interlaced polynomial lattice rules.
+One must also choose an interlacing factor, which equals the number of interlaced components used for each coordinate.
+
+Say we want to construct an interlaced polynomial lattice rules in dimension 10 with \f$2^15\f$ points
+and an interlacing factor \f$d\f$ equal to 2. 
+We will use the \f$B_{d,(2)}\f$ interlaced discrepancy with the \f$\ell_1\f$ norm to enable the
+coordinate-uniform evaluation algorithm and the fast-CBC method. The weights will be product weights
+equal to \f$.9\f$.
+
+\verbatim
+./latnetbuilder \
+--set-type lattice \
+--construction polynomial \
+--size-parameter 2^15 \
+--dimension 10 \
+--exploration-method fast-CBC  \
+--figure-of-merit CU:IB \
+--norm-type 1 \
+--weights product:.9 \
+--interlacing-factor 2
+\endverbatim
+
+- the <code>--figure-of-merit CU:IB</code> option tells LatNet Builder that we want to use the \f$B_{d,(2)}\f$ interlaced discrepancy;
+
+- the <code>interlacing-factor 2</code> option telles LatNet Builder that \f$d=2\f$.
+
+LatNet Builder will actually search for the best underlying polynomial lattice rule,
+that is the polynomial lattice rules in dimension 20 which gives the best interlaced
+polynomial lattice rule in dimension 10.
+
+
+\section cmdtut_recipes_extend Extending point sets
+
+Suppose you have constructed embedded lattice rules up to \$2^8\$ points in
+dimension 5 with:
+\verbatim
+./latnetbuilder \
+  --set-type lattice \
+  --construction ordinary \
+  --size-parameter 2^8 \
+  --dimension 5 \
+  --exploration-method fast-CBC \
+  --figure-of-merit CU:P2 \
+  --norm-type 2 \
+  --weights product:0.1 \
+  --multilevel true \
+  --combiner sum \
+  --filters norm:P2-DPW08 low-pass:1.0
+\endverbatim
+and have obtained the generating vector \f$\boldsymbol a=(1,45,101,41,25)\f$.
+Then, you find out that you need to extend the number of points to \f$2^9\f$.
+This can be done with:
+\verbatim
+./latnetbuilder \
+  --set-type lattice \
+  --construction ordinary \
+  --size-parameter 2^9 \
+  --dimension 5 \
+  --exploration-method extend:2^8:1-45-101-41-25 \
+  --figure-of-merit CU:P2 \
+  --norm-type 2 \
+  --weights product:0.1
+\endverbatim
+Note that only the merit value of the lattice with \f$2^9\f$ points, and not
+that of the embedded lattices, is considered in this type of construction.
+The argument <code>\--size-parameter 2^9</code> specifies the extended number of points
+and the argument <code>\--exploration-method extend:2^8:1-45-101-41-25</code> indicates
+that we want to extend on a lattice with \f$2^8\f$ points and generating vector 
+\f$\boldsymbol a=(1,45,101,41,25)\f$.
 */
 
 vim: ft=doxygen spelllang=en spell

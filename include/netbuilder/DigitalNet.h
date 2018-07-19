@@ -101,9 +101,9 @@ class DigitalNet
         }
 
         /**
-         * Returns a <code>std::string</code> representing the net. The verbosity of the representation
-         * depends on \c outputFormat.
-         * @param outputFormat Format to use to represent the net.
+         * Formats the net for output.
+         * @param outputFormat Format of output TODO
+         * @param interlacingFactor Interlacing factor of the net
          */ 
         virtual std::string format(OutputFormat outputFormat, unsigned int interlacingFactor) const = 0;
 

@@ -68,7 +68,7 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
-   ("set-type,T", po::value<std::string>(),
+   ("set-type,t", po::value<std::string>(),
     "(required) point set type; possible values:\n"
     "  lattice\n"
     "  net\n")
@@ -123,7 +123,7 @@ makeOptionsDescription()
     "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
     "    <q>: a real number corresponding the l_<q> norm\n"
     "    inf: corresponding to the `max' norm\n")
-   ("figure-of-merit,M", po::value<std::string>(),
+   ("figure-of-merit,F", po::value<std::string>(),
     "(required) type of figure of merit; format: [CU:]<merit>\n"
     "  where the optional \"CU:\" prefix switches on the coordinate-uniform evaluation algorithm,\n"
     "  and where <merit> is one of:\n"

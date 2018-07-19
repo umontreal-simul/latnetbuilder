@@ -16,52 +16,90 @@
 
 /** \page feats_filters Normalizations and filters
 
-Filters are optional and can be used to transform the computed values of a
-figure of merit, or to reject bad values. Various types of filters exist.
+In LatNet Builder, it is possible to apply transformations and filters to the merit values
+computed by the software. 
+
+Normalizations and filters are only available for the lattice point set type.
+
+The transformations have the following form:
+
+\f[
+\mathcal E_q(P_n) = \frac{D_q(P_n)}{D^\ast_q(n)}
+\f]
+
+where \f$D^\ast_q(n)\f$ is a normalization factor. This is why transformations implemented by LatNet Builder are also
+called normalizations. The normalization factor can be a bound on (or an estimated of) the best possible value
+of \f$D_q(P_n)\f$, or a bound on the average of \f$D_q(P_n)\f$ among all the possible point sets.
+
+It is worth mentioning that the bounds are often a family of bounds parametrized by a scalar \f$\lambda \in \mathcal A\f$. In LatNet Builder,
+the best (smallest) bound is selected with the Brent minimizer:
+
+\f[
+D^\ast_q(n) = D^\ast_q(n, \lambda^\ast) = \min_{\lambda \in \mathcal A} D^\ast_q(n, \lambda).
+\f]
+
+This normalizations can be useful to define comparable measures of uniformity for point sets of different sizes
+and to combine them to measure the global uniformity of multilevel point sets.
+
+Additionally, in the case of random searches, normalizations can be combined with a low-pass filter to eliminate
+the point sets whose quality is deemed to poor. Low-pass filters reject point sets whose merit value exceeds a threshold.
+Note that when the random variant of a search is used with a low-pass filter, the candidate samples that are rejected 
+by the filter pipeline are not considered as valid samples, meaning that the number of random 
+samples corresponds to the number of accepted candidates.
  
-\section feats_filters_norms Normalizations
 
-Normalizations are filters which transform the merit value by computing the ratio between 
-the merit value and a bound on the figure of merit. These bounds actually state the existence
-of a point set constructed in a CBC-way achieving a merit value lower than the bound. Hence the bound
-does not hold for all point sets but only for at least one point set constructed in a CBC-way. If the point set is constructed this way, 
-then its normalized merit value is guaranteed to be lower than \f$1\f$. 
+Additional details and references can be found in Section 3.4 of \cite vLEC16a.
 
-These bounds are actually parametrized by a parameter \f$\lambda\f$ which is tuned to minimize the bound 
-using the Brent minimizer.
+\section feats_filters_multilevel Normalizations and filters for multilevel point sets
+
+For \ref feats_multilevel "multilevel point sets", normalizations using a bound on the figure of merit are applied
+individually to each embedding level. Each embedding level \f$m\f$ has a weight \f$w_m = c_m^{1 / \lambda^\ast_m}\f$ , called the per-level weight.
+By default, all the \f$c_m\f$ equal one over the number of embedding levels.
+Optionally, one can select a range of levels, in this case, \f$c_m\f$ equal zero for the unselected levels and
+one over the number of selected levels for the selected levels.
+
+Then, LatNet Builder selects \f$\lambda^\ast_m\f$ as follows:
+
+\f[
+    \lambda^\ast_m = arg\,min_{\lambda \in \mathcal A} c_m^{-1/\lambda }D^\ast_q(n_m).
+\f]
+
+The normalized merit value of each embedding level is then computed as follows:
+
+\f[
+\mathcal E_q(P_{n_m}) = w_m \frac{D_q(P_{n_m})}{D^\ast_q(n)}.
+\f]
+
+Optionally, multilevel low-pass filters are applied to reject the point sets whose multilevel merit values
+are deemed to high. Then, the merit values are aggregated,
+either by taking their maximum or their sum:
+
+\f[
+    \bar{\mathcal E_q}(P_{n_1}, \dots, P_{n_k})^q = \max_{m = 1, \dots, k} \mathcal E_q(P_{n_m})^q,
+\f]
+
+or:
+
+\f[
+    \bar{\mathcal E_q}(P_{n_1}, \dots, P_{n_k})^q = \sum_{m = 1, \dots, k} \mathcal E_q(P_{n_m})^q.
+\f]
+
+Additional details and references can be found in Section 3.5 of \cite vLEC16a.
+
+\section feats_filters_norms List of normalizations
 
 Currently, the following normalizations are available:
 
 - for the \f$P_\alpha\f$ discrepancy of ordinary lattices:
-    - \f$P_\alpha\f$-SL10: the general bound derived in Theorem 3 of \cite rSIN12a for projection-dependent weights,
-    - \f$P_\alpha\f$-DPW08: the bound derived in Theorem 10 of \cite vDIC08c for product weights.
+    \anchor norm_SL10
+    - SL10: the general bound derived in Theorem 3 of \cite rSIN12a for projection-dependent weights,
+    - DPW08: the bound derived in Theorem 10 of \cite vDIC08c for product weights.
 - for the \f$P_\alpha\f$ discrepancy of polynomial lattice rules:
-    - \f$P_\alpha\f$-PLR: the bound derived in Theorem 3 of \cite rDIC15a for projection-dependent weights.
+    - the bound derived in Theorem 3 of \cite rDIC15a for projection-dependent weights.
 - for the \f$ B_{\alpha, d, (1)}\f$ interlaced discrepancy from \cite rGOD13a :
-    - \f$B_{\alpha, d, (1)}\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
+    - the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
 - for the \f$ B_{d, (2)}\f$ interlaced discrepancy from \cite rGOD13a :
-    - \f$B_{d, (2)}\f$-G15: the general bound derived in Theorem 4 of \cite rGOD13a for projection-dependent weights.
-
-\section feats_filters_lowpassfilter Low-pass filters
-
-Low-pass filters reject point sets having a merit value larger than a threshold.  
-When the random variant of a search is used with a filter, the candidate samples that are rejected 
-by the filter pipeline are not considered as valid samples, meaning that the number of random 
-samples corresponds to the number of accepted candidates.
-
-Low-pass filters are mainly designed to be used with normalization filters. 
-When one uses a full-CBC or fast-CBC exploration method,
-they can use of low-pass filter with a threshold equal to \f$1\f$ to reject point sets because the bound
-guarantees the existence of a point set constructed in a CBC-way whose merit value is lower than 1.
-
-\section feats_filters_multilevel Normalizations and filters for multilevel point sets
-
-For multilevel point sets, normalizations using a bound on the figure of merit are applied
-individually to each embedding level. Once the merit value of each level has been normalized, they can be aggregated,
-either by taking their maximum or their sum. Additionally, one can select only a range of levels. In this case, 
-the maximum or the sum is then replaced by a weighted maximum or sum, with even weights for the selected levels 
-and zero weights for the other levels. 
-
+    - the general bound derived in Theorem 5 of \cite rGOD13a for projection-dependent weights.
 
 */
 vim: ft=doxygen spelllang=en spell

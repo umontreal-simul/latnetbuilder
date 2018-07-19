@@ -82,7 +82,7 @@ If each rectangle contains exactly the same number of points, we say that the ne
   The resolution is always smaller than \f$\lfloor k/s\rfloor\f$. The resolution-gap of is the difference between 
   this upper-bound and the actual resolution.
 
-\section feats_figures_net_interlaced Interlaced digital nets
+\section feats_figures_net_interlaced Figures of merit for interlaced digital nets
 
 
 Figures of merit specific to interlaced digital nets \cite rGOD13a are also supported by LatNet Builder.

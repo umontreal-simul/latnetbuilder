@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__NORM__IAALPHA_GODA_15_H
-#define LATBUILDER__NORM__IAALPHA_GODA_15_H
+#ifndef LATBUILDER__NORM__IAALPHA_H
+#define LATBUILDER__NORM__IAALPHA_H
 
 #include "latbuilder/Norm/NormAlphaBase.h"
 #include "latbuilder/Types.h"
@@ -63,7 +63,7 @@ namespace LatBuilder { namespace Norm {
  * \f]
  * where \f$e_{i}^n\f$ denotes the symmetric elementary polynomial of degree \f$i\f$ with \f$n\f$ variables.
  */
-class IAAlphaG15 : public NormAlphaBase<IAAlphaG15> {
+class IAAlpha : public NormAlphaBase<IAAlpha> {
 public:
    /**
     * Constructor.
@@ -73,7 +73,7 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   IAAlphaG15(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
+   IAAlpha(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
 
    template <LatticeType LR, EmbeddingType L>
    Real value(
@@ -84,7 +84,7 @@ public:
          ) const;
 
    std::string name() const
-   { return "IAAlphaG15"; }
+   { return "IAAlpha"; }
 
 private:
    const LatticeTester::Weights& m_weights;

@@ -16,7 +16,7 @@
 
 /** \page feats_figures_lat Figures of merit for rank-1 lattices
 
-\section feats_figures_lat_ord Ordinary lattice rules
+\section feats_figures_lat_ord Figures of merit for ordinary lattice rules
 
 LatNet Builder supports the following figures of merit for ordinary rank-1 lattices:
 
@@ -56,7 +56,7 @@ LatNet Builder supports the following figures of merit for ordinary rank-1 latti
 
 
 
-\section feats_figures_lat_poly Polynomial lattice rules
+\section feats_figures_lat_poly Figures of merit for polynomial lattice rules
 
 LatNet Builder supports the following figures of merit for polynomial rank-1 lattices:
 
@@ -93,7 +93,7 @@ LatNet Builder supports the following figures of merit for polynomial rank-1 lat
   If \f$ q = 2\f$, a coordinate-uniform evaluation algorithm can be used. This algorithm
   drastically reduces the computation time.
 
-\subsection feats_figures_lat_interlaced Interlaced polynomial lattice rules
+\subsection feats_figures_lat_interlaced Figures of merit for interlaced polynomial lattice rules
 
 Figures of merit specific to interlaced polynomial lattice rules \cite rGOD13a are also supported by LatNet Builder.
 

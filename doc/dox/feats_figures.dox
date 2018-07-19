@@ -31,7 +31,7 @@ Figures of merit implemented by LatNet Builder have the following form:
 \f]
 
 where \f$D(P_n)\f$ is the merit value of the point set \f$P_n\f$ and \f$ D_{\mathfrak u}(P_n) \f$ its projection-dependent merit value.
-Note that if \f$q = +\infty\f$, the sum in the above equation is replaced by a maximum and the exponent \f$q\f$ taken equal to \f$1\f$.
+Note that if \f$q = +\infty\f$, the sum in the above equation is replaced by a maximum and the exponent \f$q\f$ taken equal to 1.
 <b>Note that the figure of merit actually computed
 by LatNet Builder is not \f$D(P_n)\f$ but rather \f$D(P_n)^q\f$</b>.
 

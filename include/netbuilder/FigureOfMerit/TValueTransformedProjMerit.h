@@ -82,7 +82,7 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
         /**
          * Output information about the figure of merit.
          */ 
-        virtual std::string format() const override
+        virtual std::string format() const
         {
             std::string res;
             res += "Star discrepancy bounding t-value based figure of merit";
@@ -123,7 +123,7 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
         /**
          * Output information about the figure of merit.
          */ 
-        virtual std::string format() const override
+        virtual std::string format() const
         {            
             std::string res;
             res += "Star discrepancy bounding t-value based figure of merit";

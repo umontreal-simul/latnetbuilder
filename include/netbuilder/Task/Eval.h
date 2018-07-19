@@ -63,13 +63,13 @@ class Eval : public Task
         /**
         * Returns the best net found by the search task.
         */
-        virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const
+        virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const 
         { return net().format(outputFormat, interlacingFactor); }
 
         /**
          *  Returns information about the task
          */
-        virtual std::string format() const override
+        virtual std::string format() const 
         {
             std::string res;
             std::ostringstream stream;
@@ -92,7 +92,7 @@ class Eval : public Task
         /**
         * Returns the best merit value found by the search task.
         */
-        virtual Real outputMeritValue() const
+        virtual Real outputMeritValue() const 
         { return meritValue(); }
 
         const FigureOfMerit::FigureOfMerit& figureOfMerit() const 
