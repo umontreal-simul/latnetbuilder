@@ -16,16 +16,20 @@
 
 /** \page feats_multilevel Multilevel point sets
 
-A multilevel point set is a finite sequence of nested point sets: each nested point set
-contains the previous ones. Each nested point set corresponds to an embedding level.
+A multilevel point set is a finite sequence of nested point sets \f$P_{n_1}, P_{n_2}, \dots, P_{n_k}\f$: 
+each nested point set contains the previous ones. Each nested point set corresponds to an embedding level \f$m\f$.
 
 Constructing multilevel point sets involves producing a compound merit value that
 accounts for the merit of each nested level.  This compound merit value is
 computed as follows:
-- the figure of merit is evaluated for each nested level;
+- the figure of merit is evaluated for each nested level:
+  the merit value of the embedding level \f$m\f$ is denoted by \f$D_q(P_{n_m})\f$;
 - optionally, \ref feats_filters_multilevel "multilevel filters and normalizations" are applied to the individual merit values of
   each nested level;
-- these filtered individual merit values are combined into a single value.
+- these filtered individual merit values are combined using a sum or a maximum into a single value:
+  \f[
+    \bar{D}(P_{n_1}, \dots, P_{n_k})^q = \bigotimes_{m = 1, \dots, k} D(P_{n_m})^q. 
+  \f]
 
 The possible combiners are the sum and the max of the merit values.
 

@@ -39,6 +39,7 @@ namespace {
    {
       Parser::MeritFilterList<LR>::parse(
             filters,
+            args.figure,
             args.filters,
             size,
             weights,
@@ -57,6 +58,7 @@ namespace {
    {
       Parser::MeritFilterList<LR>::parse(
             filters,
+            args.figure,
             args.filters,
             args.combiner,
             size,

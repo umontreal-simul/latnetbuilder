@@ -35,6 +35,7 @@ namespace LatBuilder { namespace Parser {
 struct MeritFilterList {
 
    static LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::UNILEVEL> parse(
+         const std::string& figure,
          const std::vector<std::string>& filters,
          const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::UNILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
@@ -42,12 +43,13 @@ struct MeritFilterList {
          )
    {
       LatBuilder::MeritFilterList<LR, EmbeddingType::UNILEVEL> f;
-      parse(f, filters, sizeParam, weights, normType);
+      parse(f, figure, filters, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
          LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::UNILEVEL>& list,
+         const std::string& figure,
          const std::vector<std::string>& filters,
          const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::UNILEVEL>& sizeParam,
          const LatticeTester::Weights& weights,
@@ -55,6 +57,7 @@ struct MeritFilterList {
          );
 
    static LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL> parse(
+         const std::string& figure,
          const std::vector<std::string>& filters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& sizeParam,
@@ -63,12 +66,13 @@ struct MeritFilterList {
          )
    {
       LatBuilder::MeritFilterList<LR, EmbeddingType::MULTILEVEL> f;
-      parse(f, filters, combiner, sizeParam, weights, normType);
+      parse(f, figure, filters, combiner, sizeParam, weights, normType);
       return f;
    }
 
    static void parse(
          LatBuilder::MeritFilterList<LR, LatBuilder::EmbeddingType::MULTILEVEL>& list,
+         const std::string& figure,
          const std::vector<std::string>& filters,
          const std::string& combiner,
          const LatBuilder::SizeParam<LR, LatBuilder::EmbeddingType::MULTILEVEL>& sizeParam,

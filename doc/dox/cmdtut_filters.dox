@@ -32,15 +32,15 @@ Each normalization can be specified as follows:
     \n <code>norm:P<var>alpha</var>-DPW08</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
 - for \f$P_\alpha\f$-PLR:
     \n <code>norm:P<var>alpha</var>-PLR</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
-- for the \f$B_{\alpha, d, (1)}\f$-G15: 
-    \n <code>norm:IA<var>alpha</var>-G15</code> with \f$\alpha=\f$<code><var>alpha</var></code>;
+- for the \f$B_{\alpha, d, (1)}\f$: 
+    \n <code>norm:IA<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code>;
 - for the \f$ B_{d, (2)}\f$:
-    \n <code>norm:IB-G15</code>.
+    \n <code>norm:IB</code>.
 
 Optionally, if the option <code>--multilevel true </code> is set, weights (on the embedded levels)
 can be optionally specified by appending
 <code>:even:<var>minLevel</var>,<var>maxLevel</var></code> to
-the filter specification, which sets even weights across all
+the filter specification, which sets positive weights across all
 levels ranging from <code><var>minLevel</var></code> through
 <code><var>maxLevel</var></code>, and a zero weight for other
 levels.

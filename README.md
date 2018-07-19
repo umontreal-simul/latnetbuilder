@@ -275,7 +275,7 @@ lattice rule with 8191 points in 5 dimensions using the P<sub>α</sub> criterion
 $\alpha = 2$ and with uniform product weights with value 0.8, issue the following
 command (from the installation directory):
 
-	bin/latnetbuilder -T lattice -c ordinary -s 8191 -d 5 -M CU:P2 -w product:0.8 -E CBC
+	bin/latnetbuilder -t lattice -c ordinary -s 8191 -d 5 -f CU:P2 -w product:0.8 -e CBC
 
 #### Constructing digital nets
 
@@ -283,7 +283,7 @@ Likewise, to construct, using the component-by-component (CBC) algorithm, Sobol'
 $\alpha = 2$ and with uniform product weights with value 0.8, issue the following
 command (from the installation directory):
 
-  bin/latnetbuilder -T net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -E random:1000
+  bin/latnetbuilder -t net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -e random:1000
 
 
 ### The LatNet Builder Graphical User Interface
@@ -380,7 +380,7 @@ the same weight of 0.1 to every coordinate (this means a weight of
 10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections
 of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
 
-	./latnetbuilder -T lattice -c ordinary -s 2^16 -d 100 -M CU:P2 -w product:0.1 -E fast-CBC
+	./latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -w product:0.1 -e fast-CBC
 
 The above search is for n=2<sup>16</sup>=65,536 points in dimension 100.  LatNet Builder
 does that very quickly.

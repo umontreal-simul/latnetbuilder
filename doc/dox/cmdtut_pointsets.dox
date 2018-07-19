@@ -52,7 +52,7 @@ The option <code>--size-parameter</code> can be used to specify the size of a la
 Recall that for ordinary lattices, the modulus is exactly
 the number of points whereas for polynomial lattices, 
 For ordinary lattice rules, we directly specify the modulus.
-For instance, to specify an ordinary lattice rule with \f$6977\f$ points, use <code>--size-parameter 6977</code>.
+For instance, to specify an ordinary lattice rule with 6977 points, use <code>--size-parameter 6977</code>.
 It is also possible to specify the number of points as a power of a base. For instance <code>--size-parameter 3^10</code> is also a valid expression.
 
 For polynomial lattice rules, the number of points equals two to the power of the degree of its modulus. 

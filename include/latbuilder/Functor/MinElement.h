@@ -72,9 +72,7 @@ public:
       }
 
       auto min = *first; // avoid using *itmin
-      if (updated){
-        std::cout << "Current merit: " << *first << " (best) with lattice:" << std::endl;
-      }
+      std::cout << "Current merit: " << *first << " (best) with lattice:" << std::endl;
       ForwardIterator itmin = first;
       onMinUpdated()(min);
 
