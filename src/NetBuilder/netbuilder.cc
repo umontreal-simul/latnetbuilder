@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <chrono>
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
@@ -37,20 +38,28 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::string outputFile, unsigned int interlacingFactor)
+void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int interlacingFactor, Real time)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
     std::cout.precision(merit_digits_displayed);
   }
   std::cout << "====================\n       Result\n====================" << std::endl;
-  std::cout << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+  std::cout << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
-  if (outputFile != ""){
+  if (outputFolder != ""){
     ofstream outFile;
-    std::string fileName = outputFile + "/output.txt";
+    std::string fileName = outputFolder + "/output.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::CLI, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile << "ELAPSED CPU TIME: " << time << " seconds" << std::endl;
+    outFile.close();
+
+
+    fileName = outputFolder + "/outputMachine.txt";
+    outFile.open(fileName);
+    outFile << task.outputNet(OutputFormat::MACHINE, interlacingFactor) << task.outputMeritValue() << "  // Merit" << std::endl;
+    outFile << time << "  // Time" << std::endl;
     outFile.close();
   }
   
@@ -71,7 +80,7 @@ makeOptionsDescription()
     "  lattice\n"
     "  net\n")
    ("help,h", "produce help message")
-   ("version,V", "show version")
+   ("version", "show version")
    ("verbose,v", po::value<std::string>()->default_value("0"),
    "specify the verbosity of the program\n")
    ("construction,c", po::value<std::string>()->default_value("sobol"),
@@ -79,7 +88,7 @@ makeOptionsDescription()
    "  sobol (default)\n"
    "  polynomial\n"
    "  explicit\n")
-   ("multilevel,m", po::value<std::string>()->default_value("false"),
+   ("multilevel,M", po::value<std::string>()->default_value("false"),
     "multilevel point set; possible values:\n"
    "  false (default)\n"
    "  true\n")
@@ -87,7 +96,7 @@ makeOptionsDescription()
     "(required) size of the net; possible values: TODO\n"
    "  <size>\n"
    "  2^<max-power>\n")
-   ("exploration-method,E", po::value<std::string>(),
+   ("exploration-method,e", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
     "  evaluation:<net_description>\n" 
     "  exhaustive\n"
@@ -113,34 +122,24 @@ makeOptionsDescription()
     "      order <x>: <weight>\n"
     "      default: <weight>\n"
     "    if <file> is `-' data is read from standard input\n")
-   ("weights-power,o", po::value<Real>(),
+   ("weights-power,p", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
    ("norm-type,q", po::value<std::string>(),
     "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
     "    <q>: a real number corresponding the l_<q> norm\n"
     "    inf: corresponding to the `max' norm\n")
-    ("combiner,b", po::value<std::string>(),
+    ("combiner,C", po::value<std::string>(),
     "combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
     "  level:{<level>|max}\n")
-   ("figure-of-merit,M", po::value<std::string>(),
+   ("figure-of-merit,f", po::value<std::string>(),
     "(required) type of figure of merit; TODO\n")
     ("interlacing-factor,i", po::value<unsigned int>()->default_value(1),
     "(default: 1) interlacing factor. If larger than one, the constructed"
     "point set is an interlaced digital net. In this case, the figure of merit must be"
     "specific to interlaced digital nets.\n")
-  //  ("filters,f", po::value<std::vector<std::string>>()->multitoken(),
-  //   "whitespace-separated list of filters for merit values; possible values:\n"
-  //   "  norm:P<alpha>-{SL10|DPW08}\n"
-  //   "  low-pass:<threshold>\n")
-  //  ("multilevel-filters,F", po::value<std::vector<std::string>>()->multitoken(),
-  //   "whitespace-separated list of filters for multilevel merit values; possible values:\n"
-  //   "  norm:P<alpha>-{SL10|DPW08}[:<multilevel-weights>]\n"
-  //   "  low-pass:<threshold>\n"
-  //   "where <multilevel-weights> specifies the per-level weights; possible values:\n"
-  //   "  even[:<min-level>[:<max-level>]] (default)\n")
-    ("output-folder,g", po::value<std::string>(),
+    ("output-folder,o", po::value<std::string>(),
     "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
@@ -228,18 +227,12 @@ int main(int argc, const char *argv[])
 
         auto repeat = opt["repeat"].as<unsigned int>();
 
-        // NetBuilder::OutputFormat outputFormat;
-        // std::vector<NetBuilder::Parser::OutputFormatParameters> outputFormatParameters;
-        // if (opt.count("output-format") >= 1){
-        //   outputFormatParameters = Parser::OutputFormatParser::parse(opt["output-format"].as<std::vector<std::string>>());
-        // }
-        // else{
-        //   outputFormatParameters = {};
-        // }
         std::string outputFolder = "";
         if (opt.count("output-folder") >= 1){
-          std::cout << "found output folder" << std::endl;
           outputFolder = opt["output-folder"].as<std::string>();
+          std::cout << "Writing in output folder: " << outputFolder << std::endl;
+          boost::filesystem::remove_all(outputFolder);
+          boost::filesystem::create_directory(outputFolder);
         }
         
         // global variable
@@ -274,9 +267,6 @@ int main(int argc, const char *argv[])
        if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
        }
-      //  if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
-      //     BUILD_TASK(POLYNOMIAL, MULTILEVEL)
-      //  } 
         if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
@@ -293,7 +283,6 @@ int main(int argc, const char *argv[])
           if (outputFolder != ""){
             ofstream outFile;
             std::string fileName = outputFolder + "/input.txt";
-            std::cout << fileName << std::endl;
             outFile.open(fileName);
             outFile << task->format();
             outFile.close();
@@ -307,13 +296,13 @@ int main(int argc, const char *argv[])
             std::cout << "====================\nRunning the task... \n====================" << std::endl;
           }
 
-          t0 = high_resolution_clock::now();\
-          task->execute();\
-          t1 = high_resolution_clock::now();\
+          t0 = high_resolution_clock::now();
+          task->execute();
+          t1 = high_resolution_clock::now();
+          auto dt = duration_cast<duration<double>>(t1 - t0);
 
           std::cout << std::endl;
-          TaskOutput(*task, outputFolder, interlacingFactor);
-          auto dt = duration_cast<duration<double>>(t1 - t0);
+          TaskOutput(*task, outputFolder, interlacingFactor, dt.count());
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
           task->reset();

@@ -77,7 +77,7 @@ the coordinate-uniform algorithm.
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
 \verbatim
-./latnetbuilder -t lattice -C ordinary -s 2053 -d 5 -E CBC -F CU:P2 -q 2 -w product:0.7
+./latnetbuilder -t lattice -c ordinary -s 2053 -d 5 -e CBC -f CU:P2 -q 2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.

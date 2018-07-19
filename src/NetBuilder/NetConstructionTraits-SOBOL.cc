@@ -270,20 +270,35 @@ namespace NetBuilder {
     std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
     {
         std::string res;
-        res += "Sobol Digital Net - Direction numbers = \n";
-        for (unsigned int coord = 0; coord < genVals.size(); coord++){
-            if (interlacingFactor > 1 && coord % interlacingFactor == 0){
-                res += "Coordinate " + std::to_string((coord / interlacingFactor) + 1)  + ":\n";
-            }            
-            res+="  ";
-            for(const auto& dirNum : genVals[coord]->second)
-            {
-                res+= std::to_string(dirNum);
-                res+= " ";
+
+        if (outputFormat == OutputFormat::HUMAN){
+            res += "Sobol Digital Net - Direction numbers = \n";
+            for (unsigned int coord = 0; coord < genVals.size(); coord++){
+                if (interlacingFactor > 1 && coord % interlacingFactor == 0){
+                    res += "Coordinate " + std::to_string((coord / interlacingFactor) + 1)  + ":\n";
+                }            
+                res+="  ";
+                for(const auto& dirNum : genVals[coord]->second)
+                {
+                    res+= std::to_string(dirNum);
+                    res+= " ";
+                }
+                res+="\n";
             }
-            res.pop_back();
-            res+="\n";
         }
+        else{
+            res += "Sobol  // Construction method\n";
+            for (unsigned int coord = 0; coord < genVals.size(); coord++){
+                for(const auto& dirNum : genVals[coord]->second)
+                {
+                    res+= std::to_string(dirNum);
+                    res+= " ";
+                }
+                res.pop_back();
+                res+="\n";
+            }
+        }
+        
         return res;
     }  
 }
