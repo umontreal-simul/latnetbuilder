@@ -113,7 +113,7 @@ public:
    { return *m_weights; }
 
    /**
-    * Returns the projection-dependent figure of merit \f$D_{\mathfrak u}^2\f$.
+    * Returns the projection-dependent figure of merit \f$D_{\mathfrak u}\f$.
     */
    const ProjDepMerit::Base<PROJDEP>& projDepMerit() const
    { return m_projDepMerit; }

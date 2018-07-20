@@ -19,6 +19,7 @@
 
 #include <type_traits>
 #include <ostream>
+#include <sstream>
 #include "latbuilder/detail/TextStream.h"
 
 namespace LatBuilder {
@@ -92,9 +93,29 @@ operator<<(std::ostream& os, const T& x)
    using TextStream::operator<<;
    os << detail::bracket_traits<T>::opening;
    for (const auto& xi : x) {
-      if (count > 0)
-         os << ", ";
-      os << xi;
+      std::ostringstream temp;
+      temp << xi;
+      std::string str = temp.str();
+      if (str.back() == '\n'){
+        if (count > 0)
+        {
+            os << ",\n " << str.substr(0, str.size()-1);
+        }
+        else
+        {
+            os << str.substr(0, str.size()-1);
+        }
+      }
+      else{
+        if (count > 0)
+        {
+            os << ", " << str;
+        }
+        else
+        {
+            os << str;
+        }
+      }
       count++;
    }
    os << detail::bracket_traits<T>::closing;

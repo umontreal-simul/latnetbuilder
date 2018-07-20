@@ -17,6 +17,8 @@
 #ifndef LATBUILDER__TRAVERSAL_H
 #define LATBUILDER__TRAVERSAL_H
 
+#include <string>
+
 #include "latbuilder/IndexedIterator.h"
 
 namespace LatBuilder {

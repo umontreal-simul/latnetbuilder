@@ -147,7 +147,7 @@ namespace detail {
 
       LatticeTester::Reducer<std::int64_t, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real, NTL::vector<Real>, NTL::matrix<Real>> reducer(lattice);
 
-      reducer.preRedDieter((int) projection.size());
+      reducer.preRedDieter(0);
 
       if (not reducer.shortestVector(lattice.getNorm())) {
          // reduction failed
@@ -156,7 +156,7 @@ namespace detail {
 
 
       // get length of shortest vector under L2NORM
-      lattice.updateScalL2Norm (0);
+      lattice.updateVecNorm();
 
       // square length
       Real sqlength = lattice.getVecNorm(0); 
