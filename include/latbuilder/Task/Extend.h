@@ -27,6 +27,7 @@
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatDef.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder { namespace Task {
 
@@ -135,7 +136,7 @@ public:
 protected:
    virtual void format(std::ostream& os) const
    {
-      os << "Task: LatBuilder Search for " << LatticeTypeStrings[(int) LR] << " lattices" << std::endl;
+      os << "Task: LatBuilder Search for " << to_string(LR) << " lattices" << std::endl;
       os << "Exploration method: extension of the number of points" << std::endl;
       os << "Base Lattice: " << baseLat() << std::endl;
       os << "Figure of merit: " << figureOfMerit() << std::endl;

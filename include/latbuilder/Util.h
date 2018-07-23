@@ -140,6 +140,7 @@ uInteger log2Int(unsigned int n);
  */ 
 std::string getDefaultPolynomial(unsigned int degree);
 
+std::string to_string(LatticeType LT);
 }
 
 #endif

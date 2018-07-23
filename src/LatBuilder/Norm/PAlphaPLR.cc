@@ -25,7 +25,7 @@
 
 namespace LatBuilder { namespace Norm {
 
-namespace {
+namespace SumHelperPAlphaPLR{
 
    template <typename WEIGHTS>
    struct SumHelper {
@@ -232,7 +232,7 @@ Real PAlphaPLR::value(
       ) const
 {
    norm = 2.0 / (norm * sizeParam.numPoints());
-   Real val = WeightsDispatcher::dispatch<SumHelper>(
+   Real val = WeightsDispatcher::dispatch<SumHelperPAlphaPLR::SumHelper>(
          m_weights,
          this->normType(),
          lambda,

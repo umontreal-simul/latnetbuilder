@@ -26,6 +26,7 @@
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
+#include "latbuilder/Util.h"
 #include "latbuilder/LFSR258.h"
 
 #include <boost/lexical_cast.hpp>
@@ -88,7 +89,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: random - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: random - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
 
    void init(LatBuilder::Task::Random<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    {

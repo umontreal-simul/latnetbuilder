@@ -24,6 +24,7 @@
 #include "latbuilder/LatSeq/Combiner.h"
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder { namespace Task {
 
@@ -65,7 +66,7 @@ struct LatSeqBasedSearchTraits<ExhaustiveTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: Exhaustive";}
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: Exhaustive";}
 
    void init(LatBuilder::Task::Exhaustive<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }

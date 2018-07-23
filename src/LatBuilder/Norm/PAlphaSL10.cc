@@ -24,7 +24,7 @@
 
 namespace LatBuilder { namespace Norm {
 
-namespace {
+namespace SumHelperPAlphaSL10{
 
    template <typename WEIGHTS>
    struct SumHelper {
@@ -232,7 +232,7 @@ Real PAlphaSL10::value(
 {
    norm = 1.0 / (norm * sizeParam.totient());
    Real z = static_cast<Real>(2 * boost::math::zeta<Real>(this->alpha() * lambda));
-   Real val = WeightsDispatcher::dispatch<SumHelper>(
+   Real val = WeightsDispatcher::dispatch<SumHelperPAlphaSL10::SumHelper>(
          m_weights,
          this->normType(),
          z,
