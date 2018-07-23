@@ -24,8 +24,8 @@ namespace NetBuilder { namespace Task {
 /** 
  * Class for exhaustive search tasks.
  */ 
-template < NetConstruction NC, EmbeddingType ET>
-class ExhaustiveSearch : public Search<NC, ET>
+template < NetConstruction NC, EmbeddingType ET, template <NetConstruction> class OBSERVER = MinimumObserver>
+class ExhaustiveSearch : public Search<NC, ET, OBSERVER>
 {
     public:
     
@@ -41,7 +41,7 @@ class ExhaustiveSearch : public Search<NC, ET>
                             std::unique_ptr<FigureOfMerit::FigureOfMerit> figure,
                             int verbose = 0,
                             bool earlyAbortion = false):
-            Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
+            Search<NC, ET, OBSERVER>(dimension, sizeParameter, verbose, earlyAbortion),
             m_figure(std::move(figure))
         {};
 
@@ -59,7 +59,7 @@ class ExhaustiveSearch : public Search<NC, ET>
         {
             std::string res;
             std::ostringstream stream;
-            stream << Search<NC, ET>::format();
+            stream << Search<NC, ET, OBSERVER>::format();
             stream << "Exploration method: exhaustive" << std::endl;
             stream << "Figure of merit: " << m_figure->format() << std::endl;
             res += stream.str();
@@ -79,8 +79,8 @@ class ExhaustiveSearch : public Search<NC, ET>
             
             if (this->m_earlyAbortion)
             {
-                evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
-                evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->minimumObserver(), _1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->minimumObserver(), _1));
             }
             
             auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_sizeParameter);
@@ -95,14 +95,14 @@ class ExhaustiveSearch : public Search<NC, ET>
                 nbNets++;
                 auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_sizeParameter, genVal);
                 double merit = (*evaluator)(*net, this->m_verbose-3);
-                this->m_minimumObserver->observe(std::move(net),merit);
+                this->m_observer->observe(std::move(net),merit);
             }
-            if (!this->m_minimumObserver->hasFoundNet())
+            if (!this->m_observer->hasFoundNet())
             {
                 this->onFailedSearch()(*this);
                 return;
             }
-            this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
+            this->selectBestNet(this->m_observer->bestNet(), this->m_observer->bestMerit());
         }
 
         /**

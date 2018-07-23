@@ -49,11 +49,16 @@ namespace{
  * Virtual base class for search task.
  * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...).
  * @tparam ET Embedding type (UNILEVEL or MULTILEVEL)
- */ 
-template <NetConstruction NC, EmbeddingType ET> 
+ * @tparam OBSERVER Template template parameter whose template parameter is a net construction type
+ *                  (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...). Should mimick the MinimumObserver class template.
+ */
+template <NetConstruction NC, EmbeddingType ET, template <NetConstruction> class OBSERVER = MinimumObserver> 
 class Search : public Task {
 
 public:
+
+    /// Observer of the search
+    typedef OBSERVER<NC> Observer;
 
     /** Virtual default destructor.
      */ 
@@ -69,7 +74,7 @@ public:
      */ 
     virtual void reset() override
     {
-        m_minimumObserver->fullReset();
+        m_observer->reset();
         m_bestNet = DigitalNetConstruction<NC>(0,m_sizeParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
@@ -100,7 +105,7 @@ public:
         m_nCols(NetConstructionTraits<NC>::nCols(m_sizeParameter)),
         m_bestNet(0, m_sizeParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
-        m_minimumObserver(new MinimumObserver<NC>(sizeParameter, verbose-2)),
+        m_observer(new Observer(sizeParameter, verbose-2)),
         m_verbose(verbose),
         m_earlyAbortion(earlyAbortion)
         {};
@@ -124,7 +129,7 @@ public:
         m_nCols(NetConstructionTraits<NC>::nCols(m_sizeParameter)),
         m_bestNet(0, m_sizeParameter),
         m_bestMerit(std::numeric_limits<Real>::infinity()),
-        m_minimumObserver(new MinimumObserver<NC>(std::move(baseNet), verbose-2)),
+        m_observer(new Observer(std::move(baseNet), verbose-2)),
         m_verbose(verbose),
         m_earlyAbortion(earlyAbortion)
         {};
@@ -164,7 +169,7 @@ public:
 
     bool hasFoundNet() const
     {
-        return m_minimumObserver->hasFoundNet();
+        return m_observer->hasFoundNet();
     }
 
     /**
@@ -198,14 +203,14 @@ public:
     /** 
      * Returns a reference to the minimum-element observer. 
      */
-    MinimumObserver<NC>& minimumObserver()
-    { return *m_minimumObserver; }
+    Observer& minimumObserver()
+    { return *m_observer; }
 
     /** 
      * Returns a const qualified reference the minimum-element observer. 
      */
-    const MinimumObserver<NC>& minimumObserver() const
-    { return *m_minimumObserver; }
+    const Observer& minimumObserver() const
+    { return *m_observer; }
 
     /**
      * Net-selected signal.
@@ -265,7 +270,7 @@ public:
         unsigned int m_nCols; // number of columns of the generating matrices
         DigitalNetConstruction<NC> m_bestNet; // best net 
         Real m_bestMerit; // best merit
-        std::unique_ptr<MinimumObserver<NC>> m_minimumObserver; // minimum observer
+        std::unique_ptr<Observer> m_observer; // minimum observer
         int m_verbose; // verbosity level
         bool m_earlyAbortion; // early abortion switch
         

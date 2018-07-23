@@ -23,11 +23,9 @@
 namespace NetBuilder { namespace Task {
 
 /** Class for CBC Search tasks.
- * Template template parameter EXPLORER must implement the following:
- * 
  */ 
-template < NetConstruction NC, EmbeddingType ET>
-class RandomSearch : public Search<NC, ET>
+template < NetConstruction NC, EmbeddingType ET, template <NetConstruction> class OBSERVER = MinimumObserver>
+class RandomSearch : public Search<NC, ET, OBSERVER>
 {
     typedef NetConstructionTraits<NC> ConstructionMethod;
 
@@ -47,7 +45,7 @@ class RandomSearch : public Search<NC, ET>
                         unsigned nbTries,
                         int verbose = 0,
                         bool earlyAbortion = false):
-            Search<NC, ET>(dimension, sizeParameter, verbose, earlyAbortion),
+            Search<NC, ET, OBSERVER>(dimension, sizeParameter, verbose, earlyAbortion),
             m_figure(std::move(figure)),
             m_nbTries(nbTries),
             m_randomGenValueGenerator(this->m_sizeParameter)
@@ -67,7 +65,7 @@ class RandomSearch : public Search<NC, ET>
         {
             std::string res;
             std::ostringstream stream;
-            stream << Search<NC, ET>::format();
+            stream << Search<NC, ET, OBSERVER>::format();
             stream << "Exploration method: random - " << m_nbTries << " samples" << std::endl;
             stream << "Figure of merit: " << m_figure->format() << std::endl;
             res += stream.str();
@@ -80,7 +78,7 @@ class RandomSearch : public Search<NC, ET>
          */ 
         virtual void reset() override
         {
-            Search<NC, ET>::reset();
+            Search<NC, ET, OBSERVER>::reset();
             this->m_figure->evaluator()->reset();
         }
 
@@ -96,8 +94,8 @@ class RandomSearch : public Search<NC, ET>
 
             if (this->m_earlyAbortion)
             {
-                evaluator->onProgress().connect(boost::bind(&MinimumObserver<NC>::onProgress, &this->minimumObserver(), _1));
-                evaluator->onAbort().connect(boost::bind(&MinimumObserver<NC>::onAbort, &this->minimumObserver(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->minimumObserver(), _1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->minimumObserver(), _1));
             }
             
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
@@ -115,14 +113,14 @@ class RandomSearch : public Search<NC, ET>
                 }
                 auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_sizeParameter, std::move(genVals));
                 double merit = (*evaluator)(*net,this->m_verbose-3);
-                this->m_minimumObserver->observe(std::move(net),merit);
+                this->m_observer->observe(std::move(net),merit);
             }
-            if (!this->m_minimumObserver->hasFoundNet())
+            if (!this->m_observer->hasFoundNet())
             {
                 this->onFailedSearch()(*this);
                 return;
             }
-            this->selectBestNet(this->m_minimumObserver->bestNet(), this->m_minimumObserver->bestMerit());
+            this->selectBestNet(this->m_observer->bestNet(), this->m_observer->bestMerit());
         }
 
         /**
