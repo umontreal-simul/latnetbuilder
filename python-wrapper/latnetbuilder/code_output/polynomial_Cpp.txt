@@ -1,0 +1,134 @@
+#include <vector>
+#include <math.h>
+#include <iostream>
+
+typedef std::vector<bool> Polynomial;
+typedef std::vector<std::vector<bool>> Matrix;
+
+unsigned int getmsb (unsigned long long x){
+    unsigned int r = 0;
+    if (x < 1) return 0;
+    while (x >>= 1) r++;
+    return r;
+}
+
+int deg(const Polynomial& p){
+    return p.size()-1;
+}
+
+bool coeff(const Polynomial& p, int i){
+    if (i < p.size()){
+        return p[i];
+    }
+    return 0;
+}
+
+int numPoints(const Matrix& matrix){
+    return pow(2, matrix.size());
+}
+
+std::vector<unsigned long> getCols(const Matrix& matrix){
+    std::vector<unsigned long> res(matrix.size(), 0);
+    for (unsigned int j=0; j<matrix.size(); j++){
+        unsigned long s = 0;
+        for (unsigned int i=0; i<matrix.size(); i++){
+            s += matrix[i][j] << i;
+        }
+        res[j] = s;
+    }
+    return res;
+}
+
+
+void expandSeries(const Polynomial& h, const Polynomial& P, std::vector<unsigned int>& expansion, unsigned int expansion_limit){
+    int m = deg(P); 
+    for(int l = 1; l<= expansion_limit ; l++){
+        int res =  (m-l >=0 && coeff(h, m-l))? 1 : 0;
+        int start = (l-m > 1) ? (l-m) : 1;
+        for( int p = start; p < l; p++){
+            res = ( res + expansion[p-1] * coeff(P, m-(l-p))) %2;        
+        }
+        expansion[l-1] = res;
+    }
+   }
+
+
+std::vector<Matrix> computeGeneratorMatrices(const Polynomial& modulus, const std::vector<Polynomial>& gen) {
+        
+    unsigned int m = (unsigned int) (deg(modulus));
+
+    std::vector<Matrix> genratorMatrices(gen.size(), std::vector<std::vector<bool>>(m, std::vector<bool>(m, 0)));
+
+    for(unsigned int j=0; j<gen.size(); j++){
+    
+        std::vector<unsigned int> expansion(2 * m);
+        expandSeries(gen[j], modulus, expansion, 2 * m);
+
+        for(unsigned int c =0; c<m; c++ ){
+            unsigned int res = 0;
+            // unsigned int mult = 1;
+            for(unsigned int row =0; row <m; row++ ){
+                genratorMatrices[j][row][c] = expansion[c + row];
+                // res += expansion[c + row] * mult;
+                // mult *= 2;
+            }
+            // genratorMatrices[j].push_back(res);
+        }
+    }
+    return genratorMatrices;
+   }
+
+
+std::vector<std::vector<double>> points(std::vector<Matrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
+    std::vector<std::vector<double>> points;
+    int nbPoints = numPoints(matrices[0]);
+    unsigned int m = matrices[0].size();
+    unsigned int dim = matrices.size() / interlacing;
+    for (int i=0; i<nbPoints; i++){
+        points.push_back(std::vector<double>());
+    }
+
+    for (int j=0; j < dim; j++){
+
+        std::vector<std::vector<unsigned long>> cols;
+        for (int r=0; r < interlacing; r++){
+            cols.push_back(getCols(matrices[j*interlacing + r]));
+        }
+
+        std::vector<unsigned long> m_permutation = std::vector<unsigned long>(interlacing, 0);
+        points[0].push_back(0);
+        for (unsigned int n=1; n<nbPoints; ++n){
+            for (unsigned int r=0; r < interlacing; r++){
+                m_permutation[r] = m_permutation[r] ^ cols[r][graycode[n-1]];
+            }
+            unsigned int res = 0;
+            for (unsigned int i=0; i < interlacing * m; i++){
+                res += (((m_permutation[i % interlacing] >> (i / interlacing)) & 1) << (interlacing*m - i - 1));
+            } 
+            points[n].push_back(((double) res) / (1 << (interlacing * m)));
+        }
+    }
+    return points;
+}
+
+int main(){
+    Polynomial modulus {{ mod }};
+    std::vector<Polynomial> genVector {{ genvec }};
+    unsigned int interlacing = {{interlacing}};
+
+    std::vector<Matrix> matrices = computeGeneratorMatrices(modulus, genVector);
+
+    std::vector<unsigned int> graycode = std::vector<unsigned int>();
+    for(unsigned int i=0; i < pow(2, deg(modulus)); i++){
+            graycode.push_back(getmsb(((i >> 1) ^ i)^(((i+1) >> 1) ^ (i+1))));
+    }
+
+    std::vector<std::vector<double>> myPoints = points(matrices, graycode, interlacing);
+    for (unsigned int i=0; i<myPoints.size(); i++){
+        for (unsigned int j=0; j<myPoints[0].size(); j++){
+            std::cout << myPoints[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+

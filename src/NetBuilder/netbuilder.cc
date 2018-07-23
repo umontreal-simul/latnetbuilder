@@ -231,8 +231,9 @@ int main(int argc, const char *argv[])
         if (opt.count("output-folder") >= 1){
           outputFolder = opt["output-folder"].as<std::string>();
           std::cout << "Writing in output folder: " << outputFolder << std::endl;
-          boost::filesystem::remove_all(outputFolder);
-          boost::filesystem::create_directory(outputFolder);
+          if (! boost::filesystem::is_directory(outputFolder)){
+            boost::filesystem::create_directories(outputFolder);
+          }
         }
         
         // global variable

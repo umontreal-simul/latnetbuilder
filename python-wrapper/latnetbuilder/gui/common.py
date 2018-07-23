@@ -5,7 +5,7 @@ from pkg_resources import resource_string
 
 import numpy as np
 
-MAX_DIM_JOE_KUO = 100   # max dim of Joe and Kuo nets loaded in memory
+MAX_DIM_JOE_KUO = 300   # max dim of Joe and Kuo nets loaded in memory
 INITIAL_DIM = 3     # default dimension for the GUI
 
 # primitive polynomials - necessary for sobol net output
@@ -31,22 +31,24 @@ style_default = {'description_width': 'initial'}
 # corresponds to the widget whose display status will changed in the callback launched by the key widget.
 # For instance, it means that if the user checks the `is_multilevel` Checkbox, it will trigger
 # the display of the main widget of the multi_level GUI element.
-trigger_display_dic = {'is_multilevel': ['filters', 'combiner_options'], 
-                    'low_pass_filter': ['filters', 'low_pass_filter_options']}
+trigger_display_dic = {'is_multilevel': [['figure_of_merit', 'combiner_options']], 
+                    'low_pass_filter': [['figure_of_merit', 'low_pass_filter_options']],
+                    'is_normalization': [['figure_of_merit', 'minimum_level'], ['figure_of_merit', 'maximum_level']]}
 
 def trigger_display(change, gui, owner):
     '''Change the display status of a widget.
     
     The arg owner corresponds to the name of the widget that triggers this callback.
     '''
+    
     if change['name'] != 'value':
         return
-    obj_id = trigger_display_dic[owner]
-    obj = getattr(getattr(gui, obj_id[0]), obj_id[1])
-    if not change['new']:
-        obj.layout.display = 'none'
-    elif change['new']:
-        obj.layout.display = 'flex'
+    for obj_id in trigger_display_dic[owner]:
+        obj = getattr(getattr(gui, obj_id[0]), obj_id[1])
+        if not change['new']:
+            obj.layout.display = 'none'
+        elif change['new']:
+            obj.layout.display = 'flex'
 
 def parse_polynomial(s):
     '''Parse a polynomial string (e.g. 1101^7).
@@ -67,11 +69,11 @@ def parse_polynomial(s):
             if poly_str != '':
                 poly_str += '+'
             poly_str += ' z^{' + str(len(modulus)-k-1) + '}'
+    if poly_str == '':
+        return ''
     if power != 1:
         poly_str = '(' + poly_str + ')^{' + str(power) + '}'  
             
-    if poly_str == '':
-        poly_str = '0'
     return poly_str
 
 class ParsingException(Exception):

@@ -3,7 +3,7 @@ import ipywidgets as widgets
 from .common import style_default, INITIAL_DIM, JoeKuoSobolNets, BaseGUIElement
 
 explr_data = {
-    'explicit:': '<p> A given generating vector \\(a = (a_1, ..., a_s)\\) is specified. </p>\
+    'lat-eval': '<p> A given generating vector \\(a = (a_1, ..., a_s)\\) is specified in the boxes below. </p>\
     <p> Two possibilities are given: </p> \
     <ul>\
     <li> simply evaluate the figure of merit for the lattice defined by this generating vector </li>\
@@ -21,7 +21,7 @@ explr_data = {
     'full-CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined the best ones are selected, one coordinate at a time. </p>\
     <p> If you tick "random choice r of points", a number r of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.\
     If the minimal random dimension \\(d\\) equals one, the search is entirely random. Else, the search is exhaustive up to dimension \\(d-1\\), and random from dimension \\(d\\). </p>',
-    'net-explicit:' : '<p> Explicit net evaluation. Enter below the net characteristics:\
+    'net-eval' : '<p> Explicit net evaluation. Enter below the net characteristics:\
         <ul>\
             <li> direction numbers for Sobol construction (please respect the format given as example)\
             <li> generating vector for the polynomial construction \
@@ -34,24 +34,28 @@ def change_explr_choice(change, gui):
     if change['name'] != 'value':
         return
     new_choice = change['new']
-    gui.exploration_method.explr_info.value = explr_data[new_choice]
 
-    if 'explicit' in new_choice:
+    if new_choice == 'evaluation':
+        if gui.main_tab.selected_index == 0:    
+            gui.exploration_method.explr_info.value = explr_data['lat-eval']
+        else:
+            gui.exploration_method.explr_info.value = explr_data['net-eval']
         gui.exploration_method.from_previous_search.layout.display = 'flex'
     else:
+        gui.exploration_method.explr_info.value = explr_data[new_choice]
         gui.exploration_method.from_previous_search.layout.display = 'none'
 
-    if new_choice == 'explicit:':     
+    if new_choice == 'evaluation' and gui.main_tab.selected_index == 0:     
         gui.exploration_method.generating_vector.layout.display = 'flex'
     else:
         gui.exploration_method.generating_vector.layout.display = 'none'
 
-    if new_choice in ['exhaustive', 'Korobov', 'CBC', 'full-CBC']:
+    if new_choice in ['exhaustive', 'Korobov', 'full-CBC']:
         gui.exploration_method.random_box.layout.display = 'flex'
     else:
         gui.exploration_method.random_box.layout.display = 'none'
 
-    if new_choice == 'full-CBC':
+    if new_choice == 'full-CBC' and gui.main_tab.selected_index == 1:
         gui.exploration_method.mixed_CBC_level.layout.display = 'flex'
     else:
         gui.exploration_method.mixed_CBC_level.layout.display = 'none'
@@ -59,14 +63,13 @@ def change_explr_choice(change, gui):
     gui.exploration_method.generating_numbers_sobol_box.layout.display = 'none'
     gui.exploration_method.generating_vector_simple.layout.display = 'none'
     gui.exploration_method.generating_matrices.layout.display = 'none'
-    if new_choice == 'net-explicit:' :
+    if new_choice == 'evaluation'  and gui.main_tab.selected_index == 1:
         if gui.construction_method.construction_choice.value == 'sobol':
             gui.exploration_method.generating_numbers_sobol_box.layout.display = 'flex'
         elif gui.construction_method.construction_choice.value == 'polynomial':
             gui.exploration_method.generating_vector_simple.layout.display = 'flex'
         elif gui.construction_method.construction_choice.value == 'explicit':
             gui.exploration_method.generating_matrices.layout.display = 'flex'
-            gui.exploration_method.from_previous_search.layout.display = 'none'
             
 
 def trigger_is_random(change, gui):
@@ -80,31 +83,37 @@ def trigger_is_random(change, gui):
         gui.exploration_method.number_samples.layout.display = 'none'
 
 def automatic_generating_numbers_sobol(change, gui):
-    gui.exploration_method.generating_numbers_sobol.value = '\n'.join(JoeKuoSobolNets[:gui.properties.dimension.value])
+    gui.exploration_method.generating_numbers_sobol.value = '\n'.join(JoeKuoSobolNets[:(gui.properties.dimension.value * gui.properties.interlacing.value)])
 
 def fill_from_previous_search(change, gui):
     if gui.output.result_obj is None:
         return
     else:
         result = gui.output.result_obj
-        if 'digital' in gui.search.search_type():
-            if gui.main_tab.selected_index == 1:
-                if gui.search.search_type() == 'digital-polynomial' and gui.construction_method.construction_choice.value == 'polynomial':
-                    for k in range(1, int(gui.search.dimension)+1):
-                        gui.exploration_method.generating_vector_simple.children[0].children[k].value = str(result.gen_vector[k-1])
-                elif gui.search.search_type() == 'digital-sobol' and gui.construction_method.construction_choice.value == 'sobol':
-                    gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, result.gen_vector[k]))) for k in range(result.dim)])
+        if 'digital' in gui.search.search_type() and gui.main_tab.selected_index == 1:
+            if gui.search.search_type() == 'digital-polynomial' and gui.construction_method.construction_choice.value == 'polynomial':
+                for k in range(int(gui.search.dimension)):
+                    gui.exploration_method.generating_vector_simple.children[k].value = "".join(list(map(str, result.gen_vector[k])))
 
-        else:
-            if gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value==gui.search.search_type():
-                for k in range(1, int(gui.search.dimension)+1):
-                    gui.exploration_method.generating_vector.children[0].children[k].value = str(result.gen_vector[k-1])
+            elif gui.search.search_type() == 'digital-sobol' and gui.construction_method.construction_choice.value == 'sobol':
+                gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, result.gen_vector[k]))) for k in range(result.dim)])
+            
+            elif gui.search.search_type() == 'digital-explicit' and gui.construction_method.construction_choice.value == 'explicit':
+                gui.exploration_method.generating_matrices.value = '\n\n'.join([ '\n'.join([' '.join(list(map(str, result.matrices[coord][i]))) for i in range(result.nb_rows)]) for coord in range(result.dim)])
+
+        if gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value == gui.search.search_type():
+            if gui.lattice_type.type_choice.value == 'ordinary':
+                for k in range(int(gui.search.dimension)):
+                    gui.exploration_method.generating_vector.children[0].children[k].value = result.gen_vector[k]
+            else:
+                for k in range(int(gui.search.dimension)):
+                    gui.exploration_method.generating_vector.children[0].children[k].value = "".join(list(map(str, result.gen_vector[k])))
 
 def exploration_method():
     exploration_choice = widgets.ToggleButtons(
-        value='CBC',
-        options=[('Evaluate/Extend', 'explicit:'), ('All space', 'exhaustive'),
-                ('Korobov', 'Korobov'), ('CBC', 'CBC'), ('Fast CBC', 'fast-CBC')],
+        value='fast-CBC',
+        options=[('Evaluate/Extend', 'evaluation'), ('All space', 'exhaustive'),
+                ('Korobov', 'Korobov'), ('CBC', 'full-CBC'), ('Fast CBC', 'fast-CBC')],
         description='Choose one:',
         style=style_default
     )
@@ -112,7 +121,7 @@ def exploration_method():
     is_random = widgets.Checkbox(description='Random choice of r points', value=False)
     number_samples = widgets.Text(value='10', description='Set r:', layout=widgets.Layout(display='none'))
 
-    random_box = widgets.HBox([is_random, number_samples], style=style_default)
+    random_box = widgets.HBox([is_random, number_samples], style=style_default, layout=widgets.Layout(display='none'))
 
 
     generating_numbers_sobol = widgets.Textarea(placeholder='0\n1\n1,1\n1,3,5',
@@ -127,16 +136,14 @@ def exploration_method():
     from_previous_search = widgets.Button(description='Evaluate from previous search', style=style_default, layout=widgets.Layout(width='200px', display='none', margin='40px 0px 0px 0px'))
 
     generating_vector_simple = widgets.HBox(
-            [widgets.Label("Generating vector:")] +
             [widgets.Text(value='1', description='', 
-            layout=widgets.Layout(width='10%'), style=style_default) for k in range(INITIAL_DIM)],
+            layout=widgets.Layout(width='100px'), style=style_default) for k in range(INITIAL_DIM)],
             layout=widgets.Layout(display='none'))
 
     generating_vector = widgets.VBox([
         widgets.HBox(
-            [widgets.Label("Generating vector:")] +
             [widgets.Text(value='1', description='', 
-            layout=widgets.Layout(width='10%'), style=style_default) for k in range(INITIAL_DIM)]),
+            layout=widgets.Layout(width='100px'), style=style_default) for k in range(INITIAL_DIM)]),
         widgets.Text(placeholder='e.g. 2^8 or 256', description='If you want to extend, please specify the former modulus:',
                     layout=widgets.Layout(width='65%'), style=style_default)
     ],

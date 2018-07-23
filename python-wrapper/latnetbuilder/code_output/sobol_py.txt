@@ -1,0 +1,49 @@
+import csv
+import numpy as np
+
+s = {{s}}
+m = {{m}}
+init_numbers = {{init_numbers}}
+prim_polys = np.array({{prim_polys}})
+interlacing = {{interlacing}}
+
+def bin_array(num, m):
+    """Convert a positive integer num into an m-bit bit vector"""
+    return np.array(list(np.binary_repr(num).zfill(m))).astype(np.int8)
+
+def sobol_generating_matrix(coord,init_numbers,m):
+    C = np.eye(m,dtype = np.int)
+    if coord==1:
+        return C
+    degree = prim_polys[coord-2,0]
+    a = np.zeros(degree,dtype=np.int)
+    a[:-1] = bin_array(prim_polys[coord-2,1],degree-1)
+    a[-1] = 1
+    exp = np.array([2<<k for k in range(degree)])
+    a = a*exp
+    assert len(init_numbers)==degree
+    for k in range(min(degree,m)):
+        assert init_numbers[k] < (2<<k)
+        assert init_numbers[k] % 2 == 1
+        C[:k, k] = bin_array(init_numbers[k],k+1)[:k]
+    tmp = np.flipud(np.copy(init_numbers))
+    for k in range(degree,m):
+        new_num = np.bitwise_xor.reduce(tmp*a) ^ tmp[-1]
+        tmp[1:]=tmp[:-1]
+        tmp[0] = new_num
+        C[:k,k] = bin_array(new_num,k+1)[:k]
+    return C
+
+points = []
+matrices = [sobol_generating_matrix(j, init_numbers[j-1], m) for j in range(1, s*interlacing+1)]
+dim = len(matrices) // interlacing
+nb_points = 2**m
+mult = np.array([2**(-k) for k in range(1, m*interlacing + 1)])
+
+for x in range(nb_points):
+    x_coord = []
+    binary_repr = np.array([((x>>i)&1) for i in range(m)])
+    for coord in range(dim):
+        prods = [np.mod(matrices[coord * interlacing + r].dot(binary_repr), 2) for r in range(interlacing)]
+        x_coord.append(np.array([prods[i % interlacing][i // interlacing] for i in range(m*interlacing)]).dot(mult))
+    points.append(x_coord)

@@ -118,14 +118,7 @@ def func_add_weights(change, gui):
     new_list.append(gui.weights.create_full_weight(name, int(gui.properties.dimension.value), gui))
     VBOX_of_weights.children = new_list
 
-def weights():
-    # weight_power = widgets.Text(
-    #     value='2',
-    #     description='<b> Set Weights Power \\(p\\): </b>',
-    #     layout=widgets.Layout(width='21%'),
-    #     style=style_default
-    # )
-    
+def weights():    
     add_weight = widgets.Dropdown(
     options=[('Select type of weights', 'None'), ('Product', 'product:'), ('Order-Dependent', 'order-dependent:'),
             ('POD', 'POD'), ('Projection-Dependent', 'projection-dependent')],
@@ -138,7 +131,6 @@ def weights():
     weights_wrapper.set_title(0, 'Weights')
 
     return BaseGUIElement(add_weight=add_weight,
-                          #  weight_power=weight_power,
                           create_full_weight=create_full_weight,
                           weights_button_id=weights_button_id,
                           weights_set_all_id=weights_set_all_id,

@@ -1,0 +1,6 @@
+n = {{n}};
+a = {{a}};
+points = zeros(n,length(a));
+for i = 1:n
+    points(i,:) = mod((i - 1) * a, n) / n;
+end
