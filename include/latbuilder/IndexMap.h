@@ -180,9 +180,4 @@ permuteVector(VEC& vec, MAP mapper) {
 
 }
 
-/** \example IndexMap.cc
-    This example shows how to make use of the LatBuilder::IndexMap class to permute vector
-    elements.
-*/
-
 #endif

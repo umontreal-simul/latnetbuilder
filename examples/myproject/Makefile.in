@@ -17,10 +17,10 @@
 # Example Makefile
 
 # installation prefix of LatNet Builder
-LATBUILDER_PREFIX = @PREFIX@
+LATNETBUILDER_PREFIX = @PREFIX@
 
-INCLUDES = -I$(LATBUILDER_PREFIX)/include @INCLUDES@
-LIBS = -L$(LATBUILDER_PREFIX)/lib -llatbuilder -llatticetester @LIBPATH@ @LIBRARIES@
+INCLUDES = -I$(LATNETBUILDER_PREFIX)/include @INCLUDES@
+LIBS = -L$(LATNETBUILDER_PREFIX)/lib -llatnetbuilder -llatticetester @LIBPATH@ @LIBRARIES@
 
 # release
 CXXFLAGS = @CXXFLAGS@
@@ -28,7 +28,7 @@ CXXFLAGS = @CXXFLAGS@
 # debugging
 #CXXFLAGS = -Wall -O0 -g
 
-LDFLAGS = -Wl,-R,"$(LATBUILDER_PREFIX)/lib"
+LDFLAGS = -Wl,-R,"$(LATNETBUILDER_PREFIX)/lib"
 
 %.o: %.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(INCLUDES) -std=c++14 -c $< -o $@

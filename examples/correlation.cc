@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "latbuilder/Types.h"
 #include "latbuilder/Parser/SizeParam.h"
 #include "latbuilder/Parser/Weights.h"
 #include "latbuilder/Parser/FigureOfMerit.h"
 #include "latbuilder/Parser/MeritFilterList.h"
-#include "latbuilder/Types.h"
 #include "latbuilder/TextStream.h"
 #include "latbuilder/LFSR258.h"
 
@@ -57,15 +57,16 @@ struct Execute {
          FIG2 fig2,
          const std::string& fig1,
          std::unique_ptr<LatticeTester::Weights> weights1,
-         LatBuilder::SizeParam<LatType::ORDINARY> size,
+         LatBuilder::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> size,
          Dimension dimension,
-         MeritFilterList<LatType::ORDINARY> filters,
+         MeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> filters,
          size_t nrand
          ) const
    {
-      Parser::FigureOfMerit::parse(
+      Parser::FigureOfMerit<LatticeType::ORDINARY>::parse(
 	    "2",
             fig1,
+            1,
             std::move(weights1),
             *this,
             std::move(fig2),
@@ -80,18 +81,18 @@ struct Execute {
    void operator()(
          FIG1 fig1,
          FIG2 fig2,
-         LatBuilder::SizeParam<LatType::ORDINARY> size,
+         LatBuilder::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> size,
          Dimension dimension,
-         MeritFilterList<LatType::ORDINARY> filters,
+         MeritFilterList<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> filters,
          size_t nrand
          ) const
    {
-      Storage<LatType::ORDINARY, fig1.suggestedCompression()> storage1(size);
-      Storage<LatType::ORDINARY, fig2.suggestedCompression()> storage2(size);
+      Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, fig1.suggestedCompression()> storage1(size);
+      Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, fig2.suggestedCompression()> storage2(size);
 
       typedef GenSeq::CoprimeIntegers<fig1.suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension, nrand);
-      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2));
+      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(2));
 
       auto latSeq = LatSeq::combine<Zip>(size, std::move(genSeqs));
 
@@ -129,7 +130,7 @@ int main(int argc, const char *argv[])
 
    int iarg = 1;
    auto nrand = boost::lexical_cast<size_t>(argv[iarg++]);
-   auto size = Parser::SizeParam::parse<LatType::ORDINARY>(argv[iarg++]);
+   auto size = Parser::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>::parse(argv[iarg++]);
    auto dimension = boost::lexical_cast<Dimension>(argv[iarg++]);
    std::string figSpec1 = argv[iarg++];
    std::string weightsSpec1 = argv[iarg++];
@@ -140,11 +141,12 @@ int main(int argc, const char *argv[])
    auto weights1 = Parser::Weights::parse(weightsSpec1);
    auto weights2 = Parser::Weights::parse(weightsSpec2);
 
-   auto filters = Parser::MeritFilterList::parse(filtersSpec, size, *weights1, 2);
+   auto filters = Parser::MeritFilterList<LatticeType::ORDINARY>::parse("", filtersSpec, size, *weights1, 2);
 
-   Parser::FigureOfMerit::parse(
+   Parser::FigureOfMerit<LatticeType::ORDINARY>::parse(
          "2",
          figSpec2,
+         1,
          std::move(weights2),
          Execute(),
          figSpec1,

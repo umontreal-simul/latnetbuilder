@@ -354,7 +354,6 @@ struct StorageTraits<Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>> {
  *                      same value, for all \f$i = 0, \dots, b^M - 1\f$, where
  *                      \f$M\f$ is the maximum level of embedding.
  *
- * See the output of \ref Storage.cc for an illustration of this.
  */
 template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO>
 class Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO> :

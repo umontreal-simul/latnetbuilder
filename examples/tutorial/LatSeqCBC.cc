@@ -30,7 +30,7 @@ template <typename SEQ>
 typename SEQ::const_iterator findBest(const SEQ& seq)
 {
    std::cout << "searching for the best lattice in dimension: " << seq.baseLat().dimension() << std::endl;
-   std::cout << "    possible choices: " << seq << std::endl;
+   std::cout << "possible choices: " << std::endl << seq << std::endl;
    // select the first element
    return seq.begin();
 }
@@ -50,7 +50,8 @@ void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
       auto latSeq = LatSeq::cbc(baseLat, Coprime(size));
       auto itBest = findBest(latSeq);
       baseLat = *itBest;
-      std::cout << "    selected lattice: " << baseLat << std::endl;
+      std::cout << "selected lattice: " << std::endl << baseLat << std::endl;
+      std::cout << std::endl;
    }
    //! [loop]
 
@@ -58,6 +59,7 @@ void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
 int main()
 {
    CBCsearch<LatticeType::ORDINARY>(8);
+   std::cout << std::endl;
    CBCsearch<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
 
    return 0;

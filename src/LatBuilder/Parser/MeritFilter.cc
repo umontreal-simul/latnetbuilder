@@ -131,7 +131,7 @@ namespace {
       }
 
       std::string newNormString = str;
-      if (admissibleNormalizations.size() == 0)
+      if (figure != "" && admissibleNormalizations.size() == 0)
             throw BadFilter("No normalizations are available with figure " + figure + ".");
 
       if ( (str.size() >= 4 && str.substr(0,4)=="select") || str.size() == 0)
@@ -140,7 +140,7 @@ namespace {
       }
 
       auto args = splitPair(newNormString, ':');
-      if (admissibleNormalizations.find(args.first) == admissibleNormalizations.end())
+      if (figure != "" && admissibleNormalizations.find(args.first) == admissibleNormalizations.end())
       {
             throw BadFilter("Normalization " + str + " is incompatible with figure" + figure + ( (LR == LatticeType::POLYNOMIAL) ? " with lattice type polynomial." : "."));
       } 

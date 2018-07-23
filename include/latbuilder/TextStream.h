@@ -140,13 +140,4 @@ operator<<(std::ostream& os, const T& x)
 
 }}
 
-/** \example TextStream.cc
- * This is an example of how to use the TextStream namespace.
- * It can be built by launching
- * \code
- * b2 TextStream
- * \endcode
- * from the \c examples/ directory.
- */
-
 #endif

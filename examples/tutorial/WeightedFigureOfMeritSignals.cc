@@ -63,7 +63,8 @@ public:
    // been observed; updates the best observed candidate lattice if necessary
    void observe(const LatDef& lat, Real merit)
    {
-      std::cout << lat << "\t:\t" << merit;
+      std::cout << lat;
+      std::cout << "Merit: " << merit;
       if (merit < m_bestMerit) {
          std::cout << " <-- best";
          m_bestMerit = merit;
@@ -79,7 +80,7 @@ public:
 
    //! [onAbort]
    void onAbort(const LatDef& lat) const
-   { std::cout << "rejected " << lat << std::endl; }
+   { std::cout << "rejected:" << std::endl << lat; }
    //! [onAbort]
 
 private:
@@ -96,7 +97,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat> ProjDep;
+   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
@@ -150,7 +151,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
       // notify the observer
       obs.observe(lat, merit);
    }
-   std::cout << "BEST LATTICE: " << obs.bestLat() << " with merit value " << obs.bestMerit() << std::endl;
+   std::cout << "BEST LATTICE: " << std::endl << obs.bestLat() << "Merit value: " << obs.bestMerit() << std::endl;
    //! [loop]
 }
 

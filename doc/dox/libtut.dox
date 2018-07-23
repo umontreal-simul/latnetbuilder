@@ -44,7 +44,6 @@ The tutorial is divided into the following sections:
     <li> \subpage libtut_lat_filters      </li>
     <li> \subpage libtut_lat_misc           </li>
     <li> \subpage libtut_lat_extending      </li>
-    <li> \subpage libtut_impl </li>
 </ol>
 */
 
@@ -73,7 +72,7 @@ outputs:
 
 /** \page libtut_lat_polynomial Implementation of Polynomials
 
-%LatBuilder uses the implementation of % NTL library to represents polynomials over \f$\mathbb{Z}_2\f$
+%LatBuilder uses the %NTL library to manipulate polynomials over \f$\mathbb{Z}_2\f$
 The Input/Output format used is the same as in NTL: The polynomial \f$ \sum_{i=0}^{n} a_iz^i \f$ is represented by [\f$a_0\f$...\f$a_n\f$].
 In the examples shown here, we construct polynomial from integers using a binary conversion. The integer \f$ i = \sum a_j2^j \f$ is seen as the polynomial \f$ i(z) = \sum a_jz^j \f$
 \snippet tutorial/Polynomials.cc main
@@ -86,91 +85,105 @@ outputs
 
 /** \page libtut_lat_latdef Lattice Types and Definitions
 
-%LatBuilder supports two lattice: ordinary lattices and polynomial lattices. For each, two types of lattices are supported: simple and embedded.
+%LatBuilder supports two types of lattices: ordinary lattices and polynomial lattices. 
+One has also the choice between simple (unilevel) lattices and embedded (multilevel) lattices.
+The first choice corresponds to the LatticeType enumeration and the second to the EmbeddingType enumeration.
+These two enumerations are used across all the library as non-type template parameters to implement different policies
+accordingly with the type of lattices.
+
 Their representation in %LatBuilder differs by the type of their size
-parameter.
-The size of a simple ordinary lattice (of type SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>) is specified by
-a single integer: the number of points in the lattice \f$n\f$.
-The size of an embedded ordinary lattice (of type SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>) is
-specified by two integers: a prime base \f$b\f$ and a maximum level \f$m\f$,
-such that, for the embedded lattice at the maximum level, \f$n = b^m\f$.
-
-The size of a simple polynomial lattice (of type SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>) is specified by
-a single polynomial: the modulus of the lattice \f$P\f$.
-
-The size of an embedded polynomial lattice (of type SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>) is
-specified by a polynomial and an integer: a polynomial base \f$b\f$ and a maximum level \f$m\f$,
-such that, for the embedded lattice at the maximum level, \f$P = b^m\f$.
-
-A lattice of either type can be defined by its size parameter(s) together with
+parameter. The SizeParam class accounts for this differences.
+A lattice of either type can be defined by its size parameter(s), together with
 its dimension \f$s\f$ and the components of its generating vector \f$\boldsymbol
-a = (a_1, \dots, a_s)\f$.  The class LatDef can be used for
-that purpose, as in \ref tutorial/LatDef.cc.
+a = (a_1, \dots, a_s)\f$.  The LatDef class can be used for
+this purpose, as in \ref tutorial/LatDef.cc.
+
 The following function calls some members of LatDef:
 \snippet tutorial/LatDef.cc printLatDef
-An simple ordinary lattice can be instantiated by passing the LatDef constructor a
-size parameter, here with \f$n=31\f$, and a generating vector, here
-\f$\boldsymbol a = (1,12,3)\f$:
-\snippet tutorial/LatDef.cc ordinary
-This outputs:
+
+The following examples show how to use LatDef to construct the different lattice types and print
+some basic information about the constructed lattices:
+
+- simple ordinary lattice:
+    Value: a single integer: the number of points in the lattice \f$n\f$
+
+    An simple ordinary lattice can be instantiated by passing to the LatDef constructor a
+    size parameter, here with \f$n=31\f$, and a generating vector, here
+    \f$\boldsymbol a = (1,12,3)\f$:
+
+    \snippet tutorial/LatDef.cc ordinary
+
+    This outputs:
 \verbatim
 ordinary - simple lattice:
-    dimension:         3
-    size parameter:    31
-    generating vector: [1, 12, 3]
-    definition:        lattice(31, [1, 12, 3])
-
+dimension:         3
+size parameter:    31
+generating vector: [1, 12, 3]
+definition:        
+Ordinary Lattice - Modulus = 31 - Generating vector = [1, 12, 3]
 \endverbatim
-Embedded ordinary lattices with \f$n=b^\ell\f$ for \f$\ell=0,\dots,m\f$ can be
-instantiated by passing the LatDef constructor a size parameter \f$(b,m)\f$,
-here \f$(b,m)=(2,5)\f$, and a generating vector, here \f$\boldsymbol a =
-(1,7,9)\f$:
-\snippet tutorial/LatDef.cc embedded
-This outputs:
+
+- embedded ordinary lattice:
+
+    Embedded ordinary lattices with \f$n=b^\ell\f$ for \f$\ell=0,\dots,m\f$ can be
+    instantiated by passing the LatDef constructor a size parameter \f$(b,m)\f$,
+    here \f$(b,m)=(2,5)\f$, and a generating vector, here \f$\boldsymbol a =
+    (1,7,9)\f$:
+
+    \snippet tutorial/LatDef.cc embedded
+
+    This outputs:
 \verbatim
 ordinary - embedded lattice:
-    dimension:         3
-    size parameter:    2^5
-    generating vector: [1, 7, 9]
-    definition:        lattice(2^5, [1, 7, 9])
-
+dimension:         3
+size parameter:    2^5
+generating vector: [1, 7, 9]
+definition:        
+Ordinary Lattice - Modulus = 2^5 - Generating vector = [1, 7, 9]
 \endverbatim
 
-An simple polynomial lattice can be instantiated by passing the LatDef constructor a
-size parameter, here with \f$P = 1 + z^2 + z^3\f$, and a generating vector, here
-\f$\boldsymbol q = (1,1+z^2,1+z)\f$:
-\snippet tutorial/LatDef.cc pordinary
-This outputs:
+- simple polynomial lattice:
+
+    Simple polynomial lattices can be instantiated by passing the LatDef constructor a
+    size parameter, here with \f$P = 1 + z^2 + z^3\f$, and a generating vector, here
+    \f$\boldsymbol q = (1,1+z^2,1+z)\f$:
+
+    \snippet tutorial/LatDef.cc pordinary
+
+    This outputs:
 \verbatim
 polynomial - simple lattice:
-    dimension:         3
-    size parameter:    [1 0 1 1]
-    generating vector: [[1], [1 0 1], [1 1]]
-    definition:        PolynomialLattice([1 0 1 1], [[1], [1 0 1], [1 1]])
-\endverbatim
-Embedded polynomial lattices with \f$P=b^\ell\f$ for \f$\ell=0,\dots,m\f$ can be
-instantiated by passing the LatDef constructor a size parameter \f$(b,m)\f$,
-here \f$(b,m)=(z,5)\f$, and a generating vector, here \f$\boldsymbol q =
-(1,z+z^3,1+z)\f$:
-\snippet tutorial/LatDef.cc pembedded
-This outputs:
-\verbatim
-polynomial - embedded lattice:
-    dimension:         3
-    size parameter:    [0 1]^5
-    generating vector: [[1], [0 1 0 1], [1 1]]
-    definition:        PolynomialLattice([0 1]^5, [[1], [0 1 0 1], [1 1]])
+dimension:         3
+size parameter:    [1 0 1 1]
+generating vector: [[1], [1 0 1], [1 1]]
+definition:        
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  1 0 1
+  1 1
 \endverbatim
 
-Note that the size parameter for the embedded lattice:
-\code
-SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(2, 5)
-\endcode
-could also have been instantiated directly with the number of points
-(\f$2^5=32\f$):
-\code
-SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(32)
-\endcode
+- embedded polynomial lattice:
+
+    Embedded polynomial lattices with \f$P=b^\ell\f$ for \f$\ell=0,\dots,m\f$ can be
+    instantiated by passing the LatDef constructor a size parameter \f$(b,m)\f$,
+    here \f$(b,m)=(z,5)\f$, and a generating vector, here \f$\boldsymbol q =
+    (1,z+z^3,1+z)\f$:
+
+    \snippet tutorial/LatDef.cc pembedded
+
+    This outputs:
+\verbatim
+polynomial - embedded lattice:
+dimension:         3
+size parameter:    [0 1]^5
+generating vector: [[1], [0 1 0 1], [1 1]]
+definition:        
+Polynomial Lattice - Modulus = [0 1]^5 - Generating vector = 
+  1
+  0 1 0 1
+  1 1
+\endverbatim
 
 \sa EmbeddingType LatDef
 */
@@ -193,26 +206,32 @@ possible values for the components of the generating vector.
 \section libtut_lat_genseq_coprime Coprime Integers-Polynomials
 
 In the general case, one normally needs to enumerate all integers (respectively polynomials) that are
-relatively prime with the modulus \f$n\f$ (respectively \f$P\f$) in the lattice point set.
+relatively prime with the modulus \f$n\f$ (respectively \f$P\f$) of the lattice point set.
 This is implemented by the class template GenSeq::GeneratingValues.
+
 For ordinary lattices, some figures of merit are invariant under the transformation \f$a \mapsto n -
 a\f$ where \f$a\f$ is any component of the generating vector.
 When using such a <em>symmetric</em> figure of merit, redundancy can be avoided
 by enumerating only the first half of the sequence of integers coprime with
 \f$n\f$, i.e.\ by compressing the search space.  
-In that case, we pass Compress::Symmetric as the second template argument to
+
+In that case, we pass <code>Compress::Symmetric</code> as second template argument to
 GenSeq::GeneratingValues:
 \snippet tutorial/GenSeqGeneratingValues.cc symmetric
-Otherwise, we pass Compress::None:
+
+Otherwise, we pass <code>Compress::None</code>:
 \snippet tutorial/GenSeqGeneratingValues.cc all
 
-For polynomial lattices, implemented figures of merit have no known symmetry
+For polynomial lattices, to our knowledge, no symmetry properties have been identified so far:
 
 \snippet tutorial/GenSeqGeneratingValues.cc pall
 
 These concepts are illustrated in \ref tutorial/GenSeqGeneratingValues.cc :
-\snippet tutorial/GenSeqGeneratingValues.cc main
-The ouput of the above code is:
+
+- For ordinary lattices: 
+    \snippet tutorial/GenSeqGeneratingValues.cc main
+
+    The ouput of the above code is:
 \verbatim
 lattice size: 7
     whole sequence: [1, 2, 3, 4, 5, 6]
@@ -225,9 +244,10 @@ lattice size: 12
      half sequence: [1, 5]
 \endverbatim
 
-And for polynomials:
-\snippet tutorial/GenSeqGeneratingValues.cc pmain
-The ouput of the above code is:
+- For polynomial lattices:
+    \snippet tutorial/GenSeqGeneratingValues.cc pmain
+    
+    The ouput of the above code is:
 \verbatim
 polynomial lattice size: [0 1 0 1]
     whole sequence: [[1], [1 1 1]]
@@ -245,36 +265,42 @@ GenSeq::GeneratingValues optionally takes a third template arguments that
 specifies a method of traversal of its values; it defaults to Traversal::Forward
 which enumerates the values in their original order in the sequence.
 It can be replaced with Traversal::Random for the above purpose:
+
 \snippet tutorial/GenSeqRandom.cc types
+
 The traversal type Traversal::Random also takes a template argument that
 specifies the type of random generator to use.
 We use LFSR258 in our example, but any C++11-compliant random engine could be
 used.
 Next, a random traversal object must be instantiated with the desired number
 \c r of random samples:
+
 \snippet tutorial/GenSeqRandom.cc trav
+
 Then, the sequence object can be instantiated with the lattice size \c n, and the
 traversal object:
+
 \snippet tutorial/GenSeqRandom.cc seq
+
 A complete example can be found in \ref tutorial/GenSeqRandom.cc :
 \snippet tutorial/GenSeqRandom.cc main
 The output of the above code is:
 \verbatim
 lattice size: 31 (4 random samples)
-          sequence: [3, 8, 6, 1]
-     same sequence: [3, 8, 6, 1]
-    other sequence: [15, 7, 13, 15]
+          sequence: [11, 2, 6, 15]
+     same sequence: [11, 2, 6, 15]
+    other sequence: [5, 14, 6, 8]
 lattice size: 256 (4 random samples)
-          sequence: [19, 63, 49, 5]
-     same sequence: [19, 63, 49, 5]
-    other sequence: [123, 59, 111, 119]
+          sequence: [115, 71, 61, 51]
+     same sequence: [115, 71, 61, 51]
+    other sequence: [31, 115, 25, 37]
 \endverbatim
 
 Note that GenSeq::Random stores its own copy of the random engine,
 so that successive iteration over the same random sequence objects yields the
 same sequence of values.
 To obtain a different random selection of values, the initial state of the
-random generator must be changed.  The LFSR258 generator exposes a jump()
+random generator must be changed. The LFSR258 generator exposes a <code>jump()</code>
 function for this purpose:
 \snippet tutorial/GenSeqRandom.cc jump
 
@@ -313,9 +339,12 @@ polynomial lattice size: [1 0 1 1]^1
 
 \endverbatim
 For ordinary lattices, and in the symmetric case, each value \f$a\f$ is mapped to \f$\min\{a, n-a\}\f$.
-Note that the power has to be 1 for the polynomial case, otherwise the group is not cyclic.
+Note that in the polynomial case, the group is cyclic if the modulus is irreducible. This is only the case
+if <code>power</code> equals 1. Otherwise the group is not cyclic. This explains why the fast-CBC algorithm
+for polynomial lattice rules is only available for irreducible modulus. As a consequence, the fast-CBC
+construction is not available for embedded polynomial lattice rules.
 
-\section libtut_lat_genseq_vector Vectors of Integer-Polynomial Sequences
+\section libtut_lat_genseq_vector Vectors of Integer/Polynomial Sequences
 
 Construction algorithms often consider a distinct sequence of possible values  
 for each component of the generating vector.
@@ -355,9 +384,9 @@ additional optional argument to GenSeq::VectorCreator::create():
 The output of the above code is:
 \verbatim
 lattice size: 7
-    random generating value sequences: [[1], [5, 3, 6, 3, 4], [3, 3, 3, 1, 4]]
+    random generating value sequences: [[1], [2, 2, 3, 5, 4], [4, 5, 4, 3, 6]]
 lattice size: [1 1 1]
-    random generating value sequences: [[[1]], [[1 1], [0 1], [1 1], [0 1], [0 1]], [[0 1], [0 1], [0 1], [1], [0 1]]]
+    random generating value sequences: [[[1]], [[0 1], [0 1], [1 1], [0 1], [1]], [[1], [0 1], [1], [1 1], [1 1]]]
 
 \endverbatim
 Distinct random sequences are automatically created.
@@ -441,13 +470,63 @@ Then, the output is generated with:
 \snippet tutorial/LatSeqExhaustive.cc output
 which produces:
 \verbatim
-[lattice(8, [1, 1, 1]), lattice(8, [1, 1, 3]), lattice(8, [1, 1, 5]), lattice(8, [1, 1, 7]), lattice(8, [1, 3, 1]), lattice(8, [1, 3, 3]), lattice(8, [1, 3, 5]), lattice(8, [1, 3, 7]), lattice(8, [1, 5, 1]), lattice(8, [1, 5, 3]), lattice(8, [1, 5, 5]), lattice(8, [1, 5, 7]), lattice(8, [1, 7, 1]), lattice(8, [1, 7, 3]), lattice(8, [1, 7, 5]), lattice(8, [1, 7, 7])]
+[Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 7],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 3, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 3, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 3, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 3, 7],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 7],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 7, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 7, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 7, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 7, 7]]
 \endverbatim
 while 
 \snippet tutorial/LatSeqExhaustive.cc poutput
 produces:
 \verbatim
-[PolynomialLattice([1 1 1], [[1], [1], [1]]), PolynomialLattice([1 1 1], [[1], [1], [0 1]]), PolynomialLattice([1 1 1], [[1], [1], [1 1]]), PolynomialLattice([1 1 1], [[1], [0 1], [1]]), PolynomialLattice([1 1 1], [[1], [0 1], [0 1]]), PolynomialLattice([1 1 1], [[1], [0 1], [1 1]]), PolynomialLattice([1 1 1], [[1], [1 1], [1]]), PolynomialLattice([1 1 1], [[1], [1 1], [0 1]]), PolynomialLattice([1 1 1], [[1], [1 1], [1 1]])]
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  0 1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  0 1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  0 1
+  1 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 1
+  1 1]
 \endverbatim
 The complete example can be found in \ref tutorial/LatSeqExhaustive.cc.
 
@@ -469,8 +548,26 @@ Thus, we can have independent values for each coordinate.
 The complete example can be found in \ref tutorial/LatSeqRandom.cc
 and outputs:
 \verbatim
-[lattice(31, [1, 24, 13]), lattice(31, [1, 11, 14]), lattice(31, [1, 27, 15]), lattice(31, [1, 14, 2])]
-[PolynomialLattice([1 1 1 1 1], [[1], [0 0 1 1], [1 1 1]]), PolynomialLattice([1 1 1 1 1], [[1], [0 1 1], [1 1 1]]), PolynomialLattice([1 1 1 1 1], [[1], [0 1 1 1], [0 0 0 1]]), PolynomialLattice([1 1 1 1 1], [[1], [1 1 1], [1]])]
+[Ordinary Lattice - Modulus = 31 - Generating vector = [1, 20, 4],
+ Ordinary Lattice - Modulus = 31 - Generating vector = [1, 14, 17],
+ Ordinary Lattice - Modulus = 31 - Generating vector = [1, 21, 22],
+ Ordinary Lattice - Modulus = 31 - Generating vector = [1, 23, 27]]
+[Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  1 0 1
+  0 0 1,
+ Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  0 1 1 1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  0 1 1
+  1 1 1,
+ Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  0 0 0 1
+  0 0 1 1]
 \endverbatim
 
 
@@ -486,8 +583,24 @@ A complete example can be found in \ref tutorial/LatSeqKorobov.cc :
 \snippet tutorial/LatSeqKorobov.cc output
 The output of the above code is:
 \verbatim
-[lattice(7, [1, 1, 1]), lattice(7, [1, 2, 4]), lattice(7, [1, 3, 2]), lattice(7, [1, 4, 2]), lattice(7, [1, 5, 4]), lattice(7, [1, 6, 1])]
-[PolynomialLattice([1 1 1], [[1], [1], [1]]), PolynomialLattice([1 1 1], [[1], [0 1], [1 1]]), PolynomialLattice([1 1 1], [[1], [1 1], [0 1]])]
+[Ordinary Lattice - Modulus = 7 - Generating vector = [1, 1, 1],
+ Ordinary Lattice - Modulus = 7 - Generating vector = [1, 2, 4],
+ Ordinary Lattice - Modulus = 7 - Generating vector = [1, 3, 2],
+ Ordinary Lattice - Modulus = 7 - Generating vector = [1, 4, 2],
+ Ordinary Lattice - Modulus = 7 - Generating vector = [1, 5, 4],
+ Ordinary Lattice - Modulus = 7 - Generating vector = [1, 6, 1]]
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  0 1
+  1 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 1
+  0 1]
 \endverbatim
 
 
@@ -496,7 +609,7 @@ The output of the above code is:
 
 The component-by-component construction method consists in selecting the
 generating vector one coordinate at a time.
-To select the \f$j\f$-th, we consider a sequence of lattice definitions when the
+To select the \f$j\f$-th, we consider a sequence of lattice definitions with the
 same first \f$j-1\f$ coordinates.
 In the following example, we set \f$j=3\f$ with the first two coordinates equal
 to 1 and 5, respectively.
@@ -510,8 +623,22 @@ The full example can be found in \ref tutorial/LatSeqCBC1.cc :
 \snippet tutorial/LatSeqCBC1.cc output
 The output of the above code is:
 \verbatim
-[lattice(8, [1, 5, 1]), lattice(8, [1, 5, 3]), lattice(8, [1, 5, 5]), lattice(8, [1, 5, 7])]
-[PolynomialLattice([1 1 1], [[1], [1 0 1], [1]]), PolynomialLattice([1 1 1], [[1], [1 0 1], [0 1]]), PolynomialLattice([1 1 1], [[1], [1 0 1], [1 1]])]
+[Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 7]]
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 0 1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 0 1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 0 1
+  1 1]
 \endverbatim
 
 In a practical situation, we would probably loop over \f$j\f$ to construct the
@@ -528,26 +655,99 @@ lattice definition of the sequence:
 This would output:
 \verbatim
 searching for the best lattice in dimension: 1
-    possible choices: [lattice(8, [1, 1]), lattice(8, [1, 3]), lattice(8, [1, 5]), lattice(8, [1, 7])]
-    selected lattice: lattice(8, [1, 1])
+possible choices: 
+[Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 7]]
+selected lattice: 
+Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1]
+
+
 searching for the best lattice in dimension: 2
-    possible choices: [lattice(8, [1, 1, 1]), lattice(8, [1, 1, 3]), lattice(8, [1, 1, 5]), lattice(8, [1, 1, 7])]
-    selected lattice: lattice(8, [1, 1, 1])
+possible choices: 
+[Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 7]]
+selected lattice: 
+Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1]
+
+
 searching for the best lattice in dimension: 3
-    possible choices: [lattice(8, [1, 1, 1, 1]), lattice(8, [1, 1, 1, 3]), lattice(8, [1, 1, 1, 5]), lattice(8, [1, 1, 1, 7])]
-    selected lattice: lattice(8, [1, 1, 1, 1])
-\endverbatim
-\verbatim
+possible choices: 
+[Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 7]]
+selected lattice: 
+Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 1]
+
+
+
 searching for the best lattice in dimension: 1
-    possible choices: [PolynomialLattice([1 1 1], [[1], [1]]), PolynomialLattice([1 1 1], [[1], [0 1]]), PolynomialLattice([1 1 1], [[1], [1 1]])]
-    selected lattice: PolynomialLattice([1 1 1], [[1], [1]])
+possible choices: 
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 1]
+selected lattice: 
+Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+
+
 searching for the best lattice in dimension: 2
-    possible choices: [PolynomialLattice([1 1 1], [[1], [1], [1]]), PolynomialLattice([1 1 1], [[1], [1], [0 1]]), PolynomialLattice([1 1 1], [[1], [1], [1 1]])]
-    selected lattice: PolynomialLattice([1 1 1], [[1], [1], [1]])
+possible choices: 
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1 1]
+selected lattice: 
+Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1
+
+
 searching for the best lattice in dimension: 3
-    possible choices: [PolynomialLattice([1 1 1], [[1], [1], [1], [1]]), PolynomialLattice([1 1 1], [[1], [1], [1], [0 1]]), PolynomialLattice([1 1 1], [[1], [1], [1], [1 1]])]
-    selected lattice: PolynomialLattice([1 1 1], [[1], [1], [1], [1]])
+possible choices: 
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1
+  1 1]
+selected lattice: 
+Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1
+  1
+  1
 \endverbatim
+
 A more useful definition of \c findBest() would rather compute the merit values
 of each candidate lattice and select the optimal one.
 The current example, however, illustrates the basic ideas and can be found in
@@ -670,18 +870,31 @@ Here, it simply contains the value \c 0.0:
 \snippet tutorial/WeightedFigureOfMerit.cc initialMerit
 The output of this example is:
 \verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=max, projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
-projections: [{1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}]
-lattice(19, [1, 1, 1])	:	1.6229 <-- best
-lattice(19, [1, 2, 4])	:	1.02641 <-- best
-lattice(19, [1, 3, 9])	:	1.02641
-lattice(19, [1, 4, 16])	:	0.725784 <-- best
-lattice(19, [1, 5, 6])	:	0.725784
-lattice(19, [1, 6, 17])	:	1.02641
-lattice(19, [1, 7, 11])	:	0.7 <-- best
-lattice(19, [1, 8, 7])	:	0.7
-lattice(19, [1, 9, 5])	:	1.02641
-BEST LATTICE: lattice(19, [1, 7, 11]) with merit value 0.7
+figure of merit: Projection Dependent Merit: spectral^1 (symmetric) - Accumulator: Max
+Norm Type: 2
+Weights: ProductWeights([], default=0.7)
+projections: [{0}, {1}, {2}, {0,1}, {0,2}, {1,2}, {0,1,2}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 1, 1]
+Merit: 5.37513 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 2, 4]
+Merit: 2.15005 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 3, 9]
+Merit: 2.15005
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 16]
+Merit: 1.07503 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 5, 6]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 6, 17]
+Merit: 2.15005
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 7, 11]
+Merit: 1.0257 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 8, 7]
+Merit: 1.0257
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 9, 5]
+Merit: 2.15005
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 7, 11]
+Merit value: 1.0257
 \endverbatim
 
 \remark A weighted \f$\mathcal P_\alpha\f$ discrepancy could be obtained by
@@ -693,7 +906,7 @@ with:
    WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(2, std::move(weights), ProjDep(2));
 \endcode
 
-The same applies for polynomial lattices. For example, we can look for the best Korobov lattice with respect to \f$\mathcal P_{\alpha,PLR}\f$:
+The same applies for polynomial lattices. For example, we can look for the best Korobov lattice with respect to \f$\mathcal P_{\alpha}\f$:
 we define the weighted figure of merit as follows: 
 \code
    typedef ProjDepMerit::CoordUniform<Kernel::PAlphaPLR> ProjDep;
@@ -704,16 +917,45 @@ We then execute
 \snippet tutorial/WeightedFigureOfMerit.cc pstorage
 which gives the output:
 \verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2_PLR, weights=ProductWeights([], default=0.7))
-projections: [{1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}]
-PolynomialLattice([1 0 1 1], [[1], [1], [1]]) : 2.18057 <-- best
-PolynomialLattice([1 0 1 1], [[1], [0 1], [0 0 1]]) : 1.0617 <-- best
-PolynomialLattice([1 0 1 1], [[1], [1 1], [1 0 1]]) : 1.04103 <-- best
-PolynomialLattice([1 0 1 1], [[1], [0 0 1], [1 1 1]]) : 1.04103
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) : 1.02036 <-- best
-PolynomialLattice([1 0 1 1], [[1], [0 1 1], [1 1]]) : 1.0617
-PolynomialLattice([1 0 1 1], [[1], [1 1 1], [0 1]]) : 1.02036
-BEST LATTICE: PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) with merit value 1.02036
+figure of merit: Projection Dependent Merit: P2_PLR - Accumulator: Sum
+Norm Type: 2
+Weights: ProductWeights([], default=0.7)
+projections: [{0}, {1}, {2}, {0,1}, {0,2}, {1,2}, {0,1,2}]
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  1
+  1
+Merit: 2.18057 <-- best
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  0 1
+  0 0 1
+Merit: 1.0617 <-- best
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  1 1
+  1 0 1
+Merit: 1.04103 <-- best
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  0 0 1
+  1 1 1
+Merit: 1.04103
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  1 0 1
+  0 1 1
+Merit: 1.02036 <-- best
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  0 1 1
+  1 1
+Merit: 1.0617
+Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+  1
+  1 1 1
+  0 1
+Merit: 1.02036
 \endverbatim
 
 \sa WeightedFigureOfMerit ProjDepMerit
@@ -750,39 +992,42 @@ Then, we connect the listener to the signals with:
 
 With these changes, the output becomes:
 \verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=max, projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
-projections: [{1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}]
-lattice(19, [1, 1, 1])	:	1.6229 <-- best
-lattice(19, [1, 2, 4])	:	1.02641 <-- best
-lattice(19, [1, 3, 9])	:	1.02641
-lattice(19, [1, 4, 16])	:	0.725784 <-- best
-lattice(19, [1, 5, 6])	:	0.725784
-rejected lattice(19, [1, 6, 17])
-lattice(19, [1, 6, 17])	:	inf
-lattice(19, [1, 7, 11])	:	0.7 <-- best
-lattice(19, [1, 8, 7])	:	0.7
-rejected lattice(19, [1, 9, 5])
-lattice(19, [1, 9, 5])	:	inf
-BEST LATTICE: lattice(19, [1, 7, 11]) with merit value 0.7
+figure of merit: Projection Dependent Merit: spectral^1 (symmetric) - Accumulator: Max
+Norm Type: 2
+Weights: ProductWeights([], default=0.7)
+projections: [{0}, {1}, {2}, {0,1}, {0,2}, {1,2}, {0,1,2}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 1, 1]
+Merit: 5.37513 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 2, 4]
+Merit: 2.15005 <-- best
+rejected:
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 3, 9]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 3, 9]
+Merit: inf
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 16]
+Merit: 1.07503 <-- best
+rejected:
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 5, 6]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 5, 6]
+Merit: inf
+rejected:
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 6, 17]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 6, 17]
+Merit: inf
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 7, 11]
+Merit: 1.0257 <-- best
+rejected:
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 8, 7]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 8, 7]
+Merit: inf
+rejected:
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 9, 5]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 9, 5]
+Merit: inf
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 7, 11]
+Merit value: 1.0257
 \endverbatim
-
-And for the polynomial lattice search: 
-\verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2_PLR, weights=ProductWeights([], default=0.7))
-projections: [{1}, {2}, {3}, {1,2}, {1,3}, {2,3}, {1,2,3}]
-PolynomialLattice([1 0 1 1], [[1], [1], [1]]) : 2.18057 <-- best
-PolynomialLattice([1 0 1 1], [[1], [0 1], [0 0 1]]) : 1.0617 <-- best
-PolynomialLattice([1 0 1 1], [[1], [1 1], [1 0 1]]) : 1.04103 <-- best
-rejected PolynomialLattice([1 0 1 1], [[1], [0 0 1], [1 1 1]])
-PolynomialLattice([1 0 1 1], [[1], [0 0 1], [1 1 1]]) : inf
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) : 1.02036 <-- best
-rejected PolynomialLattice([1 0 1 1], [[1], [0 1 1], [1 1]])
-PolynomialLattice([1 0 1 1], [[1], [0 1 1], [1 1]]) : inf
-rejected PolynomialLattice([1 0 1 1], [[1], [1 1 1], [0 1]])
-PolynomialLattice([1 0 1 1], [[1], [1 1 1], [0 1]]) : inf
-BEST LATTICE: PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) with merit value 1.02036
-\endverbatim
-
 
 \section libtut_lat_figures_cbc_simple A Simple Example Using CBC Construction
 
@@ -808,78 +1053,72 @@ observed candidate lattice:
 \snippet tutorial/WeightedFigureOfMeritCBC.cc baseLat update
 After these changes, the output becomes:
 \verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=max, projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
+figure of merit: Projection Dependent Merit: spectral^1 (symmetric) - Accumulator: Max
+Norm Type: 2
+Weights: ProductWeights([], default=0.7)
 CBC search for dimension: 1
-  base lattice: lattice(19, [])
-  base merit value: 0
-  new projections: [{1}]
-lattice(19, [1])	:	0.7 <-- best
-BEST LATTICE: lattice(19, [1]) with merit value 0.7
+base lattice: 
+Ordinary Lattice - Modulus = 19 - Generating vector = []
+base merit value: 0
+new projections: [{0}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1]
+Merit: 0.7 <-- best
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1]
+Merit value: 0.7
 CBC search for dimension: 2
-  base lattice: lattice(19, [1])
-  base merit value: 0.7
-  new projections: [{2}, {1,2}]
-lattice(19, [1, 1])	:	1.6229 <-- best
-lattice(19, [1, 2])	:	1.02641 <-- best
-lattice(19, [1, 3])	:	0.725784 <-- best
-lattice(19, [1, 4])	:	0.7 <-- best
-lattice(19, [1, 5])	:	0.7
-lattice(19, [1, 6])	:	0.725784
-lattice(19, [1, 7])	:	0.7
-lattice(19, [1, 8])	:	0.7
-lattice(19, [1, 9])	:	1.02641
-BEST LATTICE: lattice(19, [1, 4]) with merit value 0.7
+base lattice: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1]
+base merit value: 0.7
+new projections: [{1}, {0,1}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 1]
+Merit: 5.37513 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 2]
+Merit: 2.15005 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 3]
+Merit: 1.07503 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4]
+Merit: 0.7 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 5]
+Merit: 0.7
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 6]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 7]
+Merit: 0.826943
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 8]
+Merit: 0.826943
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 9]
+Merit: 2.15005
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4]
+Merit value: 0.7
 CBC search for dimension: 3
-  base lattice: lattice(19, [1, 4])
-  base merit value: 0.7
-  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
-lattice(19, [1, 4, 1])	:	1.6229 <-- best
-lattice(19, [1, 4, 2])	:	1.02641 <-- best
-lattice(19, [1, 4, 3])	:	0.725784 <-- best
-lattice(19, [1, 4, 4])	:	1.6229
-lattice(19, [1, 4, 5])	:	0.725784
-lattice(19, [1, 4, 6])	:	0.725784
-lattice(19, [1, 4, 7])	:	0.725784
-lattice(19, [1, 4, 8])	:	1.02641
-lattice(19, [1, 4, 9])	:	1.02641
-BEST LATTICE: lattice(19, [1, 4, 3]) with merit value 0.725784
+base lattice: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4]
+base merit value: 0.7
+new projections: [{2}, {0,2}, {1,2}, {0,1,2}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 1]
+Merit: 5.37513 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 2]
+Merit: 2.15005 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 3]
+Merit: 1.07503 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 4]
+Merit: 5.37513
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 5]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 6]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 7]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 8]
+Merit: 2.15005
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 9]
+Merit: 2.15005
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 3]
+Merit value: 1.07503
 \endverbatim
-
-And for the polynomial lattice search:
-\verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2_PLR, weights=ProductWeights([], default=0.7))
-CBC search for dimension: 1
-  base lattice: PolynomialLattice([1 0 1 1], [])
-  base merit value: 0
-  new projections: [{1}]
-PolynomialLattice([1 0 1 1], [[1]]) : 0.021875 <-- best
-BEST LATTICE: PolynomialLattice([1 0 1 1], [[1]]) with merit value 0.021875
-CBC search for dimension: 2
-  base lattice: PolynomialLattice([1 0 1 1], [[1]])
-  base merit value: 0.021875
-  new projections: [{2}, {1,2}]
-PolynomialLattice([1 0 1 1], [[1], [1]])  : 0.660078 <-- best
-PolynomialLattice([1 0 1 1], [[1], [0 1]])  : 0.281094 <-- best
-PolynomialLattice([1 0 1 1], [[1], [1 1]])  : 0.281094
-PolynomialLattice([1 0 1 1], [[1], [0 0 1]])  : 0.281094
-PolynomialLattice([1 0 1 1], [[1], [1 0 1]])  : 0.212187 <-- best
-PolynomialLattice([1 0 1 1], [[1], [0 1 1]])  : 0.281094
-PolynomialLattice([1 0 1 1], [[1], [1 1 1]])  : 0.212187
-BEST LATTICE: PolynomialLattice([1 0 1 1], [[1], [1 0 1]]) with merit value 0.212187
-CBC search for dimension: 3
-  base lattice: PolynomialLattice([1 0 1 1], [[1], [1 0 1]])
-  base merit value: 0.212187
-  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [1]]) : 1.27876 <-- best
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1]]) : 1.04103 <-- best
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [1 1]]) : 1.04103
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 0 1]]) : 1.25809
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [1 0 1]]) : 1.27876
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) : 1.02036 <-- best
-PolynomialLattice([1 0 1 1], [[1], [1 0 1], [1 1 1]]) : 1.02036
-BEST LATTICE: PolynomialLattice([1 0 1 1], [[1], [1 0 1], [0 1 1]]) with merit value 1.02036
-\endverbatim
-
 
 */
 
@@ -945,39 +1184,33 @@ Here, \c best is an iterator on the \c filteredSeq sequence, and \c best.base()
 is an iterator on corresponding element of the underlying \c meritSeq sequence.
 The output of this example is:
 \verbatim
+figure of merit: Projection Dependent Merit: spectral^1 (symmetric) - Accumulator: Max
+Norm Type: 2
+Weights: ProductWeights([], default=0.7)
 CBC search for dimension: 1
-  base lattice: lattice(19, [])
-  base merit value: 0
-  new projections: [{1}]
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = []
+base merit value: 0
+new projections: [{0}]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1]
+Merit value: 0.7
 CBC search for dimension: 2
-  base lattice: lattice(19, [1])
-  base merit value: 0.7
-  new projections: [{2}, {1,2}]
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1]
+base merit value: 0.7
+new projections: [{1}, {0,1}]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 15]
+Merit value: 0.7
 CBC search for dimension: 3
-  base lattice: lattice(19, [1, 4])
-  base merit value: 0.7
-  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
-\endverbatim
-
-Replacing the ordinary lattice by a polynomial lattice, and changing the figure of merit to \f$\mathcal P_{\alpha,PLR}\f$, we get the output:
-
-\verbatim
-figure of merit: WeightedFigureOfMerit(accumulator=sum, norm-type=2, projDepMerit=P2_PLR, weights=ProductWeights([], default=0.7))
-CBC search for dimension: 1
-  base lattice: PolynomialLattice([1 1 0 0 1 1 1], [])
-  base merit value: 0
-  new projections: [{1}]
-BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1]]) with merit value 0.000341797
-CBC search for dimension: 2
-  base lattice: PolynomialLattice([1 1 0 0 1 1 1], [[1]])
-  base merit value: 0.000341797
-  new projections: [{2}, {1,2}]
-BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1]]) with merit value 0.00546875
-CBC search for dimension: 3
-  base lattice: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1]])
-  base merit value: 0.00546875
-  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
-BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1], [1 0 0 1 1]]) with merit value 0.0486198
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 15]
+base merit value: 0.7
+new projections: [{2}, {0,2}, {1,2}, {0,1,2}]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 15, 39]
+Merit value: 0.746627
 \endverbatim
 
 \section libtut_lat_meritseq_cbc_signals CBC Construction Using Signals
@@ -995,8 +1228,6 @@ Then replace the call to \c std::min_element() with:
 Also note the call to \c Observer::reset() to initialize the best observed merit
 value before using \c minElement.
 The resulting code can be found in \ref tutorial/MeritSeqCBCSignals.cc .
-
-
 
 \section libtut_lat_meritseq_coorduni CBC Construction for Coordinate-Uniform Figures of Merit
 
@@ -1162,12 +1393,35 @@ Finally, we output the number of accepted and the total number candidate lattice
 \snippet tutorial/FilteredRCBC.cc output
 The output of this example is:
 \verbatim
-BEST LATTICE: lattice(257, [1]) with merit value 0.0105903
-  15 accepted / 15 tried
-BEST LATTICE: lattice(257, [1, 116]) with merit value 0.0401108
-  15 accepted / 17 tried
-BEST LATTICE: lattice(257, [1, 116, 19]) with merit value 0.205199
-  15 accepted / 19 tried
+figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
+filters: Embedding type: Unilevel
+Unilevel filters: normalizer: PAlphaSL10, low-pass
+CBC search for dimension: 1
+base lattice: 
+Ordinary Lattice - Modulus = 257 - Generating vector = []
+base merit value: 0
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1]
+Merit value: 0.0105903
+15 accepted / 15 tried
+CBC search for dimension: 2
+base lattice: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1]
+base merit value: 3.48667e-05
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1, 76]
+Merit value: 0.0346885
+15 accepted / 17 tried
+CBC search for dimension: 3
+base lattice: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1, 76]
+base merit value: 0.00125208
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1, 76, 96]
+Merit value: 0.175129
+15 accepted / 15 tried
 \endverbatim
 
 
@@ -1195,45 +1449,61 @@ We also need change the storage type to Storage<EmbeddingType::MULTILEVEL>:
 \snippet tutorial/FilteredCBC.cc Storage
 This example outputs:
 \verbatim
-figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
-filters: multilevel filters=(normalizer, low-pass), combiner=sum, scalar filters=()
+figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
+filters: Embedding type: Unilevel
+Unilevel filters: normalizer: PAlphaSL10, low-pass
 CBC search for dimension: 1
-  base lattice: lattice(2^8, [])
-  base merit value: [0, 0, 0, 0, 0, 0, 0, 0, 0]
-BEST LATTICE: lattice(2^8, [1]) with merit value 0.0622623
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = []
+base merit value: 0
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1]
+Merit value: 0.00379617
 CBC search for dimension: 2
-  base lattice: lattice(2^8, [1])
-  base merit value: [2.30291, 0.575727, 0.143932, 0.0359829, 0.00899573, 0.00224893, 0.000562233, 0.000140558, 3.51396e-05]
-BEST LATTICE: lattice(2^8, [1, 45]) with merit value 0.187022
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1]
+base merit value: 3.51396e-05
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 99]
+Merit value: 0.0160699
 CBC search for dimension: 3
-  base lattice: lattice(2^8, [1, 45])
-  base merit value: [9.9092, 4.46607, 1.9866, 0.551031, 0.23438, 0.0762869, 0.0158076, 0.00575074, 0.00166391]
-BEST LATTICE: lattice(2^8, [1, 45, 69]) with merit value 0.302157
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 99]
+base merit value: 0.00123717
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 99, 27]
+Merit value: 0.0874655
+figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
+filters: Embedding type: Multilevel
+Combiner: Sum
+Multilevel filters: normalizer: PAlphaSL10, low-pass
+CBC search for dimension: 1
+base lattice: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = []
+base merit value: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1]
+Merit value: 0.0622623
+CBC search for dimension: 2
+base lattice: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1]
+base merit value: [2.30291, 0.575727, 0.143932, 0.0359829, 0.00899573, 0.00224893, 0.000562233, 0.000140558, 3.51396e-05]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1, 45]
+Merit value: 0.187022
+CBC search for dimension: 3
+base lattice: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1, 45]
+base merit value: [9.9092, 4.46607, 1.9866, 0.551031, 0.23438, 0.0762869, 0.0158076, 0.00575074, 0.00166391]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1, 45, 69]
+Merit value: 0.302157
 \endverbatim
 Notice that the base merit value is now a vector of per-level merit values.
-
-For polynomial lattices, no adapted normalizers are implemented. The normalizers PAlphaSL10 and PAlphaDPW8 are conceived for ordinary lattices, but %LatBuilder does not forbid using them for polynomial lattices:
-\todo implement such normalization
-
-\verbatim
-figure of merit: CoordUniformFigureOfMerit(kernel=P2_PLR, weights=ProductWeights([], default=0.7))
-filters: scalar filters = (normalizer(PAlphaSL10), low-pass)
-CBC search for dimension: 1
-  base lattice: PolynomialLattice([1 1 0 0 1 1 1], [])
-  base merit value: 0
-BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1]]) with merit value 0.0135555
-  15 accepted / 15 tried
-CBC search for dimension: 2
-  base lattice: PolynomialLattice([1 1 0 0 1 1 1], [[1]])
-  base merit value: 0.000341797
-BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1]]) with merit value 0.0347688
-  15 accepted / 15 tried
-CBC search for dimension: 3
-  base lattice: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1]])
-  base merit value: 0.00546875
-BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1], [0 1 0 1 1 1]]) with merit value 0.091211
-  15 accepted / 15 tried
-\endverbatim
 */
 
 /** \example tutorial/FilteredCBC.cc
@@ -1253,72 +1523,63 @@ BEST LATTICE: PolynomialLattice([1 1 0 0 1 1 1], [[1], [0 1 0 0 0 1], [0 1 0 1 1
 
 \section libtut_lat_quantiles Examining the Distribution of Merit Values
 
-In this example, we examine the quantiles of the distribution of 
-normalized weighted \f$\mathcal P_{2\alpha}\f$ merit values.  The pipeline is
-setup as in the previous examples, but without using the low-pass filter.  Next,
-we use the Boost Accumulators library to configure a quantile accumulator:
+In this example, we examine the quantiles of the distribution of various
+coordinate-uniform figures of merit for ordinary lattice rules.  
+We use the Boost Accumulators library to configure a quantile accumulator:
 \snippet quantiles.cc accumulator setup
 Then, we output the results with:
 \snippet quantiles.cc output
 The complete code can be found in \ref quantiles.cc and, when
 launched with the following arguments:
 \code
-quantiles 256 3 0.7
+./quantiles 256 3 P2 product:0.7
 \endcode
 it outputs:
 \verbatim
-# mean:	3.46885028e-01
+# deterministic samples: 4096
+# mean:	1.21563290e-01
 prob	quantile
-0.000	1.60698706e-02
-0.050	1.64301703e-02
-0.100	1.85088223e-02
-0.150	1.91739909e-02
-0.200	2.17884732e-02
-0.250	2.26753647e-02
-0.300	2.30818567e-02
-0.350	2.70081994e-02
-0.400	3.03617579e-02
-0.450	3.53505227e-02
-0.500	3.89350427e-02
-0.550	4.54389138e-02
-0.600	4.82196883e-02
-0.650	6.27055832e-02
-0.700	7.08631375e-02
-0.750	9.24164492e-02
-0.800	1.12953531e-01
-0.850	1.79950795e-01
-0.900	2.89334083e-01
-0.950	8.67254772e-01
-1.000	1.37803954e+01
+0.000	2.15366148e-02
+0.050	2.50717127e-02
+0.100	2.68374747e-02
+0.150	2.87005857e-02
+0.200	3.06908041e-02
+0.250	3.28597701e-02
+0.300	3.56839625e-02
+0.350	3.83623012e-02
+0.400	4.20254687e-02
+0.450	4.43124539e-02
+0.500	4.78925054e-02
+0.550	5.51690531e-02
+0.600	6.17109690e-02
+0.650	6.68680728e-02
+0.700	7.73000978e-02
+0.750	9.27378624e-02
+0.800	1.34587125e-01
+0.850	1.74460806e-01
+0.900	2.00347214e-01
+0.950	4.06895746e-01
 \endverbatim
+
+Here, we computed (exactly) the mean and the quantiles of the distribution of the \f$\mathcal P_2\f$ discrepancy
+with product weights equal to 0.7 (and an \f$\ell_2\f$ norm) for ordinary lattice rules in dimension 3 with 256 points.
+
+Various options can be used with this program, such as changing the figure of merit to the \f$\mathcal R_\alpha\f$
+criterion or changing the weights. One can also increase the dimension or the number of points.
+If the search space becomes to big, one can switch to random exploration method, for instance here with 100 random lattices:
+
+\code
+./quantiles 2^10 10 R1 order-dependent:1 1000
+\endcode
 
 */
 
 /** \example quantiles.cc
-    This example shows how to examine the distribution of normalized
+    This example shows how to examine the distribution of 
     weighted \f$\mathcal P_{2\alpha}\f$ merit values.
 */
 
 /** \page libtut_lat_extending Extending LatBuilder
-
-\section libtut_lat_extending_figure Implementing a New Figure of Merit
-
-Assume that we want to introduce a new coordinate-uniform figure of merit.
-The first thing we need to do is to add a new functor and a new kernel, by
-writing the following to \c include/latbuilder/Functor/MyFigure.h:
-\snippet custom-figure.patch.cc functor def
-and the following to \c include/latbuilder/Kernel/MyFigure.h:
-\snippet custom-figure.patch.cc kernel def
-Then, teach the kernel parser to recognize the string \c my-figure as our new
-figure of merit by appending the \c try block in Parser::Kernel::parse() with
-the following code:
-\snippet custom-figure.patch.cc parser if
-Also make sure to add the relevant include file in
-\c include/latbuilder/Parser/Kernel.h:
-\snippet custom-figure.patch.cc parser header
-Then it should work out of the box if you recompile LatNet Builder, then run
-\c latnetbuilder with the option <code>--figure-of-merit CU:my-figure</code>.
-
 
 \section libtut_lat_extending_weights Implementing Custom Weights
 

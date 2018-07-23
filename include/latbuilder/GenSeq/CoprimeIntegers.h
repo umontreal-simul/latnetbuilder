@@ -29,6 +29,7 @@ namespace LatBuilder { namespace GenSeq {
 
 namespace detail {
    struct CoprimeIntegersBasisElement {
+      typedef LatticeTraits<LatticeType::ORDINARY>::Modulus Modulus;
       Modulus totient;
       Modulus leap;
       Modulus elem; 
@@ -99,7 +100,7 @@ public:
    /**
     * Value type.
     */
-   typedef Modulus value_type;
+   typedef LatticeTraits<LatticeType::ORDINARY>::Modulus value_type;
 
    /**
     * Size type.
@@ -206,7 +207,7 @@ CoprimeIntegers<COMPRESS, TRAV>::CoprimeIntegers(
       long long elem = m * egcd(bk, m).second;
       if (elem < 0)
          elem += (1 - elem / (long long)(m_modulus)) * (long long)(m_modulus);
-      e.elem = (Modulus)(elem) % m_modulus;
+      e.elem = (value_type)(elem) % m_modulus;
       m_size *= e.totient;
       m_basis.push_back(std::move(e));
    }

@@ -201,26 +201,21 @@ LatNet Builder makes uses of the following C++11 features:
 The LatNet Builder library depends on the following
 <a href="http://www.boost.org/">Boost libraries</a>:
 <ul>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/math/doc/html/index.html">Math</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/numeric/ublas/doc/index.htm">uBLAS</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/iterator/doc/index.html">Iterator</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/accumulators/">Accumulators</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/signals2/">Signals2</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/tokenizer/index.html">Tokenizer</a></li>
-	<li><a href="http://www.boost.org/doc/libs/release/libs/conversion/lexical_cast.htm">Lexical Cast</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/libs/math/doc/html/index.html">Math</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/libs/numeric/ublas/doc/index.html">uBLAS</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/libs/iterator/doc/index.html">Iterator</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/doc/html/accumulators.html">Accumulators</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/doc/html/signals2.html">Signals2</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/libs/tokenizer/index.html">Tokenizer</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/doc/html/boost_lexical_cast.html">Lexical Cast</a></li>
+	<li><a href="https://www.boost.org/doc/libs/1_67_0/doc/html/program_options.html">Program Options</a></li>
+    <li><a href="https://www.boost.org/doc/libs/1_67_0/libs/algorithm/doc/html/index.html"> Algorithm</a></li>
+    <li><a href="https://www.boost.org/doc/libs/1_67_0/libs/system/doc/index.html"> System</a></li>
+    <li><a href="https://www.boost.org/doc/libs/1_67_0/libs/filesystem/doc/index.htm"> Filesystem</a></li>
 </ul>
 
-In addition to these, the LatNet Builder command-line tool also depends on the
-following
-<a href="http://www.boost.org/">Boost libraries</a>:
-<ul>
-	<li><a href="http://www.boost.org/doc/libs/release/doc/html/program_options.html">Program Options</a></li>
-</ul>
-
-Only the Program Options library requires building and linking; the
+Only the Program Options, the System and the Filesystem libraries require building and linking; the
 others are header-only libraries.
-
-
 
 \section libtut_impl_fftw Usage of FFTW
 
@@ -230,8 +225,13 @@ the \f$R_\alpha\f$ criterion, depends on the
 
 \section libtut_impl_ntl Usage of NTL
 
-The implementation of polynomials over \f$Z_2\f$ in LatNet Builder, depends on the
-<a href="http://www.shoup.net/ntl/">NTL library</a>.
+LatNet Builder also depends on the <a href="http://www.shoup.net/ntl/">NTL library</a> for arithmetic computations 
+(lattices, polynomials, etc.).
+
+\section libtut_impl_latticetester Usage of the LatticeTester
+
+LatNet Builder uses <a href="https://github.com/umontreal-simul/latticetester"> LatticeTester</a>, a software library to compute theoretical measures of uniformity for
+lattices. This library is embedded in the code source of LatNet Builder and in the binary distribution packages  
 
 */
 vim: ft=doxygen spelllang=en spell

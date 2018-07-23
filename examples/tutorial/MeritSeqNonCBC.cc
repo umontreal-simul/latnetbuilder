@@ -88,7 +88,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    auto meritSeq = latSeqOverCBC.meritSeq(latSeq);
    auto filteredSeq = filters.apply(meritSeq);
    auto best = std::min_element(filteredSeq.begin(), filteredSeq.end());
-   std::cout << "BEST LATTICE: " << *best.base().base() << " with merit value " << *best << std::endl;
+   std::cout << "BEST LATTICE: " << std::endl << *best.base().base() << "Merit value: " << *best << std::endl;
    //! [search]
 }
 

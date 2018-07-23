@@ -1,1 +1,20 @@
-[lattice(31, [1, 24, 13]), lattice(31, [1, 11, 14]), lattice(31, [1, 27, 15]), lattice(31, [1, 14, 2])]
+[Ordinary Lattice - Modulus = 31 - Generating vector = [1, 20, 4],
+ Ordinary Lattice - Modulus = 31 - Generating vector = [1, 14, 17],
+ Ordinary Lattice - Modulus = 31 - Generating vector = [1, 21, 22],
+ Ordinary Lattice - Modulus = 31 - Generating vector = [1, 23, 27]]
+[Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  1 0 1
+  0 0 1,
+ Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  0 1 1 1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  0 1 1
+  1 1 1,
+ Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  1
+  0 0 0 1
+  0 0 1 1]

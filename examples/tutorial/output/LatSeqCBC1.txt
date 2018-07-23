@@ -1,1 +1,16 @@
-[lattice(8, [1, 5, 1]), lattice(8, [1, 5, 3]), lattice(8, [1, 5, 5]), lattice(8, [1, 5, 7])]
+[Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 1],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 3],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 5],
+ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 7]]
+[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 0 1
+  1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 0 1
+  0 1,
+ Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  1
+  1 0 1
+  1 1]

@@ -1,35 +1,65 @@
-figure of merit: WeightedFigureOfMerit(accumulator=max, norm-type=inf(2), projDepMerit=spectral^1 (symmetric), weights=ProductWeights([], default=0.7))
+figure of merit: Projection Dependent Merit: spectral^1 (symmetric) - Accumulator: Max
+Norm Type: 2
+Weights: ProductWeights([], default=0.7)
 CBC search for dimension: 1
-  base lattice: lattice(19, [])
-  base merit value: 0
-  new projections: [{1}]
-lattice(19, [1])	:	0.7 <-- best
-BEST LATTICE: lattice(19, [1]) with merit value 0.7
+base lattice: 
+Ordinary Lattice - Modulus = 19 - Generating vector = []
+base merit value: 0
+new projections: [{0}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1]
+Merit: 0.7 <-- best
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1]
+Merit value: 0.7
 CBC search for dimension: 2
-  base lattice: lattice(19, [1])
-  base merit value: 0.7
-  new projections: [{2}, {1,2}]
-lattice(19, [1, 1])	:	1.6229 <-- best
-lattice(19, [1, 2])	:	1.02641 <-- best
-lattice(19, [1, 3])	:	0.725784 <-- best
-lattice(19, [1, 4])	:	0.7 <-- best
-lattice(19, [1, 5])	:	0.7
-lattice(19, [1, 6])	:	0.725784
-lattice(19, [1, 7])	:	0.7
-lattice(19, [1, 8])	:	0.7
-lattice(19, [1, 9])	:	1.02641
-BEST LATTICE: lattice(19, [1, 4]) with merit value 0.7
+base lattice: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1]
+base merit value: 0.7
+new projections: [{1}, {0,1}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 1]
+Merit: 5.37513 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 2]
+Merit: 2.15005 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 3]
+Merit: 1.07503 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4]
+Merit: 0.7 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 5]
+Merit: 0.7
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 6]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 7]
+Merit: 0.826943
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 8]
+Merit: 0.826943
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 9]
+Merit: 2.15005
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4]
+Merit value: 0.7
 CBC search for dimension: 3
-  base lattice: lattice(19, [1, 4])
-  base merit value: 0.7
-  new projections: [{3}, {1,3}, {2,3}, {1,2,3}]
-lattice(19, [1, 4, 1])	:	1.6229 <-- best
-lattice(19, [1, 4, 2])	:	1.02641 <-- best
-lattice(19, [1, 4, 3])	:	0.725784 <-- best
-lattice(19, [1, 4, 4])	:	1.6229
-lattice(19, [1, 4, 5])	:	0.725784
-lattice(19, [1, 4, 6])	:	0.725784
-lattice(19, [1, 4, 7])	:	0.725784
-lattice(19, [1, 4, 8])	:	1.02641
-lattice(19, [1, 4, 9])	:	1.02641
-BEST LATTICE: lattice(19, [1, 4, 3]) with merit value 0.725784
+base lattice: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4]
+base merit value: 0.7
+new projections: [{2}, {0,2}, {1,2}, {0,1,2}]
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 1]
+Merit: 5.37513 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 2]
+Merit: 2.15005 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 3]
+Merit: 1.07503 <-- best
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 4]
+Merit: 5.37513
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 5]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 6]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 7]
+Merit: 1.07503
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 8]
+Merit: 2.15005
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 9]
+Merit: 2.15005
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 19 - Generating vector = [1, 4, 3]
+Merit value: 1.07503

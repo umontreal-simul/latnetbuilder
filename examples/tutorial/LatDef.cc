@@ -13,10 +13,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 #include "latbuilder/LatDef.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/TextStream.h"
 #include <iostream>
+
 using namespace LatBuilder;
 using TextStream::operator<<;
 
@@ -24,10 +26,10 @@ using TextStream::operator<<;
 template <LatticeType LA, EmbeddingType L>
 void printLatDef(const LatDef<LA, L>& def)
 {
-   std::cout << "    dimension:         " << def.dimension() << std::endl;
-   std::cout << "    size parameter:    " << def.sizeParam() << std::endl;
-   std::cout << "    generating vector: " << def.gen() << std::endl;
-   std::cout << "    definition:        " << def << std::endl;
+   std::cout << "dimension:         " << def.dimension() << std::endl;
+   std::cout << "size parameter:    " << def.sizeParam() << std::endl;
+   std::cout << "generating vector: " << def.gen() << std::endl;
+   std::cout << "definition:        " << std::endl << def << std::endl;
 }
 //! [printLatDef]
 int main()
@@ -46,13 +48,23 @@ int main()
 
    //! [pordinary]
    Polynomial P = PolynomialFromInt(13); // P = 1 + z^2 + z^3
-   auto pordinary = createLatDef(SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(P), {PolynomialFromInt(1), PolynomialFromInt(5), PolynomialFromInt(3)});
+   auto pordinary = createLatDef(
+        SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(P), 
+        {PolynomialFromInt(1), 
+            PolynomialFromInt(5), 
+            PolynomialFromInt(3)}
+        );
    std::cout << "polynomial - simple lattice:" << std::endl;
    printLatDef(pordinary);
    //! [pordinary]
 
    //! [pembedded]
-   auto pembedded = createLatDef(SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(PolynomialFromInt(2), 5),{PolynomialFromInt(1), PolynomialFromInt(10), PolynomialFromInt(3)});
+   auto pembedded = createLatDef(
+        SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(PolynomialFromInt(2), 5),
+        {PolynomialFromInt(1), 
+            PolynomialFromInt(10), 
+            PolynomialFromInt(3)}
+        );
    std::cout << "polynomial - embedded lattice:" << std::endl;
    printLatDef(pembedded);
    //! [pembedded]

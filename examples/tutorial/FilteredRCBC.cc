@@ -135,8 +135,8 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension, int samples)
       Dimension baseDim = cbc.baseLat().dimension();
 
       std::cout << "CBC search for dimension: " << (baseDim + 1) << std::endl;
-      std::cout << "  base lattice: " << cbc.baseLat() << std::endl;
-      std::cout << "  base merit value: " << cbc.baseMerit() << std::endl;
+      std::cout << "base lattice: " << std::endl << cbc.baseLat();
+      std::cout << "base merit value: " << cbc.baseMerit() << std::endl;
 
       //! [meritSeq]
       auto meritSeq = cbc.meritSeq(baseDim == 0 ? genSeq0 : genSeq);
@@ -147,15 +147,15 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension, int samples)
       //! [filteredSeq]
 
       //! [min_element]
-      auto best = minElement(filteredSeq.begin(), filteredSeq.end());
+      auto best = minElement(filteredSeq.begin(), filteredSeq.end(), 0);
       //! [min_element]
       //! [select]
       cbc.select(best.base());
       //! [select]
 
       //! [output]
-      std::cout << "BEST LATTICE: " << cbc.baseLat() << " with merit value " << *best << std::endl;
-      std::cout << "  " << obs.count() << " accepted / " << obs.totalCount() << " tried" << std::endl;;
+      std::cout << "BEST LATTICE: " << std::endl << cbc.baseLat() << "Merit value: " << *best << std::endl;
+      std::cout << obs.count() << " accepted / " << obs.totalCount() << " tried" << std::endl;;
       //! [output]
 
       // use a different permutation for the next iteration

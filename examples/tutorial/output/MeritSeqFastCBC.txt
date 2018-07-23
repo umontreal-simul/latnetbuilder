@@ -1,26 +1,48 @@
-figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
 CBC search for dimension: 1
-  base lattice: lattice(256, [])
-  base merit value: 0
-BEST LATTICE: lattice(256, [1]) with merit value 3.51396e-05
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = []
+base merit value: 0
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1]
+Merit value: 3.51396e-05
 CBC search for dimension: 2
-  base lattice: lattice(256, [1])
-  base merit value: 3.51396e-05
-BEST LATTICE: lattice(256, [1, 75]) with merit value 0.00123717
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1]
+base merit value: 3.51396e-05
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 75]
+Merit value: 0.00123717
 CBC search for dimension: 3
-  base lattice: lattice(256, [1, 75])
-  base merit value: 0.00123717
-BEST LATTICE: lattice(256, [1, 75, 23]) with merit value 0.0239383
-figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
+base lattice: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 75]
+base merit value: 0.00123717
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 256 - Generating vector = [1, 75, 23]
+Merit value: 0.0239383
+figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
 CBC search for dimension: 1
-  base lattice: lattice(2^8, [])
-  base merit value: [0, 0, 0, 0, 0, 0, 0, 0, 0]
-BEST LATTICE: lattice(2^8, [1]) with merit value 3.51396e-05
+base lattice: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = []
+base merit value: [0, 0, 0, 0, 0, 0, 0, 0, 0]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1]
+Merit value: 3.51396e-05
 CBC search for dimension: 2
-  base lattice: lattice(2^8, [1])
-  base merit value: [2.30291, 0.575727, 0.143932, 0.0359829, 0.00899573, 0.00224893, 0.000562233, 0.000140558, 3.51396e-05]
-BEST LATTICE: lattice(2^8, [1, 75]) with merit value 0.00123717
+base lattice: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1]
+base merit value: [2.30291, 0.575727, 0.143932, 0.0359829, 0.00899573, 0.00224893, 0.000562233, 0.000140558, 3.51396e-05]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1, 75]
+Merit value: 0.00123717
 CBC search for dimension: 3
-  base lattice: lattice(2^8, [1, 75])
-  base merit value: [9.9092, 4.46607, 1.9866, 0.551031, 0.23438, 0.146205, 0.0230907, 0.00474932, 0.00123717]
-BEST LATTICE: lattice(2^8, [1, 75, 23]) with merit value 0.0239383
+base lattice: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1, 75]
+base merit value: [9.9092, 4.46607, 1.9866, 0.551031, 0.23438, 0.146205, 0.0230907, 0.00474932, 0.00123717]
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 2^8 - Generating vector = [1, 75, 23]
+Merit value: 0.0239383

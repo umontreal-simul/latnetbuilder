@@ -328,12 +328,6 @@ setting the compiler to use the C++14 standard, by adding the `include`
 and `lib` directories (under the installation directory) to the include and
 library paths, respectively, then by linking with the `latticetester` and
 `latnetbuilder` libraries, together with the `fftw3`, NTL, GMP and Boost libraries.
-An example `Makefile` to build a project that uses the LatNet Builder
-application programming interface (API) can be found under
-`$HOME/latnetsoft/share/doc/examples/myproject`. TODO
-If you compiled LatNet Builder yourself from the source code, this `Makefile`
-will be adapted to your specific system configuration; otherwise, it may need
-to be customized. TODO
 
 In particular, if LatNet Builder, Boost , NTL, GMP and FFTW were respectively installed
 under `$HOME/latnetsoft`, `/opt/boost`, `/opt/ntl`, `/opt/gmp` and `/opt/FFTW`, a C++ source file called

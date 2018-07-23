@@ -110,9 +110,6 @@ struct defaultPerLevelOrder<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL>{
  * This order permits to do fast CBC exploration, and can be obtained by setting the PerLevelOrder template parameter to PerLevelOrder::CYCLIC.
  * If \f$m>1\f$, the cyclic structure does not apply and we have to set PerLevelOrder to PerLevelOrder::BASIC.
  * In this case, elements of \f$(\mathbb{Z}_2[z]/(b(z)^k))^*\f$ are ordered according to the order given by the class GeneratingValues.
- * 
- * The output from \ref Storage.cc gives an intuition of how this works for
- * different combination of lattice type and of compression.
  */
 template <LatticeType LR, EmbeddingType ET, Compress COM, PerLevelOrder PLO = defaultPerLevelOrder<LR, ET>::Order > class Storage;
 
@@ -223,61 +220,6 @@ private:
    const DERIVED& derived() const
    { return static_cast<const DERIVED&>(*this); }
 };
-
-/**
- * \example Storage.cc
- * This examples shows how to use the LatBuilder::Storage template class.
- *
- * The output is as follows:
- * \code{.unparsed}
- *==> storage / compression: flat storage / none
- *   virtual / actual sizes: 12 / 12
- *   original:   [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
- *   strided(3): [0, 3, 6, 9, 0, 3, 6, 9, 0, 3, 6, 9]
- *==> storage / compression: flat storage / symmetric
- *   virtual / actual sizes: 12 / 7
- *   original:   [0, 1, 2, 3, 4, 5, 6]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1]
- *   strided(3): [0, 3, 6, 3, 0, 3, 6]
- *==> storage / compression: multilevel storage, PerLevelOrder : inverse-cyclic / none
- *   virtual / actual sizes: 16 / 16
- *   original:   [0, 8, 4, 12, 2, 10, 14, 6, 1, 13, 9, 5, 15, 3, 7, 11]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
- *   strided(3): [0, 8, 12, 4, 6, 14, 10, 2, 3, 7, 11, 15, 13, 9, 5, 1] 
- *==> storage / compression: multilevel storage, PerLevelOrder : inverse-cyclic / symmetric
- *   virtual / actual sizes: 16 / 9
- *   original:   [0, 8, 4, 2, 6, 1, 3, 7, 5]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1]
- *   strided(3): [0, 8, 4, 6, 2, 3, 7, 5, 1]
- *==> storage / compression: multilevel storage, PerLevelOrder : basic / none
- *   virtual / actual sizes: 16 / 16
- *   original:   [0, 8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
- *   strided(3): [0, 8, 12, 4, 6, 2, 14, 10, 3, 9, 15, 5, 11, 1, 7, 13]
- *==> storage / compression: multilevel storage, PerLevelOrder : basic / symmetric
- *   virtual / actual sizes: 16 / 9
- *   original:   [0, 8, 4, 2, 6, 1, 3, 5, 7]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7, 8, 7, 6, 5, 4, 3, 2, 1]
- *   strided(3): [0, 8, 4, 6, 2, 3, 7, 1, 5]
- *==> storage / compression: flat storage / none
- *   virtual / actual sizes: 8 / 8
- *   original:   [0, 1, 2, 3, 4, 5, 6, 7]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7]
- *   strided([1 1]): [0, 3, 6, 5, 1, 2, 7, 4]
- *==> storage / compression: multilevel storage, PerLevelOrder : basic / none
- *   virtual / actual sizes: 8 / 8
- *   original:   [0, 1, 2, 3, 4, 5, 6, 7]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7]
- *   strided([1 1]): [0, 3, 6, 5, 1, 2, 7, 4]
- *==> storage / compression: multilevel storage, PerLevelOrder : inverse-cyclic / none
- *   virtual / actual sizes: 8 / 8
- *   original:   [0, 1, 6, 3, 7, 5, 4, 2]
- *   unpermuted: [0, 1, 2, 3, 4, 5, 6, 7]
- *   strided([1 1]): [0, 3, 7, 5, 4, 2, 1, 6]
- *
- * \endcode
- */
 }
 
 #include "latbuilder/Storage-SIMPLE.h"

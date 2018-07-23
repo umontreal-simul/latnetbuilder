@@ -63,7 +63,8 @@ public:
    // been observed; updates the best observed candidate lattice if necessary
    void observe(const LatDef& lat, Real merit)
    {
-      std::cout << lat << "\t:\t" << merit;
+      std::cout << lat;
+      std::cout << "Merit: " << merit;
       if (merit < m_bestMerit) {
          std::cout << " <-- best";
          m_bestMerit = merit;
@@ -87,7 +88,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    weights->setDefaultWeight(0.7);
 
    //! [ProjDepMerit]
-   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat> ProjDep;
+   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    //! [ProjDepMerit]
    std::cout << "figure of merit: " << figure << std::endl;
@@ -135,7 +136,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
       // notify the observer
       obs.observe(lat, merit);
    }
-   std::cout << "BEST LATTICE: " << obs.bestLat() << " with merit value " << obs.bestMerit() << std::endl;
+   std::cout << "BEST LATTICE: " << std::endl << obs.bestLat() << "Merit value: " << obs.bestMerit() << std::endl;
    //! [loop]
 }
 

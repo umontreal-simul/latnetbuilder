@@ -95,8 +95,8 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
       Dimension baseDim = cbc.baseLat().dimension();
 
       std::cout << "CBC search for dimension: " << (baseDim + 1) << std::endl;
-      std::cout << "  base lattice: " << cbc.baseLat() << std::endl;
-      std::cout << "  base merit value: " << cbc.baseMerit() << std::endl;
+      std::cout << "base lattice: " << std::endl << cbc.baseLat();
+      std::cout << "base merit value: " << cbc.baseMerit() << std::endl;
 
       //! [meritSeq]
       auto meritSeq = cbc.meritSeq(baseDim == 0 ? genSeq0 : genSeq);
@@ -113,7 +113,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
       cbc.select(best.base());
       //! [select]
 
-      std::cout << "BEST LATTICE: " << cbc.baseLat() << " with merit value " << *best << std::endl;
+      std::cout << "BEST LATTICE: " << std::endl << cbc.baseLat() << "Merit value: " << *best << std::endl;
    }
    //! [CBC loop]
 }

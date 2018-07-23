@@ -1,17 +1,29 @@
-figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
-filters: scalar filters = (normalizer(PAlphaSL10), low-pass)
+figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
+filters: Embedding type: Unilevel
+Unilevel filters: normalizer: PAlphaSL10, low-pass
 CBC search for dimension: 1
-  base lattice: lattice(257, [])
-  base merit value: 0
-BEST LATTICE: lattice(257, [1]) with merit value 0.0105903
-  15 accepted / 15 tried
+base lattice: 
+Ordinary Lattice - Modulus = 257 - Generating vector = []
+base merit value: 0
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1]
+Merit value: 0.0105903
+15 accepted / 15 tried
 CBC search for dimension: 2
-  base lattice: lattice(257, [1])
-  base merit value: 3.48667e-05
-BEST LATTICE: lattice(257, [1, 113]) with merit value 0.0401108
-  15 accepted / 15 tried
+base lattice: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1]
+base merit value: 3.48667e-05
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1, 76]
+Merit value: 0.0346885
+15 accepted / 17 tried
 CBC search for dimension: 3
-  base lattice: lattice(257, [1, 113])
-  base merit value: 0.00144779
-BEST LATTICE: lattice(257, [1, 113, 89]) with merit value 0.162337
-  15 accepted / 15 tried
+base lattice: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1, 76]
+base merit value: 0.00125208
+BEST LATTICE: 
+Ordinary Lattice - Modulus = 257 - Generating vector = [1, 76, 96]
+Merit value: 0.175129
+15 accepted / 15 tried

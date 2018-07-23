@@ -61,7 +61,7 @@ public:
 
    //! [onAbort]
    void onAbort(const LatDef& lat) const
-   { std::cout << "rejected " << lat << std::endl; }
+   { std::cout << "rejected:" << std::endl << lat; }
    //! [onAbort]
 
    //! [onMinUpdated]
@@ -81,7 +81,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat> ProjDep;
+   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
@@ -129,9 +129,9 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
       Dimension baseDim = cbc.baseLat().dimension();
 
       std::cout << "CBC search for dimension: " << (baseDim + 1) << std::endl;
-      std::cout << "  base lattice: " << cbc.baseLat() << std::endl;
-      std::cout << "  base merit value: " << cbc.baseMerit() << std::endl;
-      std::cout << "  new projections: " << cbc.projections() << std::endl;
+      std::cout << "base lattice: " << std::endl << cbc.baseLat();
+      std::cout << "base merit value: " << cbc.baseMerit() << std::endl;
+      std::cout << "new projections: " << cbc.projections() << std::endl;
 
       //! [meritSeq]
       auto meritSeq = cbc.meritSeq(baseDim == 0 ? genSeq0 : genSeq);
@@ -149,7 +149,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
       cbc.select(best.base());
       //! [select]
 
-      std::cout << "BEST LATTICE: " << cbc.baseLat() << " with merit value " << *best << std::endl;
+      std::cout << "BEST LATTICE: " << std::endl << cbc.baseLat() << "Merit value: " << *best << std::endl;
    }
    //! [CBC loop]
 }
