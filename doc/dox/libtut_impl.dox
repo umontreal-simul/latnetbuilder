@@ -16,8 +16,6 @@
 
 /*! \page libtut_impl Implementation Notes
 
-\todo
-
 \section libtut_impl_func_args Function Arguments
 
 In LatNet Builder, there are three different types of declarations of function

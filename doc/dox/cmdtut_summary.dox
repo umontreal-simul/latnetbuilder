@@ -273,7 +273,6 @@ options:
                 Sets the number of significant figures to use when displaying
 		merit values.
                 Takes a positive integer as its argument.
-								TODO does it work with netbuilder ?
 	</dd>
 	<dt><code>\--verbose</code> / <code>-v</code></dt>
 	<dd><em>Optional (default 0).</em>

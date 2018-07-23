@@ -15,8 +15,10 @@
 // limitations under the License.
 
 #include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 #include <iostream>
 
+#include "netbuilder/Const.h"
 #include "latbuilder/LatBuilder.h"
 #include "netbuilder/NetBuilder.h"
 
@@ -43,6 +45,9 @@ makeOptionsDescription()
 
 int main(int argc, const char *argv[])
 {
+    boost::filesystem::path p(argv[0]);
+    NetBuilder::PATH_TO_LATNETBUILDER = p.parent_path().string();
+
     try
     {
         namespace po = boost::program_options;

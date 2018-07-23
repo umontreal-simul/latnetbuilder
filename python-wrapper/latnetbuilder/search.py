@@ -1,5 +1,7 @@
 import subprocess
 import time
+import os
+import shutil
 import logging
 import traceback
 from IPython.display import display
@@ -9,25 +11,59 @@ from .parse_output import parse_output, Result
 from .gui.output import output, create_output
 from .gui.progress_bars import progress_bars
 
-logging.basicConfig(filename='stderr.txt')
+DEFAULT_OUTPUT_FOLDER = 'latnetbuilder_tmp_log'
 
 class Search():
     def __init__(self):
         self.modulus = ''
+        self.construction = ''
         self.dimension = 0
+        self.interlacing = 1
         self.multilevel = False
         self.multilevel_filters = []
         self.combiner = ''
         self.exploration_method = ''
         self.figure_of_merit = ''
-        self.figure_power = '2'
+        self.norm_type = '2'
         self.weights = []
-        self.weights_power = 2  # to be changed for inf norm ?
         self.filters = []
         self.output = None
+        self.set_type_name = ''
+        self.output_folder = DEFAULT_OUTPUT_FOLDER
 
     def construct_command_line(self):
-        pass
+        '''Construct and return the command line to call LatNetBuilder as a list of strings'''
+
+        # default value for modulus
+        if self.modulus == '':
+            if self.construction == 'polynomial' and self.multilevel == True:
+                modulus = '01^10'
+            else:
+                modulus = '2^10'
+        else:
+            modulus = self.modulus
+
+        from . import LATBUILDER
+        command = [LATBUILDER,
+                   '--set-type', self.set_type_name,
+                   '--construction', self.construction,
+                   '--multilevel', str(self.multilevel).lower(),
+                   '--size-parameter', modulus,
+                   '--figure-of-merit', self.figure_of_merit,
+                   '--norm-type', self.norm_type,
+                   '--exploration-method', self.exploration_method,
+                   '--verbose', '2',
+                   '--dimension', str(self.dimension),
+                   '--interlacing', str(self.interlacing),
+                   '--output-folder', self.output_folder
+                   ]
+        command += ['--weights'] + self.weights
+        if self.filters != []:
+            command += ['--filters'] + self.filters
+        if self.combiner != '':
+            command += ['--combiner', self.combiner]
+        return command
+
     def search_type(self):
         pass
 
@@ -67,12 +103,14 @@ class Search():
         
         This function should be used by the end user if he instanciates a Search object.'''
 
-        stdout_file = open(stdout_filename, 'w')
-        stderr_file = open(stderr_filename, 'w')
+        stdout_filepath = os.path.join(self.output_folder, stdout_filename)
+        stderr_filepath = os.path.join(self.output_folder, stderr_filename)
+        stdout_file = open(stdout_filepath, 'w')
+        stderr_file = open(stderr_filepath, 'w')
         process = self._launch_subprocess(stdout_file, stderr_file)
-        self._monitor_process(process, stdout_filename=stdout_filename, stderr_filename=stderr_filename, display_progress_bar=display_progress_bar)
+        self._monitor_process(process, stdout_filepath, stderr_filepath, display_progress_bar=display_progress_bar)
 
-    def _monitor_process(self, process, stdout_filename, stderr_filename, gui=None, display_progress_bar=False, in_thread=False):
+    def _monitor_process(self, process, stdout_filepath, stderr_filepath, gui=None, display_progress_bar=False, in_thread=False):
         '''Monitor the C++ process.
         
         This function is called inside a thread by the GUI (with in_thread=True, and gui contains the gui object).
@@ -81,13 +119,11 @@ class Search():
         The function deals the monitoring both with and without a GUI interface. Thus it is a bit lenghty
         because the same information has to be treated in two different ways.'''
 
-        search_type = self.search_type()
         try:
             if gui is not None:
                 abort = gui.button_box.abort
                 my_progress_bars = gui.progress_bars
                 display_progress_bar = True
-                output = gui.output
             else:
                 if display_progress_bar:
                     # create and display the progress bars
@@ -96,12 +132,12 @@ class Search():
                     my_progress_bars.progress_bar_nets.layout.display = 'flex'
                     display(my_progress_bars.progress_bar_nets)
                     display(my_progress_bars.progress_bar_dim)
-                self.output = output()
-                output = self.output
+
+            self.output = output()
             
             while process.poll() is None:   # while the process is not finished
-                time.sleep(1)
-                with open('cpp_outfile.txt','r') as f:
+                time.sleep(0.1)
+                with open(stdout_filepath,'r') as f:
                     data = f.read()
                 try:
                     last_line = data.split('\n')[-2]    # read the before last line (the last line is always blank)
@@ -121,25 +157,23 @@ class Search():
 
             if process.poll() == 0:     # the C++ process has finished normally
                 try:
-                    with open('output_latnet.txt') as f:
+                    with open(os.path.join(self.output_folder, 'outputMachine.txt')) as f:
                         file_output = f.read()
                 except:
                     file_output = None
-                parse_output(file_output, output, search_type)
-                result_obj = output.result_obj
+                result_obj = parse_output(file_output)
 
                 if gui is not None:
-                    gui.output.result_html.value = "<span> <b> Number of points </b>: %s </span> \
-                    <p> <b> Generating Vector </b>: %s </p>\
-                    <p> <b> Merit value </b>: %s </p>\
-                    <p> <b> CPU Time </b>: %s s </p>" % (str(result_obj.nb_points), str(result_obj.gen_vector), str(result_obj.merit), str(result_obj.time))
+                    gui.output.result_html.value = result_obj._repr_html_()
+                    gui.output.result_obj = result_obj
                     create_output(gui.output)
                 else:
-                    print("Result:\nLattice Size: %s \nGenerating Vector: %s \nMerit value: %s \nCPU Time: %s s" 
-                    % (str(result_obj.nb_points), str(result_obj.gen_vector), str(result_obj.merit), str(result_obj.time)))
+                    print(result_obj)
+                
+                self.output.result_obj = result_obj
 
             else:   # an error occured in the C++ process
-                with open(stderr_filename) as f:
+                with open(stderr_filepath) as f:
                     err_output = f.read()
                 
                 if gui is not None:
@@ -148,22 +182,36 @@ class Search():
                         if abort.value == True:
                             gui.output.result_html.value = 'You aborted the search.'
                         else:
-                            gui.output.result_html.value = '<span style="color:red"> The C++ process crashed without returning an error message. </span>'
+                            gui.output.result_html.value = '<span style="color:red"> The C++ process crashed without returning an error message (for example due to a segmentation fault).<br>Please contact the developers to report this error.</span>'
                 
                 else:
                     if err_output == '':
-                        print("The C++ process crashed without returning an error message.")
+                        print("The C++ process crashed without returning an error message (for example due to a segmentation fault). Please contact the developers to report this error.")
                     else:
                         print(err_output)
 
+            try:
+                if self.output_folder == DEFAULT_OUTPUT_FOLDER:
+                    shutil.rmtree(self.output_folder, ignore_errors=True)
+                else:
+                    os.remove(os.path.join(self.output_folder, 'cpp_outfile.txt'))
+                    os.remove(os.path.join(self.output_folder, 'cpp_errfile.txt'))
+            except OSError:
+                pass
             
         except Exception as e:
+            error_file = os.path.join(self.output_folder, 'stderr.txt')
+            logging.basicConfig(filename = error_file)
             logging.warn(e)
             logging.warn(traceback.format_exc())
             if gui is not None:
-                gui.output.result_html.value += '<span style="color:red"> An error happened in the communication with the C++ process. </span>'
+                gui.output.result_html.value += '<span style="color:red"> An error happened in the communication with the C++ process. See file: ' + error_file +  ' </span>'
             else:
-                print("An error happened in the communication with the C++ process.")
+                print('An error happened in the communication with the C++ process. See file: ' + error_file)
+        
+        finally:
+            process.kill()
+            
 
     def rich_output(self):
         '''Print a rich output (plot and code) for the Search result'''
@@ -203,79 +251,22 @@ class SearchLattice(Search):
     '''Specialization of the Search class to search for lattices'''
 
     def __init__(self):
-        self.lattice_type = ''
         super(SearchLattice, self).__init__()   # calls the constructor of the parent class Search
+        self.set_type_name = 'lattice'
 
     def __repr__(self):
         return "TODO"
           
-        
-    def construct_command_line(self):
-        '''Construct and return the command line to call LatNetBuilder as a list of strings'''
-
-        from . import LATBUILDER
-        command = [LATBUILDER,
-                   '--set-type', 'lattice',
-                   '--construction', self.lattice_type,
-                   '--multilevel', str(self.multilevel).lower(),
-                   '--modulus', self.modulus,
-                   '--figure-of-merit', self.figure_of_merit,
-                   '--norm-type', self.figure_power,
-                   '--construction', self.exploration_method,
-                   '--weights-power', str(self.weights_power),
-                   '--verbose', '1',
-                   '--dimension', str(self.dimension),
-                   ]
-        command += ['--weights'] + self.weights
-        if self.filters != []:
-            command += ['--filters'] + self.filters
-        if self.multilevel_filters != []:
-            command += ['--multilevel-filters'] + self.multilevel_filters
-        if self.combiner != '':
-            command += ['--combiner', self.combiner]
-        if self.lattice_type == 'polynomial':
-            command += ['--output-format', 'file:output_latnet.txt,format:gui']
-        return command
-
     def search_type(self):
-        command = self.construct_command_line()
-        if 'ordinary' in command:
-            return 'ordinary'
-        elif 'polynomial' in command:
-            return 'polynomial'
+        return self.construction
 
 
 class SearchNet(Search):
     '''Specialization of the Search class to search for nets'''
 
     def __init__(self):
-        self.construction = ''
         super(SearchNet, self).__init__()       # calls the constructor of the parent class Search
-    
-    def construct_command_line(self):
-        '''Construct and return the command line to call LatNetBuilder as a list of strings'''
-
-        from . import LATBUILDER
-        command = [LATBUILDER,
-                   '--set-type', 'net',
-                   '--construction', self.construction,
-                   '--multilevel', str(self.multilevel).lower(),
-                   '--size', self.modulus,
-                   '--exploration-method', self.exploration_method,
-                   '--dimension', str(self.dimension),
-                   '--verbose', '2',
-                   '--output-format', 'file:output_latnet.txt,format:gui'
-                   ]
-
-        if len(self.filters) > 0:
-            command += ['-add-figure', self.filters[-1]]
-        
-        command.append('--add-figure')
-        command.append('/'.join([self.figure_of_merit, '1', self.figure_power, ' '.join(self.weights), str(self.weights_power)]))
-
-        if self.combiner != '':
-            command += ['--combiner', self.combiner]
-        return command
+        self.set_type_name = 'net'
 
     def search_type(self):
         return 'digital-' + self.construction

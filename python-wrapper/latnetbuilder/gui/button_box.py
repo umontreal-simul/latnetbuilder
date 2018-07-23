@@ -4,7 +4,6 @@ import os
 import signal
 
 from .parse_input import parse_input
-from .output import create_output
 from .common import ParsingException, BaseGUIElement
 
 def build_command_line(change, gui):
@@ -15,7 +14,7 @@ def build_command_line(change, gui):
     except ParsingException as e:
         gui.output.command_line_out.value = '<span style="color:red"> PARSING ERROR: ' + str(e) + '</span>'
     except Exception as e:
-        gui.output.command_line_out.value = '<span style="color:red"> ERROR: ' + str(e) + '</span>'
+        gui.output.command_line_out.value = '<span style="color:red"> ERROR: ' + str(e) + '<br>Please contact the developers to report this error.</span>'
 
 def abort_process(change, process):
     '''Callback fired when the user clicks the Abort button.
@@ -33,8 +32,8 @@ def on_click_search(change, gui):
     except ParsingException as e:
         gui.output.result_html.value = '<span style="color:red"> PARSING ERROR: ' + str(e) + '</span>'
         return
-    except:     # unknown error, should not happen (means there is a bug in the Python code)
-        gui.output.result_html.value = '<span style="color:red"> ERROR: Something went wrong in the parsing of the input. Please double-check. </span>'
+    except Exception as e:    # unknown error, should not happen (means there is a bug in the Python code)
+        gui.output.result_html.value = '<span style="color:red"> ERROR: ' + str(e) + '<br>Please contact the developers to report this error.</span>'
         return
 
     gui.search = s
@@ -57,10 +56,12 @@ def on_click_search(change, gui):
     gui.button_box.abort.button_style = 'warning'
     gui.button_box.abort.value = False
 
-    stdout_filename = 'cpp_outfile.txt'
-    stderr_filename = 'cpp_errfile.txt'
-    stdout_file = open(stdout_filename, 'w')
-    stderr_file = open(stderr_filename, 'w')
+    if not os.path.exists(s.output_folder):
+        os.makedirs(s.output_folder)
+    stdout_filepath = os.path.join(s.output_folder, 'cpp_outfile.txt')
+    stderr_filepath = os.path.join(s.output_folder, 'cpp_errfile.txt')
+    stdout_file = open(stdout_filepath, 'w')
+    stderr_file = open(stderr_filepath, 'w')
 
     # call the LatNetBuilder executable and returns a subprocess instance
     process = s._launch_subprocess(stdout_file, stderr_file)
@@ -70,7 +71,7 @@ def on_click_search(change, gui):
     gui.button_box.abort.observe(lambda change: abort_process(change, process))
 
     # launch the thread that will monitor the process, and update the GUI accordingly
-    thread = threading.Thread(target=s._monitor_process, args=(process, stdout_filename, stderr_filename, gui, False, True))
+    thread = threading.Thread(target=s._monitor_process, args=(process, stdout_filepath, stderr_filepath, gui, False, True))
     thread.start()
 
 

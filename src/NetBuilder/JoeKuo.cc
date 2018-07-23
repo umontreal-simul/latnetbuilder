@@ -17,11 +17,13 @@
 
 #include "netbuilder/JoeKuo.h"
 #include "netbuilder/Util.h"
+#include "netbuilder/Const.h"
 #include <cmath>
 
 #include <string>
 #include <fstream>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace std;
 
@@ -74,34 +76,41 @@ inline std::string& trim(std::string& s, const char* t = ws)
 std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(Dimension dimension)
 {
       assert(dimension >= 1 && dimension <= 21201);
-      std::ifstream file("../share/latnetbuilder/data/JoeKuoSobolNets.csv");
+      std::string path = PATH_TO_LATNETBUILDER + "/../share/latnetbuilder/data/JoeKuoSobolNets.csv";
       std::vector<std::vector<uInteger>> res(dimension);
-      std::string sent;
 
-      do
-      {
-      getline(file,sent);
-      trim(sent);
-      }
-      while (sent != "###");
+      if (boost::filesystem::exists(path)){
+            std::ifstream file(path);
+            std::string sent;
 
-      getline(file,sent);
-
-      for(unsigned int i = 1; i <= dimension; ++i)
-      {
-            if(getline(file,sent))
+            do
             {
-                  std::vector<std::string> fields;
-                  boost::split( fields, sent, boost::is_any_of( ";" ) );
-                  for( const auto& token : fields)
+            getline(file,sent);
+            trim(sent);
+            }
+            while (sent != "###");
+
+            getline(file,sent);
+
+            for(unsigned int i = 1; i <= dimension; ++i)
+            {
+                  if(getline(file,sent))
                   {
-                        res[i-1].push_back(std::stol(token));
+                        std::vector<std::string> fields;
+                        boost::split( fields, sent, boost::is_any_of( ";" ) );
+                        for( const auto& token : fields)
+                        {
+                              res[i-1].push_back(std::stol(token));
+                        }
+                  }
+                  else
+                  {
+                        break;
                   }
             }
-            else
-            {
-                  break;
-            }
+      }
+      else{
+            throw runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER is probably incorrect. See netbuilder/Const.h.");
       }
       return res;
 }

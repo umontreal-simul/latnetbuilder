@@ -140,7 +140,9 @@ std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat)
     {
         for(unsigned int j = 0; j < mat.m_nCols; ++j)
         {
-            os << mat(i,j) << " ";
+            os << mat(i,j);
+            if (j < mat.m_nCols - 1)
+                os << " ";
         }
         os << std::endl;
     }
