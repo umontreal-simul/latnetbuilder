@@ -45,10 +45,10 @@ class MinimumObserver
         */
         MinimumObserver(typename NetConstructionTraits<NC>::SizeParameter sizeParameter, int verbose = 0):
             m_bestNet(new DigitalNetConstruction<NC>(0,sizeParameter)),
-            m_foundBestNet(false),
-            m_bestMerit(std::numeric_limits<Real>::infinity()),
             m_verbose(verbose)
-        {};
+        {
+            reset(false);
+        };
 
         /** 
          * Constructor. 
@@ -56,21 +56,23 @@ class MinimumObserver
          * @param verbose Verbosity level.
         */
         MinimumObserver(std::unique_ptr<DigitalNetConstruction<NC>> baseNet, int verbose = 0):
-            m_bestNet(std::move(baseNet)),
             m_verbose(verbose)
         {
-            fullReset(std::move(baseNet));
+            reset(std::move(baseNet));
         };
             
         /** 
          * Initializes the best observed merit value to infinity, 
-         * sets the found net flag to \c false, and the starting net to the empty net. 
+         * sets the found net flag to \c false.
+         * Optionally, resets the starting net to the empty net.
+         * @param hard Flag indicating if the starting net must be reset to the empty net.
          */
-        void fullReset() 
+        void reset(bool hard = true) 
         { 
             m_bestMerit = std::numeric_limits<Real>::infinity();
             m_foundBestNet = false;
-            m_bestNet = std::make_unique<DigitalNetConstruction<NC>>(0, m_bestNet->sizeParameter());
+            if (hard)
+                m_bestNet = std::make_unique<DigitalNetConstruction<NC>>(0, m_bestNet->sizeParameter());
         }
 
         /** 
@@ -78,21 +80,10 @@ class MinimumObserver
          * set the found net flag to \c false, and the starting net to baseNet. 
          * @param baseNet The net from which the search starts.
          */
-        void fullReset(std::unique_ptr<DigitalNetConstruction<NC>> baseNet) 
+        void reset(std::unique_ptr<DigitalNetConstruction<NC>> baseNet) 
         { 
-            m_bestMerit = std::numeric_limits<Real>::infinity();
-            m_foundBestNet = false;
+            reset(false);
             m_bestNet = std::move(baseNet);
-        }
-
-        /** 
-         * Initializes the best observed merit value to infinity, 
-         * sets the found net flag to \c false, and the starting net to the empty net. 
-         */
-        void reset() 
-        { 
-            m_bestMerit = std::numeric_limits<Real>::infinity();
-            m_foundBestNet = false;
         }
 
         /** 
