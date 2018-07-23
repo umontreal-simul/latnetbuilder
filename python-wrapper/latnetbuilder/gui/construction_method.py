@@ -3,9 +3,9 @@ import ipywidgets as widgets
 from .common import style_default, parse_polynomial, BaseGUIElement
 
 constr_data = {
-    'sobol': '<p> The nets follow the Sobol construction, and the software optimizes the direction numbers according to the figure of merit. The first matrix is always the same (reversed identity), so the first direction number is arbitrarly set to 0.</p>',
+    'sobol': '<p> The nets follow the Sobol construction, and the direction numbers are optimized. The first matrix is always the same (reversed identity), so the first direction number is arbitrarly set to 0.</p>',
     'polynomial': '<p> Polynomial Lattice Rules viewed as digital nets, and evaluated as such. </p>',
-    'explicit': '<p> Explicit construction method: this is used to evaluate a net based on explicit matrices you can provide below. </p>'
+    'explicit': '<p> Most general construction of digital nets, defined by their generating matrices. </p>'
 }
 
 def change_constr_choice(change, gui):
@@ -17,11 +17,15 @@ def change_constr_choice(change, gui):
     if new_choice == 'explicit':
         gui.exploration_method.exploration_choice.options = [
             ('Evaluate', 'evaluation'), ('All space', 'exhaustive')]
+        gui.exploration_method.exploration_choice.value = 'exhaustive'
         gui.exploration_method.is_random.value = True
         gui.exploration_method.is_random.disabled = True
     else:
+        old_value = gui.exploration_method.exploration_choice.value
         gui.exploration_method.exploration_choice.options = [
             ('Evaluate', 'evaluation'), ('All space', 'exhaustive'), ('CBC', 'full-CBC')]
+        if change['old'] == 'explicit':
+            gui.exploration_method.exploration_choice.value = old_value
         gui.exploration_method.is_random.disabled = False
 
     if new_choice == 'polynomial':

@@ -63,12 +63,10 @@ def parse_input_common(s, gui):
     s.exploration_method = exploration_method
 
     merit = ''
-    if gui.figure_of_merit.coord_unif.value:
-        merit += 'CU:'
     figtype = gui.figure_of_merit.figure_type.value
-    if figtype == 'Spectral':
-        merit += 'spectral'
-    elif 'alpha' in figtype:
+    if gui.figure_of_merit.coord_unif.value and 'projdep' not in figtype:
+        merit += 'CU:'
+    if 'alpha' in figtype:
         merit += figtype.split('alpha')[0] + str(gui.figure_of_merit.figure_alpha.value)
     else:
         merit += figtype
@@ -118,7 +116,7 @@ def parse_input_net(gui):
             s.exploration_method += ':'
             for k in range(int(s.dimension)):
                 s.exploration_method += gui.exploration_method.generating_vector_simple.children[k].value
-                if k != int(s.dimension):
+                if k != int(s.dimension)-1:
                     s.exploration_method += '-'
 
         elif s.construction == 'explicit':
@@ -145,7 +143,7 @@ def parse_input_lattice(gui):
             s.exploration_method += ':'
         for k in range(int(s.dimension)):
             s.exploration_method += gui.exploration_method.generating_vector.children[0].children[k].value
-            if k != int(s.dimension):
+            if k != int(s.dimension)-1:
                 s.exploration_method += '-'
 
     return s

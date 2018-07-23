@@ -69,6 +69,8 @@ def parse_polynomial(s):
             if poly_str != '':
                 poly_str += '+'
             poly_str += ' z^{' + str(len(modulus)-k-1) + '}'
+        elif modulus[k] not in [0, 1]:
+            return ''
     if poly_str == '':
         return ''
     if power != 1:

@@ -102,7 +102,7 @@ class RandomSearch : public Search<NC, ET>
             
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {
-                if(this->m_verbose>0 && attempt % 100 == 0)
+                if(this->m_verbose>0 && ((m_nbTries > 100 && attempt % 100 == 0) || (attempt % 10 == 0)))
                 {
                     std::cout << "Net " << attempt << "/" << m_nbTries << std::endl;
                 }

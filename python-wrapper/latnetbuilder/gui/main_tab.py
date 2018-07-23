@@ -28,7 +28,7 @@ def change_maintab(change, gui):
         gui.construction_method.main.layout.display = 'flex'
         gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
         if gui.properties.interlacing.value == 1:
-            gui.figure_of_merit.figure_type.options = ['Palpha', 'R', 't-value', 'resolution-gap']
+            gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('R', 'R'), ('t-value', 't-value'), ('proj dep t-value', 'projdep:t-value'), ('star discr t-value', 'projdep:t-value:starDisc'),  ('resolution-gap', 'projdep:resolution-gap')]
         gui.figure_of_merit.coord_unif.value = True
         gui.figure_of_merit.coord_unif.disabled = True
         gui.exploration_method.exploration_choice.options = [

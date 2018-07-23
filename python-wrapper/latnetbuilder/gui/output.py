@@ -19,8 +19,8 @@ def transform_to_c(List):
 def create_output(output, create_graph=True):
     output.output.layout.display = 'flex'
     result_obj = output.result_obj
+    
     if create_graph and not (result_obj.nb_points > 2**15):
-        time.sleep(0.1)
 
         b1 = widgets.BoundedIntText(max=result_obj.dim, min=1, value=1, layout=widgets.Layout(width='180px'), description='Coordinate on x-axis', style=style_default)
         b2 = widgets.BoundedIntText(max=result_obj.dim, min=1, value=2, layout=widgets.Layout(width='180px'), description='Coordinate on y-axis', style=style_default)
@@ -105,10 +105,7 @@ def create_output(output, create_graph=True):
 
     
     elif result_obj.set_type == 'Polynomial':
-        # if result_obj.latnetbuilder.size.power == 1:
         modulus = result_obj.modulus
-        # else:
-        #     modulus = np.flip((np.poly1d(np.array(np.flip(result_obj.latnetbuilder.size.base, axis=0)))**result_obj.latnetbuilder.size.power).c % 2, axis=0)
 
         template = env.get_template('polynomial_py.txt')
         code_python = widgets.Textarea(value= 

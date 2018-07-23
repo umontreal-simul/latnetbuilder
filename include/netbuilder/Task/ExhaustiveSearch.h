@@ -88,7 +88,7 @@ class ExhaustiveSearch : public Search<NC, ET>
             uInteger nbNets = 1;
             for(const auto& genVal : searchSpace)
             {
-                if(this->m_verbose>0 && nbNets % 100 == 0)
+                if(this->m_verbose>0 && ((searchSpace.size() > 100 && nbNets % 100 == 0) || (nbNets % 10 == 0)))
                 {
                     std::cout << "Net " << nbNets << "/" << searchSpace.size() << std::endl;
                 }

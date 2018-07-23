@@ -139,9 +139,10 @@ class CBCSearch : public Search<NC, ET>
                 while(!m_explorer->isOver()) // for each generating values provided by the explorer
                 {
                     auto newNet = net.extendDimension(m_explorer->nextGenValue());
-                    if (this->m_verbose>=2 && m_explorer->count() % 100 == 0)
+                    unsigned int totalSize = m_explorer->size();
+                    if (this->m_verbose>=2 && ((totalSize > 100 && m_explorer->count() % 100 == 0) || (m_explorer->count() % 10 == 0)))
                     {
-                        std::cout << "Coordinate " << coord + 1 << "/" << this->dimension() << " - net " << m_explorer->count() << "/" << m_explorer->size() << std::endl;
+                        std::cout << "Coordinate " << coord + 1 << "/" << this->dimension() << " - net " << m_explorer->count() << "/" << totalSize << std::endl;
                     }
                     double newMerit = (*evaluator)(*newNet,coord,merit, this->m_verbose-3); // evaluate the net
                     if (this->m_minimumObserver->observe(std::move(newNet),newMerit)) // give it to the observer
