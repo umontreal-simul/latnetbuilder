@@ -24,7 +24,7 @@
 
 namespace LatBuilder { namespace Norm {
 
-namespace {
+namespace SumHelperIB{
 
  typedef boost::math::tools::polynomial<double> RealPolynomial;
 
@@ -201,7 +201,7 @@ Real IB::value(
       ) const
 {
    norm = 1.0 / (norm * (sizeParam.numPoints() - 1.0));
-   Real val = WeightsDispatcher::dispatch<SumHelper>(
+   Real val = WeightsDispatcher::dispatch<SumHelperIB::SumHelper>(
          m_weights,
          lambda,
          dimension,

@@ -26,6 +26,7 @@
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
 #include "latbuilder/LFSR258.h"
+#include "latbuilder/Util.h"
 
 #include <boost/lexical_cast.hpp>
 
@@ -81,7 +82,7 @@ struct LatSeqBasedSearchTraits<RandomKorobovTag<LR, ET, COMPRESS, PLO, FIGURE>> 
    }
 
    std::string name() const
-   { return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: random Korobov - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: random Korobov - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
 
    void init(LatBuilder::Task::RandomKorobov<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    {

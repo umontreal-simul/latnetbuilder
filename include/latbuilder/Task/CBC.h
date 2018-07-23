@@ -24,6 +24,7 @@
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder { namespace Task {
 
@@ -62,7 +63,7 @@ struct CBCBasedSearchTraits<CBCTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    }
 
    std::string name() const
-   {  return "Task: LatBuilder Search for " + std::string(LatticeTypeStrings[(int) LR])  + " lattices\nExploration method: CBC - Full Explorer"; }
+   {  return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: CBC - Full Explorer"; }
 
    void init(LatBuilder::Task::CBC<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }

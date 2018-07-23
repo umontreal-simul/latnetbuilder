@@ -212,4 +212,11 @@ std::string getDefaultPolynomial(unsigned int degree)
     return "";
 }
 
+std::string to_string(LatticeType LT){
+    
+    static const char * LatticeTypeStrings[] = { "Ordinary", "Polynomial", "Digital" };
+
+    return LatticeTypeStrings[(int) LT];
+}
+
 } // namespace LatBuilder

@@ -116,7 +116,22 @@ public:
    { return m_norm; }
 
    std::string name() const
-   { return "normalizer: " + norm().name(); }
+   { 
+      int begin = -1;
+      int end = -1;
+      for (unsigned int i=0; i<m_levelWeights.size(); i++){
+            if (m_levelWeights[i] != 0 && begin == -1){
+                  begin = i;
+            }
+            if (m_levelWeights[i] == 0 && begin != -1 && end == -1){
+                  end = i-1;
+            }
+      }
+      if (end == -1){
+            end = m_levelWeights.size()-1;
+      }
+      return "normalizer: " + norm().name() + " - levels: " + std::to_string(begin) + "," + std::to_string(end); 
+   }
 
    /**
     * Sets the per-level weights.

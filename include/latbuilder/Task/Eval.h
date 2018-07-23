@@ -24,6 +24,7 @@
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/MeritSeq/CBC.h"
 #include "latbuilder/GenSeq/GeneratingValues.h"
+#include "latbuilder/Util.h"
 
 #include <vector>
 
@@ -75,7 +76,7 @@ struct CBCBasedSearchTraits<EvalTag<LR, ET, COMPRESS, PLO, FIGURE>> {
    std::string name() const
    {  using TextStream::operator<<;
       std::ostringstream stream;
-      stream << "Task: LatBuilder Evaluation of the " << LatticeTypeStrings[(int) LR] << " lattice " << genVec ;
+      stream << "Task: LatBuilder Evaluation of the " << to_string(LR) << " lattice " << genVec ;
       return stream.str(); }
 
    void init(LatBuilder::Task::Eval<LR, ET, COMPRESS, PLO, FIGURE>& search) const

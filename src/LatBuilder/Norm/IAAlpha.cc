@@ -23,10 +23,11 @@
 #include <boost/math/tools/polynomial.hpp>
 
 namespace LatBuilder { namespace Norm {
-
-namespace {
-
+      
  typedef boost::math::tools::polynomial<double> RealPolynomial;
+
+namespace SumHelperIAAlpha{
+
 
    template <typename WEIGHTS>
    struct SumHelper {
@@ -179,7 +180,7 @@ Real IAAlpha::value(
       ) const
 {
    norm = 1.0 / (norm * (sizeParam.numPoints() - 1.0));
-   Real val = WeightsDispatcher::dispatch<SumHelper>(
+   Real val = WeightsDispatcher::dispatch<SumHelperIAAlpha::SumHelper>(
          m_weights,
          lambda,
          dimension,

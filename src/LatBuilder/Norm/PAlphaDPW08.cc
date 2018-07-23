@@ -22,7 +22,7 @@
 
 namespace LatBuilder { namespace Norm {
 
-namespace {
+namespace SumHelperPAlphaDPW08{
 
    template <typename WEIGHTS>
    class SumHelper {
@@ -131,7 +131,7 @@ Real PAlphaDPW08::value(
    // 2^(kappa+1), where kappa is the number of distinct prime factors of n
    const auto k = intPow(2, kappa + 1);
    Real z = static_cast<Real>(k * boost::math::zeta<Real>(this->alpha() * lambda));
-   Real val = WeightsDispatcher::dispatch<SumHelper>(
+   Real val = WeightsDispatcher::dispatch<SumHelperPAlphaDPW08::SumHelper>(
          m_weights,
          this->normType(),
          z,

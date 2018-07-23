@@ -134,7 +134,7 @@ namespace {
       if (figure != "" && admissibleNormalizations.size() == 0)
             throw BadFilter("No normalizations are available with figure " + figure + ".");
 
-      if ( (str.size() >= 4 && str.substr(0,4)=="select") || str.size() == 0)
+      if ( (str.size() >= 6 && str.substr(0,6)=="select") || str.size() == 0)
       {
             newNormString =  *admissibleNormalizations.begin() + ":" + newNormString;
       }
@@ -213,22 +213,4 @@ template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, Embeddin
 template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL> ;
 template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL> ;
 
-
-/*
-template
-std::unique_ptr<BasicMeritFilter<EmbeddingType::UNILEVEL>>
-MeritFilter::parse(
-      const std::string&,
-      const LatBuilder::SizeParam<EmbeddingType::UNILEVEL>&,
-      const LatticeTester::Weights&,
-      Real);
-
-template
-std::unique_ptr<BasicMeritFilter<EmbeddingType::MULTILEVEL>>
-MeritFilter::parse(
-      const std::string&,
-      const LatBuilder::SizeParam<EmbeddingType::MULTILEVEL>&,
-      const LatticeTester::Weights&,
-      Real);
-*/
 }}
