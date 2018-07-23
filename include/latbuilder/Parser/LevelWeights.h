@@ -41,12 +41,9 @@ struct LevelWeights {
    /**
     * Parses per-level weights.
     *
-    * The weights are all even and the string must specify the minimum and
-    * maximum levels.
+    * Example string: <tt>select</tt>, <tt>select:5</tt>, <tt>select:5,12</tt>
     *
-    * Example string: <tt>even</tt>, <tt>even:5</tt>, <tt>even:5,12</tt>
-    *
-    * Empty string is interpreted as <tt>even</tt>.
+    * Empty string is interpreted as <tt>select</tt>.
     */
    static result_type parse(
          const std::string& arg,

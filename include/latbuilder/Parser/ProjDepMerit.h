@@ -78,13 +78,6 @@ template<>
 template <typename FUNC, typename... ARGS>
    void ProjDepMerit<LatticeType::ORDINARY>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
-      // try coordinate-uniform
-      try {
-         Kernel<LatticeType::ORDINARY>::parse(str, interlacingFactor, std::move(weights), ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
-         return;
-      }
-      catch (BadKernel& e) {}
-
       // try spectral
         if (str == "spectral") {
            func(
@@ -94,7 +87,13 @@ template <typename FUNC, typename... ARGS>
                );
            return;
         }
-      
+
+      // try coordinate-uniform
+      try {
+         Kernel<LatticeType::ORDINARY>::parse(str, interlacingFactor, std::move(weights), ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         return;
+      }
+      catch (BadKernel& e) {}
 
       throw BadProjDepMerit(str);
    }

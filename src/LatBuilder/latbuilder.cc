@@ -142,7 +142,7 @@ makeOptionsDescription()
     "  norm:{P<alpha>-SL10|P<alpha>-DPW08|P<alpha>-PLR|IA<alpha>|IB}[:<multilevel-weights>]\n"
     "  low-pass:<threshold>\n"
     "where the optional parameter <multilevel-weights> specifies for multilevel lattices the per-level weights; possible values:\n"
-    "  even[:<min-level>[:<max-level>]] (default)\n")
+    "  select[:<min-level>[:<max-level>]] (default)\n")
    ("combiner,C", po::value<std::string>(),
     "(required for embedded) combiner for (filtered) multilevel merit values; possible values:\n"
     "  sum\n"

@@ -21,11 +21,11 @@
 and randomized quasi Monte-Carlo methods using state-of-the-art techniques.
 
 A previous version of this software, called Lattice Builder, only handled rank-1 lattice rules. Rank-1 polynomial lattices, were later added to Lattice Builder. 
-The current version of the software can also handle digital nets in base 2. This new piece of software is called %NetBuilder whereas the older one is called %LatBuilder. All in all, the types of point sets handled by LatNet Builder include rank-1 (ordinary and polynomial) lattice rules and digital nets in base 2 
+The current version of the software can also handle digital nets in base 2. This new piece of software is called %NetBuilder whereas the older one is called %LatBuilder. All in all, the point set types handled by LatNet Builder include rank-1 (ordinary and polynomial) lattice rules and digital nets in base 2 
 (Sobol' nets, polynomial lattice rules and nets defined by explicit generating matrices.)
 
 More precisely, LatNet Builder can search for point sets of arbitrary size in any dimension of high quality with respect to various criteria. 
-Such quality criteria are called figures of merit. These figures of merit are parametrized by weights which give different importance to the subprojections of the net. 
+Such quality criteria are called figures of merit. These figures of merit are parameterized by weights which give different importance to the subprojections of the net. 
 The merit of the subprojections is aggregated using a (weighted) \f$ \ell_q \f$ norm with \f$ q \leq \infty \f$.
 LatNet Builder can use various exploration methods to construct the point sets, such as the exhaustive, the random sampling or the component-by-component (CBC) methods.
 

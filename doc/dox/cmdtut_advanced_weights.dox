@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_weights Weights
+/** \page cmdtut_advanced_weights Weights
 
 This page describes how 
 \ref feats_weights "weights" can be specified depending on their type.
@@ -33,10 +33,10 @@ option
 \endverbatim
 must be added to the command line. 
 
-\section cmdtut_weights_projdep Projection-Dependent Weights
+\section cmdtut_advanced_weights_projdep Projection-Dependent Weights
 
 In that case, the value of the <code>--weights</code> option consists of 
-colon-separated tokens: the first is the type of weights (projecion-dependent); 
+colon-separated tokens: the first is the type of weights (projection-dependent); 
 the other tokens are optional and assign explicit weights to projections. Projections
 for which no weights have been explicitly assigned have a weight equal to zero.
 
@@ -74,7 +74,7 @@ The first colon-separated token indicates that the weights
 should be read from a file, and the second one, the (relative or absolute) path to 
 the file to read.
 
-\section cmdtut_weights_orderdep Order-Dependent Weights
+\section cmdtut_advanced_weights_orderdep Order-Dependent Weights
 
 In that case, the value of the <code>--weights</code> option consists of three 
 colon-separated tokens: the first is the type of weights (order-dependent
@@ -95,7 +95,7 @@ some \f$k\f$.
   \endverbatim
 
 
-\section cmdtut_weights_product Product Weights
+\section cmdtut_advanced_weights_product Product Weights
 In that case, the value of the <code>--weights</code> option consists of three 
 colon-separated tokens: the first is the type of weights (product
 weights); the second is the default weight assigned to coordinates for
@@ -115,13 +115,13 @@ some \f$j\f$.
   \endverbatim
 
 
-\section cmdtut_weights_pod POD Weights
+\section cmdtut_advanced_weights_pod POD Weights
 
 In that case, the value of the <code>--weights</code> option consists of five 
 colon-separated tokens: the first is the type of weights (POD), the next two
 specify the \f$\Gamma_k\f$'s as in \ref
-cmdtut_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
-as in \ref cmdtut_weights_product.
+cmdtut_advanced_weights_orderdep, and the last two specify the \f$\gamma_j\f$'s
+as in \ref cmdtut_advanced_weights_product.
 
 - POD weights with \f$\Gamma_1^p = 1.0\f$, \f$\Gamma_2^p = 0.7\f$,
   \f$\Gamma_3^p = 0.3\f$ and \f$\Gamma_k^p = 0.1\f$ for all \f$k \geq 4\f$,
@@ -131,14 +131,14 @@ as in \ref cmdtut_weights_product.
   --weights POD:0.1:1.0,0.7,0.3:0.5:1.0,0.9,0.7
   \endverbatim
 
-\section cmdtut_weights_combined Combined Weights
+\section cmdtut_advanced_weights_combined Combined Weights
 
 Additionally, one can specify several types of weights as a space separated
 list of weights descriptions. The weight of a projection
 will the sum of the specified weights.
 
 - Combined weights with \f$ \gamma_{\mathfrak u}^p = \Gamma_{|\mathfrak u|}^p + \prod_{j \in \mathfrak u} \gamma^p_j \f$
-  with the order-dependent weights \f$ \Gamma \f$ and the product weights \f$ \gamma \f$ defined above in \ref cmdtut_weights_pod :
+  with the order-dependent weights \f$ \Gamma \f$ and the product weights \f$ \gamma \f$ defined above in \ref cmdtut_advanced_weights_pod :
   \verbatim
   --weights product:0.1:1.0,0.7,0.3 order-dependent:0.1:1.0,0.7,0.3
   \endverbatim

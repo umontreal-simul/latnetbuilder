@@ -82,11 +82,11 @@ namespace {
             const auto strCombinerSplit = splitPair<>(combiner, ':');
             if (strCombinerSplit.first == "level") {
                   if (strCombinerSplit.second == "max"){
-                        levelWeights = "even:" + std::to_string(sizeParam.maxLevel());
+                        levelWeights = "select:" + std::to_string(sizeParam.maxLevel());
                   }
                   else {
                         try {
-                              levelWeights = "even:" + std::to_string(boost::lexical_cast<Level>(strCombinerSplit.second)) + "," + std::to_string(boost::lexical_cast<Level>(strCombinerSplit.second));
+                              levelWeights = "select:" + std::to_string(boost::lexical_cast<Level>(strCombinerSplit.second)) + "," + std::to_string(boost::lexical_cast<Level>(strCombinerSplit.second));
                         }
                         catch (boost::bad_lexical_cast&) {}
                   }
@@ -134,7 +134,7 @@ namespace {
       if (admissibleNormalizations.size() == 0)
             throw BadFilter("No normalizations are available with figure " + figure + ".");
 
-      if ( (str.size() >= 4 && str.substr(0,4)=="even") || str.size() == 0)
+      if ( (str.size() >= 4 && str.substr(0,4)=="select") || str.size() == 0)
       {
             newNormString =  *admissibleNormalizations.begin() + ":" + newNormString;
       }

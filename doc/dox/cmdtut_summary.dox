@@ -23,7 +23,7 @@ options:
 <dl>
 	<dt><code>\--set-type</code> / <code>-t</code></dt>
 	<dd><em> Required.</em>
-		Specifies the type of point set.
+		Specifies the point set type.
 		Takes one of the following values:
     - <code>lattice</code>
       to search for rank-1 lattices; or
@@ -47,11 +47,11 @@ options:
 			- <code>explicit</code>
 				to search for digital nets with explicit generating matrices.
 
-		See \ref feats_pointsets and \ref cmdtut_pointsets for additional details.
+		You can learn more on the different point set types \ref feats_pointsets "here". Details on how to use this option can be find \ref cmdtut_advanced_pointsets "here".
   </dd>
 	<dt><code>\--dimension</code> / <code>-d</code></dt>
 	<dd><em>Required.</em>
-		Specifies the dimension.
+		Specifies the dimension of the searched point sets.
 		Takes an integer argument.
 	</dd>
 	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
@@ -60,21 +60,22 @@ options:
   Takes an argument of either form:
 	- For lattices (<code>--set-type lattice</code>):
 		- <code>--size-parameter <var>modulus</var></code>; or
-		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>.
+		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>; or
+		- <code>--size-parameter 2^<var>k</var></code> (even for polynomial lattice rules).
 	- For digital nets (<code>--set-type net</code>):
 		- <code>--size-parameter 2^<var>k</var></code>; or
 		- <code>--size-parameter <var>modulus</var></code> (only for polynomial lattice rules); or
 		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code> (only for polynomial lattice rules).
 
-	See \ref cmdtut_pointsets for additional details.
+	See \ref cmdtut_advanced_pointsets "here" for additional details.
 	</dd>
 	<dt><code>\--exploration-method</code> / <code>-e</code></dt>
 	<dd><em>Required.</em>
 		Specifies the exploration method.
 		Takes an argument of the form:
-		- <code>evaluate:<var>point-set-description</var></code> to just compute the
+		- <code>evaluate:<var>point-set-description</var></code> to compute the
 		  merit value of the point set described by <code> <var>point-set-description</var></code>. 
-			See \ref cmdtut_pointsets for details about <code><var>point-set-description</var></code>.
+			See \ref cmdtut_advanced_pointsets "here" for details about <code><var>point-set-description</var></code>.
 		- <code>exhaustive</code> for exhaustive search;
 		- <code>random:<var>samples</var></code> for a random search with
 		  <code><var>samples</var></code> random samples;
@@ -99,7 +100,7 @@ options:
 				to extend the lattice to a lattice with modulus
 					<code><var>modulus</var></code> and generating
 				vector <code><var>genVec</var></code> specified as a comma-separated list
-				of integers/polynomials. See \ref cmdtut_pointsets for details about 
+				of integers/polynomials. See \ref cmdtut_advanced_pointsets "here" for details about 
 				<code><var>genVec</var></code>.
 
 		\n Specific to digital nets (<code>--set-type net </code>):
@@ -129,7 +130,7 @@ options:
 		and where <code><var>figure</var></code> is one of:
 		- <code>P<var>alpha</var></code> for the weighted \f$\mathcal
 			P_\alpha\f$ discrepancy with \f$\alpha=\f$<code><var>alpha</var></code>
-			(differs between ordinary lattice rules and polynomial lattice rules plus digital nets);
+			(the figures of merit are different for ordinary and polynomial lattice rules but have the same name);
 		- <code>spectral</code> for the spectral figure
 			of merit (only available with ordinary lattice rules);
 		- <code>R<var>alpha</var></code> for the weighted \f$\mathcal
@@ -144,16 +145,19 @@ options:
 		  with \f$\alpha=\f$<code><var>alpha</var></code> (only available for interlaced polynomial lattice rules and digital nets); or
 		- <code>IB</code> for the interlaced \f$B_{d, (2)}\f$ discrepancy (only available for interlaced polynomial lattice rules and digital nets).
 
-		See \ref feats_figures and \ref cmdtut_figures for additional details.
+		The definitions of all these figures of merit can be find \ref feats_figures "here". More details on how to use this option 
+		are available on this \ref cmdtut_advanced_figures for additional details "page".
 	</dd>
 	<dt><code>\--interlacing-factor</code> / <code>-i</code></dt>
 	<dd><em>Optional (default:1).</em>
 		Specifies the interlacing factor.
 		Takes a positive integer value.
 		If set to a value greater than 1, the search point set
-		will be an interlaced point set. Requires to use the appopriate
+		will be an interlaced point set. Requires to use the appropriate
 		figures of merit and the corresponding norm-type.
-		See \ref feats_interlaced for additional details.
+		See \ref feats_interlaced for the definition of interlaced point sets
+		and \ref cmdtut_advanced_interlaced for details about constructing 
+		point sets with the command-line tool.
 	</dd>
 	<dt><code>\--norm-type</code> / <code>-q</code></dt>
 	<dd><em>Required.</em>
@@ -162,8 +166,9 @@ options:
 		Takes an argument of the form:
 		- <code><var>realNumber</var></code> for a finite positive number;
 		- <code>inf</code> for infinity.
-
-		See \ref feats_figures for additional details.
+		The value of this option must be compatible with the type of figure of merit,
+		especially regarding the use of the coordinate-uniform evaluation algorithm.
+		See \ref feats_figures for additional details on this parameter.
 	</dd>
 	<dt><code>\--weights</code> / <code>-w</code></dt>
 	<dd><em>Required.</em>
@@ -209,20 +214,20 @@ options:
 			- <code>#<var>comment</var></code> to ignore
 				<code><var>comment</var></code>.
 		
-		See \ref feats_weights and \ref cmdtut_weights for additional details.
+		The way to specify the different \ref feats_weights "types of weights" is explained \ref cmdtut_advanced_weights "here".
 	</dd>
 	<dt><code>\--weights-power</code> / <code>-p</code></dt>
 	<dd><em>Optional (default: same value as for the <code>--norm-type</code> option).</em>
-		Specificies that the weights passed by option
+		Specifies that the weights passed by option
 		<code>--weights</code> have already been elevated to that power.
 	
 		By default, the weights are assumed to have been elevated to the same power
 		as specified by option <code> --norm-type</code>. A value of <code>inf</code> is mapped to 1.
-		See \ref cmdtut_weights for additional details.
+		See the definition of \f$p\f$ in the first paragraph of this \ref cmdtut_advanced_weights "page" for additional details.
 	</dd>
 	<dt><code>\--multilevel</code> / <code>-M</code></dt>
 	<dd><em>Optional (default: false).</em>
-		Specifies if the searched point set is multilevel.
+		Specifies if the searched point sets are multilevel point sets.
 		Takes one of the following values:
 		- <code>false</code>
 			to search for unilevel point sets; or
@@ -253,13 +258,13 @@ options:
 		- <code>norm:<var>type</var></code> for a normalizer of type 
 			specified by <code><var>type</var></code>;
 		- <code>low-pass:<var>threshold</var></code> for a low-pass
-		  filter with thresold value <code><var>threshold</var></code>.
+		  filter with threshold value <code><var>threshold</var></code>.
 		
 		If the option <code>--multilevel true</code> is set, 
 		in the case of a normalization filter, weights can
 		be optionally specified by appending
-		<code>:even:<var>minLevel</var>,<var>maxLevel</var></code> to
-		the filter specification, which sets even positive across all
+		<code>:select:<var>minLevel</var>,<var>maxLevel</var></code> to
+		the filter specification, which sets positive weights across all
 		levels ranging from <code><var>minLevel</var></code> through
 		<code><var>maxLevel</var></code>, and a zero weight for other
 		levels.
@@ -275,9 +280,11 @@ options:
 		Specifies the verbosity level.
 		Takes an integer argument.
 	</dd>
-	<dt><code>\--output-format</code> / <code>-o</code></dt>
+	<dt><code>\--output-folder</code> / <code>-o</code></dt>
 	<dd><em>Optional.</em>
-		TODO describe option
+		Specify a path to a folder where to store the log files 
+		of the search. If the folder does not exist, it will be created.
+		If the folder already exists, some existing files may be lost.  
 	</dd>
 	<dt><code>\--version</code></dt>
 	<dd><em>Optional.</em>

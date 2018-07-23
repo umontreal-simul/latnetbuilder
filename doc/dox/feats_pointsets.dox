@@ -57,7 +57,7 @@ P_n = \left\{\boldsymbol x_i = {\nu}_k\left(\frac{h \boldsymbol a}{Q}\right): h 
 \f]
 
 In LatNet Builder, we only consider fully projection-regular \cite vLEC00b lattice rules, that is lattice rules for which all the points never superpose on each other
-in lower-dimensional projections. This happens if and only if the coordinates of \f$\boldsymbol a\f$ are coprimes
+in lower-dimensional projections. This happens if and only if the coordinates of \f$\boldsymbol a\f$ are coprime
 with \f$Q\f$. In this case, for each coordinate \f$j \in \{1, \dots, s\}\f$, the \f$\{x_{i,j}, 0 \leq i < n\}\f$ are all distinct and form a permutation of the multiples of
 \f$\frac1n\f$.
 
@@ -123,7 +123,7 @@ The first coordinate is a special case for which all the \f$m_{r,1}\f$ equal 1. 
 Note that as the Sobol' matrices are upper triangular with ones on the main diagonal, they are full-rank and consequently a Sobol' net is always fully projection-regular.
 
 In LatNet Builder, the list of the first 21200 primitive polynomials is available. These polynomials are the ones used in \cite rJOE08a.
-The following table summarizes the degree \f$e_j\f$ of the primitive polynomials (equal to the number of intiial direction numbers) as a function of \f$j\f$:
+The following table summarizes the degree \f$e_j\f$ of the primitive polynomials (equal to the number of initial direction numbers) as a function of \f$j\f$:
 
 <table border="1" align="center" class="tg">
   <tr>

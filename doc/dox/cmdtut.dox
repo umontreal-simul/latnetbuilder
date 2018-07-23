@@ -30,12 +30,12 @@ invoke the command-line tool and to see the results.
 
 
 This tutorial is divided in three sections:
- - \subpage cmdtut_recipes
-    This section gives a quick overview on how to use the software.
+ - \subpage cmdtut_quick-recipes
+    \n This section gives a quick overview on how to use the software.
  - \subpage cmdtut_spec
-    This section gives full details on how to use the different \ref feats "features" of the software in the command-line tool.
+    \n This section gives more advanced details on how to use the different \ref feats "features" of the software in the command-line tool.
  - \subpage cmdtut_summary
-    This section summarizes all the options of the command-line tool
+    \n This section summarizes all the options of the command-line tool.
 
 The following typesetting semantics is adopted:
 - <code>verbatim</code> for text to be typed as is;

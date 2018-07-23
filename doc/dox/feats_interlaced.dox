@@ -38,8 +38,7 @@ are different from 1.
 Then define \f$\boldsymbol x_i = (D_d(z_{i,1}, \dots, z_{i,d}), \dots, D_d(z_{i,(s-1)d + 1}, \dots, z_{i,sd}) )\f$ for \f$0 \leq i < n\f$.
 
 Then the point set \f$P_n \{\boldsymbol x_i, 0 \leq i < n \}\f$ is the interlaced digital net associated with the
-digital net \f$\bar{P}_n\f$. The components of \f$\bar{P}_n\f$ are called the interlaced components. We call 
-\f$\bar{P}_n\f$ the underlying net.
+digital net \f$\bar{P}_n\f$. \f$\bar{P}_n\f$ is called the underlying net and its components the interlaced components.
 
 An interlaced polynomial lattice rule is simply an interlaced digital net whose underlying net is a polynomial lattice rule.
 

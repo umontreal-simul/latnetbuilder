@@ -26,7 +26,7 @@ auto LevelWeights<LR>::parse(
       ) -> result_type
 {
    const auto args = splitPair<>(arg, ':');
-   if (arg.empty() or args.first == "even") {
+   if (arg.empty() or args.first == "select") {
       Level minLevel = 1;
       Level maxLevel = sizeParam.maxLevel();
       if (not args.second.empty()) {

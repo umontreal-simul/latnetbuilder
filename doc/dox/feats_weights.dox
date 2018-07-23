@@ -16,7 +16,7 @@
 
 /** \page feats_weights Weights
 
-Most figures of merit implemented in LatNet Builder can be parametrized by weights.
+Most figures of merit implemented in LatNet Builder can be parameterized by weights.
 Weights are used to put more importance on specific projections of the point set. Various types
 of weights have been proposed. LatNet Builder implements the following types of weights:
 - <b>projection-dependent weights</b>:
