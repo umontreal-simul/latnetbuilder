@@ -19,7 +19,7 @@
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
 #include "netbuilder/ProgressiveRowReducer.h"
-
+#include "netbuilder/LevelCombiner.h"
 
 
 namespace NetBuilder { namespace FigureOfMerit {

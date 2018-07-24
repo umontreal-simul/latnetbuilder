@@ -18,7 +18,7 @@
 #define NET_BUILDER__FIGURE_OF_MERIT_BIT__COMBINED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-
+#include "netbuilder/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 

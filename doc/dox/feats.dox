@@ -82,7 +82,7 @@ normalizations, and filters.
     <td class="tg-uys7">no</td>
   </tr>
     <tr align="center">
-    <td class="tg-uys7">\subpage feats_interlaced</td>
+    <td class="tg-uys7">\subpage feats_interlaced "Interlaced point sets"</td>
     <td class="tg-uys7">not applicable</td>
     <td class="tg-uys7">interlaced polynomial lattice rules</td>
     <td class="tg-uys7">interlaced digital nets</td>

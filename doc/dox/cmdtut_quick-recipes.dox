@@ -322,7 +322,7 @@ The following command-line will do the job:
 The way we specify
 the other point set types is explained \ref cmdtut_advanced_pointsets "here".
 
-\section cmdtut_quick-recipes_interlaced Constructing interlaced point sets
+\section cmdtut_quick-recipes_interlaced Constructing interlaced digital nets and polynomial lattice rules
 
 In this section, we explain how to construct good \ref feats_interlaced "interlaced polynomial lattice rules".
 \ref feats_figures_lat_interlaced "Specific figures of merit" must be used for interlaced polynomial lattice rules.
@@ -355,7 +355,8 @@ LatNet Builder will actually search for the best underlying polynomial lattice r
 that is the polynomial lattice rules in dimension 20 which gives the best interlaced
 polynomial lattice rule in dimension 10.
 
-You can fin additional details on constructing interlaced point sets, including interlaced digital nets \ref cmdtut_advanced_interlaced "here".
+You can fin additional details on constructing interlaced digital nets and polynomial lattice rules 
+\ref cmdtut_advanced_interlaced "here".
 
 
 \section cmdtut_quick-recipes_extend Extending point sets

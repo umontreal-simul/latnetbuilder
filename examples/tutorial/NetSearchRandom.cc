@@ -1,0 +1,55 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#include <iostream>
+#include <memory>
+
+#include "netbuilder/Types.h"
+#include "netbuilder/DigitalNet.h"
+#include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
+#include "netbuilder/Task/RandomSearch.h"
+#include "latticetester/ProductWeights.h"
+
+#include "latbuilder/Kernel/PAlphaPLR.h"
+
+using namespace NetBuilder;
+using namespace NetBuilder::FigureOfMerit;
+using namespace NetBuilder::Task;
+
+int main(int argc, char** argv)
+{
+        //! [search_params]
+        unsigned int alpha = 2;
+        auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
+        auto weights = std::make_unique<LatticeTester::ProductWeights>(.7);
+        auto figure = std::make_unique<CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
+
+        typedef typename NetConstructionTraits<NetConstruction::SOBOL>::SizeParameter SizeParameter;
+        SizeParameter size(10);
+        Dimension s = 5;
+        //! [search_params]
+
+        //! [task]
+        auto task = std::make_unique<RandomSearch<NetConstruction::SOBOL, EmbeddingType::UNILEVEL>>(s, size, std::move(figure), 100);
+        std::cout << task->format();
+        //! [task]
+
+        //! [task_execute]
+        task->execute();
+        std::cout << "Best net: " << task->bestNet().format() << std::endl;
+        std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
+        //! [task_execute]
+}

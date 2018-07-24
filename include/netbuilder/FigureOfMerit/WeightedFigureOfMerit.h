@@ -18,6 +18,7 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__WEIGHTED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+#include "netbuilder/LevelCombiner.h"
 
 #include "latticetester/Coordinates.h"
 

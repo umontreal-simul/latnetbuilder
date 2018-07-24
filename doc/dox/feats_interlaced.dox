@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page feats_interlaced Interlaced point sets
+/** \page feats_interlaced Interlaced digital nets and polynomial lattice rules
 
 LatNet Builder supports the construction of interlaced polynomial lattice rules and interlaced digital nets.
 

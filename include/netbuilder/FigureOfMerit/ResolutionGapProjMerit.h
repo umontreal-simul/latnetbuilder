@@ -20,6 +20,7 @@
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/CBCCoordinateSet.h"
 #include "netbuilder/ProgressiveRowReducer.h"
+#include "netbuilder/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 
