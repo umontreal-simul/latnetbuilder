@@ -20,6 +20,7 @@ def build(ctx):
             install_path='${BINDIR}')   
 
     # gui launch bash script
-    ctx.install_files("${PREFIX}/bin/", ["latnetbuilder-gui"])
-    ctx.set_group('group_chmod')
-    ctx(rule   = "chmod +x latnetbuilder-gui", source = 'wscript', cwd = ctx.env.PREFIX + "/bin/")
+    if ctx.cmd == 'install':
+        ctx.install_files("${PREFIX}/bin/", ["latnetbuilder-gui"])
+        ctx.set_group('group_chmod')
+        ctx(rule   = "chmod +x latnetbuilder-gui", source = 'wscript', cwd = ctx.env.PREFIX + "/bin/")
