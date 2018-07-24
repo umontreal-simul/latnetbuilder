@@ -74,7 +74,7 @@ class WeightedFigureOfMerit : public CBCFigureOfMerit
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
+        virtual std::unique_ptr<CBCFigureOfMeritEvaluator> evaluator() override
         {
             return std::make_unique<WeightedFigureOfMeritEvaluator>(this);
         }
@@ -109,7 +109,7 @@ class WeightedFigureOfMerit : public CBCFigureOfMerit
         /** 
          * Class which describes how the figure of merit is computed. 
          */
-        class WeightedFigureOfMeritEvaluator : public FigureOfMeritCBCEvaluator
+        class WeightedFigureOfMeritEvaluator : public CBCFigureOfMeritEvaluator
         {
             public:
                 /** Constructs the evaluator */

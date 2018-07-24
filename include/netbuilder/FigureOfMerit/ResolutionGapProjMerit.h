@@ -87,7 +87,7 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix(coord)->subMatrix(resolution, 0, 1,numCols));
+                    m_rowReducer.addRow(net.generatingMatrix(coord).subMatrix(resolution, 0, 1,numCols));
                 }
                 if(m_rowReducer.computeRank() == m_rowReducer.numRows())
                 {
@@ -180,7 +180,7 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.pointerToGeneratingMatrix(coord)->subMatrix(resolution, 0,  1, numCols));
+                    m_rowReducer.addRow(net.generatingMatrix(coord).subMatrix(resolution, 0,  1, numCols));
                 }
                 std::vector<unsigned int> ranks = m_rowReducer.computeRanks(0,numCols);
                 for(unsigned int m = 1; m <= numCols; ++m)

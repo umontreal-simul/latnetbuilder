@@ -28,7 +28,7 @@ namespace NetBuilder { namespace FigureOfMerit {
  * @tparam PROJDEP Template parameter representing the projection-dependent merit.
  */ 
 template <typename PROJDEP>
-class ProjectionDependentEvaluator : public FigureOfMeritCBCEvaluator 
+class ProjectionDependentEvaluator : public CBCFigureOfMeritEvaluator 
 {
 
 

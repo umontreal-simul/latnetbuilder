@@ -86,18 +86,9 @@ class DigitalNet
          * Returns the generating matrix corresponding to coordinate \c coord.
          * @param coord A coordinate (between 0 and dimension() - 1 ).
          */
-        GeneratingMatrix generatingMatrix(Dimension coord) const 
+        const GeneratingMatrix& generatingMatrix(Dimension coord) const 
         {
-            return m_generatingMatrices[coord]->upperLeftSubMatrix(m_nRows, m_nCols);
-        }
-
-        /** 
-         * Returns a raw pointer to the generating matrix corresponding to coordinate \c coord.
-         * @param coord A coordinate (between 0 and dimension() - 1).
-        */
-        GeneratingMatrix* pointerToGeneratingMatrix(Dimension coord) const 
-        {
-            return m_generatingMatrices[coord].get();
+            return *m_generatingMatrices[coord];
         }
 
         /**
@@ -105,7 +96,7 @@ class DigitalNet
          * @param outputFormat Format of output TODO
          * @param interlacingFactor Interlacing factor of the net
          */ 
-        virtual std::string format(OutputFormat outputFormat, unsigned int interlacingFactor) const = 0;
+        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, unsigned int interlacingFactor = 1) const = 0;
 
         /** 
          * Returns a bool indicating whether the net can be viewed as a digital sequence.
@@ -220,7 +211,7 @@ class DigitalNetConstruction : public DigitalNet
         /**
          * {@inheritDoc}
          */ 
-        virtual std::string format(OutputFormat outputFormat, unsigned int interlacingFactor) const
+        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, unsigned int interlacingFactor = 1) const
         {
             // TODO
             // if (outputFormat == OutputFormat::SSJ){

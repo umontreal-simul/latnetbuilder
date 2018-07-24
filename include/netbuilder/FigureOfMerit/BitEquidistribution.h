@@ -65,7 +65,7 @@ class BitEquidistribution : public CBCFigureOfMerit{
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
+        virtual std::unique_ptr<CBCFigureOfMeritEvaluator> evaluator() override
         {
             return std::make_unique<BitEquidistributionEvaluator>(this);
         }
@@ -107,7 +107,7 @@ class BitEquidistribution : public CBCFigureOfMerit{
         /** 
          * Evaluator class for BitEquidistribution. 
          */
-        class BitEquidistributionEvaluator : public FigureOfMeritCBCEvaluator
+        class BitEquidistributionEvaluator : public CBCFigureOfMeritEvaluator
         {
             public:
                 /**
@@ -220,7 +220,7 @@ MeritValue BitEquidistribution<EmbeddingType::UNILEVEL>::BitEquidistributionEval
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit) // for each bit of equidistribution
     {
-        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 0, 1, nCols )); // add the new row
+        m_newReducer.addRow(net.generatingMatrix(dimension).subMatrix(bit, 0, 1, nCols )); // add the new row
         if (m_newReducer.computeRank() < m_newReducer.numRows())
         {
             acc.accumulate(m_figure->weight(), 1, m_figure->expNorm()); // the points are not equidistributed: set the merit
@@ -257,7 +257,7 @@ MeritValue BitEquidistribution<EmbeddingType::MULTILEVEL>::BitEquidistributionEv
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit) // for each bit of equidistribution
     {
-        m_newReducer.addRow(net.pointerToGeneratingMatrix(dimension)->subMatrix(bit, 0, 1, nCols )); // add the new row
+        m_newReducer.addRow(net.generatingMatrix(dimension).subMatrix(bit, 0, 1, nCols )); // add the new row
         std::vector<unsigned int> ranks = m_newReducer.computeRanks(0,nCols); // compute the rank
 
         for(unsigned int m = 1; m <= nCols; ++m) // for each level of points
