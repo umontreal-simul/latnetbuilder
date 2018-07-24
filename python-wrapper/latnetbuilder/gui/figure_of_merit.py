@@ -12,7 +12,7 @@ def change_combiner_options(change, gui):
         if change['new'] in ['level:', 'level:max']:
             gui.figure_of_merit.minimum_level.layout.display = 'none'
             gui.figure_of_merit.maximum_level.layout.display = 'none'
-        else:
+        elif gui.figure_of_merit.is_normalization.value:
             gui.figure_of_merit.minimum_level.layout.display = 'flex'
             gui.figure_of_merit.maximum_level.layout.display = 'flex'
 
@@ -20,7 +20,7 @@ def change_figure_type(change, gui):
     # depending on the new value of the figure type, we update the GUI
     if change['name'] != 'value':
         return
-    if change['new'] in ['Spectral', 't-value', 'resolution-gap']:
+    if change['new'] in ['Spectral', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc']:
         gui.figure_of_merit.coord_unif.value = False
         gui.figure_of_merit.coord_unif.disabled = True
     elif gui.main_tab.selected_index == 0:
@@ -28,7 +28,7 @@ def change_figure_type(change, gui):
     elif gui.main_tab.selected_index == 1:
         gui.figure_of_merit.coord_unif.value = True
 
-    if change['new'] in ['Spectral', 'R', 't-value', 'resolution-gap', 'IB']:
+    if change['new'] in ['Spectral', 'R', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
     elif change['new'] in ['Ralpha', 'Palpha', 'IAalpha', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'flex'
@@ -38,6 +38,15 @@ def change_figure_type(change, gui):
         gui.figure_of_merit.norm_type.value = '1'
     else:
         change_coord_unif({'new': gui.figure_of_merit.coord_unif.value}, gui)
+
+    if change['new'] == 't-value':
+        gui.weights.main.selected_index = None
+        gui.figure_of_merit.norm_type.layout.display = 'none'
+        gui.figure_of_merit.coord_unif.layout.display = 'none'
+    else:
+        gui.weights.main.selected_index = 0
+        gui.figure_of_merit.norm_type.layout.display = 'flex'
+        gui.figure_of_merit.coord_unif.layout.display = 'flex'
 
 
 def change_coord_unif(change, gui):
@@ -56,7 +65,7 @@ def figure_of_merit():
     # first create all the individual widgets, and initialize them with default values.
     # The initialization part is important, and the initialization of all widgets must be consistent. 
     figure_type = widgets.Dropdown(
-        options=['Palpha', 'Ralpha', 'Spectral'],
+        options=[('Palpha', 'Palpha'), ('Ralpha', 'Ralpha'), ('Spectral', 'spectral')],
         value='Palpha', description='Figure:',
         layout=widgets.Layout(width='20%'), style=style_default)
 
@@ -73,15 +82,16 @@ def figure_of_merit():
                         <ul>\
                             <li> The list of available figures of merit depend on the point set type and the interlacing factor. </li>\
                             <li> The \\(P_\\alpha \\) method requires \\( \\alpha \\in \\{ 2, 4, 6 \\} \\), while \\(R_\\alpha \\) and \\(IA_\\alpha \\) require \\( \\alpha > 0 \\). </li> \
-                            <li> The Coordinate-Uniform evaluation method is generally faster, but requires q = 2.<br>Depending on the point set type and the figure, this option is mandatory, optional or impossible.</li> \
-                            <li> The possibility to choose the norm type depends on the point set type, the figure, and the Coordinate-Uniform option.\
+                            <li> The Coordinate-Uniform (CU) evaluation method is generally faster, but requires q = 2.<br>Depending on the point set type and the figure, this option is mandatory, optional or impossible.</li> \
+                            <li> The possibility to choose the norm type depends on the point set type, the figure, and the CU option.</li>\
+                            <li> The t-value is the only figure for which weights, norm type and CU evaluation do not make sense.</li>\
                         </ul>')
 
     is_normalization = widgets.Checkbox(description='Normalization', value=False, style=style_default)
     minimum_level = widgets.Text(placeholder='1', description='Min Level (optional):',
-                                layout=widgets.Layout(width='160px', margin='0px 10px 0px 0px', display='none'), style=style_default)
+                                layout=widgets.Layout(width='180px', margin='0px 10px 0px 0px', display='none'), style=style_default)
     maximum_level = widgets.Text(placeholder='10', description='Max Level (optional):',
-                                layout=widgets.Layout(width='160px', display='none'), style=style_default)
+                                layout=widgets.Layout(width='180px', display='none'), style=style_default)
 
     # Definition of combiner options HBox
     combiner_level = widgets.BoundedIntText(

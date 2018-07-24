@@ -98,19 +98,14 @@ public:
       bool visited(const Real& r)
       {
          m_totalCount++;
-         if (m_verbose > 0 && m_totalCount % 100 == 0){
+         if (m_verbose > 0 && ((m_nTotToBeVisited > 100 && m_totalCount % 100 == 0) || (m_totalCount % 10 == 0))){
                if (m_totalDim > 1){
                 std::cout << "Coordinate " << m_dimension-1 << "/" << m_totalDim <<  " - lattice ";
                }
                else{
                 std::cout << "Lattice ";
                }
-               if (m_maxAcceptedCount < std::numeric_limits<size_t>::max()){
-                 std::cout << acceptedCount() << "/" << m_maxAcceptedCount << std::endl;
-               }
-               else{
-                 std::cout << m_totalCount << "/" << m_nTotToBeVisited << std::endl;
-               }
+              std::cout << m_totalCount << "/" << m_nTotToBeVisited << std::endl;
          }
          return acceptedCount() < maxAcceptedCount() and
             totalCount() < maxTotalCount();

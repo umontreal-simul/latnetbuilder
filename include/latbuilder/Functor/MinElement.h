@@ -63,7 +63,7 @@ public:
         onStart()( std::distance(first, last));
       }
       else{
-        onStart()(0);
+        onStart()(maxAcceptedCount);
       }
 
       if (first == last) {

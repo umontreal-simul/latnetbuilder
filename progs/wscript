@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from waflib.Build import POST_LAZY
+
 def build(ctx):
+    ctx.add_group('group_chmod')
+    ctx.post_mode = POST_LAZY
 
     lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
@@ -13,4 +17,9 @@ def build(ctx):
             stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_FILESYSTEM + ctx.env.STLIB_SYSTEM + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
             target='bin/latnetbuilder',
             use=['latnetbuilder', 'latticetester'],
-            install_path='${BINDIR}')
+            install_path='${BINDIR}')   
+
+    # gui launch bash script
+    ctx.install_files("${PREFIX}/bin/", ["latnetbuilder-gui"])
+    ctx.set_group('group_chmod')
+    ctx(rule   = "chmod +x latnetbuilder-gui", source = 'wscript', cwd = ctx.env.PREFIX + "/bin/")

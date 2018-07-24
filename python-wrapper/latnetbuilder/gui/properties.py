@@ -8,7 +8,8 @@ def change_modulus(change, gui):
         return
     try:
         poly_str = parse_polynomial(change['new'])
-        if len(poly_str) > 0:
+        if len(poly_str) > 0 and \
+        ((gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value == 'polynomial') or (gui.main_tab.selected_index == 1 and gui.construction_method.construction_choice.value == 'polynomial')):
             gui.properties.modulus_pretty.layout.display = 'flex'
             gui.properties.modulus_pretty.value = '\\(' + poly_str + '\\)'
         else:
@@ -23,10 +24,12 @@ def change_interlacing(change, gui):
     if change['new'] == 1:
         if gui.main_tab.selected_index == 0:
             gui.figure_of_merit.figure_type.options = ['Palpha', 'R']
+            gui.figure_of_merit.figure_type.value = 'Palpha'
         else:
-            gui.figure_of_merit.figure_type.options = ['Palpha', 'R', 't-value', 'resolution-gap']
+            gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('R', 'R'), ('t-value', 't-value'), ('proj dep t-value', 'projdep:t-value'), ('star discr t-value', 'projdep:t-value:starDisc'),  ('resolution-gap', 'projdep:resolution-gap')]
+            gui.figure_of_merit.figure_type.value = 'Palpha'
     else:
-        gui.figure_of_merit.figure_type.options = ['IAalpha', 'IB']    
+        gui.figure_of_merit.figure_type.options = [('Balpha,d_1', 'IAalpha'), ('Bd_2', 'IB')]    
         gui.figure_of_merit.figure_type.value = 'IAalpha'
     update(gui.exploration_method.generating_vector.children[0], change['new']*gui.properties.dimension.value, '1', '100px')
     update(gui.exploration_method.generating_vector_simple, change['new']*gui.properties.dimension.value, '1', '100px')
