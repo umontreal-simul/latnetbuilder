@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from waflib.Build import POST_LAZY
+
 def build(ctx):
     if ctx.cmd == 'build':
         if not ctx.env.BUILD_CONDA:
@@ -8,7 +10,7 @@ def build(ctx):
             return
         top = ctx.srcnode.abspath()
         print(top)
-        cmd1 = "Building the conda package, this could take a few minutes..."
+        cmd1 = "echo Building the conda package, this could take a few minutes..."
         cmd2 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
         ' && %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'))
         ctx(
@@ -23,24 +25,28 @@ def build(ctx):
         )
 
     if ctx.cmd == 'install':
+        ctx.add_group('group1')
+        ctx.add_group('group2')
+        ctx.add_group('group3')
+        ctx.add_group('group4')
+        ctx.post_mode = POST_LAZY
         if not ctx.env.BUILD_CONDA:
             print('not building conda package; Conda (https://www.anaconda.com/download/) is missing')
             return
 
-        cmd1 = 'Installing the conda package... this can take a few minutes'
+        cmd1 = 'echo Installing the conda package, this could take a few minutes...'
         cmd2 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
-        cmd3 = ". activate latnetbuilder && conda install -y --use-local latnetbuilder appmode"
+        cmd3 = ". activate latnetbuilder && conda env list && conda remove -y latnetbuilder"
+        cmd4 = ". activate latnetbuilder && conda install -y --use-local latnetbuilder appmode"
 
-        ctx(
-                rule   = cmd1,
-                source = 'wscript'
-        )
-        ctx(
-                rule   = cmd2,
-                source = 'wscript'
-        )
-        ctx(
-                rule   = cmd3,
-                source = 'wscript',
-                shell = False
-        )
+        ctx.set_group('group1')
+        ctx(rule   = cmd1, source = 'wscript')
+        ctx.set_group('group2')
+        ctx(rule   = cmd2, source = 'wscript')
+        ctx.set_group('group3')
+        ctx(rule   = cmd3, source = 'wscript')
+        ctx.set_group('group4')
+        ctx(rule   = cmd4, source = 'wscript')
+
+        # jupyter notebook
+        ctx.install_files("${PREFIX}/share/latnetbuilder", ["notebooks/Interface.ipynb"])

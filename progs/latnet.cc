@@ -17,6 +17,8 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include <cstdio>
+#include <array>
 
 #include "netbuilder/Const.h"
 #include "latbuilder/LatBuilder.h"
@@ -43,10 +45,28 @@ makeOptionsDescription()
     return desc;
 }
 
+std::string exec(const char* cmd) {
+    std::array<char, 128> buffer;
+    std::string result;
+    std::shared_ptr<FILE> pipe(popen(cmd, "r"), pclose);
+    if (!pipe) throw std::runtime_error("popen() failed!");
+    while (!feof(pipe.get())) {
+        if (fgets(buffer.data(), 128, pipe.get()) != nullptr)
+            result += buffer.data();
+    }
+    return result;
+}
+
 int main(int argc, const char *argv[])
 {
     boost::filesystem::path p(argv[0]);
-    NetBuilder::PATH_TO_LATNETBUILDER = p.parent_path().string();
+    std::string path = p.parent_path().string();
+    if (path == ""){
+        path = exec("which latnetbuilder");
+        boost::filesystem::path p(path);
+        path = p.parent_path().string();
+    }
+    NetBuilder::PATH_TO_LATNETBUILDER = path;
 
     try
     {

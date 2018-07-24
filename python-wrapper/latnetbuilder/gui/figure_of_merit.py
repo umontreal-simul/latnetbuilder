@@ -28,7 +28,7 @@ def change_figure_type(change, gui):
     elif gui.main_tab.selected_index == 1:
         gui.figure_of_merit.coord_unif.value = True
 
-    if change['new'] in ['Spectral', 'R', 't-value', 'projdep:resolution-gap', 'IB']:
+    if change['new'] in ['Spectral', 'R', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
     elif change['new'] in ['Ralpha', 'Palpha', 'IAalpha', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'flex'

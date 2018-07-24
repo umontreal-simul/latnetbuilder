@@ -1,0 +1,1 @@
+jupyter notebook --NotebookApp.default_url='/apps/../share/latnetbuilder/Interface.ipynb'
