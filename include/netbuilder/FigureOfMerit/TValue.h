@@ -18,6 +18,7 @@
 #define NET_BUILDER__FIGURE_OF_MERIT__TVALUE_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+#include "netbuilder/LevelCombiner.h"
 #include "latbuilder/Storage.h"
 
 namespace NetBuilder { namespace FigureOfMerit {

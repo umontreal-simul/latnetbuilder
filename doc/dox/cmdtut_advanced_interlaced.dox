@@ -14,7 +14,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_advanced_interlaced Interlaced point sets
+/** \page cmdtut_advanced_interlaced Interlaced digital nets and polynomial lattice rules
+
+This page describes how \ref feats_interlaced "interlaced digital nets and polynomial lattice rules" 
+can be constructed using the command-line tool.
+
+LatNet Builder supports the construction of interlaced digital nets and 
+interlaced polynomial lattice rules. More precisely, it constructs the underlying digital net
+of the interlaced digital net, using various \ref feats_figures_lat_interlaced "quality criteria".
+
+The available figures of merit are the \f$B_{\alpha, d, (1)}\f$ and the \f$B_{d, (2)}\f$ interlaced discrepancies
+from \cite rGOD13a. The interlacing factor (<code>--interlacing-factor</code>) must be greater than one to enable these figures
+of merit.
+They are only available with an \f$\ell_1\f$ norm. This allows a coordinate-uniform evaluation algorithm
+which should always be used when searching for good interlaced digital nets. 
+
+<b> The output of LatNet Builder is the underling digital net (or polynomial lattice rule)
+of the interlaced digital net (or interlaced polynomial lattice rule). The \ref feats_interlaced "digit interlacing function" should be applied to this
+point set in dimension \f$ds\f$ to obtain the interlaced point set in dimension \f$s\f$.</b>
+
+\section cmdtut_advanced_interlaced_poly Constructing interlaced polynomial lattice rules
+
+\ref feats_poly "As for polynomial lattice rules", interlaced polynomial lattice rules are available on both side of the software,
+through a lattice implementation and a digital net implementation:
+
+- Lattice implementation (<code>--set-type lattice</code>):
+    - the fast-CBC algorithm is only available in this implementation. Because of the restriction on the 
+    norm-type, it is always possible to use the fast-CBC algorithm for non-random CBC searches, 
+    - \ref cmdtut_advanced_filters_normalizations "normalizations" are only supported by this implementation.
+    They are available for both quality criteria,
+    - embedded interlaced polynomial lattice rules are only available in the lattice implementation;
+
+- Net implementation (<code>--set-type net</code>):
+    - this implementation should only be used for exhaustive, random or random-CBC explorations.
 
 */
 vim: ft=doxygen spelllang=en spell

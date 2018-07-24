@@ -18,7 +18,7 @@
 #define NET_BUILDER__FIGURE_OF_MERIT_BIT__COMBINED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-
+#include "netbuilder/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 
@@ -75,7 +75,7 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
+        virtual std::unique_ptr<CBCFigureOfMeritEvaluator> evaluator() override
         {
             return std::make_unique<CombinedFigureOfMeritEvaluator>(this);
         }
@@ -103,7 +103,7 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
         /** 
          * Evaluator class for CombinedFigureOfMerit. 
          */
-        class CombinedFigureOfMeritEvaluator : public FigureOfMeritCBCEvaluator
+        class CombinedFigureOfMeritEvaluator : public CBCFigureOfMeritEvaluator
         {
             public:
                 /**
@@ -223,7 +223,7 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
 
             private:
                 CombinedFigureOfMerit* m_figure; // pointer to the figure
-                std::vector<std::unique_ptr<FigureOfMeritCBCEvaluator>> m_evaluators; // evaluators
+                std::vector<std::unique_ptr<CBCFigureOfMeritEvaluator>> m_evaluators; // evaluators
                 std::vector<Real> m_oldMerits; // merits for the best net of the previous dimension
                 std::vector<Real> m_bestNewMerits; // best merits for the best net so far for the current dimension
                 std::vector<Real> m_newMerits; // merits of the latest evaluated net 

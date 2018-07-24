@@ -18,6 +18,7 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__TVALUE_TRANSFORMED_PROJ_MERIT
 
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
+#include "netbuilder/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 

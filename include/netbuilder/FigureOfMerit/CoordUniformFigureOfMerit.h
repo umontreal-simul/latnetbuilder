@@ -18,6 +18,7 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__COORD_UNIFORM_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+#include "netbuilder/LevelCombiner.h"
 
 #include "latticetester/Weights.h"
 
@@ -127,7 +128,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
             /**
              * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
              */
-            virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() override
+            virtual std::unique_ptr<CBCFigureOfMeritEvaluator> evaluator() override
             {
                 return std::make_unique<CoordUniformFigureOfMeritEvaluator>(this);
             }
@@ -149,7 +150,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
                 /** 
                  * Class which describes how the figure of merit is computed. 
                  */
-                class CoordUniformFigureOfMeritEvaluator : public FigureOfMeritCBCEvaluator
+                class CoordUniformFigureOfMeritEvaluator : public CBCFigureOfMeritEvaluator
                 {
                     template <LatBuilder::LatticeType LR, LatBuilder::Compress COMPRESS >
                     using CoordUniformStateList = std::list<LatBuilder::ClonePtr<LatBuilder::MeritSeq::CoordUniformState<LR, ET, COMPRESS, LatBuilder::defaultPerLevelOrder<LR, ET>::Order>>>;

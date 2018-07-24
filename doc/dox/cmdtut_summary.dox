@@ -153,11 +153,12 @@ options:
 		Specifies the interlacing factor.
 		Takes a positive integer value.
 		If set to a value greater than 1, the search point set
-		will be an interlaced point set. Requires to use the appropriate
+		will be an interlaced digital net / polynomial lattice rule set. Requires to use the appropriate
 		figures of merit and the corresponding norm-type.
-		See \ref feats_interlaced for the definition of interlaced point sets
+		See \ref feats_interlaced "here" for the definition of interlaced digital nets
+		and polynomial lattice rules 
 		and \ref cmdtut_advanced_interlaced for details about constructing 
-		point sets with the command-line tool.
+		such point sets with the command-line tool.
 	</dd>
 	<dt><code>\--norm-type</code> / <code>-q</code></dt>
 	<dd><em>Required.</em>

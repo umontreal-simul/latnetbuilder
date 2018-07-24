@@ -21,6 +21,7 @@
 #include "netbuilder/FigureOfMerit/ProjectionDependentEvaluator.h"
 
 #include "netbuilder/TValueComputation.h"
+#include "netbuilder/LevelCombiner.h"
 
 #include <functional>
 #include <stdexcept>

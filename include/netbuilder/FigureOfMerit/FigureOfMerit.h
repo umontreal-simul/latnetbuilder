@@ -107,7 +107,7 @@ class FigureOfMeritEvaluator
 
 
 /** 
- * Virtual class to represent any figure of merit. Derived classes should implement
+ * Abstract class to represent any figure of merit. Derived classes should implement
  * the evaluator() member function returning a unique pointer to an instance of a concrete evaluator class 
  * which derives from FigureOfMeritEvaluator.
  */ 
@@ -140,12 +140,12 @@ class FigureOfMerit{
 /** 
  * Evaluator abstract class to evaluate figure of merit for a net in a CBC way.
  */ 
-class FigureOfMeritCBCEvaluator:
+class CBCFigureOfMeritEvaluator:
     public FigureOfMeritEvaluator
 {
     public:
 
-        virtual ~FigureOfMeritCBCEvaluator() = default;
+        virtual ~CBCFigureOfMeritEvaluator() = default;
 
         /** 
          * @{inheritDoc}
@@ -153,14 +153,14 @@ class FigureOfMeritCBCEvaluator:
         virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) override
         {
             MeritValue merit = 0; // start from a merit equal to zero
-            for(Dimension dim = 0; dim < net.dimension(); ++dim) // for each dimension
+            for(Dimension coord = 0; coord < net.dimension(); ++coord) // for each coordinate
             {
-                prepareForNextDimension(); // prepare the evaluator for the next dimension
-                if (verbose>0 && dim > 0)
+                prepareForNextDimension(); // prepare the evaluator for the next coordinate
+                if (verbose>0 && coord > 0)
                 {
-                    std::cout << "Begin coordinate: " << dim + 1 << "/" << net.dimension() << std::endl;
+                    std::cout << "Begin coordinate: " << coord + 1 << "/" << net.dimension() << std::endl;
                 }
-                merit = operator()(net, dim, merit, verbose-1); // evaluate the partial merit value
+                merit = operator()(net, coord, merit, verbose-1); // evaluate the partial merit value
                 if (verbose>0)
                 {
                     std::cout << "Partial merit value: " << merit <<std::endl;
@@ -216,7 +216,7 @@ class CBCFigureOfMerit:
         /**
          * Returns a <code>std::unique_ptr</code> to an evaluator for the figure of merit. 
          */
-        virtual std::unique_ptr<FigureOfMeritCBCEvaluator> evaluator() = 0;
+        virtual std::unique_ptr<CBCFigureOfMeritEvaluator> evaluator() = 0;
 
         /**
          * Creates a new accumulator.

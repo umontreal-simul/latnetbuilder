@@ -1,0 +1,318 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+namespace NetBuilder {
+
+/** \page libtut_net %NetBuilder tutorial
+
+The tutorial is divided into the following sections:
+<ol>
+    <li> \subpage libtut_net_def </li>
+    <li> \subpage libtut_net_figures </li>
+    <li> \subpage libtut_net_tasks </li>
+    <li> \subpage libtut_net_customtasks </li>
+</ol>
+*/
+
+/** \page libtut_net_def Net Construction Types and Definitions
+
+In LatNet Builder, digital nets are represented by the abstract class DigitalNet. This class
+is basically a wrapper around a vector of pointers to generating matrices.
+
+DigitalNet is a abstract class which is implemented by the DigitalNetConstruction class template.
+This derived class corresponds to the \ref feats_pointsets_net "various constructions of generating matrices" which are available
+in LatNet Builder. The template parameter is a non-type template parameter whose value belongs to the \link NetConstruction \endlink enumeration.
+To each value of this enumeration corresponds a trait class containing the implementation
+which are used to construct and extend digital nets. These implementations can be found in the
+NetConstructionTraits class.
+
+\section libtut_net_def_sobol Sobol' construction
+In the case of the Sobol' construction, we have the following types:
+
+\snippet tutorial/NetDef.cc Sobol_typedefs
+
+The first typedef corresponds to the type of the generating values. A generating value is the base from which
+a construction method such as the Sobol' construction produces a generating matrix. In the case of the Sobol' construction,
+it consists in a pair made of an integer and a vector of integers. The first integer is the coordinate (starting from 0) and
+stands for the primitive polynomial used to compute the matrix. The vector of integers is the vector of direction numbers.
+
+The second typedef corresponds to the type of the size parameter. For Sobol' net, matrices are always square matrices and this 
+parameter is an integer corresponding to the size of the generating matrices. 
+
+Now we show how to construct a Sobol' net in dimension 1 with \f$2^{10}\f$ points. For this purpose, 
+we first construct a generating value for the first coordinate. As a special case, the direction number
+for the first coordinate is always equal to 0.
+Then we construct the net (through <code>std::make_unique</code>), specifying the dimension, the size parameter
+and the vector of generating values (of size 1 in this case).
+
+\snippet tutorial/NetDef.cc Sobol_first_net
+
+We can now construct a new Sobol' net from this first net by adding a new coordinate. We use the
+<code>extendDimension</code> member function which instantiates a new net and returns a unique pointer to it:
+
+\snippet tutorial/NetDef.cc Sobol_extend
+
+The number of direction numbers required for each coordinate can be found \ref feats_pointsets_net "here". Note that
+there is an offset as the coordinates start from 0 in the software. 
+
+Note that the generating matrix for the first coordinate is shared by the two nets. This is
+achieved through the use of shared pointers instead of raws pointers to the generating matrices. The
+memory management is directly handled by the smart pointers. This can be verified by comparing the adresses
+of the first generating matrix of each net:
+
+\snippet tutorial/NetDef.cc shared_memory
+
+\section libtut_net_def_poly Polynomial construction
+
+Now we turn to the polynomial lattice rules case.
+
+\snippet tutorial/NetDef.cc Polynomial_typedefs
+
+The generating values of a polynomial lattice rules are polynomials over \f$\mathbb F_2\f$ and the
+size parameter is also a polynomial (which corresponds to the modulus of the lattice).
+
+To create a polynomial lattice rule with modulus \f$1 + z^3 +z^{10}\f$ and first generating value \f$1\f$,
+we first create the modulus (\f$ 1033 = 1 + 2^3 + 2^{10}\f$) and the generating value. Then we use the constructor
+of the DigitalNetConstruction class through the <code>std::make_unique</code> function template.
+
+\snippet tutorial/NetDef.cc Polynomial_modulus_and_first_net
+
+The extension of the lattice rule is performed in a very similar way to the Sobol' case. Here we add the polynomial
+\f$z^9\f$ (\f$512 = 2^9\f$) as second generating value.
+
+\snippet tutorial/NetDef.cc Polynomial_extend
+
+\section libtut_net_def_explicit Explicit construction
+
+Let us finish with the explicit construction. In this case, we have the following types:
+
+\snippet tutorial/NetDef.cc Explicit_typedefs
+
+In this case, the generating values are exactly the generating matrices. The size parameter
+is a pair of integers which represents the size of the matrices (number of rows and number of
+columns).
+
+We now directly construct a digital net with explicit generating matrices in dimension 2, with \f$2^{10}\f$ points.
+A matrix is specified as a vector of integers, the binary digits of an integer representing 
+the elements of the associated row.
+
+\snippet tutorial/NetDef.cc Explicit_net
+
+The complete example can be found in \ref tutorial/NetDef.cc.
+
+*/
+
+/** \example tutorial/NetDef.cc
+    This example shows how to instantiate the various
+    types of digital nets supported by LatNet Builder.
+*/
+
+namespace FigureOfMerit{
+
+/** \page libtut_net_figures Figures of merit
+
+The FigureOfMerit abstract class represents the various figures of merit supported by LatNet Builder
+for digital nets. This class works with another abstract class, FigureOfMeritEvaluator, which can evaluate
+figures of merit for digital nets.
+
+This scheme is used in the following code example:
+
+First, a figure of merit is created. It corresponds to the t-value:
+\snippet tutorial/NetFigures.cc figure1
+
+
+Then, the evaluator associated to this figure of merit is instantiated:
+\snippet tutorial/NetFigures.cc evaluator1
+
+
+We create a digital net (Sobol' construction) in dimension 10 with \f$2^{15}\f$ points, using the
+direction number given by Joe and Kuo in \cite rJOE08a :
+\snippet tutorial/NetFigures.cc net1
+
+
+We finally compute the t-value of the net using the evaluator:
+\snippet tutorial/NetFigures.cc evaluation1
+
+
+Most figures of merit can be evaluated in a CBC-way: this corresponds to the CBCFigureOfMerit abstract class
+which derives from FigureOfMerit. Its evaluator (of type CBCFigureOfMeritEvaluator) has additional methods
+to compute the figure of merit in a CBC way.
+
+First, a figure of merit is created. It corresponds to the \f$\mathcal P_2\f$ discrepancy:
+\snippet tutorial/NetFigures.cc figure2
+
+
+Then, the evaluator associated to this figure of merit is instantiated: 
+\snippet tutorial/NetFigures.cc evaluator2
+
+
+We first use the evaluation in a standard (non-CBC) way:
+\snippet tutorial/NetFigures.cc evaluation2
+
+
+We can reproduce this computation using the CBC-way:
+
+\snippet tutorial/NetFigures.cc evaluation2-CBC
+
+The complete example can be found in \ref tutorial/NetFigures.cc.
+
+*/
+
+/** \example tutorial/NetFigures.cc
+    This example shows how to instantiate figures of merit and
+    evaluated them for a digital net.
+*/
+
+}
+
+namespace Task{
+/** \page libtut_net_tasks  Basic tasks
+
+From a figure of merit, one can construct various tasks:
+    - evaluation tasks; or
+    - search tasks.
+
+Task is the abstract class which describes the various tasks which can be executed by LatNet Builder.
+
+\section libtut_net_tasks_eval Evaluation tasks
+
+Evaluation tasks only require a digital net and a figure of merit to be constructed. Basically, they wrap
+the \ref libtut_net_figures "previous example" in a Task.
+
+To create a task we first instantiate a figure of merit:
+\snippet tutorial/NetEval.cc figure
+
+Then we create the net to evaluate and we instantiate the task:
+\snippet tutorial/NetEval.cc task
+
+The task is now ready to be executed:
+\snippet tutorial/NetEval.cc task_execute
+
+It is possible to reuse the same Eval task to evaluate the merit value of another net. We 
+just need to create that net and to pass it to the task by the <code>reset</code> member function.
+\snippet tutorial/NetEval.cc task_reset
+
+The complete example can be found in \ref tutorial/NetEval.cc.
+
+\section libtut_net_tasks_search Search tasks
+
+Search is the abstract class which is implemented by all the search variants. It requires
+two template parameters : the \link NetConstruction \endlink and the \link EmbeddingType \endlink of the search.
+
+\subsection libtut_net_tasks_search_exhaustive Exhaustive searches
+
+Exhaustive searches require the dimension and the size parameter of the net, and also a figure of merit.
+To create such a search, we first create these three elements:
+
+
+\snippet tutorial/NetSearchExhaustive.cc search_params
+
+Then, we can instantiate the task:
+
+\snippet tutorial/NetSearchExhaustive.cc task
+
+Finally, it remains to execute the task and output its results:
+\snippet tutorial/NetSearchExhaustive.cc task_execute
+
+The complete example can be found in \ref tutorial/NetSearchExhaustive.cc.
+
+\subsection libtut_net_tasks_search_random Random searches
+
+
+
+Random searches are very similar to exhaustive searches. When creating such a task, we only need
+to add the number of random samples which are examined by the search:
+
+\snippet tutorial/NetSearchRandom.cc task
+
+Here the search is a random search with 100 random samples.
+The complete example can be found in \ref tutorial/NetSearchRandom.cc.
+
+\subsection libtut_net_tasks_search_cbc CBC searches
+
+Each CBC search has a template template parameter <code>EXPLORER</code> 
+which describes the exploration policy. The possible policies are the full-CBC (FullCBCExplorer), 
+the random-CBC (RandomCBCExplorer) and the mixed-CBC (MixedCBCExplorer) explorers.
+
+A CBCSearch is constructed with the same parameters as an ExhaustiveSearch, plus an explorer instance.
+
+Let first define the usual search parameters. To change a little bit from Sobol' nets and \f$\mathcal P_2\f$,
+we will search for polynomial lattice rules with good projection-dependent t-value merit.
+
+\snippet tutorial/NetSearchCBC.cc search_params
+
+\subsubsection libtut_net_tasks_search_cbc_full FullCBCExplorer
+
+For a full-CBC search, we use the following explorer and task:
+
+\snippet tutorial/NetSearchCBC.cc full-CBC_explorer
+
+
+\subsubsection libtut_net_tasks_search_cbc_rand RandomCBCExplorer
+
+For a random-CBC search, we use the following explorer and task:
+
+\snippet tutorial/NetSearchCBC.cc random-CBC_explorer
+
+For each coordinate, the search algorithm will examine 70 random possibilities.
+
+\subsubsection libtut_net_tasks_search_cbc_mixed MixedCBCExplorer
+
+For a mixed-CBC search, we use the following explorer and task:
+
+\snippet tutorial/NetSearchCBC.cc mixed-CBC_explorer
+For the 3 first coordinates, the search will use the full-CBC algorithm.
+Then, for each coordinate remaining coordinate, it will examine 70 random possibilities.
+
+The task is always executed in the same fashion:
+
+\snippet tutorial/NetSearchCBC.cc execute_task
+
+The complete example can be found in \ref tutorial/NetSearchCBC.cc.
+*/
+
+/** \example tutorial/NetEval.cc
+    This example shows how to instantiate an Eval task
+    to compute a figure of merit for a digital net.
+*/
+
+/** \example tutorial/NetSearchExhaustive.cc
+    This example shows how to instantiate an ExhaustiveSearch task
+    to search for the best merit among all possible nets.
+*/
+
+/** \example tutorial/NetSearchRandom.cc
+    This example shows how to instantiate an RandomSearch task
+    to search for the best merit among a random sample of nets.
+*/
+
+/** \example tutorial/NetSearchCBC.cc
+    This example shows how to instantiate an CBCSearch task
+    to search for the best merit using a CBC algorithm.
+*/
+
+/** \page libtut_net_customtasks  Customized tasks
+
+Search tasks have a template template parameter <code>OBSERVER</code> 
+whose template parameter is a member of \link NetConstruction \endlink enumeration.
+MinimumObserver is the observer which is used by the command-line tool but users can define
+customized observers. It is used by default
+
+*/
+
+}
+
+}
