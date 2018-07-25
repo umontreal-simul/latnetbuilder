@@ -31,19 +31,20 @@ def build(ctx):
         cmd7 = 'conda install -y --use-local latnetbuilder -n latnetbuilder'
 
         ctx.set_group('group1')
-        ctx(rule   = cmd1, source = 'wscript', cwd = top)
+        ctx(rule   = cmd1, source = 'wscript', cwd = top, always = True)
         ctx.set_group('group2')
-        ctx(rule   = cmd2, source = 'wscript', cwd = top)
+        ctx(rule   = cmd2, source = 'wscript', cwd = top, always = True)
         ctx.set_group('group3')
-        ctx(rule   = cmd3, source = 'wscript', cwd = top)
+        ctx(rule   = cmd3, source = 'wscript', cwd = top, always = True)
         ctx.set_group('group4')
-        ctx(rule   = cmd4, source = 'wscript')
+        ctx(rule   = cmd4, source = 'wscript', always = True)
         ctx.set_group('group5')
-        ctx(rule   = cmd5, source = 'wscript')
+        ctx(rule   = cmd5, source = 'wscript', always = True)
         ctx.set_group('group6')
-        ctx(rule   = cmd6, source = 'wscript')
+        ctx(rule   = cmd6, source = 'wscript', always = True)
         ctx.set_group('group7')
-        ctx(rule   = cmd7, source = 'wscript')
+        ctx(rule   = cmd7, source = 'wscript', always = True)
 
         
         
+

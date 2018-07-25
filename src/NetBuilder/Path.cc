@@ -49,15 +49,14 @@ namespace NetBuilder{
             FIND_PATH_TO_LATNETBUILDER_DIR();
             return;
         }
-        PATH_TO_LATNETBUILDER_DIR = path;
-        CHECK_PATH_TO_LATNETBUILDER_DIR();
+        SET_PATH_TO_LATNETBUILDER_DIR(path);
     }
 
     void FIND_PATH_TO_LATNETBUILDER_DIR()
     {
         std::string path = exec("which latnetbuilder");
         boost::filesystem::path p(path);
-        path = p.parent_path().string();
+        SET_PATH_TO_LATNETBUILDER_DIR(p.parent_path().string());
     }
 
     void SET_PATH_TO_LATNETBUILDER_DIR(const std::string& path)
