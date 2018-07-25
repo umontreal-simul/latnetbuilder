@@ -8,11 +8,10 @@ def build(ctx):
     out = ctx.bldnode.abspath()
 
     # data files
-    ctx.add_group()
-    if not(os.path.exists(str(out) + '/progs/share/latnetbuilder/data')):
-        ctx(rule= 'mkdir -p %s' % str(out) + '/progs/share/latnetbuilder/data', always = True))
-        
-    ctx.add_group()
+    if ctx.env.BUILD_EXAMPLES:
+        if not(os.path.exists(str(out) + '/progs/share/latnetbuilder/data')):
+            ctx(rule= 'mkdir -p %s' % str(out) + '/progs/share/latnetbuilder/data', always = True)
     for dat in data_dir.ant_glob('*.csv'):
-        ctx(rule='cp %s %s' %(str(dat), str(out) + '/progs/share/latnetbuilder/data'), always = True)
+        if ctx.env.BUILD_EXAMPLES:
+            ctx(rule='cp %s %s' %(str(dat), str(out) + '/progs/share/latnetbuilder/data'), always = True)
         ctx.install_files('${PREFIX}/share/latnetbuilder/data', dat)
