@@ -15,7 +15,7 @@
 // limitations under the License.
 
 #include "latbuilder/Util.h"
-#include "netbuilder/Const.h"
+#include "netbuilder/Path.h"
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -186,7 +186,7 @@ std::string getDefaultPolynomial(unsigned int degree)
 {
     if (degree <= 32)
     {
-        std::string path = NetBuilder::PATH_TO_LATNETBUILDER + "/../share/latnetbuilder/data/default_polys.csv";
+        std::string path = NetBuilder::PATH_TO_LATNETBUILDER_DIR + "/../share/latnetbuilder/data/default_polys.csv";
         if (boost::filesystem::exists(path)){
             std::ifstream file(path);
             std::string sent;
@@ -206,7 +206,7 @@ std::string getDefaultPolynomial(unsigned int degree)
             return sent;
         }
         else{
-            throw runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER is probably incorrect. See netbuilder/Const.h.");
+            throw runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER_DIR is probably incorrect. See netbuilder/Path.h.");
         }
     }
     return "";

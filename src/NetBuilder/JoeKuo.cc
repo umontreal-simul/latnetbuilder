@@ -17,7 +17,7 @@
 
 #include "netbuilder/JoeKuo.h"
 #include "netbuilder/Util.h"
-#include "netbuilder/Const.h"
+#include "netbuilder/Path.h"
 #include <cmath>
 
 #include <string>
@@ -76,7 +76,7 @@ inline std::string& trim(std::string& s, const char* t = ws)
 std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(Dimension dimension)
 {
       assert(dimension >= 1 && dimension <= 21201);
-      std::string path = PATH_TO_LATNETBUILDER + "/../share/latnetbuilder/data/JoeKuoSobolNets.csv";
+      std::string path = PATH_TO_LATNETBUILDER_DIR + "/../share/latnetbuilder/data/JoeKuoSobolNets.csv";
       std::vector<std::vector<uInteger>> res(dimension);
 
       if (boost::filesystem::exists(path)){
@@ -110,7 +110,7 @@ std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(Dimension dimensio
             }
       }
       else{
-            throw runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER is probably incorrect. See netbuilder/Const.h.");
+            throw runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER_DIR is probably incorrect. See netbuilder/Path.h.");
       }
       return res;
 }

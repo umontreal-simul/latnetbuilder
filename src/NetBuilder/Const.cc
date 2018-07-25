@@ -14,9 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/Const.h"
+#include "netbuilder/Path.h"
 
 namespace NetBuilder{
-    std::string PATH_TO_LATNETBUILDER = ".";
+    std::string PATH_TO_LATNETBUILDER_DIR = ".";
 }
 

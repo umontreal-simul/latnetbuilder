@@ -128,7 +128,7 @@ public:
             }
       }
       if (end == -1){
-            end = m_levelWeights.size()-1;
+            end = (int) m_levelWeights.size()-1;
       }
       return "normalizer: " + norm().name() + " - levels: " + std::to_string(begin) + "," + std::to_string(end); 
    }
