@@ -40,8 +40,8 @@ def create_output(output, create_graph=True):
         if result_obj.set_type == 'Polynomial':
             b3.disabled = True
 
-        pt_x = result_obj.getNet(0, b3.value)
-        pt_y = result_obj.getNet(1, b3.value)
+        pt_x = result_obj.getPoints(0, b3.value)
+        pt_y = result_obj.getPoints(1, b3.value)
         fig = widgets.Output(layout=widgets.Layout(width='600px', height='500px'))
 
         with fig:
@@ -56,14 +56,14 @@ def create_output(output, create_graph=True):
         def change_graph(change):
             if change['name'] == 'value':
                 if change['owner'] == b1:
-                    pt_x = result_obj.getNet(change['new']-1, b3.value)
-                    pt_y = result_obj.getNet(b2.value-1, b3.value)
+                    pt_x = result_obj.getPoints(change['new']-1, b3.value)
+                    pt_y = result_obj.getPoints(b2.value-1, b3.value)
                 if change['owner'] == b2:
-                    pt_x = result_obj.getNet(b1.value-1, b3.value)
-                    pt_y = result_obj.getNet(change['new']-1, b3.value)
+                    pt_x = result_obj.getPoints(b1.value-1, b3.value)
+                    pt_y = result_obj.getPoints(change['new']-1, b3.value)
                 if change['owner'] == b3:
-                    pt_x = result_obj.getNet(b1.value-1, change['new'])
-                    pt_y = result_obj.getNet(b2.value-1, change['new'])
+                    pt_x = result_obj.getPoints(b1.value-1, change['new'])
+                    pt_y = result_obj.getPoints(b2.value-1, change['new'])
                 fig.clear_output()
                 with fig:
                     plt.figure(figsize=(8,8))

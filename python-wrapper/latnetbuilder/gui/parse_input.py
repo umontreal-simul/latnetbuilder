@@ -32,10 +32,11 @@ def parse_input_common(s, gui):
 
     if gui.figure_of_merit.is_normalization.value:
         norm = "norm"
-        if gui.figure_of_merit.minimum_level.value != '':
-            norm += ':select:' + gui.figure_of_merit.minimum_level.value 
-            if gui.figure_of_merit.maximum_level.value != '':
-                norm += ',' + gui.figure_of_merit.maximum_level.value
+        if s.multilevel:
+            if gui.figure_of_merit.minimum_level.value != '':
+                norm += ':select:' + gui.figure_of_merit.minimum_level.value 
+                if gui.figure_of_merit.maximum_level.value != '':
+                    norm += ',' + gui.figure_of_merit.maximum_level.value
         s.filters.append(norm)
 
     if gui.figure_of_merit.low_pass_filter.value:

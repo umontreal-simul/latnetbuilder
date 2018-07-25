@@ -12,7 +12,7 @@ from .button_box import button_box
 from .output import output
 from .progress_bars import progress_bars
 from .main_tab import change_maintab
-from .common import trigger_display, BaseGUIElement
+from .common import BaseGUIElement
 from .lattice_type import lattice_type
 
 

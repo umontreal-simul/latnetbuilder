@@ -7,20 +7,20 @@ explr_data = {
     <p> Two possibilities are given: </p> \
     <ul>\
     <li> simply evaluate the figure of merit for the lattice defined by this generating vector </li>\
-    <li> extend the lattice defined by this generating vector and a given number of points </li>\
+    <li> extend the lattice defined by this generating vector and modulus </li>\
     </ul>',
     'exhaustive': '<p> All generating vectors are examined and the best one is selected. </p>\
-    <p> If you tick "random choice r of points", a number r of randomly selected generating vectors \\(a\\) will be examined instead of all vectors. </p>',
-    'Korobov': '<p> All generating vectors of the form \\(a=(1,a \\text{ mod } n,a^2 \\text{ mod } n,…,a^s \\text{ mod } n)\\) are examined and the best one is selected. </p>\
-    <p> If you tick "random choice r of points a number r of randomly selected generating vectors \\(a\\) will be examined instead of all Korobov vectors. </p>',
-    'CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined the best ones are selected, one coordinate at a time. </p>\
-    <p> If you tick "random choice r of points", a number r of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.</p>',
+    <p> If you tick "random choice r of samples", a number r of randomly selected generating vectors \\(a\\) will be examined instead of all vectors. </p>',
+    'Korobov': '<p> All generating vectors of the form \\(a=(1,a \\text{ mod } n,a^2 \\text{ mod } n,…,a^{s-1} \\text{ mod } n)\\) are examined and the best one is selected. </p>\
+    <p> If you tick "random choice r of samples a number r of randomly selected generating vectors \\(a\\) will be examined instead of all Korobov vectors. </p>',
+    'CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined, and the best ones are selected, one coordinate at a time. </p>\
+    <p> If you tick "random choice r of samples", a number r of randomly selected values for each component \\(a_j\\) will be examined instead of all possibilities.</p>',
     'fast-CBC': '<p> All possible values of the components components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined and the best ones are selected, one coordinate at a time. </p>\
-    <p> Computation is accelerated by using fast Fourier transforms. </p>\
+    <p> Computation is accelerated by using Fast Fourier Transforms. </p>\
     <p style="color:red"> Requires the Coordinate-Uniform evaluation method.</p>',
     'full-CBC': '<p> All possible values of the components \\(a_j\\) of the generating vector \\(a=(a_1,…,a_s)\\) are examined the best ones are selected, one coordinate at a time. </p>\
-    <p> If you tick "random choice r of points", a number r of randomly selected selected values for each component \\(a_j\\) will be examined instead of all possibilities.\
-    If the minimal random dimension \\(d\\) equals one, the search is entirely random. Else, the search is exhaustive up to dimension \\(d-1\\), and random from dimension \\(d\\). </p>',
+    <p> If you tick "random choice r of samples", a number r of randomly selected values for each component \\(a_j\\) will be examined instead of all possibilities.\
+    If the minimal random dimension \\(d\\) equals one, the search is entirely random. Else, the search is exhaustive up to coordinate \\(d-1\\), and random from coordinate \\(d\\). </p>',
     'net-eval' : '<p> Explicit net evaluation. Enter below the net characteristics:\
         <ul>\
             <li> direction numbers for Sobol construction (please respect the format given as example)\
@@ -34,6 +34,8 @@ def change_explr_choice(change, gui):
     if change['name'] != 'value':
         return
     new_choice = change['new']
+    if new_choice == None:
+        return
 
     if new_choice == 'evaluation':
         if gui.main_tab.selected_index == 0:    
@@ -44,6 +46,7 @@ def change_explr_choice(change, gui):
     else:
         gui.exploration_method.explr_info.value = explr_data[new_choice]
         gui.exploration_method.from_previous_search.layout.display = 'none'
+        gui.exploration_method.from_previous_search_warning.layout.display = 'none'
 
     if new_choice == 'evaluation' and gui.main_tab.selected_index == 0:     
         gui.exploration_method.generating_vector.layout.display = 'flex'
@@ -86,28 +89,37 @@ def automatic_generating_numbers_sobol(change, gui):
     gui.exploration_method.generating_numbers_sobol.value = '\n'.join(JoeKuoSobolNets[:(gui.properties.dimension.value * gui.properties.interlacing.value)])
 
 def fill_from_previous_search(change, gui):
-    if gui.output.result_obj is None:
-        return
-    else:
+    done = False
+    if gui.output.result_obj is not None:
         result = gui.output.result_obj
         if 'digital' in gui.search.search_type() and gui.main_tab.selected_index == 1:
             if gui.search.search_type() == 'digital-polynomial' and gui.construction_method.construction_choice.value == 'polynomial':
+                done = True
                 for k in range(int(gui.search.dimension)):
                     gui.exploration_method.generating_vector_simple.children[k].value = "".join(list(map(str, result.gen_vector[k])))
 
             elif gui.search.search_type() == 'digital-sobol' and gui.construction_method.construction_choice.value == 'sobol':
+                done = True
                 gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, result.gen_vector[k]))) for k in range(result.dim)])
             
             elif gui.search.search_type() == 'digital-explicit' and gui.construction_method.construction_choice.value == 'explicit':
+                done = True
                 gui.exploration_method.generating_matrices.value = '\n\n'.join([ '\n'.join([' '.join(list(map(str, result.matrices[coord][i]))) for i in range(result.nb_rows)]) for coord in range(result.dim)])
 
         if gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value == gui.search.search_type():
             if gui.lattice_type.type_choice.value == 'ordinary':
+                done = True
                 for k in range(int(gui.search.dimension)):
-                    gui.exploration_method.generating_vector.children[0].children[k].value = result.gen_vector[k]
+                    gui.exploration_method.generating_vector.children[0].children[k].value = str(result.gen_vector[k])
             else:
+                done = True
                 for k in range(int(gui.search.dimension)):
                     gui.exploration_method.generating_vector.children[0].children[k].value = "".join(list(map(str, result.gen_vector[k])))
+    if done:
+        gui.exploration_method.from_previous_search_warning.layout.display = 'none'
+    else:
+        gui.exploration_method.from_previous_search_warning.layout.display = 'flex'
+
 
 def exploration_method():
     exploration_choice = widgets.ToggleButtons(
@@ -134,6 +146,7 @@ def exploration_method():
                                     layout=widgets.Layout(width='inherit', height='150px', display='none'))
 
     from_previous_search = widgets.Button(description='Evaluate from previous search', style=style_default, layout=widgets.Layout(width='200px', display='none', margin='40px 0px 0px 0px'))
+    from_previous_search_warning = widgets.HTML(value='<span style="color:red"> The search result and the current point set type /<br> construction method do not match. </span>', layout=widgets.Layout(display='none'))
 
     generating_vector_simple = widgets.HBox(
             [widgets.Text(value='1', description='', 
@@ -154,13 +167,14 @@ def exploration_method():
 
     explr_info = widgets.HTMLMath(explr_data[exploration_choice.value])
     exploration = widgets.Accordion([widgets.VBox(
-        [exploration_choice, widgets.HBox([explr_info, from_previous_search], layout=widgets.Layout(justify_content='space-around')),
+        [exploration_choice, widgets.HBox([explr_info, widgets.VBox([from_previous_search, from_previous_search_warning])], layout=widgets.Layout(justify_content='space-around', align_items='center')),
         generating_vector_simple, generating_vector, generating_matrices, random_box, mixed_CBC_level, generating_numbers_sobol_box])])
     exploration.set_title(0, 'Exploration Method')
 
     return BaseGUIElement(explr_info=explr_info,
                           exploration_choice=exploration_choice,
                           from_previous_search=from_previous_search,
+                          from_previous_search_warning=from_previous_search_warning,
                           is_random=is_random,
                           number_samples=number_samples,
                           generating_vector=generating_vector,
