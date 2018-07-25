@@ -139,7 +139,7 @@ class CBCSearch : public Search<NC, ET, OBSERVER>
                 while(!m_explorer->isOver()) // for each generating values provided by the explorer
                 {
                     auto newNet = net.extendDimension(m_explorer->nextGenValue());
-                    unsigned int totalSize = m_explorer->size();
+                    unsigned long totalSize = m_explorer->size();
                     if (this->m_verbose>=2 && ((totalSize > 100 && m_explorer->count() % 100 == 0) || (m_explorer->count() % 10 == 0)))
                     {
                         std::cout << "Coordinate " << coord + 1 << "/" << this->dimension() << " - net " << m_explorer->count() << "/" << totalSize << std::endl;

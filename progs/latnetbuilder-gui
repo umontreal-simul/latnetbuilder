@@ -1,1 +1,4 @@
-jupyter notebook --NotebookApp.default_url='/apps/../share/latnetbuilder/Interface.ipynb'
+export ENV_BIN=$(which latnetbuilder-gui)
+export ENV_BIN=$(dirname $ENV_BIN)
+cd $ENV_BIN
+jupyter notebook ../share/latnetbuilder/Interface.ipynb

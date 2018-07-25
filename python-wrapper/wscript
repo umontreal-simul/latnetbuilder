@@ -12,7 +12,7 @@ def build(ctx):
         print(top)
         cmd1 = "echo Building the conda package, this takes several minutes..."
         cmd2 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
-        ' && %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'))
+        ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
         ctx(
                 rule   = cmd1,
                 source = 'wscript',
@@ -36,7 +36,7 @@ def build(ctx):
 
         cmd1 = 'echo Installing the conda package, this could take a few minutes...'
         cmd2 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
-        cmd3 = ". activate latnetbuilder && conda env list && conda remove -y latnetbuilder"
+        cmd3 = '. activate latnetbuilder && conda env list && conda remove -y latnetbuilder || echo "Tried to remove package latnetbuilder from environment latnetbuilder"'
         cmd4 = ". activate latnetbuilder && conda install -y --use-local latnetbuilder"
 
         ctx.set_group('group1')
