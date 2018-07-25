@@ -17,10 +17,14 @@
 #include "latbuilder/Util.h"
 #include "latbuilder/Types.h"
 #include <iostream>
+
+#include "Path.h"
+
 using namespace LatBuilder;
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [main]
    Polynomial P = PolynomialFromInt(13); //13 = 1 + 2^2 + 2^3
    std::cout << P << std::endl;

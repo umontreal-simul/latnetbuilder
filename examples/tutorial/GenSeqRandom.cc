@@ -19,6 +19,8 @@
 #include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -26,6 +28,7 @@ using TextStream::operator<<;
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [main]
    //! [types]
    typedef Traversal::Random<LFSR258> Trav;

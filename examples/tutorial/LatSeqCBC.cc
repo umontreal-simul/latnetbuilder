@@ -19,6 +19,8 @@
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -58,6 +60,7 @@ void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
 }
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    CBCsearch<LatticeType::ORDINARY>(8);
    std::cout << std::endl;
    CBCsearch<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));

@@ -27,6 +27,8 @@
 #include "netbuilder/Task/MixedCBCExplorer.h"
 #include "latticetester/ProductWeights.h"
 
+#include "Path.h"
+
 #include "latbuilder/Util.h"
 
 using namespace NetBuilder;
@@ -35,6 +37,7 @@ using namespace NetBuilder::Task;
 using LatBuilder::PolynomialFromInt;
 int main(int argc, char** argv)
 {
+        SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
         {
                 //! [search_params]
                 auto weights = std::make_unique<LatticeTester::ProductWeights>(.7);

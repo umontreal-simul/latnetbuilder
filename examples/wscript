@@ -28,18 +28,18 @@ def build(ctx):
 #                 use=['latnetbuilder', 'latticetester'],
 #                 install_path=None)
 
-    ctx.install_files('${DOCDIR}/examples', ctx.path.ant_glob(['*.cc', '*.c']))
+    ctx.install_files('${DOCDIR}/latnetbuilder/examples', ctx.path.ant_glob(['*.cc', '*.c']))
 
     ctx.recurse('tutorial')
 
-    ctx(features='subst',
-            source='myproject/Makefile.in',
-            target='myproject/Makefile',
-            PREFIX=ctx.env.PREFIX,
-            CXXFLAGS =' '.join(ctx.env.CXXFLAGS),
-            INCLUDES =' '.join('-I"%s"' % x for x in ctx.env.INCLUDES),
-            LIBPATH  =' '.join('-L"%s"' % x for x in ctx.env.LIBPATH),
-            LIBRARIES=' '.join('-l"%s"' % x for x in ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_FILESYSTEM + ctx.env.LIB_SYSTEM + ctx.env.LIB_NTL + ctx.env.LIB_GMP + ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_FILESYSTEM + ctx.env.STLIB_SYSTEM + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP),
-            install_path='${DOCDIR}/examples/myproject')
+    # ctx(features='subst',
+    #         source='myproject/Makefile.in',
+    #         target='myproject/Makefile',
+    #         PREFIX=ctx.env.PREFIX,
+    #         CXXFLAGS =' '.join(ctx.env.CXXFLAGS),
+    #         INCLUDES =' '.join('-I"%s"' % x for x in ctx.env.INCLUDES),
+    #         LIBPATH  =' '.join('-L"%s"' % x for x in ctx.env.LIBPATH),
+    #         LIBRARIES=' '.join('-l"%s"' % x for x in ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_FILESYSTEM + ctx.env.LIB_SYSTEM + ctx.env.LIB_NTL + ctx.env.LIB_GMP + ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_FILESYSTEM + ctx.env.STLIB_SYSTEM + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP),
+    #         install_path='${DOCDIR}/latnetbuilder/examples/myproject')
 
-    ctx.install_files('${DOCDIR}/examples/myproject', ctx.path.ant_glob('myproject/*.cc'))
+    ctx.install_files('${DOCDIR}/latnetbuilder/examples/myproject', ctx.path.ant_glob('myproject/*.cc'))

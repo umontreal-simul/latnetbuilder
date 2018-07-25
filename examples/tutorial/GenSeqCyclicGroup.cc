@@ -17,6 +17,8 @@
 #include "latbuilder/GenSeq/CyclicGroup.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -42,6 +44,7 @@ void displayPolySeq(Polynomial base, int power)
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    displayIntSeq(7, 1);
    displayIntSeq(2, 3);
    displayIntSeq(3, 2);

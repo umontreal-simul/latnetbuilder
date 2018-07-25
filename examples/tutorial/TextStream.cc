@@ -18,10 +18,13 @@
 #include <vector>
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 using namespace LatBuilder;
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [cout]
    using TextStream::operator<<;
    std::cout << std::vector<int>{1, 2, 3, 4, 5} << std::endl;

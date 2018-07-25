@@ -30,6 +30,8 @@
 #include "latbuilder/LatSeq/Korobov.h"
 #include "latbuilder/GenSeq/GeneratingValues.h"
 
+#include "Path.h"
+
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -157,6 +159,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    Dimension dim = 3;
 
    //! [storage]

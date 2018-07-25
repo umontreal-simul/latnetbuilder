@@ -17,6 +17,8 @@
 #include "latbuilder/Storage.h"
 #include "latbuilder/SizeParam.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -35,7 +37,7 @@ void test(typename LatticeTraits<LA>::Modulus modulus)
 
 int main()
 {
-
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    uInteger n = 16;
    Polynomial P = PolynomialFromInt(7);
    test<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE>(n);

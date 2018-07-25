@@ -58,6 +58,7 @@ def build(ctx):
     lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
     targets = []
+    ctx.define('CHECKING_EXAMPLES', 1)
     for src in ctx.path.ant_glob('*.cc'):
 
         targets.append(ctx.path.find_or_declare(src.name[:-3]))
@@ -71,7 +72,7 @@ def build(ctx):
                 use=['latnetbuilder', 'latticetester'],
                 install_path=None)
 
-    ctx.install_files('${DOCDIR}/examples/tutorial', ctx.path.ant_glob('*.cc'))
+    ctx.install_files('${DOCDIR}/latnetbuilder/examples/tutorial', ctx.path.ant_glob(['*.cc', '*.h']))
 
     from waflib.Tools import waf_unit_test
     ctx.add_post_fun(waf_unit_test.summary)

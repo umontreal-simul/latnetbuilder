@@ -23,6 +23,8 @@
 #include "netbuilder/Task/Eval.h"
 #include "latticetester/ProductWeights.h"
 
+#include "Path.h"
+
 #include "latbuilder/Kernel/PAlphaPLR.h"
 
 using namespace NetBuilder;
@@ -32,6 +34,7 @@ using JoeKuo::createPtrToJoeKuoSobolNet;
 
 int main(int argc, char** argv)
 {
+        SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
         //! [figure]
         unsigned int alpha = 2;
         auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);

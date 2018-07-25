@@ -21,11 +21,16 @@
 #include "netbuilder/GeneratingMatrix.h"
 #include "latbuilder/Util.h"
 
+#include "Path.h"
+
 using namespace NetBuilder;
 using LatBuilder::PolynomialFromInt;
 
 int main(int argc, char** argv)
 {
+
+    SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
+
     {
         //! [Sobol]
         std::cout << "Constructing Sobol' nets..." << std::endl;

@@ -33,6 +33,8 @@
 
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 #include <limits>
 
@@ -156,6 +158,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    Dimension dim = 3;
 
    //! [storage]

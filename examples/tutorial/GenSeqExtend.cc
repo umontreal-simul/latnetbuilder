@@ -19,6 +19,8 @@
 #include "latbuilder/TextStream.h"
 #include "latbuilder/Digits.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -35,6 +37,7 @@ void showSeq(uInteger base, const SEQ& seq)
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    uInteger m = 2;
 
    //! [main]
