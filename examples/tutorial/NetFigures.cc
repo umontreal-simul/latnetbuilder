@@ -24,6 +24,8 @@
 
 #include "latticetester/ProductWeights.h"
 
+#include "Path.h"
+
 #include "latbuilder/Kernel/PAlphaPLR.h"
 
 using namespace NetBuilder;
@@ -32,6 +34,7 @@ using JoeKuo::createJoeKuoSobolNet;
 
 int main(int argc, char** argv)
 {
+    SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
     {
         std::cout << "Computing the t-value..." << std::endl;
         //! [figure1]

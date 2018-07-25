@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+#ifndef NETBUILDER__PATH_H
+#define NETBUILDER__PATH_H
+
 #include <string>
-
-#ifndef CONST
-#define CONST
-
 /**
  * \file 
  * This file contains a global variable PATH_TO_LATNETBUILDER_DIR which should always equal

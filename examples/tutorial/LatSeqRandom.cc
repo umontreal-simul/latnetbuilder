@@ -22,6 +22,8 @@
 #include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -53,7 +55,7 @@ void test(typename LatticeTraits<LA>::Modulus modulus){
 int main()
 {
    
-
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [output]
    test<LatticeType::ORDINARY>(31);
    //! [output]

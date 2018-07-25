@@ -3,7 +3,10 @@
 
 def build(ctx):
     data_dir = ctx.path
+    out = ctx.bldnode.abspath()
 
     # data files
+    ctx(rule= 'mkdir -p %s' % str(out) + "/progs/share/latnetbuilder/data")
     for dat in data_dir.ant_glob('*.csv'):
+        ctx(rule='cp %s %s' %(str(dat), str(out) + "/progs/share/latnetbuilder/data"))
         ctx.install_files("${PREFIX}/share/latnetbuilder/data", dat)

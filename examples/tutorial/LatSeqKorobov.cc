@@ -19,6 +19,8 @@
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -42,6 +44,7 @@ void test(typename LatticeTraits<LA>::Modulus modulus){
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [output]
    test<LatticeType::ORDINARY>(7);
    test<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));

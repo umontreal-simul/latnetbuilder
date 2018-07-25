@@ -29,7 +29,7 @@ Weights: ProductWeights([], default=0.7)
 Norm type: 2
 filters: Embedding type: Multilevel
 Combiner: Sum
-Multilevel filters: normalizer: PAlphaSL10, low-pass
+Multilevel filters: normalizer: PAlphaSL10 - levels: 0,8, low-pass
 CBC search for dimension: 1
 base lattice: 
 Ordinary Lattice - Modulus = 2^8 - Generating vector = []

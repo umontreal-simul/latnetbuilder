@@ -17,6 +17,8 @@
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -24,7 +26,7 @@ using TextStream::operator<<;
 
 int main()
 {
-   
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [all]
    typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::NONE> WholeSeqIntegers;
    //! [all]

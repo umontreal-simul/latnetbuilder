@@ -17,6 +17,9 @@
 #include "latbuilder/LatDef.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/TextStream.h"
+
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
@@ -34,6 +37,8 @@ void printLatDef(const LatDef<LA, L>& def)
 //! [printLatDef]
 int main()
 {
+
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [ordinary]
    auto ordinary = createLatDef(SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(31), {1, 12, 3});
    std::cout << "ordinary - simple lattice:" << std::endl;
