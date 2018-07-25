@@ -43,8 +43,8 @@ class Search():
         else:
             modulus = self.modulus
 
-        from . import LATBUILDER
-        command = [LATBUILDER,
+        from . import PATH_TO_LATNETBUILDER
+        command = [PATH_TO_LATNETBUILDER,
                    '--set-type', self.set_type_name,
                    '--construction', self.construction,
                    '--multilevel', str(self.multilevel).lower(),

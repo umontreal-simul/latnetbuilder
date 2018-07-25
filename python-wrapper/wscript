@@ -4,49 +4,46 @@
 from waflib.Build import POST_LAZY
 
 def build(ctx):
-    if ctx.cmd == 'build':
+    if ctx.cmd == 'install':
         if not ctx.env.BUILD_CONDA:
             print('not building conda package; Conda (https://www.anaconda.com/download/) is missing')
             return
-        top = ctx.srcnode.abspath()
-        print(top)
-        cmd1 = "echo Building the conda package, this takes several minutes..."
-        cmd2 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
-        ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
-        ctx(
-                rule   = cmd1,
-                source = 'wscript',
-                cwd = top
-        )
-        ctx(
-                rule   = cmd2,
-                source = 'wscript',
-                cwd = top
-        )
-
-    if ctx.cmd == 'install':
         ctx.add_group('group1')
         ctx.add_group('group2')
         ctx.add_group('group3')
         ctx.add_group('group4')
+        ctx.add_group('group5')
+        ctx.add_group('group6')
+        ctx.add_group('group7')
         ctx.post_mode = POST_LAZY
-        if not ctx.env.BUILD_CONDA:
-            print('not building conda package; Conda (https://www.anaconda.com/download/) is missing')
-            return
 
-        cmd1 = 'echo Installing the conda package, this could take a few minutes...'
-        cmd2 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
-        cmd3 = '. activate latnetbuilder && conda env list && conda remove -y latnetbuilder || echo "Tried to remove package latnetbuilder from environment latnetbuilder"'
-        cmd4 = ". activate latnetbuilder && conda install -y --use-local latnetbuilder"
+        top = ctx.srcnode.abspath()
+        install_dir = ctx.env.EXEC_PREFIX
+        
+        cmd1 = "echo Building the conda package, this takes several minutes..."
+        cmd2 = '%s install -y conda-build || echo "Tried to install the conda-build package"' % (ctx.env.get_flat('CONDA'))
+        cmd3 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
+        ' && export TOTO_VARIABLE_UNIQUE_NAME=' + install_dir + \
+        ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
+        cmd4 = 'echo Installing the conda package, this could take a few minutes...'
+        cmd5 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
+        cmd6 = 'conda remove -y latnetbuilder -n latnetbuilder || echo "Tried to remove package latnetbuilder from environment latnetbuilder"'
+        cmd7 = 'conda install -y --use-local latnetbuilder -n latnetbuilder'
 
         ctx.set_group('group1')
-        ctx(rule   = cmd1, source = 'wscript')
+        ctx(rule   = cmd1, source = 'wscript', cwd = top)
         ctx.set_group('group2')
-        ctx(rule   = cmd2, source = 'wscript')
+        ctx(rule   = cmd2, source = 'wscript', cwd = top)
         ctx.set_group('group3')
-        ctx(rule   = cmd3, source = 'wscript')
+        ctx(rule   = cmd3, source = 'wscript', cwd = top)
         ctx.set_group('group4')
         ctx(rule   = cmd4, source = 'wscript')
+        ctx.set_group('group5')
+        ctx(rule   = cmd5, source = 'wscript')
+        ctx.set_group('group6')
+        ctx(rule   = cmd6, source = 'wscript')
+        ctx.set_group('group7')
+        ctx(rule   = cmd7, source = 'wscript')
 
-        # jupyter notebook
-        ctx.install_files("${PREFIX}/share/latnetbuilder", ["notebooks/Interface.ipynb"])
+        
+        

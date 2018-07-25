@@ -138,13 +138,14 @@ def build(ctx):
     ctx.recurse('src')
     ctx.recurse('progs')
     ctx.recurse('data')
-    ctx.recurse('test') #TODO remove
     if ctx.env.BUILD_DOCS:
         ctx.recurse('doc')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
-    if ctx.env.BUILD_CONDA:
+    if ctx.env.BUILD_CONDA: # must be done at the end to copy installed files to conda package
         ctx.recurse('python-wrapper')
+    # jupyter notebook
+    ctx.install_files("${PREFIX}/share/latnetbuilder", ["python-wrapper/notebooks/Interface.ipynb"])
 
 
 # build variants
