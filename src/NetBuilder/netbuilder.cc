@@ -75,27 +75,24 @@ makeOptionsDescription()
    po::options_description desc("allowed options");
 
    desc.add_options ()
+   ("help,h", "produce help message")
+   ("version", "show version")
     ("set-type,t", po::value<std::string>(),
     "(required) point set type; possible values:\n"
     "  lattice\n"
     "  net\n")
-   ("help,h", "produce help message")
-   ("version", "show version")
-   ("verbose,v", po::value<std::string>()->default_value("0"),
-   "specify the verbosity of the program\n")
-   ("construction,c", po::value<std::string>()->default_value("sobol"),
+   ("construction,c", po::value<std::string>(),
    "digital net; possible constructions:\n"
-   "  sobol (default)\n"
+   "  sobol\n"
    "  polynomial\n"
    "  explicit\n")
-   ("multilevel,M", po::value<std::string>()->default_value("false"),
-    "multilevel point set; possible values:\n"
-   "  false (default)\n"
-   "  true\n")
+    ("dimension,d", po::value<std::string>(),
+    "(required) point set dimension\n")
    ("size-parameter,s", po::value<std::string>(),
-    "(required) size of the net; possible values: TODO\n"
-   "  <size>\n"
-   "  2^<max-power>\n")
+    "(required) modulus of the net; possible values:\n"
+   "  2^<max-level>\n"
+   "  <modulus>: polynomial (list of coefficients: 1011 stands for 1 + X^2 + X^3) (only for polynomial construction)\n"
+   )
    ("exploration-method,e", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
     "  evaluation:<net_description>\n" 
@@ -104,11 +101,27 @@ makeOptionsDescription()
     "  full-CBC\n"
     "  random-CBC:<r>\n"
     "  mixed-CBC:<r>:<nb_full>\n"
-    "where <r> is the number of randomizations, and <nb_full> the number of coordinates for which full CBC exploration is used.")
-    ("dimension,d", po::value<std::string>(),
-    "(required) net dimension\n")
-    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
-    "(optional) number of significant figures to use when displaying merit values\n")
+    "where <net_description> is a net description (see documentation), <r> is the number of samples, and <nb_full> the number of coordinates for which full CBC exploration is used.")
+   ("figure-of-merit,f", po::value<std::string>(),
+    "(required) type of figure of merit; format: <merit>\n"
+    "  and where <merit> is one of:\n"
+    "    CU:P<alpha>  (requires l_2 norm)\n"
+    "    CU:R (requires l_2 norm)\n"
+    "    t-value (weights and norm-type are ignored)\n"
+    "    projdep:t-value\n"
+    "    projdep:t-value:starDisc\n"
+    "    projdep:resolution-gap\n"
+    "    CU:IA<alpha> (only for interlaced digital nets, requires l_1 norm)\n"
+    "    CU:IB (only for interlaced digital nets, requires l_1 norm)\n"
+    "where the \"CU:\" prefix stands for the coordinate-uniform evaluation algorithm and projdep for projection-dependent figure without coordinate-uniform evaluation algorithm\n")
+    ("interlacing-factor,i", po::value<unsigned int>()->default_value(1),
+    "(default: 1) interlacing factor. If larger than one, the constructed "
+    "point set is an interlaced digital net. In this case, the figure of merit must be"
+    "specific to interlaced digital nets.\n")
+   ("norm-type,q", po::value<std::string>(),
+    "norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
+    "    <q>: a real number corresponding the l_<q> norm\n"
+    "    inf: corresponding to the `max' norm\n")
     ("weights,w", po::value<std::vector<std::string>>()->multitoken(),
     "(required) whitespace-separated list of weights specifications (the actual weights are the sum of these); possible values:\n"
     "  product:<default>:<coord1-weight>[,...]\n"
@@ -124,26 +137,25 @@ makeOptionsDescription()
     "    if <file> is `-' data is read from standard input\n")
    ("weights-power,p", po::value<Real>(),
     "(default: same value as for the --norm-type argument) real number specifying that the weights passed as input will be assumed to be already elevated at that power (a value of `inf' is mapped to 1)\n")
-   ("norm-type,q", po::value<std::string>(),
-    "(default: 2) norm type used to combine the value of the projection-dependent figure of merit for all projections; possible values:"
-    "    <q>: a real number corresponding the l_<q> norm\n"
-    "    inf: corresponding to the `max' norm\n")
-    ("combiner,C", po::value<std::string>(),
-    "combiner for (filtered) multilevel merit values; possible values:\n"
+   ("multilevel,M", po::value<std::string>()->default_value("false"),
+    "multilevel point set; possible values:\n"
+   "  false (default)\n"
+   "  true\n")
+   ("combiner,C", po::value<std::string>(),
+    "(required for multilevel) combiner for multilevel merit values; possible values:\n"
     "  sum\n"
     "  max\n"
     "  level:{<level>|max}\n")
-   ("figure-of-merit,f", po::value<std::string>(),
-    "(required) type of figure of merit; TODO\n")
-    ("interlacing-factor,i", po::value<unsigned int>()->default_value(1),
-    "(default: 1) interlacing factor. If larger than one, the constructed"
-    "point set is an interlaced digital net. In this case, the figure of merit must be"
-    "specific to interlaced digital nets.\n")
-    ("output-folder,o", po::value<std::string>(),
-    "(optional) global path to the output folder. If none is given, no output is produced.")
    ("repeat,r", po::value<unsigned int>()->default_value(1),
     "(optional) number of times the construction must be executed\n"
-   "(can be useful to obtain different results from random constructions)\n");
+   "(can be useful to obtain different results from random constructions)\n")
+    ("verbose,v", po::value<std::string>()->default_value("0"),
+   "specify the verbosity of the program;\n"
+   "ranges between 0 (default) and 3\n")
+    ("output-folder,o", po::value<std::string>(),
+    "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
+    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
+    "(optional) number of significant figures to use when displaying merit values\n");
 
    return desc;
 }

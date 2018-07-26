@@ -133,7 +133,7 @@ uInteger log2Int(unsigned int n);
 /**
  * Returns a default polynomial of degree \c degree.
  * Polynomials will be primitive and irreducible for degree superior to \f$2\f$,
- * irreducibe for degree \f$1\f$ and equal to \f$1\f$ for degree \f$0\f$.
+ * irreducible for degree \f$1\f$ and equal to \f$1\f$ for degree \f$0\f$.
  * The current default list goes up to degree 32.
  * Modify <code>data/default_poly.csv</code> to change the default polynomials.
  * @param degree Degree of the default polynomial.

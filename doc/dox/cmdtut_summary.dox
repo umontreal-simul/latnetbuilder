@@ -21,6 +21,14 @@
 The <code>latnetbuilder</code> executable supports the following command-line
 options:
 <dl>
+	<dt><code>\--version</code></dt>
+	<dd><em>Optional.</em>
+		Shows the version of the software.
+	</dd>
+	<dt><code>\--help</code> / <code>-h</code></dt>
+	<dd><em>Optional.</em>
+		Shows a light version of this page in the console.
+	</dd>
 	<dt><code>\--set-type</code> / <code>-t</code></dt>
 	<dd><em> Required.</em>
 		Specifies the point set type.
@@ -200,6 +208,7 @@ options:
 			and <code><var>weight</var></code> the associated weight.
 			\n Alternatively, a file containing the weights can be used:
 			<code>--weights file:<var>path_to_file</var></code>
+				to assign the weight <code><var>weight</var></code> to all other
 			where <code><var>path_to_file</var></code> is the path to the file containing the weights.
 			The file must consist of lines of the form:
 			- <code><var>coordinates</var>: <var>weight</var></code>
@@ -210,13 +219,12 @@ options:
 				to assign the weight <code><var>weight</var></code> to all other
 				projections of order <code><var>order</var></code>;
 			- <code>default: <var>weight</var></code>
-				to assign the weight <code><var>weight</var></code> to all other
+	</dd>
 				projections;
 			- <code>#<var>comment</var></code> to ignore
 				<code><var>comment</var></code>.
 		
 		The way to specify the different \ref feats_weights "types of weights" is explained \ref cmdtut_advanced_weights "here".
-	</dd>
 	<dt><code>\--weights-power</code> / <code>-p</code></dt>
 	<dd><em>Optional (default: same value as for the <code>--norm-type</code> option).</em>
 		Specifies that the weights passed by option
@@ -269,11 +277,11 @@ options:
 		levels ranging from <code><var>minLevel</var></code> through
 		<code><var>maxLevel</var></code>, and a zero weight for other
 		levels.
-	<dt><code>\--merit-digits-displayed</code></dt>
-	<dd><em>Optional.</em>
-                Sets the number of significant figures to use when displaying
-		merit values.
-                Takes a positive integer as its argument.
+	<dt><code>\--repeat</code> / <code>-r</code></dt>
+	<dd><em>Optional (default 1).</em>
+		Number of times the exploration must be executed
+   		(can be useful to obtain different results from random exploration).
+		Takes an integer argument.
 	</dd>
 	<dt><code>\--verbose</code> / <code>-v</code></dt>
 	<dd><em>Optional (default 0).</em>
@@ -286,13 +294,11 @@ options:
 		of the search. If the folder does not exist, it will be created.
 		If the folder already exists, some existing files may be lost.  
 	</dd>
-	<dt><code>\--version</code></dt>
+	<dt><code>\--merit-digits-displayed</code></dt>
 	<dd><em>Optional.</em>
-		Shows the version of the software.
-	</dd>
-	<dt><code>\--help</code> / <code>-h</code></dt>
-	<dd><em>Optional.</em>
-		Shows a light version of this page in the console.
+                Sets the number of significant figures to use when displaying
+		merit values.
+                Takes a positive integer as its argument.
 	</dd>
 </dl>
 */

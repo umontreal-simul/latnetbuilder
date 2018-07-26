@@ -33,7 +33,7 @@ makeOptionsDescription()
 
     desc.add_options()
     ("help,h", "produce help message")
-    ("version,V", "show version")
+    ("version", "show version")
     ("set-type,t", po::value<std::string>(),
         "(required) point set type; possible values:\n"
         "  lattice\n"
