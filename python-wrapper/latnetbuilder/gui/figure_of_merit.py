@@ -54,9 +54,9 @@ def change_figure_type(change, gui):
     if change['new'] in ['IAalpha', 'IB']:
         gui.figure_of_merit.norm_type.disabled = True
         gui.figure_of_merit.norm_type.value = '1'
-    elif change['new'] in ['projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc']:
+    elif change['new'] in ['projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'spectral']:
         gui.figure_of_merit.norm_type.disabled = False
-        gui.figure_of_merit.norm_type.value = '1'    
+        gui.figure_of_merit.norm_type.value = 'inf'    
     else:
         change_coord_unif({'new': gui.figure_of_merit.coord_unif.value}, gui)
 
@@ -88,16 +88,16 @@ def figure_of_merit():
     figure_type = widgets.Dropdown(
         options=[('Palpha', 'Palpha'), ('Ralpha', 'Ralpha'), ('Spectral', 'spectral')],
         value='Palpha', description='Figure:',
-        layout=widgets.Layout(width='20%'), style=style_default)
+        layout=widgets.Layout(width='180px'), style=style_default)
 
-    figure_alpha = widgets.Text(value='2', description=r'Value of \(\alpha\):',
-                        layout=widgets.Layout(width='15%'), style=style_default)
+    figure_alpha = widgets.Text(value='2', description='Value of \\(\\alpha\\):',
+                        layout=widgets.Layout(width='130px'), style=style_default)
 
     coord_unif = widgets.Checkbox(value=True, description='Coordinate-Uniform evaluation',
                                         style=style_default)
 
     norm_type = widgets.Text(value='2', description='Norm type q > 0 or q = "inf":',
-                            layout=widgets.Layout(width='24%'), style=style_default, disabled=True)
+                            layout=widgets.Layout(width='220px'), style=style_default, disabled=True)
 
     figure_of_merit_expl = widgets.HTMLMath(value='<p> Please note (and see the documentation for more details) that: </p> \
                         <ul>\
@@ -116,7 +116,7 @@ def figure_of_merit():
 
     # Definition of combiner options HBox
     combiner_level = widgets.BoundedIntText(
-        description='Level:', min=1, layout=widgets.Layout(display='none', width='15%'))
+        description='Level:', min=1, layout=widgets.Layout(display='none', width='130px'))
     combiner_dropdown = widgets.Dropdown(
         # options are (label, value) pairs
         options=[('weighted sum', 'sum'),
@@ -129,7 +129,7 @@ def figure_of_merit():
     
     low_pass_filter = widgets.Checkbox(description='Low-Pass Filter', value=False, style=style_default)
     low_pass_filter_options = widgets.Text(value='1', description='Low-Pass Threshold',
-                                        layout=widgets.Layout(display='none', width='25%'), style=style_default)
+                                        layout=widgets.Layout(display='none', width='200px'), style=style_default)
 
 
     # then wrap the widgets inside containers: the containters are nested, because this allows for a compact

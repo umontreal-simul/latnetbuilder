@@ -115,9 +115,10 @@ def parse_input_net(gui):
 
         elif 'polynomial' in s.construction:
             s.exploration_method += ':'
-            for k in range(int(s.dimension)):
+            effective_dim = int(s.dimension) * int(s.interlacing)
+            for k in range(effective_dim):
                 s.exploration_method += gui.exploration_method.generating_vector_simple.children[k].value
-                if k != int(s.dimension)-1:
+                if k != effective_dim-1:
                     s.exploration_method += '-'
 
         elif s.construction == 'explicit':
@@ -142,9 +143,10 @@ def parse_input_lattice(gui):
             s.exploration_method = 'extend:' + modulus + ':'
         else:
             s.exploration_method += ':'
-        for k in range(int(s.dimension)):
+        effective_dim = int(s.dimension) * int(s.interlacing)
+        for k in range(effective_dim):
             s.exploration_method += gui.exploration_method.generating_vector.children[0].children[k].value
-            if k != int(s.dimension)-1:
+            if k != int(effective_dim)-1:
                 s.exploration_method += '-'
 
     return s
