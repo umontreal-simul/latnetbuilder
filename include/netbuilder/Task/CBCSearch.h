@@ -113,22 +113,22 @@ class CBCSearch : public Search<NC, ET, OBSERVER>
             // compute the merit of the base net is one was provided
             Real merit = 0; 
 
-            for(Dimension coord = 0; coord < this->minimumObserver().bestNet().dimension(); ++coord)
+            for(Dimension coord = 0; coord < this->observer().bestNet().dimension(); ++coord)
             {
                 evaluator->prepareForNextDimension();
-                merit = (*evaluator)(this->minimumObserver().bestNet(), coord, merit) ;
+                merit = (*evaluator)(this->observer().bestNet(), coord, merit) ;
                 evaluator->lastNetWasBest();
             }
 
             if (this->m_earlyAbortion) // if the switch is on, connect the abortion signals of the evaluator to the observer
             {
-                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->minimumObserver(), _1));
-                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->minimumObserver(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), _1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), _1));
             }
 
-            m_explorer->switchToCoordinate(this->minimumObserver().bestNet().dimension()); // to to the first dimension to explore
+            m_explorer->switchToCoordinate(this->observer().bestNet().dimension()); // to to the first dimension to explore
 
-            for(Dimension coord = this->minimumObserver().bestNet().dimension() ; coord < this->dimension(); ++coord) // for each dimension to explore
+            for(Dimension coord = this->observer().bestNet().dimension() ; coord < this->dimension(); ++coord) // for each dimension to explore
             {
                 evaluator->prepareForNextDimension();
                 if(this->m_verbose>=1 && coord > 0)
