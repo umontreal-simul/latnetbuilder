@@ -1,5 +1,6 @@
 import ipywidgets as widgets
 
+# style_default tells the navigator not to crop the description of the ipywidgets if it's too long. 
 from .common import style_default, BaseGUIElement
 
 type_data = {
@@ -8,6 +9,7 @@ type_data = {
 }
 
 def change_lattice_type(change, gui):
+    # depending on the new value of the lattice type, we update the GUI
     if change['name'] != 'value':
         return
     new_choice = change['new']
@@ -31,18 +33,32 @@ def change_lattice_type(change, gui):
 
 
 def lattice_type():
+    # first create all the individual widgets, and initialize them with default values.
+    # The initialization part is important, and the initialization of all widgets must be consistent. 
+
     type_choice = widgets.ToggleButtons(
+        # options are (label, value) pairs
         value='ordinary',
         options=[('Ordinary', 'ordinary'), ('Polynomial', 'polynomial')],
         description='Choose one:',
         style=style_default
     )
-
     type_info = widgets.HTMLMath(value=type_data[type_choice.value])
+
+    # then wrap the widgets inside containers: the containters are nested, because this allows for a compact
+    # visualization for the user. For information about containers and their layout, see:
+    # https://ipywidgets.readthedocs.io/en/stable/examples/Widget%20Styling.html#The-Flexbox-layout
+    # The outmost container is always an Accordion.
     lattice_type = widgets.Accordion([widgets.VBox(
         [type_choice, type_info])])
     lattice_type.set_title(0, 'Lattice Type')
 
+    # Instanciate and return the BaseGUIElement which encapsulates all the widgets created above.
+    # Add each widget as an attribute of the Element. 
+    # We almost always use the same name for the widget (local name in the function) and the attribute (global name that will be accessible everywhere)
+    # To register callbacks, use the _callbacks dictionary where the key is the widget launching the callback and
+    # the value is the callback function itself.
+    # See the BaseGUIElement class for more information.
     return BaseGUIElement(type_info=type_info,
                                     main=lattice_type,
                                     type_choice=type_choice,

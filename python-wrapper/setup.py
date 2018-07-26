@@ -36,7 +36,7 @@ name_url = 'latbuilder'
 
 packages = [module]
 version = meta_ns['__version__']
-description = 'Python wrapper for LatNetBuilder'
+description = 'Python Interface for LatNetBuilder'
 long_description = 'See github repo README'
 author = 'umontreal-simul'
 author_email = '' # TODO
