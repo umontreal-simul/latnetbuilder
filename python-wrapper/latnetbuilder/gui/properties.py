@@ -91,22 +91,22 @@ def change_dimension(change, gui):
 
 def properties():
     modulus = widgets.Text(placeholder='e.g. 2^10 (default) or 1024', description='Modulus n=', 
-                    style=style_default, layout=widgets.Layout(width='95%'))
+                    style=style_default, layout=widgets.Layout(width='420px'))
 
     is_multilevel = widgets.Checkbox(value=False, description='Multilevel')
 
     dimension = widgets.BoundedIntText(value=INITIAL_DIM, min=1, description='Dimension s:',
-                                       style=style_default, layout=widgets.Layout(width='90%'))
+                                       style=style_default, layout=widgets.Layout(width='160px'))
     interlacing = widgets.BoundedIntText(value=1, min=1, description='Interlacing d:',
-                                       style=style_default, layout=widgets.Layout(width='90%'), disabled=True)
+                                       style=style_default, layout=widgets.Layout(width='160px'), disabled=True)
 
     modulus_pretty = widgets.Label('', layout=widgets.Layout(display='none'))
 
     properties_wrapper = widgets.Accordion(
         [widgets.HBox(
-            [widgets.VBox([modulus, modulus_pretty], layout=widgets.Layout(width='50%')), 
+            [widgets.VBox([modulus, modulus_pretty], layout=widgets.Layout(width='460px')), 
             is_multilevel, 
-            widgets.VBox([dimension, interlacing], layout=widgets.Layout(width='20%'))],
+            widgets.VBox([dimension, interlacing], layout=widgets.Layout(width='180px'))],
             layout=widgets.Layout(align_items='center')
         )])
     properties_wrapper.set_title(0, 'Basic Lattice properties')
