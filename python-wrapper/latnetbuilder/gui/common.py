@@ -26,30 +26,6 @@ for line in lines:
 
 style_default = {'description_width': 'initial'}
 
-# key: the name of a sub-element of the GUI (i.e. an ipywidget)
-# value: a list of length 2 [name of a GUI element, name of one of its subelements] which
-# corresponds to the widget whose display status will changed in the callback launched by the key widget.
-# For instance, it means that if the user checks the `is_multilevel` Checkbox, it will trigger
-# the display of the main widget of the multi_level GUI element.
-trigger_display_dic = {'is_multilevel': [['figure_of_merit', 'combiner_options']], 
-                    'low_pass_filter': [['figure_of_merit', 'low_pass_filter_options']],
-                    'is_normalization': [['figure_of_merit', 'minimum_level'], ['figure_of_merit', 'maximum_level']]}
-
-def trigger_display(change, gui, owner):
-    '''Change the display status of a widget.
-    
-    The arg owner corresponds to the name of the widget that triggers this callback.
-    '''
-    
-    if change['name'] != 'value':
-        return
-    for obj_id in trigger_display_dic[owner]:
-        obj = getattr(getattr(gui, obj_id[0]), obj_id[1])
-        if not change['new']:
-            obj.layout.display = 'none'
-        elif change['new']:
-            obj.layout.display = 'flex'
-
 def parse_polynomial(s):
     '''Parse a polynomial string (e.g. 1101^7).
     
@@ -105,10 +81,6 @@ class BaseGUIElement():
     my_element.widget2 = widget2
     my_element.widget1.observe(lambda change: callback_widget1(change, gui))
     my_element.widget2.on_click(lambda change: callback_widget2(change, gui))
-
-    There is a special case for the trigger_display callback (see trigger_display and trigger_display_dic above).
-    If you want to use this callback, just write trigger_display as the value of the callback, 
-    and add a new (key, value) pair to the trigger_display_dic.
     '''
 
     def __init__(self, **kwargs):
@@ -122,8 +94,6 @@ class BaseGUIElement():
             self._callbacks = {}  
             for (key, value) in kwargs['_callbacks'].items():
                 self._callbacks[getattr(self, key)] = value
-                if value == trigger_display:        # exception due to the structure of trigger_display
-                    self._callbacks[getattr(self, key)] = lambda change, gui: trigger_display(change, gui, self._name[change['owner']])
         if '_on_click_callbacks' in kwargs.keys():
             self._on_click_callbacks = {}
             for (key, value) in kwargs['_on_click_callbacks'].items():

@@ -50,7 +50,7 @@ class Result:
         return s1 + s2 + s3 + s4
 
 
-    def getNet(self, coord, level=None):
+    def getPoints(self, coord, level=None):
         assert coord < self.dim and (level==None or self.max_level > 0)
 
         if level is None:

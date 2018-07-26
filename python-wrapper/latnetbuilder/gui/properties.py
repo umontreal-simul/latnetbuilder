@@ -1,7 +1,7 @@
 import ipywidgets as widgets
 import numpy as np
 
-from .common import style_default, parse_polynomial, INITIAL_DIM, BaseGUIElement, trigger_display
+from .common import style_default, parse_polynomial, INITIAL_DIM, BaseGUIElement
 
 def change_modulus(change, gui):
     if change['name'] != 'value':
@@ -17,6 +17,19 @@ def change_modulus(change, gui):
     except:
         gui.properties.modulus_pretty.layout.display = 'none'
         return
+
+def change_multilevel(change, gui):
+    if change['name'] != 'value':
+        return
+    if change['new'] == True:
+        gui.figure_of_merit.combiner_options.layout.display = 'flex'
+        if gui.figure_of_merit.is_normalization.value and gui.figure_of_merit.combiner_dropdown.value in ['sum', 'max']:
+            gui.figure_of_merit.minimum_level.layout.display = 'flex'
+            gui.figure_of_merit.maximum_level.layout.display = 'flex'
+    else:
+        gui.figure_of_merit.combiner_options.layout.display = 'none'
+        gui.figure_of_merit.minimum_level.layout.display = 'none'
+        gui.figure_of_merit.maximum_level.layout.display = 'none'        
 
 def change_interlacing(change, gui):
     if change['name'] != 'value':
@@ -106,4 +119,4 @@ def properties():
                           _callbacks={'modulus': change_modulus,
                                       'dimension': change_dimension,
                                       'interlacing': change_interlacing,
-                                      'is_multilevel': trigger_display})
+                                      'is_multilevel': change_multilevel})

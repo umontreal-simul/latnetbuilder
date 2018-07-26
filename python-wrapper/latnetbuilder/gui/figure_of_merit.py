@@ -1,7 +1,25 @@
 import ipywidgets as widgets
 
 # style_default tells the navigator not to crop the description of the ipywidgets if it's too long. 
-from .common import style_default, BaseGUIElement, trigger_display
+from .common import style_default, BaseGUIElement
+
+def change_low_pass_filter(change, gui):
+    if change['name'] != 'value':
+        return
+    if change['new'] == True:
+        gui.figure_of_merit.low_pass_filter_options.layout.display = 'flex'
+    else:
+        gui.figure_of_merit.low_pass_filter_options.layout.display = 'none'
+
+def change_normalization(change, gui):
+    if change['name'] != 'value':
+        return
+    if change['new'] == True and gui.properties.is_multilevel.value and gui.figure_of_merit.combiner_dropdown.value in ['sum', 'max']:
+        gui.figure_of_merit.minimum_level.layout.display = 'flex'
+        gui.figure_of_merit.maximum_level.layout.display = 'flex'
+    elif change['new'] == False:
+        gui.figure_of_merit.minimum_level.layout.display = 'none'
+        gui.figure_of_merit.maximum_level.layout.display = 'none'                 
 
 def change_combiner_options(change, gui):
     if change['name'] == 'value':
@@ -20,7 +38,7 @@ def change_figure_type(change, gui):
     # depending on the new value of the figure type, we update the GUI
     if change['name'] != 'value':
         return
-    if change['new'] in ['Spectral', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc']:
+    if change['new'] in ['spectral', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc']:
         gui.figure_of_merit.coord_unif.value = False
         gui.figure_of_merit.coord_unif.disabled = True
     elif gui.main_tab.selected_index == 0:
@@ -28,7 +46,7 @@ def change_figure_type(change, gui):
     elif gui.main_tab.selected_index == 1:
         gui.figure_of_merit.coord_unif.value = True
 
-    if change['new'] in ['Spectral', 'R', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'IB']:
+    if change['new'] in ['spectral', 'R', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
     elif change['new'] in ['Ralpha', 'Palpha', 'IAalpha', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'flex'
@@ -36,6 +54,9 @@ def change_figure_type(change, gui):
     if change['new'] in ['IAalpha', 'IB']:
         gui.figure_of_merit.norm_type.disabled = True
         gui.figure_of_merit.norm_type.value = '1'
+    elif change['new'] in ['projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc']:
+        gui.figure_of_merit.norm_type.disabled = False
+        gui.figure_of_merit.norm_type.value = '1'    
     else:
         change_coord_unif({'new': gui.figure_of_merit.coord_unif.value}, gui)
 
@@ -81,10 +102,10 @@ def figure_of_merit():
     figure_of_merit_expl = widgets.HTMLMath(value='<p> Please note (and see the documentation for more details) that: </p> \
                         <ul>\
                             <li> The list of available figures of merit depend on the point set type and the interlacing factor. </li>\
-                            <li> The \\(P_\\alpha \\) method requires \\( \\alpha \\in \\{ 2, 4, 6 \\} \\), while \\(R_\\alpha \\) and \\(IA_\\alpha \\) require \\( \\alpha > 0 \\). </li> \
-                            <li> The Coordinate-Uniform (CU) evaluation method is generally faster, but requires q = 2.<br>Depending on the point set type and the figure, this option is mandatory, optional or impossible.</li> \
+                            <li> The \\(P_\\alpha \\) method requires \\( \\alpha \\in \\{ 2, 4, 6 \\} \\), \\(R_\\alpha \\) requires \\( \\alpha > 0 \\) and \\(B_{d, \\alpha, (1)} \\) requires \\( \\alpha > 0 \\). </li> \
+                            <li> The Coordinate-Uniform (CU) evaluation method is generally faster, but requires a specific norm type.<br>Depending on the point set type and the figure, this option is mandatory, optional or impossible.</li> \
                             <li> The possibility to choose the norm type depends on the point set type, the figure, and the CU option.</li>\
-                            <li> The t-value is the only figure for which weights, norm type and CU evaluation do not make sense.</li>\
+                            <li> For the t-value figure, weights, norm type and CU evaluation do not make sense.</li>\
                         </ul>')
 
     is_normalization = widgets.Checkbox(description='Normalization', value=False, style=style_default)
@@ -149,6 +170,6 @@ def figure_of_merit():
                           main=figure_of_merit_wrapper,
                           _callbacks={'figure_type': change_figure_type,
                                       'coord_unif': change_coord_unif,
-                                      'low_pass_filter': trigger_display,
+                                      'low_pass_filter': change_low_pass_filter,
                                       'combiner_dropdown': change_combiner_options,
-                                      'is_normalization': trigger_display})
+                                      'is_normalization': change_normalization})

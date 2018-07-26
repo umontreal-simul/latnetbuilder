@@ -3,7 +3,7 @@ import ipywidgets as widgets
 from .common import style_default, parse_polynomial, BaseGUIElement
 
 constr_data = {
-    'sobol': '<p> The nets follow the Sobol construction, and the direction numbers are optimized. The first matrix is always the same (reversed identity), so the first direction number is arbitrarly set to 0.</p>',
+    'sobol': '<p> The nets follow the Sobol construction, and the direction numbers are optimized. The first matrix is always the same (identity), so the first direction number is arbitrarly set to 0.</p>',
     'polynomial': '<p> Polynomial Lattice Rules viewed as digital nets, and evaluated as such. </p>',
     'explicit': '<p> Most general construction of digital nets, defined by their generating matrices. </p>'
 }

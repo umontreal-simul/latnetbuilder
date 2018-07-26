@@ -5,6 +5,7 @@ import numexpr as ne
 from .common import style_default, BaseGUIElement
 
 # Define weights VBox
+# TODO: change link (+ put link in the notebook)
 weight_math = widgets.HTMLMath(value='The weights are of the form: \\(\\gamma_u^q (u \\subseteq \\{1, ... s\\})\\). \
 You can specify below type of weights with their values (the actual weights are the sum of these). \
 See <a href="https://github.com/PierreMarion23/latbuilder/tree/dev/web-ui/weights_guidelines.md" target="_blank">this GitHub page</a> for guidelines on the choice of weights.',
