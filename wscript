@@ -147,6 +147,9 @@ def build(ctx):
     # jupyter notebook
     ctx.install_files("${PREFIX}/share/latnetbuilder", ["python-wrapper/notebooks/Interface.ipynb"])
 
+    # Docker file for no GUI
+    ctx.install_files("${PREFIX}/share/latnetbuilder", ["DockerfileNoGui"])
+
 
 # build variants
 

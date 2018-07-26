@@ -1,6 +1,5 @@
 import ipywidgets as widgets
 
-# style_default tells the navigator not to crop the description of the ipywidgets if it's too long. 
 from .common import style_default, BaseGUIElement
 
 def change_low_pass_filter(change, gui):
@@ -35,7 +34,6 @@ def change_combiner_options(change, gui):
             gui.figure_of_merit.maximum_level.layout.display = 'flex'
 
 def change_figure_type(change, gui):
-    # depending on the new value of the figure type, we update the GUI
     if change['name'] != 'value':
         return
     if change['new'] in ['spectral', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc']:
@@ -71,8 +69,6 @@ def change_figure_type(change, gui):
 
 
 def change_coord_unif(change, gui):
-    # depending on the new value of the coord unif checkbox, we update the GUI
-    # print(change)
     if ('name' in change and change['name'] != 'value') or gui.properties.interlacing.value > 1:
         return
     if change['new'] == True:
@@ -83,8 +79,6 @@ def change_coord_unif(change, gui):
 
 
 def figure_of_merit():
-    # first create all the individual widgets, and initialize them with default values.
-    # The initialization part is important, and the initialization of all widgets must be consistent. 
     figure_type = widgets.Dropdown(
         options=[('Palpha', 'Palpha'), ('Ralpha', 'Ralpha'), ('Spectral', 'spectral')],
         value='Palpha', description='Figure:',
@@ -114,11 +108,9 @@ def figure_of_merit():
     maximum_level = widgets.Text(placeholder='10', description='Max Level (optional):',
                                 layout=widgets.Layout(width='180px', display='none'), style=style_default)
 
-    # Definition of combiner options HBox
     combiner_level = widgets.BoundedIntText(
         description='Level:', min=1, layout=widgets.Layout(display='none', width='130px'))
     combiner_dropdown = widgets.Dropdown(
-        # options are (label, value) pairs
         options=[('weighted sum', 'sum'),
                 ('maximum weighted value', 'max'),
                 ('weighted value of the highest level', 'level:max'),
@@ -131,11 +123,6 @@ def figure_of_merit():
     low_pass_filter_options = widgets.Text(value='1', description='Low-Pass Threshold',
                                         layout=widgets.Layout(display='none', width='200px'), style=style_default)
 
-
-    # then wrap the widgets inside containers: the containters are nested, because this allows for a compact
-    # visualization for the user. For information about containers and their layout, see:
-    # https://ipywidgets.readthedocs.io/en/stable/examples/Widget%20Styling.html#The-Flexbox-layout
-    # The outmost container is always an Accordion.
     figure_of_merit_wrapper = widgets.Accordion([
         widgets.VBox([
             figure_of_merit_expl,
@@ -149,12 +136,6 @@ def figure_of_merit():
 
     figure_of_merit_wrapper.set_title(0, 'Figure of Merit')
 
-    # Instanciate and return the BaseGUIElement which encapsulates all the widgets created above.
-    # Add each widget as an attribute of the Element. 
-    # We almost always use the same name for the widget (local name in the function) and the attribute (global name that will be accessible everywhere)
-    # To register callbacks, use the _callbacks dictionary where the key is the widget launching the callback and
-    # the value is the callback function itself.
-    # See the BaseGUIElement class for more information.
     return BaseGUIElement(figure_type=figure_type,
                           figure_alpha=figure_alpha,
                           coord_unif=coord_unif,
