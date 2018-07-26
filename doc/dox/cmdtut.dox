@@ -37,7 +37,7 @@ This tutorial is divided in three sections:
  - \subpage cmdtut_summary
     \n This section summarizes all the options of the command-line tool.
 
-The following typesetting semantics is adopted:
+The following typesetting semantics are adopted:
 - <code>verbatim</code> for text to be typed as is;
 - <code><var>arg</var></code> for text to be substituted;
 - when a command is broken into multiple lines, a trailing backslash (\\)

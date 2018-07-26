@@ -18,21 +18,24 @@
 
 The first version of LatNet Builder only handled ordinary lattice rules. The polynomial lattice rules
 were later added to the software. This extension uses the lattice point of view for polynomial lattice rules.
-However, polynomial lattice rules are also digital nets and when this point set type was added to the software,
+However, polynomial lattice rules are also digital nets and when the latter was added to the software,
 a polynomial construction of digital net was implemented. 
 
 As a consequence, polynomial lattice rules are available on both side of the software: %LatBuilder and %NetBuilder. 
 
 Choosing which piece of software to use depends on what one wants to achieve:
 
-- Generally, the digital net implementation (%NetBuilder) is faster than the lattice implementation;
+- Generally, the digital net implementation (%NetBuilder) is much faster than the lattice implementation;
 - This implementation provides more exploration methods and more figures of merit;
-- However, the fast-CBC algorithm and the embedded polynomial lattice rules are only
-  available in the lattice implementation (%LatBuilder);
+- However, the fast-CBC algorithm which is only available in the lattice implementation (%LatBuilder)
+  beats the full-CBC exploration method of %NetBuilder;
+- Moreover, the embedded polynomial lattice rules and filters and normalizations are not
+  supported by the digital net implementation.
 - To wrap it up: the lattice implementation should only be used in the following cases:
     - for the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R\f$ discrepancies and the \f$\ell_2\f$ norm
       <b>with the fast-CBC algorithm</b>,
-    - for embedded polynomial lattice rules.
+    - for embedded polynomial lattice rules,
+    - for filters and normalizations.
 
 */
 vim: ft=doxygen spelllang=en spell

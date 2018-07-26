@@ -92,8 +92,7 @@ should be left as in the basic example.
 LatNet Builder supports a variety of exploration methods. The <code>--exploration-method</code> option
 controls which one is used to explore the search space.
 
-To fasten computation, it is recommended to use the fast-CBC algorithm instead of full-CBC whenever possible, that is when
-the coordinate-uniform evaluation algorithm (<code>CU</code> token) can be used. 
+To fasten computation, it is recommended to use the fast-CBC algorithm instead of full-CBC whenever possible. 
 This is done by using the following option:
 
 <code>--exploration-method fast-CBC</code>.
@@ -233,7 +232,7 @@ arguments separated by whitespace.
   the second one specifies the threshold value of this low-pass filter.
 
 For usage with embedded lattices, see \ref cmdtut_quick-recipes_embedded.
-Additional details on how to use filters and normalizations can be found \ref cmdtut_advanced_filters "here"
+Additional details on how to use filters and normalizations can be found \ref cmdtut_advanced_filters "here".
 
 \section cmdtut_quick-recipes_embedded Constructing embedded point sets
 
@@ -304,7 +303,7 @@ First, we must be able to tell LatNet Builder which point set we want to evaluat
 We will just give an example for ordinary lattice rules.
 
 Say we want to evaluate the \f$\mathcal R_1\f$ criterion with product weights equal to 0.9 and an \f$\ell_2\f$
-norm for the lattice rule with modulus 11,551 and generating vector 
+norm for the lattice rule with modulus 11551 and generating vector 
 (1, 5396, 2285, 484, 5355, 20, 249, 4237, 4919, 3622). 
 The following command-line will do the job:
 \verbatim
@@ -361,7 +360,7 @@ You can fin additional details on constructing interlaced digital nets and polyn
 
 \section cmdtut_quick-recipes_extend Extending point sets
 
-Suppose you have constructed embedded lattice rules up to \$2^8\$ points in
+Suppose you have constructed embedded lattice rules up to \f$2^8\f$ points in
 dimension 5 with:
 \verbatim
 ./latnetbuilder \
