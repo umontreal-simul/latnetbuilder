@@ -81,10 +81,10 @@ public:
 
     /// Signal emitted when a net has been selected.
 
-    typedef boost::signals2::signal<void (const Search<NC, ET>&)> OnNetSelected;
+    typedef boost::signals2::signal<void (const Search<NC, ET, OBSERVER>&)> OnNetSelected;
 
     /// Signal emitted when the search has failed.
-    typedef boost::signals2::signal<void (const Search<NC, ET>&)> OnFailedSearch;
+    typedef boost::signals2::signal<void (const Search<NC, ET, OBSERVER>&)> OnFailedSearch;
 
     /**
      * Constructor.
@@ -203,13 +203,13 @@ public:
     /** 
      * Returns a reference to the minimum-element observer. 
      */
-    Observer& minimumObserver()
+    Observer& observer()
     { return *m_observer; }
 
     /** 
      * Returns a const qualified reference the minimum-element observer. 
      */
-    const Observer& minimumObserver() const
+    const Observer& observer() const
     { return *m_observer; }
 
     /**

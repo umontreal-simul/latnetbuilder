@@ -38,6 +38,9 @@ class MinimumObserver
 {
     public:
 
+
+        virtual ~MinimumObserver() = default;
+
         /** 
          * Constructor. 
          * @param sizeParameter Size parameter of the searched net.
@@ -67,7 +70,7 @@ class MinimumObserver
          * Optionally, resets the starting net to the empty net.
          * @param hard Flag indicating if the starting net must be reset to the empty net.
          */
-        void reset(bool hard = true) 
+        virtual void reset(bool hard = true) 
         { 
             m_bestMerit = std::numeric_limits<Real>::infinity();
             m_foundBestNet = false;
@@ -80,7 +83,7 @@ class MinimumObserver
          * set the found net flag to \c false, and the starting net to baseNet. 
          * @param baseNet The net from which the search starts.
          */
-        void reset(std::unique_ptr<DigitalNetConstruction<NC>> baseNet) 
+        virtual void reset(std::unique_ptr<DigitalNetConstruction<NC>> baseNet) 
         { 
             reset(false);
             m_bestNet = std::move(baseNet);
@@ -100,7 +103,7 @@ class MinimumObserver
          * Notifies the observer that the merit value of a new candidate net has
          * been observed, updates the best observed candidate net if necessary.
          */
-        bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit)
+        virtual bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit)
         {
                 if (merit < m_bestMerit){
                     m_bestMerit = merit;

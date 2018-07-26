@@ -94,10 +94,10 @@ class RandomSearch : public Search<NC, ET, OBSERVER>
 
             if (this->m_earlyAbortion)
             {
-                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->minimumObserver(), _1));
-                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->minimumObserver(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), _1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), _1));
             }
-            
+
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
             {
                 if(this->m_verbose>0 && ((m_nbTries > 100 && attempt % 100 == 0) || (attempt % 10 == 0)))
