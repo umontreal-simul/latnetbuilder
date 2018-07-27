@@ -212,35 +212,7 @@ class DigitalNetConstruction : public DigitalNet
          * {@inheritDoc}
          */ 
         virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, unsigned int interlacingFactor = 1) const
-        {
-            // TODO
-            // if (outputFormat == OutputFormat::SSJ){
-            //     std::ostringstream out;
-            //     out << "2  //Base" << std::endl;
-            //     out << numColumns() << "  //Number of columns" << std::endl;
-            //     out << numRows() << "  //Number of rows" << std::endl;
-            //     out << numPoints() << "  //Number of points" << std::endl;
-            //     out << dimension() << "  //dimension of points" << std::endl;
-            //     out << std::endl;
-            //     for(uInteger j=0; j<dimension(); j++){
-            //         out << "//dim = " << j+1 << std::endl;
-            //         std::vector<uInteger> cols = generatingMatrix(j).getColsReverse();
-            //         for(uInteger c=0; c<numColumns(); c++){
-            //             uInteger x = cols[c];
-            //             uInteger mult = intPow(2,30);
-            //             uInteger res = 0;
-            //             while(x > 0){
-            //                 res += (x%2) * mult ;
-            //                 x /= 2;
-            //                 mult /= 2;
-            //             }
-            //             out << res << std::endl;
-            //         }
-            //         out << std::endl;
-            //     }
-            //     return out.str();
-            // }
-            
+        {   
             std::string res;
 
             if (outputFormat == OutputFormat::MACHINE){

@@ -42,11 +42,9 @@ The current version of the software is called LatNet Builder, for Lattice & Net 
 
 \section links Links
 
-\todo update links
-
-- <a href="http://simul.iro.umontreal.ca/latbuilder/">Lattice Builder Home</a>
-- <a href="http://simul.iro.umontreal.ca/latbuilder/download">Lattice Builder Downloads</a>
-- <a href="http://simul.iro.umontreal.ca/latbuilder/#compiling-the-source-code">Compiling Lattice Builder</a>
+- <a href="https://github.com/umontreal-simul/latnetbuilder">LatNet Builder Home</a>
+- <a href="https://github.com/umontreal-simul/latnetbuilder/releases">LatNet Builder Downloads</a>
+- <a href="https://github.com/umontreal-simul/latnetbuilder/tree/master#compiling-the-source-code">Compiling LatNet Builder</a>
 
 */
 
