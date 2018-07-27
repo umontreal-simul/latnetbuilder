@@ -29,14 +29,14 @@ The tutorial is divided into the following sections:
 
 /** \page libtut_net_def Net Construction Types and Definitions
 
-In LatNet Builder, digital nets are represented by the abstract class DigitalNet. This class
+In %NetBuilder, digital nets are represented by the abstract class DigitalNet. This class
 is basically a wrapper around a vector of pointers to generating matrices.
 
-DigitalNet is a abstract class which is implemented by the DigitalNetConstruction class template.
+DigitalNet is an abstract class which is implemented by the DigitalNetConstruction class template.
 This derived class corresponds to the \ref feats_pointsets_net "various constructions of generating matrices" which are available
-in LatNet Builder. The template parameter is a non-type template parameter whose value belongs to the \link NetConstruction \endlink enumeration.
+in %NetBuilder. The template parameter is a non-type template parameter whose value belongs to the \link NetConstruction \endlink enumeration.
 To each value of this enumeration corresponds a trait class containing the implementation
-which are used to construct and extend digital nets. These implementations can be found in the
+which is used to construct and extend digital nets. These implementations can be found in the
 NetConstructionTraits class.
 
 \section libtut_net_def_sobol Sobol' construction
@@ -69,7 +69,7 @@ The number of direction numbers required for each coordinate can be found \ref f
 there is an offset as the coordinates start from 0 in the software. 
 
 Note that the generating matrix for the first coordinate is shared by the two nets. This is
-achieved through the use of shared pointers instead of raws pointers to the generating matrices. The
+achieved through the use of shared pointers instead of raw pointers to the generating matrices. The
 memory management is directly handled by the smart pointers. This can be verified by comparing the adresses
 of the first generating matrix of each net:
 
@@ -107,7 +107,7 @@ columns).
 
 We now directly construct a digital net with explicit generating matrices in dimension 2, with \f$2^{10}\f$ points.
 A matrix is specified as a vector of integers, the binary digits of an integer representing 
-the elements of the associated row.
+the elements of the associated row, with the least significant bit on the left.
 
 \snippet tutorial/NetDef.cc Explicit_net
 
@@ -117,14 +117,14 @@ The complete example can be found in \ref tutorial/NetDef.cc.
 
 /** \example tutorial/NetDef.cc
     This example shows how to instantiate the various
-    types of digital nets supported by LatNet Builder.
+    types of digital nets supported by %NetBuilder.
 */
 
 namespace FigureOfMerit{
 
 /** \page libtut_net_figures Figures of merit
 
-The FigureOfMerit abstract class represents the various figures of merit supported by LatNet Builder
+The FigureOfMerit abstract class represents the various figures of merit supported by %NetBuilder
 for digital nets. This class works with another abstract class, FigureOfMeritEvaluator, which can evaluate
 figures of merit for digital nets.
 
@@ -159,7 +159,7 @@ Then, the evaluator associated to this figure of merit is instantiated:
 \snippet tutorial/NetFigures.cc evaluator2
 
 
-We first use the evaluation in a standard (non-CBC) way:
+We first compute the merit value for all coordinates at once:
 \snippet tutorial/NetFigures.cc evaluation2
 
 
@@ -185,7 +185,7 @@ From a figure of merit, one can construct various tasks:
     - evaluation tasks; or
     - search tasks.
 
-Task is the abstract class which describes the various tasks which can be executed by LatNet Builder.
+Task is the abstract class which describes the various tasks which can be executed by %NetBuilder.
 
 \section libtut_net_tasks_eval Evaluation tasks
 
@@ -275,7 +275,7 @@ For a mixed-CBC search, we use the following explorer and task:
 
 \snippet tutorial/NetSearchCBC.cc mixed-CBC_explorer
 For the 3 first coordinates, the search will use the full-CBC algorithm.
-Then, for each coordinate remaining coordinate, it will examine 70 random possibilities.
+Then, for each remaining coordinate, it will examine 70 random possibilities.
 
 The task is always executed in the same fashion:
 

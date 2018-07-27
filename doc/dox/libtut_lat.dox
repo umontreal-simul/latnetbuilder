@@ -86,10 +86,8 @@ The following examples show how to use LatDef to construct the different lattice
 some basic information about the constructed lattices:
 
 - simple ordinary lattice:
-    Value: a single integer: the number of points in the lattice \f$n\f$
-
-    An simple ordinary lattice can be instantiated by passing to the LatDef constructor a
-    size parameter, here with \f$n=31\f$, and a generating vector, here
+    A simple ordinary lattice can be instantiated by passing to the LatDef constructor a
+    size parameter, here \f$n=31\f$, and a generating vector, here
     \f$\boldsymbol a = (1,12,3)\f$:
 
     \snippet tutorial/LatDef.cc ordinary
@@ -126,7 +124,7 @@ Ordinary Lattice - Modulus = 2^5 - Generating vector = [1, 7, 9]
 - simple polynomial lattice:
 
     Simple polynomial lattices can be instantiated by passing the LatDef constructor a
-    size parameter, here with \f$P = 1 + z^2 + z^3\f$, and a generating vector, here
+    size parameter, here \f$P = 1 + z^2 + z^3\f$, and a generating vector, here
     \f$\boldsymbol q = (1,1+z^2,1+z)\f$:
 
     \snippet tutorial/LatDef.cc pordinary
@@ -291,8 +289,8 @@ without passing the argument \c r, which defaults to infinity, then to add a
 stopping condition in loops that iterate over the elements of the sequence.
 
 
-\section libtut_lat_genseq_cyclicgroup Cylic Groups
-For an integer \f$n\f$ power of prime base, the multiplicative group of integers coprime with \f$n\f$ is a cyclic group (or a product of two cyclic groups if \f$8|n\f$).
+\section libtut_lat_genseq_cyclicgroup Cyclic Groups
+For an integer \f$n\f$ power of prime base, the multiplicative group of integers coprime with \f$n\f$ is a cyclic group (or a product of two cyclic groups if \f$2^3|n\f$).
 For an irreducible polynomial \f$P\f$, the multiplicative group of polynomials coprime with \f$P\f$ is a cyclic group.
 
 In these cases, the class template GenSeq::CyclicGroup can be used to enumerate the elements of

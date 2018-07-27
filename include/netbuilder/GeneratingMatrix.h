@@ -54,7 +54,9 @@ class GeneratingMatrix {
         GeneratingMatrix(unsigned int nRows = 0, unsigned int nCols = 0);
 
         /** Constructs a generating matrix with rows initialized 
-         * using the given integers.
+         * using the given integers. The elements of a row
+         * are the binary digits of the corresponding integer, 
+         * with the least significant bit on the left.
          * @param nRows Number of rows.
          * @param nCols Number of columns.
          * @param init  Vector of uInteger of length nRows

@@ -32,39 +32,32 @@ install_requires = [e.strip() for e in li_req if len(e)]
 
 
 name = 'latnetbuilder'
-name_url = 'latbuilder'
+name_url = 'latnetbuilder'
 
 packages = [module]
 version = meta_ns['__version__']
 description = 'Python Interface for LatNetBuilder'
 long_description = 'See github repo README'
 author = 'umontreal-simul'
-author_email = '' # TODO
+author_email = 'pierre.marion@polytechnique.org'
 # github template
 url = 'https://github.com/{}/{}'.format(author,
                                         name_url)
 download_url = 'https://github.com/{}/{}/tarball/{}'.format(author,
                                                             name_url,
                                                             version)
-keywords = ['QMC'] # TODO
-license = 'Apache License, Version 2.0' # TODO
-classifiers = ['Development Status :: 4 - Beta',
-               'License :: OSI Approved :: Apache-2.0',
-               'Programming Language :: Python :: 3.5',
-               'Programming Language :: Python :: 3.6'
+keywords = ['scientific computation', 'numerical integration', 'C++ backend', 'QMC', 'lattices', 'digital nets', 'Jupyter', 'LatNetBuilder']
+license = 'Apache Software License, Version 2.0'
+classifiers = ['Framework :: Jupyter',
+               'Topic :: Scientific/Engineering :: Mathematics'
+               'Development Status :: 5 - Stable',
+               'License :: OSI Approved :: Apache Software License',
+               'Programming Language :: Python :: 3.6',
+               'Programming Language :: C++',
+               'Intended Audience :: Financial and Insurance Industry',
+               'Intended Audience :: Science/Research'
                ]
 include_package_data = True
-# data_files = [
-#     ('share/jupyter/nbextensions/ipypivot', [
-#         'ipypivot/static/extension.js',
-#         'ipypivot/static/index.js',
-#         'ipypivot/static/index.js.map',
-#     ]),
-#     ('etc/jupyter/nbconfig/notebook.d', [
-#         'enable_ipypivot.json'
-#     ])
-
-# ]
 install_requires = install_requires
 zip_safe = False
 
@@ -84,7 +77,6 @@ setup(
     license=license,
     classifiers=classifiers,
     include_package_data=include_package_data,
-    # data_files=data_files,
     install_requires=install_requires,
     zip_safe=zip_safe,
 )

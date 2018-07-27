@@ -70,7 +70,8 @@ typedef LatBuilder::Polynomial Polynomial;
 /// polynomial with arbitrary integers
 typedef NTL::ZZX IntPolynomial;
 
-enum class OutputFormat { HUMAN, MACHINE};
+/// Output format for nets
+enum class OutputFormat {HUMAN, MACHINE};
 
 //@}
 }

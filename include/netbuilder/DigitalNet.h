@@ -93,8 +93,8 @@ class DigitalNet
 
         /**
          * Formats the net for output.
-         * @param outputFormat Format of output TODO
-         * @param interlacingFactor Interlacing factor of the net
+         * @param outputFormat Format of output.
+         * @param interlacingFactor Interlacing factor of the net.
          */ 
         virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, unsigned int interlacingFactor = 1) const = 0;
 

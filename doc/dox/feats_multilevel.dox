@@ -34,8 +34,6 @@ computed as follows:
 The possible combiners are the sum and the max of the merit values.
 
 Multilevel point sets are handled differently for lattices and for nets. 
-Multilevel lattices correspond to embedded lattices whereas multilevel nets correspond
-to finite digital sequence.
 
 \section feats_multilevel_lat Embedded lattices
 
@@ -46,25 +44,12 @@ The sequence of lattice rules forms a multilevel point set.
 
 \section feats_multilevel_net Multilevel digital nets
 
-\todo check what are our embedded digital nets
-
-A digital net is uniquely defined by its generating matrices. The number of points in a digital net
-equals \f$ 2^k \f$ where \f$k\f$ is the number of columns of its generating matrices. 
-Replacing the finite matrices which define a digital net with infinite matrices, one can obtain an infinite point set called a digital sequence.
-
-Conversely, given infinite matrices, one can restrict its size to obtain a digital net. 
-By further restricting the size of the matrix, one obtain another digital net which is included in the previous one. 
-More generally, given generating matrices, one can obtain nested digital nets by considering successively 
-their upper-left submatrices. From nested generating matrices we thus obtain a multilevel digital net 
-which is in fact a finite digital sequence. 
-
-However, taking nested generating matrices is not sufficient to have an increasing number of distinct points. 
-The number of points doubles when the size increases by one
-only if all the nested generating matrices are full-rank.
+For multilevel digital nets, we consider only generating matrices which are upper triangular with ones on the main diagonal.
+That way, the first \f$2^m\f$ points of the corresponding digital net form a digital net whose generating matrices are the upper-left submatrices
+of size \f$m \times m\f$ of the original generating matrices.
 
 <b>Multilevel digital nets are only available with the Sobol' and explicit constructions.</b>
-In the case of the Sobol' construction, the generating matrices are naturally nested full-rank. For the
-explicit construction, the search space is restricted to the subset of nested full-rank generating matrices.
-Recall that for this construction, only the random variants of the exploration methods are available.
+In the case of the Sobol' construction, the generating matrices are upper triangular with ones on the main diagonal. For the
+explicit construction, we restrict the search space to upper triangular matrices with ones on the main diagonal.
 */
 vim: ft=doxygen spelllang=en spell

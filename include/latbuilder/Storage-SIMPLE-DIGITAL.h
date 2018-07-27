@@ -51,12 +51,13 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMP
    /**
     * Stride permutation.
     *
-    * Depending on the lattice: 
-    *
+    * For digital nets: 
+    * a Stride with takes as parameter a generating matrix \f$M\f$ is the mapping that maps an index \f$i\f$ as follows:
+    * - convert the binary representation of \f$i\f$ to its associated Gray code \f$\boldsymbol i'\f$
+    * - compute \f$M \boldsymbol i'\f$ which is the reversed binary representation of the result integer
     * 
-    *
-    * For digital nets: the permutation is computed using the Gray code, and the formula:
-    *  \f$n\f$
+    * Since the integers are first converted to Gray code, the computation of \f$M \boldsymbol i'\f$ can be fastened as explained in
+    * these <a href="http://web.maths.unsw.edu.au/~fkuo/sobol/joe-kuo-notes.pdf">notes by Joe and Kuo on the generation of Sobol' sequences</a>.
     */
    class Stride {
    public:

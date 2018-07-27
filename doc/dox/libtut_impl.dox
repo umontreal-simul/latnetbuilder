@@ -16,30 +16,30 @@
 
 /*! \page libtut_impl Implementation Notes
 
-\section libtut_impl_func_args Function Arguments
+\section libtut_impl_spaghetti Relations between LatBuilder and NetBuilder
 
-In LatNet Builder, there are three different types of declarations of function
-arguments:
-\code
-void f(const T& x) // if f only reads x
-void f(T& x)       // if f writes to x
-void f(T x)        // if f needs a copy of x
-\endcode
-Although the first prototype allows \c f to make a copy of \c x internally, it
-is best to leave it to the compiler to do it.  For example, the following code
-will cause two instantiations of objects of type \c T:
-\code
-void f(const T& x) { T y = x; y.modify(); }
-...
-f(T());
-\endcode
-whereas the following allows the compiler to instantiate only one object of type
-\c T:
-\code
-void f(T y) { y.modify(); }
-...
-f(T());
-\endcode
+The two parts of the software are mostly independent, but some dependencies were introduced so as to limit code duplication.
+More precisely:
+
+- LatBuilder only uses some output formatting functionalities from NetBuilder.
+- NetBuilder uses the following parts of LatBuilder:
+    - the interlacing functionalities (\link LatBuilder::Interlaced \endlink), e.g. the interlaced weights and kernels.
+    - the kernels (\link LatBuilder::Kernel \endlink)
+    - the coordinate-uniform evaluation algorithm  (\link LatBuilder::MeritSeq \endlink) for kernel-based figures of merit
+    - the Sequence framework explained below
+    - some parts of the parser, output formatting functionalities and additional technical utilities
+
+In LatBuilder, the coordinate-uniform evaluation algorithm is based on viewing fully-projection regular lattice rules as permutations of the multiples of \f$\frac1n\f$.
+The computation rules for these permutations are based on modular arithmetic in \f$\mathhb Z\f$ for ordinary lattice rules (resp. arithmetic in the 
+Laurent formal series space for polynomial lattice rules).
+This point of view can be extended to digital nets, by changing the computation rule for the permutations. The rule
+relies on linear algebra in \f$\mathbb F_2\f$.
+All these rules are detailed on this \ref feats_pointsets "page".
+
+These operations are implemented in the \link LatBuilder::SizeParam\endlink, \link LatBuilder::Storage \endlink and \link LatBuilder::Stride \endlink classes templated by the LatticeType enumeration. 
+To reuse code from LatBuilder, in particular the coordinate-uniform evaluation algorithm, we added a new value (\link LatticeType::DIGITAL  \endlink) to this enumeration, 
+and implemented the above-mentioned classes. Although the notion of digital lattice does not make sense mathematically, it does make sense from the implementation standpoint.
+Details on the coordinate-uniform evaluation algorithm are available in the original reference paper \cite vLEC16a.
 
 \section libtut_impl_seq Sequence
 
@@ -160,9 +160,9 @@ after it is passed as an argument to a constructor or factory function, it is
 generally std::move()'d to the constructor or function in question.
 The compiler takes care of using the default move constructor on the object
 that is passed to the constructor and thus avoids copying the object, which can
-safely be stored as a class member of the `owner' object.
+safely be stored as a class member of the owner object.
 Generator sequences (see the GenSeq namespace) are an example of non-trivial
-objects that are transferred to other  ̀owner' objects using this mechanism.
+objects that are transferred to other owner objects using this mechanism.
 Weights objects, such as instances of LatticeTester::ProductWeights or of
 LatticeTester::ProjectionDependentWeights, are other examples of non-trivial
 objects, but because they are polymorphic, they are stored using a
@@ -226,10 +226,10 @@ the \f$R_\alpha\f$ criterion, depends on the
 LatNet Builder also depends on the <a href="http://www.shoup.net/ntl/">NTL library</a> for arithmetic computations 
 (lattices, polynomials, etc.).
 
-\section libtut_impl_latticetester Usage of the LatticeTester
+\section libtut_impl_latticetester Usage of LatticeTester
 
 LatNet Builder uses <a href="https://github.com/umontreal-simul/latticetester"> LatticeTester</a>, a software library to compute theoretical measures of uniformity for
-lattices. This library is embedded in the code source of LatNet Builder and in the binary distribution packages  
+lattices. This library is embedded in the code source of LatNet Builder and in the binary distribution packages.  
 
 */
 vim: ft=doxygen spelllang=en spell

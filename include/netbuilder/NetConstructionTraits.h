@@ -349,34 +349,14 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             
             GenValue operator()(Dimension dimension)
             {
-                GeneratingMatrix matrix(1, 1, {1});
-
-                ProgressiveRowReducer rowReducer(1);
-                rowReducer.addRow(matrix);
-
-                for (unsigned int i = 2; i <= m_sizeParameter.second; i++){
-                    GeneratingMatrix newCol(i-1, 1);
-                    auto randomNumber = m_randomGen();
-                    for (unsigned int k = 0; k < i - 1; k++){
-                        newCol(k, 0) = (randomNumber >> k) & 1;
-                    }
-                    matrix.stackRight(newCol);
-                    rowReducer.addColumn(newCol);
-
-                    bool goToNext = false;
-                    while (! goToNext){
-                        GeneratingMatrix newRow(1, i, {m_unif(m_randomGen)});
-                        ProgressiveRowReducer rowReducerTemp = rowReducer;
-                        rowReducerTemp.addRow(newRow);
-
-                        if (rowReducerTemp.computeRank() == i){
-                            goToNext = true;
-                            rowReducer = rowReducerTemp;
-                            matrix.stackBelow(newRow);
-                        }
-                    }
+                std::vector<uInteger> init;
+                init.reserve(m_sizeParameter.first);
+                for (unsigned int i = 0; i < m_sizeParameter.first; ++i)
+                {
+                    uInteger nb = m_randomGen();
+                    init.push_back( (1 << i) + (nb - (nb % (1 << (i + 1)))));
                 }
-                return matrix;
+                return GeneratingMatrix(m_sizeParameter.first, m_sizeParameter.second, std::move(init));
             }
 
         private:
