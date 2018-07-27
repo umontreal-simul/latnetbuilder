@@ -51,7 +51,7 @@ struct StorageTraits<Storage<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, CO
 
    /**
     * Stride permutation.
-    * For digital nets: TODO
+    * For digital nets: 
     */
    class Stride {
    public:

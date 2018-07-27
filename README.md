@@ -41,6 +41,7 @@ The software supports a variety of possibilities for the normalization of the me
 
 - [**Download a binary release**] TODO
 - [**Browse the source code**] TODO
+
 #### Documentation
 
 - [**Reference Publication**  
@@ -64,7 +65,7 @@ The easiest way to use LatNet Builder is to:
    [LatNet Builder GUI](#the-latnetbuilder-builder-graphical-user-interface), TODO
 5. To use
    [LatNet Builder CLI](#the-latnetbuilder-builder-command-line-interface),
-   invoke the `latnetbuilder` (or `latnetbuilder.exe` for Windows users) program with
+   invoke the `latnetbuilder` program with
    appropriate arguments.
 
 
@@ -257,8 +258,7 @@ Help on usage can be obtained by replacing the `--version` switch with the
 ### The LatNet Builder Command-Line Interface
 
 Information on using the LatNet Builder program is given in the
-[LatNet Builder command line tutorial](link) TODO
-that can also be found in `TODO`.
+[LatNet Builder command line tutorial](link) TODO.
 Compact usage information can also be obtained with `bin/latnetbuilder --help`.
 
 The below command line assumes that the current working directory is that which
@@ -297,8 +297,6 @@ The local web server can be started by typing the following commands in a termin
 	jupyter notebook latnetbuilder-gui.ipynb
 
 It requires the LatNet Builder program above to be working properly.
-
-**Microsoft Windows** users should replace TODO
 
 If you have a network connection, the LatNet Builder GUI may also be accessed through the Binder web service without installing anything on your computer. Note that the computation ressources could be limited.
 
@@ -383,8 +381,5 @@ the shell (command line interpreter).
 
 #TODO
 binder
-docker
-conda + python deps
-host the doc somewhere
 links
 releases

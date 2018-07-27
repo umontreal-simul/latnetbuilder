@@ -53,11 +53,15 @@ Suppose we divide axis \f$j\f$ in \f$2^{q_j}\f$ equal parts for some integer \f$
 If each rectangle contains exactly the same number of points, we say that the net is 
 \f$(q_1,\dots,q_s)\f$-equidistributed. 
 
+The following figures of merit are supported by LatNet Builder:
+
 - The t-value \cite rDIC10a merit, using the fast algorithm from \cite rDIC13a, with
-  weights equal to \f$\gamma_{\mathfrak u} = \mathbb{1}_{|\mathfrak u| = s} \f$ and
+  weights equal to \f$\gamma_{\mathfrak u} = \mathbb{1}_{\mathfrak u = \{1, \dots, s\}} \f$ and
   an \f$\ell_{\infty}\f$ norm:
     \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the t-value of the projection of \f$P_n \f$
   on \f$\mathfrak u\f$.
+  The sum which defines this figure has only one term and this term equals the t-value of the net.
+  The choice of weights or norm-type has no impact on the ranking of digital nets according to this figure.
   The t-value of a net with \f$n = 2^k\f$ points is the smallest \f$t\f$ such that the net is \f$(q_1,\dots,q_s)\f$-equidistributed
   whenever \f$q_1+\dots+q_s = k-t \f$.
   This figure is not available with CBC exploration methods as it cannot be computed in a CBC-way.
@@ -66,6 +70,8 @@ If each rectangle contains exactly the same number of points, we say that the ne
   with an \f$\ell_q\f$ norm:
     \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the t-value of the projection of \f$P_n \f$
   on \f$\mathfrak u\f$.
+  Contrary to the t-value merit, this figure of merit does not only consider the t-value of the whole net but also the t-values of
+  its subprojections.
 <br><br>
 - The projection-dependent t-value-based star discrepancy bound (Corollary 5.3 in \cite rDIC10a), using state-of-the art algorithms,
   with an \f$\ell_q\f$ norm:
@@ -79,7 +85,7 @@ If each rectangle contains exactly the same number of points, we say that the ne
     \n \f$\mathcal{D}_{\mathfrak u}(P_n)\f$ is the resolution-gap of the projection of \f$P_n \f$
     on \f$\mathfrak u\f$.
   The resolution of a net is the biggest \f$r\f$ such that the net is \f$(r,\dots,r)\f$-equidistributed.
-  The resolution is always smaller than \f$\lfloor k/s\rfloor\f$. The resolution-gap of is the difference between 
+  The resolution is always smaller than \f$\lfloor k/s\rfloor\f$. The resolution-gap is the difference between 
   this upper-bound and the actual resolution.
 
 \section feats_figures_net_interlaced Figures of merit for interlaced digital nets

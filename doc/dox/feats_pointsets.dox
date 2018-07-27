@@ -48,9 +48,7 @@ For \f$k \in \mathbb N\f$, define the mapping \f$ {\nu}_k: \mathbb L_2 \rightarr
 
 Define the vectorized mapping \f$ {\nu}_k: \mathbb L_2^s \rightarrow \mathbb R^s \f$ by applying \f${\nu}_k\f$ separately to each coordinate.
 
-For a polynomial modulus \f$Q \in \mathbb F_2[z]\f$ of degree \f$k\f$ and a polynomial generating vector \f$ \boldsymbol a \in \mathbb F_2[z]^s \f$, 
-with \f$\deg a_i < k\f$ for \f$i=1, \dots, s\f$, 
-Let \f$n = 2^k\f$ for some \f$k \in \mathbb N\f$.
+For a polynomial modulus \f$Q \in \mathbb F_2[z]\f$ of degree \f$k\f$ and a polynomial generating vector \f$ \boldsymbol a \in \mathbb F_2[z]^s \f$, let \f$n = 2^k\f$.
 The rank-1 polynomial lattice rule associated with this modulus and this generating vector is the point set \f$P_n\f$ which can be written:
 \f[
 P_n = \left\{\boldsymbol x_i = {\nu}_k\left(\frac{h \boldsymbol a}{Q}\right): h \in \mathbb{F}_2[z], \deg(h) < k \right\}.
@@ -210,7 +208,7 @@ The following table summarizes the degree \f$e_j\f$ of the primitive polynomials
 
 \subsection feats_pointsets_net_poly Polynomial construction
 
-In \ref feats_pointsets_latrank1_poly, we defined polynomial lattice rules. It turns out that polynomial lattice rules
+Polynomial lattice rules were defined \ref feats_pointsets_latrank1_poly "above". It turns out that polynomial lattice rules
 can also be viewed as digital nets. The generating matrices of a polynomial lattice rule with polynomial modulus \f$Q\f$
 and polynomial generating vector \f$\boldsymbol a \in \mathbb F_2[z]\f$ can be computed as follows \cite rDIC10a :
 
@@ -229,7 +227,7 @@ m_{l, r + 1}^{(j)} = u_{r+l}^{(j)} \in \mathbb F_2,
 \f]
 for \f$ 1 \leq j \leq s \f$, \f$ 1 \leq l \leq k\f$ and \f$0 \leq r \leq k - 1 \f$.
 
-These matrices coincide with the generating matrices of the digital net corresponding to this polynomial lattice rule.
+Then, the digital net corresponding to these matrices coincides with the polynomial lattice rule defined by the generating vector \f$\boldsymbol a\f$.
 Provided that all the components of the generating vector are coprime with the modulus, these generating matrices are full-rank and the
 digital net is fully projection-regular.
 

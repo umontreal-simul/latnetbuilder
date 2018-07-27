@@ -16,8 +16,8 @@
 
 /** \page feats_multilevel Multilevel point sets
 
-A multilevel point set is a finite sequence of nested point sets \f$P_{n_1}, P_{n_2}, \dots, P_{n_k}\f$: 
-each nested point set contains the previous ones. Each nested point set corresponds to an embedding level \f$m\f$.
+A multilevel point set is a finite sequence of nested point sets \f$\{P_{n_m}, 1 \leq m \leq k \}\f$:
+for each embedding levels \f$l \leq m\f$, \f$P_{n_l} \subseteq P_{n_m}\f$.
 
 Constructing multilevel point sets involves producing a compound merit value that
 accounts for the merit of each nested level.  This compound merit value is
@@ -39,12 +39,14 @@ to finite digital sequence.
 
 \section feats_multilevel_lat Embedded lattices
 
-Embedded lattices \cite vHIC01a with \f$m\f$ levels consist in taking a sequence of modulus \f$p_k = b^{k}\f$ for \f$1 \leq k \leq m\f$
+Embedded lattices \cite vHIC01a with \f$m\f$ levels consist in taking a sequence of modulus \f$p_m = b^{m}\f$ for \f$1 \leq m \leq k\f$
 with \f$b\f$ a prime base for ordinary lattice rules or an irreducible polynomial for polynomial lattice rules. Then for each embedding level,
 we consider the associated lattice rule. The same generating vector is used for all the embedding levels. 
 The sequence of lattice rules forms a multilevel point set.
 
 \section feats_multilevel_net Multilevel digital nets
+
+\todo check what are our embedded digital nets
 
 A digital net is uniquely defined by its generating matrices. The number of points in a digital net
 equals \f$ 2^k \f$ where \f$k\f$ is the number of columns of its generating matrices. 

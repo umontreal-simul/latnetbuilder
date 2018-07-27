@@ -27,6 +27,8 @@ which must be specified as follows.
 When a normalization is available with the selected figure of merit, one can simply use
 <code>norm</code> to tell LatNet Builder to use the default normalization.
 
+Alternatively, it is possible to choose specific normalizations:
+
 - Normalizations for the \f$P_\alpha\f$ discrepancy (ordinary lattice rules):
     - <code>norm:P<var>alpha</var>-SL10</code> with \f$\alpha=\f$<code><var>alpha</var></code> (default),
     - <code>norm:P<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code> (alias for SL10),
@@ -61,7 +63,7 @@ levels.
 
 Note that when a level selector combiner (<code>--combiner level:<var>m</var></code> 
 or <code>--combiner level:max</code>) is used with a normalization,
-the software will automatically select the same level as the level selector combiner, overriding 
+the software will automatically select ( i.e. set a positive per-level weight) the same level as the combiner, overriding 
 any <code>select</code> token you may have appended to your normalization. This is required
 to have exactly the same behavior when one constructs a unilevel point set or a multilevel point set
 with a level selector combiner.

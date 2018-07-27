@@ -19,7 +19,7 @@
 In LatNet Builder, it is possible to apply transformations and filters to the merit values
 computed by the software. 
 
-Normalizations and filters are only available for the lattice point set type.
+Transformations and filters are only available for the lattice point set type.
 
 The transformations have the following form:
 
@@ -31,7 +31,7 @@ where \f$D^\ast_q(n)\f$ is a normalization factor. This is why transformations i
 called normalizations. The normalization factor can be a bound on (or an estimate of) the best possible value
 of \f$D_q(P_n)\f$, or a bound on the average of \f$D_q(P_n)\f$ among all the possible point sets.
 
-It is worth mentioning that the bounds are often a family of bounds parameterized by a scalar \f$\lambda \in \mathcal A\f$. In LatNet Builder,
+It is worth mentioning that the bounds are often a family of bounds parametrized by a scalar \f$\lambda \in \mathcal A\f$. In LatNet Builder,
 the best (smallest) bound is selected with the Brent minimizer:
 
 \f[
@@ -42,7 +42,7 @@ This normalizations can be useful to define comparable measures of uniformity fo
 and to combine them to measure the global uniformity of multilevel point sets.
 
 Additionally, in the case of random searches, normalizations can be combined with a low-pass filter to eliminate
-the point sets whose quality is deemed to poor. Low-pass filters reject point sets whose merit value exceeds a threshold.
+the point sets whose quality is deemed too poor. Low-pass filters reject point sets whose merit value exceeds a threshold.
 Note that when the random variant of a search is used with a low-pass filter, the candidate samples that are rejected 
 by the filter pipeline are not considered as valid samples, meaning that the number of random 
 samples corresponds to the number of accepted candidates.
@@ -70,8 +70,8 @@ The normalized merit value of each embedding level is then computed as follows:
 \mathcal E_q(P_{n_m}) = w_m \frac{D_q(P_{n_m})}{D^\ast_q(n)}.
 \f]
 
-Optionally, multilevel low-pass filters are applied to reject the point sets whose multilevel merit values
-are deemed to high. Then, the merit values are aggregated,
+Optionally, multilevel low-pass filters are applied to reject the point sets for which at least one multilevel merit value
+is deemed too high. Then, the merit values are aggregated,
 either by taking their maximum or their sum:
 
 \f[

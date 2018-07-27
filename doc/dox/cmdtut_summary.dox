@@ -39,7 +39,7 @@ options:
       to search for digital nets.
 	</dd>		
   <dt><code>\--construction</code> / <code>-c</code></dt>
-  <dd><em>Optional (default: ordinary).</em>
+  <dd><em>Required.</em>
     Specifies the construction type.
     Takes one of the following values:
 		- For lattices (<code>--set-type lattice</code>):
@@ -55,7 +55,7 @@ options:
 			- <code>explicit</code>
 				to search for digital nets with explicit generating matrices.
 
-		You can learn more on the different point set types \ref feats_pointsets "here". Details on how to use this option can be find \ref cmdtut_advanced_pointsets "here".
+		You can learn more on the different point set types and constructions \ref feats_pointsets "here". Details on how to use the two options above can be find \ref cmdtut_advanced_pointsets "here".
   </dd>
 	<dt><code>\--dimension</code> / <code>-d</code></dt>
 	<dd><em>Required.</em>
@@ -65,7 +65,7 @@ options:
 	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
 	<dd><em>Required.</em>
   Specifies the size parameter of the point sets.
-  Takes an argument of either form:
+  Takes an argument of the form:
 	- For lattices (<code>--set-type lattice</code>):
 		- <code>--size-parameter <var>modulus</var></code>; or
 		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>; or
@@ -107,7 +107,7 @@ options:
 			- <code>extend:<var>modulus</var>:<var>genVec</var></code>
 				to extend the lattice to a lattice with modulus
 					<code><var>modulus</var></code> and generating
-				vector <code><var>genVec</var></code> specified as a comma-separated list
+				vector <code><var>genVec</var></code> specified as a dash-separated list
 				of integers/polynomials. See \ref cmdtut_advanced_pointsets "here" for details about 
 				<code><var>genVec</var></code>.
 
@@ -120,7 +120,7 @@ options:
 	    (see the <code>\--filters</code> option below), the
 	    candidate samples that are rejected by the filter pipeline are
 	    not considered as valid samples, meaning that the user-specified
-	    number of random samples corresponds to only the number
+	    number of random samples only corresponds to the number
 	    of accepted candidates.
 	</dd>
 	<dt><code>\--figure-of-merit</code> / <code>-f</code></dt>
@@ -154,7 +154,7 @@ options:
 		- <code>IB</code> for the interlaced \f$B_{d, (2)}\f$ discrepancy (only available for interlaced polynomial lattice rules and digital nets).
 
 		The definitions of all these figures of merit can be find \ref feats_figures "here". More details on how to use this option 
-		are available on this \ref cmdtut_advanced_figures for additional details "page".
+		are available on this \ref cmdtut_advanced_figures "page".
 	</dd>
 	<dt><code>\--interlacing-factor</code> / <code>-i</code></dt>
 	<dd><em>Optional (default:1).</em>
@@ -177,6 +177,7 @@ options:
 		- <code>inf</code> for infinity.
 		The value of this option must be compatible with the type of figure of merit,
 		especially regarding the use of the coordinate-uniform evaluation algorithm.
+		
 		See \ref feats_figures for additional details on this parameter.
 	</dd>
 	<dt><code>\--weights</code> / <code>-w</code></dt>
@@ -285,7 +286,7 @@ options:
 	</dd>
 	<dt><code>\--verbose</code> / <code>-v</code></dt>
 	<dd><em>Optional (default 0).</em>
-		Specifies the verbosity level.
+		Specifies the verbosity level. Ranges between 0 (quite quiet) and 3 (pretty chatty)
 		Takes an integer argument.
 	</dd>
 	<dt><code>\--output-folder</code> / <code>-o</code></dt>

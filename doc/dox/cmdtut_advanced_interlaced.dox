@@ -29,7 +29,7 @@ of merit.
 They are only available with an \f$\ell_1\f$ norm. This allows a coordinate-uniform evaluation algorithm
 which should always be used when searching for good interlaced digital nets. 
 
-<b> The output of LatNet Builder is the underling digital net (or polynomial lattice rule)
+<b> The output of LatNet Builder is the underlying digital net (or polynomial lattice rule)
 of the interlaced digital net (or interlaced polynomial lattice rule). The \ref feats_interlaced "digit interlacing function" should be applied to this
 point set in dimension \f$ds\f$ to obtain the interlaced point set in dimension \f$s\f$.</b>
 
@@ -40,7 +40,8 @@ through a lattice implementation and a digital net implementation:
 
 - Lattice implementation (<code>--set-type lattice</code>):
     - the fast-CBC algorithm is only available in this implementation. Because of the restriction on the 
-    norm-type, it is always possible to use the fast-CBC algorithm for non-random CBC searches, 
+    norm-type, the coordinate-uniform evaluation algorithm is always enabled. Thus, it is always possible to use the fast-CBC 
+    algorithm for non-random CBC searches, 
     - \ref cmdtut_advanced_filters_normalizations "normalizations" are only supported by this implementation.
     They are available for both quality criteria,
     - embedded interlaced polynomial lattice rules are only available in the lattice implementation;
