@@ -56,8 +56,8 @@ namespace SumHelperIB{
       }\
 
    DECLARE_IB_SUM(LatBuilder::CombinedWeights);
-   DECLARE_IB_SUM(NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>);
-   DECLARE_IB_SUM(NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>);
+   DECLARE_IB_SUM(LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>);
+   DECLARE_IB_SUM(LatBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>);
 
 #undef DECLARE_IB_SUM
 
@@ -96,8 +96,8 @@ namespace SumHelperIB{
    // interlaced projection-dependent weights
    //===========================================================================
 
-   Real SumHelper<NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>>::operator()(
-         const NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>& weights,
+   Real SumHelper<LatBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>>::operator()(
+         const LatBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IB>& weights,
          Real lambda,
          Dimension dimension,
          unsigned int alpha
@@ -147,8 +147,8 @@ namespace SumHelperIB{
    // IPOD weights
    //===========================================================================
 
-   Real SumHelper<NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>::operator()(
-         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>& weights,
+   Real SumHelper<LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>::operator()(
+         const LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>& weights,
          Real lambda,
          Dimension dimension,
          unsigned int alpha

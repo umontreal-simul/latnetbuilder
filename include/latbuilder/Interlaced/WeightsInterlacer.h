@@ -18,10 +18,10 @@
 #define NETBUILDER__INTERLACED__WEIGHTS_INTERLACER_H
 
 #include "latbuilder/WeightsDispatcher.h"
-#include "netbuilder/Interlaced/IPDWeights.h"
+#include "latbuilder/Interlaced/IPDWeights.h"
 #include <iostream>
 
-namespace NetBuilder { namespace Interlaced {
+namespace LatBuilder { namespace Interlaced {
 
 /**
  * Class to interlace weights in dimension \f$s\f$ into weights in dimension \f$d s\f$ using the \f$w\f$ operator defined in

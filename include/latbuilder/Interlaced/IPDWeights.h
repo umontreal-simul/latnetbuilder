@@ -27,7 +27,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace NetBuilder { namespace Interlaced
+namespace LatBuilder { namespace Interlaced
 {
 
 /**

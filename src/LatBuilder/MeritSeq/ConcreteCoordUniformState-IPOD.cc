@@ -26,10 +26,10 @@ namespace LatBuilder { namespace MeritSeq {
 
 #define CONCRETE_COORD_UNIF_STATE(KERNEL)\
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>\
-ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<KERNEL>>::\
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights<KERNEL>>::\
 ConcreteCoordUniformState(\
          const Storage<LR, ET, COMPRESS, PLO>& storage,\
-         const NetBuilder::Interlaced::IPODWeights<KERNEL>& weights\
+         const LatBuilder::Interlaced::IPODWeights<KERNEL>& weights\
          ):\
       CoordUniformState<LR, ET, COMPRESS, PLO>(storage),\
       m_weights(weights),\
@@ -44,7 +44,7 @@ ConcreteCoordUniformState(\
 \
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>\
 void \
-ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<KERNEL>>::\
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights<KERNEL>>::\
 reset()\
 {\
    CoordUniformState<LR, ET, COMPRESS, PLO>::reset();\
@@ -58,7 +58,7 @@ reset()\
 \
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>\
 void \
-ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<KERNEL>>::\
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights<KERNEL>>::\
 update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)\
 {\
 \
@@ -97,7 +97,7 @@ update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
 \
 template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>\
 RealVector \
-ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, NetBuilder::Interlaced::IPODWeights<KERNEL>>::\
+ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights<KERNEL>>::\
 weightedState() const\
 {\
    using LatticeTester::Coordinates;\
@@ -114,17 +114,17 @@ weightedState() const\
 }\
 \
 /*Ordinary state must be instantiated for compatibility purposes but will throw a runtime error when constructed.*/\
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
-template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
 \
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
-template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
 \
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
-template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  NetBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
+template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  LatBuilder::Interlaced::IPODWeights<KERNEL>>;\
 
 
 CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::IAAlpha);

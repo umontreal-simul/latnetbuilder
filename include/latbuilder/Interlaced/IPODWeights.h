@@ -29,7 +29,7 @@
 
 #include <memory>
 #include <cmath>
-namespace NetBuilder { namespace Interlaced
+namespace LatBuilder { namespace Interlaced
 {
 
 using LatticeTester::Coordinates;

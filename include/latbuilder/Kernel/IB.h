@@ -43,7 +43,7 @@ public:
      * of dimension \f$ d s \f$. See Corollary 3. and Remark 1. of \cite rGOD13a.
      * In the case of the \f$\B_{d, \gamma, (2)}\f$, the weights equal \f$ 2^{-l}\f$ for the
      * \f$l\f$-th interlaced component. This corresponds to \f$\delta_l \f$ in
-     * the interlaced weights. @see NetBuilder::Interlaced::IPDWeights.
+     * the interlaced weights. @see LatBuilder::Interlaced::IPDWeights.
      */ 
    struct CorrectionProductWeights{
        
@@ -77,7 +77,7 @@ public:
      * Corrects POD weights in dimension \f$s\f$. In the case of this kernel, there is nothing to do. See
      * Theorem 3. in \cite rGOD13a.
      * This corresponds to \f$\Gamma\f$ in
-     * the interlaced weights. @see NetBuilder::Interlaced::IPDWeights
+     * the interlaced weights. @see LatBuilder::Interlaced::IPDWeights
      */ 
     void correctPODWeights(LatticeTester::PODWeights& weights) const{
         return;

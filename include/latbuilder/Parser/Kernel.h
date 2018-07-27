@@ -25,7 +25,7 @@
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
 
-#include "netbuilder/Interlaced/WeightsInterlacer.h"
+#include "latbuilder/Interlaced/WeightsInterlacer.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -80,10 +80,10 @@ template <typename FUNC, typename... ARGS>
    }
 
 // template <typename WEIGHTS>
-// using WeightsInterlacerA = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IAAlpha>::WeightsInterlacer<WEIGHTS>;
+// using WeightsInterlacerA = typename LatBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IAAlpha>::WeightsInterlacer<WEIGHTS>;
 
 // template <typename WEIGHTS>
-// using WeightsInterlacerB = typename NetBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IB>::WeightsInterlacer<WEIGHTS>;
+// using WeightsInterlacerB = typename LatBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IB>::WeightsInterlacer<WEIGHTS>;
 
    
 template<>
@@ -107,13 +107,13 @@ template <typename FUNC, typename... ARGS>
                 {
                     auto alpha = boost::lexical_cast<unsigned int>(str.substr(2));
                     LatBuilder::Kernel::IAAlpha kernel(alpha, interlacingFactor);
-                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<NetBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
+                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                     func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                     return;
                 }
                 else if (str[1] == 'B') {
                     LatBuilder::Kernel::IB kernel(interlacingFactor);
-                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<NetBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
+                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                     func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                     return;
                 }

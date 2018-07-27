@@ -30,14 +30,15 @@ More precisely:
     - some parts of the parser, output formatting functionalities and additional technical utilities
 
 In LatBuilder, the coordinate-uniform evaluation algorithm is based on viewing fully-projection regular lattice rules as permutations of the multiples of \f$\frac1n\f$.
-The computation rules for these permutations are based on modular arithmetic in \f$\mathhb Z\f$ for ordinary lattice rules (resp. arithmetic in the 
+The computation rules for these permutations are based on modular arithmetic in \f$\mathbb Z\f$ for ordinary lattice rules (resp. arithmetic in the 
 Laurent formal series space for polynomial lattice rules).
 This point of view can be extended to digital nets, by changing the computation rule for the permutations. The rule
 relies on linear algebra in \f$\mathbb F_2\f$.
 All these rules are detailed on this \ref feats_pointsets "page".
 
-These operations are implemented in the \link LatBuilder::SizeParam\endlink, \link LatBuilder::Storage \endlink and \link LatBuilder::Stride \endlink classes templated by the LatticeType enumeration. 
-To reuse code from LatBuilder, in particular the coordinate-uniform evaluation algorithm, we added a new value (\link LatticeType::DIGITAL  \endlink) to this enumeration, 
+These operations are implemented in the \link LatBuilder::SizeParam\endlink and \link LatBuilder::Storage \endlink classes templated by the LatticeType enumeration. The actual implementation
+is in the Stride inner class.
+To reuse code from LatBuilder, in particular the coordinate-uniform evaluation algorithm, we added a new value (\link LatBuilder::LatticeType::DIGITAL  \endlink) to this enumeration, 
 and implemented the above-mentioned classes. Although the notion of digital lattice does not make sense mathematically, it does make sense from the implementation standpoint.
 Details on the coordinate-uniform evaluation algorithm are available in the original reference paper \cite vLEC16a.
 

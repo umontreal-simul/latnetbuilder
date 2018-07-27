@@ -14,12 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/Interlaced/IPDWeights.h"
+#include "latbuilder/Interlaced/IPDWeights.h"
 #include "netbuilder/Types.h"
 
 #include "latticetester/CoordinateSets.h"
 
-namespace NetBuilder { namespace Interlaced
+namespace LatBuilder { namespace Interlaced
 {
 
 template <class KERNEL>

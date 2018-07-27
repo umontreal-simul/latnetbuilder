@@ -14,11 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/Interlaced/IPODWeights.h"
+#include "latbuilder/Interlaced/IPODWeights.h"
 
 #include "netbuilder/Util.h"
 
-namespace NetBuilder { namespace Interlaced
+namespace LatBuilder { namespace Interlaced
 {
 
 using LatticeTester::Coordinates;

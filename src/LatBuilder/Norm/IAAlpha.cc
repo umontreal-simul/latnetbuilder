@@ -57,8 +57,8 @@ namespace SumHelperIAAlpha{
       }\
 
    DECLARE_IAALPHA_SUM(LatBuilder::CombinedWeights);
-   DECLARE_IAALPHA_SUM(NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>);
-   DECLARE_IAALPHA_SUM(NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>);
+   DECLARE_IAALPHA_SUM(LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>);
+   DECLARE_IAALPHA_SUM(LatBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>);
 
 #undef DECLARE_IAALPHA_SUM
 
@@ -97,8 +97,8 @@ namespace SumHelperIAAlpha{
    // interlaced projection-dependent weights
    //===========================================================================
 
-   Real SumHelper<NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>>::operator()(
-         const NetBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>& weights,
+   Real SumHelper<LatBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>>::operator()(
+         const LatBuilder::Interlaced::IPDWeights<LatBuilder::Kernel::IAAlpha>& weights,
          Real lambda,
          Dimension dimension,
          unsigned int alpha
@@ -137,8 +137,8 @@ namespace SumHelperIAAlpha{
    // IPOD weights
    //===========================================================================
    
-   Real SumHelper<NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>::operator()(
-         const NetBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>& weights,
+   Real SumHelper<LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>::operator()(
+         const LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>& weights,
          Real lambda,
          Dimension dimension,
          unsigned int alpha

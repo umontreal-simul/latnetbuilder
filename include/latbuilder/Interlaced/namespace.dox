@@ -1,4 +1,4 @@
-namespace NetBuilder {
+namespace LatBuilder {
 /**
  * Features used for interlaced digital nets.
  */
