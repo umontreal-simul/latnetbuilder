@@ -6,13 +6,13 @@ The goal of this file is to present enough information for new developers to ext
 
 The dev install is pretty straight-forward (at least for Linux and Mac OS X users):
 
-1) Install LatNet Builder (see [here](../README.md))
-2) Install all the dependencies for LatNet Builder (FFTW, GMP, NTL, Boost) listed [here]()
+1) Download the LatNet Builder source code
+2) Install all the dependencies for LatNet Builder (FFTW, GMP, NTL, Boost) listed [here](../README.MD)
 3) Install all the dependencies for the interface: a conda distribution, then
 
 ```bash
 conda config --add channels conda-forge
-conda create -n dev-latnetbuilder python ipywidgets widgetsnbextension notebook matplotlib numexpr appmode
+conda create -n dev-latnetbuilder python ipywidgets widgetsnbextension notebook matplotlib numexpr appmode numpy
 ```
 
 4) Run from the root directory of LatNet Builder
@@ -57,7 +57,7 @@ Before going any further, we invite the unfamiliar developer to have a look at [
 
 #### Events and user interaction
 
-To summarize the main ideas about widget events, when the user modifies the value of a widget, an event is triggered by the library [Traitlets](https://github.com/ipython/traitlets), and a callback can run to handle the event. The callback registered must have the signature `handler(change)` where `change` is a dictionary holding the information about the change. For us, useful keys of this dictionary are `value` (which contains the name of the trait of the widget that has changed), and `new` (which contains the new value of this trait). 
+To summarize the main ideas about widget events, when the user modifies the value of a widget, an event is triggered by the library [Traitlets](https://github.com/ipython/traitlets), and a callback can run to handle the event. The registered callback must have the signature `handler(change)` where `change` is a dictionary holding the information about the change. For us, useful keys of this dictionary are `value` (which contains the name of the trait of the widget that has changed), and `new` (which contains the new value of this trait). 
 
 For example, the following is a valid callback:
 
@@ -80,17 +80,17 @@ A typical (simple) example of a file used to define an instance of `BaseGUIEleme
 
 To add a new GUI element, a good starting point would be to copy-paste this file, and work from there.
 
-Some of the callbacks can be quite complex, reflecting the complexity of the rules that define what the user will see in his GUI, depending on his interaction choices. The complexity thus mostly arises from the rules themselves, rather than from the implementation that is mostly straight-forward.
+Some of the callbacks can be quite complex, reflecting the complexity of the rules that define what will be seen in the GUI, depending on the interaction choices. The complexity thus mostly arises from the rules themselves, rather than from the implementation that is mostly straight-forward.
 
 #### Layout and styling
 
-The `layout` attribute of each widget contains information for the frontend to display correctly the widget, in the form of CSS specifiers. For us, a very important feature is the `layout.display` attribute. If set to `none`, the widget is invisible. If set to `flex`, it is visible. A large part of the callbacks is about changing the value of this `display` attribute, because we want some parts of the GUI to appear only when certain conditions are met.
+The `layout` attribute of each widget contains information for the frontend to display correctly the widget, in the form of CSS specifiers. For us, a very important feature is the `layout.display` attribute. If set to `'none'`, the widget is invisible. If set to `'flex'`, it is visible. Most callbacks only change the value of this `display` attribute, to hide some parts of the GUI under some conditions.
 
-Other layout and styling attributes are used, mainly for web-design purposes. See the code for examples.
+Other layout and styling attributes are used, mainly for web-design purposes. 
 
 #### Other files
 
-In the folder `gui`, three files do not correspond to instanciations of `BaseGUIElement` that were explained above:
+In the folder `gui`, three files do not correspond to instanciations of `BaseGUIElement` that are explained above:
 
 + `common.py` contains tools used by different elements of the GUI.
 + `main_tab.py` only contains the callback fired when the user changes the uppermost tab between lattices and nets.
@@ -98,7 +98,7 @@ In the folder `gui`, three files do not correspond to instanciations of `BaseGUI
 
 ### Communication with LatNetBuilder
 
-Several files deal with the communication with LatNetBuilder; we list them below, and invite the reader to look at them in this order. The Python side and the C++ side interact via the command line interface, and log files. When the user clicks the Search button, a [subprocess](https://docs.python.org/3.6/library/subprocess.html#module-subprocess) instance is launched which contains a call to the LatNetBuilder executable. Moreover, a [thread](https://docs.python.org/3.6/library/threading.html) instance is launched as well: it encapsulates a Python thread which monitors the output and updates the GUI accordingly. In particular, when the subprocess has finished running, the thread reads the output files and updates the Output GUI element. The reason we use a Python thread is to avoid blocking the Python kernel while waiting for the C++ process to end. This allows the user to do something else in his notebook in the meantime, for example aborting the C++ process by clicking the Abort button if he wishes to do so.
+Several files deal with the communication with LatNetBuilder; we list them below, and invite the reader to look at them in this order. The Python side and the C++ side interact via the command line interface, and log files. When the user clicks the Search button, a [subprocess](https://docs.python.org/3.6/library/subprocess.html#module-subprocess) instance is launched which contains a call to the LatNetBuilder executable. Moreover, a [thread](https://docs.python.org/3.6/library/threading.html) instance is launched as well: it encapsulates a Python thread which monitors the output and updates the GUI accordingly. In particular, when the subprocess has finished running, the thread reads the output files and updates the Output GUI element. The reason we use a Python thread is to avoid blocking the Python kernel while waiting for the C++ process to end. This allows the user to do something else in the notebook in the meantime, for example aborting the C++ process by clicking the Abort button.
 
 Files:
 
@@ -113,7 +113,7 @@ Files:
 
 ## Packaging and publishing a new version of the Interface
 
-1) Update the version of the conda package in python-wrapper/conda_recipe/meta.yaml
+1) Increment the version number of the conda package in python-wrapper/conda_recipe/meta.yaml
 2) Build the new conda package:
 
 ```bash
@@ -132,13 +132,13 @@ anaconda upload PATH_TO_PACKAGE
 4) update the gui docker image by running from the python-wrapper directory:
 
 ```bash
-docker build -t pierremarion23/latnetbuilder:gui --no-cache .
-docker push pierremarion23/latnetbuilder:gui
+docker build -t umontreal-simul/latnetbuilder:gui --no-cache .
+docker push umontreal-simul/latnetbuilder:gui
 ```
 
 5) update the no-gui docker image by running from the installation directory:
 
 ```bash
-docker build -t pierremarion23/latnetbuilder:no-gui -f share/latnetbuilder/DockerfileNoGui .
-docker push pierremarion23/latnetbuilder:no-gui
+docker build -t umontreal-simul/latnetbuilder:no-gui -f share/latnetbuilder/DockerfileNoGui .
+docker push umontreal-simul/latnetbuilder:no-gui
 ```

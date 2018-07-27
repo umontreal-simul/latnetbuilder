@@ -4,11 +4,8 @@ import numexpr as ne
 
 from .common import style_default, BaseGUIElement
 
-# Define weights VBox
-# TODO: change link (+ put link in the notebook)
 weight_math = widgets.HTMLMath(value='The weights are of the form: \\(\\gamma_u^q (u \\subseteq \\{1, ... s\\})\\). \
-You can specify below type of weights with their values (the actual weights are the sum of these). \
-See <a href="https://github.com/PierreMarion23/latbuilder/tree/dev/web-ui/weights_guidelines.md" target="_blank">this GitHub page</a> for guidelines on the choice of weights.',
+You can specify below type of weights with their values (the actual weights are the sum of these).',
                                layout=widgets.Layout(width='inherit'))
 
 math_strings = {'Order-Dependent': '\\( \\Gamma_k^q \\)', 
@@ -103,8 +100,6 @@ def create_full_weight(type_weights, dimension_int, gui):
 
     return main
 
-
-# add weight observe
 def func_add_weights(change, gui):
     if change['name'] == '_property_lock' and change['new'] == {}:
         change['owner'].value = 'None'
