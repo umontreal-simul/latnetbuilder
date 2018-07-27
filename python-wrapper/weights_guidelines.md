@@ -1,1 +1,0 @@
-This file will soon contain guidelines about the choice of weights.

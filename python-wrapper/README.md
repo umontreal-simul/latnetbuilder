@@ -1,10 +1,11 @@
-# Lattice Builder Web Interface
+# LatNet Builder Web Interface
 
-TODO: change links + name pierremarion23 + name of the Docker image
+TODO: change links
+TODO: update doc/dox/gui.dox
 
 This interface was built using [Jupyter](http://jupyter.org/) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets).
 
-It allows to easily run Lattice Builder without having to manually construct the command line.
+It allows to easily run LatNet Builder without having to manually construct the command line.
 
 ## Test and installation
 
@@ -12,7 +13,7 @@ It allows to easily run Lattice Builder without having to manually construct the
 
 Click here: [![Binder](https://mybinder.org/badge.svg)] %% TODO update link
 
-A server is launched on [Binder](https://mybinder.org/), to run the Lattice Builder application.
+A server is launched on [Binder](https://mybinder.org/), to run the LatNet Builder application.
 
 This is not advised for a production usage, as the computational resource available are limited (for example around 1 GB of RAM).
 
@@ -22,15 +23,15 @@ Three possibilities are given:
 
 #### Install with conda (simplest for Linux and Mac OS X users)
 
-[Conda](https://conda.io/docs/) is an open source package management system and environment management system, very used in the Python community. You can download it from the [Anaconda distribution](https://www.anaconda.com/download).
+[Conda](https://conda.io/docs/) is an open source package management system and environment management system, very popular in the Python community. You can download it from the [Anaconda distribution](https://www.anaconda.com/download).
 Fore more information, see the [conda documentation about environments](https://conda.io/docs/user-guide/tasks/manage-environments.html).
 
-To install LatNetBuilder and its interface:
+To install LatNetBuilder and its interface: # TODO: appmode
 
 ```bash
 conda create -n latnetbuilder   # create a conda environment named latnetbuilder
 conda config --add channels conda-forge         # add conda-forge as a default conda channel
-conda install -c pierremarion23 latnetbuilder   # installs the latnetbuilder package from the channel pierremarion23
+conda install -c umontreal-simul latnetbuilder   # installs the latnetbuilder package from the channel umontreal-simul
 ```
 
 
@@ -44,26 +45,26 @@ latnetbuilder --help
 latnetbuilder-gui
 ```
 
-#### Install with Docker (simplest for Windows user)
+#### Install with Docker (simplest for Windows users)
 
 [Docker](https://docs.docker.com/) provides a way to run applications securely isolated in a container, packaged with all its dependencies and libraries. It is similar to a virtual machine.
 
-A Docker image will soon be available, with the whole software bundled (LatticeBuilder, Python, Jupyter) running on a Linux distribution. Warning: as a lot of dependencies are needed to run the GUI, the image is rather heavy (1.5 GB). A lighter docker image without the GUI is also available (430 MB).
+A Docker image is available, with the whole software bundled (LatNetBuilder, Python, Jupyter) running on a Linux distribution. Warning: as a lot of dependencies are needed to run the GUI, the image is rather heavy (1.5 GB). A lighter docker image without the GUI is also available (430 MB).
 
 To install LatNetBuilder and its interface:
 + install Docker: https://docs.docker.com/install/
 + pull the image:
 
 ```bash
-docker pull pierremarion23/latnetbuilder:gui    # for the full image
-docker pull pierremarion23/latnetbuilder:no-gui    # for the light image
+docker pull umontreal-simul/latnetbuilder:gui    # for the full image
+docker pull umontreal-simul/latnetbuilder:no-gui    # for the light image
 ```
 
 To run LatNetBuilder and its interface: the following command starts a console inside a Docker container and tells your system to listen at port 8888 to the port 8888 of the Docker container.
 
 ```bash
-docker run -it -p 8888:8888 pierremarion23/latnetbuilder:gui bash   # for the full image
-docker run -it pierremarion23/latnetbuilder:gui bash   # for the light image
+docker run -it -p 8888:8888 umontreal-simul/latnetbuilder:gui bash   # for the full image
+docker run -it umontreal-simul/latnetbuilder:gui bash   # for the light image
 ```
 
 Then you can call latnetbuilder from the command line:
@@ -72,7 +73,9 @@ Then you can call latnetbuilder from the command line:
 latnetbuilder --help
 ```
 
-With the gui image, you can also start the interface. The following command starts a Jupyter server inside the Docker container which emits in port 8888. Once this is done, you can navigate to `localhost:8888` in your navigator, enter the password (which securises the Jupyter server), start the `Interface.ipynb` notebook, and finally click on the 'Appmode' button to start the GUI App.
+With the gui image, you can also start the interface. The following command starts a Jupyter server inside the Docker container which emits in port 8888. Once this is done, you can browse to `localhost:8888` in your browser, enter the password (which securises the Jupyter server), start the `Interface.ipynb` notebook, and finally click on the 'Appmode' button to start the GUI App.
+
+**The password is `latnet`.**
 
 ```bash
 latnetbuilder-gui-docker
@@ -109,8 +112,8 @@ This method works fine for Linux and Mac OS X users. For Windows users, the soft
 ./waf install
 ```
 
-The `--build-full-conda` option locally builds a conda package container LatNetBuilder source code and Python interface, then runs the steps described in the section about the installation from conda.
-Once this is done, to run LatNetBuilder and its interface, you can follow the instructions in this section.
+The `--build-full-conda` option locally builds a conda package containing the LatNetBuilder software and its Python interface, then installs it in a [`latnetbuilder` conda environment](#install-with-conda-(simplest-for-Linux-and-Mac-OS-X-users)).
+Once this is done, to run LatNetBuilder and its interface, you can follow the instructions [in this section](#install-with-conda-(simplest-for-Linux-and-Mac-OS-X-users)).
 
 Remark: as an alternative, you can replace `--build-full-conda` by `--build-conda`, which creates a conda package containing only the Python interface. If you do so, you have to modify the `Interface.ipynb` notebook to change the path to LatNet Builder (see `latnetbuilder/__init__.py`)
 
@@ -118,16 +121,16 @@ Remark: as an alternative, you can replace `--build-full-conda` by `--build-cond
 ## More technical details
 
 The application is based on the following stack of technologies:
-+ the Jupyter extension [appmode](https://github.com/oschuett/appmode) for the final rendering of the user interface 
-+ the [Jupyter notebook](https://github.com/jupyter/notebook), [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) (interactive widgets for Jupyter), and [bqplot](https://github.com/bloomberg/bqplot) (a plotting library for IPython and the Jupyter notebook) for user interactivity
++ the [Jupyter notebook](https://github.com/jupyter/notebook), [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) (interactive widgets for Jupyter), and [matplotlib](TODO link) (a plotting library for IPython and the Jupyter notebook) for user interactivity
 + the Python [subprocess](https://docs.python.org/3.6/library/subprocess.html#module-subprocess) and [threading](https://docs.python.org/3.6/library/threading.html) modules, which allow to handle processes and threads from Python
-+ the Lattice Builder software, written in C++, called from its command line interface
++ the LatNet Builder software, written in C++, called from its command line interface
++ the Jupyter extension [appmode](https://github.com/oschuett/appmode) for the final rendering of the user interface 
 
 The packaging as a Docker container is based on Docker and [ready-to-run Docker images](https://github.com/jupyter/docker-stacks) created by the Jupyter project.
 
 The online interface is powered by [Binder](mybinder.org), which is essentially a bridge between:
 
-+ [jupyter-repo2docker](https://github.com/jupyter/repo2docker), which is a tool to build, run, and push Docker images from source code repositories. The image contains a Jupyter installation, customized according to the specifications found in the repo, in the `environment.yml` file.
++ [jupyter-repo2docker](https://github.com/jupyter/repo2docker), which is a tool to build, run, and push Docker images from source code repositories. The image contains a Jupyter installation, customized according to the specifications found in the repository, in the `environment.yml` file.
 + [JupyterHub](https://github.com/jupyterhub/jupyterhub), which hosts user instances with a Jupyter server in the cloud. See [this excellent blog post](https://blog.jupyter.org/binder-2-0-a-tech-guide-2017-fd40515a3a84) for more information. 
 
 ## For developers

@@ -20,7 +20,6 @@ class Search():
         self.dimension = 0
         self.interlacing = 1
         self.multilevel = False
-        self.multilevel_filters = []
         self.combiner = ''
         self.exploration_method = ''
         self.figure_of_merit = ''
@@ -30,6 +29,20 @@ class Search():
         self.output = None
         self.set_type_name = ''
         self.output_folder = DEFAULT_OUTPUT_FOLDER
+
+    def __repr__(self):
+        return ("Construction method: %s\n" + \
+    "Modulus: %s\n" + \
+    "Multilevel: %s\n" + \
+    "Dimension: %i\n" + \
+    "Interlacing: %i\n" + \
+    "Exploration method: %s\n" + \
+    "Figure of merit: %s\n" + \
+    "Norm type: %s\n" + \
+    "Combiner: %s\n" + \
+    "Filters: %s\n" + \
+    "Weights: %s\n" + \
+    "Output folder: %s\n") % (self.construction, self.modulus, str(self.multilevel), self.dimension, self.interlacing, self.exploration_method, self.figure_of_merit, self.norm_type, self.combiner, str(self.filters), str(self.weights), self.output_folder)
 
     def construct_command_line(self):
         '''Construct and return the command line to call LatNetBuilder as a list of strings'''
@@ -255,7 +268,7 @@ class SearchLattice(Search):
         self.set_type_name = 'lattice'
 
     def __repr__(self):
-        return "TODO"
+        return "Point Set Type: Lattice\n" + super(SearchLattice, self).__repr__()
           
     def search_type(self):
         return self.construction
@@ -267,6 +280,9 @@ class SearchNet(Search):
     def __init__(self):
         super(SearchNet, self).__init__()       # calls the constructor of the parent class Search
         self.set_type_name = 'net'
+
+    def __repr__(self):
+        return "Point Set Type: Net\n" + super(SearchNet, self).__repr__()
 
     def search_type(self):
         return 'digital-' + self.construction
