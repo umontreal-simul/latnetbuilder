@@ -1,112 +1,306 @@
 # LatNet Builder
 _A general software tool for constructing highly uniform point sets_
 
-*Quasi-Monte Carlo methods* are often used as a replacement for [Monte
-Carlo](http://en.wikipedia.org/wiki/Monte_Carlo_integration) to integrate
+- [**Reference Publication**  
+  *LatNet Builder*: A General Software Tool for Constructing Rank-1 Lattice Rules](https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf)
+- [**LatNet Builder Manual**](https://umontreal-simul.github.io/latnetbuilder/)
+
+**Outline**:
+1) [LatNet Builder: a software for quasi-Monte Carlo](#latnet-builder:-a-software-for-quasi-monte-carlo)
+2) [How to use the software](#overview-of-the-software)
+3) [How to get the software](#how-to-get-the-software)
+
+## LatNet Builder: a software for quasi-Monte Carlo
+
+*LatNet Builder* is a C++ software library and tool for constructing *highly-uniform point sets* for *quasi-Monte Carlo* 
+and *randomized quasi-Monte Carlo* methods using state-of-the-art techniques.
+
+Quasi-Monte Carlo methods are often used as a replacement for [*Monte
+Carlo*](http://en.wikipedia.org/wiki/Monte_Carlo_integration) to integrate
 multidimensional functions.
 
-Monte Carlo and quasi-Monte Carlo methods are used for the same purpose. The problem is to approximate the integral of a function over the unit hypercube as the average of the function evaluated at a set of points. Whereas Monte-Carlo uses a (pseudo)-random sequence of points, quasi-Monte Carlo uses a hihly uniform point set.
+Monte Carlo and quasi-Monte Carlo methods are used for the same purpose. The problem is to approximate the integral of a function over the unit hypercube as the average of the function evaluated at a set of points. Whereas Monte-Carlo uses a (pseudo)-random sequence of points, quasi-Monte Carlo uses a highly uniform point set, that is a point set with low *discrepancy*.
 For certain problems, well-constructed point sets can dramatically reduce the integration error with respect to Monte Carlo.
 
-*LatNet Builder* is a software tool and library that implements a variety of
-construction algorithms for highly uniform point sets. 
+LatNet Builder implements a variety of
+construction algorithms for highly uniform point sets. The point set types handled by LatNet Builder include rank-1 ordinary and polynomial lattice rules and digital nets in base 2, including Sobol' nets.
 
-The user can quickly discover the functionalities of LatNet Builder without anything to install using Binder TODO button. This service hosts a version of LatNet Builder which can be used through a Graphical User Interface. However, this service only provides limited computation ressources. For a better experience, one should directly install the software on their machine.
+More precisely, LatNet Builder can search for point sets with an arbitrary number of points in any dimension of high quality with respect to various criteria. 
+Such quality criteria are called *figures of merit*. These figures of merit are parametrized by *weights* which give different importance to the subprojections of the net. 
+The merits of the subprojections are aggregated using a (weighted) *𝓁<sub>q</sub> norm*.
+LatNet Builder can use various *exploration methods* to construct the point sets, such as the exhaustive, the random sampling or the component-by-component (CBC) methods.
 
-The simplest way to use the software is through its Graphical User Interface (GUI). 
-A Command Line Interface (CLI) is available as an alternative.
-The software can also be used as a C++ library. Interfaces with Python and R are also provided. Finally, the software can be used directly from the simulation software [SSJ](http://simul.iro.umontreal.ca/ssj/indexe.html).
+Additionally LatNet Builder contains more advanced features such as multilevel point sets, extensible point sets, interlaced point sets,
+normalizations, and filters.
 
-LatNet Builder comprises two interdependent pieces called LatBuilder and NetBuilder.
-*LatBuilder* focuses on the construction of rank-1 ordinary and polynomial lattice rules whereas *NetBuilder* supports the construction of digital nets in base 2. The quality of point sets are assessed using various measures of (non)uniformity of the points. 
+The features of LatNet Builder are summed up in the following table:
 
-The implemented quality measures include, for the LatBuilder part, the weighted P<sub>α</sub> square discrepancy, the R<sub>α</sub> criterion, and figures of merit based on the spectral test, and for the NetBuilder part, the weighted P<sub>2</sub> square discrepancy, the R<sub>1</sub> criterion and bit equidistribution quality measures such as the t-value and the resolution-gap.
+<table border="1" align="center" class="tg">
+  <tr align="center">
+    <th class="tg-uys7">Features</th>
+    <th class="tg-uys7" colspan="2">Lattice rules</th>
+    <th class="tg-uys7">Digital nets</th>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7"> Point set types </td>
+    <td class="tg-uys7">Rank-1 ordinary lattice rules</td>
+    <td class="tg-uys7">Rank-1 polynomial lattice rules</td>
+    <td class="tg-uys7">Sobol' nets<br> Polynomial lattice rules<br>Nets with explicit generating matrices</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7"> Figures of merit </td>
+    <td class="tg-uys7">P<sub>𝛼</sub>, R<sub>𝛼</sub>, spectral test</td>
+    <td class="tg-uys7">P<sub>𝛼</sub>, R</td>
+    <td class="tg-uys7">P<sub>𝛼</sub>, R, t-value, resolution-gap</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7"> Types of weights </td>
+    <td class="tg-uys7" colspan="3">projection-dependent, order-dependent, product, product-order-dependent and combined weights</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7"> Exploration methods </td>
+    <td class="tg-uys7" colspan="3">evaluation, exhaustive, random, full CBC and random CBC, fast CBC</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7"> Multilevel point sets </td>
+    <td class="tg-uys7" colspan="2">Embedded lattices</td>
+    <td class="tg-uys7">Digital sequences</td>
+  </tr>
+  <tr align="center">
+    <td class="tg-uys7"> Additional features</td>
+    <td class="tg-uys7"> Extensible lattices, normalizations and filters</td>
+    <td class="tg-uys7">Extensible lattices, normalizations and filters, interlaced polynomial lattice rules</td>
+    <td class="tg-uys7">Interlaced digital nets</td>
+  </tr>
+</table> 
 
-All these measures, which are called figures of merit, are parametrized with weights to give different importances to the projections of the point sets.
+## How to use the software
 
-The software supports exhaustive and random searches, as well as component-by-component
-(CBC) and random CBC explorations, for any number of points, and for various
-measures of (non)uniformity of the points.
+### Quick overview
+The user can quickly discover the functionalities of LatNet Builder without anything to install using [Binder](https://mybinder.org/): 
 
-The software also support the construction of multi-level point sets. A multi-level point set is actually a sequence of point sets whose points are embedded. Good multi-level point sets are highly uniform for their different embedding levels.
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/umontreal-simul/latnetbuilder/master?urlpath=/apps%2Fpython-wrapper%2Fnotebooks%2FInterface.ipynb)
 
-For modulus that are powers of an irreducible base, the construction
-of embedded rank-1 ordinary and polynomial lattice rules is supported by LatBuilder through any of the above algorithms. In this case, a fast-CBC exploration is also available for specific figures of merit. For polynomial lattice rules, the fast-CBC algorithm is only available for irreducible modulus. 
-
-NetBuilder supports the construction of various (finite) good digital sequences.
-
-The software supports a variety of possibilities for the normalization of the merit values of individual embedded levels and for their combination into a single merit value.
-
-#### Get the Software
-
-- [**Download a binary release**] TODO
-- [**Browse the source code**] TODO
-
-#### Documentation
-
-- [**Reference Publication**  
-  *LatNet Builder*: A General Software Tool for Constructing Rank-1 Lattice Rules](http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latnetbuilder.pdf)
-- [**LatNet Builder Manual**](link) TODO
-
-
-## Quick Start Guide
-
-The easiest way to use LatNet Builder is to:
-
-1. Install [Python](link to conda) (required for the web interface). TODO
-2. [**Download a binary
-   package**](link) corresponding
-   to your platform 
-3. Unpack the downloaded archive into a location of your choice.
-   **No further installation is required.**
-4. Navigate to the directory named `latnetbuilder` in the unpacked archive, then
-   to the subdirectory named `bin`.
-5. To use the
-   [LatNet Builder GUI](#the-latnetbuilder-builder-graphical-user-interface), TODO
-5. To use
-   [LatNet Builder CLI](#the-latnetbuilder-builder-command-line-interface),
-   invoke the `latnetbuilder` program with
-   appropriate arguments.
+This service hosts a version of LatNet Builder which can be used through a Graphical User Interface (GUI). However, this service only provides limited computation resources. For a better experience, one should install the software on their machine.
 
 
-## Binary Releases
+### Main components
+LatNet Builder offers various possibilities to use its functionalities:  
 
-[Binary (pre-compiled) releases](link)
-of LatNet Builder are available for ??? platforms.
-These include the executable `latnetbuilder` program, library and documentation,
-together with the Graphical User Interface.
+- a C++ library
+- a Command Line Tool
+- a Python package which comprises:
+  - a Python interface
+  - a Graphical User Interface based on the [Jupyter](https://jupyter.org) ecosystem
 
-Interfaces with Python and R ???
+There are three ways to get the software: 
+- [downloading a binary release](download-a-binary-release)
+- [installing the Python package](installing-with-conda) (with conda)
+- [using a Docker container](using-a-docker-container), a 'light-weight virtual machine'
+- [compiling from source code](compiling-the-source-code)
 
-The binary distribution packages, under the `latnetbuilder` base directory, have
-the following directory structure:
+The binary pre-compiled release of LatNet Builder is available wrapped in a Python package, which provides a one-line installation procedure for the software, its GUI and its Python interface. Unfortunately, this package is only available for Linux and Mac OS users.
 
-* `bin`: contains the executable `latnetbuilder` program
-  ([the Command Line Interface](#the-latnetbuilder-builder-command-line-interface))
-  and the `latnetbuilder-gui.ipynb` Jupyter notebook (that launches
-  [the Graphical User Interface](#the-latnetbuilder-builder-graphical-user-interface));
-* `include`: contains the C++ header files necessary to use the LatNet Builder
-  library;
-* `lib`: contains the binary LatNet Builder library;
-* `share/latnetbuilder/html`: contains the HTML documentation;
-* `share/latnetbuilder/examples`: contains examples on using the LatNet Builder library.
+The Docker container, based on a Linux distribution, is meant as
+a convenience for Windows users.
 
-## Compiling the Source Code
+The source code should compile fine on Linux and Mac OS platforms. However, since a lot of dependencies are required, we advise you to use the binary pre-compiled release available either on its own or through the Python package. 
+
+For Windows users, we recommend to use a Unix emulation environment like Cygwin or MinGW, instead of Microsoft development tools. Compiling LatNet Builder and its dependencies may turn out to be time-consuming so we highly recommend to use the Docker container.
+
+### The command-line tool in a nutshell
+
+Information on using the LatNet Builder program is given in the
+[LatNet Builder command line tutorial](link) TODO.
+Compact usage information can also be obtained with `latnetbuilder --help`.
+
+The below command line assumes that the latnetbuilder executable was added to your PATH environment variable. It will be the case if you installed LatNet Builder with conda or are using a Docker container. If you installed a binary package, you must replace
+`latnetbuilder` with a path to the latnetbuilder executable. For instance if you installed LatNet Builder in `$HOME/latnetsoft`, use `$HOME/latnetsoft/bin/latnetbuilder`.
+
+#### Constructing rank-1 lattice rules
+
+As a concrete example of how the program can be used, the following command line performs a fast CBC exploration using
+the weighted P<sub>α</sub> criterion with α=2 and with product weights giving
+the same weight of 0.1 to every coordinate (this means a weight of
+10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections
+of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
+
+```
+latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC
+```
+
+The above search is for n=2<sup>16</sup>=65,536 points in dimension 100. LatNet Builder
+does that in less than 2 seconds.
+
+#### Constructing digital nets
+
+Likewise, to construct a Sobol' net with 2<sub>16</sub> points in 10 dimensions using the random component-by-component (CBC) algorithm, with 70 samples per coordinate and a t-value-based criterion with order-dependent
+weights equal to 1 on the 2-dimensional and 3-dimensional projections, issue the following
+command:
+
+```
+latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70
+```
+
+### The LatNet Builder library 
+
+Several examples of code using the LatNet Builder application programming
+interface (API) can be found under the `share/doc/examples`
+directory under the installation directory and in subdirectories.
+
+To teach yourself how to code using the LatNet Builder library, you can read:
+
+* [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html) TODO
+
+Compiling and linking code with the LatNet Builder library requires the same
+[software dependencies](#software-dependencies) to be available as for
+compiling the LatNet Builder program itself.
+
+External software can make use of the LatNet Builder libraries by
+setting the compiler to use the C++14 standard, by adding the `include`
+and `lib` directories (under the installation directory) to the include and
+library paths, respectively, then by linking with the `latticetester` and
+`latnetbuilder` libraries, together with the `fftw3`, NTL, GMP and Boost libraries.
+
+In particular, if LatNet Builder, Boost , NTL, GMP and FFTW were respectively installed
+under `$HOME/latnetsoft`, `/opt/boost`, `/opt/ntl`, `/opt/gmp` and `/opt/FFTW`, a C++ source file called
+`myprog.cc` can be compiled and linked into an executable called `myprog` by
+using the following command line with GCC:
+```bash
+g++ 
+  -std=c++14 -O2 \
+  -I$HOME/latnetsoft/include \
+  -I/opt/boost/include \
+  -I/opt/ntl/include \
+  -I/opt/gmp/include \
+  -I/opt/fftw/include \
+  -o myprog myprog.cc \ 
+  -L$HOME/latnetsoft/lib -l latnetbuilder -l latticetester \
+  -L/opt/ntl/lib  -l ntl \
+  -L/opt/gmp/lib  -l gmp \
+  -L/opt/fftw/lib -l fftw3 \
+  -L /opt/boost/lib -l boost_program_options -l boost_system -l boost_filesystem
+```
+
+With clang, just replace `g++` with `clang++`.
+
+## How to get the software
+
+### Downloading a binary release
+
+[Binary pre-compiled releases](https://github.com/umontreal-simul/latnetbuilder/releases)
+of LatNet Builder are available for Linux and Mac OS platforms.
+These include the executable `latnetbuilder` program, library and documentation.
+
+The binary distribution packages, under the `latnetbuilder` base directory, have the following directory structure:
+
+* `bin` contains the executable `latnetbuilder` program (the command-line tool)
+* `include` contains the C++ header files necessary to use the LatNet Builder library
+* `lib` contains the LatNet Builder and LatticeTester libraries (LatticeTester is an embedded dependency of the LatNet Builder library)
+* `share/doc/latnetbuilder/` contains the HTML documentation
+* `share/doc/latnetbuilder/examples` contains examples on using the LatNet Builder library
+* `share/latnetbuilder` and `share/latticetester` contain examples some data files used by the libraries
+
+### Installing with conda
+
+The Python package, which contains the [binary pre-compiled release](downloading-a-binary-release) plus the GUI, must be installed using [Conda](https://conda.io/docs/). Conda is an open source package management system and environment management system, which is very popular in the Python community. 
+
+You can download it from the [Anaconda distribution](https://www.anaconda.com/download).
+Fore more information, see the [conda documentation about environments](https://conda.io/docs/user-guide/tasks/manage-environments.html).
+
+To install LatNetBuilder and its interface:
+
+```bash
+conda create -n latnetbuilder   # create a conda environment named latnetbuilder
+conda config --add channels conda-forge         # add conda-forge as a default conda channel
+conda install -c umontreal-simul latnetbuilder   # installs the latnetbuilder package from the channel umontreal-simul
+```
+
+
+To run LatNetBuilder and its interface:
+
+```bash
+source activate latnetbuilder
+# you can call latnetbuilder from the command line:
+latnetbuilder --help
+# you can also start the interface:
+latnetbuilder-gui
+```
+
+This latest command will open a Jupyter notebook in your browser. 
+Click on the AppMode button to run the GUI in full-screen mode. For more information about Jupyter notebooks, you can have a look at the [Jupyter documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html).
+
+### Using a Docker container
+
+[Docker](https://docs.docker.com/) provides a way to run applications securely isolated in a container, packaged with all its dependencies and libraries. It is similar to a virtual machine.
+
+Two Docker images are available:
+- a light (430 MB) image which runs on a Linux system the binary pre-compiled executable
+- a complete (1.5 GB) image which is based on the Python package
+installation solution
+
+The GUI is only available in the complete Docker image.
+
+To install LatNetBuilder and its interface:
++ [install Docker](https://docs.docker.com/install/)
++ pull the image:
+
+```bash
+docker pull umontreal-simul/latnetbuilder:complete    # for the complete image
+docker pull umontreal-simul/latnetbuilder:light    # for the light image
+```
+
+To run LatNetBuilder and its interface: the following command starts a console inside a Docker container and tells your system to listen at port 8888 to the port 8888 of the Docker container.
+
+```bash
+docker run -it -p 8888:8888 umontreal-simul/latnetbuilder:complete bash   # for the complete image
+docker run -it umontreal-simul/latnetbuilder:light bash   # for the light image
+```
+
+Then you can call latnetbuilder from the command line:
+
+```bash
+latnetbuilder --help
+```
+
+With the complete image, you can also start the interface. The following command starts a Jupyter server inside the Docker container which emits in port 8888. Once this is done, you can browse to `localhost:8888` in your browser, enter the password (`latnet`), start the `Interface.ipynb` notebook, and finally click on the 'Appmode' button to start the GUI App.
+
+**Again, the password is `latnet`**. It is only meant to secure the Jupyter server which is only useful for network applications.
+
+```bash
+latnetbuilder-gui-docker
+```
+
+Once you're done, don't forget to stop the Jupyter server inside the container. Even when you close the console window, the container is still running. You can see the list of running containers (and their names) with the command
+
+```bash
+docker container ls
+```
+
+You can either leave it running or stop it. To stop the container:
+```bash
+docker stop CONTAINER_NAME
+```
+
+If you leave it running, to start a new console you can use the following command instead of the `docker run` command above:
+
+```bash
+docker exec -it CONTAINER_NAME bash
+```
+
+## Compiling the source code
+
+This method works fine for Linux and Mac OS X users. For Windows users, the software is known to compile on Cygwin, without the --link-static option. Nevertheless, this method is really complex and we recommended you avoid it, unless you are a power user.
 
 ### Software Dependencies
 
 Compiling LatNet Builder requires the following softwares to be installed on
 the system:
 
-* [Python](link) TODO
-* [Boost C++ Libraries](http://www.boost.org/) 1.57.0 or later
-  <small>
-  Installation instructions (**section 5 is important**):
-  [for Linux / MacOS](http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html),
-  [for Microsoft Windows](http://www.boost.org/doc/libs/release/more/getting_started/windows.html)
-  </small>
-* [NTL](http://www.shoup.net/ntl/index.html) 10.4.0 or later
-* [GMP](http://www.shoup.net/ntl/index.html) compatible version with your NTL installation
+* [Python](https://www.python.org/getit/) 3.6 or later
+* [Boost C++ Libraries](http://www.boost.org/doc/libs/release/more/getting_started/unix-variants.html) 1.67.0 or later
+* [NTL](http://www.shoup.net/ntl/index.html) 11.0.0 or later
+* [GMP](https://gmplib.org/#DOWNLOAD) compatible version with your NTL installation
 * [FFTW](http://fftw.org/) 3.3.4 or later
 * [Git](http://git-scm.com/) *(optional for downloading the source code)*
 * [Doxygen](http://www.stack.nl/~dimitri/doxygen/) *(optional for generating
@@ -115,9 +309,8 @@ the system:
 You will also need a recent compiler compliant with the C++14 standard.
 LatNet Builder is **known to compile** using:
 
-* [GCC](http://gcc.gnu.org/) 4.8 or 4.9 on Linux ???
-* [clang](http://clang.llvm.org/) 3.6.0 on Linux ???
-* Apple LLVM version 6.0 (based on LLVM 3.5svn) on MacOS ???
+* [GCC](http://gcc.gnu.org/) 5.4.0 on Linux
+* Apple LLVM version 9.1.0 on MacOS
 
 ### Obtaining the Source Code
 
@@ -134,28 +327,21 @@ archive.
 ### Configuring the Build
 
 LatNet Builder relies on the
-[waf meta build system](https://code.google.com/p/waf/) for configuring and
+[waf meta build system](https://gitlab.com/ita1024/waf/) for configuring and
 compiling the software source.
 Waf is included in the LatNet Builder source tree, but it depends on
-[Python](http://python.org/download), which must be available on the system
+[Python](https://www.python.org/getit/), which must be available on the system
 on which LatNet Builder is to be compiled.
 
 The commands below should work verbatim under Linux and MacOS systems.
-**Microsoft Windows** users should replace every instance of `./waf` 
-with the path under which the Python executable
-(`python.exe`) or simply with `python waf`
-if the Python installation path is accessible from the system `%PATH%`
-environment variable.
 
 Change the current directory to the root directory of the package, for example:
 
 	cd latnetbuilder
 
 if you obtained the source code with the `git` command.
-If you obtained the source code from the ZIP archive, the directory should be
-named `latnetbuilder-master` instead of `latnetbuilder`.
-At the root of the source tree lies the `waf` script, manages the build
-process.
+If you obtained the source code from the ZIP archive, the directory should be named `latnetbuilder-master` instead of `latnetbuilder`.
+At the root of the source tree lies the `waf` script which manages the build process.
 
 Try:
 
@@ -171,8 +357,7 @@ directories.  First, the project must be configured with:
 
 	./waf configure --prefix $HOME/latnetsoft
 
-with `$HOME/latnetsoft` replaced with the directory into which you wish to install
-LatNet Builder.
+with `$HOME/latnetsoft` replaced with the directory into which you wish to install LatNet Builder.
 Here, `$HOME` will expand to your own home directory; you can specify any other
 directory to which you have permissions for write access, e.g., with `--prefix
 /tmp/latnetsoft`.
@@ -183,7 +368,7 @@ which means that `/opt/boost`, `/opt/ntl`, `/opt/gmp` and `/opt/fftw` both conta
 `include` and `lib` — the following command indicates `waf` where to find these
 two libraries:
 
-	./waf configure --prefix $HOME/latnetsoft --boost /opt/boost --fftw /opt/fftw configure --link-static
+	./waf configure --prefix $HOME/latnetsoft --boost /opt/boost --ntl /opt/ntl --gmp /opt/gmp --fftw /opt/fftw configure --link-static
 
 The `--link-static` option suggested above will cause the 
 libraries to be linked statically to the executable program, which may be
@@ -194,15 +379,18 @@ C++ compiler to be used to build LatNet Builder, before running the `waf
 configure` command.
 
 The above `waf configure` commands configures `waf` for a minimal build,
-without documentation nor code examples.  These can be built by
+without documentation, code examples nor GUI.  These can be built by
 appending the following options to `waf configure`:
 
 * `--build-docs` to generate the documentation, if
   [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available on the system.
+  
 * `--build-examples` to compile and install example code, including
   code from the tutorial, which will also be verified to yield correct output.
   The expected outputs are stored in text files with names matching those of
   programs, under the `examples/tutorial/output` subdirectory.
+
+* `--build-conda` to build the Python package then install it in a [`latnetbuilder` conda environment](#installing-with-conda). More precisely, the package contains the LatNet Builder software and its Python interface. Thus, with this option, two versions of the software are installed: one in your installation folder, and one wrapped inside the Python package. 
 
 Errors will be reported if required software components cannot be found.  In
 that case, you should check the dependencies installation paths.
@@ -220,8 +408,7 @@ during the configuration step, with:
 
 	./waf install
 
-The LatNet Builder executable can be found at `$HOME/latnetsoft/bin/latnetbuilder`
-(with an additional `.exe` extension under Windows systems).
+The LatNet Builder executable can be found at `$HOME/latnetsoft/bin/latnetbuilder`.
 
 Before executing the LatNet Builder program, it may be necessary to
 to add the paths to the Boost, NTL, GMP and FFTW libraries to the `LD_LIBRARY_PATH` (for
@@ -240,10 +427,6 @@ under Linux, or
 
 under MacOS.
 
-**Microsoft Windows** users might need to copy the Boost, NTL and GMP FFTW DLLs into the
-same directory (`$HOME/latnetsoft/bin`, for example) as the `latnetbuilder`
-executable program.
-
 To check that the program installed correctly, run:
 
 	$HOME/latnetsoft/bin/latnetbuilder --version
@@ -251,135 +434,3 @@ To check that the program installed correctly, run:
 which should report the current LatNet Builder version.
 Help on usage can be obtained by replacing the `--version` switch with the
 `--help` switch.
-
-
-## Using LatNet Builder
-
-### The LatNet Builder Command-Line Interface
-
-Information on using the LatNet Builder program is given in the
-[LatNet Builder command line tutorial](link) TODO.
-Compact usage information can also be obtained with `bin/latnetbuilder --help`.
-
-The below command line assumes that the current working directory is that which
-contains the `bin` subdirectory.  If you installed a binary package, it is the
-`latnetbuilder` directory at the root of the package.
-
-**Microsoft Windows** users should replace `bin/latnetbuilder` with
-`bin\latnetbuilder.exe` in what follows.
-
-#### Constructing rank-1 lattice rules
-
-As a concrete example of how the program can be used, to construct, using the component-by-component (CBC) algorithm, a rank-1 ordinary
-lattice rule with 8191 points in 5 dimensions using the P<sub>α</sub> criterion with
-$\alpha = 2$ and with uniform product weights with value 0.8, issue the following
-command (from the installation directory):
-
-	bin/latnetbuilder -t lattice -c ordinary -s 8191 -d 5 -f CU:P2 -w product:0.8 -e CBC
-
-#### Constructing digital nets
-
-Likewise, to construct, using the component-by-component (CBC) algorithm, Sobol' net with 2<sub>10</sub> points in 10 dimensions using the P<sub>α</sub> criterion with
-$\alpha = 2$ and with uniform product weights with value 0.8, issue the following
-command (from the installation directory):
-
-  bin/latnetbuilder -t net -c sobol -s 2^10 -d 10 -a CU:P2/2/2/product:0.8 -e random:1000
-
-
-### The LatNet Builder Graphical User Interface
-
-The LatNet Builder Graphical User Interface is included in the binary packages.
-[Python](http://python.org/download/) must be installed on the host machine.
-A connection to the Internet is also necessary to display the mathematical
-symbols.
-The local web server can be started by typing the following commands in a terminal
-  source activate latnetbuilder
-	jupyter notebook latnetbuilder-gui.ipynb
-
-It requires the LatNet Builder program above to be working properly.
-
-If you have a network connection, the LatNet Builder GUI may also be accessed through the Binder web service without installing anything on your computer. Note that the computation ressources could be limited.
-
-TODO screenshot + link binder
-
-
-### The LatNet Builder Library
-
-#### Understanding the API
-
-Several examples of code using the LatNet Builder application programming
-interface (API) can be found under the `share/doc/examples`
-directory under the installation directory and in subdirectories.
-
-To teach yourself how to code using the LatNet Builder library, you can read:
-
-* [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html)
-
-#### Compiling and Linking
-
-Compiling and linking code with the LatNet Builder library requires the same
-[software dependencies](#software-dependencies) to be available as for
-compiling the LatNet Builder program itself.
-
-External software can make use of the LatNet Builder libraries by
-setting the compiler to use the C++14 standard, by adding the `include`
-and `lib` directories (under the installation directory) to the include and
-library paths, respectively, then by linking with the `latticetester` and
-`latnetbuilder` libraries, together with the `fftw3`, NTL, GMP and Boost libraries.
-
-In particular, if LatNet Builder, Boost , NTL, GMP and FFTW were respectively installed
-under `$HOME/latnetsoft`, `/opt/boost`, `/opt/ntl`, `/opt/gmp` and `/opt/FFTW`, a C++ source file called
-`myprog.cc` can be compiled and linked into an executable called `myprog` by
-using the following command line with GCC: TODO
-
-	g++ -std=c++14 -I$HOME/latnetsoft/include -I/opt/boost/include -I/opt/ntl/include -I/opt/gmp/include -I/opt/fftw/include -O2 -o myprog myprog.cc -L$HOME/latnetsoft/lib -l latnetbuilder -l latticetester -L/opt/ntl/lib  -l ntl -L/opt/gmp/lib  -l gmp -L/opt/fftw/lib -l fftw3
-
-With clang, just replace `g++` with `clang++`.
-
-
-#### Using LatNet Builder with Xcode 6.0
-
-To create an Xcode project that uses LatNet Builder, follow the following
-steps:
-
-1. Create a new Xcode projet as: **Application &#9658; Command Line Tool**
-2. Once the Xcode project displays, select the application name (blue file) on the left pane.
-3. Set **Build Settings &#9658; Search Paths &#9658; Always Search User Paths** to **Yes**.
-4. To **Build Settings &#9658; Search Paths &#9658; User Header Search Paths**, add the path
-   to the `include` directory from your LatNet Builder installation (e.g.,
-   `/Users/me/latnetbuilder/include`) and the paths to the `include` directories
-   from your Boost, NTL, GMP and FFTW installations if not under standard system
-   locations.
-5. To **Build Phases &#9658; Link Binary With Libraries**, add (+) the following files:
-     - `liblatnetbuilder.a` and `liblatticetester.a ` from the `lib` directory of your
-       LatNet Builder installation (e.g., `/Users/me/latnetbuilder/lib`);
-     - `libntl.a` from your NTL installation.
-     - `libgmp.a` from your GMP installation.
-     - `libfftw3.a` from your FFTW installation.
-
-
-## Frequently Asked Questions
-
-TODO
-
-### What should I use to find good high-dimensional lattices in reasonable time?
-
-Fast CBC with a coordinate-uniform figure of merit.
-
-For example, the following command line performs a fast CBC exploration using
-the weighted P<sub>α</sub> criterion with α=2 and with product weights giving
-the same weight of 0.1 to every coordinate (this means a weight of
-10<sup>-2</sup> for projections of order 1, of 10<sup>-4</sup> for projections
-of order 2, of 10<sup>-6</sup> for projections of order 3, etc.):
-
-	./latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -w product:0.1 -e fast-CBC
-
-The above search is for n=2<sup>16</sup>=65,536 points in dimension 100.  LatNet Builder
-does that very quickly.
-It may be necessary to enclose some arguments in double quotes, depending on
-the shell (command line interpreter).
-
-#TODO
-binder
-links
-releases

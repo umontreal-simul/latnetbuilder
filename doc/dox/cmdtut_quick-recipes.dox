@@ -26,7 +26,7 @@ more elaborated tasks.
 
 Consider the following basic example:
 \verbatim
-./latnetbuilder \ 
+latnetbuilder \ 
  --set-type lattice \
  --construction ordinary \
  --size-parameter 2053 \
@@ -77,7 +77,7 @@ the coordinate-uniform algorithm.
 Option names come in long and short forms.  For example, the following has the
 same effect as the previous example:
 \verbatim
-./latnetbuilder -t lattice -c ordinary -s 2053 -d 5 -e full-CBC -f CU:P2 -q 2 -w product:0.7
+latnetbuilder -t lattice -c ordinary -s 2053 -d 5 -e full-CBC -f CU:P2 -q 2 -w product:0.7
 \endverbatim
 The long forms are favored in this tutorial to make the examples
 self-explanatory.
@@ -175,7 +175,7 @@ Happily, \ref feats_poly "detailed guidelines" are available for you to pull thr
 But here we will just compare the two following examples:
 
 \verbatim
-./latnetbuilder \ 
+latnetbuilder \ 
  --set-type lattice \
  --construction polynomial \
  --size-parameter 2^10 \
@@ -188,7 +188,7 @@ But here we will just compare the two following examples:
 
 
 \verbatim
-./latnetbuilder \ 
+latnetbuilder \ 
  --set-type net \
  --construction polynomial \
  --size-parameter 2^10 \
@@ -251,7 +251,7 @@ use the maximum, which is more compatible with the star discrepancy (which is it
 than a sum.
 The search will be based on the full-CBC exploration method. 
 \verbatim
-./latnetbuilder \
+latnetbuilder \
 --set-type net \
 --construction sobol \
 --size-parameter 2^15 \
@@ -279,7 +279,7 @@ Note the <code>select:10,17</code> token which tells LatNet Builder to put posit
 for the embedding levels 10 to 17, and a zero weight for the other embedding level.
 
 \verbatim
-./latnetbuilder \
+latnetbuilder \
 --set-type lattice \
 --construction ordinary \
 --size-parameter 2^17 \
@@ -307,7 +307,7 @@ norm for the lattice rule with modulus 11551 and generating vector
 (1, 5396, 2285, 484, 5355, 20, 249, 4237, 4919, 3622). 
 The following command-line will do the job:
 \verbatim
-./latnetbuilder \
+latnetbuilder \
 --set-type lattice \
 --construction ordinary \
 --size-parameter 11551 \
@@ -334,7 +334,7 @@ coordinate-uniform evaluation algorithm and the fast-CBC method. The weights wil
 equal to \f$.9\f$.
 
 \verbatim
-./latnetbuilder \
+latnetbuilder \
 --set-type lattice \
 --construction polynomial \
 --size-parameter 2^15 \
@@ -363,7 +363,7 @@ You can fin additional details on constructing interlaced digital nets and polyn
 Suppose you have constructed embedded lattice rules up to \f$2^8\f$ points in
 dimension 5 with:
 \verbatim
-./latnetbuilder \
+latnetbuilder \
   --set-type lattice \
   --construction ordinary \
   --size-parameter 2^8 \
@@ -380,7 +380,7 @@ and have obtained the generating vector \f$\boldsymbol a=(1,45,101,41,25)\f$.
 Then, you find out that you need to extend the number of points to \f$2^9\f$.
 This can be done with:
 \verbatim
-./latnetbuilder \
+latnetbuilder \
   --set-type lattice \
   --construction ordinary \
   --size-parameter 2^9 \

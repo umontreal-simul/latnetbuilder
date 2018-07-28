@@ -32,6 +32,7 @@ LatNet Builder can use various exploration methods to construct the point sets, 
 Additionally LatNet Builder contains more advanced features such as multilevel point sets, extensible point sets, interlaced point sets,
 normalizations, and filters.
 
+The features of LatNet Builder are summed up in the following table:
 
 <table border="1" align="center" class="tg">
   <tr align="center">

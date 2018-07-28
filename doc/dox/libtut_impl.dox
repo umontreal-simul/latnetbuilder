@@ -177,7 +177,7 @@ the object ownership has changed.
 
 
 
-\section libtut_impl_cpp11 Usage of the C++11 Standard
+\section libtut_impl_cpp11 Usage of the C++14 Standard
 
 LatNet Builder makes uses of the following C++11 features:
 - auto-typed variables
@@ -193,6 +193,8 @@ LatNet Builder makes uses of the following C++11 features:
 - non-static data member initializers
 - template aliases
 
+LatNet Builder makes uses of the following C++14 features:
+- std::make_unique
 
 
 \section libtut_impl_boost Usage of the Boost C++ Libraries
