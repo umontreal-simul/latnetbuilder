@@ -152,16 +152,4 @@ anaconda login
 anaconda upload PATH_TO_PACKAGE
 ```
 
-4) update the complete docker image by running from the python-wrapper directory:
-
-```bash
-docker build -t umontreal-simul/latnetbuilder:complete --no-cache .
-docker push umontreal-simul/latnetbuilder:complete
-```
-
-5) update the light docker image by running from the installation directory:
-
-```bash
-docker build -t umontreal-simul/latnetbuilder:light -f share/latnetbuilder/DockerfileNoGui .
-docker push umontreal-simul/latnetbuilder:light
-```
+4) update the Docker images by following the instructions in the [README of the repository](../README.md).

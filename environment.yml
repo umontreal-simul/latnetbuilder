@@ -1,4 +1,4 @@
-name: example-environment
+name: latnetbuilder
 channels:
   - conda-forge
   - umontreal-simul

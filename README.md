@@ -6,11 +6,12 @@ _A general software tool for constructing highly uniform point sets_
 - [**LatNet Builder Manual**](https://umontreal-simul.github.io/latnetbuilder/)
 
 **Outline**:
-1) [LatNet Builder: a software for quasi-Monte Carlo](#latnet-builder:-a-software-for-quasi-monte-carlo)
-2) [How to use the software](#overview-of-the-software)
+1) [A software for quasi-Monte Carlo](#a-software-for-quasi-monte-carlo)
+2) [How to use the software](#how-to-use-the-software)
 3) [How to get the software](#how-to-get-the-software)
+4) [For developers](#for-developers)
 
-## LatNet Builder: a software for quasi-Monte Carlo
+## A software for quasi-Monte Carlo
 
 *LatNet Builder* is a C++ software library and tool for constructing *highly-uniform point sets* for *quasi-Monte Carlo* 
 and *randomized quasi-Monte Carlo* methods using state-of-the-art techniques.
@@ -94,10 +95,10 @@ LatNet Builder offers various possibilities to use its functionalities:
   - a Graphical User Interface based on the [Jupyter](https://jupyter.org) ecosystem
 
 There are three ways to get the software: 
-- [downloading a binary release](download-a-binary-release)
-- [installing the Python package](installing-with-conda) (with conda)
-- [using a Docker container](using-a-docker-container), a 'light-weight virtual machine'
-- [compiling from source code](compiling-the-source-code)
+- [downloading a binary release](#downloading-a-binary-release)
+- [installing the Python package](#installing-with-conda) (with conda)
+- [using a Docker container](#using-a-docker-container), a 'light-weight virtual machine'
+- [compiling from source code](#compiling-the-source-code)
 
 The binary pre-compiled release of LatNet Builder is available wrapped in a Python package, which provides a one-line installation procedure for the software, its GUI and its Python interface. Unfortunately, this package is only available for Linux and Mac OS users.
 
@@ -114,8 +115,8 @@ Information on using the LatNet Builder program is given in the
 [LatNet Builder command line tutorial](link) TODO.
 Compact usage information can also be obtained with `latnetbuilder --help`.
 
-The below command line assumes that the latnetbuilder executable was added to your PATH environment variable. It will be the case if you installed LatNet Builder with conda or are using a Docker container. If you installed a binary package, you must replace
-`latnetbuilder` with a path to the latnetbuilder executable. For instance if you installed LatNet Builder in `$HOME/latnetsoft`, use `$HOME/latnetsoft/bin/latnetbuilder`.
+The below command line assumes that the `latnetbuilder` executable was added to your PATH environment variable. It will be the case if you installed LatNet Builder with conda or are using a Docker container. If you installed a binary package, you must replace
+`latnetbuilder` with a path to the `latnetbuilder` executable. For instance if you installed LatNet Builder in `$HOME/latnetsoft`, use `$HOME/latnetsoft/bin/latnetbuilder`.
 
 #### Constructing rank-1 lattice rules
 
@@ -134,7 +135,7 @@ does that in less than 2 seconds.
 
 #### Constructing digital nets
 
-Likewise, to construct a Sobol' net with 2<sub>16</sub> points in 10 dimensions using the random component-by-component (CBC) algorithm, with 70 samples per coordinate and a t-value-based criterion with order-dependent
+Likewise, to construct a Sobol' net with 2<sup>16</sup> points in 10 dimensions using the random component-by-component (CBC) algorithm, with 70 samples per coordinate and a t-value-based criterion with order-dependent
 weights equal to 1 on the 2-dimensional and 3-dimensional projections, issue the following
 command:
 
@@ -148,9 +149,7 @@ Several examples of code using the LatNet Builder application programming
 interface (API) can be found under the `share/doc/examples`
 directory under the installation directory and in subdirectories.
 
-To teach yourself how to code using the LatNet Builder library, you can read:
-
-* [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html) TODO
+To teach yourself how to code using the LatNet Builder library, you can read the [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html). TODO
 
 Compiling and linking code with the LatNet Builder library requires the same
 [software dependencies](#software-dependencies) to be available as for
@@ -165,7 +164,7 @@ library paths, respectively, then by linking with the `latticetester` and
 In particular, if LatNet Builder, Boost , NTL, GMP and FFTW were respectively installed
 under `$HOME/latnetsoft`, `/opt/boost`, `/opt/ntl`, `/opt/gmp` and `/opt/FFTW`, a C++ source file called
 `myprog.cc` can be compiled and linked into an executable called `myprog` by
-using the following command line with GCC:
+using the following command line with g++:
 ```bash
 g++ 
   -std=c++14 -O2 \
@@ -203,10 +202,10 @@ The binary distribution packages, under the `latnetbuilder` base directory, have
 
 ### Installing with conda
 
-The Python package, which contains the [binary pre-compiled release](downloading-a-binary-release) plus the GUI, must be installed using [Conda](https://conda.io/docs/). Conda is an open source package management system and environment management system, which is very popular in the Python community. 
+The Python package, which contains the [binary pre-compiled release](#downloading-a-binary-release) plus the GUI, must be installed using [Conda](https://conda.io/docs/). Conda is an open source package management system and environment management system, which is very popular in the Python community. 
 
 You can download it from the [Anaconda distribution](https://www.anaconda.com/download).
-Fore more information, see the [conda documentation about environments](https://conda.io/docs/user-guide/tasks/manage-environments.html).
+For more information, see the [conda documentation about environments](https://conda.io/docs/user-guide/tasks/manage-environments.html).
 
 To install LatNetBuilder and its interface:
 
@@ -257,7 +256,7 @@ docker run -it -p 8888:8888 umontreal-simul/latnetbuilder:complete bash   # for 
 docker run -it umontreal-simul/latnetbuilder:light bash   # for the light image
 ```
 
-Then you can call latnetbuilder from the command line:
+Then you can call LatNet Builder from the command line:
 
 ```bash
 latnetbuilder --help
@@ -271,7 +270,7 @@ With the complete image, you can also start the interface. The following command
 latnetbuilder-gui-docker
 ```
 
-Once you're done, don't forget to stop the Jupyter server inside the container. Even when you close the console window, the container is still running. You can see the list of running containers (and their names) with the command
+Once you are done, do not forget to stop the Jupyter server inside the container. Even when you close the console window, the container is still running. You can see the list of running containers (and their names) with the command
 
 ```bash
 docker container ls
@@ -290,7 +289,7 @@ docker exec -it CONTAINER_NAME bash
 
 ## Compiling the source code
 
-This method works fine for Linux and Mac OS X users. For Windows users, the software is known to compile on Cygwin, without the --link-static option. Nevertheless, this method is really complex and we recommended you avoid it, unless you are a power user.
+This method works fine for Linux and Mac OS X users. For Windows users, the software is known to compile on Cygwin, without the `--link-static` option. Nevertheless, this method is really complex and we recommended you avoid it, unless you are a power user.
 
 ### Software Dependencies
 
@@ -434,3 +433,37 @@ To check that the program installed correctly, run:
 which should report the current LatNet Builder version.
 Help on usage can be obtained by replacing the `--version` switch with the
 `--help` switch.
+
+## For developers
+
+### Binary pre-compiled releases TODO
+
+### Updating the documentation TODO
+
+### Updating the Python package on Anaconda Cloud
+
+See the [README](python-wrapper/README.md) file in the `python-wrapper` directory.
+
+### Updating the Docker images on DockerHub:
+
+To update the complete docker image, run from the source code directory:
+
+```bash
+docker build -t umontreal-simul/latnetbuilder:complete --no-cache -f DockerfileComplete .
+docker push umontreal-simul/latnetbuilder:complete
+```
+
+To update the light docker image, run from the installation directory:
+
+```bash
+docker build -t umontreal-simul/latnetbuilder:light --no-cache -f share/latnetbuilder/DockerfileLight .
+docker push umontreal-simul/latnetbuilder:light
+```
+
+### Maintaining the online GUI on Binder
+
+Binder uses the GitHub repository to build the online GUI. More precisely, it uses the `environment.yml` file to build the online GUI: it downloads the latnetbuilder package from Anaconda Cloud, and creates a Docker image to run the `Interface.ipynb` notebook.
+
+Therefore, to re-build the online GUI, you have to:
+- first upload the new version of the package to Anaconda Cloud
+- then the next push on the main branch of the repository will cause the online GUI to be rebuilt (at the first connection to Binder after the push).

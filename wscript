@@ -148,7 +148,7 @@ def build(ctx):
     ctx.install_files("${PREFIX}/share/latnetbuilder", ["python-wrapper/notebooks/Interface.ipynb"])
 
     # Docker file for no GUI
-    ctx.install_files("${PREFIX}/share/latnetbuilder", ["DockerfileNoGui"])
+    ctx.install_files("${PREFIX}/share/latnetbuilder", ["DockerfileLight"])
 
 
 # build variants
