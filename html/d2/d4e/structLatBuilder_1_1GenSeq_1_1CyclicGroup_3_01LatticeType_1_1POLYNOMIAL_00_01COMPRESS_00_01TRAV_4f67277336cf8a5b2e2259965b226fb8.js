@@ -1,0 +1,4 @@
+var structLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_4f67277336cf8a5b2e2259965b226fb8 =
+[
+    [ "Type", "d2/d4e/structLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_4f67277336cf8a5b2e2259965b226fb8.html#a934216a53a14728980c474d7a8690828", null ]
+];

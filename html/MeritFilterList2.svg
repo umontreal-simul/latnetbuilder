@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="640px"
+   height="480px"
+   id="svg3201"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="MeritFilterList2.svg">
+  <defs
+     id="defs3203">
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Mend"
+       style="overflow:visible">
+      <path
+         id="path4120"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3142"
+       style="overflow:visible">
+      <path
+         id="path3144"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3146"
+       style="overflow:visible">
+      <path
+         id="path3148"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3150"
+       style="overflow:visible">
+      <path
+         id="path3152"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker3154"
+       style="overflow:visible">
+      <path
+         id="path3156"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.4,0,0,-0.4,-4,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.5494505"
+     inkscape:cx="320"
+     inkscape:cy="264.21069"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:window-width="946"
+     inkscape:window-height="710"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata3206">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="327.96255"
+       y="22.550259"
+       id="text2993"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         x="327.96255"
+         y="22.550259"
+         id="tspan5201">Multilevel Merit Sequence</tspan><tspan
+         sodipodi:role="line"
+         x="327.96255"
+         y="37.550259"
+         id="tspan5207">(input)</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text2997"
+       y="232.57716"
+       x="-240.90733"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"
+       transform="matrix(0,-1,1,0,0,0)"
+       inkscape:transform-center-x="-70.735753"><tspan
+         y="232.57716"
+         x="-240.90733"
+         id="tspan2999"
+         sodipodi:role="line">MeritFilterList</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text3001"
+       y="451.07202"
+       x="326.2717"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="451.07202"
+         x="326.2717"
+         id="tspan3003"
+         sodipodi:role="line">(output)</tspan><tspan
+         y="466.07202"
+         x="326.2717"
+         sodipodi:role="line"
+         id="tspan5203">Scalar Merit Sequence</tspan></text>
+    <rect
+       ry="0"
+       y="271.27472"
+       x="289.35211"
+       height="18.710754"
+       width="72.561188"
+       id="rect3046"
+       style="fill:#f9f9f9;stroke:#b3b3b3" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="325.03506"
+       y="284.92502"
+       id="text3048"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3050"
+         x="325.03506"
+         y="284.92502">Combiner</tspan></text>
+    <rect
+       style="fill:#f9f9f9;stroke:#b3b3b3;stroke-width:1.17639685"
+       id="rect3115"
+       width="100.41813"
+       height="18.710754"
+       x="275.42365"
+       y="108.1261"
+       ry="0" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text3117"
+       y="121.7764"
+       x="325.03506"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="121.7764"
+         x="325.03506"
+         id="tspan3119"
+         sodipodi:role="line">Multilevel Filter A</tspan></text>
+    <rect
+       ry="0"
+       y="189.70042"
+       x="276.71292"
+       height="18.710754"
+       width="97.839577"
+       id="rect3123"
+       style="fill:#f9f9f9;stroke:#b3b3b3;stroke-width:1.1611948" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="325.03506"
+       y="203.35072"
+       id="text3125"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3127"
+         x="325.03506"
+         y="203.35072">Multilevel Filter B</tspan></text>
+    <rect
+       ry="0"
+       y="352.84903"
+       x="283.78122"
+       height="18.710754"
+       width="83.702965"
+       id="rect3131"
+       style="fill:#f9f9f9;stroke:#b3b3b3;stroke-width:1.07403445" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       x="325.03506"
+       y="366.49933"
+       id="text3133"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3135"
+         x="325.03506"
+         y="366.49933">Scalar Filter C</tspan></text>
+    <g
+       id="g3088">
+      <g
+         id="g3080">
+        <g
+           id="g3279"
+           transform="translate(108.4055,1.6481192)">
+          <path
+             sodipodi:nodetypes="cc"
+             inkscape:connector-curvature="0"
+             id="path5135"
+             d="m 217.2272,293.00664 0,52.025"
+             style="fill:#aa0000;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Mend)" />
+        </g>
+      </g>
+      <text
+         sodipodi:linespacing="125%"
+         id="text5137"
+         y="-333.33481"
+         x="321.26578"
+         style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#aa0000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         xml:space="preserve"
+         transform="matrix(0,1,-1,0,0,0)"><tspan
+           id="tspan5139"
+           y="-333.33481"
+           x="321.26578"
+           sodipodi:role="line">scalar merit</tspan></text>
+    </g>
+    <g
+       id="g3071">
+      <path
+         style="fill:#000080;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-mid:none;marker-end:url(#Arrow1Mend)"
+         d="m 325.6327,49.93185 0,52.025"
+         id="path5151"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cc" />
+      <text
+         transform="matrix(0,1,-1,0,0,0)"
+         xml:space="preserve"
+         style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000080;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+         x="76.542854"
+         y="-333.33481"
+         id="text5153"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           x="76.542854"
+           y="-333.33481"
+           id="tspan5155">vector merit</tspan></text>
+    </g>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:2, 4;stroke-dashoffset:0"
+       id="rect5157"
+       width="151.51141"
+       height="390.18753"
+       x="249.87698"
+       y="45.368252" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3071"
+       id="use3084"
+       transform="translate(0,82)"
+       width="640"
+       height="480" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3071"
+       id="use3086"
+       transform="translate(0,162)"
+       width="640"
+       height="480" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g3088"
+       id="use3095"
+       transform="translate(0,82)"
+       width="640"
+       height="480" />
+  </g>
+</svg>

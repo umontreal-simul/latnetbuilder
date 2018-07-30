@@ -1,0 +1,6 @@
+var structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits_3_01CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00328b8308f0e18a2c1c3878b79cd6991d =
+[
+    [ "Modulus", "dd/d6b/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits_3_01CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00328b8308f0e18a2c1c3878b79cd6991d.html#a93bb5972fb05064954010ae58b36197d", null ],
+    [ "size_type", "dd/d6b/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits_3_01CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00328b8308f0e18a2c1c3878b79cd6991d.html#a436dcd0d2ce318d63ca99e8eb0c3f664", null ],
+    [ "value_type", "dd/d6b/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits_3_01CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00328b8308f0e18a2c1c3878b79cd6991d.html#a4ff738c08ce6e850835d04f0f52ab403", null ]
+];

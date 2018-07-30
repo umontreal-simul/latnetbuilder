@@ -1,0 +1,4 @@
+var structLatBuilder_1_1GenSeq_1_1Creator_3_01CyclicGroup_3_01LR_00_01COMPRESS_00_01TRAV_00_01ORDER_01_4_01_4 =
+[
+    [ "result_type", "dd/dc8/structLatBuilder_1_1GenSeq_1_1Creator_3_01CyclicGroup_3_01LR_00_01COMPRESS_00_01TRAV_00_01ORDER_01_4_01_4.html#a4e0083ffd1d3f7cb9a627de6a450f6df", null ]
+];
