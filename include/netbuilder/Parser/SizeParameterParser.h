@@ -17,12 +17,14 @@
 #ifndef NETBUILDER__PARSER__SIZE_PARAMETER_PARSER_H
 #define NETBUILDER__PARSER__SIZE_PARAMETER_PARSER_H
 
+#include "latbuilder/Util.h"
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Parser/SizeParam.h"
+
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
-
-#include "latbuilder/Util.h"
+#include "netbuilder/NetConstructionTraits.h"
+#include "netbuilder/Parser/CommandLine.h"
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>

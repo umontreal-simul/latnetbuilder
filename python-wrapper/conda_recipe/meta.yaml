@@ -9,7 +9,7 @@ source:
 build:
     script_env:
         - WITHOUT_WAF
-        - TOTO_VARIABLE_UNIQUE_NAME
+        - LATNETBUILDER_INSTALL_DIR
     number: 0
 
 requirements:

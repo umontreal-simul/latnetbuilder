@@ -18,6 +18,7 @@
 #define LATBUILDER__DETAIL__TEXT_STREAM_H
 
 #include <type_traits>
+#include <iostream>
 
 namespace LatBuilder { namespace TextStream { namespace detail {
 

@@ -23,7 +23,7 @@ def build(ctx):
         cmd1 = "echo Building the conda package, this takes several minutes..."
         cmd2 = '%s install -y conda-build || echo "Tried to install the conda-build package"' % (ctx.env.get_flat('CONDA'))
         cmd3 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
-        ' && export TOTO_VARIABLE_UNIQUE_NAME=' + install_dir + \
+        ' && export LATNETBUILDER_INSTALL_DIR=' + install_dir + \
         ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
         cmd4 = 'echo Installing the conda package, this could take a few minutes...'
         cmd5 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
