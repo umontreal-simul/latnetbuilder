@@ -30,7 +30,7 @@ invoke the command-line tool and to see the results.
 
 
 This tutorial is divided in three sections:
- - \subpage cmdtut_quick-recipes
+ - \subpage cmdtut_quickrecipes
     \n This section gives a quick overview on how to use the software.
  - \subpage cmdtut_spec
     \n This section gives more advanced details on how to use the different \ref feats "features" of the software in the command-line tool.

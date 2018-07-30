@@ -14,9 +14,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** \page cmdtut_quick-recipes Quick Recipes
+/** \page cmdtut_quickrecipes Quick Recipes
 
-\section cmdtut_quick-recipes_first-example A first example
+\section cmdtut_quickrecipes_first_example A first example
 
 In this section, we start with a basic example to perform a standard
 component-by-component (CBC) method for an ordinary lattice rule, 
@@ -87,7 +87,7 @@ command-line parameters that need to be changed, or added; other parameters
 should be left as in the basic example.
 
 
-\section cmdtut_quick-recipes_explorations Exploring the search space with other methods
+\section cmdtut_quickrecipes_explorations Exploring the search space with other methods
 
 LatNet Builder supports a variety of exploration methods. The <code>--exploration-method</code> option
 controls which one is used to explore the search space.
@@ -105,7 +105,7 @@ point set among 100 random point sets, one can use the following option:
 
 All the available exploration methods and the usage restrictions can be found \ref cmdtut_advanced_exploration "here".
 
-\section cmdtut_quick-recipes_figures Using different figures of merit
+\section cmdtut_quickrecipes_figures Using different figures of merit
 
 \ref feats_figures "Figures of merit" are constructed using the following ingredients:
 - a projection-dependent merit \f$D_{\mathfrak u}\f$;
@@ -145,7 +145,7 @@ One can also use the \f$\ell_\infty\f$ norm, for instance with the spectral proj
 
 <code>--figure-of-merit spectral --norm-type inf</code>.
 
-\section cmdtut_quick-recipes_pointsets Constructing polynomial lattice rules and digital nets
+\section cmdtut_quickrecipes_pointsets Constructing polynomial lattice rules and digital nets
 
 As explained \ref feats_figures "here", the available figures
 of merit depend on the type of the point set we want to construct. 
@@ -204,7 +204,7 @@ The only difference between these two examples it that the first performs a fast
 that the lattice approach (first example) should only be used with the fast-CBC construction. In all the other cases, the net approach (second example)
 is most efficient. 
 
-\section cmdtut_quick-recipes_filters Applying filters and normalizations
+\section cmdtut_quickrecipes_filters Applying filters and normalizations
 
 The general idea behind filters and normalizations is explained \ref feats_filters "here".
 Filters are optional and can be used to transform the computed values of a
@@ -231,10 +231,10 @@ arguments separated by whitespace.
   low-pass) indicates that we want to apply a low-pass filter on merit values;
   the second one specifies the threshold value of this low-pass filter.
 
-For usage with embedded lattices, see \ref cmdtut_quick-recipes_embedded.
+For usage with embedded lattices, see \ref cmdtut_quickrecipes_embedded.
 Additional details on how to use filters and normalizations can be found \ref cmdtut_advanced_filters "here".
 
-\section cmdtut_quick-recipes_embedded Constructing embedded point sets
+\section cmdtut_quickrecipes_embedded Constructing embedded point sets
 
 For \ref feats_multilevel "multilevel point sets", a merit value is computed
 for each embedding level. Optionally, \ref feats_filters_multilevel "multilevel filters and normalizations" are
@@ -293,7 +293,7 @@ latnetbuilder \
 --filters norm:P2-SL10:select:10,17
 \endverbatim
 
-\section cmdtut_quick-recipes_eval Evaluating figures of merit for a specific point set
+\section cmdtut_quickrecipes_eval Evaluating figures of merit for a specific point set
 
 In this section we focus on the evaluation of a figure of merit for a specific point set.
 Evaluation is not a real exploration method as the search space is limited to only one point set.
@@ -321,7 +321,7 @@ latnetbuilder \
 The way we specify
 the other point set types is explained \ref cmdtut_advanced_pointsets "here".
 
-\section cmdtut_quick-recipes_interlaced Constructing interlaced digital nets and polynomial lattice rules
+\section cmdtut_quickrecipes_interlaced Constructing interlaced digital nets and polynomial lattice rules
 
 In this section, we explain how to construct good \ref feats_interlaced "interlaced polynomial lattice rules".
 \ref feats_figures_lat_interlaced "Specific figures of merit" must be used for interlaced polynomial lattice rules.
@@ -358,7 +358,7 @@ You can fin additional details on constructing interlaced digital nets and polyn
 \ref cmdtut_advanced_interlaced "here".
 
 
-\section cmdtut_quick-recipes_extend Extending point sets
+\section cmdtut_quickrecipes_extend Extending point sets
 
 Suppose you have constructed embedded lattice rules up to \f$2^8\f$ points in
 dimension 5 with:

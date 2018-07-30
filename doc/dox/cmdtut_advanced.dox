@@ -17,7 +17,7 @@
 /** \page cmdtut_spec Advanced Tutorial
 
 This section explains in details what are the possible values for the different options
-introduced in the \ref cmdtut_quick-recipes "basic tutorial".
+introduced in the \ref cmdtut_quickrecipes "basic tutorial".
 
 - \subpage cmdtut_advanced_pointsets
 - \subpage cmdtut_advanced_figures
