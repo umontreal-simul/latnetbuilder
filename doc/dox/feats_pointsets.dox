@@ -103,7 +103,7 @@ where \f$\oplus\f$ is the bitwise exclusive-or operator.
 The \f$\{m_{1,j}, m_{2,j}, \dots\}\f$ are called the direction numbers for coordinate \f$j\f$. The initial values \f$m_{1,j}, \dots, m_{e_j,j}\f$ can be chosen freely 
 provided that each \f$m_{r,j}\f$, \f$ 1 \leq r \leq e_j\f$ is odd and less than \f$2^r\f$. As a consequence, all the direction numbers \f$m_{r,j}\f$ are odd and less than \f$2^r\f$.
 We can write \f$m_{r,j} = \sum_{l = 1} m_{r,j,l} 2^{r-l} \f$.
-Then, for any positive integer \f$m\f$, the \f$j\f$-th generating matrix \f$M_{j}\f$ of size \f$k\f$ can be written:
+Then, for any positive integer \f$k\f$, the \f$j\f$-th generating matrix \f$M_{j}\f$ of size \f$k\f$ can be written:
 
 \f[
 M_{j} = 

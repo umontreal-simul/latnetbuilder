@@ -112,7 +112,7 @@ For Windows users, we recommend to use a Unix emulation environment like Cygwin 
 ### The command-line tool in a nutshell
 
 Information on using the LatNet Builder program is given in the
-[LatNet Builder command line tutorial](link) TODO.
+[LatNet Builder command line tutorial](http://umontreal-simul.github.io/latnetbuilder/d5/d56/cmdtut.html).
 Compact usage information can also be obtained with `latnetbuilder --help`.
 
 The below command line assumes that the `latnetbuilder` executable was added to your PATH environment variable. It will be the case if you installed LatNet Builder with conda or are using a Docker container. If you installed a binary package, you must replace
@@ -149,7 +149,7 @@ Several examples of code using the LatNet Builder application programming
 interface (API) can be found under the `share/doc/examples`
 directory under the installation directory and in subdirectories.
 
-To teach yourself how to code using the LatNet Builder library, you can read the [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html). TODO
+To teach yourself how to code using the LatNet Builder library, you can read the [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html).
 
 Compiling and linking code with the LatNet Builder library requires the same
 [software dependencies](#software-dependencies) to be available as for
@@ -436,9 +436,14 @@ Help on usage can be obtained by replacing the `--version` switch with the
 
 ## For developers
 
-### Binary pre-compiled releases TODO
+### Binary pre-compiled releases 
 
-### Updating the documentation TODO
+TODO
+
+### Updating the documentation
+
+See the [README](https://github.com/umontreal-simul/latnetbuilder/tree/gh-pages) file
+on the gh-pages branch.
 
 ### Updating the Python package on Anaconda Cloud
 
@@ -466,4 +471,5 @@ Binder uses the GitHub repository to build the online GUI. More precisely, it us
 
 Therefore, to re-build the online GUI, you have to:
 - first upload the new version of the package to Anaconda Cloud
-- then the next push on the main branch of the repository will cause the online GUI to be rebuilt (at the first connection to Binder after the push).
+- then , after a new push on the master branch, the first connection will trigger
+a rebuild of the online GUI.
