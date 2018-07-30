@@ -1,7 +1,0 @@
-namespace LatBuilder {
-
-/**
- * Kernels for coordinate-uniform figures of merit.
- */
-namespace Kernel {
-}}

@@ -1,1 +1,0 @@
-[lattice(7, [1, 1, 1]), lattice(7, [1, 2, 4]), lattice(7, [1, 3, 2]), lattice(7, [1, 4, 2]), lattice(7, [1, 5, 4]), lattice(7, [1, 6, 1])]

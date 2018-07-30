@@ -1,2 +1,0 @@
-figure of merit: CoordUniformFigureOfMerit(kernel=P2, weights=ProductWeights([], default=0.7))
-BEST LATTICE: lattice(256, [1, 37, 89]) with merit value 0.0235313

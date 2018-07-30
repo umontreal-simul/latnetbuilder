@@ -1,0 +1,6 @@
+var structLatticeTester_1_1specReducer_3_01NTL_1_1ZZ_00_01NTL_1_1ZZ_00_01NTL_1_1vector_3_01NTL_1_1ZZ1dfb05504b0bfb5c91b3d0aa703320b4 =
+[
+    [ "redBKZ", "dc/dff/structLatticeTester_1_1specReducer_3_01NTL_1_1ZZ_00_01NTL_1_1ZZ_00_01NTL_1_1vector_3_01NTL_1_1ZZ1dfb05504b0bfb5c91b3d0aa703320b4.html#af8501514cc88ed7d3c410351de5d5200", null ],
+    [ "redLLLNTL", "dc/dff/structLatticeTester_1_1specReducer_3_01NTL_1_1ZZ_00_01NTL_1_1ZZ_00_01NTL_1_1vector_3_01NTL_1_1ZZ1dfb05504b0bfb5c91b3d0aa703320b4.html#a76f8fe52b9a09e0db88f36bbb99f2da5", null ],
+    [ "redLLLNTLExact", "dc/dff/structLatticeTester_1_1specReducer_3_01NTL_1_1ZZ_00_01NTL_1_1ZZ_00_01NTL_1_1vector_3_01NTL_1_1ZZ1dfb05504b0bfb5c91b3d0aa703320b4.html#a40ebe4b92b5014e067017934fb7500f3", null ]
+];
