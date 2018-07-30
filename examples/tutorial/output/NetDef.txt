@@ -1,0 +1,81 @@
+Constructing Sobol' nets...
+First generating matrix:
+1 0 0 0 0 0 0 0 0 0
+0 1 0 0 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 0
+0 0 0 1 0 0 0 0 0 0
+0 0 0 0 1 0 0 0 0 0
+0 0 0 0 0 1 0 0 0 0
+0 0 0 0 0 0 1 0 0 0
+0 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0 1 0
+0 0 0 0 0 0 0 0 0 1
+
+Second generating matrix:
+1 1 1 1 1 1 1 1 1 1
+0 1 0 1 0 1 0 1 0 1
+0 0 1 1 0 0 1 1 0 0
+0 0 0 1 0 0 0 1 0 0
+0 0 0 0 1 1 1 1 0 0
+0 0 0 0 0 1 0 1 0 0
+0 0 0 0 0 0 1 1 0 0
+0 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 0 1
+
+The shared generating matrix has a unique address.
+
+Constructing polynomial lattice rules...
+Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+First generating value: [1]
+First generating matrix:
+0 0 0 0 0 0 0 0 0 1
+0 0 0 0 0 0 0 0 1 0
+0 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 1 0 0 0
+0 0 0 0 0 1 0 0 0 0
+0 0 0 0 1 0 0 0 0 0
+0 0 0 1 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 1
+0 1 0 0 0 0 0 0 1 0
+1 0 0 0 0 0 0 1 0 0
+
+Second generating value: [0 0 0 0 0 0 0 0 0 1]
+Second generating matrix:
+1 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 1 0 0 1
+0 0 0 0 0 1 0 0 1 0
+0 0 0 0 1 0 0 1 0 0
+0 0 0 1 0 0 1 0 0 0
+0 0 1 0 0 1 0 0 0 1
+0 1 0 0 1 0 0 0 1 0
+1 0 0 1 0 0 0 1 0 0
+0 0 1 0 0 0 1 0 0 0
+0 1 0 0 0 1 0 0 0 0
+
+
+Constructing digital net with explicit generating matrices...
+Second generating value: 
+1 0 0 0 0 0 0 0 0 0
+0 1 0 0 0 0 0 0 0 0
+0 0 1 0 0 0 0 0 0 0
+0 0 0 1 0 0 0 0 0 0
+0 0 0 0 1 0 0 0 0 0
+0 0 0 0 0 1 0 0 0 0
+0 0 0 0 0 0 1 0 0 0
+0 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0 1 0
+0 0 0 0 0 0 0 0 0 1
+
+Second generating value: 
+1 0 0 0 0 0 0 0 0 0
+1 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+1 1 1 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 0 0 0
+0 0 0 0 0 0 0 0 0 0
+1 1 1 1 1 1 1 1 1 0
+

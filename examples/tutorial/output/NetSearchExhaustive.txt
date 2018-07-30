@@ -1,0 +1,16 @@
+Task: NetBuilder Search - Net Construction : Sobol
+Number of components: 5
+Number of rows: 10 - Number of columns: 10
+Exploration method: exhaustive
+Figure of merit: Coordinate Uniform with Kernel: P2_PLR
+Embedding type: Unilevel
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
+Best net: Sobol Digital Net - Direction numbers = 
+  0 
+  1 
+  1 1 
+  1 1 5 
+  1 3 1 
+
+Merit value: 0.0212217

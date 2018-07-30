@@ -1,0 +1,34 @@
+Computing the t-value...
+t-value
+Embedding type: Unilevel
+Merit value: 9
+
+Computing the P2...
+Coordinate Uniform with Kernel: P2_PLR
+Embedding type: Unilevel
+Weights: ProductWeights([], default=0.7)
+Norm type: 2
+Standard way:
+Merit value: 0.158913
+CBC-way:
+Begin coordinate: 1/10
+Partial merit value: 1.30385e-09
+Begin coordinate: 2/10
+Partial merit value: 4.55044e-08
+Begin coordinate: 3/10
+Partial merit value: 9.11816e-07
+Begin coordinate: 4/10
+Partial merit value: 1.43633e-05
+Begin coordinate: 5/10
+Partial merit value: 0.000130962
+Begin coordinate: 6/10
+Partial merit value: 0.00110999
+Begin coordinate: 7/10
+Partial merit value: 0.00465111
+Begin coordinate: 8/10
+Partial merit value: 0.0159885
+Begin coordinate: 9/10
+Partial merit value: 0.053728
+Begin coordinate: 10/10
+Partial merit value: 0.158913
+Merit value: 1290.16

@@ -1,0 +1,4 @@
+JoeKuo Sobol' net in dimension 15 with 2^15 points
+Merit value: 15.2705
+JoeKuo Sobol' net in dimension 15 with 2^15 points
+Merit value: 15.2705
