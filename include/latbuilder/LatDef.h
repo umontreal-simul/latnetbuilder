@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/TextStream.h"
 
+#include <boost/algorithm/string/erase.hpp>
+
 namespace LatBuilder
 {
 
@@ -30,36 +32,39 @@ namespace LatBuilder
  * - lattice size parameter;
  * - generating vector.
  *
- * \tparam LAT  Type of lattice.
+ * \tparam ET  Type of lattice.
  */
-template <LatType LAT>
+template <LatticeType LR, EmbeddingType ET>
 class LatDef {
 public:
+
+  typedef typename LatticeTraits<LR>::GeneratingVector GeneratingVector;
+  
    /**
     * Constructor.
     * \param sizeParam     Size parameter of the lattice.
     * \param gen           Generating vector.
     */
    LatDef(
-         SizeParam<LAT> sizeParam = SizeParam<LAT>(),
+         SizeParam<LR, ET> sizeParam = SizeParam<LR, ET>(),
          GeneratingVector gen = GeneratingVector()
          ):
       m_sizeParam(std::move(sizeParam)),
       m_gen(std::move(gen))
    {}
 
-   template <LatType L>
-   LatDef(const LatDef<L>& other): LatDef(other.sizeParam(), other.gen())
+   template <EmbeddingType L>
+   LatDef(const LatDef<LR,L>& other): LatDef(other.sizeParam(), other.gen())
    {}
 
    /**
     * Returns the size parameter of the lattice.
     */
-   SizeParam<LAT>& sizeParam()
+   SizeParam<LR,ET>& sizeParam()
    { return m_sizeParam; }
 
    /// \copydoc sizeParam()
-   const SizeParam<LAT>& sizeParam() const
+   const SizeParam<LR,ET>& sizeParam() const
    { return m_sizeParam; }
 
    /**
@@ -100,31 +105,54 @@ public:
 
 
 private:
-   SizeParam<LAT> m_sizeParam;
+   SizeParam<LR,ET> m_sizeParam;
    GeneratingVector m_gen;
 };
 
 
+//==================================================================================
 /**
  * Formats \c lat and outputs it to \c os.
  */
-template <LatType LAT>
-std::ostream& operator<< (std::ostream& os, const LatDef<LAT>& lat)
+template <EmbeddingType ET>
+std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::ORDINARY,ET>& lat)
 {
    using TextStream::operator<<;
-   os << "lattice(" << lat.sizeParam() << ", " << lat.gen() << ")";
+   os << "Ordinary Lattice - Modulus = " << lat.sizeParam() << " - Generating vector = " << lat.gen() << std::endl;
    return os;
 }
 
+template <EmbeddingType ET>
+std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::POLYNOMIAL,ET>& lat)
+{
+      using TextStream::operator<<;
+      std::ostringstream stream;
+      std::string res;
+
+      os << "Polynomial Lattice - Modulus = " << lat.sizeParam() << " - Generating vector = " << std::endl;
+      auto vec = lat.gen();
+      for (unsigned int i=0; i<vec.size(); i++){
+      stream << "  " << vec[i] << std::endl;
+      }
+
+      res += stream.str();
+      boost::algorithm::erase_all(res, "[");
+      boost::algorithm::erase_all(res, "]");
+      os << res;
+
+      return os;
+}
+
+//====================================================================================
 /**
  * Returns a lattice definition instance with the proper type of size parameter.
  */
-template <LatType LAT>
-LatDef<LAT> createLatDef(
-      SizeParam<LAT> sizeParam = SizeParam<LAT>(), 
-      GeneratingVector gen = GeneratingVector()
+template <LatticeType LR,EmbeddingType ET>
+LatDef<LR,ET> createLatDef(
+      SizeParam<LR,ET> sizeParam = SizeParam<LR,ET>(), 
+      typename LatDef<LR,ET>::GeneratingVector gen = typename LatDef<LR,ET>::GeneratingVector()
       )
-{ return LatDef<LAT>(std::move(sizeParam), std::move(gen)); }
+{ return LatDef<LR,ET>(std::move(sizeParam), std::move(gen)); }
 
 }
 

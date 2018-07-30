@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/Storage.h"
 
-#include "latcommon/Coordinates.h"
-#include "latcommon/Rank1Lattice.h"
-#include "latcommon/Reducer.h"
+#include "latticetester/Coordinates.h"
+#include "latticetester/Rank1Lattice.h"
+#include "latticetester/Reducer.h"
 
 #include <limits>
 #include <stdexcept>
@@ -75,23 +75,27 @@ public:
    std::string name() const
    { std::ostringstream os; os << "spectral^" << power(); return os.str(); }
 
+   template <EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
+   static Storage<LatticeType::ORDINARY,ET, COMPRESS> asAcceptableStorage(Storage<LatticeType::ORDINARY,ET, COMPRESS, PLO> storage)
+   {return Storage<LatticeType::ORDINARY,ET, COMPRESS>(storage.sizeParam());}
+
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <LatType LAT, Compress COMPRESS>
-   Evaluator<Spectral, LAT, COMPRESS> evaluator(Storage<LAT, COMPRESS> storage) const
-   { return Evaluator<Spectral, LAT, COMPRESS>(std::move(storage), power()); }
+   template <EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LatticeType::ORDINARY, ET>::Order>
+   Evaluator<Spectral,LatticeType::ORDINARY, ET, COMPRESS, PLO> evaluator(Storage<LatticeType::ORDINARY,ET, COMPRESS, PLO> storage) const
+   { return Evaluator<Spectral,LatticeType::ORDINARY, ET, COMPRESS, PLO>(std::move(asAcceptableStorage<ET,COMPRESS,PLO>(storage)), power()); }
 
 private:
    Real m_power;
 };
 
 namespace detail {
-   template <class NORM, Compress COMPRESS, LatType LAT>
+   template <class NORM, Compress COMPRESS, EmbeddingType ET>
    Real spectralEval(
-            const Storage<LatType::ORDINARY, COMPRESS>& storage,
-            const LatDef<LAT>& lat,
-            const LatCommon::Coordinates& projection,
+            const Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, COMPRESS>& storage,
+            const LatDef<LatticeType::ORDINARY, ET>& lat,
+            const LatticeTester::Coordinates& projection,
             Real power
             )
    {
@@ -101,14 +105,15 @@ namespace detail {
       //   P. L'Ecuyer and C. Lemieux.
       //   Variance Reduction via Lattice Rules.
       //   Management Science, 46, 9 (2000), 1214-1235.
+      Real logDensity = log(lat.sizeParam().numPoints());
       Normalizer normalizer(
-            lat.sizeParam().numPoints(),
-            1 /* lattice rank */,
+            logDensity,
+            // 1 /* lattice rank */,
             static_cast<int>(projection.size()));
       // idea: we could cache the normalizer values for each projection size
       // (check in the profiler first if this is worth it)
 
-      if (normalizer.getNorm () != LatCommon::L2NORM)
+      if (normalizer.getNorm () != LatticeTester::L2NORM)
          // this is the L2NORM implementation
          throw std::invalid_argument ("norm of normalizer must be L2NORM");
 
@@ -116,13 +121,14 @@ namespace detail {
       // throw std::invalid_argument("projection order must be >= 2");
 
       // extract projection of the generating vector
-      MVect gen(projection.size() + 1);
+      NTL::vector<std::int64_t> gen(projection.size());
       {
          // first component is not used
          size_t j = 0;
-         gen(j++) = 0;
-         for (const auto& coord : projection)
-            gen(j++) = lat.gen()[coord];
+         for (const auto& coord : projection){
+               gen(j) = lat.gen()[coord];
+                  j++;
+         }   
       }
 
 #ifdef DEBUG
@@ -131,7 +137,7 @@ namespace detail {
 #endif
 
       // prepare lattice and basis reduction
-      LatCommon::Rank1Lattice lattice(
+      LatticeTester::Rank1Lattice<std::int64_t, NTL::vector<std::int64_t>, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real> lattice(
             lat.sizeParam().numPoints(),
             gen,
             static_cast<int>(projection.size()),
@@ -139,18 +145,21 @@ namespace detail {
       lattice.buildBasis (static_cast<int>(projection.size()));
       lattice.dualize ();
 
-      LatCommon::Reducer reducer(lattice);
+      LatticeTester::Reducer<std::int64_t, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real, NTL::vector<Real>, NTL::matrix<Real>> reducer(lattice);
+
+      reducer.preRedDieter(0);
 
       if (not reducer.shortestVector(lattice.getNorm())) {
          // reduction failed
          return std::numeric_limits<Real>::infinity();
       }
 
+
       // get length of shortest vector under L2NORM
-      lattice.getPrimalBasis ().updateScalL2Norm (1);
+      lattice.updateVecNorm();
 
       // square length
-      Real sqlength = lattice.getPrimalBasis().getVecNorm(1);
+      Real sqlength = lattice.getVecNorm(0); 
 
       // normalization
       Real sqlength0 =
@@ -172,11 +181,11 @@ namespace detail {
       return Real(pow(merit, power));
    }
 
-   template <class NORM, Compress COMPRESS, LatType LAT>
+   template <class NORM, Compress COMPRESS, EmbeddingType ET>
    RealVector spectralEval(
-            const Storage<LatType::EMBEDDED, COMPRESS>& storage,
-            const LatDef<LAT>& lat,
-            const LatCommon::Coordinates& projection,
+            const Storage<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, COMPRESS>& storage,
+            const LatDef<LatticeType::ORDINARY, ET>& lat,
+            const LatticeTester::Coordinates& projection,
             Real power
             )
    {
@@ -185,8 +194,8 @@ namespace detail {
 
       for (Level level = 0; level <= storage.sizeParam().maxLevel(); level++) {
 
-         typename Storage<LatType::ORDINARY, COMPRESS>::SizeParam osize(storage.sizeParam().numPointsOnLevel(level));
-         Storage<LatType::ORDINARY, COMPRESS> ostorage(osize);
+         typename Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, COMPRESS>::SizeParam osize(storage.sizeParam().numPointsOnLevel(level));
+         Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, COMPRESS> ostorage(osize);
 
          auto olat = createLatDef(osize, lat.gen());
 
@@ -201,13 +210,13 @@ namespace detail {
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class NORM, LatType LAT, Compress COMPRESS>
-class Evaluator<Spectral<NORM>, LAT, COMPRESS> {
+template <class NORM, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
+class Evaluator<Spectral<NORM>,LatticeType::ORDINARY, ET, COMPRESS, PLO> {
 public:
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef typename Storage<LatticeType::ORDINARY, ET, COMPRESS>::MeritValue MeritValue;
 
    Evaluator(
-      Storage<LAT, COMPRESS> storage,
+      Storage<LatticeType::ORDINARY, ET, COMPRESS> storage,
       Real power
       ):
       m_storage(std::move(storage)),
@@ -219,8 +228,8 @@ public:
     * \c projection.
     */
    MeritValue operator() (
-         const LatDef<LAT>& lat,
-         const LatCommon::Coordinates& projection
+         const LatDef<LatticeType::ORDINARY, ET>& lat,
+         const LatticeTester::Coordinates& projection
          ) const
    {
       if (projection.size() == 0)
@@ -239,7 +248,7 @@ public:
    }
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LatticeType::ORDINARY, ET, COMPRESS> m_storage;
    Real m_power;
 };
 

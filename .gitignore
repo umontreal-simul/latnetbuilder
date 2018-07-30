@@ -1,7 +1,8 @@
-__pycache__
 .waf*
 .lock-waf_*
 build
-VERSION
-*.pyc
-*.pyo
+version-*
+*.txt
+
+test/*
+!test/*.cc

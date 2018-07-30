@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for generic weighted figures of merit.
  */
+  template<LatticeType LR>
 struct FigureOfMerit {
    /**
     * Parses a string specifying a weighted figure of merit and a string
@@ -38,14 +39,15 @@ struct FigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
-         std::unique_ptr<LatCommon::Weights> weights,
+         unsigned int interlacingFactor,
+         std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
       auto strCS = splitPair<>(str, ':');
       if (strCS.first == "CU")
-         CoordUniformFigureOfMerit::parse(strNorm, strCS.second, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         CoordUniformFigureOfMerit<LR>::parse(strNorm, strCS.second, interlacingFactor, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
       else
-         WeightedFigureOfMerit::parse(strNorm, str, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         WeightedFigureOfMerit<LR>::parse(strNorm, str, interlacingFactor, std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
    }
 };
 

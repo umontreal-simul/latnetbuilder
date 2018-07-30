@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,11 +19,13 @@
 
 #include "latbuilder/CombinedWeights.h"
 
-#include "latcommon/Weights.h"
-#include "latcommon/ProjectionDependentWeights.h"
-#include "latcommon/OrderDependentWeights.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/PODWeights.h"
+#include "latticetester/Weights.h"
+#include "latticetester/ProjectionDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/PODWeights.h"
+#include "latbuilder/Interlaced/IPODWeights.h"
+#include "latbuilder/Interlaced/IPDWeights.h"
 
 namespace LatBuilder {
 
@@ -35,15 +37,19 @@ public:
     */
    template <template <typename> class F, typename... ARGS>
    static
-   typename std::result_of<F<LatCommon::Weights>(const LatCommon::Weights&, ARGS&&...)>::type
-   dispatch(const LatCommon::Weights& weights, ARGS&&... args)
+   typename std::result_of<F<LatticeTester::Weights>(const LatticeTester::Weights&, ARGS&&...)>::type
+   dispatch(const LatticeTester::Weights& weights, ARGS&&... args)
    {
-      try { return tryDispatch<F, CombinedWeights                      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatch<F, LatCommon::ProductWeights            >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatch<F, LatCommon::OrderDependentWeights     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatch<F, LatCommon::PODWeights                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatch<F, LatCommon::ProjectionDependentWeights>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatch<F, LatCommon::Weights                   >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, CombinedWeights                                       >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatBuilder::Interlaced::IPODWeights<Kernel::IAAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatBuilder::Interlaced::IPODWeights<Kernel::IB>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatBuilder::Interlaced::IPDWeights<Kernel::IAAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatBuilder::Interlaced::IPDWeights<Kernel::IB>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatticeTester::ProductWeights                         >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatticeTester::OrderDependentWeights                  >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatticeTester::PODWeights                             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatticeTester::ProjectionDependentWeights             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatticeTester::Weights                                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       throw std::runtime_error("unsupported type of weights");
    }
 
@@ -53,15 +59,19 @@ public:
     */
    template <template <typename> class F, typename... ARGS>
    static
-   typename std::result_of<F<LatCommon::Weights>(std::unique_ptr<LatCommon::Weights>, ARGS&&...)>::type
-   dispatchPtr(std::unique_ptr<LatCommon::Weights> weights, ARGS&&... args)
+   typename std::result_of<F<LatticeTester::Weights>(std::unique_ptr<LatticeTester::Weights>, ARGS&&...)>::type
+   dispatchPtr(std::unique_ptr<LatticeTester::Weights> weights, ARGS&&... args)
    {
-      try { return tryDispatchPtr<F, CombinedWeights                      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatchPtr<F, LatCommon::ProductWeights            >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatchPtr<F, LatCommon::OrderDependentWeights     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatchPtr<F, LatCommon::PODWeights                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatchPtr<F, LatCommon::ProjectionDependentWeights>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
-      try { return tryDispatchPtr<F, LatCommon::Weights                   >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, CombinedWeights                                       >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPODWeights<Kernel::IAAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPODWeights<Kernel::IB>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPDWeights<Kernel::IAAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPDWeights<Kernel::IB>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatticeTester::ProductWeights                         >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatticeTester::OrderDependentWeights                  >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatticeTester::PODWeights                             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatticeTester::ProjectionDependentWeights             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatticeTester::Weights                                >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       throw std::runtime_error("unsupported type of weights");
    }
 private:
@@ -71,8 +81,8 @@ private:
       typename... ARGS
       >
    static
-   typename std::result_of<F<LatCommon::Weights>(const LatCommon::Weights&, ARGS&&...)>::type
-   tryDispatch(const LatCommon::Weights& weights, ARGS&&... args)
+   typename std::result_of<F<LatticeTester::Weights>(const LatticeTester::Weights&, ARGS&&...)>::type
+   tryDispatch(const LatticeTester::Weights& weights, ARGS&&... args)
    { return F<WEIGHTS>()(dynamic_cast<const WEIGHTS&>(weights), std::forward<ARGS>(args)...); }
 
    template <
@@ -81,8 +91,8 @@ private:
       typename... ARGS
       >
    static
-   typename std::result_of<F<LatCommon::Weights>(std::unique_ptr<LatCommon::Weights>&&, ARGS&&...)>::type
-   tryDispatchPtr(std::unique_ptr<LatCommon::Weights>& weights, ARGS&&... args)
+   typename std::result_of<F<LatticeTester::Weights>(std::unique_ptr<LatticeTester::Weights>&&, ARGS&&...)>::type
+   tryDispatchPtr(std::unique_ptr<LatticeTester::Weights>& weights, ARGS&&... args)
    {
       auto pweights = weights.release();
       std::unique_ptr<WEIGHTS> w(dynamic_cast<WEIGHTS*>(pweights));

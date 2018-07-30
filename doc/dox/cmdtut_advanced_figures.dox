@@ -1,0 +1,87 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_advanced_figures Figures of merit
+
+This page describes how the various
+\ref feats_figures "figures of merit" can be specified.
+
+
+- Figures of merit for ordinary lattice rules:
+
+    - the \f$\mathcal P_{\alpha}\f$ discrepancy:
+    \n <code>--figure-of-merit P<var>alpha</var></code> with \f$\alpha\f$=<code><var>alpha</var></code>,
+
+    - the \f$\mathcal R_{\alpha}\f$ criterion:
+    \n <code>--figure-of-merit R<var>alpha</var></code> with \f$\alpha\f$=<code><var>alpha</var></code>,
+
+    For the two last figures of merit, the <code>CU</code> prefix may be added to fasten the computations 
+    by using the coordinate-uniform evaluation algorithm when an \f$\ell_2\f$ norm is used.
+
+    - the spectral figure of merit:
+    \n <code>--figure-of-merit spectral</code>;
+
+
+- Figures of merit for polynomial lattice rules:
+
+    - the \f$\mathcal P_{\alpha}\f$ discrepancy:
+    \n <code>--figure-of-merit P<var>alpha</var></code> with \f$\alpha\f$=<code><var>alpha</var></code>,
+
+    - the \f$\mathcal R\f$ criterion:
+    \n <code>--figure-of-merit R</code>;
+
+    For both figures of merit, the <code>CU</code> prefix may be added to fasten the computations by using the coordinate-uniform evaluation
+    algorithm when an \f$\ell_2\f$ norm is used.
+
+
+- Figures of merit for digital nets:
+
+    - the \f$\mathcal P_{\alpha}\f$ discrepancy:
+    \n Only with the coordinate-uniform evaluation algorithm and an \f$\ell_2\f$ norm.
+    \n <code>--figure-of-merit CU:P<var>alpha</var> --norm-type 2</code> with \f$\alpha\f$=<code><var>alpha</var></code>,
+
+    - the \f$\mathcal R\f$ criterion:
+    \n Only with the coordinate-uniform evaluation algorithm and an \f$\ell_2\f$ norm.
+    \n <code>--figure-of-merit CU:R --norm-type 2</code>,
+
+    - the t-value merit:
+    \n <code>--figure-of-merit t-value</code>,
+
+    - the projection-dependent t-value merit:
+    \n <code>--figure-of-merit projdep:t-value</code>,
+
+    - the projection-dependent t-value based star discrepancy bound merit
+    \n <code>--figure-of-merit projdep:t-value:starDisc</code>,
+
+    - the projection-dependent resolution-gap merit:
+    \n <code>--figure-of-merit projdep:resolution-gap</code>;
+
+
+- Figures of merit for interlaced polynomial lattice rules and interlaced digital nets:
+
+    - the \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy:
+    \n Only with an \f$\ell_1\f$ norm.
+    \n <code>--figure-of-merit CU:IA<var>alpha</var> --norm-type 1</code> with \f$\alpha\f$=<code><var>alpha</var></code>,
+
+    - the \f$B_{d, (2)}\f$ interlaced discrepancy:
+    \n Only with an \f$\ell_1\f$ norm.
+    <code>--figure-of-merit CU:IB --norm-type 1</code>.
+
+    For both figures of merit, the <code>CU</code> prefix may be added to fasten the computations by using the coordinate-uniform evaluation
+    algorithm.
+
+*/
+vim: ft=doxygen spelllang=en spell

@@ -1,0 +1,62 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page feats_exploration Exploration methods
+
+Various exploration methods are supported by LatNet Builder. Exploration methods
+describe how the point sets search space is explored. LatNet Builder supports the following exploration
+methods:
+
+- <b>evaluation</b>:
+  \n Only the specified point set is evaluated.
+- <b>exhaustive</b>:
+  \n All the possible point sets are explored.
+- <b>random</b>:
+  \n A random sample of point sets are explored.
+- <b>full-CBC</b>:
+  \n Point sets are constructed component-by-component (CBC) in a greedy procedure. Starting from a point set with zero coordinates, coordinates are
+  added one at a time. For each coordinate, all possible coordinate values
+  are evaluated and the best choice is selected to increase the dimension.
+- <b>random-CBC</b>:
+  \n Point sets are constructed component-by-component (CBC) in a greedy procedure. Starting from a point set with zero coordinates, coordinates are
+  added one at a time. For each coordinate, a random sample of coordinate values
+  are evaluated and the best choice is selected to increase the dimension.
+
+Additionally, some exploration methods are only supported either for lattices or for digital nets:
+- lattices:
+\anchor feats_exploration_extend
+    - <b>extend</b>: 
+      \n Extend the size of a rank-1 lattice up to a specific modulus.
+\anchor feats_exploration_fast-CBC
+    - <b>fast-CBC</b>: 
+      \n This exploration method can be used to fasten computation for the CBC exploration method when used with the following coordinate-uniform figures of merit:
+      - \f$\mathcal P_{\alpha}\f$, \f$\mathcal R_\alpha\f$ and \f$\mathcal R\f$ discrepancies with an \f$\ell_2\f$ norm; and
+      - \f$B_{\alpha, d, (1)}\f$ and \f$B_{d, (2)}\f$ interlaced discrepancies with an \f$\ell_1\f$ norm.
+    \n This method \cite vLEC16a uses a Fast Fourier Transform to compute the merit values for all the possible values of the new component of the generating vector.
+    - <b>Korobov</b>: 
+      \n Explore the generating vectors of the form \f$ (1, a, a^2, \dots, a^{s-1}) \mod N \f$ for all \f$a\f$ coprime with \f$N\f$ where \f$s\f$ is the dimension of the lattice 
+      and \f$ N \f$ its modulus.
+    - <b>random Korobov</b>: 
+      \n Same as Korobov except that only a random sample of integers/polynomials coprime with \f$ N \f$ is explored.
+<br><br>
+- digital nets:
+    - <b>mixed-CBC</b>:
+      \n This algorithm mixes the full-CBC and the random-CBC algorithms. For the first coordinates, the full-CBC exploration is used
+      and then, it is replaced with the random-CBC exploration. In other words, component-by-component, all the possible coordinate values are tested for the first dimensions
+      but then only a random sample of fixed size is explored for the remaining coordinates. 
+
+*/
+vim: ft=doxygen spelllang=en spell

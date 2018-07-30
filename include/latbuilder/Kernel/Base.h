@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,11 +37,15 @@ public:
     * The intervals are of size \c 1/sizeParam.numPoints() and the first point is
     * at 0.
     *
+    * the \f$i^{\text{th}}\f$ element  \f$\omega_i\f$ is:
+    *- \f$\omega(i/n)\f$ in the case of an ordinary lattice with modulus \f$n\f$.
+    *-  \f$\omega((\nu_m(\frac{i(z)}{P(z)}))\f$ in the case of a polynomial lattice of modulus \f$P(z)\f$ (\f$ i(z) = \sum a_iz^i\f$ where \f$i =\sum a_i2^i\f$).
+    *
     * \return The newly created vector.
     */
-   template <LatType L, Compress C> 
+   template <LatticeType LR, EmbeddingType L, Compress C, PerLevelOrder P > 
    RealVector valuesVector(
-         const Storage<L, C>& storage
+         const Storage<LR, L, C, P>& storage
          ) const
    { return derived().valuesVector(storage); }
 

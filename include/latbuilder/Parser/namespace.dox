@@ -1,7 +1,7 @@
 namespace LatBuilder {
 
 /**
- * String parsing facilities for Lattice Builder objects.
+ * String parsing facilities for LatBuilder objects.
  *
  * For polymorphic objects, the parser functions return a shared pointer to a
  * newly created object, or a null pointer on failure, without throwing

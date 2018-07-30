@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,18 +15,22 @@
 // limitations under the License.
 
 #include "latbuilder/WeightedFigureOfMerit.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/CoordinateSets.h"
 
 #include "latbuilder/ProjDepMerit/Spectral.h"
-#include "latcommon/NormaBestLat.h"
+#include "latticetester/NormaBestLat.h"
+#include "latbuilder/ProjDepMerit/CoordUniform.h" 
+#include "latbuilder/Kernel/PAlphaPLR.h"
 
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Storage.h"
 #include "latbuilder/Functor/binary.h"
 
 #include "latbuilder/LatSeq/Korobov.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
+
+#include "Path.h"
 
 #include "latbuilder/TextStream.h"
 
@@ -41,9 +45,10 @@ std::unique_ptr<T> unique(ARGS&&... args)
 { return std::unique_ptr<T>(new T(std::forward<ARGS>(args)...)); }
 
 //! [Observer]
+template<LatticeType LA>
 class Observer {
 public:
-   typedef LatBuilder::LatDef<LatType::ORDINARY> LatDef;
+   typedef LatBuilder::LatDef<LA, EmbeddingType::UNILEVEL> LatDef;
 
    Observer() { reset(); }
 
@@ -60,7 +65,8 @@ public:
    // been observed; updates the best observed candidate lattice if necessary
    void observe(const LatDef& lat, Real merit)
    {
-      std::cout << lat << "\t:\t" << merit;
+      std::cout << lat;
+      std::cout << "Merit: " << merit;
       if (merit < m_bestMerit) {
          std::cout << " <-- best";
          m_bestMerit = merit;
@@ -76,7 +82,7 @@ public:
 
    //! [onAbort]
    void onAbort(const LatDef& lat) const
-   { std::cout << "rejected " << lat << std::endl; }
+   { std::cout << "rejected:" << std::endl << lat; }
    //! [onAbort]
 
 private:
@@ -86,28 +92,42 @@ private:
 //! [Observer]
 
 
-template <LatType L, Compress C>
-void test(const Storage<L, C>& storage, Dimension dimension)
+template <LatticeType LA, EmbeddingType L, Compress C>
+void test(const Storage<LA, L, C>& storage, Dimension dimension)
 {
    //! [figure]
-   auto weights = unique<LatCommon::ProductWeights>();
+   auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   typedef ProjDepMerit::Spectral<LatCommon::NormaBestLat> ProjDep;
+   typedef ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Max> figure(2, std::move(weights));
    std::cout << "figure of merit: " << figure << std::endl;
    //! [figure]
 
+   /*
+   // The P_{\alpha,PLR} figure of merit for polynomial lattices
+   //! [pfigure]
+   auto weights = unique<LatticeTester::ProductWeights>();
+   weights->setDefaultWeight(0.7);
+
+   //! [pProjDepMerit]
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaPLR> ProjDep;
+   WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(2, std::move(weights), ProjDep(2));
+   //! [pProjDepMerit]
+   std::cout << "figure of merit: " << figure << std::endl;
+   //! [pfigure]
+   */
+
    // sequence of lattice definitions
-   typedef GenSeq::CoprimeIntegers<decltype(figure)::suggestedCompression()> Coprime;
+   typedef GenSeq::GeneratingValues<LA, decltype(figure)::suggestedCompression()> Coprime;
    auto latSeq = LatSeq::korobov(
          storage.sizeParam(),
-         Coprime(storage.sizeParam().numPoints()),
+         Coprime(storage.sizeParam().modulus()),
          dimension
          );
 
    //! [allProjections]
-   LatCommon::CoordinateSets::FromRanges allProjections(
+   LatticeTester::CoordinateSets::FromRanges allProjections(
          1, latSeq.latDimension(),     // range for dimension
          0, latSeq.latDimension() - 1  // range for coordinate index
          );
@@ -121,9 +141,9 @@ void test(const Storage<L, C>& storage, Dimension dimension)
    auto eval = figure.evaluator(storage);
 
    //! [connect]
-   Observer obs;
-   eval.onProgress().connect(boost::bind(&Observer::onProgress, &obs, _1));
-   eval.onAbort().connect(boost::bind(&Observer::onAbort, &obs, _1));
+   Observer<LA> obs;
+   eval.onProgress().connect(boost::bind(&Observer<LA>::onProgress, &obs, _1));
+   eval.onAbort().connect(boost::bind(&Observer<LA>::onAbort, &obs, _1));
    //! [connect]
 
    //! [loop]
@@ -133,17 +153,23 @@ void test(const Storage<L, C>& storage, Dimension dimension)
       // notify the observer
       obs.observe(lat, merit);
    }
-   std::cout << "BEST LATTICE: " << obs.bestLat() << " with merit value " << obs.bestMerit() << std::endl;
+   std::cout << "BEST LATTICE: " << std::endl << obs.bestLat() << "Merit value: " << obs.bestMerit() << std::endl;
    //! [loop]
 }
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    Dimension dim = 3;
 
    //! [storage]
-   test(Storage<LatType::ORDINARY, Compress::SYMMETRIC>(19), dim);
+   test(Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC>(19), dim);
    //! [storage]
+   /*
+   //! [pstorage]
+   test(Storage<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE>(PolynomialFromInt(13)), dim);
+   //! [pstorage]
+   */
 
    return 0;
 }

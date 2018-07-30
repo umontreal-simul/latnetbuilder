@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
 
 #ifndef LATBUILDER__FUNCTOR__LOW_PASS_H
 #define LATBUILDER__FUNCTOR__LOW_PASS_H
+
+#include <limits>
+#include <utility>
 
 namespace LatBuilder { namespace Functor {
 /**

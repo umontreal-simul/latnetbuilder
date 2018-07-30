@@ -1,0 +1,6 @@
+namespace LatBuilder {
+/**
+ * Features used for interlaced digital nets.
+ */
+namespace Interlaced {
+}}

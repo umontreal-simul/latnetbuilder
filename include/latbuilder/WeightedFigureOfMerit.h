@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #define LATBUILDER__WEIGHTED_FIGURE_OF_MERIT_H
 
 #include "latbuilder/FigureOfMerit.h"
-#include "latcommon/CoordinateSets.h"
+#include "latticetester/CoordinateSets.h"
 
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
@@ -35,7 +35,7 @@
 namespace LatBuilder
 {
 
-template <class FIGURE, LatType LAT, Compress COMPRESS>
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LR, ET>::Order>
 class WeightedFigureOfMeritEvaluator;
 
 /**
@@ -90,7 +90,7 @@ public:
     */
    WeightedFigureOfMerit(
          Real normType,
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          PROJDEP projdep = PROJDEP()
          ):
       m_normType(normType),
@@ -109,11 +109,11 @@ public:
    { return m_normType; }
 
    /// \copydoc FigureOfMerit::weights()
-   const LatCommon::Weights& weights() const
+   const LatticeTester::Weights& weights() const
    { return *m_weights; }
 
    /**
-    * Returns the projection-dependent figure of merit \f$D_{\mathfrak u}^2\f$.
+    * Returns the projection-dependent figure of merit \f$D_{\mathfrak u}\f$.
     */
    const ProjDepMerit::Base<PROJDEP>& projDepMerit() const
    { return m_projDepMerit; }
@@ -130,10 +130,10 @@ public:
    /**
     * Creates an evaluator for the figure of merit.
     */
-   template <LatType LAT, Compress COMPRESS>
-   WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LAT, COMPRESS>
-   evaluator(Storage<LAT, COMPRESS> storage) const
-   { return WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LAT, COMPRESS>(*this, std::move(storage)); }
+   template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+   WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, ET, COMPRESS, PLO>
+   evaluator(Storage<LR, ET, COMPRESS, PLO> storage) const
+   { return WeightedFigureOfMeritEvaluator<WeightedFigureOfMerit, LR, ET, COMPRESS, PLO>(*this, std::move(storage)); }
 
    std::string name() const
    { return Accumulator<ACC, Real>::name() + ":" + projDepMerit().name(); }
@@ -143,26 +143,15 @@ public:
 
 private:
    Real m_normType;
-   std::unique_ptr<LatCommon::Weights> m_weights;
+   std::unique_ptr<LatticeTester::Weights> m_weights;
    PROJDEP m_projDepMerit;
 
    std::ostream& format(std::ostream& os) const
    {
-      os << "WeightedFigureOfMerit("
-         << "accumulator=" << Accumulator<ACC, Real>::name() << ", "
-         << "norm-type=";
-      if (Accumulator<ACC, Real>::name() == "max") {
-         if (normType() == 1.0)
-            os << "inf";
-         else
-            os << "inf(" << normType() << ")";
-      }
-      else
-         os << normType();
-      os << ", "
-         << "projDepMerit=" << projDepMerit() << ", "
-         << "weights=" << weights()
-         << ")";
+      os << "Projection Dependent Merit: " << projDepMerit() 
+         << " - Accumulator: " << Accumulator<ACC, Real>::name() << std::endl
+         << "Norm Type: " << normType() << std::endl
+         << "Weights: " << weights();
       return os;
    }
 
@@ -175,21 +164,21 @@ private:
  * instantiated without prior knowledge of the storage class to be used during
  * the evaluation.
  */
-template <class FIGURE, LatType LAT, Compress COMPRESS>
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
 class WeightedFigureOfMeritEvaluator
 {
 public:
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
 
    typedef boost::signals2::signal<bool (const MeritValue&), Functor::AllOf> OnProgress;
-   typedef boost::signals2::signal<void (const LatDef<LAT>&)> OnAbort;
+   typedef boost::signals2::signal<void (const LatDef<LR, ET>&)> OnAbort;
 
    /**
     * Constructor.
     */
    WeightedFigureOfMeritEvaluator(
          const FIGURE& figure,
-         Storage<LAT, COMPRESS> storage
+         Storage<LR, ET, COMPRESS, PLO> storage
          ):
       m_onProgress(new OnProgress),
       m_onAbort(new OnAbort),
@@ -230,18 +219,18 @@ public:
     * to the projections \c projections of the lattice \c lat.
     *
     * \param lat     Lattice for which the figure of merit will be computed.
-    * \param projections  Set of projections \f$\mathcal J\f$ (see LatCommon::CoordinateSets).
+    * \param projections  Set of projections \f$\mathcal J\f$ (see LatticeTester::CoordinateSets).
     * \param initialValue  Initial value to put in the accumulator.
     */
    template <class CSETS>
    MeritValue operator() (
-         const LatDef<LAT>& lat,
+         const LatDef<LR, ET>& lat,
          const CSETS& projections,
          MeritValue initialValue
          ) const
    {
    //#define DEBUG
-      using namespace LatCommon;
+      using namespace LatticeTester;
 #ifdef DEBUG
       using TextStream::operator<<;
       std::cout << "computing merit for lattice " << lat << std::endl;
@@ -277,11 +266,11 @@ public:
          std::cout << "    weighted:  " << (weight * merit) << std::endl;
 #endif
 
-         // divide q by two because the merit is assumed to be a squared value
-         acc.accumulate(weight, merit, m_figure.normType() / 2);
+         // divide q by the normType of the kernel
+         acc.accumulate(weight, merit, m_figure.normType() / m_figure.projDepMerit().power());
 
          if (!onProgress()(acc.value())) {
-            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / 2);
+            acc.accumulate(std::numeric_limits<Real>::infinity(), merit, m_figure.normType() / m_figure.projDepMerit().power());
             onAbort()(lat);
 #ifdef DEBUG
             std::cout << "    aborting" << std::endl;
@@ -307,7 +296,7 @@ private:
    std::unique_ptr<OnAbort> m_onAbort;
 
    const FIGURE& m_figure;
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    decltype(m_figure.projDepMerit().evaluator(m_storage)) m_eval;
 };
 

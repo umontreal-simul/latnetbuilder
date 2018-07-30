@@ -18,7 +18,6 @@ class doxygen(Task.Task):
             for x in outputs:
                 x.sig = Utils.h_file(x.abspath())
             self.outputs = outputs
-        self.generator.bld.install_files('${DOCDIR}/html', outputs, cwd=html, relative_trick=True)
 
 def build(ctx):
     if not ctx.env.DOXYGEN:
@@ -27,25 +26,34 @@ def build(ctx):
 
     ctx.post_mode = Build.POST_LAZY
 
+
     # Doxyfile
     doc_dir = ctx.root.find_node(ctx.variant_dir).make_node('doc')
     ctx(features='subst',
             source='Doxyfile.in',
             target='Doxyfile',
             DOCDIR=ctx.path.abspath(),
-            LCDOCDIR=ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/doc').abspath(),
+            LCDOCDIR=ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/doc').abspath(),
             TOPDIR=ctx.top_dir,
-            OUTDIR=doc_dir.abspath())
+            OUTDIR=doc_dir.abspath(),
+            LATNETBUILDER_VERSION = ctx.set_version("latnetbuilder"))
 
     # Doxygen
     dox = doxygen(env=ctx.env)
     dox.set_inputs([doc_dir.find_or_declare('Doxyfile')]
         + ctx.path.ant_glob('dox/*.dox')
-        + ctx.path.parent.ant_glob('latcommon/include/latcommon/**/*.h')
-        + ctx.path.parent.ant_glob('include/latbuilder/**/*.h'))
+        + ctx.path.parent.ant_glob('latticetester/include/latticetester/**/*.h')
+        # + ctx.path.parent.ant_glob('latticetester/doc/dox/*.dox')
+        + ctx.path.parent.ant_glob('include/latbuilder/**/*.h')
+        + ctx.path.parent.ant_glob('include/netbuilder/**/*.h')
+        + ctx.path.parent.ant_glob('include/latbuilder/*.h')
+        + ctx.path.parent.ant_glob('include/netbuilder/*.h'))
     dox.set_outputs(ctx.path.find_or_declare('html/index.html'))
     ctx.add_to_group(dox)
 
     # install files
     ctx.add_group()
-    ctx.install_files('${DOCDIR}', ctx.path.find_node('index.html'))
+    html = ctx.path.find_dir('.').get_bld().find_dir('html')
+    if html:
+        ctx.install_files('${DOCDIR}/latnetbuilder/html', html.ant_glob('**/*') , cwd=html, relative_trick=True)
+        ctx.install_files('${DOCDIR}/latnetbuilder', ctx.path.find_node('index.html'))

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,27 +17,39 @@
 #include "latbuilder/GenSeq/CyclicGroup.h"
 #include "latbuilder/TextStream.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
 using TextStream::operator<<;
 
 //! [main]
-typedef GenSeq::CyclicGroup<Compress::NONE> WholeSeq;
-typedef GenSeq::CyclicGroup<Compress::SYMMETRIC> HalfSeq;
+typedef GenSeq::CyclicGroup<LatticeType::ORDINARY, Compress::NONE> WholeIntSeq;
+typedef GenSeq::CyclicGroup<LatticeType::ORDINARY, Compress::SYMMETRIC> HalfIntSeq;
+typedef GenSeq::CyclicGroup<LatticeType::POLYNOMIAL, Compress::NONE> WholePolySeq;
 
-void displaySeq(int base, int power)
+void displayIntSeq(int base, int power)
 {
    std::cout << "lattice size: " << base << "^" << power << std::endl;
-   std::cout << "    whole sequence: " << WholeSeq(base, power) << std::endl;
-   std::cout << "     half sequence: " << HalfSeq(base, power) << std::endl;
+   std::cout << "    whole sequence: " << WholeIntSeq(base, power) << std::endl;
+   std::cout << "     half sequence: " << HalfIntSeq(base, power) << std::endl;
+}
+
+void displayPolySeq(Polynomial base, int power)
+{
+   std::cout << "polynomial lattice size: " << base << "^" << power << std::endl;
+   std::cout << "    whole sequence: " << WholePolySeq(base, power) << std::endl;
 }
 
 int main()
 {
-   displaySeq(7, 1);
-   displaySeq(2, 3);
-   displaySeq(3, 2);
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
+   displayIntSeq(7, 1);
+   displayIntSeq(2, 3);
+   displayIntSeq(3, 2);
+   displayPolySeq(PolynomialFromInt(13),1); 
+
    return 0;
 }
 //! [main]

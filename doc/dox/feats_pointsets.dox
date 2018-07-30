@@ -1,0 +1,241 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page feats_pointsets Point set types
+
+LatNet Builder supports the construction of highly uniform point sets of two types : 
+- \ref feats_pointsets_latrank1
+- \ref feats_pointsets_net
+
+\section feats_pointsets_latrank1 Rank-1 lattices
+
+\subsection feats_pointsets_latrank1_ord Ordinary lattices
+
+A rank-1 ordinary lattice rule is a point set \f$P_n\f$ in dimension \f$s\f$ which can be written:
+\f[
+    P_n = \left\{\boldsymbol x_i = (i \boldsymbol a / n) \mod 1 : i = 0, \dots, n - 1\right\}.
+\f]
+where \f$\boldsymbol a = (a_1, \dots, a_s)\f$ is an integer generating vector.
+In LatNet Builder, we only consider fully projection-regular \cite vLEC00b lattice rules, that is lattice rules for which all the points never superpose on each other
+in lower-dimensional projections. This happens if and only if the coordinates of \f$\boldsymbol a\f$ are coprimes
+with \f$n\f$. In this case, for each coordinate \f$j \in \{1, \dots, s\}\f$, the \f$\{x_{i,j}, 0 \leq i < n\}\f$ are all distinct and form a permutation of the multiples of
+\f$\frac1n\f$.
+
+For simplicity, in this documentation, the term ordinary lattice rule will always refer to fully projection-regular rank-1 ordinary lattice rules.
+
+\subsection feats_pointsets_latrank1_poly Polynomial lattices in base 2
+
+Recall that \f$\mathbb F_2[z]\f$ is the ring of polynomials over \f$\mathbb F_2\f$, the field with two element, and \f$\mathbb L_2\f$ is the ring of formal Laurent series
+over \f$\mathbb F_2\f$. For a series \f$v(z) = \sum_{l = w}^{\infty} x_l z^{-l} \in \mathbb L_2\f$, with \f$x_w \neq 0\f$, we note \f$\deg(v) = - w \f$ where \f$\deg(0) = - \infty\f$ by convention.
+
+For \f$k \in \mathbb N\f$, define the mapping \f$ {\nu}_k: \mathbb L_2 \rightarrow \mathbb R \f$ by:
+\f[
+    {\nu}_k\left(\sum_{l = w}^{\infty} x_l z^{-l}\right) = \sum_{l = \max(w, 1)}^{\infty} x_l 2^{-l}.
+\f]
+
+Define the vectorized mapping \f$ {\nu}_k: \mathbb L_2^s \rightarrow \mathbb R^s \f$ by applying \f${\nu}_k\f$ separately to each coordinate.
+
+For a polynomial modulus \f$Q \in \mathbb F_2[z]\f$ of degree \f$k\f$ and a polynomial generating vector \f$ \boldsymbol a \in \mathbb F_2[z]^s \f$, let \f$n = 2^k\f$.
+The rank-1 polynomial lattice rule associated with this modulus and this generating vector is the point set \f$P_n\f$ which can be written:
+\f[
+P_n = \left\{\boldsymbol x_i = {\nu}_k\left(\frac{h \boldsymbol a}{Q}\right): h \in \mathbb{F}_2[z], \deg(h) < k \right\}.
+\f]
+
+In LatNet Builder, we only consider fully projection-regular \cite vLEC00b lattice rules, that is lattice rules for which all the points never superpose on each other
+in lower-dimensional projections. This happens if and only if the coordinates of \f$\boldsymbol a\f$ are coprime
+with \f$Q\f$. In this case, for each coordinate \f$j \in \{1, \dots, s\}\f$, the \f$\{x_{i,j}, 0 \leq i < n\}\f$ are all distinct and form a permutation of the multiples of
+\f$\frac1n\f$.
+
+For simplicity, in this documentation, the term polynomial lattice rule will always refer to fully projection-regular rank-1 polynomial lattice rules.
+
+\section feats_pointsets_net Digital nets in base 2
+
+\subsection feats_pointsets_net_def Definition
+
+Let \f$\mathbb{F}_2\f$ be the finite field with 2 elements (denoted 0 and 1). For a given dimension \f$s \geq 1\f$, a positive integer \f$k\f$, let \f$M_1, \dots, M_s\f$ be \f$r \times k\f$ matrices over \f$\mathbb{F}_2\f$. 
+The digital net associated with these matrices is the point set \f$P_n = \{\boldsymbol x_0, \dots, \boldsymbol x_{2^k-1} \}\f$ in dimension \f$s\f$ defined as follows:
+
+For each \f$0 \leq i \leq 2^k-1\f$, let \f$ \boldsymbol i = (a_0, \dots, a_{k-1})\f$ be the digits (in \f$\mathbb{F}_2\f$)  of the 2-adic expansion \f$i = \sum_{j=0}^{k-1} a_j 2^j\f$. 
+For each coordinate \f$l\f$, let \f$ \boldsymbol y_l= M_l \times \boldsymbol i = (y_{i, l, 1}, \dots,y_{i, l, r})\f$.  Write \f$\boldsymbol x_i = (x_{i, 1}, \dots, x_{i, s})\f$. 
+Then:
+\f[
+x_{i, l} = \sum_{j=1}^{r} y_{i, l, j}2^{-j}.
+\f]
+
+In LatNet Builder, we only consider fully projection-regular \cite vLEC00b digital nets, that is digital nets for which all the points never superpose on each other
+in lower-dimensional projections. This happens if and only if the generating matrices \f$M_1, \dots, M_s\f$ are full-rank.
+In this case, for each coordinate \f$j \in \{1, \dots, s\}\f$, the \f$\{x_{i,j}, 0 \leq i < n\}\f$ are all distinct and form a permutation of the multiples of
+\f$\frac1n\f$. In this documentation, the term digital net will always refer to fully projection-regular digital nets in base 2.
+
+Three constructions methods are supported by LatNet Builder:
+- \ref feats_pointsets_net_sobol 
+- \ref feats_pointsets_net_poly
+- \ref feats_pointsets_net_explicit
+
+\subsection feats_pointsets_net_sobol Sobol' construction
+
+A popular technique for constructing digital nets is the Sobol' construction. The generating matrices of Sobol' nets are defined as follows \cite rJOE08a :
+
+To construct the \f$j\f$-th generating matrix, choose a primitive polynomial of degree \f$e_j\f$ over the field \f$\mathbb F_2\f$:
+\f[
+    Q_j(z) = z^{e_j} + a_{1, j} z^{e_j - 1} + \dots + a_{e_j - 1, j} z + 1.
+\f]
+
+Define the sequence of positive integers \f$\{m_{1,j}, m_{2,j}, \dots\}\f$ by the recurrence relation:
+\f[
+    m_{r, j} = 2 a_{1,j} m_{r-1, j} \oplus 2^2 a_{2,j} m_{r-2, j} \oplus \dots \oplus 2^{e_j - 1} a_{e_j-1, j} m_{r-e_j \oplus 1, j} \oplus 2^{e_j} m_{r - e_j, j} \oplus m_{r-e_j,j},
+\f]
+where \f$\oplus\f$ is the bitwise exclusive-or operator. 
+
+The \f$\{m_{1,j}, m_{2,j}, \dots\}\f$ are called the direction numbers for coordinate \f$j\f$. The initial values \f$m_{1,j}, \dots, m_{e_j,j}\f$ can be chosen freely 
+provided that each \f$m_{r,j}\f$, \f$ 1 \leq r \leq e_j\f$ is odd and less than \f$2^r\f$. As a consequence, all the direction numbers \f$m_{r,j}\f$ are odd and less than \f$2^r\f$.
+We can write \f$m_{r,j} = \sum_{l = 1} m_{r,j,l} 2^{r-l} \f$.
+Then, for any positive integer \f$k\f$, the \f$j\f$-th generating matrix \f$M_{j}\f$ of size \f$k\f$ can be written:
+
+\f[
+M_{j} = 
+  \begin{bmatrix}
+    1 & m_{2,j,1} & m_{3,j,1} & \cdots & m_{k,j,1} \\
+    0 & 1 & m_{3,j,1} & \cdots & m_{k,j,2} \\
+    0 & 0 & 1 & \cdots & m_{k,j,3} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \cdots & 1
+  \end{bmatrix}.
+\f]
+
+The first coordinate is a special case for which all the \f$m_{r,1}\f$ equal 1. The corresponding matrix is therefore the identity matrix.
+
+Note that as the Sobol' matrices are upper triangular with ones on the main diagonal, they are full-rank and consequently a Sobol' net is always fully projection-regular.
+
+In LatNet Builder, the list of the first 21200 primitive polynomials is available. These polynomials are the ones used in \cite rJOE08a.
+The following table summarizes the degree \f$e_j\f$ of the primitive polynomials (equal to the number of initial direction numbers) as a function of \f$j\f$:
+
+<table border="1" align="center" class="tg">
+  <tr>
+    <th>\f$j\f$</th>
+    <th>\f$e_j\f$</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>N.A.</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>4-5</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>6-7</td>
+    <td>4</td>
+  </tr>
+  <tr>
+    <td>8-13</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>14-19</td>
+    <td>6</td>
+  </tr>
+  <tr>
+    <td>20-37</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td>38-53</td>
+    <td>8</td>
+  </tr>
+  <tr>
+    <td>54-101</td>
+    <td>9</td>
+  </tr>
+  <tr>
+    <td>102-161</td>
+    <td>10</td>
+  </tr>
+  <tr>
+    <td>162-337</td>
+    <td>11</td>
+  </tr>
+  <tr>
+    <td>338-481</td>
+    <td>12</td>
+  </tr>
+  <tr>
+    <td>482-1111</td>
+    <td>13</td>
+  </tr>
+  <tr>
+    <td>1112-1867</td>
+    <td>14</td>
+  </tr>
+  <tr>
+    <td>1868-3667</td>
+    <td>15</td>
+  </tr>
+  <tr>
+    <td>3668-5715</td>
+    <td>16</td>
+  </tr>
+  <tr>
+    <td>5716-13425</td>
+    <td>17</td>
+  </tr>
+  <tr>
+    <td>13426-21201</td>
+    <td>18</td>
+  </tr>
+</table>
+
+\subsection feats_pointsets_net_poly Polynomial construction
+
+Polynomial lattice rules were defined \ref feats_pointsets_latrank1_poly "above". It turns out that polynomial lattice rules
+can also be viewed as digital nets. The generating matrices of a polynomial lattice rule with polynomial modulus \f$Q\f$
+and polynomial generating vector \f$\boldsymbol a \in \mathbb F_2[z]\f$ can be computed as follows \cite rDIC10a :
+
+For \f$ 1 \leq j \leq s \f$, consider the expansions:
+
+\f[
+\frac{a_j(z)}{Q} = \sum_{l = w_j}^{+\infty} u_{l}^{(j)} z^{-l} \in \mathbb L_2[z]
+\f]
+where \f$ w_{j} \leq 1 \f$.
+
+Define the \f$k \times k\f$ matrices \f$M_{1}, \dots, M_s \f$ over \f$\mathbb F_2\f$ where the elements 
+\f$m_{l, r + 1}^{(j)}\f$ of the matrix \f$M_j\f$ are given by:
+
+\f[
+m_{l, r + 1}^{(j)} = u_{r+l}^{(j)} \in \mathbb F_2,
+\f]
+for \f$ 1 \leq j \leq s \f$, \f$ 1 \leq l \leq k\f$ and \f$0 \leq r \leq k - 1 \f$.
+
+Then, the digital net corresponding to these matrices coincides with the polynomial lattice rule defined by the generating vector \f$\boldsymbol a\f$.
+Provided that all the components of the generating vector are coprime with the modulus, these generating matrices are full-rank and the
+digital net is fully projection-regular.
+
+\subsection feats_pointsets_net_explicit Explicit construction
+
+LatNet Builder also supports the construction of random generating matrices. To ensure the fully projection-regular property,
+all the generating matrices constructed by the random generator are full-rank. It is not possible to explore exhaustively the space
+of all generating matrices as it is often really huge. Only the random variants of the exploration methods are available with the explicit 
+construction.
+*/
+vim: ft=doxygen spelllang=en spell

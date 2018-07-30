@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,35 +19,45 @@
 #include "latbuilder/TextStream.h"
 #include "latbuilder/Digits.h"
 
+#include "Path.h"
+
 #include <iostream>
 
 using namespace LatBuilder;
 using TextStream::operator<<;
 
 template <typename SEQ>
-void showSeq(Modulus base, const SEQ& seq)
+void showSeq(uInteger base, const SEQ& seq)
 {
    for (auto x : seq) {
-      Digits<Modulus> digits(base, x);
+      Digits<uInteger> digits(base, x);
       std::cout << "    " << digits << std::endl;
    }
 }
 
 int main()
 {
-   Modulus m = 2;
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
+   uInteger m = 2;
 
    //! [main]
-   for (Modulus b : {2, 3, 5}) {
-      Modulus numPoints = intPow(b, m); // n = b^m
-      Modulus gen = numPoints - 2;      // a_j = n - 2 for this example
+   for (uInteger b : {2, 3, 5}) {
+      uInteger numPoints = intPow(b, m); // n = b^m
+      uInteger gen = numPoints - 2;      // a_j = n - 2 for this example
       std::cout << "base: " << b << std::endl;
       //! [Extend]
-      GenSeq::Extend<> seq(b * numPoints, numPoints, gen);
+      GenSeq::Extend<LatticeType::ORDINARY> seq(b * numPoints, numPoints, gen);
       //! [Extend]
       std::cout << "  one level: " << seq << std::endl;
       showSeq(b, seq);
    }
+
+   Polynomial base = PolynomialFromInt(7);
+   Polynomial P = intPow(base,3);
+   Polynomial generator = PolynomialFromInt(5);
+   //! [pExtend]
+   GenSeq::Extend<LatticeType::POLYNOMIAL> seq(base * P, P, generator);
+   //! [pExtend]
    //! [main]
 
    return 0;

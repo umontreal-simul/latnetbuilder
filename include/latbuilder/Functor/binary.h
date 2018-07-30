@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
-
+#include "latbuilder/Types.h"
 namespace LatBuilder { namespace Functor {
 
 /**
@@ -35,7 +35,7 @@ struct Sum {
    { return x + y; }
 
    static std::string name()
-   { return "sum"; }
+   { return "Sum"; }
 };
 
 /**
@@ -50,7 +50,7 @@ struct Max {
    { return std::max(x, y); }
 
    static std::string name()
-   { return "max"; }
+   { return "Max"; }
 };
 
 /**
@@ -64,7 +64,7 @@ struct Pow {
    { return std::pow(x, y); }
 
    static std::string name()
-   { return "pow"; }
+   { return "Pow"; }
 };
 
 }}

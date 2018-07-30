@@ -1,0 +1,147 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_advanced_pointsets Point set types
+
+\section cmdtut_advanced_pointsets_types Switching between point set types
+
+LatNet Builder can handle two main \ref feats_pointsets "point set types": 
+- \ref feats_pointsets_latrank1 "lattice rules";
+- \ref feats_pointsets_net "digital nets".
+
+The switch between these two types of points can be operated using the option
+<code>--set-type</code> which can take the following values:
+    - <code>--set-type lattice</code>
+      to search for lattice rules; or
+    - <code>--set-type net</code>
+      to search for digital nets.
+
+\section cmdtut_advanced_pointsets_lat Lattice rules
+
+\subsection cmdtut_advanced_pointsets_lat_construction Types of lattice rules
+
+Two types of lattice rules are supported by LatNet Builder:
+- \ref feats_pointsets_latrank1_ord "ordinary lattice rules";
+- \ref feats_pointsets_latrank1_poly "polynomial lattice rules".
+
+The switch between these two types of lattices can be operated using the option
+<code>--construction</code> which can take the following values:
+    - <code>--construction ordinary</code>
+      to search for ordinary lattice rules; or
+    - <code>--construction polynomial</code>
+      to search for polynomial lattice rules.
+
+
+\subsection cmdtut_advanced_pointsets_lat_size Size of lattice rules
+
+The option <code>--size-parameter</code> can be used to specify the size (number of points) of a lattice rule. 
+
+Recall that for ordinary lattice rules, the modulus is exactly
+the number of points. In this case, we directly specify the modulus.
+For instance, to specify an ordinary lattice rule with 6977 points, use <code>--size-parameter 6977</code>.
+It is also possible to specify the number of points as a power of a base. For instance <code>--size-parameter 3^10</code> is also a valid expression.
+
+For polynomial lattice rules, the number of points equals two to the power of the degree of its modulus. 
+The number of points will thus always be a power of two. 
+In the case of unilevel point sets, one can specify the number of points of the polynomial 
+lattice rule to equal \f$2^k\f$ with <code>--size-parameter 2^<var>k</var></code>. In this case, a predefined polynomial with degree 
+\f$k\f$ will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used
+with the fast-CBC exploration method.
+
+Otherwise, one can also specify a custom polynomial modulus. The number of points will be two to the power of its degree.
+Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by
+<code>101001</code>. 
+Additionally, one can raise the polynomial to an integer power. For instance <code>--size-parameter 01^8</code> tells LatNet Builder that the modulus of the polynomial lattice is
+\f$z^8\f$. Note that it is always necessary to specify a custom modulus (as a power of a base modulus) when one constructs an embedded polynomial lattice rule.
+
+\subsection cmdtut_advanced_pointsets_lat_specify How to construct a specific lattice rule
+
+To construct a specific lattice rule, for instance to evaluate its merit value or to extend it,
+one must specify its generating vector. LatNet Builder uses the following convention: a generating vector is described
+by a dash-separated list of integers or polynomials, depending on whether the lattice is ordinary or polynomial.
+
+- An ordinary generating vector is a dash-separated list of integers.
+- A polynomial generating vector is a dash-separated list of polynomials (specified as explained above). 
+
+In the Command-Line Tutorial, any occurrence of <code><var>genVec</var></code> or <code><var>point-set-description</var></code> with 
+<code>--set-type lattice </code> can be replaced by such a list.
+For instance to specify an ordinary lattice with generating vector \f$(1, 2, 3, 5, 7, 11)\f$, replace <code><var>genVec</var></code> with
+<code>1-2-3-5-7-11</code>.
+
+\section cmdtut_advanced_pointsets_net Digital nets
+
+\subsection cmdtut_advanced_pointsets_net_construction Digital net constructions
+
+Three constructions of \ref feats_pointsets_net "digital nets" are supported by LatNet Builder:
+- \ref feats_pointsets_net_sobol "Sobol' nets";
+- \ref feats_pointsets_net_poly "polynomial lattice rules";
+- \ref feats_pointsets_net_explicit "digital nets with explicit generating matrices".
+
+The switch between these three constructions can be operated using the option
+<code>--construction</code> which can take the following values:
+    - <code>--construction sobol</code>
+      to search for Sobol' nets;
+    - <code>--construction polynomial</code>
+      to search for polynomial lattice rules; or
+    - <code>--construction explicit</code>
+      to search for with digital nets with explicit generating matrices.
+
+\subsection cmdtut_advanced_pointsets_net_size Size of digital nets
+
+Recall that the number of points of a digital net in base 2 is always a power of two.
+The option <code>--size-parameter</code> can be used to specify the number of points of the digital net.
+For instance, to specify a net with \f$2^8\f$ points, use <code>--size-parameter 2^8</code>.
+For polynomial lattice rules, a default (irreducible) modulus corresponding to this number of points will be chosen;
+to choose a specific modulus, one can use <code>--size-parameter</code> as they would 
+\ref cmdtut_advanced_pointsets_lat_size "specify a modulus for a polynomial lattice rule". 
+
+\subsection cmdtut_advanced_pointsets_net_specify How to construct a specific net 
+
+Constructing a specific digital net depends on its construction method. In the Command-Line Tutorial, any occurence of
+<code><var>point-set-description</var></code> or <code><var>net-description</var></code> can be replaced as follows:
+
+- for Sobol' nets:
+  \n a list of direction numbers. Direction numbers are specified as a dash-separated list of comma-separated lists of 
+  integers. Each comma-separated list correspond to a coordinate. Details on direction numbers, including the number of
+  direction numbers required for each coordinate, can be find \ref feats_pointsets "here". For instance <code>0-1-1,1</code>
+  stands for the Sobol' net in dimension 3 with direction numbers \f$((0), (1), (1,1))\f$.
+  Note that a dummy direction number equal to zero must be specified for the first coordinate. 
+- for polynomial lattice rules:
+  \n a (polynomial) \ref cmdtut_advanced_pointsets_lat "generating vector".
+- for explicit digital nets:
+  \n a dash-separated list of comma-separated lists of rows. Each comma-separated list
+  correspond to a generating matrix. The rows are specified as a binary sequence without separators. For instance, 
+  <code>001,010,111-110,001,111-100,110,001</code> stands for the following generating matrices :
+
+  \f[ 
+    \begin{pmatrix}
+      0 & 0 & 1 \\
+      0 & 1 & 0 \\
+      1 & 1 & 1 
+    \end{pmatrix},
+    \begin{pmatrix}
+      1 & 1 & 0 \\
+      0 & 0 & 1 \\
+      1 & 1 & 1 
+    \end{pmatrix},
+    \begin{pmatrix}
+      1 & 0 & 0 \\
+      1 & 1 & 0 \\
+      0 & 0 & 1 
+    \end{pmatrix}.
+  \f]
+*/
+vim: ft=doxygen spelllang=en spell

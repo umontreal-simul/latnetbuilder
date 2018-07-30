@@ -1,0 +1,19 @@
+import numpy as np
+
+matrices = {{matrices}}
+interlacing = {{interlacing}}
+m = len(matrices[0])
+dim = len(matrices) // interlacing
+
+points = []
+width = matrices[0].shape[0]
+nb_points = 2**width
+mult = np.array([2**(-k) for k in range(1, width*interlacing +1)])
+
+for x in range(nb_points):
+    x_coord = []
+    binary_repr = np.array([((x>>i)&1) for i in range(m)])
+    for coord in range(dim):
+        prods = [np.mod(matrices[coord * interlacing + r].dot(binary_repr), 2) for r in range(interlacing)]
+        x_coord.append(np.array([prods[i % interlacing][i // interlacing] for i in range(width*interlacing)]).dot(mult))
+    points.append(x_coord)

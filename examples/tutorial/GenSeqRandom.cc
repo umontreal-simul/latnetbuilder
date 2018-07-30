@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,10 +14,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
+
+#include "Path.h"
 
 #include <iostream>
 
@@ -26,10 +28,11 @@ using TextStream::operator<<;
 
 int main()
 {
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [main]
    //! [types]
-   typedef Traversal::Random<LFSR113> Trav;
-   typedef GenSeq::CoprimeIntegers<Compress::SYMMETRIC, Trav> RandomSeq;
+   typedef Traversal::Random<LFSR258> Trav;
+   typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, Compress::SYMMETRIC, Trav> RandomSeq;
    //! [types]
 
    size_t r = 4; // 4 random samples
@@ -37,7 +40,7 @@ int main()
    //! [trav]
    Trav trav(r);
    //! [trav]
-   for (Modulus n : {31, 256}) {
+   for (uInteger n : {31, 256}) {
       std::cout << "lattice size: " << n
          << " (" << trav.size() << " random samples)" << std::endl;
       //! [seq]

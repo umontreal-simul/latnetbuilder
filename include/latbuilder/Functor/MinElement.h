@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@
 
 #include "latbuilder/Functor/AllOf.h"
 
+#include <limits>
 #include <boost/signals2.hpp>
+#include <iostream>
 
 namespace LatBuilder { namespace Functor {
 
@@ -32,7 +34,7 @@ namespace LatBuilder { namespace Functor {
 template <typename T>
 struct MinElement {
 public:
-   typedef boost::signals2::signal<void ()> OnStart;
+   typedef boost::signals2::signal<void (const size_t&)> OnStart;
    typedef boost::signals2::signal<void ()> OnStop;
    typedef boost::signals2::signal<void (const T&)> OnMinUpdated;
    typedef boost::signals2::signal<bool (const T&), Functor::AllOf> OnElementVisited;
@@ -56,9 +58,14 @@ public:
     * An element-visited signal is emitted after an element has been visited.
     */
    template <typename ForwardIterator>
-   ForwardIterator operator()(ForwardIterator first, ForwardIterator last) const
+   ForwardIterator operator()(ForwardIterator first, ForwardIterator last, size_t maxAcceptedCount, int verbose = 0) const
    {
-      onStart()();
+      if (maxAcceptedCount == std::numeric_limits<size_t>::max()){
+        onStart()( std::distance(first, last));
+      }
+      else{
+        onStart()(maxAcceptedCount);
+      }
 
       if (first == last) {
          onStop()();
@@ -66,6 +73,10 @@ public:
       }
 
       auto min = *first; // avoid using *itmin
+      if (verbose > 0){
+        std::cout << "Current merit: " << *first << " (best) with lattice:" << std::endl;
+        std::cout << *first.base().base() << std::endl;
+      }
       ForwardIterator itmin = first;
       onMinUpdated()(min);
 
@@ -75,11 +86,24 @@ public:
       }
 
       while (++first != last) {
+         bool updated = false;
          if (*first < min) {
             min = *first;
             itmin = first;
             this->onMinUpdated()(min);
+            updated = true;
          }
+
+         if (verbose > 0){
+            if (updated) {
+              std::cout << "Current merit: " << *first << " (best) with lattice:" << std::endl;
+            }
+            else{
+              std::cout << "Current merit: " << *first << " (rejected) with lattice:" << std::endl;
+            }
+            std::cout << *first.base().base() << std::endl;
+         }
+
          if (!onElementVisited()(*first)) {
             onStop()();
             return itmin;

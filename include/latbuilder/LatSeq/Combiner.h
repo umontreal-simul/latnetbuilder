@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,28 +28,29 @@ namespace LatBuilder {
 namespace LatSeq {
 
 /**
- * Sequence of lattices based on a combination of integer sequences.
+ * Sequence of lattices based on a combination of sequences of generator values.
  *
  * Contains all lattices with the same size parameter and dimension, with
  * components of the generating vectors taken from a user-specified vector of
- * integer sequences, one corresponding to each coordinate.
+ * sequences of generator values, one corresponding to each coordinate.
  *
- * \tparam LAT       Type of lattice.
+ * \tparam ET       Type of lattice.
  * \tparam GENSEQ    Type of sequence of generator values.
  * \tparam POLICY    See SeqCombiner.
  */
 template <
-   LatType LAT,
+   LatticeType LR,
+   EmbeddingType ET,
    class GENSEQ,
    template <class> class POLICY>
 class Combiner :
    public BridgeSeq<
-      Combiner<LAT, GENSEQ, POLICY>,
+      Combiner<LR, ET, GENSEQ, POLICY>,
       SeqCombiner<GENSEQ, POLICY>,
-      LatDef<LAT>,
+      LatDef<LR, ET>,
       BridgeIteratorCached>
 {
-   typedef Combiner<LAT, GENSEQ, POLICY> self_type;
+   typedef Combiner<LR, ET, GENSEQ, POLICY> self_type;
 
 public:
 
@@ -66,7 +67,7 @@ public:
     *                      generating vector can take.
     */
    Combiner(
-         SizeParam<LAT> sizeParam,
+         SizeParam<LR, ET> sizeParam,
          std::vector<GenSeq> genSeqs
          ):
       self_type::BridgeSeq_(Base(std::move(genSeqs))),
@@ -76,7 +77,7 @@ public:
    /**
     * Returns the size parameter of the lattices in the sequence.
     */
-   const SizeParam<LAT>& sizeParam() const
+   const SizeParam<LR, ET>& sizeParam() const
    { return m_sizeParam; }
 
    /**
@@ -92,17 +93,17 @@ public:
    { return value_type(m_sizeParam, *it); }
 
 private:
-   SizeParam<LAT> m_sizeParam;
+   SizeParam<LR, ET> m_sizeParam;
 };
 
-/// Creates a lattice sequence based on a combination of sequences of integers.
-template <template <class> class POLICY, LatType LAT, class GENSEQ>
-Combiner<LAT, GENSEQ, POLICY>
+/// Creates a lattice sequence based on a combination of sequences of generator values.
+template <template <class> class POLICY,LatticeType LR, EmbeddingType ET, class GENSEQ>
+Combiner<LR, ET, GENSEQ, POLICY>
 combine(
-      SizeParam<LAT> size,
+      SizeParam<LR, ET> size,
       std::vector<GENSEQ> genSeqs
       ) {
-   return Combiner<LAT, GENSEQ, POLICY>(std::move(size), std::move(genSeqs));
+   return Combiner<LR, ET, GENSEQ, POLICY>(std::move(size), std::move(genSeqs));
 }
 
 }}

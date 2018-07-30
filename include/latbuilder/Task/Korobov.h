@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,39 +21,40 @@
 #include "latbuilder/Task/macros.h"
 
 #include "latbuilder/LatSeq/Korobov.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct KorobovTag {};
 
 
 /// Korobov search.
-template <LatType LAT, Compress COMPRESS, class FIGURE> using Korobov =
-   LatSeqBasedSearch<KorobovTag<LAT, COMPRESS, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Korobov =
+   LatSeqBasedSearch<KorobovTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Korobov search.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-Korobov<LAT, COMPRESS, FIGURE> korobov(
-      Storage<LAT, COMPRESS> storage,
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+Korobov<LR, ET, COMPRESS, PLO, FIGURE> korobov(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return Korobov<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return Korobov<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct LatSeqBasedSearchTraits<KorobovTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef GenSeq::CoprimeIntegers<COMPRESS> GenSeqType;
-   typedef LatSeq::Korobov<LAT, GenSeqType> LatSeqType;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct LatSeqBasedSearchTraits<KorobovTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef GenSeq::GeneratingValues<LR, COMPRESS> GenSeqType;
+   typedef LatSeq::Korobov<LR, ET, GenSeqType> LatSeqType;
 
    virtual ~LatSeqBasedSearchTraits() {}
 
@@ -67,9 +68,9 @@ struct LatSeqBasedSearchTraits<KorobovTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " Korobov search"; }
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: Korobov"; }
 
-   void init(LatBuilder::Task::Korobov<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::Korobov<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 

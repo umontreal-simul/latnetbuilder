@@ -1,0 +1,9 @@
+# subfolders
+recursive-include latnetbuilder/code_output *.txt
+recursive-include latnetbuilder/data *.csv
+recursive-include latnetbuilder/gui *.py
+
+# Misc
+include requirements.txt
+# include LICENSE
+global-exclude *.py[co]

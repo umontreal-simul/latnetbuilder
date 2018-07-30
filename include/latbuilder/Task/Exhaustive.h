@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,52 +22,53 @@
 
 #include "latbuilder/MeritSeq/CBC.h"
 #include "latbuilder/LatSeq/Combiner.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct ExhaustiveTag {};
 
 
 /// Exhaustive search.
-template <LatType LAT, Compress COMPRESS, class FIGURE> using Exhaustive =
-   LatSeqBasedSearch<ExhaustiveTag<LAT, COMPRESS, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Exhaustive =
+   LatSeqBasedSearch<ExhaustiveTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Exhaustive search.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-Exhaustive<LAT, COMPRESS, FIGURE> exhaustive(
-      Storage<LAT, COMPRESS> storage,
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+Exhaustive<LR, ET, COMPRESS, PLO, FIGURE> exhaustive(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return Exhaustive<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return Exhaustive<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct LatSeqBasedSearchTraits<ExhaustiveTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef GenSeq::CoprimeIntegers<COMPRESS> GenSeqType;
-   typedef LatSeq::Combiner<LAT, GenSeqType, CartesianProduct> LatSeqType;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct LatSeqBasedSearchTraits<ExhaustiveTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef GenSeq::GeneratingValues<LR, COMPRESS> GenSeqType;
+   typedef LatSeq::Combiner<LR, ET, GenSeqType, CartesianProduct> LatSeqType;
 
    virtual ~LatSeqBasedSearchTraits() {}
 
    LatSeqType latSeq(const SizeParam& sizeParam, Dimension dimension) const
    {
       auto vec = GenSeq::VectorCreator<GenSeqType>::create(sizeParam, dimension);
-      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(2));
+      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(LatticeTraits<LR>::TrivialModulus));
       return LatSeqType(sizeParam, std::move(vec));
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " exhaustive search"; }
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: Exhaustive";}
 
-   void init(LatBuilder::Task::Exhaustive<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::Exhaustive<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 

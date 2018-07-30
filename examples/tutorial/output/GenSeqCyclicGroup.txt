@@ -7,3 +7,5 @@ lattice size: 2^3
 lattice size: 3^2
     whole sequence: [1, 2, 4, 8, 7, 5]
      half sequence: [1, 2, 4]
+polynomial lattice size: [1 0 1 1]^1
+    whole sequence: [[1], [0 1], [0 0 1], [1 0 1], [1 1 1], [1 1], [0 1 1]]

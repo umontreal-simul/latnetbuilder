@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,39 +23,41 @@
 #include "latbuilder/WeightedFigureOfMerit.h"
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latbuilder/MeritSeq/CBC.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
+#include "latbuilder/Util.h"
 
 #include <vector>
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct EvalTag {};
 
 
 /// Explicit construction (evaluates a figure of merit for a single lattice).
-template <LatType LAT, Compress COMPRESS, class FIGURE> using Eval =
-   CBCBasedSearch<EvalTag<LAT, COMPRESS, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Eval =
+   CBCBasedSearch<EvalTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Explicit construction (evaluates a figure of merit for a single lattice).
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-Eval<LAT, COMPRESS, FIGURE> eval(
-      Storage<LAT, COMPRESS> storage,
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+Eval<LR, ET, COMPRESS, PLO, FIGURE> eval(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure,
-      GeneratingVector genVec
+      typename LatticeTraits<LR>::GeneratingVector genVec
       )
-{ return Eval<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure), std::move(genVec)); }
+{ return Eval<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), std::move(genVec)); }
 
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct CBCBasedSearchTraits<EvalTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef std::vector<Modulus> GenSeqType;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<EvalTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef typename LatticeTraits<LR>::GeneratingVector GeneratingVector;
+   typedef std::vector< typename LatticeTraits<LR>::GenValue> GenSeqType;
 
    CBCBasedSearchTraits(GeneratingVector genVec): genVec(std::move(genVec)) {}
 
@@ -72,9 +74,12 @@ struct CBCBasedSearchTraits<EvalTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " evaluation"; }
+   {  using TextStream::operator<<;
+      std::ostringstream stream;
+      stream << "Task: LatBuilder Evaluation of the " << to_string(LR) << " lattice " << genVec ;
+      return stream.str(); }
 
-   void init(LatBuilder::Task::Eval<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::Eval<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 
    GeneratingVector genVec;

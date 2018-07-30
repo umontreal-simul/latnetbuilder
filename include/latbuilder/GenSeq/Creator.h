@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,35 +39,35 @@ struct Creator {
    /**
     * Creates a new sequence object.
     */
-   template <LatType L, typename... ARGS>
+   template <LatticeType LR, EmbeddingType L, typename... ARGS>
    static result_type create(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          ARGS&&... t
          )
-   { return result_type(sizeParam.numPoints(), std::forward<ARGS>(t)...); }
+   { return result_type(sizeParam.modulus(), std::forward<ARGS>(t)...); }
 };
 
 /**
  * Creator specialization for cyclic groups.
  */
-template <Compress COMPRESS, class TRAV, GroupOrder ORDER>
-struct Creator<CyclicGroup<COMPRESS, TRAV, ORDER>> {
-   typedef CyclicGroup<COMPRESS, TRAV, ORDER> result_type;
+template <LatticeType LR,Compress COMPRESS, class TRAV, GroupOrder ORDER>
+struct Creator<CyclicGroup<LR,COMPRESS, TRAV, ORDER>> {
+   typedef CyclicGroup<LR, COMPRESS, TRAV, ORDER> result_type;
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LatType::EMBEDDED>& sizeParam,
+         const SizeParam<LR,EmbeddingType::MULTILEVEL>& sizeParam,
          ARGS&&... t
          )
    { return result_type(sizeParam.base(), sizeParam.maxLevel(), std::forward<ARGS>(t)...); }
 
    template <typename... ARGS>
    static result_type create(
-         const SizeParam<LatType::ORDINARY>& sizeParam,
+         const SizeParam<LR,EmbeddingType::UNILEVEL>& sizeParam,
          ARGS&&... t
          )
    {
-      SizeParam<LatType::EMBEDDED> ml(sizeParam.numPoints());
+      SizeParam<LR, EmbeddingType::MULTILEVEL> ml(sizeParam.modulus());
       return result_type(ml.base(), ml.maxLevel(), std::forward<ARGS>(t)...);
    }
 };
@@ -81,13 +81,13 @@ struct Creator<PowerSeq<SEQ>> {
    /**
     * Creates a new sequence object.
     */
-   template <LatType L, typename... ARGS>
+   template <LatticeType LR, EmbeddingType L, typename... ARGS>
    static result_type create(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          unsigned int power,
          ARGS&&... t
          )
-   { return result_type(Creator<SEQ>::create(sizeParam, std::forward<ARGS>(t)...), power, sizeParam.numPoints()); }
+   { return result_type(Creator<SEQ>::create(sizeParam, std::forward<ARGS>(t)...), power, sizeParam.modulus()); }
 };
 
 }}

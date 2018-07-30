@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,18 +25,12 @@ namespace LatBuilder { namespace Parser {
 /**
  * Parser for size parameters.
  */
+	template <LatticeType LR, LatBuilder::EmbeddingType ET>
 struct SizeParam {
-   template <LatBuilder::LatType LAT>
-   static LatBuilder::SizeParam<LAT> parse(const std::string& str);
+   
+   static LatBuilder::SizeParam<LR, ET> parse(const std::string& str);
 };
 
-template <>
-LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY> SizeParam::parse(const std::string&);
-template <>
-LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED> SizeParam::parse(const std::string&);
-
-extern template LatBuilder::SizeParam<LatBuilder::LatType::ORDINARY> SizeParam::parse<LatBuilder::LatType::ORDINARY>(const std::string&);
-extern template LatBuilder::SizeParam<LatBuilder::LatType::EMBEDDED> SizeParam::parse<LatBuilder::LatType::EMBEDDED>(const std::string&);
 
 }}
 

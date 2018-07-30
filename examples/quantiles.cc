@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@
 #include "latbuilder/MeritSeq/CoordUniformCBC.h"
 #include "latbuilder/LatSeq/Combiner.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
 
 #include <iostream>
@@ -56,20 +56,20 @@ struct Execute {
    template <class FIGURE, class LATSEQ>
    void execute(
          FIGURE figure,
-         LatBuilder::SizeParam<LatType::ORDINARY> size,
+         LatBuilder::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> size,
          LATSEQ latSeq,
          unsigned int numSamples
          ) const
    {
-      Storage<LatType::ORDINARY, FIGURE::suggestedCompression()> storage(std::move(size));
+      Storage<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, FIGURE::suggestedCompression()> storage(std::move(size));
 
       auto latSeqOverCBC = MeritSeq::latSeqOverCBC(MeritSeq::cbc(storage, figure));
 
       //! [accumulator setup]
       using namespace boost::accumulators;
 
-      accumulator_set<Real, features<tag::count, tag::min, tag::max, tag::mean, tag::tail_quantile<left>>>
-          acc(tag::tail<left>::cache_size = numSamples);
+      accumulator_set<Real, features<tag::count, tag::min, tag::max, tag::mean, tag::tail_quantile<boost::accumulators::left>>>
+          acc(tag::tail<boost::accumulators::left>::cache_size = numSamples);
 
       auto meritSeq = latSeqOverCBC.meritSeq(latSeq);
       for (const auto& val : meritSeq)
@@ -80,23 +80,23 @@ struct Execute {
       unsigned int numBins = 20;
       printTableRow("# mean:", mean(acc));
       printTableRow("prob", "quantile");
-      printTableRow(0.0, min(acc));
+      printTableRow(0.0, boost::accumulators::min(acc));
       for (unsigned int i = 1; i < numBins; i++) {
           double p = double(i) / numBins;
           Real q = quantile(acc, quantile_probability = p);
           printTableRow(p, q);
       }
-      printTableRow(1.0, max(acc));
+      printTableRow(1.0, boost::accumulators::max(acc));
       //! [output]
    }
 
    // random sampling
    template <class FIGURE>
-   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension, unsigned int nrand) const
+   void operator()(FIGURE figure, LatBuilder::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> size, Dimension dimension, unsigned int nrand) const
    {
-      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression(), Traversal::Random<LFSR113>> Coprime;
+      typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, FIGURE::suggestedCompression(), Traversal::Random<LFSR258>> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension, nrand);
-      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2), nrand);
+      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(2), nrand);
 
       auto latSeq = LatSeq::combine<Zip>(size, std::move(genSeqs));
 
@@ -112,11 +112,11 @@ struct Execute {
 
    // exhaustive sampling
    template <class FIGURE>
-   void operator()(FIGURE figure, LatBuilder::SizeParam<LatType::ORDINARY> size, Dimension dimension) const
+   void operator()(FIGURE figure, LatBuilder::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL> size, Dimension dimension) const
    {
-      typedef GenSeq::CoprimeIntegers<FIGURE::suggestedCompression()> Coprime;
+      typedef GenSeq::GeneratingValues<LatticeType::ORDINARY, FIGURE::suggestedCompression()> Coprime;
       auto genSeqs = GenSeq::VectorCreator<Coprime>::create(size, dimension);
-      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatType::ORDINARY>(2));
+      genSeqs[0] = GenSeq::Creator<Coprime>::create(SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(2));
 
       unsigned int numSamples = 1;
       for (const auto& g : genSeqs)
@@ -154,12 +154,13 @@ int main(int argc, const char *argv[])
       if (++iarg < argc)
         nrand =  (unsigned int)atoi(argv[iarg]);
 
-      auto size = Parser::SizeParam::parse<LatType::ORDINARY>(sizeSpec);
+      auto size = Parser::SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>::parse(sizeSpec);
 
       if (nrand) {
-         Parser::CoordUniformFigureOfMerit::parse(
+         Parser::CoordUniformFigureOfMerit<LatticeType::ORDINARY>::parse(
                "2",
                figureSpec,
+               1,
                std::move(weights),
                Execute(),
                size,
@@ -167,9 +168,10 @@ int main(int argc, const char *argv[])
                nrand);
       }
       else {
-         Parser::CoordUniformFigureOfMerit::parse(
+         Parser::CoordUniformFigureOfMerit<LatticeType::ORDINARY>::parse(
                "2",
                figureSpec,
+               1,
                std::move(weights),
                Execute(),
                size,

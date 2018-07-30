@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,11 +36,11 @@ namespace LatBuilder
  * This class template is useful to reuse the same code to apply the filter to a
  * single merit value or to embedded merit values.
  */
-template <LatType LAT>
-class MeritFilter : public BasicMeritFilter<LAT> {
+template <LatticeType LR, EmbeddingType ET>
+class MeritFilter : public BasicMeritFilter<LR, ET> {
 public:
-   typedef typename BasicMeritFilter<LAT>::InputMeritValue  MeritValue;
-   typedef typename BasicMeritFilter<LAT>::LatDef           LatDef;
+   typedef typename BasicMeritFilter<LR, ET>::InputMeritValue  MeritValue;
+   typedef typename BasicMeritFilter<LR, ET>::LatDef           LatDef;
 
    /**
     * Filter function type.

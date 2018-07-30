@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,46 +22,47 @@
 
 #include "latbuilder/MeritSeq/CBC.h"
 #include "latbuilder/LatSeq/Combiner.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/Util.h"
+#include "latbuilder/LFSR258.h"
 
 #include <boost/lexical_cast.hpp>
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomTag {};
 
 
 /// Fully random search.
-template <LatType LAT, Compress COMPRESS, class FIGURE> using Random =
-   LatSeqBasedSearch<RandomTag<LAT, COMPRESS, FIGURE>>;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using Random =
+   LatSeqBasedSearch<RandomTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
 /// Fully random search.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-Random<LAT, COMPRESS, FIGURE> random(
-      Storage<LAT, COMPRESS> storage,
+template <class FIGURE, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+Random<LR, ET, COMPRESS, PLO, FIGURE> random(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure,
       unsigned int numRand
       )
-{ return Random<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
+{ return Random<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef LFSR113 RandomGenerator;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct LatSeqBasedSearchTraits<RandomTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef LFSR258 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
-   typedef GenSeq::CoprimeIntegers<COMPRESS, Traversal> GenSeqType;
-   typedef LatSeq::Combiner<LAT, GenSeqType, Zip> LatSeqType;
+   typedef GenSeq::GeneratingValues<LR, COMPRESS, Traversal> GenSeqType;
+   typedef LatSeq::Combiner<LR, ET, GenSeqType, Zip> LatSeqType;
 
    LatSeqBasedSearchTraits(unsigned int numRand_):
       numRand(numRand_)
@@ -74,7 +75,7 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
       auto infty = std::numeric_limits<typename Traversal::size_type>::max();
       std::vector<GenSeqType> vec;
       vec.reserve(dimension);
-      vec.push_back(GenSeq::Creator<GenSeqType>::create(SizeParam(2)));
+      vec.push_back(GenSeq::Creator<GenSeqType>::create(SizeParam(LatticeTraits<LR>::TrivialModulus)));
       for (Dimension j = 1; j < dimension; j++) {
          vec.push_back(
                GenSeq::Creator<GenSeqType>::create(
@@ -88,9 +89,9 @@ struct LatSeqBasedSearchTraits<RandomTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " random search (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: random - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
 
-   void init(LatBuilder::Task::Random<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::Random<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    {
       connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty());
       search.minObserver().setMaxAcceptedCount(numRand);

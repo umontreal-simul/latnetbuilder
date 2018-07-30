@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ namespace LatBuilder { namespace MeritSeq {
  * Standard implementation of the inner product for a sequence of vector with a
  * single vector.
  */
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformInnerProd {
 public:
-   typedef Storage<LAT, COMPRESS> InternalStorage;
-   typedef CoordUniformStateList<LAT, COMPRESS> StateList;
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef Storage<LR, ET, COMPRESS, PLO> InternalStorage;
+   typedef CoordUniformStateList<LR, ET, COMPRESS, PLO> StateList;
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
 
    /**
     * Constructor.
@@ -50,7 +50,7 @@ public:
     */
    template <class K>
    CoordUniformInnerProd(
-         Storage<LAT, COMPRESS> storage,
+         Storage<LR, ET, COMPRESS, PLO> storage,
          const Kernel::Base<K>& kernel
          ):
       m_storage(std::move(storage)),
@@ -60,13 +60,13 @@ public:
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LAT, COMPRESS>& storage() const
+   const Storage<LR, ET, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
     * Returns the storage configuration instance.
     */
-   const Storage<LAT, COMPRESS>& internalStorage() const
+   const Storage<LR, ET, COMPRESS, PLO>& internalStorage() const
    { return m_storage; }
 
    /**
@@ -162,7 +162,7 @@ private:
    template <class> friend class Seq;
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    RealVector m_kernelValues;
 };
 

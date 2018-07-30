@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatSeq/CBC.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
+
+#include "Path.h"
 
 #include <iostream>
 
@@ -30,29 +32,38 @@ template <typename SEQ>
 typename SEQ::const_iterator findBest(const SEQ& seq)
 {
    std::cout << "searching for the best lattice in dimension: " << seq.baseLat().dimension() << std::endl;
-   std::cout << "    possible choices: " << seq << std::endl;
+   std::cout << "possible choices: " << std::endl << seq << std::endl;
    // select the first element
    return seq.begin();
 }
 //! [findBest]
 
-int main()
-{
-   SizeParam<LatType::ORDINARY> size(8);
+template<LatticeType LA>
+void CBCsearch(typename LatticeTraits<LA>::Modulus modulus){
+   SizeParam<LA, EmbeddingType::UNILEVEL> size(modulus);
    Dimension dim = 4;
 
-   auto baseLat = createLatDef(size, GeneratingVector{1});
+   auto baseLat = createLatDef(size, typename LatticeTraits<LA>::GeneratingVector{typename LatticeTraits<LA>::GenValue(1)});
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Coprime;
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;
 
    //! [loop]
    while (baseLat.dimension() < dim) {
       auto latSeq = LatSeq::cbc(baseLat, Coprime(size));
       auto itBest = findBest(latSeq);
       baseLat = *itBest;
-      std::cout << "    selected lattice: " << baseLat << std::endl;
+      std::cout << "selected lattice: " << std::endl << baseLat << std::endl;
+      std::cout << std::endl;
    }
    //! [loop]
+
+}
+int main()
+{
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
+   CBCsearch<LatticeType::ORDINARY>(8);
+   std::cout << std::endl;
+   CBCsearch<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
 
    return 0;
 }

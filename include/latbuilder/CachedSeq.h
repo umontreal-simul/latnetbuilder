@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,11 +37,11 @@ namespace LatBuilder {
  *   std::cout << elem << std::endl;
  * \endcode
  */
-template <class BASE, LatType LAT, Compress COMPRESS>
+template <class BASE, LatticeType LR, EmbeddingType ET, Compress COMPRESS>
 class CachedSeq : public BASE {
 public:
    typedef BASE Base;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS> Storage;
    typedef typename Storage::value_type value_type;
    typedef typename Storage::size_type size_type;
    typedef typename Storage::const_iterator const_iterator;

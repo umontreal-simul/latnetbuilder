@@ -1,0 +1,45 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page feats_figures Figures of merit
+
+Figures of merit are the quality measures used to evaluate point sets. The lower the merit value,
+the better the point set as the integration error will be smaller. Figures of merit
+are often derived from Koskma-Hlawka type inequalities which bound the integration error.
+
+LatNet Builder implements various figures of merit. Figures of merit are specific to a construction method. Most of them can be parametrized by a norm-type and weights.
+
+Let \f$P_n = \left\{(x_{0,1}, \dots, x_{0, s}), \dots, (x_{n-1,1}, \dots, x_{n-1, s}) \right\}\f$ denote a point set in dimension \f$s\f$ with \f$n\f$ points, 
+\f$ q \leq +\infty \f$ a norm-type and \f$\gamma_{\mathfrak u}\f$ some general weights.
+
+Figures of merit implemented by LatNet Builder have the following form:
+
+\f[
+    D(P_n)^q = \sum_{\emptyset \neq \mathfrak u \subseteq \{1, \dots, s\}}\left(\gamma_{\mathfrak u} D_{\mathfrak u}(P_n)\right)^q,
+\f]
+
+where \f$D(P_n)\f$ is the merit value of the point set \f$P_n\f$ and \f$ D_{\mathfrak u}(P_n) \f$ its projection-dependent merit value.
+If \f$q = +\infty\f$, the sum in the above equation is replaced by a maximum and the exponent \f$q\f$ taken equal to 1.
+<b>Note that the figure of merit actually computed
+by LatNet Builder is not \f$D(P_n)\f$ but rather \f$D(P_n)^q\f$</b>.
+
+LatNet Builder implements various projection-dependent merits depending on the point set type:
+
+- \subpage feats_figures_lat
+- \subpage feats_figures_net
+
+*/
+vim: ft=doxygen spelllang=en spell

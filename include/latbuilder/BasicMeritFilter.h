@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,13 +28,13 @@ namespace LatBuilder {
  * It defines MeritValue as the type of merit value associated to a given type
  * of lattice.
  */
-template <LatType>
+template <EmbeddingType>
 struct MeritFilterTraits;
 
 /**
  * Abstract base class for filters.
  */
-template <LatType LAT, LatType OUT = LAT>
+template <LatticeType LR, EmbeddingType ET, EmbeddingType OUT = ET>
 struct BasicMeritFilter;
 
 /**
@@ -46,11 +46,11 @@ struct LatticeRejectedException : std::exception {};
 //========================================================================
 
 
-template <LatType LAT, LatType OUT>
+template <LatticeType LR, EmbeddingType ET, EmbeddingType OUT>
 struct BasicMeritFilter {
-   typedef typename MeritFilterTraits<LAT>::MeritValue InputMeritValue;
+   typedef typename MeritFilterTraits<ET>::MeritValue InputMeritValue;
    typedef typename MeritFilterTraits<OUT>::MeritValue OutputMeritValue;
-   typedef LatBuilder::LatDef<LAT> LatDef;
+   typedef LatBuilder::LatDef<LR, ET> LatDef;
    virtual ~BasicMeritFilter() {}
    virtual OutputMeritValue operator() (const InputMeritValue&, const LatDef&) const = 0;
    virtual std::string name() const = 0;
@@ -60,11 +60,11 @@ struct BasicMeritFilter {
 //========================================================================
 
 
-template <> struct MeritFilterTraits<LatType::ORDINARY> {
+template <> struct MeritFilterTraits<EmbeddingType::UNILEVEL> {
    typedef Real MeritValue;
 };
 
-template <> struct MeritFilterTraits<LatType::EMBEDDED> {
+template <> struct MeritFilterTraits<EmbeddingType::MULTILEVEL> {
    typedef RealVector MeritValue;
 };
 

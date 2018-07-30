@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,13 +42,18 @@ struct CompressTraits<Compress::NONE> {
    static size_t size(size_t n) { return n; }
    /// Returns \c i.
    static size_t compressIndex(size_t i, size_t n) { return i; }
+   /// Returns \c i.
+   static Polynomial compressIndex(Polynomial i, Polynomial n) { return i; } //for polynomial lattices
    /// Returns "none".
    static constexpr const char* name() { return "none"; }
    /// Returns 1.
    static int indexCompressionRatio(size_t i, size_t n)
    { return 1; }
    /// Returns 1.
-   static int levelCompressionRatio(Modulus base, Level level)
+   static int levelCompressionRatio(uInteger base, Level level)
+   { return 1; }
+   /// Returns 1.
+   static int levelCompressionRatio(Polynomial base, Level level) //for polynomial lattices
    { return 1; }
 };
 
@@ -103,10 +108,9 @@ struct CompressTraits<Compress::SYMMETRIC> {
     * If \c base is larger than 2, level 0 is not compressed, and higher levels
     * are compressed by a factor of 2.
     */
-   int levelCompressionRatio(Modulus base, Level level) const
+   int levelCompressionRatio(uInteger base, Level level) const
    { return level >= (base == 2 ? 2 : 1) ? 2 : 1; }
 };
 
 }
-
 #endif

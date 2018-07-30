@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #ifndef LATBUILDER__COMBINED_WEIGHTS_H
 #define LATBUILDER__COMBINED_WEIGHTS_H
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 #include <list>
 #include <memory>
 
@@ -29,10 +29,10 @@ namespace LatBuilder {
  * Sum of different instances of weights (possibly be of different concrete
  * types).
  */
-class CombinedWeights : public LatCommon::Weights {
+class CombinedWeights : public LatticeTester::Weights {
 public:
 
-   typedef std::list<std::unique_ptr<LatCommon::Weights>> WeightsList;
+   typedef std::list<std::unique_ptr<LatticeTester::Weights>> WeightsList;
 
    /**
     * Constructs an empty set of combined weights.
@@ -47,16 +47,36 @@ public:
    /**
     * Returns the weight of the projection specified by \c projection.
     */
-   virtual LatCommon::Weight getWeight (const LatCommon::Coordinates & projection) const;
+   virtual LatticeTester::Weight getWeight (const LatticeTester::Coordinates & projection) const;
+
+//    virtual std::string name() const { return "combined"; }
 
    /**
     * Adds a weight specification to the set of combined weights.
     */
-   void add (std::unique_ptr<LatCommon::Weights> weights) 
+   void add (std::unique_ptr<LatticeTester::Weights> weights) 
    { m_weights.push_back(std::move(weights)); }
 
    const WeightsList& list() const
    { return m_weights; }
+
+   WeightsList giveWeights(){
+       return std::move(m_weights);
+   }
+
+    /**
+     * {@inheritDoc}
+     */ 
+   virtual unsigned int interlacingFactor() const{
+       if (m_weights.size() == 0)
+       {
+           return 1;
+       }
+       else
+       {
+           return m_weights.front()->interlacingFactor();
+       }
+   }
 
 protected:
    virtual void format(std::ostream& os) const;
@@ -82,7 +102,7 @@ protected:
  * associated to the projection-match <tt>\<match<i>n</i>\></tt>, and
  * <tt>\<match<i>n</i>\></tt> is one of:
  * - a set of coordinates, as specified in
- *   #operator>>(std::istream&, LatCommon::Coordinates&)
+ *   #operator>>(std::istream&, LatticeTester::Coordinates&)
  *   to explicitly set the weight for the projection that
  *   correspond to these coordinates;
  * - the string <tt>order <i>m</i></tt> to implicitly set the weights of
@@ -96,16 +116,9 @@ protected:
  *
  * \remark The colons (\c :) can be replaced with <tt>=\></tt> or <tt>-\></tt>.
  *
- * \sa  #operator>>(std::istream&, LatCommon::Coordinates&)
+ * \sa  #operator>>(std::istream&, LatticeTester::Coordinates&)
  */
 std::istream& operator>> (std::istream& is, CombinedWeights& weights);
 #endif
-
-/**
- * \relates CombinedWeights
- * Outputs the projection-dependent weights to \c os in a format readable.
- */
-std::ostream& operator<< (std::ostream& os, const CombinedWeights& weights);
-
 }
 #endif

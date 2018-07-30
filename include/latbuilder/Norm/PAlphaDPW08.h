@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 #ifndef LATBUILDER__NORM__PALPHA_DICK08_H
 #define LATBUILDER__NORM__PALPHA_DICK08_H
 
-#include "latbuilder/Norm/PAlphaBase.h"
+#include "latbuilder/Norm/NormAlphaBase.h"
 #include "latbuilder/Types.h"
 
-#include "latcommon/ProductWeights.h"
+#include "latticetester/ProductWeights.h"
 #include "latbuilder/CombinedWeights.h"
 
 namespace LatBuilder { namespace Norm {
@@ -34,7 +34,7 @@ namespace LatBuilder { namespace Norm {
  * \f]
  * from Theorem 10 (with the minimization step proposed in Algorithm 2) in \cite vDIC08c .
  */
-class PAlphaDPW08 : public PAlphaBase<PAlphaDPW08> {
+class PAlphaDPW08 : public NormAlphaBase<PAlphaDPW08> {
 public:
    /**
     * Constructor.
@@ -44,12 +44,12 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaDPW08(unsigned int alpha, const LatCommon::Weights& weights, Real normType);
+   PAlphaDPW08(unsigned int alpha, const LatticeTester::Weights& weights, Real normType);
 
-   template <LatType L>
+   template <LatticeType LR, EmbeddingType L>
    Real value(
          Real lambda,
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
          Real norm = 1.0
          ) const;
@@ -58,7 +58,7 @@ public:
    { return "PAlphaDPW08"; }
 
 private:
-   const LatCommon::Weights& m_weights;
+   const LatticeTester::Weights& m_weights;
 };
 
 }}

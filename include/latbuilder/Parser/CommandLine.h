@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,40 +25,43 @@ namespace LatBuilder { namespace Parser {
 /**
  * Collection of arguments required to construct a Search instance.
  */
-template <LatBuilder::LatType>
+template <LatBuilder::LatticeType , LatBuilder::EmbeddingType>
 struct CommandLine;
 
 /**
  * Specialization of CommandLine for ordinary lattices.
  */
-template <>
-struct CommandLine<LatBuilder::LatType::ORDINARY> {
+template <LatBuilder::LatticeType LR>
+struct CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
    std::string construction;
    std::string size;
    std::string dimension;
    std::string normType;
    std::string figure;
+   std::string interlacingFactor;
    std::vector<std::string> weights;
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
 
-   std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::ORDINARY>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::EmbeddingType::UNILEVEL>> parse() const;
 };
 
 /**
  * Specialization of CommandLine for embedded lattices.
  */
-template <>
-struct CommandLine<LatBuilder::LatType::EMBEDDED> : CommandLine<LatBuilder::LatType::ORDINARY> {
-   std::vector<std::string> multilevelFilters;
+template <LatBuilder::LatticeType LR>
+struct CommandLine<LR, LatBuilder::EmbeddingType::MULTILEVEL> : CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
    std::string combiner;
 
-   std::unique_ptr<LatBuilder::Task::Search<LatBuilder::LatType::EMBEDDED>> parse() const;
+   std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::EmbeddingType::MULTILEVEL>> parse() const;
 };
 
-extern template struct CommandLine<LatBuilder::LatType::ORDINARY>;
-extern template struct CommandLine<LatBuilder::LatType::EMBEDDED>;
-
+/*
+extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::ORDINARY, LatBuilder::EmbeddingType::MULTILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>;
+*/
 }}
 
 #endif

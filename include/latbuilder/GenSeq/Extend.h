@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ namespace LatBuilder { namespace GenSeq {
  * Given a small integer \f$x\f$ smaller than the grain \f$n_0\f$, the
  * \f$i\f$-th integer this sequence is given by \f$i n_0 + x\f$.
  */
-template <class TRAV = Traversal::Forward>
+template <LatticeType LR, class TRAV = Traversal::Forward>
 class Extend :
-   public Traversal::Policy<Extend<TRAV>, TRAV> {
+   public Traversal::Policy<Extend<LR, TRAV>, TRAV> {
 
-   typedef Extend<TRAV> self_type;
+   typedef Extend<LR, TRAV> self_type;
    typedef Traversal::Policy<self_type, TRAV> TraversalPolicy;
 
 public:
@@ -44,7 +44,7 @@ public:
    /**
     * Value type.
     */
-   typedef Modulus value_type;
+   typedef typename LatticeTraits<LR>::Modulus value_type;
 
    /**
     * Size type.
@@ -65,14 +65,14 @@ public:
     *                   digits of every integer in the sequence.
     * \param trav       Traversal instance.
     */
-   Extend(value_type modulus = 1, value_type grain = 1, value_type low = 0, Traversal trav = Traversal());
+   Extend(value_type modulus = value_type(1), value_type grain = value_type(1), value_type low = value_type(0), Traversal trav = Traversal());
 
    /**
     * Cross-traversal copy-constructor.
     */
    template <class TRAV2>
    Extend(
-         const Extend<TRAV2>& other,
+         const Extend<LR, TRAV2>& other,
          Traversal trav = Traversal()):
       TraversalPolicy(std::move(trav)),
       m_modulus(other.m_modulus),
@@ -86,7 +86,7 @@ public:
     */
    template <class TRAV2>
    struct RebindTraversal {
-      typedef Extend<TRAV2> Type;
+      typedef Extend<LR, TRAV2> Type;
    };
 
    /**
@@ -116,7 +116,7 @@ public:
    value_type operator[](size_type i) const;
 
 private:
-   template <typename> friend class Extend;
+   template <LatticeType, typename> friend class Extend;
 
    value_type m_modulus;
    value_type m_grain;
@@ -132,8 +132,8 @@ private:
 
 namespace LatBuilder { namespace GenSeq {
 
-template <class TRAV>
-Extend<TRAV>::Extend(
+template <LatticeType LR, class TRAV>
+Extend<LR, TRAV>::Extend(
       value_type modulus,
           value_type grain,
           value_type low,
@@ -142,14 +142,14 @@ Extend<TRAV>::Extend(
    m_modulus(modulus),
    m_grain(grain),
    m_low(low),
-   m_size(modulus / grain)
+   m_size(LatticeTraits<LR>::NumPoints(modulus / grain))
 {
 }
 
-template <class TRAV>
-auto Extend<TRAV>::operator[](size_type i) const -> value_type
+template <LatticeType LR, class TRAV>
+auto Extend<LR, TRAV>::operator[](size_type i) const -> value_type
 {
-   return i * m_grain + m_low;
+   return LatticeTraits<LR>::ToGenValue(i) * m_grain + m_low;
 }
 
 }}

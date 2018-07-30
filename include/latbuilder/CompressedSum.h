@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ namespace LatBuilder {
  *
  * In an compressed vector some elements are implicitly repeated.
  */
-template <Compress COMPRESS, class E>
-typename Storage<LatType::ORDINARY, COMPRESS>::MeritValue
+template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO, class E>
+typename Storage<LR, EmbeddingType::UNILEVEL, COMPRESS, PLO>::MeritValue
 compressedSum(
-      const Storage<LatType::ORDINARY, COMPRESS>& storage, 
+      const Storage<LR, EmbeddingType::UNILEVEL, COMPRESS, PLO>& storage, 
       const boost::numeric::ublas::vector_expression<E>& e
       ) 
 {
@@ -38,14 +38,15 @@ compressedSum(
    Real sum = 0.0;
    for (const auto& x : vec)
       sum += x;
-
-   if (COMPRESS == Compress::SYMMETRIC) {
-      // compression ratio except first element
-      sum *= 2;
-      sum -= vec(0);
-      // if even number of points, last element is not repeated
-      if (storage.sizeParam().numPoints() % 2 == 0)
-         sum -= vec(vec.size() - 1);
+   if (LR == LatticeType::ORDINARY){
+      if (COMPRESS == Compress::SYMMETRIC) {
+         // compression ratio except first element
+         sum *= 2;
+         sum -= vec(0);
+         // if even number of points, last element is not repeated
+         if (storage.sizeParam().numPoints() % 2 == 0)
+            sum -= vec(vec.size() - 1);
+      }
    }
 
    return sum;
@@ -56,10 +57,10 @@ compressedSum(
  * Returns the per-level sums of the elements of the compressed multilevel
  * vector expression \c e.
  */
-template <Compress COMPRESS, class E>
-typename Storage<LatType::EMBEDDED, COMPRESS>::MeritValue
+template <LatticeType LR, Compress COMPRESS, PerLevelOrder PLO, class E>
+typename Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>::MeritValue
 compressedSum(
-      const Storage<LatType::EMBEDDED, COMPRESS>& storage, 
+      const Storage<LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO>& storage, 
       const boost::numeric::ublas::vector_expression<E>& e
       ) 
 {
@@ -80,11 +81,14 @@ compressedSum(
 
       auto level = itOut - out.begin();
 
+      
       if (COMPRESS == Compress::SYMMETRIC) {
-         if (level >= (storage.sizeParam().base() == 2 ? 2 : 1))
+         if (level >= (storage.sizeParam().base() == LatticeTraits<LR>::TrivialModulus ? 2 : 1))
             // compression ratio except if uncompressed level has only one element
             sum *= 2;
       }
+      
+      
 
       *itOut = cumulative += sum;
 

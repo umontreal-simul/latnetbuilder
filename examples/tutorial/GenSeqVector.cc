@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,28 +14,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/GenSeq/Creator.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
 #include "latbuilder/TextStream.h"
+
+#include "Path.h"
 
 #include <iostream>
 
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-int main()
-{
-   //! [main]
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Seq;
-
-   SizeParam<LatType::ORDINARY> n(7);      // lattice size
-   SizeParam<LatType::ORDINARY> n0(2);     // fake lattice size to obtain a single value (1)
-   Dimension dim = 3;           // dimension
-
+//! [nonrandom]
+template <LatticeType LA>
+void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Seq;
+   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   Dimension dim = 3;
    //! [VectorCreator]
    auto vec = GenSeq::VectorCreator<Seq>::create(n, dim);
    //! [VectorCreator]
@@ -43,17 +43,39 @@ int main()
    vec[0] = GenSeq::Creator<Seq>::create(n0);
    //! [1st]
    std::cout << "lattice size: " << n << std::endl;
-   std::cout << "    integer sequences: " << vec << std::endl;
-   //! [main]
+   std::cout << "    generating value sequences: " << vec << std::endl;
 
-   //! [random]
-   n = 31;
-   typedef GenSeq::CoprimeIntegers<Compress::NONE, Traversal::Random<LFSR113>> RandomSeq;
+}
+//! [nonrandom]
+
+//! [random]
+template <LatticeType LA>
+void RandomSeqVector(typename LatticeTraits<LA>::Modulus modulus){
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR258>> RandomSeq;
+   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice size
+   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   Dimension dim = 3;
+  
    auto randVec = GenSeq::VectorCreator<RandomSeq>::create(n, dim, 5);
    randVec[0] = GenSeq::Creator<RandomSeq>::create(n0, 1); // replace 1st with singleton
    std::cout << "lattice size: " << n << std::endl;
-   std::cout << "    random integer sequences: " << randVec << std::endl;
-   //! [random]
+   std::cout << "    random generating value sequences: " << randVec << std::endl;
 
+}
+//! [random]
+
+int main()
+{
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
+   //! [nonrandommain]
+   SeqVector<LatticeType::ORDINARY>(7);
+   SeqVector<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
+   //! [nonrandommain]
+   //! [randommain]
+   RandomSeqVector<LatticeType::ORDINARY>(7);
+   RandomSeqVector<LatticeType::POLYNOMIAL>(PolynomialFromInt(7));
+   //! [randommain]
+
+   
    return 0;
 }

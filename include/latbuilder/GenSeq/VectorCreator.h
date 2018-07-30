@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,9 +80,9 @@ struct VectorCreator {
     * \param dimension        Dimension of the output vector.
     * \param t                Other arguments to be passed to GenSeq::Creator
     */
-   template <LatType L, typename... ARGS>
+   template <LatticeType LR, EmbeddingType L, typename... ARGS>
    static result_type create(
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR,L>& sizeParam,
          Dimension dimension, 
          ARGS&&... t
          )

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 
 #include <type_traits>
 #include <ostream>
+#include <sstream>
 #include "latbuilder/detail/TextStream.h"
 
 namespace LatBuilder {
@@ -92,9 +93,29 @@ operator<<(std::ostream& os, const T& x)
    using TextStream::operator<<;
    os << detail::bracket_traits<T>::opening;
    for (const auto& xi : x) {
-      if (count > 0)
-         os << ", ";
-      os << xi;
+      std::ostringstream temp;
+      temp << xi;
+      std::string str = temp.str();
+      if (str.back() == '\n'){
+        if (count > 0)
+        {
+            os << ",\n " << str.substr(0, str.size()-1);
+        }
+        else
+        {
+            os << str.substr(0, str.size()-1);
+        }
+      }
+      else{
+        if (count > 0)
+        {
+            os << ", " << str;
+        }
+        else
+        {
+            os << str;
+        }
+      }
       count++;
    }
    os << detail::bracket_traits<T>::closing;
@@ -118,14 +139,5 @@ operator<<(std::ostream& os, const T& x)
 }
 
 }}
-
-/** \example TextStream.cc
- * This is an example of how to use the TextStream namespace.
- * It can be built by launching
- * \code
- * b2 TextStream
- * \endcode
- * from the \c examples/ directory.
- */
 
 #endif

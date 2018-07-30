@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+from waflib.Build import POST_LAZY
+
+def build(ctx):
+    if ctx.cmd == 'install':
+        if not ctx.env.BUILD_CONDA:
+            print('not building conda package; Conda (https://www.anaconda.com/download/) is missing')
+            return
+        ctx.add_group('group1')
+        ctx.add_group('group2')
+        ctx.add_group('group3')
+        ctx.add_group('group4')
+        ctx.add_group('group5')
+        ctx.add_group('group6')
+        ctx.add_group('group7')
+        ctx.post_mode = POST_LAZY
+
+        top = ctx.srcnode.abspath()
+        install_dir = ctx.env.EXEC_PREFIX
+        
+        cmd1 = "echo Building the conda package, this takes several minutes..."
+        cmd2 = '%s install -y conda-build || echo "Tried to install the conda-build package"' % (ctx.env.get_flat('CONDA'))
+        cmd3 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
+        ' && export LATNETBUILDER_INSTALL_DIR=' + install_dir + \
+        ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
+        cmd4 = 'echo Installing the conda package, this could take a few minutes...'
+        cmd5 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
+        cmd6 = 'conda remove -y latnetbuilder -n latnetbuilder || echo "Tried to remove package latnetbuilder from environment latnetbuilder"'
+        cmd7 = 'conda install -y --use-local latnetbuilder -n latnetbuilder'
+
+        ctx.set_group('group1')
+        ctx(rule   = cmd1, source = 'wscript', cwd = top, always = True)
+        ctx.set_group('group2')
+        ctx(rule   = cmd2, source = 'wscript', cwd = top, always = True)
+        ctx.set_group('group3')
+        ctx(rule   = cmd3, source = 'wscript', cwd = top, always = True)
+        ctx.set_group('group4')
+        ctx(rule   = cmd4, source = 'wscript', always = True)
+        ctx.set_group('group5')
+        ctx(rule   = cmd5, source = 'wscript', always = True)
+        ctx.set_group('group6')
+        ctx(rule   = cmd6, source = 'wscript', always = True)
+        ctx.set_group('group7')
+        ctx(rule   = cmd7, source = 'wscript', always = True)
+
+        
+        
+

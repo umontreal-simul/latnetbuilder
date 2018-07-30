@@ -1,0 +1,306 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_summary Summary of Command-Line Options
+
+
+
+The <code>latnetbuilder</code> executable supports the following command-line
+options:
+<dl>
+	<dt><code>\--version</code></dt>
+	<dd><em>Optional.</em>
+		Shows the version of the software.
+	</dd>
+	<dt><code>\--help</code> / <code>-h</code></dt>
+	<dd><em>Optional.</em>
+		Shows a light version of this page in the console.
+	</dd>
+	<dt><code>\--set-type</code> / <code>-t</code></dt>
+	<dd><em> Required.</em>
+		Specifies the point set type.
+		Takes one of the following values:
+    - <code>lattice</code>
+      to search for rank-1 lattices; or
+    - <code>net</code>
+      to search for digital nets.
+	</dd>		
+  <dt><code>\--construction</code> / <code>-c</code></dt>
+  <dd><em>Required.</em>
+    Specifies the construction type.
+    Takes one of the following values:
+		- For lattices (<code>--set-type lattice</code>):
+			- <code>ordinary</code>
+				to search for ordinary lattices; or
+			- <code>polynomial</code>
+				to search for polynomial lattices.
+		- For digital nets (<code>--set-type net</code>):
+			- <code>sobol</code>
+				to search for Sobol' nets; or
+			- <code>sobol</code>
+				to search for polynomial lattice rules; or
+			- <code>explicit</code>
+				to search for digital nets with explicit generating matrices.
+
+		You can learn more on the different point set types and constructions \ref feats_pointsets "here". Details on how to use the two options above can be find \ref cmdtut_advanced_pointsets "here".
+  </dd>
+	<dt><code>\--dimension</code> / <code>-d</code></dt>
+	<dd><em>Required.</em>
+		Specifies the dimension of the searched point sets.
+		Takes an integer argument.
+	</dd>
+	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
+	<dd><em>Required.</em>
+  Specifies the size parameter of the point sets.
+  Takes an argument of the form:
+	- For lattices (<code>--set-type lattice</code>):
+		- <code>--size-parameter <var>modulus</var></code>; or
+		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>; or
+		- <code>--size-parameter 2^<var>k</var></code> (even for polynomial lattice rules).
+	- For digital nets (<code>--set-type net</code>):
+		- <code>--size-parameter 2^<var>k</var></code>; or
+		- <code>--size-parameter <var>modulus</var></code> (only for polynomial lattice rules); or
+		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code> (only for polynomial lattice rules).
+
+	See \ref cmdtut_advanced_pointsets "here" for additional details.
+	</dd>
+	<dt><code>\--exploration-method</code> / <code>-e</code></dt>
+	<dd><em>Required.</em>
+		Specifies the exploration method.
+		Takes an argument of the form:
+		- <code>evaluate:<var>point-set-description</var></code> to compute the
+		  merit value of the point set described by <code> <var>point-set-description</var></code>. 
+			See \ref cmdtut_advanced_pointsets "here" for details about <code><var>point-set-description</var></code>.
+		- <code>exhaustive</code> for exhaustive search;
+		- <code>random:<var>samples</var></code> for a random search with
+		  <code><var>samples</var></code> random samples;
+		- <code>full-CBC</code> for a component-by-component search;
+		- <code>random-CBC:<var>samples</var></code> for a random
+		  component-by-component search with <code><var>samples</var></code>
+		  random samples per coordinate;
+
+		\n Specific to lattices (<code>--set-type lattice </code>):
+			- <code>Korobov</code> for a Korobov search;
+			- <code>random-Korobov:<var>samples</var></code> for a random Korobov
+				search with <code><var>samples</var></code> random samples;
+			- <code>fast-CBC</code> for a fast CBC search (requires a
+										coordinate-uniform implementation of the selected figure of
+										merit);
+
+				Recall that the implementation of the fast CBC algorithm in %LatBuilder
+				supports only modulus that are a power of a prime base in the ordinary case and 
+				irreducible modulus in the polynomial case.
+
+			- <code>extend:<var>modulus</var>:<var>genVec</var></code>
+				to extend the lattice to a lattice with modulus
+					<code><var>modulus</var></code> and generating
+				vector <code><var>genVec</var></code> specified as a dash-separated list
+				of integers/polynomials. See \ref cmdtut_advanced_pointsets "here" for details about 
+				<code><var>genVec</var></code>.
+
+		\n Specific to digital nets (<code>--set-type net </code>):
+			- <code>mixed-CBC:<var>samples</var>:<var>nbFull</var></code> for a full-CBC search for the first 
+			<code><var>nbFull</var></code> coordinates and then a random-CBC search with <code><var>samples</var></code> 
+			random samples for the remaining coordinates.
+
+			When the random variant of a search is used with a filter
+	    (see the <code>\--filters</code> option below), the
+	    candidate samples that are rejected by the filter pipeline are
+	    not considered as valid samples, meaning that the user-specified
+	    number of random samples only corresponds to the number
+	    of accepted candidates.
+	</dd>
+	<dt><code>\--figure-of-merit</code> / <code>-f</code></dt>
+	<dd><em>Required.</em>
+		Specifies the figure of merit to be used.
+		Takes an argument of either of the following forms:
+		- <code><var>figure</var></code>
+		- <code>CU:<var>figure</var></code>
+                where the optional prefix <code>CU:</code> indicates that a
+                coordinate-uniform implementation of the evaluation algorithm
+                should be used (only available for <code>P<var>alpha</var></code>, <code>R1</code>, <code>R</code> with
+								<code>--norm-type 2</code> and <code>IA<var>alpha</var></code>, <code>IB</code> with
+								<code>--norm-type 1</code>)
+
+		and where <code><var>figure</var></code> is one of:
+		- <code>P<var>alpha</var></code> for the weighted \f$\mathcal
+			P_\alpha\f$ discrepancy with \f$\alpha=\f$<code><var>alpha</var></code>
+			(the figures of merit are different for ordinary and polynomial lattice rules but have the same name);
+		- <code>spectral</code> for the spectral figure
+			of merit (only available with ordinary lattice rules);
+		- <code>R<var>alpha</var></code> for the weighted \f$\mathcal
+			R_\alpha\f$ figure of merit with
+			\f$\alpha=\f$<code><var>alpha</var></code> (only available with ordinary lattice rules); or
+		- <code>R</code> for the weighted \f$\mathcal
+			R\f$ figure of merit (only available with polynomial lattice rules and digital nets);
+		- <code>t-value</code> for the t-value merit (only available with digital nets and incompatible with CBC explorations);
+		- <code>projdep:t-value</code> for the projection-dependent t-value merit (only available wih digital nets);
+		- <code>projdep:resolution-gap</code> for the projection-dependent resolution-gap (only available wih digital nets);
+		- <code>IA<var>alpha</var></code> for the interlaced \f$B_{\alpha, d, (1)}\f$ discrepancy 
+		  with \f$\alpha=\f$<code><var>alpha</var></code> (only available for interlaced polynomial lattice rules and digital nets); or
+		- <code>IB</code> for the interlaced \f$B_{d, (2)}\f$ discrepancy (only available for interlaced polynomial lattice rules and digital nets).
+
+		The definitions of all these figures of merit can be find \ref feats_figures "here". More details on how to use this option 
+		are available on this \ref cmdtut_advanced_figures "page".
+	</dd>
+	<dt><code>\--interlacing-factor</code> / <code>-i</code></dt>
+	<dd><em>Optional (default:1).</em>
+		Specifies the interlacing factor.
+		Takes a positive integer value.
+		If set to a value greater than 1, the search point set
+		will be an interlaced digital net / polynomial lattice rule set. Requires to use the appropriate
+		figures of merit and the corresponding norm-type.
+		See \ref feats_interlaced "here" for the definition of interlaced digital nets
+		and polynomial lattice rules 
+		and \ref cmdtut_advanced_interlaced for details about constructing 
+		such point sets with the command-line tool.
+	</dd>
+	<dt><code>\--norm-type</code> / <code>-q</code></dt>
+	<dd><em>Required.</em>
+		Specifies the type of the \f$\ell_q\f$ norm to combine the merit
+		values across projections.
+		Takes an argument of the form:
+		- <code><var>realNumber</var></code> for a finite positive number;
+		- <code>inf</code> for infinity.
+		The value of this option must be compatible with the type of figure of merit,
+		especially regarding the use of the coordinate-uniform evaluation algorithm.
+		
+		See \ref feats_figures for additional details on this parameter.
+	</dd>
+	<dt><code>\--weights</code> / <code>-w</code></dt>
+	<dd><em>Required.</em>
+		Specifies the type(s) of weights and their values.
+                Takes a whitespace-separated list of arguments, each of which
+                specifying a type of weights with its values. 
+                (The actual weights are the sum of these.)
+		Takes argument of the form:
+		- <code>product:<var>default</var>:<var>list</var></code>
+		  for product weights with the weights for the first coordinates
+		  specified by the comma-separated list of weights
+		  <code><var>list</var></code>, and with weight
+		  <code><var>default</var></code> for the other coordinates;
+		- <code>order-dependent:<var>default</var>:<var>list</var></code>
+		  for order-dependent weights with the weights for the first orders
+		  specified by the comma-separated list of weights
+		  <code><var>list</var></code> (starting at order 1), and with weight
+		  <code><var>default</var></code> for the other orders;
+		- <code>POD:<var>default1</var>:<var>list1</var>:<var>default2</var>:<var>list2</var></code>
+			for POD weights, where <code><var>default1</var></code> and
+			<code><var>list1</var></code> specify the default and
+			individual order-dependent weights, and where
+			<code><var>default2</var></code> and
+			<code><var>list2</var></code> specify the default and
+			individual product weights.
+		- <code>projection-dependent:<var>proj</var>:<var>weight</var>:...:<var>proj</var>:<var>weight</var></code> for
+		  projection-dependent weights where <code><var>proj</var></code> is a projection (comma-separated list of coordinates)
+			and <code><var>weight</var></code> the associated weight.
+			\n Alternatively, a file containing the weights can be used:
+			<code>--weights file:<var>path_to_file</var></code>
+				to assign the weight <code><var>weight</var></code> to all other
+			where <code><var>path_to_file</var></code> is the path to the file containing the weights.
+			The file must consist of lines of the form:
+			- <code><var>coordinates</var>: <var>weight</var></code>
+				to assign the weight <code><var>weight</var></code> to the projection
+				defined by the comma-separated list of coordinates
+				<code><var>coordinates</var></code>;
+			- <code>order <var>order</var>: <var>weight</var></code>
+				to assign the weight <code><var>weight</var></code> to all other
+				projections of order <code><var>order</var></code>;
+			- <code>default: <var>weight</var></code>
+	</dd>
+				projections;
+			- <code>#<var>comment</var></code> to ignore
+				<code><var>comment</var></code>.
+		
+		The way to specify the different \ref feats_weights "types of weights" is explained \ref cmdtut_advanced_weights "here".
+	<dt><code>\--weights-power</code> / <code>-p</code></dt>
+	<dd><em>Optional (default: same value as for the <code>--norm-type</code> option).</em>
+		Specifies that the weights passed by option
+		<code>--weights</code> have already been elevated to that power.
+	
+		By default, the weights are assumed to have been elevated to the same power
+		as specified by option <code> --norm-type</code>. A value of <code>inf</code> is mapped to 1.
+		See the definition of \f$p\f$ in the first paragraph of this \ref cmdtut_advanced_weights "page" for additional details.
+	</dd>
+	<dt><code>\--multilevel</code> / <code>-M</code></dt>
+	<dd><em>Optional (default: false).</em>
+		Specifies if the searched point sets are multilevel point sets.
+		Takes one of the following values:
+		- <code>false</code>
+			to search for unilevel point sets; or
+		- <code>true</code>
+			to search for multilevel point sets.
+	</dd>
+	<dt><code>\--combiner</code> / <code>-C</code></dt>
+	<dd><em>Optional.</em>
+    Selects a combiner for multilevel figures of merit.
+		Takes one of the following values:
+		- <code>sum</code>
+			to sum the individual merit values of all nested levels;
+		- <code>max</code>
+			to select the maximum individual merit value across all nested
+			levels;
+		- <code>level:max</code>
+                  to select the individual merit value of the nested level with
+                  the largest number of points (the highest level);
+		- <code>level:<var>m</var></code>
+                  to select the individual merit value of the \f$m\f$th nested
+                  level.
+	</dd>
+	<dt><code>\--filters</code> / <code>-F</code></dt>
+	<dd><em>Optional.</em>
+		Configures filters for merit values.
+		Only supported when <code>--set-type lattice </code> is set.
+		Takes a whitespace-separated list of arguments of the form:
+		- <code>norm:<var>type</var></code> for a normalizer of type 
+			specified by <code><var>type</var></code>;
+		- <code>low-pass:<var>threshold</var></code> for a low-pass
+		  filter with threshold value <code><var>threshold</var></code>.
+		
+		If the option <code>--multilevel true</code> is set, 
+		in the case of a normalization filter, weights can
+		be optionally specified by appending
+		<code>:select:<var>minLevel</var>,<var>maxLevel</var></code> to
+		the filter specification, which sets positive weights across all
+		levels ranging from <code><var>minLevel</var></code> through
+		<code><var>maxLevel</var></code>, and a zero weight for other
+		levels.
+	<dt><code>\--repeat</code> / <code>-r</code></dt>
+	<dd><em>Optional (default 1).</em>
+		Number of times the exploration must be executed
+   		(can be useful to obtain different results from random exploration).
+		Takes an integer argument.
+	</dd>
+	<dt><code>\--verbose</code> / <code>-v</code></dt>
+	<dd><em>Optional (default 0).</em>
+		Specifies the verbosity level. Ranges between 0 (quite quiet) and 3 (pretty chatty)
+		Takes an integer argument.
+	</dd>
+	<dt><code>\--output-folder</code> / <code>-o</code></dt>
+	<dd><em>Optional.</em>
+		Specify a path to a folder where to store the log files 
+		of the search. If the folder does not exist, it will be created.
+		If the folder already exists, some existing files may be lost.  
+	</dd>
+	<dt><code>\--merit-digits-displayed</code></dt>
+	<dd><em>Optional.</em>
+                Sets the number of significant figures to use when displaying
+		merit values.
+                Takes a positive integer as its argument.
+	</dd>
+</dl>
+*/
+vim: ft=doxygen spelllang=en spell

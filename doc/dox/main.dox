@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,42 +15,51 @@
 // limitations under the License.
 
 /*!
-\mainpage Lattice Builder Manual
+\mainpage LatNet Builder Manual
 
 \section overview Overview
 
-<strong>Lattice Builder</strong> is a software package for constructing rank-1 lattices using 
-state-of-the-art techniques.
+<strong>LatNet Builder</strong> is a software library and tool for constructing highly-uniform point sets for quasi Monte-Carlo 
+and randomized quasi Monte-Carlo methods using state-of-the-art techniques. The software can construct rank-1 lattices and digital nets 
+in base 2.
 
 Reference paper:
 <blockquote>
-<a href="http://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder.pdf">
+<a href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf">
 P. L'Ecuyer and D. Munger.
 <b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Lattice Rules.</b>
-<i>Submitted, 2012, revised in 2013.</i>
+ACM Trans. Math. Softw. 42, 2, Article 15 (May 2016), 30 pages.
 </a>
 </blockquote>
 
+The current version of the software is called LatNet Builder, for Lattice & Net Builder, as it handles both rank-1 lattices and digital nets in base 2.
+
 \section outline Manual Outline
-- \subpage webif
+- \subpage feats
 - \subpage cmdtut
-- \subpage hightut
+- \subpage gui
 - \subpage libtut
-- \subpage impl
 
 \section links Links
 
-- <a href="http://simul.iro.umontreal.ca/latbuilder/">Lattice Builder Home</a>
-- <a href="http://simul.iro.umontreal.ca/latbuilder/download">Lattice Builder Downloads</a>
-- <a href="http://simul.iro.umontreal.ca/latbuilder/#compiling-the-source-code">Compiling Lattice Builder</a>
+- <a href="https://github.com/umontreal-simul/latnetbuilder">LatNet Builder Home</a>
+- <a href="https://github.com/umontreal-simul/latnetbuilder/releases">LatNet Builder Downloads</a>
+- <a href="https://github.com/umontreal-simul/latnetbuilder/tree/master#compiling-the-source-code">Compiling LatNet Builder</a>
 
 */
 
 /**
- * Lattice Builder namespace.
+ * LatBuilder namespace.
  *
- * Class and type definitions that are specific to Lattice Builder.
+ * Class and type definitions that are specific to LatBuilder.
  */
 namespace LatBuilder {}
+
+/**
+ * NetBuilder namespace.
+ *
+ * Class and type definitions that are specific to NetBuilder.
+ */
+namespace NetBuilder {}
 
 vim: ft=doxygen spelllang=en spell

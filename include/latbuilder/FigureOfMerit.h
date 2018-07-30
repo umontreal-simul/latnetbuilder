@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 #include <ostream>
 
@@ -49,7 +49,7 @@ public:
    /**
     * Returns the projection-dependent weights \f$\gamma_{\mathfrak u}\f$.
     */
-   virtual const LatCommon::Weights& weights() const = 0;
+   virtual const LatticeTester::Weights& weights() const = 0;
 
    virtual std::string name() const = 0;
 

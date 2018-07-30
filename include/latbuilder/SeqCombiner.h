@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,6 +53,25 @@ public:
       }
       return true;
    }
+
+   template<typename SEQ>
+   static size_t computeSize(const std::vector<SEQ>& seqs)
+   {
+         if (seqs.size() > 0)
+         {
+            size_t size = 1;
+            for(const auto& s : seqs)
+            {
+                  size *= s.size();
+            }
+            return size;
+         }
+         else
+         {
+               return 0;
+         }
+   }
+
 };
 
 /**
@@ -77,6 +96,24 @@ public:
          ++out; ++seq; ++val;
       }
       return false;
+   }
+
+   template<typename SEQ>
+   static size_t computeSize(const std::vector<SEQ>& seqs)
+   {
+         if (seqs.size() > 0)
+         {
+            size_t size = seqs.front().size();
+            for(const auto& s : seqs)
+            {
+                  std::min(s.size(), size);
+            }
+            return size;
+         }
+         else
+         {
+               return 0;
+         }
    }
 };
 
@@ -110,8 +147,9 @@ public:
     * \param seqs     Container of unidimenisonal sequences.
     */
    SeqCombiner(std::vector<Seq> seqs):
-      m_seqs(std::move(seqs))
-   {}
+      m_seqs(std::move(seqs)),
+      m_size(INCREMENT<Seq>::computeSize(m_seqs))
+   {};
 
    /**
     * Returns the vector of unidimensional sequences.
@@ -121,6 +159,7 @@ public:
 
 private:
    std::vector<Seq> m_seqs;
+   size_t m_size;
 
 public:
 
@@ -142,15 +181,13 @@ public:
          m_seq(&seq), m_at_end(m_seq->seqs().size() == 0)
       {
          // initial iterators and initial value
-         m_value.resize(m_seq->seqs().size());
-         m_its.resize(m_seq->seqs().size());
-         auto val = m_value.begin();
-         auto out = m_its.begin();
-         auto in = m_seq->seqs().begin();
-         while (out != m_its.end()) {
-            *out = in->begin();
-            *val = **out;
-            ++in; ++out; ++val;
+         m_value.reserve(m_seq->seqs().size());
+         m_its.reserve(m_seq->seqs().size());
+
+         for(const auto& s : m_seq->seqs())
+         {
+               m_its.push_back(s.begin());
+               m_value.push_back(*(m_its.back()));
          }
       }
 
@@ -165,7 +202,7 @@ public:
       { return *m_seq; }
 
       /**
-       * Returns a refenrence to all generator sequence iterators.
+       * Returns a reference to all generator sequence iterators.
        */
       const SeqIterators& seqIterators() const
       { return m_its; }
@@ -218,6 +255,11 @@ public:
     */
    const_iterator end() const
    { return const_iterator(*this, typename const_iterator::end_tag{}); }
+
+   size_t size() const
+   {
+         return m_size;
+   }
 };
 
 }

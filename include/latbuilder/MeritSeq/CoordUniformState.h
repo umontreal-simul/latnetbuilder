@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,10 +38,13 @@ namespace LatBuilder { namespace MeritSeq {
  * of RealVector.  This is the cost for making update() a virtual function: it
  * cannot be a template.
  */
-template <LatType LAT, Compress COMPRESS>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO >
 class CoordUniformState {
 public:
-   CoordUniformState(Storage<LAT, COMPRESS> storage):
+
+  
+
+   CoordUniformState(Storage<LR, ET, COMPRESS, PLO> storage):
       m_storage(std::move(storage)),
       m_dimension(0)
    {}
@@ -59,14 +62,14 @@ public:
     * Updates the current state using the specified row of the permuted matrix
     * of kernel values.
     *
-    * This corresponds to appending a component \f$a_j\f$ to the generating
+    * For lattices, this corresponds to appending a component \f$a_j\f$ to the generating
     * vector \f$\boldsymbol a = (a_1, \dots, a_{j-1})\f$.
     * To each possible value of \f$a_j\f$ corresponds a distinct row of the
     * matrix \f$\boldsymbol\Omega\f$ of kernel values.
     *
     * This increases the internal dimension counter.
     */
-   virtual void update(const RealVector& kernelValues, Modulus gen)
+   virtual void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen)
    { m_dimension++; }
 
    /**
@@ -77,7 +80,7 @@ public:
    /**
     * Returns a pointer to the storage configuration.
     */
-   const Storage<LAT, COMPRESS>& storage() const
+   const Storage<LR, ET, COMPRESS, PLO>& storage() const
    { return m_storage; }
 
    /**
@@ -92,7 +95,7 @@ public:
    virtual std::unique_ptr<CoordUniformState> clone() const = 0;
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    Dimension m_dimension;
 };
 

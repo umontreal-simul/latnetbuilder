@@ -8,8 +8,3 @@ namespace LatBuilder {
  */
 namespace GenSeq {
 }}
-
-/** \example GenSeq.cc
- * This is an example of how to use the different sequences of generating
- * vectors.
- */

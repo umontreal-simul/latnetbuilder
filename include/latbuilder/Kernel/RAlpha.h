@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -74,7 +74,7 @@ namespace LatBuilder { namespace Kernel {
  * r_{\alpha,n}(h)\f$ at \f$h=0,\dots,n-1\f$.  This is how #valuesVector()
  * computes these values.
  *
- * \tparam LAT          Type of lattice.
+ * \tparam ET          Type of lattice.
  */
 class RAlpha : public Base<RAlpha> {
 public:
@@ -95,12 +95,12 @@ public:
     *
     * \remark Returns only the real part of the kernel value.
     */
-   Real pointValue(const Real& x, Modulus n) const
+   Real pointValue(const Real& x, uInteger n) const
    {
       const auto pi = boost::math::constants::pi<Real>();
-      Modulus hmax = (n - 1) / 2;
+      uInteger hmax = (n - 1) / 2;
       Real sum = 0.0;
-      for (Modulus h = 1; h <= hmax; h++)
+      for (uInteger h = 1; h <= hmax; h++)
          sum += std::pow(h, -alpha()) * 2 * std::cos(2 * pi * h * x);
       if (n % 2 == 0)
          sum += std::pow(n / 2, -alpha()) * cos(pi * n * x);
@@ -112,9 +112,9 @@ public:
     *
     * Creates a new vector of kernel values using fast Fourier transforms.
     */
-   template <LatType L, Compress C>
+   template <LatticeType LR, EmbeddingType L, Compress C, PerLevelOrder P >
    RealVector valuesVector(
-         const Storage<L, C>& storage
+         const Storage<LR, L, C, P>& storage
          ) const
    {
       fftw<Real>::real_vector rvec(storage.sizeParam().numPoints());
@@ -148,6 +148,8 @@ public:
 
    std::string name() const
    { std::ostringstream os; os << "R" << alpha(); return os.str(); }
+
+   static constexpr Real CUPower = 2;
 
 private:
    Real m_alpha;

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,21 +17,21 @@
 #ifndef LATBUILDER__NORM__PALPHA_SL10_H
 #define LATBUILDER__NORM__PALPHA_SL10_H
 
-#include "latbuilder/Norm/PAlphaBase.h"
+#include "latbuilder/Norm/NormAlphaBase.h"
 #include "latbuilder/Types.h"
 #include "latbuilder/CombinedWeights.h"
 
-#include "latcommon/ProjectionDependentWeights.h"
-#include "latcommon/OrderDependentWeights.h"
-#include "latcommon/ProductWeights.h"
-#include "latcommon/PODWeights.h"
+#include "latticetester/ProjectionDependentWeights.h"
+#include "latticetester/OrderDependentWeights.h"
+#include "latticetester/ProductWeights.h"
+#include "latticetester/PODWeights.h"
 
 namespace LatBuilder { namespace Norm {
 
 /**
  * Bound on the weighted \f$\mathcal P_\alpha\f$ discrepancy.
  *
- * This is the general bound derived in Theorem 3 of \cite rSIN11a for
+ * This is the general bound derived in Theorem 3 of \cite rSIN12a for
  * projection-dependent weights.
  * The theorem states that, for \f$\mathcal D^2(\boldsymbol a_s, n)
  * = \mathcal P_\alpha(\boldsymbol a_s, n)\f$, there exists a generating vector
@@ -110,7 +110,7 @@ namespace LatBuilder { namespace Norm {
  * for \f$\ell \geq 1\f$ and \f$y_0(\lambda) = 1\f$.
  *
  */
-class PAlphaSL10 : public PAlphaBase<PAlphaSL10> {
+class PAlphaSL10 : public NormAlphaBase<PAlphaSL10> {
 public:
    /**
     * Constructor.
@@ -120,12 +120,12 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaSL10(unsigned int alpha, const LatCommon::Weights& weights, Real normType=2);
+   PAlphaSL10(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
 
-   template <LatType L>
+   template <LatticeType LR, EmbeddingType L>
    Real value(
          Real lambda,
-         const SizeParam<L>& sizeParam,
+         const SizeParam<LR, L>& sizeParam,
          Dimension dimension,
          Real norm = 1.0
          ) const;
@@ -134,7 +134,7 @@ public:
    { return "PAlphaSL10"; }
 
 private:
-   const LatCommon::Weights& m_weights;
+   const LatticeTester::Weights& m_weights;
 };
 
 }}

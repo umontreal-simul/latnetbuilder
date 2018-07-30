@@ -1,0 +1,4 @@
+export ENV_BIN=$(which latnetbuilder-gui)
+export ENV_BIN=$(dirname $ENV_BIN)
+cd $ENV_BIN
+jupyter notebook --NotebookApp.password='sha1:dd72903edb36:73ba238d97e4c0b61909800adda9847dd2ff23f2' ../share/latnetbuilder/Interface.ipynb

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ namespace LatBuilder { namespace Task {
 /**
  * Base class for search tasks.
  *
- * \tparam LAT   Type of lattice.
+ * \tparam ET   Type of lattice.
  */
-template <LatType LAT>
+template <LatticeType LR, EmbeddingType ET>
 class Search : public Task {
 public:
    typedef boost::signals2::signal<void (const Search&)> OnLatticeSelected;
@@ -63,10 +63,13 @@ public:
             size_t maxTotalCount = std::numeric_limits<size_t>::max()
             )
       {
+         m_totalDim = 0;
+         m_dimension = 0;
+         m_verbose=0;
          setMaxAcceptedCount(maxAcceptedCount);
          setMaxTotalCount(maxTotalCount);
          setTruncateSum(false);
-         start();
+         start(0);
       }
 
       void setMaxAcceptedCount(size_t maxCount)
@@ -83,8 +86,8 @@ public:
       void setTruncateSum(bool value)
       { m_truncateSum = value; }
 
-      void start()
-      { stop(); m_totalCount = 0; m_rejectedCount = 0; }
+      void start(const size_t& n_totToBeVisited)
+      { stop(); m_dimension++; m_totalCount = 0; m_rejectedCount = 0; m_nTotToBeVisited = n_totToBeVisited;}
 
       /**
        * Reset the low-pass filter when min-element stops.
@@ -92,15 +95,24 @@ public:
       void stop()
       { m_lowPass.setThreshold(std::numeric_limits<Real>::max()); }
 
-      bool visited(const Real&)
+      bool visited(const Real& r)
       {
          m_totalCount++;
+         if (m_verbose > 0 && ((m_nTotToBeVisited > 100 && m_totalCount % 100 == 0) || (m_totalCount % 10 == 0))){
+               if (m_totalDim > 1){
+                std::cout << "Coordinate " << m_dimension-1 << "/" << m_totalDim <<  " - lattice ";
+               }
+               else{
+                std::cout << "Lattice ";
+               }
+              std::cout << m_totalCount << "/" << m_nTotToBeVisited << std::endl;
+         }
          return acceptedCount() < maxAcceptedCount() and
             totalCount() < maxTotalCount();
       }
 
-      template <LatType L>
-      void reject(const LatDef<L>& lat)
+      template <LatticeType LA, EmbeddingType L>
+      void reject(const LatDef<LA, L>& lat)
       { m_rejectedCount++; }
 
       /**
@@ -109,6 +121,14 @@ public:
        */
       void minUpdated(const Real& newMin)
       { m_lowPass.setThreshold(newMin); }
+
+      void setVerbosity(int verbose){
+        m_verbose = verbose;
+      }
+
+      void setTotalDim(Dimension totalDim){
+        m_totalDim = totalDim;
+      }
 
       size_t maxAcceptedCount() const
       { return m_maxAcceptedCount; }
@@ -143,11 +163,15 @@ public:
       { return m_lowPass; }
 
    private:
+      Dimension m_dimension;
+      int m_verbose;
       bool m_truncateSum;
       size_t m_maxAcceptedCount;
       size_t m_maxTotalCount;
       size_t m_totalCount;
       size_t m_rejectedCount;
+      size_t m_nTotToBeVisited;
+      Dimension m_totalDim;
 
       /**
        * Low-pass filter whose threshold is continuously updated with the
@@ -167,7 +191,8 @@ public:
       m_dimension(dimension),
       m_bestLat(),
       m_bestMerit(0),
-      m_minObserver(new MinObserver())
+      m_minObserver(new MinObserver()),
+      m_verbose(0)
    { connectSignals(); }
 
    Search(Search&& other):
@@ -178,7 +203,8 @@ public:
       m_bestMerit(std::move(other.m_bestMerit)),
       m_minObserver(other.m_minObserver.release()),
       m_minElement(std::move(other.m_minElement)),
-      m_filters(std::move(other.m_filters))
+      m_filters(std::move(other.m_filters)),
+      m_verbose(other.m_verbose)
    {}
 
    virtual ~Search() {}
@@ -189,20 +215,25 @@ public:
    Dimension dimension() const
    { return m_dimension; }
 
+   int verbose() const
+   { return m_verbose; }
+   void setVerbose(int verbose)
+   { m_verbose= verbose; }
+
    /**
     * Returns the filters of merit transformations.
     */
-   const MeritFilterList<LAT>& filters() const
+   const MeritFilterList<LR, ET>& filters() const
    { return m_filters; }
 
    /// \copydoc filters() const
-   MeritFilterList<LAT>& filters()
+   MeritFilterList<LR, ET>& filters()
    { return m_filters; }
 
    /**
     * Returns the best lattice found by the search task.
     */
-   const LatDef<LAT>& bestLattice() const
+   const LatDef<LR, ET>& bestLattice() const
    { return m_bestLat; }
 
    /**
@@ -222,6 +253,16 @@ public:
 
    const MinObserver& minObserver() const
    { return *m_minObserver; }
+
+   void setObserverVerbosity(int verbose) const
+   {
+      m_minObserver->setVerbosity(verbose);
+   }
+
+   void setObserverTotalDim(Dimension totalDim) const
+   {
+      m_minObserver->setTotalDim(totalDim);
+   }
 
    /**
     * Lattice-selected signal.
@@ -248,7 +289,7 @@ public:
     */
    virtual void reset()
    {
-      m_bestLat = LatDef<LAT>();
+      m_bestLat = LatDef<LR, ET>();
       m_bestMerit = 0.0;
    }
 
@@ -256,36 +297,40 @@ protected:
 
    virtual void format(std::ostream& os) const
    {
-      os << "dimension: " << dimension() << std::endl;
-      os << "filters: " << filters();
+      os << "Dimension: " << dimension() << std::endl;
+      os << filters() << std::endl;
    }
 
    /**
-    * Selects a new best lattice and emits an OnLatticeSelected signal.
+    * Selects a new best lattice and emits an OnLatticeSelected signal, if quiet is set to false.
     */
-   void selectBestLattice(const LatDef<LAT>& lattice, Real merit)
+   void selectBestLattice(const LatDef<LR, ET>& lattice, Real merit, bool quiet)
    {
       m_bestLat = lattice;
       m_bestMerit = merit;
-      onLatticeSelected()(*this);
+      if (! quiet){
+        onLatticeSelected()(*this);
+      }
    }
 
 private:
    std::unique_ptr<OnLatticeSelected> m_onLatticeSelected;
 
    Dimension m_dimension;
-   LatDef<LAT> m_bestLat;
+   LatDef<LR, ET> m_bestLat;
    Real m_bestMerit;
    std::unique_ptr<MinObserver> m_minObserver;
    Functor::MinElement<Real> m_minElement;
-   MeritFilterList<LAT> m_filters;
+   MeritFilterList<LR, ET> m_filters;
+   int m_verbose;
 
    void connectSignals()
    {
       // notify minObserver before minElement visits the first element
       m_minElement.onStart().connect(boost::bind(
                &MinObserver::start,
-               &minObserver()
+               &minObserver(),
+               _1
                ));
 
       // notify minObserver when minElement visits a new element
@@ -305,26 +350,26 @@ private:
       connectSignals(filters());
    }
 
-   void connectSignals(MeritFilterList<LatType::ORDINARY>& filters)
+   void connectSignals(MeritFilterList<LR, EmbeddingType::UNILEVEL>& filters)
    {
       // notify minObserver when the filters rejects an element
-      filters.template onReject<LatType::ORDINARY>().connect(boost::bind(
-               &MinObserver::template reject<LatType::ORDINARY>,
+      filters.template onReject<EmbeddingType::UNILEVEL>().connect(boost::bind(
+               &MinObserver::template reject<LR, EmbeddingType::UNILEVEL>,
                &minObserver(),
                _1
                ));
    }
 
-   void connectSignals(MeritFilterList<LatType::EMBEDDED>& filters)
+   void connectSignals(MeritFilterList<LR, EmbeddingType::MULTILEVEL>& filters)
    {
       // notify minObserver when the filters rejects an element
-      filters.template onReject<LatType::ORDINARY>().connect(boost::bind(
-               &MinObserver::template reject<LatType::ORDINARY>,
+      filters.template onReject<EmbeddingType::UNILEVEL>().connect(boost::bind(
+               &MinObserver::template reject<LR, EmbeddingType::UNILEVEL>,
                &minObserver(),
                _1
                ));
-      filters.template onReject<LatType::EMBEDDED>().connect(boost::bind(
-               &MinObserver::template reject<LatType::EMBEDDED>,
+      filters.template onReject<EmbeddingType::MULTILEVEL>().connect(boost::bind(
+               &MinObserver::template reject<LR, EmbeddingType::MULTILEVEL>,
                &minObserver(),
                _1
                ));
@@ -335,7 +380,7 @@ private:
 /**
  * Selector the proper CBC algorithm, given a figure of merit.
  *
- * \tparam LAT          Type of lattice.
+ * \tparam ET          Type of lattice.
  * \tparam COMPRESS     Type of compression.
  * \tparam FIGURE       Type of figure of merit.
  *
@@ -349,17 +394,17 @@ private:
  * - an init() function that takes an instance of Task::Search as its argument
  *   and that performs special actions depending on the type of CBC algorithm.
  */
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct CBCSelector;
 
-template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC>
-struct CBCSelector<LAT, COMPRESS, WeightedFigureOfMerit<PROJDEP, ACC>> {
-   typedef MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC> CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC>
+struct CBCSelector<LR, ET, COMPRESS, PLO, WeightedFigureOfMerit<PROJDEP, ACC>> {
+   typedef MeritSeq::CBC<LR, ET, COMPRESS, PLO, PROJDEP, ACC> CBC;
 };
 
-template <LatType LAT, Compress COMPRESS, class KERNEL>
-struct CBCSelector<LAT, COMPRESS, CoordUniformFigureOfMerit<KERNEL>> {
-   typedef MeritSeq::CoordUniformCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordUniformInnerProd> CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
+struct CBCSelector<LR, ET, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>> {
+   typedef MeritSeq::CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, MeritSeq::CoordUniformInnerProd> CBC;
 };
 
 
@@ -367,9 +412,9 @@ struct CBCSelector<LAT, COMPRESS, CoordUniformFigureOfMerit<KERNEL>> {
  * Connects WeightedFigureOfMerit::OnProgress with an Search::MinObserver::progress
  * function and activates Search::MinObserver::setTruncateSum().
  */
-template <LatType LAT, Compress COMPRESS, class PROJDEP, template <class> class ACC, class OBSERVER>
-void connectCBCProgress(const MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC>& cbc, OBSERVER& obs, bool truncateSum) {
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class PROJDEP, template <class> class ACC, class OBSERVER>
+void connectCBCProgress(const MeritSeq::CBC<LR, ET, COMPRESS, PLO, PROJDEP, ACC>& cbc, OBSERVER& obs, bool truncateSum) {
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
    typedef bool (OBSERVER::*ProgressCallback)(const MeritValue&) const;
    ProgressCallback progress = &OBSERVER::progress;
 
@@ -391,8 +436,8 @@ void connectCBCProgress(const MeritSeq::CBC<LAT, COMPRESS, PROJDEP, ACC>& cbc, O
 /**
  * Does nothing.
  */
-template <LatType LAT, Compress COMPRESS, class KERNEL, template <LatType, Compress> class PROD, class OBSERVER>
-void connectCBCProgress(const MeritSeq::CoordUniformCBC<LAT, COMPRESS, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL, template <LatticeType, EmbeddingType, Compress, PerLevelOrder> class PROD, class OBSERVER>
+void connectCBCProgress(const MeritSeq::CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, PROD>& cbc, OBSERVER& obs, bool truncateSum) {
    // nothing to do with coordinate-uniform CBC
 }
 

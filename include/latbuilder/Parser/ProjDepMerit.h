@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@
 #include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/ProjDepMerit/Spectral.h"
 
-#include "latcommon/NormaBestLat.h"
+#include "latticetester/NormaBestLat.h"
 
 
 namespace LatBuilder { namespace Parser {
@@ -41,17 +41,19 @@ public:
 /**
  * Parser for projection-dependent figures of merit.
  */
+template< LatticeType LR>
 struct ProjDepMerit {
 
    struct ParseCoordUniform {
       template <class KERNEL, typename FUNC, typename... ARGS>
       void operator()(
             KERNEL kernel,
+            std::unique_ptr<LatticeTester::Weights> weights,
             FUNC&& func, ARGS&&... args
             ) const
       {
          func(
-               LatBuilder::ProjDepMerit::CoordUniform<KERNEL>(std::move(kernel)),
+               LatBuilder::ProjDepMerit::CoordUniform<KERNEL>(std::move(kernel)), std::move(weights),
                std::forward<ARGS>(args)...
              );
       }
@@ -65,27 +67,58 @@ struct ProjDepMerit {
     * \throws BadProjDepMerit On failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   static void parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args);
+   
+};
+
+
+
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void ProjDepMerit<LatticeType::ORDINARY>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
+      // try spectral
+        if (str == "spectral") {
+           func(
+                 LatBuilder::ProjDepMerit::Spectral<LatticeTester::NormaBestLat<Real>>(2.0),
+                 std::move(weights),
+                 std::forward<ARGS>(args)...
+               );
+           return;
+        }
+
       // try coordinate-uniform
       try {
-         Kernel::parse(str, ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         Kernel<LatticeType::ORDINARY>::parse(str, interlacingFactor, std::move(weights), ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
       catch (BadKernel& e) {}
 
-      // try spectral
-      if (str == "spectral") {
-         func(
-               LatBuilder::ProjDepMerit::Spectral<LatCommon::NormaBestLat>(2.0),
-               std::forward<ARGS>(args)...
-             );
+      throw BadProjDepMerit(str);
+   }
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void ProjDepMerit<LatticeType::POLYNOMIAL>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
+   {
+      // try coordinate-uniform
+      try {
+         Kernel<LatticeType::POLYNOMIAL>::parse(str, interlacingFactor, std::move(weights), ParseCoordUniform(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
          return;
       }
+      catch (BadKernel& e) {}
+
+      
+      
 
       throw BadProjDepMerit(str);
    }
-};
+
+/*
+extern template struct ProjDepMerit<LatticeType::ORDINARY>;
+extern template struct ProjDepMerit<LatticeType::POLYNOMIAL>;
+*/
 
 }}
 

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,12 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Kernel/RAlpha.h"
 #include "latbuilder/Kernel/PAlpha.h"
+#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/RPLR.h"
+#include "latbuilder/Kernel/IAAlpha.h"
+#include "latbuilder/Kernel/IB.h"
+
+#include "latbuilder/Interlaced/WeightsInterlacer.h"
 
 namespace LatBuilder { namespace Parser {
 
@@ -36,7 +42,9 @@ public:
 /**
  * Parser for kernels for coordinate-uniform figures of merit.
  */
-struct Kernel {
+template <LatticeType LR>
+struct Kernel
+{
    /**
     * Parses a string specifying a kernel for the coordinate-uniform figure of
     * merit, like the \f$\mathcal P_\alpha\f$ and the \f$\mathcal R_\alpha\f$
@@ -47,24 +55,78 @@ struct Kernel {
     * \return A shared pointer to a newly created object or \c nullptr on failure.
     */
    template <typename FUNC, typename... ARGS>
-   static void parse(const std::string& str,  FUNC&& func, ARGS&&... args)
+   static void parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights>,  FUNC&& func, ARGS&&... args);
+};
+
+
+template<>
+template <typename FUNC, typename... ARGS>
+   void Kernel<LatticeType::ORDINARY>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
    {
       try {
-         if (str[0] == 'P') {
-            auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
-            func(LatBuilder::Kernel::PAlpha(alpha), std::forward<ARGS>(args)...);
-            return;
-         }
-         else if (str[0] == 'R') {
-            auto alpha = boost::lexical_cast<Real>(str.substr(1));
-            func(LatBuilder::Kernel::RAlpha(alpha), std::forward<ARGS>(args)...);
-            return;
-         }
-      }
-      catch (boost::bad_lexical_cast&) {}
-      throw BadKernel(str);
+             if (str[0] == 'P') {
+                auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
+                func(LatBuilder::Kernel::PAlpha(alpha), std::move(weights), std::forward<ARGS>(args)...);
+                return;
+             }
+             else if (str[0] == 'R') {
+                auto alpha = boost::lexical_cast<Real>(str.substr(1));
+                func(LatBuilder::Kernel::RAlpha(alpha), std::move(weights), std::forward<ARGS>(args)...);
+                return;
+             }
+          }
+          catch (boost::bad_lexical_cast&) {}
+          throw BadKernel(str);
    }
-};
+
+// template <typename WEIGHTS>
+// using WeightsInterlacerA = typename LatBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IAAlpha>::WeightsInterlacer<WEIGHTS>;
+
+// template <typename WEIGHTS>
+// using WeightsInterlacerB = typename LatBuilder::Interlaced::WeightsInterlacerContainer<LatBuilder::Kernel::IB>::WeightsInterlacer<WEIGHTS>;
+
+   
+template<>
+template <typename FUNC, typename... ARGS>
+   void Kernel<LatticeType::POLYNOMIAL>::parse(const std::string& str, unsigned int interlacingFactor, std::unique_ptr<LatticeTester::Weights> weights, FUNC&& func, ARGS&&... args)
+   {
+      try {
+             if (str[0] == 'P') {
+                auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
+                func(LatBuilder::Kernel::PAlphaPLR(alpha), std::move(weights), std::forward<ARGS>(args)...);
+                return;
+             }
+             else if (str[0] == 'R') {
+                
+                func(LatBuilder::Kernel::RPLR(), std::move(weights), std::forward<ARGS>(args)...);
+                return;
+             }
+            else if (str[0] == 'I')
+            {
+                if (str[1] == 'A')
+                {
+                    auto alpha = boost::lexical_cast<unsigned int>(str.substr(2));
+                    LatBuilder::Kernel::IAAlpha kernel(alpha, interlacingFactor);
+                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
+                    func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
+                    return;
+                }
+                else if (str[1] == 'B') {
+                    LatBuilder::Kernel::IB kernel(interlacingFactor);
+                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
+                    func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
+                    return;
+                }
+            }
+          }
+          catch (boost::bad_lexical_cast&) {}
+          throw BadKernel(str);
+   }
+
+/*
+extern template struct Kernel<LatticeType::ORDINARY>;
+extern template struct Kernel<LatticeType::POLYNOMIAL>;
+*/
 
 }}
 

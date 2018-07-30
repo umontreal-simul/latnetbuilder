@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,14 +19,14 @@
 
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Coordinates.h"
 #include "latbuilder/Storage.h"
 
 #include <memory>
 
 namespace LatBuilder { namespace ProjDepMerit {
 
-template <class DERIVED, LatType LAT, Compress COMPRESS>
+template <class DERIVED, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO = defaultPerLevelOrder<LR, ET>::Order>
 class Evaluator;
 
 /**
@@ -39,11 +39,11 @@ public:
     * Computes the value of the figure of merit of lattice \c lat for projection
     * \c projection.
     */
-   template <LatType LAT, Compress COMPRESS>
-   typename Storage<LAT, COMPRESS>::MeritValue operator() (
-         const Storage<LAT, COMPRESS>& storage,
-         const LatDef<LAT>& lat,
-         const LatCommon::Coordinates& projection
+   template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+   typename Storage<LR, ET, COMPRESS, PLO>::MeritValue operator() (
+         const Storage<LR, ET, COMPRESS, PLO>& storage,
+         const LatDef<LR, ET>& lat,
+         const LatticeTester::Coordinates& projection
          ) const
    { return derived()(storage, lat, projection); }
 
@@ -65,8 +65,8 @@ public:
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <LatType LAT, Compress COMPRESS>
-   Evaluator<DERIVED, LAT, COMPRESS> evaluator(const Storage<LAT, COMPRESS>& storage) const
+   template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+   Evaluator<DERIVED, LR, ET, COMPRESS, PLO> evaluator(const Storage<LR, ET, COMPRESS, PLO>& storage) const
    { return derived().evaluator(storage); }
 
    DERIVED& derived()
@@ -74,6 +74,9 @@ public:
 
    const DERIVED& derived() const
    { return static_cast<const DERIVED&>(*this); }
+
+   Real power() const
+   { return derived().power(); }
 
 private:
    template <class D>

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ namespace LatBuilder { namespace GenSeq {
 
 namespace detail {
    struct CoprimeIntegersBasisElement {
+      typedef LatticeTraits<LatticeType::ORDINARY>::Modulus Modulus;
       Modulus totient;
       Modulus leap;
       Modulus elem; 
@@ -99,7 +100,7 @@ public:
    /**
     * Value type.
     */
-   typedef Modulus value_type;
+   typedef LatticeTraits<LatticeType::ORDINARY>::Modulus value_type;
 
    /**
     * Size type.
@@ -206,7 +207,7 @@ CoprimeIntegers<COMPRESS, TRAV>::CoprimeIntegers(
       long long elem = m * egcd(bk, m).second;
       if (elem < 0)
          elem += (1 - elem / (long long)(m_modulus)) * (long long)(m_modulus);
-      e.elem = (Modulus)(elem) % m_modulus;
+      e.elem = (value_type)(elem) % m_modulus;
       m_size *= e.totient;
       m_basis.push_back(std::move(e));
    }

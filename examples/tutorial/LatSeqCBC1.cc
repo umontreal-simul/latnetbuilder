@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,33 +16,44 @@
 
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/LatSeq/CBC.h"
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/TextStream.h"
+
+#include "Path.h"
 
 #include <iostream>
 
 using namespace LatBuilder;
 using TextStream::operator<<;
 
-int main()
-{
-   //! [main]
-   SizeParam<LatType::ORDINARY> size(8);
 
+//! [main]
+template<LatticeType LA>
+void test(typename LatticeTraits<LA>::Modulus modulus, typename LatticeTraits<LA>::GeneratingVector genv){
+   SizeParam<LA, EmbeddingType::UNILEVEL> size(modulus);
+   
    //! [baseLat]
-   auto baseLat = createLatDef(size, GeneratingVector{1, 5});
+   auto baseLat = createLatDef(size, genv);
    //! [baseLat]
 
-   typedef GenSeq::CoprimeIntegers<Compress::NONE> Coprime;
+   typedef GenSeq::GeneratingValues<LA, Compress::NONE> Coprime;
 
    //! [latSeq]
    auto latSeq = LatSeq::cbc(baseLat, Coprime(size));
    //! [latSeq]
 
-   //! [output]
    std::cout << latSeq << std::endl;
+}
+//! [main]
+
+int main()
+{
+   SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
    //! [output]
-   //! [main]
+   test<LatticeType::ORDINARY>(8, {1,5});
+   test<LatticeType::POLYNOMIAL>(PolynomialFromInt(7), {PolynomialFromInt(1),PolynomialFromInt(5)});
+   //! [output]
+
 
    return 0;
 }

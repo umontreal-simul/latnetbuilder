@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,23 +35,24 @@ public:
 /**
  * Parser for per-level weights.
  */
+template <LatticeType LR>
 struct LevelWeights {
    typedef RealVector result_type;
    /**
     * Parses per-level weights.
     *
-    * The weights are all even and the string must specify the minimum and
-    * maximum levels.
+    * Example string: <tt>select</tt>, <tt>select:5</tt>, <tt>select:5,12</tt>
     *
-    * Example string: <tt>even</tt>, <tt>even:5</tt>, <tt>even:5,12</tt>
-    *
-    * Empty string is interpreted as <tt>even</tt>.
+    * Empty string is interpreted as <tt>select</tt>.
     */
    static result_type parse(
          const std::string& arg,
-         const SizeParam<LatType::EMBEDDED>& sizeParam
+         const SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam
          );
 };
+
+extern template struct LevelWeights<LatticeType::ORDINARY>;
+extern template struct LevelWeights<LatticeType::POLYNOMIAL>;
 
 }}
 

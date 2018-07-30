@@ -54,10 +54,11 @@ class check_output(Task.Task):
 
 def build(ctx):
 
-    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latcommon/include')
+    lc_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('latticetester/include')
     lb_inc_dir = ctx.root.find_dir(ctx.top_dir).find_dir('include')
 
     targets = []
+    ctx.define('CHECKING_EXAMPLES', 1)
     for src in ctx.path.ant_glob('*.cc'):
 
         targets.append(ctx.path.find_or_declare(src.name[:-3]))
@@ -65,13 +66,13 @@ def build(ctx):
         ctx(features='cxx cxxprogram test',
                 source=src,
                 includes=[lb_inc_dir, lc_inc_dir],
-                lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_RT,
-                stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS,
+                lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_FILESYSTEM + ctx.env.LIB_SYSTEM + ctx.env.LIB_NTL + ctx.env.LIB_GMP,
+                stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_FILESYSTEM + ctx.env.STLIB_SYSTEM + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
                 target=targets[-1],
-                use=['latbuilder', 'latcommon'],
+                use=['latnetbuilder', 'latticetester'],
                 install_path=None)
 
-    ctx.install_files('${DOCDIR}/examples/tutorial', ctx.path.ant_glob('*.cc'))
+    ctx.install_files('${DOCDIR}/latnetbuilder/examples/tutorial', ctx.path.ant_glob(['*.cc', '*.h']))
 
     from waflib.Tools import waf_unit_test
     ctx.add_post_fun(waf_unit_test.summary)

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 #include "latbuilder/Types.h"
 #include "latbuilder/LatDef.h"
 
-#include "latcommon/Num.h"
-#include "latcommon/Coordinates.h"
+#include "latticetester/Num.h"
+#include "latticetester/Coordinates.h"
 
 #include <boost/numeric/ublas/vector.hpp>
 #include <boost/numeric/ublas/vector_proxy.hpp>
@@ -75,12 +75,15 @@ public:
    std::string name() const
    { return kernel().name(); }
 
+   Real power() const
+   { return KERNEL::CUPower; }
+
    /**
     * Creates an evaluator for the projection-dependent figure of merit.
     */
-   template <LatType LAT, Compress COMPRESS>
-   Evaluator<CoordUniform, LAT, COMPRESS> evaluator(Storage<LAT, COMPRESS> storage) const
-   { return Evaluator<CoordUniform, LAT, COMPRESS>(std::move(storage), kernel().valuesVector(storage)); }
+   template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+   Evaluator<CoordUniform, LR, ET, COMPRESS, PLO> evaluator(Storage<LR, ET, COMPRESS, PLO> storage) const
+   { return Evaluator<CoordUniform, LR, ET, COMPRESS, PLO>(std::move(storage), kernel().valuesVector(storage)); }
 
 private:
    KERNEL m_kernel;
@@ -89,13 +92,13 @@ private:
 /**
  * Evaluator for coordinate-uniform projeciton-dependent figures of merit.
  */
-template <class KERNEL, LatType LAT, Compress COMPRESS>
-class Evaluator<CoordUniform<KERNEL>, LAT, COMPRESS> {
+template <class KERNEL, LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+class Evaluator<CoordUniform<KERNEL>, LR, ET, COMPRESS, PLO> {
 public:
-   typedef typename Storage<LAT, COMPRESS>::MeritValue MeritValue;
+   typedef typename Storage<LR, ET, COMPRESS, PLO>::MeritValue MeritValue;
 
    Evaluator(
-      Storage<LAT, COMPRESS> storage,
+      Storage<LR, ET, COMPRESS, PLO> storage,
       RealVector kernelValues
       ):
       m_storage(std::move(storage)),
@@ -107,8 +110,8 @@ public:
     * \c projection.
     */
    MeritValue operator() (
-         const LatDef<LAT>& lat,
-         const LatCommon::Coordinates& projection
+         const LatDef<LR, ET>& lat,
+         const LatticeTester::Coordinates& projection
          ) const
    {
       if (projection.size() == 0)
@@ -142,7 +145,7 @@ public:
    }
 
 private:
-   Storage<LAT, COMPRESS> m_storage;
+   Storage<LR, ET, COMPRESS, PLO> m_storage;
    RealVector m_kernelValues;
 };
 

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,44 +20,45 @@
 #include "latbuilder/Task/CBCBasedSearch.h"
 #include "latbuilder/Task/macros.h"
 
-#include "latbuilder/GenSeq/CoprimeIntegers.h"
+#include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
 #include "latbuilder/Traversal.h"
-#include "latbuilder/LFSR113.h"
+#include "latbuilder/LFSR258.h"
+#include "latbuilder/Util.h"
 
 #include <boost/lexical_cast.hpp>
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct RandomCBCTag {};
 
 
-/// Random CBC construction.
-template <LatType LAT, Compress COMPRESS, class FIGURE> using RandomCBC =
-   CBCBasedSearch<RandomCBCTag<LAT, COMPRESS, FIGURE>>;
+/// Random CBC exploration.
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using RandomCBC =
+   CBCBasedSearch<RandomCBCTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
-/// Random CBC construction.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-RandomCBC<LAT, COMPRESS, FIGURE> randomCBC(
-      Storage<LAT, COMPRESS> storage,
+/// Random CBC exploration.
+template <class FIGURE,LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+RandomCBC<LR, ET, COMPRESS, PLO, FIGURE> randomCBC(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure,
       unsigned int numRand
       )
-{ return RandomCBC<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
+{ return RandomCBC<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure), numRand); }
 
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct CBCBasedSearchTraits<RandomCBCTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef LFSR113 RandomGenerator;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<RandomCBCTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef LFSR258 RandomGenerator;
    typedef LatBuilder::Traversal::Random<RandomGenerator> Traversal;
-   typedef GenSeq::CoprimeIntegers<COMPRESS, Traversal> GenSeqType;
+   typedef GenSeq::GeneratingValues<LR, COMPRESS, Traversal> GenSeqType;
 
    CBCBasedSearchTraits(unsigned int numRand_): numRand(numRand_) {}
 
@@ -68,7 +69,7 @@ struct CBCBasedSearchTraits<RandomCBCTag<LAT, COMPRESS, FIGURE>> {
       auto infty = std::numeric_limits<typename Traversal::size_type>::max();
       std::vector<GenSeqType> vec;
       vec.reserve(dimension);
-      vec.push_back(GenSeq::Creator<GenSeqType>::create(SizeParam(2)));
+      vec.push_back(GenSeq::Creator<GenSeqType>::create(SizeParam(LatticeTraits<LR>::TrivialModulus)));
       vec[0].resize(1);
       for (Dimension j = 1; j < dimension; j++) {
          vec.push_back(
@@ -83,9 +84,9 @@ struct CBCBasedSearchTraits<RandomCBCTag<LAT, COMPRESS, FIGURE>> {
    }
 
    std::string name() const
-   { return FIGURE::evaluationName() + " random CBC (" + boost::lexical_cast<std::string>(numRand) + " random samples)"; }
+   { return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: CBC - Random Explorer - " + boost::lexical_cast<std::string>(numRand) + " random samples"; }
 
-   void init(LatBuilder::Task::RandomCBC<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::RandomCBC<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    {
       connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty());
       search.minObserver().setMaxAcceptedCount(numRand);

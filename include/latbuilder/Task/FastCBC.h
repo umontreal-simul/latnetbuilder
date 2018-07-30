@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,74 +24,75 @@
 #include "latbuilder/MeritSeq/CoordUniformInnerProdFast.h"
 #include "latbuilder/GenSeq/CyclicGroup.h"
 #include "latbuilder/GenSeq/VectorCreator.h"
+#include "latbuilder/Util.h"
 
 namespace LatBuilder { namespace Task {
 
-template <LatType LAT, Compress COMPRESS, class FIGURE>
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
 struct FastCBCTag {};
 
 
-/// Fast CBC construction.
-template <LatType LAT, Compress COMPRESS, class FIGURE> using FastCBC =
-   CBCBasedSearch<FastCBCTag<LAT, COMPRESS, FIGURE>>;
+/// Fast CBC exploration.
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE> using FastCBC =
+   CBCBasedSearch<FastCBCTag<LR, ET, COMPRESS, PLO, FIGURE>>;
 
 
-/// Fast CBC construction.
-template <class FIGURE, LatType LAT, Compress COMPRESS>
-FastCBC<LAT, COMPRESS, FIGURE> fastCBC(
-      Storage<LAT, COMPRESS> storage,
+/// Fast CBC exploration.
+template <class FIGURE,LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+FastCBC<LR, ET, COMPRESS, PLO, FIGURE> fastCBC(
+      Storage<LR, ET, COMPRESS, PLO> storage,
       Dimension dimension,
       FIGURE figure
       )
-{ return FastCBC<LAT, COMPRESS, FIGURE>(std::move(storage), dimension, std::move(figure)); }
+{ return FastCBC<LR, ET, COMPRESS, PLO, FIGURE>(std::move(storage), dimension, std::move(figure)); }
 
 // specialization for coordinate-uniform figures of merit
-template <LatType LAT, Compress COMPRESS, class KERNEL>
-struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, CoordUniformFigureOfMerit<KERNEL>>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef MeritSeq::CoordUniformCBC<LAT, COMPRESS, KERNEL, MeritSeq::CoordUniformInnerProdFast> CBC;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class KERNEL>
+struct CBCBasedSearchTraits<FastCBCTag<LR, ET, COMPRESS, PLO, CoordUniformFigureOfMerit<KERNEL>>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef MeritSeq::CoordUniformCBC<LR, ET, COMPRESS, PLO, KERNEL, MeritSeq::CoordUniformInnerProdFast> CBC;
    typedef typename CBC::FigureOfMerit FigureOfMerit;
-   typedef GenSeq::CyclicGroup<COMPRESS> GenSeqType;
+   typedef GenSeq::CyclicGroup<LR, COMPRESS> GenSeqType;
 
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension) const
    {
       auto vec = GenSeq::VectorCreator<GenSeqType>::create(sizeParam, dimension);
-      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(2));
+      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(LatticeTraits<LR>::TrivialModulus));
       return vec;
    }
 
    std::string name() const
-   { return "fast CBC"; }
+   {  return "Task: LatBuilder Search for " + to_string(LR)  + " lattices\nExploration method: CBC - Fast Explorer";}
 
-   void init(LatBuilder::Task::FastCBC<LAT, COMPRESS, FigureOfMerit>& search) const
+   void init(LatBuilder::Task::FastCBC<LR, ET, COMPRESS, PLO, FigureOfMerit>& search) const
    { connectCBCProgress(search.cbc(), search.minObserver(), search.filters().empty()); }
 };
 
 // specialization for other figures of merit
-template <LatType LAT, Compress COMPRESS, class FIGURE>
-struct CBCBasedSearchTraits<FastCBCTag<LAT, COMPRESS, FIGURE>> {
-   typedef LatBuilder::Task::Search<LAT> Search;
-   typedef LatBuilder::Storage<LAT, COMPRESS> Storage;
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO, class FIGURE>
+struct CBCBasedSearchTraits<FastCBCTag<LR, ET, COMPRESS, PLO, FIGURE>> {
+   typedef LatBuilder::Task::Search<LR, ET> Search;
+   typedef LatBuilder::Storage<LR, ET, COMPRESS, PLO> Storage;
    typedef FIGURE FigureOfMerit;
-   typedef typename LatBuilder::Storage<LAT, COMPRESS>::SizeParam SizeParam;
-   typedef typename CBCSelector<LAT, COMPRESS, FIGURE>::CBC CBC;
-   typedef GenSeq::CyclicGroup<COMPRESS> GenSeqType;
+   typedef typename LatBuilder::Storage<LR, ET, COMPRESS, PLO>::SizeParam SizeParam;
+   typedef typename CBCSelector<LR, ET, COMPRESS, PLO, FIGURE>::CBC CBC;
+   typedef GenSeq::CyclicGroup<LR, COMPRESS> GenSeqType;
 
    virtual ~CBCBasedSearchTraits() {}
 
    std::vector<GenSeqType> genSeqs(const SizeParam& sizeParam, Dimension dimension) const
    {
       auto vec = GenSeq::VectorCreator<GenSeqType>::create(sizeParam, dimension);
-      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(2));
+      vec[0] = GenSeq::Creator<GenSeqType>::create(SizeParam(LatticeTraits<LR>::TrivialModulus));
       return vec;
    }
 
    std::string name() const
    { return "unimplemented fast CBC"; }
 
-   void init(LatBuilder::Task::FastCBC<LAT, COMPRESS, FIGURE>& search) const
+   void init(LatBuilder::Task::FastCBC<LR, ET, COMPRESS, PLO, FIGURE>& search) const
    { throw std::runtime_error("fast CBC is implemented only for coordinate-uniform figures of merit"); }
 };
 

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,13 +36,14 @@ public:
 /**
  * Parser for coordinate-uniform figures of merit.
  */
+template <LatticeType LR>
 struct CoordUniformFigureOfMerit {
 
    struct ParseKernel {
       template <class KERNEL, typename FUNC, typename... ARGS>
       void operator()(
             KERNEL kernel,
-            std::unique_ptr<LatCommon::Weights> weights,
+            std::unique_ptr<LatticeTester::Weights> weights,
             FUNC&& func, ARGS&&... args
             ) const
       {
@@ -65,18 +66,25 @@ struct CoordUniformFigureOfMerit {
    static void parse(
          const std::string& strNorm,
          const std::string& str,
-         std::unique_ptr<LatCommon::Weights> weights,
+         unsigned int interlacingFactor,
+         std::unique_ptr<LatticeTester::Weights> weights,
          FUNC&& func, ARGS&&... args)
    {
+
       try {
          const auto norm = boost::lexical_cast<Real>(strNorm);
-         if (norm == 2) {
-            Kernel::parse(str, ParseKernel(), std::move(weights), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+         if (norm == 2 && interlacingFactor == 1) {
+            Kernel<LR>::parse(str, interlacingFactor, std::move(weights), ParseKernel(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
+            return;
+         }
+         else if (norm == 1 && interlacingFactor > 1)
+         {
+            Kernel<LR>::parse(str, interlacingFactor, std::move(weights), ParseKernel(), std::forward<FUNC>(func), std::forward<ARGS>(args)...);
             return;
          }
       }
       catch (boost::bad_lexical_cast&) {}
-      throw BadCoordUniformFigureOfMerit("norm must be `2' for the coordinate-uniform implementation");
+      throw BadCoordUniformFigureOfMerit("incompatibility between norm type, coordinate implementation and interlacement.");
    }
 };
 

@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public:
     *                   the Kernel namespace for examples.
     */
    CoordUniformFigureOfMerit(
-         std::unique_ptr<LatCommon::Weights> weights,
+         std::unique_ptr<LatticeTester::Weights> weights,
          KERNEL kernel = KERNEL()
          ):
       m_weights(std::move(weights)),
@@ -49,7 +49,7 @@ public:
    {}
 
    /// \copydoc FigureOfMerit::weights()
-   const LatCommon::Weights& weights() const
+   const LatticeTester::Weights& weights() const
    { return *m_weights; }
 
    /**
@@ -76,19 +76,18 @@ public:
    { return "coordinate-uniform"; }
 
    Real normType() const
-   { return 2.0; }
+   { return KERNEL::CUPower; }
 
 protected:
    std::ostream& format(std::ostream& os) const
    {
-      return os << "CoordUniformFigureOfMerit("
-         << "kernel=" << kernel() << ", "
-         << "weights=" << weights()
-         << ")";
+      return os << "Coordinate Uniform with Kernel: " << kernel() << std::endl
+         << "Weights: " << weights() << std::endl
+         << "Norm type: " << normType();
    }
 
 private:
-   std::unique_ptr<LatCommon::Weights> m_weights;
+   std::unique_ptr<LatticeTester::Weights> m_weights;
    KERNEL m_kernel;
 };
 

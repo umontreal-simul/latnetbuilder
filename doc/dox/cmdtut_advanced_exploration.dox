@@ -1,0 +1,57 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_advanced_exploration Exploration methods
+
+This page describes how the various
+\ref feats_exploration "exploration methods" can be specified:
+
+- <b>evaluation</b>:
+  \n <code>--exploration-method evaluation:<var>point-set-description</var></code>
+  where <code><var>point-set-description</var></code> corresponds
+  to a \ref cmdtut_advanced_pointsets "point set description";
+- <b>exhaustive</b>:
+  \n <code>--exploration-method exhaustive</code>
+- <b>random</b>:
+  \n <code>--exploration-method random:<var>samples</var></code>
+  where <code><var>samples</var></code> is the number of random samples;
+- <b>full-CBC</b>:
+  \n <code>--exploration-method full-CBC</code>;
+- <b>random-CBC</b>:
+  \n <code>--exploration-method random-CBC:<var>samples</var></code>
+  where <code><var>samples</var></code> is the number of random samples per coordinate.
+
+Additionally, some exploration method are only supported either for lattice rules or for digital nets:
+- lattice rules:
+    - <b>extend</b>: 
+      \n <code>--exploration-method extend:<var>modulus</var>:<var>genVec</var></code>
+      where <code><var>modulus</var></code> is the modulus of the lattice to extend
+      and <code><var>genVec</var></code> its generating vector;
+    - <b>fast-CBC</b>: 
+      \n <code>--exploration-method fast-CBC</code>
+    - <b>Korobov</b>: 
+      \n <code>--exploration-method Korobov</code>
+    - <b>random Korobov</b>: 
+      \n <code>--exploration-method random-Korobov:<var>samples</var></code>
+      where <code><var>samples</var></code> is the number of random samples;
+- digital nets:
+    - <b>mixed-CBC</b>:
+      \n <code>--exploration-method mixed-CBC:<var>samples</var>:<var>nbFull</var></code>
+      where <code><var>samples</var></code> is the number of random samples and
+      <code><var>nbFull</var></code> is the number of coordinates which are fully
+      explored. 
+*/
+vim: ft=doxygen spelllang=en spell

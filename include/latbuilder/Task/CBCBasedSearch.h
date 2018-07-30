@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -80,14 +80,15 @@ public:
    virtual void execute()
    {
       auto genSeqs = m_traits.genSeqs(storage().sizeParam(), this->dimension());
+      this->setObserverTotalDim(this->dimension());
 
       // iterate through dimension
       for (const auto& genSeq : genSeqs) {
          auto seq = cbc().meritSeq(genSeq);
          auto fseq = this->filters().apply(seq);
-         const auto itmin = this->minElement()(fseq.begin(), fseq.end());
+         const auto itmin = this->minElement()(fseq.begin(), fseq.end(), this->minObserver().maxAcceptedCount(), this->verbose());
          cbc().select(itmin.base());
-         this->selectBestLattice(cbc().baseLat(), *itmin);
+         this->selectBestLattice(cbc().baseLat(), *itmin, false);
       }
    }
 
@@ -112,10 +113,10 @@ public:
 protected:
    virtual void format(std::ostream& os) const
    {
-      os << "construction: " << m_traits.name() << std::endl;
-      os << "figure of merit: " << figureOfMerit() << std::endl;
-      os << "size parameter: " << storage().sizeParam() << std::endl;
+      os << m_traits.name() << std::endl;
       CBCBasedSearchTraits<TAG>::Search::format(os);
+      os << "Modulus: " << storage().sizeParam() << std::endl;
+      os << "Figure of merit: " << figureOfMerit() << std::endl;
    }
 
 private:

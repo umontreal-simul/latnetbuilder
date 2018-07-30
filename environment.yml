@@ -1,0 +1,7 @@
+name: latnetbuilder
+channels:
+  - conda-forge
+  - umontreal-simul
+
+dependencies:
+  - latnetbuilder

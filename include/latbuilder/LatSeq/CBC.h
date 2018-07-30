@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,16 +28,16 @@ namespace LatBuilder { namespace LatSeq {
  * Sequence of lattice definitions obtained by appending a variable component to
  * a base genrating vector.
  *
- * \tparam LAT       Type of lattice.
+ * \tparam ET       Type of lattice.
  * \tparam GENSEQ    Type of sequences of generator values.
  * 
  */
-template <LatType LAT, class GENSEQ>
+template <LatticeType LR, EmbeddingType ET, class GENSEQ>
 class CBC {
 public:
 
    typedef GENSEQ GenSeq;
-   typedef LatDef<LAT> value_type;
+   typedef LatDef<LR, ET> value_type;
    typedef size_t size_type;
 
    /**
@@ -46,7 +46,7 @@ public:
     * \param baseLat    Base lattice.
     * \param genSeq     Sequence of generator sequences.
     */
-   CBC(LatDef<LAT> baseLat, GenSeq genSeq):
+   CBC(LatDef<LR, ET> baseLat, GenSeq genSeq):
       m_baseLat(std::move(baseLat)), m_genSeq(std::move(genSeq))
    {}
 
@@ -60,11 +60,11 @@ public:
    /**
     * Returns the base lattice definition.
     */
-   const LatDef<LAT>& baseLat() const
+   const LatDef<LR, ET>& baseLat() const
    { return m_baseLat; }
 
 private:
-   LatDef<LAT> m_baseLat;
+   LatDef<LR, ET> m_baseLat;
    GenSeq m_genSeq;
 
 public:
@@ -143,10 +143,10 @@ public:
 };
 
 /// Creates a CBC lattice sequence.
-template <LatType LAT, class GENSEQ>
-CBC<LAT, GENSEQ>
-cbc(LatDef<LAT> baseLat, GENSEQ genSeq)
-{ return CBC<LAT, GENSEQ>(std::move(baseLat), std::move(genSeq)); }
+template <LatticeType LR, EmbeddingType ET, class GENSEQ>
+CBC<LR, ET, GENSEQ>
+cbc(LatDef<LR, ET> baseLat, GENSEQ genSeq)
+{ return CBC<LR, ET, GENSEQ>(std::move(baseLat), std::move(genSeq)); }
 
 }}
 

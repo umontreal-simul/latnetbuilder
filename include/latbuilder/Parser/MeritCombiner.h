@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,12 +39,16 @@ public:
 /**
  * Parser for filters combiners for use with embedded lattices.
  */
+template <LatticeType LR>
 struct MeritCombiner {
-   static std::unique_ptr<typename LatBuilder::MeritFilterList<LatType::EMBEDDED>::Combiner> parse(
+   static std::unique_ptr<typename LatBuilder::MeritFilterList<LR, EmbeddingType::MULTILEVEL>::Combiner> parse(
          const std::string& str,
-         const LatBuilder::SizeParam<LatType::EMBEDDED>& sizeParam
+         const LatBuilder::SizeParam<LR, EmbeddingType::MULTILEVEL>& sizeParam
          );
 };
+
+extern template struct MeritCombiner<LatticeType::ORDINARY>;
+extern template struct MeritCombiner<LatticeType::POLYNOMIAL>;
 
 }}
 

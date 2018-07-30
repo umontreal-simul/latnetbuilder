@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
 namespace LatBuilder { namespace GenSeq {
 
 /**
- * Sequence filter that raises values to a given power, optionally modulo a
- * given integer.
+ * Sequence filter that raises values (of integers or polynomials) to a given power, optionally modulo a
+ * given modulus 
  */
 template <typename BASE>
 class PowerSeq :
@@ -41,6 +41,7 @@ public:
 
    typedef typename self_type::Base Base;
    typedef typename self_type::value_type value_type;
+   typedef typename Base::Modulus Modulus;
    typedef typename self_type::size_type size_type;
    typedef typename BASE::Traversal Traversal;
 
@@ -51,7 +52,7 @@ public:
     * \param power Power to which the elements of the sequence will be raised.
     * \param modulus If nonzero, integer against which to apply the modulo.
     */
-   PowerSeq(Base base = Base(), unsigned int power = 1, Modulus modulus = 0):
+   PowerSeq(Base base = Base(), unsigned int power = 1, Modulus modulus = (Modulus)(0)):
       self_type::BridgeSeq_(std::move(base)),
       m_power(power),
       m_modulus(modulus)
@@ -89,7 +90,7 @@ public:
     * value pointed to by \c it.
     */
    value_type element(const typename Base::const_iterator& it) const
-   { return modulus() ? modularPow(*it, power(), modulus()) : intPow(*it, power()); }
+   { return modulus() != (Modulus)(0) ? modularPow(*it, power(), modulus()) : intPow(*it, power()); }
 
    /**
     * Returns the size of the underlying sequence.

@@ -1,0 +1,55 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page feats_multilevel Multilevel point sets
+
+A multilevel point set is a finite sequence of nested point sets \f$\{P_{n_m}, 1 \leq m \leq k \}\f$:
+for each embedding levels \f$l \leq m\f$, \f$P_{n_l} \subseteq P_{n_m}\f$.
+
+Constructing multilevel point sets involves producing a compound merit value that
+accounts for the merit of each nested level.  This compound merit value is
+computed as follows:
+- the figure of merit is evaluated for each nested level:
+  the merit value of the embedding level \f$m\f$ is denoted by \f$D_q(P_{n_m})\f$;
+- optionally, \ref feats_filters_multilevel "multilevel filters and normalizations" are applied to the individual merit values of
+  each nested level;
+- these filtered individual merit values are combined using a sum or a maximum into a single value:
+  \f[
+    \bar{D}(P_{n_1}, \dots, P_{n_k})^q = \bigotimes_{m = 1, \dots, k} D(P_{n_m})^q. 
+  \f]
+
+The possible combiners are the sum and the max of the merit values.
+
+Multilevel point sets are handled differently for lattices and for nets. 
+
+\section feats_multilevel_lat Embedded lattices
+
+Embedded lattices \cite vHIC01a with \f$m\f$ levels consist in taking a sequence of modulus \f$p_m = b^{m}\f$ for \f$1 \leq m \leq k\f$
+with \f$b\f$ a prime base for ordinary lattice rules or an irreducible polynomial for polynomial lattice rules. Then for each embedding level,
+we consider the associated lattice rule. The same generating vector is used for all the embedding levels. 
+The sequence of lattice rules forms a multilevel point set.
+
+\section feats_multilevel_net Multilevel digital nets
+
+For multilevel digital nets, we consider only generating matrices which are upper triangular with ones on the main diagonal.
+That way, the first \f$2^m\f$ points of the corresponding digital net form a digital net whose generating matrices are the upper-left submatrices
+of size \f$m \times m\f$ of the original generating matrices.
+
+<b>Multilevel digital nets are only available with the Sobol' and explicit constructions.</b>
+In the case of the Sobol' construction, the generating matrices are upper triangular with ones on the main diagonal. For the
+explicit construction, we restrict the search space to upper triangular matrices with ones on the main diagonal.
+*/
+vim: ft=doxygen spelllang=en spell

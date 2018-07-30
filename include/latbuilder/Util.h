@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@
 
 #include <map>
 #include <vector>
+#include <string>
 
 //================================================================================
 
@@ -43,7 +44,7 @@ namespace LatBuilder
 template <typename T>
 T intPow(T base, unsigned long exponent)
 {
-   T result = 1;
+   T result = (T) (1);
    while (exponent) {
       if (exponent % 2 == 1)
          result *= base;
@@ -55,14 +56,42 @@ T intPow(T base, unsigned long exponent)
 
 //================================================================================
 
+/**
+ * convert Integer to polynomial  
+ *
+ * the integer \f$\sum a_i2^i\f$ is converted to \f$ \sum a_iz^i\f$
+ * Note that the input integer must be < 2^64
+ */
+Polynomial PolynomialFromInt(uInteger x);
 
+/**
+ * convert polynomial to integer 
+ *
+ * the polyomial \f$ \sum a_iz^i\f$ is converted to \f$\sum a_i2^i\f$
+ * 
+ */
+uInteger IndexOfPolynomial(Polynomial P);
 /**
  * Modular exponentiation.
  *
  * Source:
  * http://en.wikipedia.org/wiki/Modular_exponentiation#Right-to-left_binary_method
+ *Note : to use this fonction an operator %  
+ * BASE operator% (BASE, MODULUS) 
+ * has to be implemented 
  */
-Modulus modularPow(Modulus base, Modulus exponent, Modulus modulus);
+template<typename T>
+T modularPow(T base, uInteger exponent, T modulus)
+{
+   T result = (T)(1);
+   while (exponent) {
+      if (exponent % 2 == 1)
+         result = (result * base) % modulus;
+      exponent /= 2;
+      base = (base * base) % modulus;
+   }
+   return result;
+}
 
 /**
  * Prime factorization using the naive "trial division" algorithm.
@@ -70,14 +99,14 @@ Modulus modularPow(Modulus base, Modulus exponent, Modulus modulus);
  * Returns a list of prime factors, without their multiplicity if \c raise is
  * \c false, or raised to their multiplicity if it is \c true.
  */
-std::vector<Modulus> primeFactors(Modulus n, bool raise = false);
+std::vector<uInteger> primeFactors(uInteger n, bool raise = false);
 
 /**
  * Prime factorization using the naive "trial division" algorithm.
  *
  * Returns a map of (factor, multiplicity) pairs.
  */
-std::map<Modulus, Modulus> primeFactorsMap(Modulus n);
+std::map<uInteger, uInteger> primeFactorsMap(uInteger n);
 
 /**
  * Extended Euclidian algorithm.
@@ -85,8 +114,33 @@ std::map<Modulus, Modulus> primeFactorsMap(Modulus n);
  * Source:
  * http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Iterative_method_2
  */
-std::pair<long long, long long> egcd(Modulus a, Modulus b);
+std::pair<long long, long long> egcd(uInteger a, uInteger b);
 
+/**
+ * computes The integer \f$2^{\deg(P)}\nu_m(\frac{h} {p}) \f$ \n
+ * where \f$\nu_{m}\f$ is the mapping \f$\nu_{m} : \mathbb{L}_{2} \rightarrow \mathbb{R} \f$ 
+ *     \f[
+ *    \nu_{m}(\sum_{l=\omega}^{\infty} x_{l} z^{-l}) = \sum_{l=\max(\omega,1)}^{m} x_{l} 2^{-l}
+ *     \f]
+ *
+ * 
+ * reference : https://people.cs.kuleuven.be/~dirk.nuyens/phdthesis/thesis.pdf page 153
+ */
+uInteger Vm(const Polynomial& h, const Polynomial& P);
+
+uInteger log2Int(unsigned int n);
+
+/**
+ * Returns a default polynomial of degree \c degree.
+ * Polynomials will be primitive and irreducible for degree superior to \f$2\f$,
+ * irreducible for degree \f$1\f$ and equal to \f$1\f$ for degree \f$0\f$.
+ * The current default list goes up to degree 32.
+ * Modify <code>data/default_poly.csv</code> to change the default polynomials.
+ * @param degree Degree of the default polynomial.
+ */ 
+std::string getDefaultPolynomial(unsigned int degree);
+
+std::string to_string(LatticeType LT);
 }
 
 #endif

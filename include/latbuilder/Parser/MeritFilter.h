@@ -1,6 +1,6 @@
-// This file is part of Lattice Builder.
+// This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2016  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/BasicMeritFilter.h"
 
-#include "latcommon/Weights.h"
+#include "latticetester/Weights.h"
 
 #include <memory>
 
@@ -36,30 +36,25 @@ public:
    {}
 };
 
+
+template <LatticeType LR, EmbeddingType ET>
 struct MeritFilter {
-   template <LatType LAT>
-   static std::unique_ptr<BasicMeritFilter<LAT>> parse(
+   
+   static std::unique_ptr<BasicMeritFilter<LR, ET>> parse(
          const std::string& str,
-         const LatBuilder::SizeParam<LAT>& sizeParam,
-         const LatCommon::Weights& weights,
-         Real normType);
+         const std::string& figure,
+         const LatBuilder::SizeParam<LR, ET>& sizeParam,
+         const LatticeTester::Weights& weights,
+         Real normType,
+         std::string combiner = "");
 };
 
-extern template
-std::unique_ptr<BasicMeritFilter<LatType::ORDINARY>>
-MeritFilter::parse(
-      const std::string&,
-      const LatBuilder::SizeParam<LatType::ORDINARY>&,
-      const LatCommon::Weights&,
-      Real);
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, EmbeddingType::UNILEVEL> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::ORDINARY, EmbeddingType::MULTILEVEL> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL> ;
+extern template struct LatBuilder::Parser::MeritFilter <LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL> ;
 
-extern template
-std::unique_ptr<BasicMeritFilter<LatType::EMBEDDED>>
-MeritFilter::parse(
-      const std::string&,
-      const LatBuilder::SizeParam<LatType::EMBEDDED>&,
-      const LatCommon::Weights&,
-      Real);
+
 
 }}
 
