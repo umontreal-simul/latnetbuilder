@@ -17,6 +17,9 @@
 #ifndef LATBUILDER__MERIT_SEQ__CONCRETE_COORD_SYM_STATE_H
 #define LATBUILDER__MERIT_SEQ__CONCRETE_COORD_SYM_STATE_H
 
+#include "latbuilder/MeritSeq/CoordUniformState.h"
+#include "latticetester/Coordinates.h"
+
 namespace LatBuilder { namespace MeritSeq {
 
 /**

@@ -21,6 +21,7 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/LevelCombiner.h"
 #include "netbuilder/NetConstructionTraits.h"
+#include "netbuilder/Parser/CommandLine.h"
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>

@@ -17,6 +17,9 @@
 #ifndef NETBUILDER__PARSER__NET_DESCRIPTION_PARSER_H
 #define NETBUILDER__PARSER__NET_DESCRIPTION_PARSER_H
 
+#include "latbuilder/Parser/Common.h"
+
+#include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
 #include "netbuilder/NetConstructionTraits.h"
@@ -28,6 +31,7 @@
 #include <boost/lexical_cast.hpp>
 
 namespace NetBuilder { namespace Parser {
+namespace lbp = LatBuilder::Parser;
 /**
  * Exception thrown when trying to parse an invalid net description.
  */

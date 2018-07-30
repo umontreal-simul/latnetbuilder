@@ -17,6 +17,9 @@
 #ifndef LATBUILDER__FUNCTOR__LOW_PASS_H
 #define LATBUILDER__FUNCTOR__LOW_PASS_H
 
+#include <limits>
+#include <utility>
+
 namespace LatBuilder { namespace Functor {
 /**
  * Low pass filter.

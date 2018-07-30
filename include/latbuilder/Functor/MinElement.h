@@ -21,6 +21,7 @@
 
 #include <limits>
 #include <boost/signals2.hpp>
+#include <iostream>
 
 namespace LatBuilder { namespace Functor {
 

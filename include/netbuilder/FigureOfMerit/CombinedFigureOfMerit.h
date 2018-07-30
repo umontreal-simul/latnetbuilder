@@ -93,7 +93,7 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
             std::string res;
             res += "Combined figure of merit";
             for (unsigned int i=0; i<m_figures.size(); i++){
-                res += "\n   Figure " + i + ": " + m_figures[i]->format();
+                res += "\n   Figure " + std::to_string(i) + ": " + m_figures[i]->format();
             }
             return res;
         }; 

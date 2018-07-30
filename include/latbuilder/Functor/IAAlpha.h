@@ -18,6 +18,7 @@
 #define LATBUILDER__FUNCTOR__IAALPHA_H
 
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 
 #include <cmath>
 #include <sstream>

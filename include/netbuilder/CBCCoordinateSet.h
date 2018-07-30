@@ -23,6 +23,7 @@
 #define NETBUILDER__CBC_COORDINATE_SET_H
 
 #include "latticetester/CoordinateSets.h"
+#include "netbuilder/Types.h"
 
 #include <iostream>
 #include <algorithm>

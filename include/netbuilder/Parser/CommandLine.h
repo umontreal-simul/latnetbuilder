@@ -59,33 +59,13 @@ struct CommandLine {
    std::unique_ptr<Task::Task> parse();
 };
 
-}}
-
-#include "netbuilder/Parser/SizeParameterParser.h"
-#include "netbuilder/Parser/FigureParser.h"
-#include "netbuilder/Parser/ExplorationMethodParser.h"
-
-namespace NetBuilder { namespace Parser {
-template <NetConstruction NC, EmbeddingType ET>
-std::unique_ptr<NetBuilder::Task::Task>
-CommandLine<NC, ET>::parse()
-{
-      namespace lbp = LatBuilder::Parser;
-      
-      SizeParameterParser<NC,ET>::parse(*this);
-      m_dimension = boost::lexical_cast<Dimension>(s_dimension) * m_interlacingFactor;
-      if (m_interlacingFactor > 1){
-            std::cout << "Warning: interlacing factor is > 1." << std::endl;
-            std::cout << "    Dimension: " <<  boost::lexical_cast<Dimension>(s_dimension) << std::endl;
-            std::cout << "    Interlacing factor: " << m_interlacingFactor << std::endl;
-            std::cout << "    Number of components: " << m_dimension << std::endl;
-      }
-      m_verbose = boost::lexical_cast<int>(s_verbose);
-      m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized and moved to m_figure as a side effect 
-      return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task
-}
-
+extern template class CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
+extern template class CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
+extern template class CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;
+extern template class CommandLine<NetConstruction::SOBOL, EmbeddingType::UNILEVEL>;
+extern template class CommandLine<NetConstruction::SOBOL, EmbeddingType::MULTILEVEL>;
 
 }}
+
 
 #endif

@@ -23,6 +23,7 @@
 
 #include <type_traits>
 #include <functional>
+#include <memory>
 
 namespace LatBuilder { namespace MeritSeq {
 
