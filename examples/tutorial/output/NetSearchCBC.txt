@@ -1,0 +1,51 @@
+Task: NetBuilder Search - Net Construction : Polynomial
+Number of components: 5
+Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+Number of rows: 10 - Number of columns: 10
+Exploration method: CBC - Full Explorer
+Figure of merit: t-value based figure of merit
+Embedding type: Unilevel
+Weights: ProductWeights([], default=0.7)
+Norm type: inf
+Best net: Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
+  1
+  0 0 0 0 0 1 0 0 1 1
+  0 0 1 0 0 0 1 0 1
+  0 0 1 0 0 0 0 1
+  0 0 0 1 0 1 0 1
+
+Merit value: 1.029
+Task: NetBuilder Search - Net Construction : Polynomial
+Number of components: 5
+Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+Number of rows: 10 - Number of columns: 10
+Exploration method: CBC - Random Explorer - 70 samples
+Figure of merit: t-value based figure of merit
+Embedding type: Unilevel
+Weights: ProductWeights([], default=0.7)
+Norm type: inf
+Best net: Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
+  1
+  1 0 1 1 0 1 0 0 1 1
+  0 0 0 1 0 0 0 0 1
+  0 0 0 1 1 1 0 1 1 1
+  1 0 1 1 0 1 1 1
+
+Merit value: 1.372
+Task: NetBuilder Search - Net Construction : Polynomial
+Number of components: 5
+Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+Number of rows: 10 - Number of columns: 10
+Exploration method: CBC - Mixed Explorer - 3 full coordinates - 70 samples for random coordinates
+Figure of merit: t-value based figure of merit
+Embedding type: Unilevel
+Weights: ProductWeights([], default=0.7)
+Norm type: inf
+Best net: Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
+  1
+  0 0 0 0 0 1 0 0 1 1
+  0 0 1 0 0 0 1 0 1
+  1 0 1 1 1 0 1 1
+  0 0 0 1 0 0 0 0 1
+
+Merit value: 1.372
