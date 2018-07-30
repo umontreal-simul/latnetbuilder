@@ -59,11 +59,11 @@ struct CommandLine {
    std::unique_ptr<Task::Task> parse();
 };
 
-extern template class CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
-extern template class CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
-extern template class CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;
-extern template class CommandLine<NetConstruction::SOBOL, EmbeddingType::UNILEVEL>;
-extern template class CommandLine<NetConstruction::SOBOL, EmbeddingType::MULTILEVEL>;
+extern template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
+extern template struct CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<NetConstruction::SOBOL, EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<NetConstruction::SOBOL, EmbeddingType::MULTILEVEL>;
 
 }}
 
