@@ -41,10 +41,10 @@ CommandLine<NC, ET>::parse()
       return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task
 }
 
-template class CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
-template class CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
-template class CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;
-template class CommandLine<NetConstruction::SOBOL, EmbeddingType::UNILEVEL>;
-template class CommandLine<NetConstruction::SOBOL, EmbeddingType::MULTILEVEL>;
+template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
+template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
+template struct CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;
+template struct CommandLine<NetConstruction::SOBOL, EmbeddingType::UNILEVEL>;
+template struct CommandLine<NetConstruction::SOBOL, EmbeddingType::MULTILEVEL>;
 
 }}
