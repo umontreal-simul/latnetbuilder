@@ -142,13 +142,15 @@ def build(ctx):
         ctx.recurse('doc')
     if ctx.env.BUILD_EXAMPLES:
         ctx.recurse('examples')
-    if ctx.env.BUILD_CONDA: # must be done at the end to copy installed files to conda package
-        ctx.recurse('python-wrapper')
+        
     # jupyter notebook
     ctx.install_files("${PREFIX}/share/latnetbuilder", ["python-wrapper/notebooks/Interface.ipynb"])
 
     # Docker file for no GUI
     ctx.install_files("${PREFIX}/share/latnetbuilder", ["DockerfileLight"])
+
+    if ctx.env.BUILD_CONDA: # must be done at the end to copy installed files to conda package
+        ctx.recurse('python-wrapper')
 
 
 # build variants
