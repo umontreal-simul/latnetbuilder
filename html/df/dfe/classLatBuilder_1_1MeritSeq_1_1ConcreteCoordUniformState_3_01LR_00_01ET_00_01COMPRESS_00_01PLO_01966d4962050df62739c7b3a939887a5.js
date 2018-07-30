@@ -1,8 +1,0 @@
-var classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5 =
-[
-    [ "ConcreteCoordUniformState", "df/dfe/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5.html#a3d0d42018179c45084b2d864306f1b17", null ],
-    [ "clone", "df/dfe/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5.html#a5b6fcae61e6d31746611a14e00e5ba66", null ],
-    [ "reset", "df/dfe/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5.html#af3a6ccaf8cbf00cce0065e41aa1fe7d0", null ],
-    [ "update", "df/dfe/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5.html#a31ed0d9288fb93c42a7df5e46fd7f84e", null ],
-    [ "weightedState", "df/dfe/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5.html#a73a4e3891770e2f0953fa70d8f750f0b", null ]
-];

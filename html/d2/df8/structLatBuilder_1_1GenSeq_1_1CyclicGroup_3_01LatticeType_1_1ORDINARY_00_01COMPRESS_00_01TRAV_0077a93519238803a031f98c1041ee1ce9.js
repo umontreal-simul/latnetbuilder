@@ -1,4 +1,0 @@
-var structLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1ORDINARY_00_01COMPRESS_00_01TRAV_0077a93519238803a031f98c1041ee1ce9 =
-[
-    [ "Type", "d2/df8/structLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1ORDINARY_00_01COMPRESS_00_01TRAV_0077a93519238803a031f98c1041ee1ce9.html#a07157bcea6a808efc3745ad769d44db1", null ]
-];

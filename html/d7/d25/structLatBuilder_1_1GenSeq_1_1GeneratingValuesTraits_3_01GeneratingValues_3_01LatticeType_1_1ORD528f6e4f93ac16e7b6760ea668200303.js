@@ -1,6 +1,0 @@
-var structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303 =
-[
-    [ "Modulus", "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html#a3cab6b49b3f4f692e73b853dccf1a3f1", null ],
-    [ "size_type", "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html#a7694b6eab9475661572922a9e2705713", null ],
-    [ "value_type", "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html#a2a2c15d5c1c85918621fdb1382ba1201", null ]
-];

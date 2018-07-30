@@ -1,4 +1,0 @@
-var structLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_01_4_1_1RebindTraversal =
-[
-    [ "Type", "dc/d71/structLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_01_4_1_1RebindTraversal.html#a66c4d7a6af73895c490040ddbcdf8e07", null ]
-];

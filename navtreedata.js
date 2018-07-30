@@ -65,9 +65,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a6b2178716117638a286e918d1d0d22f4",
-"d2/dc8/classNetBuilder_1_1Task_1_1MixedCBCExplorer.html#a738ee4a058620333e4d15e161f21e9fe",
-"d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a185bd13c806599499614055868cf5ceb",
+"d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a45749075fdbc385e301acb3bd623b343",
+"d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html",
+"d4/d4d/structLatBuilder_1_1LatticeTraits_3_01LatticeType_1_1DIGITAL_01_4.html#ac4ec188418aee74e39f833c98caeea05",
 "d5/dd2/classLatBuilder_1_1GenSeq_1_1detail_1_1Traversal.html#a56d078c5a1c5c8cde82af5b298d6eedf",
 "d7/d22/classLatticeTester_1_1LatTestWriter.html#a8b7562aecf1d4ba0900700b703ee943c",
 "d7/df2/latticetester_2include_2latticetester_2Util_8h.html#ae12db9335c229d7c60e570dab50ef05b",
