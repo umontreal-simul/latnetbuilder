@@ -1,0 +1,21 @@
+// [[Rcpp::export]]
+List computePoints()
+{
+  int n = 1024;
+  int s = 3;
+  int a[] =  { 1, 275, 167 } ;
+  List points;
+  int i, j;
+  for (i = 0; i < n; i++){
+    NumericVector point(s);
+    for (j = 0; j < s; j++){
+      point[j] = ((long long)i * a[j]) % n / (double)n;
+    }
+    points.push_back(point);
+  }
+  return points;
+}
+
+/*** R
+myPoints <- computePoints()
+*/

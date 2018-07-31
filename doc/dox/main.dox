@@ -23,7 +23,8 @@
 and randomized quasi Monte-Carlo methods using state-of-the-art techniques. The software can construct rank-1 lattices and digital nets 
 in base 2.
 
-Reference paper:
+This software is based on a previous version called <a href="https://github.com/umontreal-simul/latnetbuilder/tree/v1.5.0"> Lattice Builder</a>.
+The reference for this previous version can be found below:
 <blockquote>
 <a href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf">
 P. L'Ecuyer and D. Munger.

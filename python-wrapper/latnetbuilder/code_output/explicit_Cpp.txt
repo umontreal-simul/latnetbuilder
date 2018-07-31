@@ -3,7 +3,7 @@
 #include <iostream>
 
 typedef std::vector<bool> Polynomial;
-typedef std::vector<std::vector<bool>> Matrix;
+typedef std::vector<std::vector<bool>> BinaryMatrix;
 
 unsigned int getmsb (unsigned long long x){
     unsigned int r = 0;
@@ -17,11 +17,11 @@ int deg(const Polynomial& p){
 }
 
 
-int numPoints(const Matrix& matrix){
+int numPoints(const BinaryMatrix& matrix){
     return pow(2, matrix.size());
 }
 
-std::vector<unsigned long> getCols(const Matrix& matrix){
+std::vector<unsigned long> getCols(const BinaryMatrix& matrix){
     std::vector<unsigned long> res(matrix.size(), 0);
     for (unsigned int j=0; j<matrix.size(); j++){
         unsigned long s = 0;
@@ -33,7 +33,7 @@ std::vector<unsigned long> getCols(const Matrix& matrix){
     return res;
 }
 
-std::vector<std::vector<double>> points(std::vector<Matrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
+std::vector<std::vector<double>> points(std::vector<BinaryMatrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
     std::vector<std::vector<double>> points;
     int nbPoints = numPoints(matrices[0]);
     unsigned int m = matrices[0].size();
@@ -66,7 +66,7 @@ std::vector<std::vector<double>> points(std::vector<Matrix> matrices, std::vecto
 }
 
 int main(){
-    std::vector<Matrix> matrices = {{ matrices }};
+    std::vector<BinaryMatrix> matrices = {{ matrices }};
     unsigned int m = matrices[0].size();
     unsigned int interlacing = {{interlacing}};
 

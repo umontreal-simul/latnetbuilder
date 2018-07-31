@@ -21,14 +21,18 @@ were later added to the software. This extension uses the lattice point of view 
 However, polynomial lattice rules are also digital nets and when the latter was added to the software,
 a polynomial construction of digital net was implemented. 
 
-As a consequence, polynomial lattice rules are available on both side of the software: %LatBuilder and %NetBuilder. 
+As a consequence, there are two implementations to search for good polynomial lattice rules: a lattice implementation
+and a net implementation.
 
 Choosing which piece of software to use depends on what one wants to achieve:
 
-- Generally, the digital net implementation (%NetBuilder) is much faster than the lattice implementation;
+- Generally, the digital net implementation is much faster than the lattice implementation.
+  The lattice implementation is slower because it requires many change of representation of polynomials
+  between integers and polynomials of NTL. For example, to construct a polynomial lattice rules
+  with 32 points in dimension 3 using the full-CBC exploration method, 2636 conversions are needed.
 - This implementation provides more exploration methods and more figures of merit;
-- However, the fast-CBC algorithm which is only available in the lattice implementation (%LatBuilder)
-  beats the full-CBC exploration method of %NetBuilder;
+- However, the fast-CBC algorithm which is only available in the lattice implementation
+  beats the full-CBC exploration method of the net implementation;
 - Moreover, the embedded polynomial lattice rules and filters and normalizations are not
   supported by the digital net implementation.
 - To wrap it up: the lattice implementation should only be used in the following cases:

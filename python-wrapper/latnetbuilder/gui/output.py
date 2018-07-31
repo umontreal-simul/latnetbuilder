@@ -78,7 +78,7 @@ def create_output(output, create_graph=True):
     else:
         plot = widgets.HTML('Too many points to display graph.')
 
-
+    Rcpp_header = env.get_template('Rcpp_header.txt').render()
 
     if 'Ordinary' in result_obj.set_type:
         template = env.get_template('ordinary_C.txt')
@@ -96,12 +96,18 @@ def create_output(output, create_graph=True):
             template.render(n=result_obj.nb_points, a=result_obj.gen_vector),
             layout=widgets.Layout(width='600px', height='130px'))
 
+        template = env.get_template('ordinary_Rcpp.txt')
+        code_Rcpp = widgets.Textarea(value= 
+            Rcpp_header + template.render(n=result_obj.nb_points, a=result_obj.gen_vector),
+            layout=widgets.Layout(width='600px', height='130px'))
+
     
-        output.output.children = [plot, code_C, code_python, code_matlab]
+        output.output.children = [plot, code_C, code_python, code_matlab, code_Rcpp]
         output.output.set_title(0, 'Plot')
         output.output.set_title(1, 'C code')
         output.output.set_title(2, 'Python code')
         output.output.set_title(3, 'Matlab code')
+        output.output.set_title(4, 'R code')
 
     
     elif result_obj.set_type == 'Polynomial':
@@ -113,14 +119,23 @@ def create_output(output, create_graph=True):
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('polynomial_Cpp.txt')
+        str_cpp = template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.gen_vector), interlacing = result_obj.interlacing)
         code_cpp = widgets.Textarea(value= 
-            template.render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.gen_vector), interlacing = result_obj.interlacing),
+            str_cpp,
+            layout=widgets.Layout(width='600px', height='700px'))
+            
+        Rcpp_suffix = env.get_template('polynomial_Rcpp.txt').render(mod=transform_to_c(modulus), genvec=transform_to_c(result_obj.gen_vector), interlacing = result_obj.interlacing)
+        code_Rcpp = widgets.Textarea(value= 
+            Rcpp_header + 
+            str_cpp.split('int main()')[0] + 
+            Rcpp_suffix,
             layout=widgets.Layout(width='600px', height='700px'))
         
-        output.output.children = [plot, code_cpp, code_python]
+        output.output.children = [plot, code_cpp, code_python, code_Rcpp]
         output.output.set_title(0, 'Plot')
         output.output.set_title(1, 'C++11 code')
         output.output.set_title(2, 'Python code')
+        output.output.set_title(3, 'R code')
 
     elif result_obj.set_type == 'Sobol':
         
@@ -140,19 +155,34 @@ def create_output(output, create_graph=True):
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('sobol_Cpp.txt')
-        code_cpp = widgets.Textarea(value= 
-            template.render(s=result_obj.dim * result_obj.interlacing, 
+        str_cpp = template.render(s=result_obj.dim * result_obj.interlacing, 
                             m=result_obj.nb_cols,
                             genvec=transform_to_c(result_obj.gen_vector),
                             degrees=str(prim_polys[:, 0].tolist()).strip('[]'),
                             representations=str(prim_polys[:, 1].tolist()).strip('[]'),
-                            interlacing = result_obj.interlacing),
+                            interlacing = result_obj.interlacing)
+        code_cpp = widgets.Textarea(value= 
+            str_cpp,
+            layout=widgets.Layout(width='600px', height='700px'))
+
+        Rcpp_suffix = env.get_template('sobol_Rcpp.txt').render(
+                            s=result_obj.dim * result_obj.interlacing, 
+                            m=result_obj.nb_cols,
+                            genvec=transform_to_c(result_obj.gen_vector),
+                            degrees=str(prim_polys[:, 0].tolist()).strip('[]'),
+                            representations=str(prim_polys[:, 1].tolist()).strip('[]'),
+                            interlacing = result_obj.interlacing)
+        code_Rcpp = widgets.Textarea(value= 
+            Rcpp_header + 
+            str_cpp.split('int main()')[0] +
+            Rcpp_suffix,
             layout=widgets.Layout(width='600px', height='700px'))
         
-        output.output.children = [plot, code_cpp, code_python]
+        output.output.children = [plot, code_cpp, code_python, code_Rcpp]
         output.output.set_title(0, 'Plot')
         output.output.set_title(1, 'C++11 code')
         output.output.set_title(2, 'Python code')
+        output.output.set_title(3, 'R code')
 
     elif 'Explicit' in result_obj.set_type:
 
@@ -162,14 +192,23 @@ def create_output(output, create_graph=True):
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('explicit_Cpp.txt')
+        str_cpp = template.render(matrices = transform_to_c([m.tolist() for m in result_obj.matrices]), interlacing = result_obj.interlacing)
         code_cpp = widgets.Textarea(value= 
-            template.render(matrices = transform_to_c([m.tolist() for m in result_obj.matrices]), interlacing = result_obj.interlacing),   
+            str_cpp,   
             layout=widgets.Layout(width='600px', height='700px'))
 
-        output.output.children = [plot, code_cpp, code_python]
+        Rcpp_suffix = env.get_template('explicit_Rcpp.txt').render(matrices = transform_to_c([m.tolist() for m in result_obj.matrices]), interlacing = result_obj.interlacing)
+        code_Rcpp = widgets.Textarea(value= 
+            Rcpp_header + 
+            str_cpp.split('int main()')[0] +
+            Rcpp_suffix,
+            layout=widgets.Layout(width='600px', height='700px'))
+
+        output.output.children = [plot, code_cpp, code_python, code_Rcpp]
         output.output.set_title(0, 'Plot')
         output.output.set_title(1, 'C++11 code')
         output.output.set_title(2, 'Python code')
+        output.output.set_title(3, 'R code')
     
 
 
