@@ -28,7 +28,7 @@ class Search():
         self.filters = []
         self.output = None
         self.set_type_name = ''
-        self.output_folder = DEFAULT_OUTPUT_FOLDER
+        self._output_folder = DEFAULT_OUTPUT_FOLDER
 
     def __repr__(self):
         return ("Construction method: %s\n" + \
@@ -42,7 +42,7 @@ class Search():
     "Combiner: %s\n" + \
     "Filters: %s\n" + \
     "Weights: %s\n" + \
-    "Output folder: %s\n") % (self.construction, self.modulus, str(self.multilevel), self.dimension, self.interlacing, self.exploration_method, self.figure_of_merit, self.norm_type, self.combiner, str(self.filters), str(self.weights), self.output_folder)
+    "Output folder: %s\n") % (self.construction, self.modulus, str(self.multilevel), self.dimension, self.interlacing, self.exploration_method, self.figure_of_merit, self.norm_type, self.combiner, str(self.filters), str(self.weights), self._output_folder)
 
     def construct_command_line(self):
         '''Construct and return the command line to call LatNetBuilder as a list of strings'''
@@ -68,7 +68,7 @@ class Search():
                    '--verbose', '2',
                    '--dimension', str(self.dimension),
                    '--interlacing', str(self.interlacing),
-                   '--output-folder', self.output_folder
+                   '--output-folder', self._output_folder
                    ]
         command += ['--weights'] + self.weights
         if self.filters != []:
@@ -105,29 +105,41 @@ class Search():
             total_dim = int(try_split[0].split('/')[1])
             return (float(current_dim) / total_dim, float(current_nb_nets) / total_nb_nets)
 
-    def execute(self, stdout_filename='cpp_outfile.txt', stderr_filename='cpp_errfile.txt', delete_files=True, display_progress_bar=False):
+    def execute(self, output_folder=None, delete_files=True, stdout_filename='cpp_outfile.txt', stderr_filename='cpp_errfile.txt', display_progress_bar=False):
         '''Call the C++ process and monitor it.
 
         Arguments (all optional):
+            + output_folder: set the path to the output folder, which will contain information about the inputs and outputs of the call to LatNetBuilder. By default, no output folder is created. 
+            The folders contents may be overwritten. If the folder does not exist, it is created.
+            + delete_files: if set to False, the C++ output files are not deleted at the end of the process
             + stdout_filename: name of the file which will contain the std output of the C++ executable
             + stdout_filename: name of the file which will contain the error output of the C++ executable
-            + delete_files: if set to True, the log files are deleted at the end of the process
             + display_progress_bars: if set to True, ipywidgets progress bars are displayed (should be used only in the notebook)
         
         This function should be used by the end user if he instanciates a Search object.'''
+        
+        if output_folder is not None:
+            self._output_folder = output_folder
+            
+        try:
+            if not os.path.exists(self._output_folder):
+                os.makedirs(self._output_folder)
+            stdout_filepath = os.path.join(self._output_folder, stdout_filename)
+            stderr_filepath = os.path.join(self._output_folder, stderr_filename)
+            stdout_file = open(stdout_filepath, 'w')
+            stderr_file = open(stderr_filepath, 'w')
+        except Exception as e:
+            print('ERROR: ' + str(e))
+            return
 
-        stdout_filepath = os.path.join(self.output_folder, stdout_filename)
-        stderr_filepath = os.path.join(self.output_folder, stderr_filename)
-        stdout_file = open(stdout_filepath, 'w')
-        stderr_file = open(stderr_filepath, 'w')
         process = self._launch_subprocess(stdout_file, stderr_file)
-        self._monitor_process(process, stdout_filepath, stderr_filepath, display_progress_bar=display_progress_bar)
+        self._monitor_process(process, stdout_filepath, stderr_filepath, display_progress_bar=display_progress_bar, delete_files=delete_files)
 
-    def _monitor_process(self, process, stdout_filepath, stderr_filepath, gui=None, display_progress_bar=False, in_thread=False):
+    def _monitor_process(self, process, stdout_filepath, stderr_filepath, gui=None, display_progress_bar=False, delete_files=True):
         '''Monitor the C++ process.
         
-        This function is called inside a thread by the GUI (with in_thread=True, and gui contains the gui object).
-        It is called outside of any thread by the execute method (with in_thread=False).
+        This function is called inside a thread by the GUI (with gui containing the gui object).
+        It is called outside of any thread by the execute method.
         
         The function deals the monitoring both with and without a GUI interface. Thus it is a bit lenghty
         because the same information has to be treated in two different ways.'''
@@ -169,11 +181,8 @@ class Search():
                 abort.disabled = True
 
             if process.poll() == 0:     # the C++ process has finished normally
-                try:
-                    with open(os.path.join(self.output_folder, 'outputMachine.txt')) as f:
-                        file_output = f.read()
-                except:
-                    file_output = None
+                with open(os.path.join(self._output_folder, 'outputMachine.txt')) as f:
+                    file_output = f.read()
                 result_obj = parse_output(file_output)
 
                 if gui is not None:
@@ -204,16 +213,17 @@ class Search():
                         print(err_output)
 
             try:
-                if self.output_folder == DEFAULT_OUTPUT_FOLDER:
-                    shutil.rmtree(self.output_folder, ignore_errors=True)
+                if self._output_folder == DEFAULT_OUTPUT_FOLDER:
+                    shutil.rmtree(self._output_folder, ignore_errors=True)
                 else:
-                    os.remove(os.path.join(self.output_folder, 'cpp_outfile.txt'))
-                    os.remove(os.path.join(self.output_folder, 'cpp_errfile.txt'))
+                    if delete_files:
+                        os.remove(os.path.join(self._output_folder, 'cpp_outfile.txt'))
+                        os.remove(os.path.join(self._output_folder, 'cpp_errfile.txt'))
             except OSError:
                 pass
             
         except Exception as e:
-            error_file = os.path.join(self.output_folder, 'stderr.txt')
+            error_file = os.path.join(self._output_folder, 'stderr.txt')
             logging.basicConfig(filename = error_file)
             logging.warn(e)
             logging.warn(traceback.format_exc())
@@ -233,6 +243,7 @@ class Search():
         else:
             display(self.output.result_obj)
             create_output(self.output)
+            display(self.output.output)
 
 
     def points(self, verbose=0):
@@ -243,7 +254,7 @@ class Search():
         
         If verbose is >0, the Python code executed is printed.'''
 
-        if self.output is None:
+        if self.output is None or self.output.result_obj is None:
             print("Run self.execute() before using points")
         else:
             if len(self.output.output.children) == 0:

@@ -33,7 +33,7 @@ class Result:
             s3 = "\nGenerating Vector: %s" % (str(self.gen_vector))
         else:
             s3 = ""
-        s4 = "\nMerit value: %s \nCPU Time: %s seconds </p>" % (str(self.merit), str(self.time))
+        s4 = "\nMerit value: %s \nCPU Time: %s seconds" % (str(self.merit), str(self.time))
         return s1 + s2 + s3 + s4
     
     def _repr_html_(self):

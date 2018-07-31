@@ -2,12 +2,31 @@
 # coding: utf-8
 
 from waflib.Build import POST_LAZY
+import socket
+
+# See: https://stackoverflow.com/questions/20913411/test-if-an-internet-connection-is-present-in-python
+REMOTE_SERVER = "www.google.com"
+def is_connected(hostname):
+  try:
+    # see if we can resolve the host name -- tells us if there is
+    # a DNS listening
+    host = socket.gethostbyname(hostname)
+    # connect to the host -- tells us if the host is actually
+    # reachable
+    s = socket.create_connection((host, 80), 2)
+    return True
+  except:
+     pass
+
 
 def build(ctx):
     if ctx.cmd == 'install':
         if not ctx.env.BUILD_CONDA:
-            print('not building conda package; Conda (https://www.anaconda.com/download/) is missing')
-            return
+            raise Exception('not building conda package; Conda (https://www.anaconda.com/download/) is missing')
+
+        if not is_connected(REMOTE_SERVER):
+            raise Exception('Internet connection required to build the conda package. Please check your connection.')
+
         ctx.add_group('group1')
         ctx.add_group('group2')
         ctx.add_group('group3')
