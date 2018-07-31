@@ -1,9 +1,7 @@
 # LatNet Builder
 _A general software tool for constructing highly uniform point sets_
 
-- [**Reference Publication**  
-  *LatNet Builder*: A General Software Tool for Constructing Rank-1 Lattice Rules](https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf)
-- [**LatNet Builder Manual**](https://umontreal-simul.github.io/latnetbuilder/)
+[**LatNet Builder Manual**](https://umontreal-simul.github.io/latnetbuilder/)
 
 **Outline**:
 1) [A software for quasi-Monte Carlo](#a-software-for-quasi-monte-carlo)
