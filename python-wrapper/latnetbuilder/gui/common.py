@@ -1,6 +1,5 @@
 """Tools used by different elements of the GUI."""
 
-import os
 from pkg_resources import resource_string
 
 import numpy as np

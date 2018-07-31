@@ -15,17 +15,9 @@ def change_constr_choice(change, gui):
     gui.construction_method.constr_info.value = constr_data[new_choice]
 
     if new_choice == 'explicit':
-        gui.exploration_method.exploration_choice.options = [
-            ('Evaluate', 'evaluation'), ('All space', 'exhaustive')]
-        gui.exploration_method.exploration_choice.value = 'exhaustive'
         gui.exploration_method.is_random.value = True
         gui.exploration_method.is_random.disabled = True
     else:
-        old_value = gui.exploration_method.exploration_choice.value
-        gui.exploration_method.exploration_choice.options = [
-            ('Evaluate', 'evaluation'), ('All space', 'exhaustive'), ('CBC', 'full-CBC')]
-        if change['old'] == 'explicit':
-            gui.exploration_method.exploration_choice.value = old_value
         gui.exploration_method.is_random.disabled = False
 
     if new_choice == 'polynomial':

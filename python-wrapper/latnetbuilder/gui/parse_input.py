@@ -99,7 +99,7 @@ def parse_input_common(s, gui):
         s.weights.append(string)
 
     if gui.output_folder.children[1].value:
-        s.output_folder = gui.output_folder.children[1].value
+        s._output_folder = gui.output_folder.children[1].value
 
 def parse_input_net(gui):
     s = SearchNet()

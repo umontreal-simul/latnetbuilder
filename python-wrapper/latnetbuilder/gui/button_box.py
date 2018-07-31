@@ -56,12 +56,16 @@ def on_click_search(change, gui):
     gui.button_box.abort.button_style = 'warning'
     gui.button_box.abort.value = False
 
-    if not os.path.exists(s.output_folder):
-        os.makedirs(s.output_folder)
-    stdout_filepath = os.path.join(s.output_folder, 'cpp_outfile.txt')
-    stderr_filepath = os.path.join(s.output_folder, 'cpp_errfile.txt')
-    stdout_file = open(stdout_filepath, 'w')
-    stderr_file = open(stderr_filepath, 'w')
+    try:
+        if not os.path.exists(s._output_folder):
+            os.makedirs(s._output_folder)
+        stdout_filepath = os.path.join(s._output_folder, 'cpp_outfile.txt')
+        stderr_filepath = os.path.join(s._output_folder, 'cpp_errfile.txt')
+        stdout_file = open(stdout_filepath, 'w')
+        stderr_file = open(stderr_filepath, 'w')
+    except Exception as e:
+        gui.output.result_html.value = '<span style="color:red"> ERROR: ' + str(e) + '</span>'
+        return
 
     # call the LatNetBuilder executable and returns a subprocess instance
     process = s._launch_subprocess(stdout_file, stderr_file)
