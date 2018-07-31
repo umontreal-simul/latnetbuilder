@@ -50,7 +50,7 @@ options:
 		- For digital nets (<code>--set-type net</code>):
 			- <code>sobol</code>
 				to search for Sobol' nets; or
-			- <code>sobol</code>
+			- <code>polynomial</code>
 				to search for polynomial lattice rules; or
 			- <code>explicit</code>
 				to search for digital nets with explicit generating matrices.
@@ -100,8 +100,8 @@ options:
 										coordinate-uniform implementation of the selected figure of
 										merit);
 
-				Recall that the implementation of the fast CBC algorithm in %LatBuilder
-				supports only modulus that are a power of a prime base in the ordinary case and 
+				Recall that the implementation of the fast CBC algorithm
+				only supports modulus that are a power of a prime base in the ordinary case and 
 				irreducible modulus in the polynomial case.
 
 			- <code>extend:<var>modulus</var>:<var>genVec</var></code>

@@ -22,6 +22,11 @@ interface.
 The complete code of the examples in this tutorial can be found under the \c
 examples/tutorial/ directory.
 
+The library is divided in two namespaces: LatBuilder and NetBuilder. The first namespace
+corresponds to the construction of lattice rules whereas the latter deals with
+the construction of digital nets. The interdepencecy between these two libraries is explained
+in this \ref libtut_impl_spaghetti "section" of the implementation notes.
+
 This tutorial is divided in three parts:
 - \subpage libtut_lat
 - \subpage libtut_net
