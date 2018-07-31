@@ -21,7 +21,8 @@
 and randomized quasi Monte-Carlo methods using state-of-the-art techniques.
 
 A previous version of this software, called Lattice Builder, only handled rank-1 lattice rules. Rank-1 polynomial lattices, were later added to Lattice Builder. 
-The current version of the software can also handle digital nets in base 2. This new piece of software is called %NetBuilder whereas the older one is called %LatBuilder. All in all, the point set types handled by LatNet Builder include rank-1 (ordinary and polynomial) lattice rules and digital nets in base 2 
+The current version of the software can also handle digital nets in base 2. All in all, the point set types handled by LatNet Builder include rank-1 
+(ordinary and polynomial) lattice rules and digital nets in base 2 
 (Sobol' nets, polynomial lattice rules and nets defined by explicit generating matrices.)
 
 More precisely, LatNet Builder can search for point sets with an arbitrary number of points in any dimension of high quality with respect to various criteria. 
@@ -37,8 +38,8 @@ The features of LatNet Builder are summed up in the following table:
 <table border="1" align="center" class="tg">
   <tr align="center">
     <th class="tg-uys7">Features</th>
-    <th class="tg-uys7" colspan="2">%LatBuilder</th>
-    <th class="tg-uys7">%NetBuilder</th>
+    <th class="tg-uys7" colspan="2">Lattice rules</th>
+    <th class="tg-uys7">Digital nets</th>
   </tr>
   <tr align="center">
     <td class="tg-uys7"> \subpage feats_pointsets </td>

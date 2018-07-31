@@ -24,7 +24,7 @@ examples/tutorial/ directory.
 
 The library is divided in two namespaces: LatBuilder and NetBuilder. The first namespace
 corresponds to the construction of lattice rules whereas the latter deals with
-the construction of digital nets. The interdepencecy between these two libraries is explained
+the construction of digital nets. The interdependency between these two libraries is explained
 in this \ref libtut_impl_spaghetti "section" of the implementation notes.
 
 This tutorial is divided in three parts:
