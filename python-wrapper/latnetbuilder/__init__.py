@@ -15,3 +15,4 @@ Else, modify this path to match the current path to LatNetBuilder on your system
 
 from .gui import gui
 from .search import SearchLattice, SearchNet
+from .generate_points import generate_points_digital_net, generate_points_ordinary_lattice

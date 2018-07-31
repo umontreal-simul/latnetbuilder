@@ -2,6 +2,8 @@ import re
 import math
 import numpy as np
 
+from .generate_points import generate_points_digital_net, generate_points_ordinary_lattice
+
 class Result:
     def __init__(self, set_type, nb_points, dim, merit, time, gen_vector=[], modulus= [], nb_cols=0, nb_rows=0, matrices = [], interlacing=1, base=0, max_level=0):
         self.set_type = set_type
@@ -53,23 +55,13 @@ class Result:
     def getPoints(self, coord, level=None):
         assert coord < self.dim and (level==None or self.max_level > 0)
 
-        if level is None:
-            nb_points = self.nb_points
-        else:
-            nb_points = self.base ** level
-
         if self.matrices == []:
-            return np.array([(self.gen_vector[coord] * i / nb_points) % 1 for i in range(nb_points)])
-
+            if level == None:
+                return generate_points_ordinary_lattice(self.gen_vector, self.nb_points, coord)
+            else:
+                return generate_points_ordinary_lattice(self.gen_vector, self.base ** level, coord)
         else:
-            points = []
-            if level is None:
-                level = self.nb_cols
-            for x in range(nb_points):
-                binary_repr = np.array([((x>>i)&1) for i in range(self.nb_cols)])
-                prods = [np.mod(self.matrices[coord * self.interlacing + r].dot(binary_repr), 2) for r in range(self.interlacing)]
-                points.append(sum([ prods[i % self.interlacing][i // self.interlacing] * (0.5 **(i+1)) for i in range(level*self.interlacing)]))
-            return points
+            return generate_points_digital_net(self.matrices, self.interlacing, coord, level)
 
 
 
@@ -130,11 +122,11 @@ def parse_output(file_output):
         time = float(Lines[line+1].split(sep)[0])
 
         if set_type == 'Polynomial':
-            return Result(set_type, nb_points, dim // interlacing, merit, time, gen_vector=gen_vector, modulus=modulus, nb_cols=nb_cols, nb_rows=nb_rows, matrices=matrices, interlacing=interlacing)
+            return Result(set_type, nb_points, dim // interlacing, merit, time, gen_vector=gen_vector, modulus=modulus, nb_cols=nb_cols, nb_rows=nb_rows, matrices=np.array(matrices), interlacing=interlacing)
         elif set_type == 'Sobol':
-            return Result(set_type, nb_points, dim // interlacing, merit, time, gen_vector=gen_vector, nb_cols=nb_cols, nb_rows=nb_rows, matrices=matrices, interlacing=interlacing)
+            return Result(set_type, nb_points, dim // interlacing, merit, time, gen_vector=gen_vector, nb_cols=nb_cols, nb_rows=nb_rows, matrices=np.array(matrices), interlacing=interlacing)
         elif set_type == 'Explicit':
-            return Result(set_type, nb_points, dim // interlacing, merit, time, nb_cols=nb_cols, nb_rows=nb_rows, matrices=matrices, interlacing=interlacing)
+            return Result(set_type, nb_points, dim // interlacing, merit, time, nb_cols=nb_cols, nb_rows=nb_rows, matrices=np.array(matrices), interlacing=interlacing)
 
 
     

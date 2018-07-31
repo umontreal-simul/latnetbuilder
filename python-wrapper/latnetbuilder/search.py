@@ -10,6 +10,7 @@ import numpy as np
 from .parse_output import parse_output, Result
 from .gui.output import output, create_output
 from .gui.progress_bars import progress_bars
+from .generate_points import generate_points_digital_net, generate_points_ordinary_lattice
 
 DEFAULT_OUTPUT_FOLDER = 'latnetbuilder_tmp_log'
 
@@ -246,29 +247,25 @@ class Search():
             display(self.output.output)
 
 
-    def points(self, verbose=0):
+    def points(self, coordinate=None, level=None):
         '''Compute and return the QMC points of the Search result.
         
         The points are returned as a 2-dimensional numpy array, the first index corresponds to the index of the point,
-        and the second corresponds to the coordinate.
-        
-        If verbose is >0, the Python code executed is printed.'''
+        and the second corresponds to the coordinate.'''
 
         if self.output is None or self.output.result_obj is None:
             print("Run self.execute() before using points")
         else:
-            if len(self.output.output.children) == 0:
-                create_output(self.output, create_graph=False)
+            result_obj = self.output.result_obj
             
-            code = self.output.output.children[2].value
-            if verbose > 0:
-                print('Executing....')
-                print(code)
-
-            glob = {}
-            exec(code, glob)    # execute string as Python code. Potentially dangerous if the .txt files in code_output 
-                                # have been tampered with.
-            return np.array(glob['points'])
+            if self.construction == 'ordinary':
+                if level == None:
+                    return generate_points_ordinary_lattice(result_obj.gen_vector, result_obj.nb_points, coordinate)
+                else:
+                    return generate_points_ordinary_lattice(result_obj.gen_vector, result_obj.base ** level, coordinate)
+            
+            else:
+                return generate_points_digital_net(result_obj.matrices, result_obj.interlacing, coordinate=coordinate, level=level)
 
 
 class SearchLattice(Search):
