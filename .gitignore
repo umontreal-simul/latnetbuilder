@@ -2,6 +2,3 @@
 .lock-waf_*
 build
 version-*
-
-test/*
-!test/*.cc

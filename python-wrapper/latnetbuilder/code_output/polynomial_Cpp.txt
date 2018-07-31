@@ -3,7 +3,7 @@
 #include <iostream>
 
 typedef std::vector<bool> Polynomial;
-typedef std::vector<std::vector<bool>> Matrix;
+typedef std::vector<std::vector<bool>> BinaryMatrix;
 
 unsigned int getmsb (unsigned long long x){
     unsigned int r = 0;
@@ -23,11 +23,11 @@ bool coeff(const Polynomial& p, int i){
     return 0;
 }
 
-int numPoints(const Matrix& matrix){
+int numPoints(const BinaryMatrix& matrix){
     return pow(2, matrix.size());
 }
 
-std::vector<unsigned long> getCols(const Matrix& matrix){
+std::vector<unsigned long> getCols(const BinaryMatrix& matrix){
     std::vector<unsigned long> res(matrix.size(), 0);
     for (unsigned int j=0; j<matrix.size(); j++){
         unsigned long s = 0;
@@ -53,11 +53,11 @@ void expandSeries(const Polynomial& h, const Polynomial& P, std::vector<unsigned
    }
 
 
-std::vector<Matrix> computeGeneratorMatrices(const Polynomial& modulus, const std::vector<Polynomial>& gen) {
+std::vector<BinaryMatrix> computeGeneratorMatrices(const Polynomial& modulus, const std::vector<Polynomial>& gen) {
         
     unsigned int m = (unsigned int) (deg(modulus));
 
-    std::vector<Matrix> genratorMatrices(gen.size(), std::vector<std::vector<bool>>(m, std::vector<bool>(m, 0)));
+    std::vector<BinaryMatrix> generatorMatrices(gen.size(), std::vector<std::vector<bool>>(m, std::vector<bool>(m, 0)));
 
     for(unsigned int j=0; j<gen.size(); j++){
     
@@ -65,21 +65,16 @@ std::vector<Matrix> computeGeneratorMatrices(const Polynomial& modulus, const st
         expandSeries(gen[j], modulus, expansion, 2 * m);
 
         for(unsigned int c =0; c<m; c++ ){
-            unsigned int res = 0;
-            // unsigned int mult = 1;
             for(unsigned int row =0; row <m; row++ ){
-                genratorMatrices[j][row][c] = expansion[c + row];
-                // res += expansion[c + row] * mult;
-                // mult *= 2;
+                generatorMatrices[j][row][c] = expansion[c + row];
             }
-            // genratorMatrices[j].push_back(res);
         }
     }
-    return genratorMatrices;
+    return generatorMatrices;
    }
 
 
-std::vector<std::vector<double>> points(std::vector<Matrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
+std::vector<std::vector<double>> points(std::vector<BinaryMatrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
     std::vector<std::vector<double>> points;
     int nbPoints = numPoints(matrices[0]);
     unsigned int m = matrices[0].size();
@@ -116,7 +111,7 @@ int main(){
     std::vector<Polynomial> genVector {{ genvec }};
     unsigned int interlacing = {{interlacing}};
 
-    std::vector<Matrix> matrices = computeGeneratorMatrices(modulus, genVector);
+    std::vector<BinaryMatrix> matrices = computeGeneratorMatrices(modulus, genVector);
 
     std::vector<unsigned int> graycode = std::vector<unsigned int>();
     for(unsigned int i=0; i < pow(2, deg(modulus)); i++){

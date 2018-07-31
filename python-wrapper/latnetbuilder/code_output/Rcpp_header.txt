@@ -1,0 +1,14 @@
+#include <Rcpp.h>
+using namespace Rcpp;
+
+// [[Rcpp::plugins(cpp11)]]  
+
+// The following code use the Rcpp package.
+// Rcpp (https://cran.r-project.org/web/packages/Rcpp/index.html) is a R package 
+// which provides R functions as well as C++ classes offering a seamless integration of R and C++.
+// To use the code below, you must copy paste it in a file, say `points.Cpp`
+// and run in the R console:
+// library(Rcpp)
+// sourceCpp("points.Cpp")
+// This will create the list of points `myPoints`.
+

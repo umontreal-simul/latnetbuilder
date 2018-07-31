@@ -7,21 +7,21 @@
 
 typedef std::vector<unsigned int> GenValue ;
 typedef std::pair<unsigned int, unsigned int> PrimitivePolynomial; 
-typedef std::vector<std::vector<bool>> Matrix;
+typedef std::vector<std::vector<bool>> BinaryMatrix;
 
 const unsigned int dim = {{s}}; 
 
 
 // primitive polynomials are hard-coded because their computation is really complex.
 static const std::array<unsigned int, dim> degrees =
-{
+{ {
     {{degrees}}
-};
+} };
 
 static const std::array<unsigned long, dim> representations =
-{
+{ {
     {{representations}}
-};
+} };
 
 PrimitivePolynomial  nthPrimitivePolynomial(unsigned int n)
 {
@@ -64,11 +64,11 @@ unsigned int getmsb (unsigned long long x){
     return r;
 }
 
-int numPoints(const Matrix& matrix){
+int numPoints(const BinaryMatrix& matrix){
     return pow(2, matrix.size());
 }
 
-std::vector<unsigned long> getCols(const Matrix& matrix){
+std::vector<unsigned long> getCols(const BinaryMatrix& matrix){
     std::vector<unsigned long> res(matrix.size(), 0);
     for (unsigned int j=0; j<matrix.size(); j++){
         unsigned long s = 0;
@@ -81,7 +81,7 @@ std::vector<unsigned long> getCols(const Matrix& matrix){
 }
 
 
-Matrix createGeneratingMatrix(const GenValue& genValue, unsigned int m, unsigned int coord) 
+BinaryMatrix createGeneratingMatrix(const GenValue& genValue, unsigned int m, unsigned int coord) 
     {
         // GeneratingMatrix tmp = new GeneratingMatrix(m,m);
         std::vector<std::vector<bool>> tmp (m, std::vector<bool>(m, 0));
@@ -139,7 +139,7 @@ Matrix createGeneratingMatrix(const GenValue& genValue, unsigned int m, unsigned
     }
 
 
-std::vector<std::vector<double>> points(std::vector<Matrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
+std::vector<std::vector<double>> points(std::vector<BinaryMatrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
     std::vector<std::vector<double>> points;
     int nbPoints = numPoints(matrices[0]);
     unsigned int m = matrices[0].size();
@@ -175,7 +175,7 @@ int main(){
     unsigned int m = {{m}};
     std::vector<GenValue> genValues {{ genvec }};
     unsigned int interlacing = {{interlacing}};
-    std::vector<Matrix> matrices = std::vector<Matrix>();
+    std::vector<BinaryMatrix> matrices = std::vector<BinaryMatrix>();
     for (unsigned int i=0; i<dim; i++){
         matrices.push_back(createGeneratingMatrix(genValues[i], m, i+1));
     }
