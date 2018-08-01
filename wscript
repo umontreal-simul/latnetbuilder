@@ -20,8 +20,8 @@ def options(ctx):
     ctx.add_option('--fftw',  action='store', help='prefix under which FFTW is installed')
     ctx.add_option('--build-docs', action='store_true', default=False, help='build documentation')
     ctx.add_option('--build-examples', action='store_true', default=False, help='build examples (and tests them)')
-    ctx.add_option('--build-conda', action='store_true', default=False, help='build conda package without embedding LatNetBuilder inside')
-    ctx.add_option('--build-full-conda', action='store_true', default=False, help='build conda package, and embed LatNetBuilder inside')
+    ctx.add_option('--build-light-conda', action='store_true', default=False, help='build conda package without embedding LatNetBuilder inside')
+    ctx.add_option('--build-conda', action='store_true', default=False, help='build conda package, and embed LatNetBuilder inside')
 
 def configure(ctx):
     ctx.options.nested = True
@@ -85,12 +85,12 @@ def configure(ctx):
             ctx.fatal('Doxygen is required for building documentation.\n' +
                       'Get it from http://www.stack.nl/~dimitri/doxygen/')
 
-    if ctx.options.build_conda or ctx.options.build_full_conda:
+    if ctx.options.build_light_conda or ctx.options.build_conda:
         if not ctx.find_program('conda', var='CONDA', mandatory=False):
             ctx.fatal('Conda is required for building conda package.\n' +
                       'Get it from https://www.anaconda.com/download/')
         ctx.env.BUILD_CONDA = True
-        if ctx.options.build_full_conda:
+        if ctx.options.build_conda:
             ctx.env.EMBED_LATNET_CONDA = True
         else:
             ctx.env.EMBED_LATNET_CONDA = False
