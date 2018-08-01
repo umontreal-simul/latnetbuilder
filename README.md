@@ -96,7 +96,7 @@ There are three ways to get the software:
 - [downloading a binary release](#downloading-a-binary-release)
 - [installing the Python package](#installing-with-conda) (with conda)
 - [using a Docker container](#using-a-docker-container), a 'light-weight virtual machine'
-- [compiling from source code](#compiling-the-source-code)
+- [compiling the source code](#compiling-the-source-code)
 
 The binary pre-compiled release of LatNet Builder is available wrapped in a Python package, which provides a one-line installation procedure for the software, its GUI and its Python interface. Unfortunately, this package is only available for Linux and Mac OS users.
 
@@ -147,7 +147,7 @@ Several examples of code using the LatNet Builder application programming
 interface (API) can be found under the `share/doc/examples`
 directory under the installation directory and in subdirectories.
 
-To teach yourself how to code using the LatNet Builder library, you can read the [Library Tutorial](http://simul.iro.umontreal.ca/latnetbuilder/doc/da/d6f/libtut.html).
+To teach yourself how to code using the LatNet Builder library, you can read the [Library Tutorial](http://umontreal-simul.github.io/latnetbuilder/da/d6f/libtut.html).
 
 Compiling and linking code with the LatNet Builder library requires the same
 [software dependencies](#software-dependencies) to be available as for
@@ -196,7 +196,7 @@ The binary distribution packages, under the `latnetbuilder` base directory, have
 * `lib` contains the LatNet Builder and LatticeTester libraries (LatticeTester is an embedded dependency of the LatNet Builder library)
 * `share/doc/latnetbuilder/` contains the HTML documentation
 * `share/doc/latnetbuilder/examples` contains examples on using the LatNet Builder library
-* `share/latnetbuilder` and `share/latticetester` contain examples some data files used by the libraries
+* `share/latnetbuilder` and `share/latticetester` contain some data files used by the libraries
 
 ### Installing with conda
 
@@ -243,15 +243,15 @@ To install LatNetBuilder and its interface:
 + pull the image:
 
 ```bash
-docker pull umontreal-simul/latnetbuilder:complete    # for the complete image
-docker pull umontreal-simul/latnetbuilder:light    # for the light image
+docker pull umontrealsimul/latnetbuilder:complete    # for the complete image
+docker pull umontrealsimul/latnetbuilder:light    # for the light image
 ```
 
 To run LatNetBuilder and its interface: the following command starts a console inside a Docker container and tells your system to listen at port 8888 to the port 8888 of the Docker container.
 
 ```bash
-docker run -it -p 8888:8888 umontreal-simul/latnetbuilder:complete bash   # for the complete image
-docker run -it umontreal-simul/latnetbuilder:light bash   # for the light image
+docker run -it -p 8888:8888 umontrealsimul/latnetbuilder:complete bash   # for the complete image
+docker run -it umontrealsimul/latnetbuilder:light bash   # for the light image
 ```
 
 Then you can call LatNet Builder from the command line:
@@ -452,15 +452,15 @@ See the [README](python-wrapper/README.md) file in the `python-wrapper` director
 To update the complete docker image, run from the source code directory:
 
 ```bash
-docker build -t umontreal-simul/latnetbuilder:complete --no-cache -f DockerfileComplete .
-docker push umontreal-simul/latnetbuilder:complete
+docker build -t umontrealsimul/latnetbuilder:complete --no-cache -f DockerfileComplete .
+docker push umontrealsimul/latnetbuilder:complete
 ```
 
 To update the light docker image, run from the installation directory:
 
 ```bash
-docker build -t umontreal-simul/latnetbuilder:light --no-cache -f share/latnetbuilder/DockerfileLight .
-docker push umontreal-simul/latnetbuilder:light
+docker build -t umontrealsimul/latnetbuilder:light --no-cache -f share/latnetbuilder/DockerfileLight .
+docker push umontrealsimul/latnetbuilder:light
 ```
 
 ### Maintaining the online GUI on Binder

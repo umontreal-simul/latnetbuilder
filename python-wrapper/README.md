@@ -140,7 +140,7 @@ Files:
 2) Build the new conda package:
 
 ```bash
-./waf configure --prefix PATH_TO_YOUR_INSTALLATION_FOLDER --link-static --build-full-conda
+./waf configure --prefix PATH_TO_YOUR_INSTALLATION_FOLDER --link-static --build-conda
 ./waf build
 ./waf install
 ```

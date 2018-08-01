@@ -10,7 +10,7 @@ The GUI works in a Jupyter notebook, and can be displayed by displaying latnetbu
 PATH_TO_LATNETBUILDER = 'latnetbuilder'
 '''str: path to the latbuilder executable
 
-If you used an installer (conda or waf with --build-full-conda), you don't have to modify the path.
+If you used an installer (conda or waf with --build-conda), you don't have to modify the path.
 Else, modify this path to match the current path to LatNetBuilder on your system.'''
 
 import atexit
