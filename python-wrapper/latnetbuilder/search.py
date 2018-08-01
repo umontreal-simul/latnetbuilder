@@ -4,7 +4,8 @@ import os
 import shutil
 import logging
 import traceback
-from IPython.display import display
+import tarfile
+from IPython.display import display, FileLink
 import numpy as np
 
 from .parse_output import parse_output, Result
@@ -12,7 +13,7 @@ from .gui.output import output, create_output
 from .gui.progress_bars import progress_bars
 from .generate_points import generate_points_digital_net, generate_points_ordinary_lattice
 
-DEFAULT_OUTPUT_FOLDER = 'latnetbuilder_tmp_log'
+DEFAULT_OUTPUT_FOLDER = 'latnetbuilder_results'
 
 class Search():
     def __init__(self):
@@ -213,15 +214,9 @@ class Search():
                     else:
                         print(err_output)
 
-            try:
-                if self._output_folder == DEFAULT_OUTPUT_FOLDER:
-                    shutil.rmtree(self._output_folder, ignore_errors=True)
-                else:
-                    if delete_files:
-                        os.remove(os.path.join(self._output_folder, 'cpp_outfile.txt'))
-                        os.remove(os.path.join(self._output_folder, 'cpp_errfile.txt'))
-            except OSError:
-                pass
+            if delete_files:
+                os.remove(os.path.join(self._output_folder, 'cpp_outfile.txt'))
+                os.remove(os.path.join(self._output_folder, 'cpp_errfile.txt'))
             
         except Exception as e:
             error_file = os.path.join(self._output_folder, 'stderr.txt')
@@ -229,12 +224,26 @@ class Search():
             logging.warn(e)
             logging.warn(traceback.format_exc())
             if gui is not None:
-                gui.output.result_html.value += '<span style="color:red"> An error happened in the communication with the C++ process. See file: ' + error_file +  ' </span>'
+                gui.output.result_html.value += '<span style="color:red"> An error happened in the Python interface. In result archive, see file: stderr.txt </span>'
             else:
-                print('An error happened in the communication with the C++ process. See file: ' + error_file)
+                print('An error happened in the Python interface. In result folder, see file: ' + error_file)
         
         finally:
             process.kill()
+            try:
+                if gui is not None:
+                    with tarfile.open('latnetbuilder-results.tar.gz', "w:gz") as tar:
+                        tar.add(self._output_folder, arcname=os.path.basename(self._output_folder))
+                    shutil.make_archive('latnetbuilder-results', 'zip', self._output_folder)
+                    gui.output.file_link.children[1].children[0].clear_output()
+                    gui.output.file_link.children[1].children[1].clear_output()
+                    with gui.output.file_link.children[1].children[0]:
+                        display(FileLink('latnetbuilder-results.tar.gz'))
+                    with gui.output.file_link.children[1].children[1]:
+                        display(FileLink('latnetbuilder-results.zip'))
+            
+            except:
+                gui.output.result_html.value += '<span style="color:red"> An error happened while trying to create the result archives. Please check that you have write permissions in the folder where this notebook runs. </span>'
             
 
     def rich_output(self):

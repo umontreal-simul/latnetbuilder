@@ -13,6 +13,18 @@ PATH_TO_LATNETBUILDER = 'latnetbuilder'
 If you used an installer (conda or waf with --build-full-conda), you don't have to modify the path.
 Else, modify this path to match the current path to LatNetBuilder on your system.'''
 
+import atexit
+import os
+import shutil
+def _delete_archive():
+    try:
+        os.remove('latnetbuilder-results.tar.gz')
+        os.remove('latnetbuilder-results.zip')
+        shutil.rmtree('latnetbuilder_results', ignore_errors=True)
+    except:
+        pass
+atexit.register(_delete_archive)
+
 from .gui import gui
 from .search import SearchLattice, SearchNet
 from .generate_points import generate_points_digital_net, generate_points_ordinary_lattice

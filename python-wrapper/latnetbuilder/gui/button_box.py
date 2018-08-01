@@ -1,6 +1,7 @@
 import ipywidgets as widgets
 import threading
 import os
+import shutil
 import signal
 
 from .parse_input import parse_input
@@ -57,8 +58,9 @@ def on_click_search(change, gui):
     gui.button_box.abort.value = False
 
     try:
-        if not os.path.exists(s._output_folder):
-            os.makedirs(s._output_folder)
+        if os.path.exists(s._output_folder):
+            shutil.rmtree(s._output_folder, ignore_errors=True)
+        os.makedirs(s._output_folder)
         stdout_filepath = os.path.join(s._output_folder, 'cpp_outfile.txt')
         stderr_filepath = os.path.join(s._output_folder, 'cpp_errfile.txt')
         stdout_file = open(stdout_filepath, 'w')

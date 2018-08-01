@@ -35,30 +35,3 @@ def sobol_generating_matrix(coord,init_numbers,m):
     return C
 
 matrices = [sobol_generating_matrix(j, init_numbers[j-1], m) for j in range(1, s*interlacing+1)]
-
-def all_binary_vectors(m):
-    arrays = [np.array([0, 1]) for i in range(m)]
-    la = len(arrays)
-    dtype = np.result_type(*arrays)
-    arr = np.empty([len(a) for a in arrays] + [la], dtype=dtype)
-    for i, a in enumerate(np.ix_(*arrays)):
-        arr[...,i] = a
-    return np.transpose(arr.reshape(-1, la))
-
-def generate_points(matrices, interlacing):
-    dim = len(matrices) // interlacing
-    m = len(matrices[0])
-    nb_points = 2**m
-    points = np.zeros(shape=(nb_points, dim))
-    binary_decomp_points = np.mod(np.dot(matrices, all_binary_vectors(m)), 2)
-    
-    mult = np.logspace(-1, -(m-1)*interlacing - 1, num=m, endpoint=True, base=2)
-    mult2 = np.logspace(0, -interlacing+1, num=interlacing, base=2)
-    powers_of_2 = np.outer(mult2, mult)
-
-    for coord in range(0, dim):
-        projected_binary_decomp_points = binary_decomp_points[coord*interlacing : (coord+1)*interlacing]
-        points[:, coord] = np.einsum('ijk,ij->k', projected_binary_decomp_points, powers_of_2)
-    return points
-
-points = generate_points(matrices, interlacing)

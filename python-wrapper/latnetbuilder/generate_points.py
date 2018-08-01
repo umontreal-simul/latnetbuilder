@@ -27,7 +27,7 @@ def generate_points_digital_net(matrices, interlacing, coordinate=None, level=No
         m = level
     
     if coordinate is None:
-        binary_decomp_points = np.mod(np.dot(matrices[:,:,:m], all_binary_vectors(m)), 2)[::-1,:]
+        binary_decomp_points = np.mod(np.dot(matrices[:,:,:m], all_binary_vectors(m)[::-1,:]), 2)
         points = np.zeros(shape=(2**m, dim))
         for coord in range(0, dim):
             projected_binary_decomp_points = binary_decomp_points[coord*interlacing : (coord+1)*interlacing]
@@ -35,6 +35,6 @@ def generate_points_digital_net(matrices, interlacing, coordinate=None, level=No
         return points
     
     else:
-        binary_decomp_points = np.mod(np.dot(matrices[coordinate*interlacing : (coordinate+1)*interlacing,:,:m], all_binary_vectors(m)), 2)[::-1,:]
+        binary_decomp_points = np.mod(np.dot(matrices[coordinate*interlacing : (coordinate+1)*interlacing,:,:m], all_binary_vectors(m)[::-1,:]), 2)
         return np.einsum('ijk,ij->k', binary_decomp_points, powers_of_2)
 

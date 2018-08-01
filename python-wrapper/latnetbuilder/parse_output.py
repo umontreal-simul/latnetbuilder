@@ -32,23 +32,29 @@ class Result:
         else:
             s2 = ""
         if self.gen_vector != []:
-            s3 = "\nGenerating Vector: %s" % (str(self.gen_vector))
+            if self.set_type == 'Sobol':
+                s3 = "\nDirection numbers: %s" % (str(self.gen_vector))
+            else:
+                s3 = "\nGenerating Vector: %s" % (str(self.gen_vector))
         else:
             s3 = ""
         s4 = "\nMerit value: %s \nCPU Time: %s seconds" % (str(self.merit), str(self.time))
         return s1 + s2 + s3 + s4
     
     def _repr_html_(self):
-        s1 = "<span> <b> Number of points </b>: %s </span>" % (str(self.nb_points))
+        s1 = "<span> <b> Number of points</b>: %s </span>" % (str(self.nb_points))
         if self.modulus != []:
-            s2 = "<p> <b> Modulus </b>: %s </p>" % (str(self.modulus))
+            s2 = "<p> <b> Modulus</b>: %s </p>" % (str(self.modulus))
         else:
             s2 = ""
         if self.gen_vector != []:
-            s3 = "<p> <b> Generating Vector </b>: %s </p>" % (str(self.gen_vector))
+            if self.set_type == 'Sobol':
+                s3 = "<p> <b> Direction numbers</b>: %s </p>" % (str(self.gen_vector))
+            else:
+                s3 = "<p> <b> Generating Vector</b>: %s </p>" % (str(self.gen_vector))
         else:
             s3 = ""            
-        s4 = "<p> <b> Merit value </b>: %s </p> <p> <b> CPU Time </b>: %s seconds </p>" % (str(self.merit), str(self.time))
+        s4 = "<p> <b> Merit value</b>: %s </p> <p> <b> CPU Time</b>: %s seconds </p>" % (str(self.merit), str(self.time))
         return s1 + s2 + s3 + s4
 
 

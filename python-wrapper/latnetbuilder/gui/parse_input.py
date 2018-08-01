@@ -98,9 +98,6 @@ def parse_input_common(s, gui):
             string += proj_dep_string.replace('\n', ':')
         s.weights.append(string)
 
-    if gui.output_folder.children[1].value:
-        s._output_folder = gui.output_folder.children[1].value
-
 def parse_input_net(gui):
     s = SearchNet()
     parse_input_common(s, gui)

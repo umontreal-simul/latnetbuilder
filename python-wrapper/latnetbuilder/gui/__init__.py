@@ -1,13 +1,12 @@
-import inspect
 import ipywidgets as widgets
 from IPython.display import display
+import os
 
 from .properties import properties
 from .figure_of_merit import figure_of_merit
 from .exploration_method import exploration_method
 from .construction_method import construction_method
 from .weights import weights, func_add_weights
-from .output_folder import output_folder
 from .button_box import button_box
 from .output import output
 from .progress_bars import progress_bars
@@ -31,7 +30,6 @@ class GUI():
                  weights,
                  construction_method,
                  exploration_method,
-                 output_folder,
                  button_box,
                  output,
                  progress_bars):
@@ -41,7 +39,6 @@ class GUI():
         self.weights = weights
         self.construction_method = construction_method
         self.exploration_method = exploration_method
-        self.output_folder = output_folder
         self.button_box = button_box
         self.output = output
         self.progress_bars = progress_bars
@@ -68,7 +65,7 @@ class GUI():
         display(self.main_tab)
 
 gui = GUI(lattice_type(), properties(), figure_of_merit(), weights(),
-          construction_method(), exploration_method(), output_folder(), button_box(), output(), progress_bars())
+          construction_method(), exploration_method(), button_box(), output(), progress_bars())
 
 # add default order-dependent weights in the interface at start up.
 func_add_weights({'name':'label', 'new':'Order-Dependent'}, gui)
@@ -79,13 +76,13 @@ inside_tab = widgets.VBox([gui.lattice_type.main,
                 gui.properties.main, 
                 gui.exploration_method.main,
                 gui.figure_of_merit.main, 
-                gui.weights.main, 
-                gui.output_folder,
+                gui.weights.main,
                 gui.button_box.main,
                 gui.output.command_line_out,
                 gui.progress_bars.progress_bar_dim,
                 gui.progress_bars.progress_bar_nets,
                 gui.output.result_html, 
+                gui.output.file_link,
                 gui.output.output
                 ])
 

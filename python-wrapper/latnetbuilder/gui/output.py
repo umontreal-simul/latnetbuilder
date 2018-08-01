@@ -108,6 +108,7 @@ def create_output(output, create_graph=True):
         output.output.set_title(2, 'Python code')
         output.output.set_title(3, 'Matlab code')
         output.output.set_title(4, 'R code')
+        return
 
     
     elif result_obj.set_type == 'Polynomial':
@@ -115,7 +116,8 @@ def create_output(output, create_graph=True):
 
         template = env.get_template('polynomial_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(mod=modulus, genvec=result_obj.gen_vector, interlacing = result_obj.interlacing),
+            template.render(mod=modulus, genvec=result_obj.gen_vector, interlacing = result_obj.interlacing) +
+            env.get_template('python_net_suffix.txt').render(),
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('polynomial_Cpp.txt')
@@ -130,12 +132,6 @@ def create_output(output, create_graph=True):
             str_cpp.split('int main()')[0] + 
             Rcpp_suffix,
             layout=widgets.Layout(width='600px', height='700px'))
-        
-        output.output.children = [plot, code_cpp, code_python, code_Rcpp]
-        output.output.set_title(0, 'Plot')
-        output.output.set_title(1, 'C++11 code')
-        output.output.set_title(2, 'Python code')
-        output.output.set_title(3, 'R code')
 
     elif result_obj.set_type == 'Sobol':
         
@@ -151,7 +147,8 @@ def create_output(output, create_graph=True):
                             m=result_obj.nb_cols, 
                             init_numbers=result_obj.gen_vector,
                             prim_polys=prim_polys.tolist(),
-                            interlacing = result_obj.interlacing),
+                            interlacing = result_obj.interlacing) +
+            env.get_template('python_net_suffix.txt').render(),
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('sobol_Cpp.txt')
@@ -177,18 +174,13 @@ def create_output(output, create_graph=True):
             str_cpp.split('int main()')[0] +
             Rcpp_suffix,
             layout=widgets.Layout(width='600px', height='700px'))
-        
-        output.output.children = [plot, code_cpp, code_python, code_Rcpp]
-        output.output.set_title(0, 'Plot')
-        output.output.set_title(1, 'C++11 code')
-        output.output.set_title(2, 'Python code')
-        output.output.set_title(3, 'R code')
 
     elif 'Explicit' in result_obj.set_type:
 
         template = env.get_template('explicit_py.txt')
         code_python = widgets.Textarea(value= 
-            template.render(matrices = str(result_obj.matrices).replace('array', '\n np.array'), interlacing = result_obj.interlacing),   
+            template.render(matrices = str(list(result_obj.matrices)).replace('array', '\n np.array'), interlacing = result_obj.interlacing) +
+            env.get_template('python_net_suffix.txt').render(),   
             layout=widgets.Layout(width='600px', height='700px'))
 
         template = env.get_template('explicit_Cpp.txt')
@@ -204,20 +196,24 @@ def create_output(output, create_graph=True):
             Rcpp_suffix,
             layout=widgets.Layout(width='600px', height='700px'))
 
-        output.output.children = [plot, code_cpp, code_python, code_Rcpp]
-        output.output.set_title(0, 'Plot')
-        output.output.set_title(1, 'C++11 code')
-        output.output.set_title(2, 'Python code')
-        output.output.set_title(3, 'R code')
+    output.output.children = [plot, code_cpp, code_python, code_Rcpp]
+    output.output.set_title(0, 'Plot')
+    output.output.set_title(1, 'C++11 code')
+    output.output.set_title(2, 'Python code')
+    output.output.set_title(3, 'R code')
     
 
 
 def output():
-    result_html = widgets.HTML(description='<b> Result: </b>', value='', layout=widgets.Layout(width='900px'), disabled=False)
+    result_html = widgets.HTML(description='<b> Result: </b>', value='', layout=widgets.Layout(width='900px'), disabled=False, style=style_default)
+    file_link = widgets.VBox([widgets.HTML(description='<b> Download the result files: </b>', layout=widgets.Layout(width='900px'), style=style_default),
+        widgets.HBox([widgets.Output(), widgets.Output()])
+                            ])
     command_line_out = widgets.HTML(description='<b> Command line: </b>', layout=widgets.Layout(width='900px'), disabled=False, style=style_default)
     result_obj = None
     output = widgets.Tab(layout=widgets.Layout(display='none'))
     return BaseGUIElement(result_html=result_html,
+                          file_link=file_link,
                           result_obj=result_obj,
                           output=output,
                           command_line_out=command_line_out)
