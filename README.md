@@ -200,6 +200,8 @@ The binary distribution packages, under the `latnetbuilder` base directory, have
 
 ### Installing with conda
 
+[![Anaconda-Server Badge](https://anaconda.org/umontreal-simul/latnetbuilder/badges/installer/conda.svg)](https://conda.anaconda.org/umontreal-simul)
+
 The Python package, which contains the [binary pre-compiled release](#downloading-a-binary-release) plus the GUI, must be installed using [Conda](https://conda.io/docs/). Conda is an open source package management system and environment management system, which is very popular in the Python community. 
 
 You can download it from the [Anaconda distribution](https://www.anaconda.com/download).
@@ -232,8 +234,8 @@ Click on the AppMode button to run the GUI in full-screen mode. For more informa
 [Docker](https://docs.docker.com/) provides a way to run applications securely isolated in a container, packaged with all its dependencies and libraries. It is similar to a virtual machine.
 
 Two Docker images are available:
-- a light (430 MB) image which runs on a Linux system the binary pre-compiled executable
-- a complete (1.5 GB) image which is based on the Python package
+- a light (446 MB) image which runs on a Linux system the binary pre-compiled executable
+- a complete (1.6 GB) image which is based on the Python package
 installation solution
 
 The GUI is only available in the complete Docker image.
@@ -436,7 +438,7 @@ Help on usage can be obtained by replacing the `--version` switch with the
 
 ### Binary pre-compiled releases 
 
-TODO
+Publish a new release on the [release page](https://github.com/umontreal-simul/latnetbuilder/releases).
 
 ### Updating the documentation
 
@@ -452,6 +454,7 @@ See the [README](python-wrapper/README.md) file in the `python-wrapper` director
 To update the complete docker image, run from the source code directory:
 
 ```bash
+docker login
 docker build -t umontrealsimul/latnetbuilder:complete --no-cache -f DockerfileComplete .
 docker push umontrealsimul/latnetbuilder:complete
 ```
@@ -459,6 +462,7 @@ docker push umontrealsimul/latnetbuilder:complete
 To update the light docker image, run from the installation directory:
 
 ```bash
+docker login
 docker build -t umontrealsimul/latnetbuilder:light --no-cache -f share/latnetbuilder/DockerfileLight .
 docker push umontrealsimul/latnetbuilder:light
 ```
