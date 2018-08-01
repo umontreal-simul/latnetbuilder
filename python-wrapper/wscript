@@ -40,7 +40,7 @@ def build(ctx):
         install_dir = ctx.env.EXEC_PREFIX
         
         cmd1 = "echo Building the conda package, this takes several minutes..."
-        cmd2 = '%s install -y conda-build || echo "Tried to install the conda-build package"' % (ctx.env.get_flat('CONDA'))
+        cmd2 = '%s install -y anaconda-client conda-build || echo "Tried to install the anaconda-client and the conda-build package"' % (ctx.env.get_flat('CONDA'))
         cmd3 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
         ' && export LATNETBUILDER_INSTALL_DIR=' + install_dir + \
         ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
