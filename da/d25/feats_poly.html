@@ -99,12 +99,12 @@ $(document).ready(function(){initNavTree('da/d25/feats_poly.html','../../');});
 <div class="contents">
 <div class="textblock"><p>The first version of LatNet Builder only handled ordinary lattice rules.</p>
 <p>The polynomial lattice rules were later added to the software. This extension uses the lattice point of view for polynomial lattice rules. However, polynomial lattice rules are also digital nets and when the latter was added to the software, a polynomial construction of digital net was implemented.</p>
-<p>As a consequence, polynomial lattice rules are available on both side of the software: LatBuilder and NetBuilder.</p>
+<p>As a consequence, there are two implementations to search for good polynomial lattice rules: a lattice implementation and a net implementation.</p>
 <p>Choosing which piece of software to use depends on what one wants to achieve:</p>
 <ul>
-<li>Generally, the digital net implementation (NetBuilder) is much faster than the lattice implementation;</li>
+<li>Generally, the digital net implementation is much faster than the lattice implementation. The lattice implementation is slower because it requires many change of representation of polynomials between integers and polynomials of <a class="el" href="../../d2/d5a/namespaceNTL.html" title="The two floowing two classes are copies from NTL::Vec&lt;T&gt; and NTL::Mat&lt;T&gt;, but they contain additional...">NTL</a>. For example, to construct a polynomial lattice rules with 32 points in dimension 3 using the full-CBC exploration method, 2636 conversions are needed.</li>
 <li>This implementation provides more exploration methods and more figures of merit;</li>
-<li>However, the fast-CBC algorithm which is only available in the lattice implementation (LatBuilder) beats the full-CBC exploration method of NetBuilder;</li>
+<li>However, the fast-CBC algorithm which is only available in the lattice implementation beats the full-CBC exploration method of the net implementation;</li>
 <li>Moreover, the embedded polynomial lattice rules and filters and normalizations are not supported by the digital net implementation.</li>
 <li>To wrap it up: the lattice implementation should only be used in the following cases:<ul>
 <li>for the \(\mathcal P_\alpha\) and the \(\mathcal R\) discrepancies and the \(\ell_2\) norm <b>with the fast-CBC algorithm</b>,</li>
@@ -119,7 +119,7 @@ $(document).ready(function(){initNavTree('da/d25/feats_poly.html','../../');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../dd/d51/feats.html">Main features</a></li>
-    <li class="footer">Generated on Mon Jul 30 2018 12:07:44 for LatNet Builder Manual by
+    <li class="footer">Generated on Wed Aug 1 2018 09:24:44 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>
