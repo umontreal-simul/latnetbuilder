@@ -4,6 +4,7 @@
 from waflib.Build import POST_LAZY
 
 def build(ctx):
+    ctx.add_group('group_install')
     ctx.add_group('group_chmod')
     ctx.post_mode = POST_LAZY
 
@@ -21,6 +22,7 @@ def build(ctx):
 
     # gui launch bash script
     if ctx.cmd == 'install':
+        ctx.set_group('group_install')
         ctx.install_files("${PREFIX}/bin/", ["latnetbuilder-gui", "latnetbuilder-gui-docker"])
         ctx.set_group('group_chmod')
         ctx(rule   = "chmod +x latnetbuilder-gui", source = 'wscript', cwd = ctx.env.PREFIX + "/bin/")
