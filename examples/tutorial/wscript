@@ -66,8 +66,8 @@ def build(ctx):
         ctx(features='cxx cxxprogram test',
                 source=src,
                 includes=[lb_inc_dir, lc_inc_dir],
-                lib=ctx.env.LIB_FFTW + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_FILESYSTEM + ctx.env.LIB_SYSTEM + ctx.env.LIB_NTL + ctx.env.LIB_GMP,
-                stlib=ctx.env.STLIB_FFTW + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_FILESYSTEM + ctx.env.STLIB_SYSTEM + ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
+                lib=ctx.env.LIB_FFTW  + ctx.env.LIB_SYSTEM + ctx.env.LIB_FILESYSTEM + ctx.env.LIB_PROGRAM_OPTIONS + ctx.env.LIB_GMP + ctx.env.LIB_NTL,
+                stlib=ctx.env.STLIB_FFTW  + ctx.env.STLIB_SYSTEM + ctx.env.STLIB_FILESYSTEM + ctx.env.STLIB_PROGRAM_OPTIONS + ctx.env.STLIB_GMP + ctx.env.STLIB_NTL,
                 target=targets[-1],
                 use=['latnetbuilder', 'latticetester'],
                 install_path=None)
