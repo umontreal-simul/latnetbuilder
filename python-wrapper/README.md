@@ -1,15 +1,16 @@
-# LatNet Builder Web Interface
+# LatNet Builder Python Interface
 
-This interface was built using [Jupyter](http://jupyter.org/) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets).
+This interface works both to call LatNet Builder as a Python module (in a Python script), and as a GUI interface. To use the GUI, please refer to the instructions in the [README of the repository](../README.md).
 
+The files `notebooks/Example_Python_module.py` and `notebooks/Example_Python_module.ipynb` contain an example of how to use this interface in a Python script.
+
+The GUI was built using [Jupyter](http://jupyter.org/) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets).
 It allows to easily run LatNet Builder without having to manually construct the command line.
-
-Installation instructions can be found in the [README of the repository](../README.md).
 
 ## Implementation notes
 
 The application is based on the following stack of technologies:
-+ the [Jupyter notebook](https://github.com/jupyter/notebook), [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) (interactive widgets for Jupyter) for user interactivity
++ the [Jupyter notebook](https://github.com/jupyter/notebook) and [ipywidgets](https://github.com/jupyter-widgets/ipywidgets) (interactive widgets for Jupyter) for user interactivity
 + the Python modules [subprocess](https://docs.python.org/3.6/library/subprocess.html#module-subprocess) and [threading](https://docs.python.org/3.6/library/threading.html), which allow to handle processes and threads from Python, as well as [matplotlib](https://matplotlib.org), a plotting library for Python
 + the LatNet Builder software, called from its command line interface
 + the Jupyter extension [appmode](https://github.com/oschuett/appmode) for the final rendering of the user interface 

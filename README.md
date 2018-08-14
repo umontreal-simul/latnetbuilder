@@ -89,23 +89,23 @@ LatNet Builder offers various possibilities to use its functionalities:
 - a C++ library
 - a Command Line Tool
 - a Python package which comprises:
-  - a Python interface
+  - a [Python interface](python-wrapper/README.md)
   - a Graphical User Interface based on the [Jupyter](https://jupyter.org) ecosystem
 
-There are three ways to get the software: 
-- [downloading a binary release](#downloading-a-binary-release)
+There are four ways to get the software: 
+- [downloading a binary release](#downloading-a-binary-release) (only available for Linux and Mac OS)
 - [installing the Python package](#installing-with-conda) (with conda)
 - [using a Docker container](#using-a-docker-container), a 'light-weight virtual machine'
 - [compiling the source code](#compiling-the-source-code)
 
-The binary pre-compiled release of LatNet Builder is available wrapped in a Python package, which provides a one-line installation procedure for the software, its GUI and its Python interface. Unfortunately, this package is only available for Linux and Mac OS users.
+The binary pre-compiled release of LatNet Builder is available on itself and also wrapped in a Python package. The latter provides a one-line installation procedure for the software, its GUI and its Python interface. 
 
-The Docker container, based on a Linux distribution, is meant as
-a convenience for Windows users.
+The Docker container, which encapsulates a Linux distribution, is meant as
+a convenience for Windows users. As an additional convenience, the Python package in its Windows version acts as a wrapper above the Docker container. Users unfamiliar with Docker should thus consider using the Python package.
 
 The source code should compile fine on Linux and Mac OS platforms. However, since a lot of dependencies are required, we advise you to use the binary pre-compiled release available either on its own or through the Python package. 
 
-For Windows users, we recommend to use a Unix emulation environment like Cygwin or MinGW, instead of Microsoft development tools. Compiling LatNet Builder and its dependencies may turn out to be time-consuming so we highly recommend to use the Docker container.
+For Windows users who would like to compile the source code, we recommend to use a UNIX emulation environment like Cygwin or MinGW, instead of Microsoft development tools. Compiling LatNet Builder and its dependencies may turn out to be time-consuming so we highly recommend to use the conda package or directly the Docker container.
 
 ### The command-line tool in a nutshell
 
@@ -147,7 +147,7 @@ Several examples of code using the LatNet Builder application programming
 interface (API) can be found under the `share/doc/examples`
 directory under the installation directory and in subdirectories.
 
-To teach yourself how to code using the LatNet Builder library, you can read the [Library Tutorial](http://umontreal-simul.github.io/latnetbuilder/da/d6f/libtut.html).
+To learn how to code using the LatNet Builder library, you can read the [Library Tutorial](http://umontreal-simul.github.io/latnetbuilder/da/d6f/libtut.html).
 
 Compiling and linking code with the LatNet Builder library requires the same
 [software dependencies](#software-dependencies) to be available as for
@@ -186,7 +186,7 @@ With clang, just replace `g++` with `clang++`.
 ### Downloading a binary release
 
 [Binary pre-compiled releases](https://github.com/umontreal-simul/latnetbuilder/releases)
-of LatNet Builder are available for Linux and Mac OS platforms.
+of LatNet Builder are available **for Linux and Mac OS platforms**.
 These include the executable `latnetbuilder` program, library and documentation.
 
 The binary distribution packages, under the `latnetbuilder` base directory, have the following directory structure:
@@ -204,10 +204,16 @@ The binary distribution packages, under the `latnetbuilder` base directory, have
 
 The Python package, which contains the [binary pre-compiled release](#downloading-a-binary-release) plus the GUI, must be installed using [Conda](https://conda.io/docs/). Conda is an open source package management system and environment management system, which is very popular in the Python community. 
 
-You can download it from the [Anaconda distribution](https://www.anaconda.com/download).
+First, you have to download Conda from the [Anaconda distribution](https://www.anaconda.com/download).
 For more information, see the [conda documentation about environments](https://conda.io/docs/user-guide/tasks/manage-environments.html).
 
-To install LatNetBuilder and its interface:
+The Conda `latnetbuilder` package is available **for Windows, Linux and Mac OS.** The Windows version acts as a wrapper above a Docker container. 
+
+The installation procedures is as follow:
+
+#### For Linux and MacOS
+
+After installing Conda, you can run the following commands:
 
 ```bash
 conda create -n latnetbuilder   # create a conda environment named latnetbuilder
@@ -215,11 +221,32 @@ conda config --add channels conda-forge         # add conda-forge as a default c
 conda install -c umontreal-simul latnetbuilder   # installs the latnetbuilder package from the channel umontreal-simul
 ```
 
+#### For Windows
 
-To run LatNetBuilder and its interface:
+You have to install Docker first. [Docker](https://docs.docker.com/) provides a way to run applications securely isolated in a container, packaged with all its dependencies and libraries. It is similar to a virtual machine. Depending on your Windows version, as of now, two Docker installations are available:
++ for Windows 10 Professional or Enterprise 64-bit users: [Docker for Windows](https://docs.docker.com/docker-for-windows/install/#start-docker-for-windows)
++ for all other users: [Docker Toolbox](https://docs.docker.com/toolbox/toolbox_install_windows/)
+
+In either case, if you are given the choice during the installation procedure, please add Docker to your PATH.
+Else, the configuration of LatNet Builder will require you to state the path to your Docker installation, so please remember it when you set it during the installation procedure.
+
+The installation of Docker can be tricky, so please follow precisely the instructions on the Docker website and double-check that your installation works before moving on to the installation of LatNet Builder.
+
+After installing Docker and Conda, you can run the following commands to install LatNet Builder: 
 
 ```bash
-source activate latnetbuilder
+conda create -n latnetbuilder   # create a conda environment named latnetbuilder
+conda config --add channels conda-forge         # add conda-forge as a default conda channel
+conda install -c umontreal-simul latnetbuilder   # installs the latnetbuilder package from the channel umontreal-simul
+activate latnetbuilder  # activate the conda environment named latnetbuilder
+latnetbuilder_configure # run the configuration script (which will locate the Docker installation on your system)
+```
+
+#### Running LatNetBuilder and its interface (all systems)
+
+```bash
+source activate latnetbuilder  # for UNIX
+activate latnetbuilder  # for Windows
 # you can call latnetbuilder from the command line:
 latnetbuilder --help
 # you can also start the interface:
@@ -229,16 +256,16 @@ latnetbuilder-gui
 This latest command will open a Jupyter notebook in your browser. 
 Click on the AppMode button to run the GUI in full-screen mode. For more information about Jupyter notebooks, you can have a look at the [Jupyter documentation](http://jupyter-notebook-beginner-guide.readthedocs.io/en/latest/execute.html).
 
+Remark: for Windows users with Docker Toolbox, the LatNet Builder package creates and manipulates a virtual machine. It is possible that when you shut your system down, it complains about a running VirtualBox application. This is because the LatNet Builder package does not destroy the virtual machine it creates. You can either force the shutdown of your system or destroy the machine yourself with the command `docker-machine rm latnetbuilder`. The next time you use LatNet Builder, the machine will be re-created.
+
 ### Using a Docker container
 
 [Docker](https://docs.docker.com/) provides a way to run applications securely isolated in a container, packaged with all its dependencies and libraries. It is similar to a virtual machine.
 
 Two Docker images are available:
 - a light (446 MB) image which runs on a Linux system the binary pre-compiled executable
-- a complete (1.6 GB) image which is based on the Python package
-installation solution
+- a complete (1.6 GB) image which additionally contains the GUI
 
-The GUI is only available in the complete Docker image.
 
 To install LatNetBuilder and its interface:
 + [install Docker](https://docs.docker.com/install/)
@@ -287,11 +314,11 @@ If you leave it running, to start a new console you can use the following comman
 docker exec -it CONTAINER_NAME bash
 ```
 
-## Compiling the source code
+### Compiling the source code
 
 This method works fine for Linux and Mac OS X users. For Windows users, the software is known to compile on Cygwin, without the `--link-static` option. Nevertheless, this method is really complex and we recommended you avoid it, unless you are a power user.
 
-### Software Dependencies
+#### Software Dependencies
 
 Compiling LatNet Builder requires the following softwares to be installed on
 the system:
@@ -311,7 +338,7 @@ LatNet Builder is **known to compile** using:
 * [GCC](http://gcc.gnu.org/) 5.4.0 on Linux
 * Apple LLVM version 9.1.0 on MacOS
 
-### Obtaining the Source Code
+#### Obtaining the Source Code
 
 Get the latest source tree from GitHub, either by typing:
 
@@ -323,7 +350,7 @@ link from the [LatNet Builder GitHub
 page](https://github.com/umontreal-simul/latnetbuilder), then by unzipping the downloaded
 archive.
 
-### Configuring the Build
+#### Configuring the Build
 
 LatNet Builder relies on the
 [waf meta build system](https://gitlab.com/ita1024/waf/) for configuring and
@@ -394,7 +421,7 @@ appending the following options to `waf configure`:
 Errors will be reported if required software components cannot be found.  In
 that case, you should check the dependencies installation paths.
 
-### Building and Installing
+#### Building and Installing
 
 Once everything is configured correctly, the following command will build the
 LatNet Builder library and command-line tool:
@@ -437,6 +464,45 @@ Help on usage can be obtained by replacing the `--version` switch with the
 ## For developers
 
 ### Binary pre-compiled releases 
+
+To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). 
+
+The following commands **should** do the job. If you compile on Linux, replace `<OS>` by `linux`. If you compile on Linux, replace `<OS>` by `darwin`, and add `--enable-assembly=no` to the configuration of GMP.
+
+**FFTW**
+```bash
+export CXXFLAGS='-m64 -march=k8'
+export CFLAGS='-m64 -march=k8'
+./configure --prefix=$HOME/fftw --enable-static --enable-threads --with-combined-threads --enable-sse2
+```
+
+**GMP**
+```bash
+export CXXFLAGS='-m64 -march=k8'
+export CFLAGS='-m64 -march=k8'
+./configure --prefix=$HOME/gmp --enable-shared=no --host=x86_64-unknown-<OS>-gnu
+make
+make install
+```
+
+**NTL**
+```bash
+./configure "CXXFLAGS=-O2 -m64 -march=k8 -std=c++11" GMP_PREFIX=$HOME/gmp PREFIX=$HOME/ntl NTL_THREADS=off
+make
+make install
+```
+
+**Boost**
+```bash
+./bootstrap.sh --prefix=$HOME/boost --with-toolset=gcc --without-icu --with-libraries=program_options,system,filesystem
+./b2 -j4 --prefix=$HOME/boost --layout=tagged link=static threading=single variant=release target-os=<OS> address-model=64
+./b2 install
+```
+
+**LatNet Builder**
+```bash
+./waf configure --prefix=$HOME/latnetsoft --fftw=$HOME/fftw --gmp=$HOME/gmp --ntl=$HOME/ntl --boost=$HOME/boost --link-static --build-examples --build-docs --build-conda
+```
 
 Publish a new release on the [release page](https://github.com/umontreal-simul/latnetbuilder/releases).
 
