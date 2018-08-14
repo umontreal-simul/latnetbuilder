@@ -11,6 +11,7 @@
 
 from distutils.util import convert_path
 from setuptools import setup, find_packages
+import os
 
 
 ##################################################
@@ -18,14 +19,15 @@ module = 'latnetbuilder'
 ##################################################
 
 # get version from __meta__
+dir_path = os.path.dirname(os.path.realpath(__file__))
 meta_ns = {}
-path = convert_path(module + '/__meta__.py')
+path = convert_path(os.path.join(dir_path, module, '__meta__.py'))
 with open(path) as meta_file:
     exec(meta_file.read(), meta_ns)
 
 
 # read requirements.txt
-with open('requirements.txt', 'r') as f:
+with open(os.path.join(dir_path, 'requirements.txt'), 'r') as f:
     content = f.read()
 li_req = content.split('\n')
 install_requires = [e.strip() for e in li_req if len(e)]

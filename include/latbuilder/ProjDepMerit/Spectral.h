@@ -137,7 +137,7 @@ namespace detail {
 #endif
 
       // prepare lattice and basis reduction
-      LatticeTester::Rank1Lattice<std::int64_t, NTL::vector<std::int64_t>, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real> lattice(
+      LatticeTester::Rank1Lattice<std::int64_t, std::int64_t, Real, Real> lattice(
             lat.sizeParam().numPoints(),
             gen,
             static_cast<int>(projection.size()),
@@ -145,9 +145,9 @@ namespace detail {
       lattice.buildBasis (static_cast<int>(projection.size()));
       lattice.dualize ();
 
-      LatticeTester::Reducer<std::int64_t, std::int64_t, NTL::vector<std::int64_t>,  NTL::matrix<std::int64_t>, Real, NTL::vector<Real>, Real, NTL::vector<Real>, NTL::matrix<Real>> reducer(lattice);
+      LatticeTester::Reducer<std::int64_t, std::int64_t, Real, Real> reducer(lattice);
 
-      reducer.preRedDieter(0);
+      reducer.redDieter(0);
 
       if (not reducer.shortestVector(lattice.getNorm())) {
          // reduction failed
