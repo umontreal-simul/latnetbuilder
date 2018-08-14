@@ -35,15 +35,20 @@ namespace{
      * @param s Size of the projection.
      * 
      */
-    Real h(uInteger t, uInteger m, uInteger s){
+    Real h(uInteger t, uInteger m, uInteger s, int type){
         Real res = 0.0;
-        Real binom_coeff = 1.0;
-        
-        for (uInteger i=0; i < std::min(s, m-t+1); i++){
-            res += binom_coeff;
-            binom_coeff *= (Real) (m-t-i) / (i+1);
+        if (type == 1){
+            Real binom_coeff = 1.0;
+            
+            for (uInteger i=0; i < std::min(s, m-t+1); i++){
+                res += binom_coeff;
+                binom_coeff *= (Real) (m-t-i) / (i+1);
+            }
+            return intPow(0.5, m - t) * res;
         }
-        return intPow(0.5, m - t) * res;
+        else{
+            return 1.0/6 + intPow(4.0, t) * intPow(m-t, s-1);
+        }
     }
 }
 
@@ -72,12 +77,14 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
-        TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner=std::make_unique<LevelCombiner::LevelCombiner>()): TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>(maxCardinal, std::move(combiner))
-        {}
+        TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner=std::make_unique<LevelCombiner::LevelCombiner>(), int cost_function=1): TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>(maxCardinal, std::move(combiner))
+        {
+            this->cost_function = cost_function;
+        }
 
         virtual Real combine(Merit merit, const DigitalNet& net, const LatticeTester::Coordinates& projection)
         {
-            return h(merit, net.numColumns(), projection.size());
+            return h(merit, net.numColumns(), projection.size(), cost_function);
         }
 
         /**
@@ -89,7 +96,10 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
             res += "Star discrepancy bounding t-value based figure of merit";
             res += "\nEmbedding type: Unilevel";
             return res;
-        }; 
+        };
+
+    private:
+        int cost_function;
 };
 
 /** Template specialization of the projection-dependent merit defined by the t-value of the projection
@@ -110,13 +120,15 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
          */  
-        TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner): TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>(maxCardinal, std::move(combiner))
-        {}
+        TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner, int cost_function): TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>(maxCardinal, std::move(combiner))
+        {
+            this->cost_function = cost_function;
+        }
 
         virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
-                tmp[i] = h(merits[i], net.numColumns(), projection.size());
+                tmp[i] = h(merits[i], net.numColumns(), projection.size(), cost_function);
             } 
             return (*(this->m_combiner))(std::move(tmp)) ; 
         }
@@ -132,6 +144,9 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
             res += "\nCombiner: " + this->m_combiner->format();
             return res;
         }; 
+
+    private:
+        int cost_function;
 };
 
 /**

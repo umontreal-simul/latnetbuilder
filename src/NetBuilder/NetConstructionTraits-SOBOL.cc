@@ -157,6 +157,7 @@ namespace NetBuilder {
             makeIteration(*tmp, reg, mask, k);
             ++k;
         }
+        tmp->resize(m, m);
         return tmp;
     }
 

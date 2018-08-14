@@ -157,7 +157,13 @@ struct FigureParser
         else if (commandLine.s_figure == "projdep:t-value:starDisc")
         {
             unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
-            auto projDepMerit = std::make_unique<FigureOfMerit::TValueTransformedProjMerit<ET>>(maxCard, std::move(commandLine.m_combiner));
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueTransformedProjMerit<ET>>(maxCard, std::move(commandLine.m_combiner), 1);
+            return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueTransformedProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
+        }
+        else if (commandLine.s_figure == "projdep:t-value:L2Disc")
+        {
+            unsigned int maxCard = LatBuilder::WeightsDispatcher::dispatch<ComputeMaxCardFromWeights>(*weights);
+            auto projDepMerit = std::make_unique<FigureOfMerit::TValueTransformedProjMerit<ET>>(maxCard, std::move(commandLine.m_combiner), 2);
             return std::make_unique<FigureOfMerit::WeightedFigureOfMerit<FigureOfMerit::TValueTransformedProjMerit<ET>>>(commandLine.m_normType, std::move(weights), std::move(projDepMerit));
         }
         else if (commandLine.s_figure == "projdep:resolution-gap")

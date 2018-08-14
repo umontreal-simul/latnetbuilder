@@ -12,54 +12,53 @@ unsigned int getmsb (unsigned long long x){
     return r;
 }
 
-int deg(const Polynomial& p){
-    return p.size()-1;
+unsigned int numPoints(const BinaryMatrix& matrix){
+    return pow(2, matrix[0].size());
 }
 
-
-int numPoints(const BinaryMatrix& matrix){
-    return pow(2, matrix.size());
-}
-
-std::vector<unsigned long> getCols(const BinaryMatrix& matrix){
-    std::vector<unsigned long> res(matrix.size(), 0);
-    for (unsigned int j=0; j<matrix.size(); j++){
+std::vector<unsigned long> getColsReverse(const BinaryMatrix& matrix){
+    std::vector<unsigned long> res(matrix[0].size(), 0);
+    for (unsigned int j=0; j<matrix[0].size(); j++){
         unsigned long s = 0;
         for (unsigned int i=0; i<matrix.size(); i++){
-            s += matrix[i][j] << i;
+            s += matrix[i][j] << (matrix.size() - i -1);
         }
         res[j] = s;
     }
     return res;
 }
 
-std::vector<std::vector<double>> points(std::vector<BinaryMatrix> matrices, std::vector<unsigned int> graycode, unsigned int interlacing){
-    std::vector<std::vector<double>> points;
-    int nbPoints = numPoints(matrices[0]);
-    unsigned int m = matrices[0].size();
+std::vector<BinaryMatrix> interlace(const std::vector<BinaryMatrix>& matrices, unsigned int interlacing){
+    std::vector<BinaryMatrix> res;
     unsigned int dim = matrices.size() / interlacing;
-    for (int i=0; i<nbPoints; i++){
+    for (unsigned int j=0; j < dim; j++){
+        BinaryMatrix mat;
+        for (unsigned int i=0; i < matrices[0].size(); i++){
+            for (unsigned int d=0; d<interlacing; d++){
+                mat.push_back(matrices[j*interlacing+d][i]);
+            }
+        }
+        res.push_back(mat);
+    }
+    return res;
+}
+
+
+std::vector<std::vector<double>> points(const std::vector<BinaryMatrix>& matrices, const std::vector<unsigned int>& graycode){
+    std::vector<std::vector<double>> points;
+    unsigned int nbPoints = numPoints(matrices[0]);
+    for (unsigned int i=0; i<nbPoints; i++){
         points.push_back(std::vector<double>());
     }
 
-    for (int j=0; j < dim; j++){
-
-        std::vector<std::vector<unsigned long>> cols;
-        for (int r=0; r < interlacing; r++){
-            cols.push_back(getCols(matrices[j*interlacing + r]));
-        }
-
-        std::vector<unsigned long> m_permutation = std::vector<unsigned long>(interlacing, 0);
+    for (unsigned int j=0; j < matrices.size(); j++){
+        BinaryMatrix matrix = matrices[j];
+        std::vector<unsigned long> cols = getColsReverse(matrix);
+        unsigned long m_permutation = 0;
         points[0].push_back(0);
-        for (unsigned int n=1; n<nbPoints; ++n){
-            for (unsigned int r=0; r < interlacing; r++){
-                m_permutation[r] = m_permutation[r] ^ cols[r][graycode[n-1]];
-            }
-            unsigned int res = 0;
-            for (unsigned int i=0; i < interlacing * m; i++){
-                res += (((m_permutation[i % interlacing] >> (i / interlacing)) & 1) << (interlacing*m - i - 1));
-            } 
-            points[n].push_back(((double) res) / (1 << (interlacing * m)));
+        for (unsigned int i=1; i<nbPoints; ++i){
+            m_permutation = m_permutation ^ cols[graycode[i-1]];
+            points[i].push_back(((double) m_permutation) / pow(2, matrices[0].size()));
         }
     }
     return points;
@@ -67,8 +66,9 @@ std::vector<std::vector<double>> points(std::vector<BinaryMatrix> matrices, std:
 
 int main(){
     std::vector<BinaryMatrix> matrices = {{ matrices }};
-    unsigned int m = matrices[0].size();
+    unsigned int m = matrices[0][0].size();
     unsigned int interlacing = {{interlacing}};
+    matrices = interlace(matrices, interlacing);
 
     std::vector<unsigned int> graycode = std::vector<unsigned int>();
     for(unsigned int i=0; i < pow(2, m); i++){
@@ -76,7 +76,7 @@ int main(){
     }
 
 
-    std::vector<std::vector<double>> myPoints = points(matrices, graycode, interlacing);
+    std::vector<std::vector<double>> myPoints = points(matrices, graycode);
     for (unsigned int i=0; i<myPoints.size(); i++){
         for (unsigned int j=0; j<myPoints[0].size(); j++){
             std::cout << myPoints[i][j] << " ";
