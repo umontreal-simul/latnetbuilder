@@ -2,15 +2,21 @@
 # coding: utf-8
 
 import os
+from waflib.Build import POST_LAZY
 
 def build(ctx):
     data_dir = ctx.path
     out = ctx.bldnode.abspath()
+    ctx.add_group('group_data1')
+    ctx.add_group('group_data2')
+    ctx.post_mode = POST_LAZY
 
     # data files
+    ctx.set_group('group_data1')
     if ctx.env.BUILD_EXAMPLES:
         if not(os.path.exists(str(out) + '/progs/share/latnetbuilder/data')):
             ctx(rule= 'mkdir -p %s' % str(out) + '/progs/share/latnetbuilder/data', always = True)
+    ctx.set_group('group_data2')
     for dat in data_dir.ant_glob('*.csv'):
         if ctx.env.BUILD_EXAMPLES:
             ctx(rule='cp %s %s' %(str(dat), str(out) + '/progs/share/latnetbuilder/data'), always = True)
