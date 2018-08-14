@@ -52,11 +52,11 @@ def configure(ctx):
             lib='boost_system',
             uselib_store='SYSTEM')
     ctx_check(features='cxx cxxprogram',
-            header_name='boost/filesystem.hpp',
-            lib='boost_system')
-    ctx_check(features='cxx cxxprogram',
             lib='boost_filesystem',
             uselib_store='FILESYSTEM')
+    #ctx_check(features='cxx cxxprogram',
+    #        header_name='boost/filesystem.hpp',
+    #        lib=['boost_system', 'boost_filesystem'])
     
     # Boost Chrono
     # ctx_check(features='cxx cxxprogram',

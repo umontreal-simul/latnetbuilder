@@ -31,6 +31,17 @@ This tutorial is divided in three parts:
 - \subpage libtut_lat
 - \subpage libtut_net
 - \subpage libtut_impl
-*/
 
+
+To use the library, you must include the \link netbuilder/Path.h \endlink file in your program and use the appropriate
+function to set the path to the directory containing the `latnetbuilder` executable. 
+For instance, if the `latnetbuilder` command is in the PATH environment variable and you are on a Unix-system, use
+\verbatim
+#include "netbuilder/Path.h"
+NetBuilder::FIND_PATH_TO_LATNETBUILDER_DIR();
+\endverbatim
+Other functions can be used to directly set an absolute path to the directory containing the `latnetbuilder`
+executable such as NetBuilder::SET_PATH_TO_LATNETBUILDER_DIR.
+
+*/
 vim: ft=doxygen spelllang=en spell
