@@ -22,5 +22,6 @@ var searchData=
   ['tvaluetransformedprojmerit_3c_20embeddingtype_3a_3aunilevel_2c_20schmidmethod_20_3e',['TValueTransformedProjMerit&lt; EmbeddingType::UNILEVEL, SchmidMethod &gt;',['../d5/d33/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit.html',1,'NetBuilder::FigureOfMerit']]],
   ['typeinfo',['TypeInfo',['../da/de1/structLatBuilder_1_1TypeInfo.html',1,'LatBuilder']]],
   ['typeinfo_3c_20boost_3a_3aaccumulators_3a_3atag_3a_3amax_20_3e',['TypeInfo&lt; boost::accumulators::tag::max &gt;',['../d0/d15/structLatBuilder_1_1TypeInfo_3_01boost_1_1accumulators_1_1tag_1_1max_01_4.html',1,'LatBuilder']]],
-  ['typeinfo_3c_20boost_3a_3aaccumulators_3a_3atag_3a_3asum_20_3e',['TypeInfo&lt; boost::accumulators::tag::sum &gt;',['../df/d2f/structLatBuilder_1_1TypeInfo_3_01boost_1_1accumulators_1_1tag_1_1sum_01_4.html',1,'LatBuilder']]]
+  ['typeinfo_3c_20boost_3a_3aaccumulators_3a_3atag_3a_3asum_20_3e',['TypeInfo&lt; boost::accumulators::tag::sum &gt;',['../df/d2f/structLatBuilder_1_1TypeInfo_3_01boost_1_1accumulators_1_1tag_1_1sum_01_4.html',1,'LatBuilder']]],
+  ['types',['Types',['../d6/df9/classLatticeTester_1_1Types.html',1,'LatticeTester']]]
 ];

@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.0.1</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -133,9 +133,9 @@ typedef std::vector&lt; unsigned int &gt;&#160;</td><td class="memItemRight" val
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1fa502cfdaea45887d9517e884d4b80b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d7d/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html#a1fa502cfdaea45887d9517e884d4b80b">TValueTransformedProjMerit</a> (unsigned int <a class="el" href="../../d3/d7a/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html#a8e2e3d492c23097076bdd44b2de730b7">maxCardinal</a>, pCombiner combiner)</td></tr>
-<tr class="memdesc:a1fa502cfdaea45887d9517e884d4b80b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a transformed projection-dependent merit based on the t-value of projections.  <a href="#a1fa502cfdaea45887d9517e884d4b80b">More...</a><br /></td></tr>
-<tr class="separator:a1fa502cfdaea45887d9517e884d4b80b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31764d82bf7c37f3e4c533dfbd99e2bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d7d/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html#a31764d82bf7c37f3e4c533dfbd99e2bd">TValueTransformedProjMerit</a> (unsigned int <a class="el" href="../../d3/d7a/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html#a8e2e3d492c23097076bdd44b2de730b7">maxCardinal</a>, pCombiner combiner, int cost_function)</td></tr>
+<tr class="memdesc:a31764d82bf7c37f3e4c533dfbd99e2bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a transformed projection-dependent merit based on the t-value of projections.  <a href="#a31764d82bf7c37f3e4c533dfbd99e2bd">More...</a><br /></td></tr>
+<tr class="separator:a31764d82bf7c37f3e4c533dfbd99e2bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e26515333eb462033c01e9cd5b733cb"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../dd/da8/group__ypedefsNetBuilder.html#ga86b2e97f784067568d3eef4e99360211">Real</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d7d/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html#a9e26515333eb462033c01e9cd5b733cb">combine</a> (const <a class="el" href="../../d3/d7a/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html#a2cf206710f406ba5084773c91cb7632c">Merit</a> &amp;merits, const <a class="el" href="../../dd/d67/classNetBuilder_1_1DigitalNet.html">DigitalNet</a> &amp;net, const <a class="el" href="../../d9/dd3/classLatticeTester_1_1Coordinates.html">LatticeTester::Coordinates</a> &amp;projection)</td></tr>
 <tr class="memdesc:a9e26515333eb462033c01e9cd5b733cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Combines the projection-dependent multilevel merits into a single value merit.  <a href="#a9e26515333eb462033c01e9cd5b733cb">More...</a><br /></td></tr>
 <tr class="separator:a9e26515333eb462033c01e9cd5b733cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -190,8 +190,8 @@ class NetBuilder::FigureOfMerit::TValueTransformedProjMerit&lt; EmbeddingType::M
 <p>Template specialization of the projection-dependent merit defined by the t-value of the projection in the case of multilevel nets. </p>
 <dl class="section see"><dt>See also</dt><dd>NetBuilder::TValueProjMerit. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1fa502cfdaea45887d9517e884d4b80b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fa502cfdaea45887d9517e884d4b80b">&#9670;&nbsp;</a></span>TValueTransformedProjMerit()</h2>
+<a id="a31764d82bf7c37f3e4c533dfbd99e2bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31764d82bf7c37f3e4c533dfbd99e2bd">&#9670;&nbsp;</a></span>TValueTransformedProjMerit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -211,7 +211,13 @@ template&lt;typename METHOD &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">pCombiner&#160;</td>
-          <td class="paramname"><em>combiner</em>&#160;</td>
+          <td class="paramname"><em>combiner</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cost_function</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -305,7 +311,7 @@ template&lt;typename METHOD &gt; </div>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../dc/dc5/namespaceNetBuilder.html">NetBuilder</a></li><li class="navelem"><a class="el" href="../../dc/d58/namespaceNetBuilder_1_1FigureOfMerit.html">FigureOfMerit</a></li><li class="navelem"><a class="el" href="../../d3/d7d/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html">TValueTransformedProjMerit&lt; EmbeddingType::MULTILEVEL, METHOD &gt;</a></li>
-    <li class="footer">Generated on Wed Aug 1 2018 09:24:45 for LatNet Builder Manual by
+    <li class="footer">Generated on Tue Aug 14 2018 12:11:11 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

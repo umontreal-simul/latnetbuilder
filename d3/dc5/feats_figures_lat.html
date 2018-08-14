@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.0.1</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -101,11 +101,11 @@ $(document).ready(function(){initNavTree('d3/dc5/feats_figures_lat.html','../../
 Figures of merit for ordinary lattice rules</h1>
 <p>LatNet Builder supports the following figures of merit for ordinary rank-1 lattices:</p>
 <ul>
-<li>The spectral figure of merit <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[18]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC16a">[19]</a> using a term-by-term evaluation with an \(\ell_q\) norm: <br />
+<li>The spectral figure of merit <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[17]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC16a">[18]</a> using a term-by-term evaluation with an \(\ell_q\) norm: <br />
  \(\mathcal D_{\mathfrak u}(P_n)\) is the normalized maximum distance between two successive parallel hyperplanes. <br />
 <br />
 </li>
-<li><p class="startli">The \(\mathcal P_\alpha\) discrepancy <a class="el" href="../../d0/de3/citelist.html#CITEREF_vSLO94a">[32]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_vHIC98a">[13]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_rNUY14a">[27]</a> with \(\alpha \in \{2, 4, 6, 8\}\), using a term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
+<li><p class="startli">The \(\mathcal P_\alpha\) discrepancy <a class="el" href="../../d0/de3/citelist.html#CITEREF_vSLO94a">[32]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_vHIC98a">[13]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_rNUY14a">[26]</a> with \(\alpha \in \{2, 4, 6, 8\}\), using a term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
 \[ \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n \prod_{j \in \mathfrak u} p_{\alpha}(x_{i,j}), \]
 </p>
 <p> where </p><p class="formulaDsp">
@@ -116,7 +116,7 @@ Figures of merit for ordinary lattice rules</h1>
 <br />
 </p>
 </li>
-<li><p class="startli">The \(\mathcal R_\alpha\) criterion <a class="el" href="../../d0/de3/citelist.html#CITEREF_rNIE92b">[25]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_vHIC03b">[11]</a>, with \(\alpha \in \{1, 2, \dots, 9\}\), using a term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
+<li><p class="startli">The \(\mathcal R_\alpha\) criterion <a class="el" href="../../d0/de3/citelist.html#CITEREF_rNIE92b">[24]</a>, <a class="el" href="../../d0/de3/citelist.html#CITEREF_vHIC03b">[11]</a>, with \(\alpha \in \{1, 2, \dots, 9\}\), using a term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
 \[ \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n \prod_{j \in \mathfrak u} r_{\alpha, n}(x_{i,j}), \]
 </p>
 <p> where </p><p class="formulaDsp">
@@ -129,7 +129,7 @@ Figures of merit for ordinary lattice rules</h1>
 Figures of merit for polynomial lattice rules</h1>
 <p>LatNet Builder supports the following figures of merit for polynomial rank-1 lattices:</p>
 <ul>
-<li><p class="startli">The \(\mathcal P_{\alpha}\) discrepancy <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEM03a">[22]</a> with \(\alpha \in \{2, 4, 6, 8\}\) , using a term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
+<li><p class="startli">The \(\mathcal P_{\alpha}\) discrepancy <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEM03a">[21]</a> with \(\alpha \in \{2, 4, 6, 8\}\) , using a term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
 \[ \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n \prod_{j \in \mathfrak u} \omega_{\alpha}(x_{i,j}), \]
 </p>
 <p> where </p><p class="formulaDsp">
@@ -140,7 +140,7 @@ Figures of merit for polynomial lattice rules</h1>
 <br />
 </p>
 </li>
-<li><p class="startli">The \(\mathcal R\) criterion <a class="el" href="../../d0/de3/citelist.html#CITEREF_rNIE03a">[26]</a>, using term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
+<li><p class="startli">The \(\mathcal R\) criterion <a class="el" href="../../d0/de3/citelist.html#CITEREF_rNIE03a">[25]</a>, using term-by-term evaluation with an \(\ell_q\) norm: </p><p class="formulaDsp">
 \[ \mathcal{D}^2_{\mathfrak u}(P_n) = \frac{1}{n} \sum_{i = 0}^n \prod_{j \in \mathfrak u} \phi&#39;_m(x_{i,j}), \]
 </p>
 <p> where \(m\) is the degree of the modulus and </p><p class="formulaDsp">
@@ -193,7 +193,7 @@ Figures of merit for interlaced polynomial lattice rules</h2>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../dd/d51/feats.html">Main features</a></li><li class="navelem"><a class="el" href="../../d6/d4c/feats_figures.html">Figures of merit</a></li>
-    <li class="footer">Generated on Wed Aug 1 2018 09:24:43 for LatNet Builder Manual by
+    <li class="footer">Generated on Tue Aug 14 2018 12:11:09 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

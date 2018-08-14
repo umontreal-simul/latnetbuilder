@@ -1,6 +1,0 @@
-var structLatticeTester_1_1specReducer_3_01std_1_1int64__t_00_01std_1_1int64__t_00_01NTL_1_1vector_3fe33ef71beef4ee2dd816a5506ea1c46 =
-[
-    [ "redBKZ", "d1/d18/structLatticeTester_1_1specReducer_3_01std_1_1int64__t_00_01std_1_1int64__t_00_01NTL_1_1vector_3fe33ef71beef4ee2dd816a5506ea1c46.html#a82e6a78cb692313636816ab18cb0364c", null ],
-    [ "redLLLNTL", "d1/d18/structLatticeTester_1_1specReducer_3_01std_1_1int64__t_00_01std_1_1int64__t_00_01NTL_1_1vector_3fe33ef71beef4ee2dd816a5506ea1c46.html#a4349f6d7c6dcfb0fe0840a453c219a12", null ],
-    [ "redLLLNTLExact", "d1/d18/structLatticeTester_1_1specReducer_3_01std_1_1int64__t_00_01std_1_1int64__t_00_01NTL_1_1vector_3fe33ef71beef4ee2dd816a5506ea1c46.html#a34d0a28f75ba7cc4fc41757e25f02190", null ]
-];

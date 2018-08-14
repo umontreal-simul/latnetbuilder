@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.14"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LatNet Builder Manual: LatticeTester::ParamReader&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt; Class Template Reference</title>
+<title>LatNet Builder Manual: LatticeTester::ParamReader&lt; Int, BasInt, RedDbl &gt; Class Template Reference</title>
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.0.1</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -96,150 +96,170 @@ $(document).ready(function(){initNavTree('da/d47/classLatticeTester_1_1ParamRead
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="../../d7/d25/classLatticeTester_1_1ParamReader-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">LatticeTester::ParamReader&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt; Class Template Reference</div>  </div>
+<div class="title">LatticeTester::ParamReader&lt; Int, BasInt, RedDbl &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Utility class used to read basic parameter fields in a configuration file.  
+<p>Utility class that can be used to read different kind of data from a file.  
  <a href="../../da/d47/classLatticeTester_1_1ParamReader.html#details">More...</a></p>
 
 <p><code>#include &lt;ParamReader.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1aa28ecda5545f4c2cce5502aa3c7bea"><td class="memItemLeft" align="right" valign="top"><a id="a1aa28ecda5545f4c2cce5502aa3c7bea"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a1aa28ecda5545f4c2cce5502aa3c7bea">ParamReader</a> ()</td></tr>
-<tr class="memdesc:a1aa28ecda5545f4c2cce5502aa3c7bea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
-<tr class="separator:a1aa28ecda5545f4c2cce5502aa3c7bea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57dfd27929e1bfc162a99f4b0d59e30e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a57dfd27929e1bfc162a99f4b0d59e30e">ParamReader</a> (std::string fileName)</td></tr>
-<tr class="memdesc:a57dfd27929e1bfc162a99f4b0d59e30e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a57dfd27929e1bfc162a99f4b0d59e30e">More...</a><br /></td></tr>
-<tr class="separator:a57dfd27929e1bfc162a99f4b0d59e30e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5442abc91ab4cf39bb0188c9ccfd3f67"><td class="memItemLeft" align="right" valign="top"><a id="a5442abc91ab4cf39bb0188c9ccfd3f67"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a5442abc91ab4cf39bb0188c9ccfd3f67">~ParamReader</a> ()</td></tr>
-<tr class="memdesc:a5442abc91ab4cf39bb0188c9ccfd3f67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
-<tr class="separator:a5442abc91ab4cf39bb0188c9ccfd3f67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a892c2852d7c523533ad627223a9b6f23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a892c2852d7c523533ad627223a9b6f23">getLines</a> ()</td></tr>
-<tr class="memdesc:a892c2852d7c523533ad627223a9b6f23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads all the lines from the file and stores them into this object’s buffer.  <a href="#a892c2852d7c523533ad627223a9b6f23">More...</a><br /></td></tr>
-<tr class="separator:a892c2852d7c523533ad627223a9b6f23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e121a648e34143c134892af71790040"><td class="memItemLeft" align="right" valign="top"><a id="a7e121a648e34143c134892af71790040"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a7e121a648e34143c134892af71790040">getToken</a> (std::string &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a7e121a648e34143c134892af71790040"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts into <code>field</code> the <code>pos</code>-th string token from line <code>ln</code>. <br /></td></tr>
-<tr class="separator:a7e121a648e34143c134892af71790040"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d1ce841df6f0427a83c55132edb1c16"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a1d1ce841df6f0427a83c55132edb1c16">tokenize</a> (std::vector&lt; std::string &gt; &amp;tokens, unsigned int ln)</td></tr>
-<tr class="memdesc:a1d1ce841df6f0427a83c55132edb1c16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits line <code>ln</code> from the file into several string tokens.  <a href="#a1d1ce841df6f0427a83c55132edb1c16">More...</a><br /></td></tr>
-<tr class="separator:a1d1ce841df6f0427a83c55132edb1c16"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addcd4492ddca97073fa1d3d813e586b7"><td class="memItemLeft" align="right" valign="top"><a id="addcd4492ddca97073fa1d3d813e586b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#addcd4492ddca97073fa1d3d813e586b7">readString</a> (std::string &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:addcd4492ddca97073fa1d3d813e586b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a string from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:addcd4492ddca97073fa1d3d813e586b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2a219dedfd52b39cc0032a0377b65a5"><td class="memItemLeft" align="right" valign="top"><a id="ab2a219dedfd52b39cc0032a0377b65a5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ab2a219dedfd52b39cc0032a0377b65a5">readBool</a> (bool &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:ab2a219dedfd52b39cc0032a0377b65a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a boolean from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:ab2a219dedfd52b39cc0032a0377b65a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d8e5884529125c346aad08dd0a11dbe"><td class="memItemLeft" align="right" valign="top"><a id="a9d8e5884529125c346aad08dd0a11dbe"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a9d8e5884529125c346aad08dd0a11dbe">readChar</a> (char &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a9d8e5884529125c346aad08dd0a11dbe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a character from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a9d8e5884529125c346aad08dd0a11dbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94995c842d0fd107478d9b51f53dc66a"><td class="memItemLeft" align="right" valign="top"><a id="a94995c842d0fd107478d9b51f53dc66a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a94995c842d0fd107478d9b51f53dc66a">readInt</a> (int &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a94995c842d0fd107478d9b51f53dc66a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an integer from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a94995c842d0fd107478d9b51f53dc66a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c52f4ee326e2b82590e9b13d5b98fa5"><td class="memItemLeft" align="right" valign="top"><a id="a8c52f4ee326e2b82590e9b13d5b98fa5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a8c52f4ee326e2b82590e9b13d5b98fa5">readLong</a> (std::int64_t &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a8c52f4ee326e2b82590e9b13d5b98fa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a std::int64_t from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a8c52f4ee326e2b82590e9b13d5b98fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7df70d11387c4d17648e4655e964d5b"><td class="memItemLeft" align="right" valign="top"><a id="af7df70d11387c4d17648e4655e964d5b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#af7df70d11387c4d17648e4655e964d5b">readZZ</a> (NTL::ZZ &amp;field, unsigned int ln, int pos)</td></tr>
-<tr class="memdesc:af7df70d11387c4d17648e4655e964d5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a large integer from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:af7df70d11387c4d17648e4655e964d5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae2a78d40625b0dd9e4e4f5d23958257"><td class="memItemLeft" align="right" valign="top"><a id="aae2a78d40625b0dd9e4e4f5d23958257"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#aae2a78d40625b0dd9e4e4f5d23958257">readDouble</a> (double &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:aae2a78d40625b0dd9e4e4f5d23958257"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a double from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:aae2a78d40625b0dd9e4e4f5d23958257"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2d249025946fe97f015727b54b22e78"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ab2d249025946fe97f015727b54b22e78">readNumber3</a> (Int &amp;r, std::int64_t &amp;b, std::int64_t &amp;e, std::int64_t &amp;c, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:ab2d249025946fe97f015727b54b22e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads \(b\), \(e\) and \(c\), starting at the <code>pos</code>-th token of the <code>ln</code>-th line and uses them to define \(r\).  <a href="#ab2d249025946fe97f015727b54b22e78">More...</a><br /></td></tr>
-<tr class="separator:ab2d249025946fe97f015727b54b22e78"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6042ade3c81fba6e65d876c1ae442711"><td class="memItemLeft" align="right" valign="top"><a id="a6042ade3c81fba6e65d876c1ae442711"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a6042ade3c81fba6e65d876c1ae442711">readBScal</a> (BasInt &amp;field, unsigned int ln, int pos)</td></tr>
-<tr class="memdesc:a6042ade3c81fba6e65d876c1ae442711"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>BScal</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a6042ade3c81fba6e65d876c1ae442711"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d2f6c8005a82a09b9c5e00319b9024f"><td class="memItemLeft" align="right" valign="top"><a id="a7d2f6c8005a82a09b9c5e00319b9024f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a7d2f6c8005a82a09b9c5e00319b9024f">readBMat</a> (BasIntMat &amp;fields, unsigned int &amp;ln, unsigned int pos, unsigned int numPos)</td></tr>
-<tr class="memdesc:a7d2f6c8005a82a09b9c5e00319b9024f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>BMat</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a7d2f6c8005a82a09b9c5e00319b9024f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97cc36ecc08d4e002d207fe8a1b85282"><td class="memItemLeft" align="right" valign="top"><a id="a97cc36ecc08d4e002d207fe8a1b85282"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a97cc36ecc08d4e002d207fe8a1b85282">readMScal</a> (Int &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a97cc36ecc08d4e002d207fe8a1b85282"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>Int</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a97cc36ecc08d4e002d207fe8a1b85282"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58da6703ae6f863c724a479d5aa479c1"><td class="memItemLeft" align="right" valign="top"><a id="a58da6703ae6f863c724a479d5aa479c1"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a58da6703ae6f863c724a479d5aa479c1">readRedDbl</a> (RedDbl &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a58da6703ae6f863c724a479d5aa479c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>RedDbl</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a58da6703ae6f863c724a479d5aa479c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98c6da17a7ea01216215e2dfd3e07a5c"><td class="memItemLeft" align="right" valign="top"><a id="a98c6da17a7ea01216215e2dfd3e07a5c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a98c6da17a7ea01216215e2dfd3e07a5c">readMVect</a> (IntVec &amp;field, unsigned int &amp;ln, unsigned int pos, unsigned int num, int j)</td></tr>
-<tr class="memdesc:a98c6da17a7ea01216215e2dfd3e07a5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>num</code> tokens (from the <code>pos</code>-th token of the <code>ln</code>-th line) into <code>field</code>, starting at index \(j\) of <code>field</code>. <br /></td></tr>
-<tr class="separator:a98c6da17a7ea01216215e2dfd3e07a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac149ab6b5374b02ddbb970d6509ff622"><td class="memItemLeft" align="right" valign="top"><a id="ac149ab6b5374b02ddbb970d6509ff622"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ac149ab6b5374b02ddbb970d6509ff622">readIntVect</a> (int *field, unsigned int ln, unsigned int pos, unsigned int num, int j)</td></tr>
-<tr class="memdesc:ac149ab6b5374b02ddbb970d6509ff622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>num</code> tokens (from the <code>pos</code>-th token of the <code>ln</code>-th line) into <code>field</code>, starting at index \(j\) of <code>field</code>. <br /></td></tr>
-<tr class="separator:ac149ab6b5374b02ddbb970d6509ff622"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3443c40fe06ab62289bc75bd34b7639f"><td class="memItemLeft" align="right" valign="top"><a id="a3443c40fe06ab62289bc75bd34b7639f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a3443c40fe06ab62289bc75bd34b7639f">readDoubleVect</a> (double *field, unsigned int ln, unsigned int pos, unsigned int num, int j)</td></tr>
-<tr class="memdesc:a3443c40fe06ab62289bc75bd34b7639f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>num</code> tokens (from the <code>pos</code>-th token of the <code>ln</code>-th line) into <code>field</code>, starting at index \(j\) of <code>field</code>. <br /></td></tr>
-<tr class="separator:a3443c40fe06ab62289bc75bd34b7639f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af088ba48d70f28fc41d9b4bee35bb2e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#af088ba48d70f28fc41d9b4bee35bb2e4">readNormType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a9770e4d57aa715e249cd7e700c6f37e4">NormType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:af088ba48d70f28fc41d9b4bee35bb2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>2k MScal</code> tokens into vectors <code>B</code> and <code>C</code>, starting at the <code>ln</code>-th line.  <a href="#af088ba48d70f28fc41d9b4bee35bb2e4">More...</a><br /></td></tr>
-<tr class="separator:af088ba48d70f28fc41d9b4bee35bb2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48fb38cc545a1d857ef9878ce7820183"><td class="memItemLeft" align="right" valign="top"><a id="a48fb38cc545a1d857ef9878ce7820183"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a48fb38cc545a1d857ef9878ce7820183">readCriterionType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a2cf3c4f4181718b7adc6f5e4513695a0">CriterionType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a48fb38cc545a1d857ef9878ce7820183"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a test type from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a48fb38cc545a1d857ef9878ce7820183"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2cd21ce93f06ee139abb4396faaf8c98"><td class="memItemLeft" align="right" valign="top"><a id="a2cd21ce93f06ee139abb4396faaf8c98"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a2cd21ce93f06ee139abb4396faaf8c98">readNormaType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#ab747c1cbb0f5e47fef711b62327a8e90">NormaType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a2cd21ce93f06ee139abb4396faaf8c98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a type of normalization from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a2cd21ce93f06ee139abb4396faaf8c98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5c83ca4012fd739829aeed1fb1d3730"><td class="memItemLeft" align="right" valign="top"><a id="ac5c83ca4012fd739829aeed1fb1d3730"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ac5c83ca4012fd739829aeed1fb1d3730">readPrecisionType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a94f96ff406f8b56147a2b7fd96209cb2">PrecisionType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:ac5c83ca4012fd739829aeed1fb1d3730"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a type of precision from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:ac5c83ca4012fd739829aeed1fb1d3730"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac38e29fa9f41f3b9c0fbe4510cf12380"><td class="memItemLeft" align="right" valign="top"><a id="ac38e29fa9f41f3b9c0fbe4510cf12380"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ac38e29fa9f41f3b9c0fbe4510cf12380">readPreRed</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a191af830e61af769e233e1b03138520e">PreReductionType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:ac38e29fa9f41f3b9c0fbe4510cf12380"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a type of PreReduction from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:ac38e29fa9f41f3b9c0fbe4510cf12380"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94c8aede1b340327855f665bb8fb588a"><td class="memItemLeft" align="right" valign="top"><a id="a94c8aede1b340327855f665bb8fb588a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a94c8aede1b340327855f665bb8fb588a">readOutputType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#ad78f099c800f4c648134967a45b91058">OutputType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
-<tr class="memdesc:a94c8aede1b340327855f665bb8fb588a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an output form from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
-<tr class="separator:a94c8aede1b340327855f665bb8fb588a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f6269d7463b327181d49273fae76b0a"><td class="memItemLeft" align="right" valign="top"><a id="a0f6269d7463b327181d49273fae76b0a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a0f6269d7463b327181d49273fae76b0a">read</a> (<a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html">LatticeTesterConfig</a>&lt; Int, BasIntMat &gt; &amp;config)</td></tr>
-<tr class="memdesc:a0f6269d7463b327181d49273fae76b0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the configuration file into <code>config</code> for the Beyer and the spectral tests. <br /></td></tr>
-<tr class="separator:a0f6269d7463b327181d49273fae76b0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1842c427910a1aef0bf6d27d84a2674"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ab1842c427910a1aef0bf6d27d84a2674">ParamReader</a> ()</td></tr>
+<tr class="memdesc:ab1842c427910a1aef0bf6d27d84a2674"><td class="mdescLeft">&#160;</td><td class="mdescRight">Empty constructor.  <a href="#ab1842c427910a1aef0bf6d27d84a2674">More...</a><br /></td></tr>
+<tr class="separator:ab1842c427910a1aef0bf6d27d84a2674"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a49414cd82b97a2791433ab69f571db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a9a49414cd82b97a2791433ab69f571db">ParamReader</a> (std::string fileName)</td></tr>
+<tr class="memdesc:a9a49414cd82b97a2791433ab69f571db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a9a49414cd82b97a2791433ab69f571db">More...</a><br /></td></tr>
+<tr class="separator:a9a49414cd82b97a2791433ab69f571db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05036e6750ed0fc98e30aa5c06ba8839"><td class="memItemLeft" align="right" valign="top"><a id="a05036e6750ed0fc98e30aa5c06ba8839"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a05036e6750ed0fc98e30aa5c06ba8839">~ParamReader</a> ()</td></tr>
+<tr class="memdesc:a05036e6750ed0fc98e30aa5c06ba8839"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
+<tr class="separator:a05036e6750ed0fc98e30aa5c06ba8839"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a819fed133f35078ba1ccc8e039228ed9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a819fed133f35078ba1ccc8e039228ed9">getLines</a> ()</td></tr>
+<tr class="memdesc:a819fed133f35078ba1ccc8e039228ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads all the lines from the file and stores them into this object’s buffer.  <a href="#a819fed133f35078ba1ccc8e039228ed9">More...</a><br /></td></tr>
+<tr class="separator:a819fed133f35078ba1ccc8e039228ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23329dc46761c6bcc1dd48f002a152b9"><td class="memItemLeft" align="right" valign="top"><a id="a23329dc46761c6bcc1dd48f002a152b9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a23329dc46761c6bcc1dd48f002a152b9">readString</a> (std::string &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a23329dc46761c6bcc1dd48f002a152b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a string from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a23329dc46761c6bcc1dd48f002a152b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22854b92043cb754f126c8e71ace860d"><td class="memItemLeft" align="right" valign="top"><a id="a22854b92043cb754f126c8e71ace860d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a22854b92043cb754f126c8e71ace860d">readBool</a> (bool &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a22854b92043cb754f126c8e71ace860d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a boolean from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a22854b92043cb754f126c8e71ace860d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c0a4a8e12a446b7c071721052994716"><td class="memItemLeft" align="right" valign="top"><a id="a2c0a4a8e12a446b7c071721052994716"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a2c0a4a8e12a446b7c071721052994716">readChar</a> (char &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a2c0a4a8e12a446b7c071721052994716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a character from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a2c0a4a8e12a446b7c071721052994716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6171b6f5ac9550a97688b44bdbdfe592"><td class="memItemLeft" align="right" valign="top"><a id="a6171b6f5ac9550a97688b44bdbdfe592"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a6171b6f5ac9550a97688b44bdbdfe592">readInt</a> (int &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a6171b6f5ac9550a97688b44bdbdfe592"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an integer from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a6171b6f5ac9550a97688b44bdbdfe592"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a496e1f833251fb195d5cc1ef13eace6f"><td class="memItemLeft" align="right" valign="top"><a id="a496e1f833251fb195d5cc1ef13eace6f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a496e1f833251fb195d5cc1ef13eace6f">readLong</a> (std::int64_t &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a496e1f833251fb195d5cc1ef13eace6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a std::int64_t from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a496e1f833251fb195d5cc1ef13eace6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e40cb684c9f0187713f54b62e72463f"><td class="memItemLeft" align="right" valign="top"><a id="a1e40cb684c9f0187713f54b62e72463f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a1e40cb684c9f0187713f54b62e72463f">readZZ</a> (NTL::ZZ &amp;field, unsigned int ln, int pos)</td></tr>
+<tr class="memdesc:a1e40cb684c9f0187713f54b62e72463f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a large integer from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a1e40cb684c9f0187713f54b62e72463f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9537f46057ab8e0ec64098673b03ea6"><td class="memItemLeft" align="right" valign="top"><a id="ac9537f46057ab8e0ec64098673b03ea6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ac9537f46057ab8e0ec64098673b03ea6">readDouble</a> (double &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:ac9537f46057ab8e0ec64098673b03ea6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a double from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:ac9537f46057ab8e0ec64098673b03ea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0691720136e032ccfca138d12fcf0c7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a0691720136e032ccfca138d12fcf0c7d">readNumber3</a> (Int &amp;r, std::int64_t &amp;b, std::int64_t &amp;e, std::int64_t &amp;c, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a0691720136e032ccfca138d12fcf0c7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads \(b\), \(e\) and \(c\), starting at the <code>pos</code>-th token of the <code>ln</code>-th line and uses them to define \(r\).  <a href="#a0691720136e032ccfca138d12fcf0c7d">More...</a><br /></td></tr>
+<tr class="separator:a0691720136e032ccfca138d12fcf0c7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0964e9ba2abdbf9efc484c0a2b96ad69"><td class="memItemLeft" align="right" valign="top"><a id="a0964e9ba2abdbf9efc484c0a2b96ad69"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a0964e9ba2abdbf9efc484c0a2b96ad69">readBScal</a> (BasInt &amp;field, unsigned int ln, int pos)</td></tr>
+<tr class="memdesc:a0964e9ba2abdbf9efc484c0a2b96ad69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>BScal</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a0964e9ba2abdbf9efc484c0a2b96ad69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1736b8ed650f1a0cd19048073dcae677"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a1736b8ed650f1a0cd19048073dcae677">readBMat</a> (<a class="el" href="../../d4/d6f/classNTL_1_1matrix.html">BasIntMat</a> &amp;fields, unsigned int &amp;ln, unsigned int pos, unsigned int numPos)</td></tr>
+<tr class="memdesc:a1736b8ed650f1a0cd19048073dcae677"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a square <code>BMat</code> of size <code>numPos*numPos</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>.  <a href="#a1736b8ed650f1a0cd19048073dcae677">More...</a><br /></td></tr>
+<tr class="separator:a1736b8ed650f1a0cd19048073dcae677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6efab6ff2c09374c099b93df91762748"><td class="memItemLeft" align="right" valign="top"><a id="a6efab6ff2c09374c099b93df91762748"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a6efab6ff2c09374c099b93df91762748">readMScal</a> (Int &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a6efab6ff2c09374c099b93df91762748"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>Int</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a6efab6ff2c09374c099b93df91762748"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5bd97678d455bbed53fc19cf17a8c9d"><td class="memItemLeft" align="right" valign="top"><a id="ab5bd97678d455bbed53fc19cf17a8c9d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ab5bd97678d455bbed53fc19cf17a8c9d">readRedDbl</a> (RedDbl &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:ab5bd97678d455bbed53fc19cf17a8c9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a <code>RedDbl</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:ab5bd97678d455bbed53fc19cf17a8c9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ddecf5128f4e7071cb770e726a46786"><td class="memItemLeft" align="right" valign="top"><a id="a5ddecf5128f4e7071cb770e726a46786"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a5ddecf5128f4e7071cb770e726a46786">readMVect</a> (<a class="el" href="../../d0/d01/classNTL_1_1vector.html">IntVec</a> &amp;field, unsigned int &amp;ln, unsigned int pos, unsigned int num, int j)</td></tr>
+<tr class="memdesc:a5ddecf5128f4e7071cb770e726a46786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>num</code> tokens (from the <code>pos</code>-th token of the <code>ln</code>-th line) into <code>field</code>, starting at index \(j\) of <code>field</code>. <br /></td></tr>
+<tr class="separator:a5ddecf5128f4e7071cb770e726a46786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0eeae7247ad8e30347cff9afd511ced3"><td class="memItemLeft" align="right" valign="top"><a id="a0eeae7247ad8e30347cff9afd511ced3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a0eeae7247ad8e30347cff9afd511ced3">readIntVect</a> (int *field, unsigned int ln, unsigned int pos, unsigned int num, int j)</td></tr>
+<tr class="memdesc:a0eeae7247ad8e30347cff9afd511ced3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>num</code> tokens (from the <code>pos</code>-th token of the <code>ln</code>-th line) into <code>field</code>, starting at index \(j\) of <code>field</code>. <br /></td></tr>
+<tr class="separator:a0eeae7247ad8e30347cff9afd511ced3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99ab5e7c128d09f0f3d9e297bce4209f"><td class="memItemLeft" align="right" valign="top"><a id="a99ab5e7c128d09f0f3d9e297bce4209f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a99ab5e7c128d09f0f3d9e297bce4209f">readDoubleVect</a> (double *field, unsigned int ln, unsigned int pos, unsigned int num, int j)</td></tr>
+<tr class="memdesc:a99ab5e7c128d09f0f3d9e297bce4209f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>num</code> tokens (from the <code>pos</code>-th token of the <code>ln</code>-th line) into <code>field</code>, starting at index \(j\) of <code>field</code>. <br /></td></tr>
+<tr class="separator:a99ab5e7c128d09f0f3d9e297bce4209f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66773203622b226982ae41abb70f059f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a66773203622b226982ae41abb70f059f">readNormType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a9770e4d57aa715e249cd7e700c6f37e4">NormType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a66773203622b226982ae41abb70f059f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads <code>2k MScal</code> tokens into vectors <code>B</code> and <code>C</code>, starting at the <code>ln</code>-th line.  <a href="#a66773203622b226982ae41abb70f059f">More...</a><br /></td></tr>
+<tr class="separator:a66773203622b226982ae41abb70f059f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cb1010d2c813be3b7ad43d9ff91fb46"><td class="memItemLeft" align="right" valign="top"><a id="a3cb1010d2c813be3b7ad43d9ff91fb46"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a3cb1010d2c813be3b7ad43d9ff91fb46">readCriterionType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a2cf3c4f4181718b7adc6f5e4513695a0">CriterionType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a3cb1010d2c813be3b7ad43d9ff91fb46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a test type from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a3cb1010d2c813be3b7ad43d9ff91fb46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3f19939355c336f1fb366c8d1e45fb8"><td class="memItemLeft" align="right" valign="top"><a id="ab3f19939355c336f1fb366c8d1e45fb8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ab3f19939355c336f1fb366c8d1e45fb8">readNormaType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#ab747c1cbb0f5e47fef711b62327a8e90">NormaType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:ab3f19939355c336f1fb366c8d1e45fb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a type of normalization from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:ab3f19939355c336f1fb366c8d1e45fb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9768493deaa93c9e4e6f86583cbf1e50"><td class="memItemLeft" align="right" valign="top"><a id="a9768493deaa93c9e4e6f86583cbf1e50"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a9768493deaa93c9e4e6f86583cbf1e50">readPrecisionType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a94f96ff406f8b56147a2b7fd96209cb2">PrecisionType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a9768493deaa93c9e4e6f86583cbf1e50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a type of precision from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a9768493deaa93c9e4e6f86583cbf1e50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad351fb4607d09192c836cc6e180a1e36"><td class="memItemLeft" align="right" valign="top"><a id="ad351fb4607d09192c836cc6e180a1e36"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ad351fb4607d09192c836cc6e180a1e36">readPreRed</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#a191af830e61af769e233e1b03138520e">PreReductionType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:ad351fb4607d09192c836cc6e180a1e36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a type of PreReduction from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:ad351fb4607d09192c836cc6e180a1e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0148a6b8d4e74ed4868f0546de5d38ff"><td class="memItemLeft" align="right" valign="top"><a id="a0148a6b8d4e74ed4868f0546de5d38ff"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a0148a6b8d4e74ed4868f0546de5d38ff">readOutputType</a> (<a class="el" href="../../d8/d74/namespaceLatticeTester.html#ad78f099c800f4c648134967a45b91058">OutputType</a> &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:a0148a6b8d4e74ed4868f0546de5d38ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads an output form from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. <br /></td></tr>
+<tr class="separator:a0148a6b8d4e74ed4868f0546de5d38ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e947587ab962ed237eb8e603e0a038b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#a3e947587ab962ed237eb8e603e0a038b">read</a> (<a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html">LatticeTesterConfig</a>&lt; Int, <a class="el" href="../../d4/d6f/classNTL_1_1matrix.html">BasIntMat</a> &gt; &amp;config)</td></tr>
+<tr class="memdesc:a3e947587ab962ed237eb8e603e0a038b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the configuration file into <code>config</code> for.  <a href="#a3e947587ab962ed237eb8e603e0a038b">More...</a><br /></td></tr>
+<tr class="separator:a3e947587ab962ed237eb8e603e0a038b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
-<tr class="memitem:af87a46978e6d09e678826ff9ab9c2045"><td class="memItemLeft" align="right" valign="top"><a id="af87a46978e6d09e678826ff9ab9c2045"></a>
+<tr class="memitem:aa747e4e5f11c9b87dead224bd30a5083"><td class="memItemLeft" align="right" valign="top"><a id="aa747e4e5f11c9b87dead224bd30a5083"></a>
 static const int&#160;</td><td class="memItemRight" valign="bottom"><b>MAX_WORD_SIZE</b> = 64</td></tr>
-<tr class="separator:af87a46978e6d09e678826ff9ab9c2045"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:aa747e4e5f11c9b87dead224bd30a5083"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:ac0b29f73f0b8c39447506d22e9d84958"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html#ac0b29f73f0b8c39447506d22e9d84958">getToken</a> (std::string &amp;field, unsigned int ln, unsigned int pos)</td></tr>
+<tr class="memdesc:ac0b29f73f0b8c39447506d22e9d84958"><td class="mdescLeft">&#160;</td><td class="mdescRight">Puts into <code>field</code> the <code>pos</code>-th string token from line <code>ln</code>.  <a href="#ac0b29f73f0b8c39447506d22e9d84958">More...</a><br /></td></tr>
+<tr class="separator:ac0b29f73f0b8c39447506d22e9d84958"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename Int, typename IntVec, typename BasInt, typename BasIntMat, typename RedDbl&gt;<br />
-class LatticeTester::ParamReader&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt;</h3>
+<div class="textblock"><h3>template&lt;typename Int, typename BasInt, typename RedDbl&gt;<br />
+class LatticeTester::ParamReader&lt; Int, BasInt, RedDbl &gt;</h3>
 
-<p>Utility class used to read basic parameter fields in a configuration file. </p>
-<p>Lines whose first non-blank character is a <code>#</code> are considered as comments and discarded. </p>
+<p>Utility class that can be used to read different kind of data from a file. </p>
+<p>This class has to be initialized with a <code>fileName</code> to be used. After the object is initialized, it is then necessary to read the entire file with <code>getLines</code>. This will make a vector containing all the lines of the file, removing those with a <code>#</code> at the start. There then are many methods allowing the conversion of string tokens to various data types by specifying a line and a token number. In every line, a token is a string delimited by any of these caracters: (blank), <code>?</code>, <code>!</code>, <code>,</code>, <code>\t</code>, and <code>\n</code>. For example, <code>ReadString(string, 2, 3)</code> will put the 4th token (numerotation starts at 0) of the 3rd line in string. The user of this class has to be aware of the format of the file that will be read.</p>
+<dl class="section remark"><dt>Remarks</dt><dd>This class should have proper error management in the <code>GetToken</code> method because the program curently simply crashes without explanation if this class is misued. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a57dfd27929e1bfc162a99f4b0d59e30e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57dfd27929e1bfc162a99f4b0d59e30e">&#9670;&nbsp;</a></span>ParamReader()</h2>
+<a id="ab1842c427910a1aef0bf6d27d84a2674"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1842c427910a1aef0bf6d27d84a2674">&#9670;&nbsp;</a></span>ParamReader() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMat , typename RedDbl &gt; </div>
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt;::<a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">ParamReader</a> </td>
+          <td class="memname"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::<a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">ParamReader</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Empty constructor. </p>
+<p>Allocates space for a word. </p>
+
+</div>
+</div>
+<a id="a9a49414cd82b97a2791433ab69f571db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a49414cd82b97a2791433ab69f571db">&#9670;&nbsp;</a></span>ParamReader() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::<a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">ParamReader</a> </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
           <td class="paramname"><em>fileName</em></td><td>)</td>
@@ -254,16 +274,16 @@ template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMa
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a892c2852d7c523533ad627223a9b6f23"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a892c2852d7c523533ad627223a9b6f23">&#9670;&nbsp;</a></span>getLines()</h2>
+<a id="a819fed133f35078ba1ccc8e039228ed9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a819fed133f35078ba1ccc8e039228ed9">&#9670;&nbsp;</a></span>getLines()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMat , typename RedDbl &gt; </div>
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt;::getLines </td>
+          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::getLines </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -276,16 +296,133 @@ template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMa
 
 </div>
 </div>
-<a id="af088ba48d70f28fc41d9b4bee35bb2e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af088ba48d70f28fc41d9b4bee35bb2e4">&#9670;&nbsp;</a></span>readNormType()</h2>
+<a id="ac0b29f73f0b8c39447506d22e9d84958"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0b29f73f0b8c39447506d22e9d84958">&#9670;&nbsp;</a></span>getToken()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMat , typename RedDbl &gt; </div>
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt;::readNormType </td>
+          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::getToken </td>
+          <td>(</td>
+          <td class="paramtype">std::string &amp;&#160;</td>
+          <td class="paramname"><em>field</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>ln</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Puts into <code>field</code> the <code>pos</code>-th string token from line <code>ln</code>. </p>
+<p>This is intended to be used by other methods the get a specific string token that can then be converted. This method uses <code>tokenize</code> to split the line it has to operate on. </p>
+
+</div>
+</div>
+<a id="a3e947587ab962ed237eb8e603e0a038b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e947587ab962ed237eb8e603e0a038b">&#9670;&nbsp;</a></span>read()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::read </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html">LatticeTesterConfig</a>&lt; Int, <a class="el" href="../../d4/d6f/classNTL_1_1matrix.html">BasIntMat</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>config</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads the configuration file into <code>config</code> for. </p>
+<p>This is a preset reading order that is used in <code><a class="el" href="../../df/d59/classLatticeTester_1_1LatticeAnalysis.html" title="This class gathers other classes of LatticeTester to create an object performing tests on lattices...">LatticeAnalysis</a></code> to get data from a file with the standard format described in <code>Using the executable</code>. </p>
+
+<p class="reference">References <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a21843f4ae3648bfe7b17d61ad05f083b">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::alpha</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a088810243db5a6d812246d0f6bf65cd5">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::basis</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a42e7af0e9fbc7559fff2e6636862ae63">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::blocksize</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#add9128758fb4c3e6cec8059b0b10fa86">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::fact</a>, <a class="el" href="../../d8/d74/namespaceLatticeTester.html#ae5744c76f19028a3bd469d318108dd5e">LatticeTester::initNorm()</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a4582585f1b602d726c9d3b4c5834b787">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::maxNodesBB</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a01baf658db57d133fdec72ef5cd990e3">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::modulo</a>, <a class="el" href="../../d8/d74/namespaceLatticeTester.html#a49105dd8e915243488440f570b3951bd">LatticeTester::MyExit()</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a496070baa7fb11424b28d445ad1c9677">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::normalizer</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a06fec148982299433efad90048defaed">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::outputType</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a2ccf00bcd1015e20a2bad6545b136055">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::precision</a>, <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a7574c8718bac488e285cc70c54b3cd2c">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::prereduction</a>, and <a class="el" href="../../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#aee2d705e7e2234bc37180284b7137985">LatticeTester::LatticeTesterConfig&lt; Int, BasIntMat &gt;::test</a>.</p>
+
+</div>
+</div>
+<a id="a1736b8ed650f1a0cd19048073dcae677"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1736b8ed650f1a0cd19048073dcae677">&#9670;&nbsp;</a></span>readBMat()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::readBMat </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d4/d6f/classNTL_1_1matrix.html">BasIntMat</a> &amp;&#160;</td>
+          <td class="paramname"><em>fields</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int &amp;&#160;</td>
+          <td class="paramname"><em>ln</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>pos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>numPos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads a square <code>BMat</code> of size <code>numPos*numPos</code> from the <code>pos</code>-th token of the <code>ln</code>-th line into <code>field</code>. </p>
+<p>The lines in the matrix will be read from the subsequent lines in the file, starting from token at the position <code>pos</code>. </p>
+
+</div>
+</div>
+<a id="a66773203622b226982ae41abb70f059f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66773203622b226982ae41abb70f059f">&#9670;&nbsp;</a></span>readNormType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::readNormType </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="../../d8/d74/namespaceLatticeTester.html#a9770e4d57aa715e249cd7e700c6f37e4">NormType</a> &amp;&#160;</td>
           <td class="paramname"><em>field</em>, </td>
@@ -317,16 +454,16 @@ template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMa
 
 </div>
 </div>
-<a id="ab2d249025946fe97f015727b54b22e78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2d249025946fe97f015727b54b22e78">&#9670;&nbsp;</a></span>readNumber3()</h2>
+<a id="a0691720136e032ccfca138d12fcf0c7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0691720136e032ccfca138d12fcf0c7d">&#9670;&nbsp;</a></span>readNumber3()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMat , typename RedDbl &gt; </div>
+template&lt;typename Int , typename BasInt , typename RedDbl &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt;::readNumber3 </td>
+          <td class="memname">void <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, BasInt, RedDbl &gt;::readNumber3 </td>
           <td>(</td>
           <td class="paramtype">Int &amp;&#160;</td>
           <td class="paramname"><em>r</em>, </td>
@@ -378,39 +515,6 @@ template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMa
 
 </div>
 </div>
-<a id="a1d1ce841df6f0427a83c55132edb1c16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d1ce841df6f0427a83c55132edb1c16">&#9670;&nbsp;</a></span>tokenize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMat , typename RedDbl &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">int <a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">LatticeTester::ParamReader</a>&lt; Int, IntVec, BasInt, BasIntMat, RedDbl &gt;::tokenize </td>
-          <td>(</td>
-          <td class="paramtype">std::vector&lt; std::string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>tokens</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>ln</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Splits line <code>ln</code> from the file into several string tokens. </p>
-<p>Separator characters are defined in function <code>IsDelim</code>. Tokens are stored in vector <code>tokens</code>. </p>
-
-</div>
-</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>latticetester/include/latticetester/ParamReader.h</li>
 </ul>
@@ -420,7 +524,7 @@ template&lt;typename Int , typename IntVec , typename BasInt , typename BasIntMa
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../d8/d74/namespaceLatticeTester.html">LatticeTester</a></li><li class="navelem"><a class="el" href="../../da/d47/classLatticeTester_1_1ParamReader.html">ParamReader</a></li>
-    <li class="footer">Generated on Wed Aug 1 2018 09:24:44 for LatNet Builder Manual by
+    <li class="footer">Generated on Tue Aug 14 2018 12:11:11 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

@@ -7,7 +7,7 @@ var searchData=
   ['addcolumn',['addColumn',['../d6/dc5/classNetBuilder_1_1ProgressiveRowReducer.html#a765fa940a2e533bb7eadc1fd774b2bdb',1,'NetBuilder::ProgressiveRowReducer']]],
   ['addcoordinate',['AddCoordinate',['../d7/d31/classLatticeTester_1_1CoordinateSets_1_1AddCoordinate.html#a6aeba3b4f8e51e430890986a0d22c966',1,'LatticeTester::CoordinateSets::AddCoordinate']]],
   ['addrow',['addRow',['../d6/dc5/classNetBuilder_1_1ProgressiveRowReducer.html#a71deb5dd1cd0cbad12a93ac8822864cc',1,'NetBuilder::ProgressiveRowReducer']]],
-  ['addtab',['addTab',['../d7/d22/classLatticeTester_1_1LatTestWriter.html#a3e0ce2e4dd43970f93f9fd8db76d145d',1,'LatticeTester::LatTestWriter::addTab()'],['../df/db5/classLatticeTester_1_1LatTestWriterRes.html#a25d19a0f7655f44998ecf24588e66229',1,'LatticeTester::LatTestWriterRes::addTab()']]],
+  ['addtab',['addTab',['../d7/d22/classLatticeTester_1_1LatTestWriter.html#ad5805ba4278cc0f0e9ba3bca1cd59650',1,'LatticeTester::LatTestWriter::addTab()'],['../df/db5/classLatticeTester_1_1LatTestWriterRes.html#a2542e343eecccc3c8dd97713ed2bb0c3',1,'LatticeTester::LatTestWriterRes::addTab()']]],
   ['alpha',['alpha',['../d1/d9f/classLatBuilder_1_1Kernel_1_1RAlpha.html#a9bea6e8630695d49e4687da59efdef9b',1,'LatBuilder::Kernel::RAlpha']]],
   ['apply',['apply',['../dd/d23/classLatBuilder_1_1MeritFilterList.html#a09e621c2a5ba813378a2671a7679d9cf',1,'LatBuilder::MeritFilterList::apply()'],['../d4/dc8/namespaceLatBuilder_1_1Vectorize.html#ac2cc530fb1f9809d83bcb205ec963b4f',1,'LatBuilder::Vectorize::apply()']]]
 ];

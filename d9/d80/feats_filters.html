@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.0.1</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -110,7 +110,7 @@ $(document).ready(function(){initNavTree('d9/d80/feats_filters.html','../../');}
 </p>
 <p>This normalizations can be useful to define comparable measures of uniformity for point sets of different sizes and to combine them to measure the global uniformity of multilevel point sets.</p>
 <p>Additionally, in the case of random searches, normalizations can be combined with a low-pass filter to eliminate the point sets whose quality is deemed too poor. Low-pass filters reject point sets whose merit value exceeds a threshold. Note that when the random variant of a search is used with a low-pass filter, the candidate samples that are rejected by the filter pipeline are not considered as valid samples, meaning that the number of random samples corresponds to the number of accepted candidates.</p>
-<p>Additional details and references can be found in Section 3.4 of <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC16a">[19]</a>.</p>
+<p>Additional details and references can be found in Section 3.4 of <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC16a">[18]</a>.</p>
 <h1><a class="anchor" id="feats_filters_multilevel"></a>
 Normalizations and filters for multilevel point sets</h1>
 <p>For <a class="el" href="../../d6/d6f/feats_multilevel.html">multilevel point sets</a>, normalizations using a bound on the figure of merit are applied individually to each embedding level. Each embedding level \(m\) has a weight \(w_m = c_m^{1 / \lambda^\ast_m}\) , called the per-level weight. By default, all the \(c_m\) equal one over the number of embedding levels. Optionally, one can select a range of levels, in this case, \(c_m\) equal zero for the unselected levels and one over the number of selected levels for the selected levels.</p>
@@ -130,7 +130,7 @@ Normalizations and filters for multilevel point sets</h1>
 <p class="formulaDsp">
 \[ \bar{\mathcal E_q}(P_{n_1}, \dots, P_{n_k})^q = \sum_{m = 1, \dots, k} \mathcal E_q(P_{n_m})^q. \]
 </p>
-<p>Additional details and references can be found in Section 3.5 of <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC16a">[19]</a>.</p>
+<p>Additional details and references can be found in Section 3.5 of <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC16a">[18]</a>.</p>
 <h1><a class="anchor" id="feats_filters_norms"></a>
 List of normalizations</h1>
 <p>Currently, the following normalizations are available:</p>
@@ -159,7 +159,7 @@ List of normalizations</h1>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../dd/d51/feats.html">Main features</a></li>
-    <li class="footer">Generated on Wed Aug 1 2018 09:24:43 for LatNet Builder Manual by
+    <li class="footer">Generated on Tue Aug 14 2018 12:11:09 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

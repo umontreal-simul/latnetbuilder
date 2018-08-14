@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.0.1</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -109,7 +109,7 @@ Ordinary lattices</h2>
 <p>A rank-1 ordinary lattice rule is a point set \(P_n\) in dimension \(s\) which can be written: </p><p class="formulaDsp">
 \[ P_n = \left\{\boldsymbol x_i = (i \boldsymbol a / n) \mod 1 : i = 0, \dots, n - 1\right\}. \]
 </p>
-<p> where \(\boldsymbol a = (a_1, \dots, a_s)\) is an integer generating vector. In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[18]</a> lattice rules, that is lattice rules for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the coordinates of \(\boldsymbol a\) are coprimes with \(n\). In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\).</p>
+<p> where \(\boldsymbol a = (a_1, \dots, a_s)\) is an integer generating vector. In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[17]</a> lattice rules, that is lattice rules for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the coordinates of \(\boldsymbol a\) are coprimes with \(n\). In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\).</p>
 <p>For simplicity, in this documentation, the term ordinary lattice rule will always refer to fully projection-regular rank-1 ordinary lattice rules.</p>
 <h2><a class="anchor" id="feats_pointsets_latrank1_poly"></a>
 Polynomial lattices in base 2</h2>
@@ -121,7 +121,7 @@ Polynomial lattices in base 2</h2>
 <p>For a polynomial modulus \(Q \in \mathbb F_2[z]\) of degree \(k\) and a polynomial generating vector \( \boldsymbol a \in \mathbb F_2[z]^s \), let \(n = 2^k\). The rank-1 polynomial lattice rule associated with this modulus and this generating vector is the point set \(P_n\) which can be written: </p><p class="formulaDsp">
 \[ P_n = \left\{\boldsymbol x_i = {\nu}_k\left(\frac{h \boldsymbol a}{Q}\right): h \in \mathbb{F}_2[z], \deg(h) &lt; k \right\}. \]
 </p>
-<p>In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[18]</a> lattice rules, that is lattice rules for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the coordinates of \(\boldsymbol a\) are coprime with \(Q\). In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\).</p>
+<p>In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[17]</a> lattice rules, that is lattice rules for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the coordinates of \(\boldsymbol a\) are coprime with \(Q\). In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\).</p>
 <p>For simplicity, in this documentation, the term polynomial lattice rule will always refer to fully projection-regular rank-1 polynomial lattice rules.</p>
 <h1><a class="anchor" id="feats_pointsets_net"></a>
 Digital nets in base 2</h1>
@@ -131,7 +131,7 @@ Definition</h2>
 <p>For each \(0 \leq i \leq 2^k-1\), let \( \boldsymbol i = (a_0, \dots, a_{k-1})\) be the digits (in \(\mathbb{F}_2\)) of the 2-adic expansion \(i = \sum_{j=0}^{k-1} a_j 2^j\). For each coordinate \(l\), let \( \boldsymbol y_l= M_l \times \boldsymbol i = (y_{i, l, 1}, \dots,y_{i, l, r})\). Write \(\boldsymbol x_i = (x_{i, 1}, \dots, x_{i, s})\). Then: </p><p class="formulaDsp">
 \[ x_{i, l} = \sum_{j=1}^{r} y_{i, l, j}2^{-j}. \]
 </p>
-<p>In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[18]</a> digital nets, that is digital nets for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the generating matrices \(M_1, \dots, M_s\) are full-rank. In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\). In this documentation, the term digital net will always refer to fully projection-regular digital nets in base 2.</p>
+<p>In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[17]</a> digital nets, that is digital nets for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the generating matrices \(M_1, \dots, M_s\) are full-rank. In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\). In this documentation, the term digital net will always refer to fully projection-regular digital nets in base 2.</p>
 <p>Three constructions methods are supported by LatNet Builder:</p><ul>
 <li><a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_net_sobol">Sobol' construction</a></li>
 <li><a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_net_poly">Polynomial construction</a></li>
@@ -219,7 +219,7 @@ Explicit construction</h2>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../dd/d51/feats.html">Main features</a></li>
-    <li class="footer">Generated on Wed Aug 1 2018 09:24:44 for LatNet Builder Manual by
+    <li class="footer">Generated on Tue Aug 14 2018 12:11:09 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>
