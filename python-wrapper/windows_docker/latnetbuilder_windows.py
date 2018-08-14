@@ -52,8 +52,15 @@ def main():
             pass
     atexit.register(stop_container)
 
-    for line in container.logs(stream=True, stdout=True, stderr=True):
+    for line in container.logs(stream=True, stdout=True, stderr=False):
         print(line.strip().decode("utf-8"))
+    
+    is_error = False
+    for line in container.logs(stream=True, stdout=False, stderr=True):
+        print(line.strip().decode("utf-8"), file=sys.stderr)
+        is_error = True
+    if is_error:
+        exit(1)
 
     try:
         if '--output-folder' in sys.argv:
