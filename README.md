@@ -91,6 +91,7 @@ LatNet Builder offers various possibilities to use its functionalities:
 - a Python package which comprises:
   - a [Python interface](python-wrapper/README.md)
   - a Graphical User Interface based on the [Jupyter](https://jupyter.org) ecosystem
+- a Java interface encapsulated in the [Stochastic Simulation in Java (SSJ) software](https://github.com/umontreal-simul/ssj)
 
 There are four ways to get the software: 
 - [downloading a binary release](#downloading-a-binary-release) (only available for Linux and Mac OS)
@@ -467,7 +468,7 @@ Help on usage can be obtained by replacing the `--version` switch with the
 
 To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). 
 
-The following commands **should** do the job. If you compile on Linux, replace `<OS>` by `linux`. If you compile on Linux, replace `<OS>` by `darwin`, and add `--enable-assembly=no` to the configuration of GMP.
+The following commands **should** do the job. If you compile on Linux, replace `<OS>` by `linux`. If you compile on Linux, replace `<OS>` by `darwin`, add `--enable-assembly=no` to the configuration of GMP, and replace `--with-toolset=gcc` by `--with-toolset=clang`.
 
 **FFTW**
 ```bash
