@@ -138,19 +138,21 @@ Files:
 ### Packaging and publishing a new version of the Interface
 
 1) Increment the version number of the conda package in python-wrapper/conda_recipe/meta.yaml
-2) Build the new conda package:
 
-```bash
-./waf configure --prefix PATH_TO_YOUR_INSTALLATION_FOLDER --link-static --build-conda
-./waf build
-./waf install
+2) For Mac OS and Linux, build and install LatNetBuilder following the instructions on the main [README of the repository](../README.md).
+
+3) For Windows: from the folder containing the repository, execute the following command:
+
+```bat
+conda build python-wrapper\conda_recipe
 ```
 
-3) upload the conda package to Anaconda Cloud (where the PATH_TO_PACKAGE can for instance be found in the console ouptut of the ./waf install command):
+
+4) On all platforms, upload the conda packages to Anaconda Cloud (where the PATH_TO_PACKAGE can for instance be found in the console ouptut of the `./waf install` command or the `conda build` command for Windows):
 
 ```bash
 anaconda login
 anaconda upload PATH_TO_PACKAGE
 ```
 
-4) update the Docker images by following the instructions in the [README of the repository](../README.md).
+5) update the Docker images by following the instructions in the [README of the repository](../README.md).
