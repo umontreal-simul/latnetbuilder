@@ -91,7 +91,7 @@ The following figures of merit are supported by LatNet Builder:
 \section feats_figures_net_interlaced Figures of merit for interlaced digital nets
 
 
-Figures of merit specific to \ref feats_interlaced "interlaced digital nets" \cite rGOD13a are also supported by LatNet Builder.
+Figures of merit specific to \ref feats_pointsets_interlaced "interlaced digital nets" \cite rGOD13a are also supported by LatNet Builder.
 These figures of merit are the same as \ref feats_figures_lat_interlaced "those used for interlaced polynomial lattice rules".
 These figures of merit for interlaced digital nets in dimension \f$s\f$ can be seen as figures of merit 
 for the underlying lattice rules in higher dimension \f$ds\f$, where \f$d\f$ is the interlacing factor.

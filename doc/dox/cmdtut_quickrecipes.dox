@@ -323,7 +323,7 @@ the other point set types is explained \ref cmdtut_advanced_pointsets "here".
 
 \section cmdtut_quickrecipes_interlaced Constructing interlaced digital nets and polynomial lattice rules
 
-In this section, we explain how to construct good \ref feats_interlaced "interlaced polynomial lattice rules".
+In this section, we explain how to construct good \ref feats_pointsets_interlaced "interlaced polynomial lattice rules".
 \ref feats_figures_lat_interlaced "Specific figures of merit" must be used for interlaced polynomial lattice rules.
 One must also choose an interlacing factor, which equals the number of interlaced components used for each coordinate.
 

@@ -20,8 +20,6 @@ namespace LatBuilder {
 
 The tutorial is divided into the following sections:
 <ol>
-    <li> \subpage libtut_lat_textstream     </li>
-    <li> \subpage libtut_lat_polynomial     </li>
     <li> \subpage libtut_lat_latdef         </li>
     <li> \subpage libtut_lat_genseq         </li>
     <li> \subpage libtut_lat_latseq         </li>
@@ -30,6 +28,8 @@ The tutorial is divided into the following sections:
     <li> \subpage libtut_lat_filters      </li>
     <li> \subpage libtut_lat_misc           </li>
     <li> \subpage libtut_lat_extending      </li>
+    <li> \subpage libtut_lat_textstream     </li>
+    <li> \subpage libtut_lat_polynomial     </li>
 </ol>
 */
 
@@ -66,8 +66,8 @@ outputs
 
 /** \page libtut_lat_latdef Lattice Types and Definitions
 
-%LatBuilder supports two types of lattices: ordinary lattices and polynomial lattices. 
-One has also the choice between simple (unilevel) lattices and embedded (multilevel) lattices.
+%LatBuilder supports two types of \ref feats_pointsets_latrank1 "lattices": \ref feats_pointsets_latrank1_ord "ordinary lattices" and \ref feats_pointsets_latrank1_poly "polynomial lattices". 
+One has also the choice between \ref feats_multilevel_lat "simple (unilevel) lattices and embedded (multilevel) lattices".
 The first choice corresponds to the LatticeType enumeration and the second to the EmbeddingType enumeration.
 These two enumerations are used across all the library as non-type template parameters to implement different policies
 accordingly with the type of lattices.

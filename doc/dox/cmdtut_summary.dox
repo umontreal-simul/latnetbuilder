@@ -163,7 +163,7 @@ options:
 		If set to a value greater than 1, the search point set
 		will be an interlaced digital net / polynomial lattice rule set. Requires to use the appropriate
 		figures of merit and the corresponding norm-type.
-		See \ref feats_interlaced "here" for the definition of interlaced digital nets
+		See \ref feats_pointsets_interlaced "here" for the definition of interlaced digital nets
 		and polynomial lattice rules 
 		and \ref cmdtut_advanced_interlaced for details about constructing 
 		such point sets with the command-line tool.

@@ -16,7 +16,7 @@
 
 /** \page cmdtut_advanced_interlaced Interlaced digital nets and polynomial lattice rules
 
-This page describes how \ref feats_interlaced "interlaced digital nets and polynomial lattice rules" 
+This page describes how \ref feats_pointsets_interlaced "interlaced digital nets and polynomial lattice rules" 
 can be constructed using the command-line tool.
 
 LatNet Builder supports the construction of interlaced digital nets and 
@@ -30,7 +30,7 @@ They are only available with an \f$\ell_1\f$ norm. This allows a coordinate-unif
 which should always be used when searching for good interlaced digital nets. 
 
 <b> The output of LatNet Builder is the underlying digital net (or polynomial lattice rule)
-of the interlaced digital net (or interlaced polynomial lattice rule). The \ref feats_interlaced "digit interlacing function" should be applied to this
+of the interlaced digital net (or interlaced polynomial lattice rule). The \ref feats_pointsets_interlaced "digit interlacing function" should be applied to this
 point set in dimension \f$ds\f$ to obtain the interlaced point set in dimension \f$s\f$.</b>
 
 \section cmdtut_advanced_interlaced_poly Constructing interlaced polynomial lattice rules

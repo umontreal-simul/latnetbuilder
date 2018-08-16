@@ -95,7 +95,7 @@ LatNet Builder supports the following figures of merit for polynomial rank-1 lat
 
 \subsection feats_figures_lat_interlaced Figures of merit for interlaced polynomial lattice rules
 
-Figures of merit specific to \ref feats_interlaced "interlaced polynomial lattice rules" \cite rGOD13a are also supported by LatNet Builder.
+Figures of merit specific to \ref feats_pointsets_interlaced "interlaced polynomial lattice rules" \cite rGOD13a are also supported by LatNet Builder.
 
 These figures of merit for interlaced polynomial lattice rules in dimension \f$s\f$ can be seen as figures of merit 
 for the underlying lattice rules in higher dimension \f$ds\f$, where \f$d\f$ is the interlacing factor.

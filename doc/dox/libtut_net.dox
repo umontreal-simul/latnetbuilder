@@ -306,6 +306,9 @@ The complete example can be found in \ref tutorial/NetSearchCBC.cc.
 
 /** \page libtut_net_customtasks  Customized tasks
 
+Standard tasks are meant to evaluate a figure of merit for a digital net or to search for the best one.
+However, it is possible to define customized tasks if one wants to achieve more specific tasks.
+
 Search tasks have a template template parameter <code>OBSERVER</code> 
 whose template parameter is a member of \link NetConstruction \endlink enumeration.
 MinimumObserver is the observer which is used by the command-line tool but users can define

@@ -39,13 +39,13 @@ The features of LatNet Builder are summed up in the following table:
   <tr align="center">
     <th class="tg-uys7">Features</th>
     <th class="tg-uys7" colspan="2">Lattice rules</th>
-    <th class="tg-uys7">Digital nets</th>
+    <th class="tg-uys7">\ref feats_pointsets_net_def "Digital nets"</th>
   </tr>
   <tr align="center">
     <td class="tg-uys7"> \subpage feats_pointsets </td>
     <td class="tg-uys7">rank-1 ordinary lattice rules</td>
-    <td class="tg-uys7">\ref feats_poly "rank-1 polynomial lattice rules"</td>
-    <td class="tg-uys7">Sobol' nets<br>\subpage feats_poly "polynomial lattice rules", <br>nets with explicit generating matrices</td>
+    <td class="tg-uys7">\ref feats_pointsets_latrank1_poly "rank-1 polynomial lattice rules"</td>
+    <td class="tg-uys7">\ref feats_pointsets_net_sobol "Sobol' nets"<br>\ref feats_pointsets_net_poly "polynomial lattice rules", <br>\ref feats_pointsets_net_explicit "nets with explicit generating matrices"</td>
   </tr>
   <tr align="center">
     <td class="tg-uys7"> \subpage feats_figures </td>
@@ -84,7 +84,7 @@ The features of LatNet Builder are summed up in the following table:
     <td class="tg-uys7">no</td>
   </tr>
     <tr align="center">
-    <td class="tg-uys7">\subpage feats_interlaced "Interlaced point sets"</td>
+    <td class="tg-uys7">\subpage feats_pointsets_interlaced "Interlaced point sets"</td>
     <td class="tg-uys7">not applicable</td>
     <td class="tg-uys7">interlaced polynomial lattice rules</td>
     <td class="tg-uys7">interlaced digital nets</td>

@@ -20,11 +20,13 @@ LatNet Builder supports the construction of highly uniform point sets of two typ
 - \ref feats_pointsets_latrank1
 - \ref feats_pointsets_net
 
+LatNet Builder also supports the construction of \ref feats_pointsets_interlaced "interlaced digital nets and polynomial lattice rules".
+
 \section feats_pointsets_latrank1 Rank-1 lattices
 
 \subsection feats_pointsets_latrank1_ord Ordinary lattices
 
-A rank-1 ordinary lattice rule is a point set \f$P_n\f$ in dimension \f$s\f$ which can be written:
+A rank-1 ordinary lattice rule \cite rLEC16a is a point set \f$P_n\f$ in dimension \f$s\f$ which can be written:
 \f[
     P_n = \left\{\boldsymbol x_i = (i \boldsymbol a / n) \mod 1 : i = 0, \dots, n - 1\right\}.
 \f]
@@ -37,6 +39,8 @@ with \f$n\f$. In this case, for each coordinate \f$j \in \{1, \dots, s\}\f$, the
 For simplicity, in this documentation, the term ordinary lattice rule will always refer to fully projection-regular rank-1 ordinary lattice rules.
 
 \subsection feats_pointsets_latrank1_poly Polynomial lattices in base 2
+
+The following definition is from \cite rDIC10a.
 
 Recall that \f$\mathbb F_2[z]\f$ is the ring of polynomials over \f$\mathbb F_2\f$, the field with two element, and \f$\mathbb L_2\f$ is the ring of formal Laurent series
 over \f$\mathbb F_2\f$. For a series \f$v(z) = \sum_{l = w}^{\infty} x_l z^{-l} \in \mathbb L_2\f$, with \f$x_w \neq 0\f$, we note \f$\deg(v) = - w \f$ where \f$\deg(0) = - \infty\f$ by convention.
@@ -64,6 +68,8 @@ For simplicity, in this documentation, the term polynomial lattice rule will alw
 \section feats_pointsets_net Digital nets in base 2
 
 \subsection feats_pointsets_net_def Definition
+
+The following definition is from \cite rDIC10a.
 
 Let \f$\mathbb{F}_2\f$ be the finite field with 2 elements (denoted 0 and 1). For a given dimension \f$s \geq 1\f$, a positive integer \f$k\f$, let \f$M_1, \dots, M_s\f$ be \f$r \times k\f$ matrices over \f$\mathbb{F}_2\f$. 
 The digital net associated with these matrices is the point set \f$P_n = \{\boldsymbol x_0, \dots, \boldsymbol x_{2^k-1} \}\f$ in dimension \f$s\f$ defined as follows:
@@ -237,5 +243,37 @@ LatNet Builder also supports the construction of random generating matrices. To 
 all the generating matrices constructed by the random generator are full-rank. It is not possible to explore exhaustively the space
 of all generating matrices as it is often really huge. Only the random variants of the exploration methods are available with the explicit 
 construction.
+
+\section feats_pointsets_interlaced Interlaced digital nets and polynomial lattice rules
+
+LatNet Builder supports the construction of interlaced polynomial lattice rules and interlaced digital nets.
+
+We adapt the definition of interlaced polynomial lattice rules from Definition 4. in \cite rGOD13a to
+the interlaced digital nets case.
+
+Let \f$s\f$ and \f$d\f$ be positive integers. \f$s\f$ is the dimension of the point set, \f$d\f$ is called
+the interlacing factor and \f$ds\f$ is called the number of components.
+
+Let \f$\bar{P}_n \{\boldsymbol z_i, 0 \leq i < n \}\f$ be a digital net in dimension \f$ds\f$.
+For \f$ 0 \leq i < n\f$, note \f$\boldsymbol z_i = (z_{i,1}, \dots, z_{i,ds})\f$.
+
+Define the digit interlacing function \f$D_d: [0,1)^d \rightarrow [0,1)\f$ by:
+\f[
+D_d(z_1, \dots, z_d) = \sum_{a = 1}^{\infty} \sum_{r = 1}^d z_{r,a} 2^{-r-(a-1)d},
+\f]
+where we denote the 2-adic expansion of \f$z_l\f$ by \f$z_l = z_{l,1} 2^{-1} + z_{l,2} 2^{-2} + \dots\f$
+for \f$1 \leq l \leq d\f$ and where we assume that the expansion is unique in the sense that infinitely many digits
+are different from 1.
+
+Then define \f$\boldsymbol x_i = (D_d(z_{i,1}, \dots, z_{i,d}), \dots, D_d(z_{i,(s-1)d + 1}, \dots, z_{i,sd}) )\f$ for \f$0 \leq i < n\f$.
+
+Then the point set \f$P_n = \{\boldsymbol x_i, 0 \leq i < n \}\f$ is the interlaced digital net associated with the
+digital net \f$\bar{P}_n\f$. \f$\bar{P}_n\f$ is called the underlying net and its components the interlaced components.
+
+An interlaced polynomial lattice rule is simply an interlaced digital net whose underlying net is a polynomial lattice rule.
+
+The construction of interlaced digital nets boils down to the construction of digital nets in higher dimension. This is the point of view adopted
+by LatNet Builder for all the interlacing functionalities.
+
 */
 vim: ft=doxygen spelllang=en spell
