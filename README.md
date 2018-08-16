@@ -341,15 +341,18 @@ LatNet Builder is **known to compile** using:
 
 #### Obtaining the Source Code
 
-Get the latest source tree from GitHub, either by typing:
+Get the latest source tree from GitHub by typing:
 
-	git clone --recursive https://github.com/umontreal-simul/latnetbuilder.git
+	git clone --recurse-submodules https://github.com/umontreal-simul/latnetbuilder.git
+
+The `--recurse-submodules` clones at the same time LatticeTester, which is a subrepository of LatNet Builder.
 
 If [Git](http://git-scm.com/) is not available on your system, you can click on
 the [Download ZIP](https://github.com/umontreal-simul/latnetbuilder/archive/master.zip)
 link from the [LatNet Builder GitHub
 page](https://github.com/umontreal-simul/latnetbuilder), then by unzipping the downloaded
 archive.
+In this case, the `latticetester` folder is empty, so you need to also [download a ZIP archive of LatticeTester](https://github.com/umontreal-simul/latticetester/archive/master.zip), unzip it and copy the contents inside the `latticetester` folder.
 
 #### Configuring the Build
 
@@ -468,7 +471,14 @@ Help on usage can be obtained by replacing the `--version` switch with the
 
 To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). 
 
-The following commands **should** do the job. If you compile on Linux, replace `<OS>` by `linux`. If you compile on Linux, replace `<OS>` by `darwin`, add `--enable-assembly=no` to the configuration of GMP, and replace `--with-toolset=gcc` by `--with-toolset=clang`.
+The following commands **should** do the job. 
+- If you compile on Linux:
+	- replace `<OS>` by `linux`
+- If you compile on Mac OS X:
+	- replace `<OS>` by `darwin`
+	- add `--enable-assembly=no` to the configuration of GMP
+	- replace `--with-toolset=gcc` by `--with-toolset=clang`
+	- remove from the installation folder of Boost the shared libaries (.dylib) after installation
 
 **FFTW**
 ```bash
@@ -503,9 +513,11 @@ make install
 **LatNet Builder**
 ```bash
 ./waf configure --prefix=$HOME/latnetsoft --fftw=$HOME/fftw --gmp=$HOME/gmp --ntl=$HOME/ntl --boost=$HOME/boost --link-static --build-examples --build-docs --build-conda
+./waf build
+./waf install
 ```
 
-Publish a new release on the [release page](https://github.com/umontreal-simul/latnetbuilder/releases).
+Publish a new release on the [release page](https://github.com/umontreal-simul/latnetbuilder/releases) and update the features below.
 
 ### Updating the documentation
 

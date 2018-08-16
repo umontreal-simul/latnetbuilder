@@ -9,8 +9,14 @@ if errorlevel 1 exit 1
 echo F | xcopy /Y python-wrapper\windows_docker\latnetbuilder.bat %PREFIX%\bin\latnetbuilder.bat
 if errorlevel 1 exit 1
 
+echo F | xcopy /Y python-wrapper\windows_docker\latnetbuilder-gui.bat %PREFIX%\bin\latnetbuilder-gui.bat
+if errorlevel 1 exit 1
+
 echo F | xcopy /Y python-wrapper\windows_docker\latnetbuilder_configure.bat %PREFIX%\bin\latnetbuilder_configure.bat
 if errorlevel 1 exit 1
 
 echo F | xcopy /Y python-wrapper\windows_docker\configure.py %PREFIX%\share\latnetbuilder\configure.py
+if errorlevel 1 exit 1
+
+echo F | xcopy /Y python-wrapper\notebooks\Interface.ipynb %PREFIX%\share\latnetbuilder\Interface.ipynb
 if errorlevel 1 exit 1

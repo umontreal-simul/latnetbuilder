@@ -1,6 +1,7 @@
 import subprocess
 import time
 import os
+import sys
 import shutil
 import logging
 import traceback
@@ -28,7 +29,7 @@ class Search():
         self.norm_type = '2'
         self.weights = []
         self.filters = []
-        self.output = None
+        self.my_output = None
         self.set_type_name = ''
         self._output_folder = DEFAULT_OUTPUT_FOLDER
 
@@ -50,11 +51,11 @@ class Search():
         '''Construct and return the command line to call LatNetBuilder as a list of strings'''
 
         # default value for modulus
-        if self.modulus == '':
+        if self.modulus == '""':
             if self.construction == 'polynomial' and self.multilevel == True:
-                modulus = '01^10'
+                modulus = '"01^10"'
             else:
-                modulus = '2^10'
+                modulus = '"2^10"'
         else:
             modulus = self.modulus
 
@@ -88,7 +89,10 @@ class Search():
         This function is used by the GUI, but should NOT be called directly by the end user.'''
 
         command = self.construct_command_line()
-        process = subprocess.Popen(['exec ' + ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
+        if 'win' in sys.platform:
+            process = subprocess.Popen(command, stdout=stdout_file, stderr=stderr_file, shell=True)
+        else:
+            process = subprocess.Popen(['exec ' + ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
         # The exec keyword is essential as it allows to kill the latnetbuilder process using process.kill()
         # This syntax may not work without the exec keyword.
         return process
@@ -160,7 +164,7 @@ class Search():
                     display(my_progress_bars.progress_bar_nets)
                     display(my_progress_bars.progress_bar_dim)
 
-            self.output = output()
+            self.my_output = output()
             
             while process.poll() is None:   # while the process is not finished
                 time.sleep(0.1)
@@ -194,9 +198,11 @@ class Search():
                 else:
                     print(result_obj)
                 
-                self.output.result_obj = result_obj
+                self.my_output.result_obj = result_obj
 
             else:   # an error occured in the C++ process
+                with open(stdout_filepath) as f:
+                    std_output = f.read()
                 with open(stderr_filepath) as f:
                     err_output = f.read()
                 
@@ -220,9 +226,12 @@ class Search():
             
         except Exception as e:
             error_file = os.path.join(self._output_folder, 'stderr.txt')
-            logging.basicConfig(filename = error_file)
-            logging.warn(e)
-            logging.warn(traceback.format_exc())
+            # logging.basicConfig(filename = error_file)
+            # logging.warn(e)
+            # logging.warn(traceback.format_exc())
+            # logging.close()
+            with open(error_file, 'w') as g:
+                g.write(traceback.format_exc())
             if gui is not None:
                 gui.output.result_html.value += '<span style="color:red"> An error happened in the Python interface. In result archive, see file: stderr.txt </span>'
             else:
@@ -248,12 +257,12 @@ class Search():
 
     def rich_output(self):
         '''Print a rich output (plot and code) for the Search result'''
-        if self.output is None:
+        if self.my_output is None:
             print("Run self.execute() before outputing")
         else:
-            display(self.output.result_obj)
-            create_output(self.output)
-            display(self.output.output)
+            display(self.my_output.result_obj)
+            create_output(self.my_output)
+            display(self.my_output.output)
 
 
     def points(self, coordinate=None, level=None):
@@ -262,10 +271,10 @@ class Search():
         The points are returned as a 2-dimensional numpy array, the first index corresponds to the index of the point,
         and the second corresponds to the coordinate.'''
 
-        if self.output is None or self.output.result_obj is None:
+        if self.my_output is None or self.my_output.result_obj is None:
             print("Run self.execute() before using points")
         else:
-            result_obj = self.output.result_obj
+            result_obj = self.my_output.result_obj
             
             if self.construction == 'ordinary':
                 if level == None:
