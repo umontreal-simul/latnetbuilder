@@ -100,7 +100,7 @@ unsigned int ComputeMaxCardFromWeights<LatticeTester::PODWeights>::operator()(co
         maxCardPD = ComputeMaxCardFromWeights<LatticeTester::ProductWeights>()(prodWeights);
         return std::min(maxCardOD, maxCardPD);
     }
-    catch (std::invalid_argument e)
+    catch (std::invalid_argument& e)
     {
         return maxCardOD;
     }
