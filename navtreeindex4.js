@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a7a113a6d644a772a6ae504943ecebb72":[11,0,0,7,1,6],
 "d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a83a73654ab7d7e72d13106749cd066dc":[11,0,0,7,1,16],
 "d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#acce0cfd80944cde519f896a0a24793b0":[11,0,0,7,1,15],
 "d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#ad172c70324d66ecfb62b2a774e623a5c":[11,0,0,7,1,11],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "d7/d22/classLatticeTester_1_1LatTestWriter.html#ae8d8f8fd7180327b4dd3ad82342e0ad1":[11,0,1,6,19],
 "d7/d22/classLatticeTester_1_1LatTestWriter.html#aea1626c5cd44d9bc1d9eddcccee953ef":[11,0,1,6,8],
 "d7/d22/classLatticeTester_1_1LatTestWriter.html#af033cd365f12765ea481f9d8c6e34780":[11,0,1,6,1],
-"d7/d22/classLatticeTester_1_1LatTestWriter.html#af289d892aedd5ea680b772fa03ba8a35":[11,0,1,6,11],
-"d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html":[11,0,0,1,20]
+"d7/d22/classLatticeTester_1_1LatTestWriter.html#af289d892aedd5ea680b772fa03ba8a35":[11,0,1,6,11]
 };

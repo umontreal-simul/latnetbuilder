@@ -1,5 +1,6 @@
 var NAVTREEINDEX7 =
 {
+"d9/d82/structLatBuilder_1_1Parser_1_1ProjDepMerit.html#aa3059cbc02aea79ff164d2bbd5027e33":[11,0,0,9,27,2],
 "d9/d83/libtut_net.html":[6,1],
 "d9/d86/structLatBuilder_1_1Kernel_1_1IB_1_1CorrectionProductWeights.html":[11,0,0,4,3,0],
 "d9/d86/structLatBuilder_1_1Kernel_1_1IB_1_1CorrectionProductWeights.html#a06158c2e20ccd745bbf92b318f75125d":[11,0,0,4,3,0,1],
@@ -216,10 +217,10 @@ var NAVTREEINDEX7 =
 "da/da5/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1MU57a1ad219e0f16564fca023a008a5520.html#aba260b8459dd615559e07ce6d88957d2":[11,0,0,74,1,0],
 "da/da5/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1MU57a1ad219e0f16564fca023a008a5520.html#ae310369d3c70c57748e0bfafcd722a95":[11,0,0,74,1,1],
 "da/da5/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1MU57a1ad219e0f16564fca023a008a5520.html#afb1083f8563110a08cbd9204e25d7e2f":[11,0,0,74,1,3],
-"da/da5/namespaceLatBuilder_1_1Traversal.html":[10,0,0,13],
 "da/da5/namespaceLatBuilder_1_1Traversal.html":[11,0,0,13],
-"da/db0/namespaceLatBuilder_1_1Interlaced.html":[10,0,0,3],
+"da/da5/namespaceLatBuilder_1_1Traversal.html":[10,0,0,13],
 "da/db0/namespaceLatBuilder_1_1Interlaced.html":[11,0,0,3],
+"da/db0/namespaceLatBuilder_1_1Interlaced.html":[10,0,0,3],
 "da/db1/structLatBuilder_1_1Functor_1_1Max.html":[11,0,0,0,5],
 "da/db1/structLatBuilder_1_1Functor_1_1Max.html#a54c25b7ac5ab0b501b7e6a4b283261a6":[11,0,0,0,5,0],
 "da/db1/structLatBuilder_1_1Functor_1_1Max.html#a74212047aa6eb0edc9a91df526192ca7":[11,0,0,0,5,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX7 =
 "da/ddd/classLatBuilder_1_1BasicSizeParam.html#a98caa249618da4792e5c0c8d6ec99903":[11,0,0,18,10],
 "da/ddd/classLatBuilder_1_1BasicSizeParam.html#a9bcd3fef0aa6378415c71f8b3299df05":[11,0,0,18,0],
 "da/ddd/classLatBuilder_1_1BasicSizeParam.html#ab16c031ee2a806ed59feff795e4e28fe":[11,0,0,18,9],
-"da/ddd/classLatBuilder_1_1BasicSizeParam.html#abd1400b004819f60d371d3f5ce421e06":[11,0,0,18,8],
-"da/ddd/classLatBuilder_1_1BasicSizeParam.html#add160bc18f709393cb1aff82ed3451f8":[11,0,0,18,13]
+"da/ddd/classLatBuilder_1_1BasicSizeParam.html#abd1400b004819f60d371d3f5ce421e06":[11,0,0,18,8]
 };

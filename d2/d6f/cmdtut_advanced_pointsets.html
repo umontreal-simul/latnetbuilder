@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.1-10</span>
+   &#160;<span id="projectnumber">2.0.1-11</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -123,7 +123,7 @@ Types of lattice rules</h2>
 Size of lattice rules</h2>
 <p>The option <code>&ndash;size-parameter</code> can be used to specify the size (number of points) of a lattice rule.</p>
 <p>Recall that for ordinary lattice rules, the modulus is exactly the number of points. In this case, we directly specify the modulus. For instance, to specify an ordinary lattice rule with 6977 points, use <code>&ndash;size-parameter 6977</code>. It is also possible to specify the number of points as a power of a base. For instance <code>&ndash;size-parameter 3^10</code> is also a valid expression.</p>
-<p>For polynomial lattice rules, the number of points equals two to the power of the degree of its modulus. The number of points will thus always be a power of two. In the case of unilevel point sets, one can specify the number of points of the polynomial lattice rule to equal \(2^k\) with <code>&ndash;size-parameter 2^<em>k</em></code>. In this case, a predefined polynomial with degree \(k\) will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used with the fast-CBC exploration method.</p>
+<p>For polynomial lattice rules, the number of points equals two to the power of the degree of its modulus. The number of points will thus always be a power of two. In the case of unilevel point sets, one can specify the number of points of the polynomial lattice rule to equal \(2^k\) with <code>&ndash;size-parameter 2^<em>k</em></code>. In this case, a predefined polynomial with degree \(k\) will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used with the fast-CBC exploration method. These polynomials are from <a href="http://www.partow.net/programming/polynomials/index.html">Arash Partow </a>.</p>
 <p>Otherwise, one can also specify a custom polynomial modulus. The number of points will be two to the power of its degree. Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \( 1 + z^2 + z^5 \) can be specified by <code>101001</code>. Additionally, one can raise the polynomial to an integer power. For instance <code>&ndash;size-parameter 01^8</code> tells LatNet Builder that the modulus of the polynomial lattice is \(z^8\). Note that it is always necessary to specify a custom modulus (as a power of a base modulus) when one constructs an embedded polynomial lattice rule.</p>
 <h2><a class="anchor" id="cmdtut_advanced_pointsets_lat_specify"></a>
 How to construct a specific lattice rule</h2>
@@ -171,7 +171,7 @@ How to construct a specific net</h2>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../d5/d56/cmdtut.html">Command-Line Tutorial</a></li><li class="navelem"><a class="el" href="../../d7/de4/cmdtut_spec.html">Advanced Tutorial</a></li>
-    <li class="footer">Generated on Thu Aug 16 2018 10:33:27 for LatNet Builder Manual by
+    <li class="footer">Generated on Fri Aug 17 2018 17:21:02 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

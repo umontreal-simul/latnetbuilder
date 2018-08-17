@@ -1,5 +1,6 @@
 var NAVTREEINDEX10 =
 {
+"dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html#a1d269cdf7a8a51927ddc247ddd85f0de":[11,0,0,0,2,0],
 "dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html#a38c62122e54df4fa53520d28495c1714":[11,0,0,0,2,1],
 "dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html#a4449b63505a0127179ba33ce0031df65":[11,0,0,0,2,3],
 "dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html#a7d91102554437fc1a6c4db1377b6c800":[11,0,0,0,2,4],
@@ -142,8 +143,8 @@ var NAVTREEINDEX10 =
 "de/db5/classLatBuilder_1_1LatSeq_1_1CBC.html#ad94a84fa9c1084903fc56514d4009391":[11,0,0,5,0,1],
 "de/db5/cmdtut_summary.html":[4,2],
 "de/db9/structLatBuilder_1_1IndexedIterator_1_1Random_1_1end__tag.html":[11,0,0,2,1,0],
-"de/dbf/namespaceNetBuilder_1_1Task.html":[11,0,2,4],
 "de/dbf/namespaceNetBuilder_1_1Task.html":[10,0,2,3],
+"de/dbf/namespaceNetBuilder_1_1Task.html":[11,0,2,4],
 "de/dc5/gui.html":[5],
 "de/dd1/classNetBuilder_1_1FigureOfMerit_1_1BitEquidistribution.html":[11,0,2,0,0],
 "de/dd1/classNetBuilder_1_1FigureOfMerit_1_1BitEquidistribution.html#a17994037b71c77d935d5b58be4f1fcf1":[11,0,2,0,0,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "df/d59/classLatticeTester_1_1LatticeAnalysis.html":[11,0,1,8],
 "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a036ba1f11e6e91de96d9e15e12d9692c":[11,0,1,8,15],
 "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a06e3e98662e5f4365a96f8e383268dd9":[11,0,1,8,3],
-"df/d59/classLatticeTester_1_1LatticeAnalysis.html#a0debb821e811014de0b189cdc2594548":[11,0,1,8,12],
-"df/d59/classLatticeTester_1_1LatticeAnalysis.html#a1fc0539cd051f00ce329117b903736f3":[11,0,1,8,14]
+"df/d59/classLatticeTester_1_1LatticeAnalysis.html#a0debb821e811014de0b189cdc2594548":[11,0,1,8,12]
 };

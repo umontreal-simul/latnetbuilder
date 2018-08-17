@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a1815a81b470dd97a89107336579c750f":[11,0,0,13,0,0],
 "d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a35512ff12a37246b635fc977d0cd6ef5":[11,0,0,13,0,1],
 "d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a8f2a38423fb810b7a6df3f4f6e39a21d":[11,0,0,13,0,3],
 "d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#acf87597a927218fb4af94f8ab93b38ca":[11,0,0,13,0,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "d9/d80/feats_filters.html#feats_filters_multilevel":[3,5,0],
 "d9/d80/feats_filters.html#feats_filters_norms":[3,5,1],
 "d9/d82/structLatBuilder_1_1Parser_1_1ProjDepMerit.html":[11,0,0,9,27],
-"d9/d82/structLatBuilder_1_1Parser_1_1ProjDepMerit.html#a2ec5c584bbb176a91a4166784ab57550":[11,0,0,9,27,1],
-"d9/d82/structLatBuilder_1_1Parser_1_1ProjDepMerit.html#aa3059cbc02aea79ff164d2bbd5027e33":[11,0,0,9,27,2]
+"d9/d82/structLatBuilder_1_1Parser_1_1ProjDepMerit.html#a2ec5c584bbb176a91a4166784ab57550":[11,0,0,9,27,1]
 };

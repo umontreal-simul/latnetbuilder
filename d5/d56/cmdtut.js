@@ -2,6 +2,7 @@ var cmdtut =
 [
     [ "Quick Recipes", "d0/da5/cmdtut_quickrecipes.html", [
       [ "A first example", "d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_first_example", null ],
+      [ "Saving the results in a folder", "d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_outputfolder", null ],
       [ "Exploring the search space with other methods", "d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_explorations", null ],
       [ "Using different figures of merit", "d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_figures", null ],
       [ "Constructing polynomial lattice rules and digital nets", "d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_pointsets", null ],

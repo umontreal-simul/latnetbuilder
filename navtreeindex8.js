@@ -1,5 +1,6 @@
 var NAVTREEINDEX8 =
 {
+"da/ddd/classLatBuilder_1_1BasicSizeParam.html#add160bc18f709393cb1aff82ed3451f8":[11,0,0,18,13],
 "da/ddd/classLatBuilder_1_1BasicSizeParam.html#ade387f35df4436392aae0077e23ee4b3":[11,0,0,18,6],
 "da/de1/structLatBuilder_1_1TypeInfo.html":[11,0,0,78],
 "da/de7/structLatBuilder_1_1Parser_1_1CoordUniformFigureOfMerit.html":[11,0,0,9,14],
@@ -223,8 +224,8 @@ var NAVTREEINDEX8 =
 "dc/d5a/feats_pointsets.html#feats_pointsets_net_explicit":[3,0,1,3],
 "dc/d5a/feats_pointsets.html#feats_pointsets_net_poly":[3,0,1,2],
 "dc/d5a/feats_pointsets.html#feats_pointsets_net_sobol":[3,0,1,1],
-"dc/d60/namespaceLatBuilder_1_1GenSeq.html":[11,0,0,1],
 "dc/d60/namespaceLatBuilder_1_1GenSeq.html":[10,0,0,1],
+"dc/d60/namespaceLatBuilder_1_1GenSeq.html":[11,0,0,1],
 "dc/d71/structLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_01_4_1_1RebindTraversal.html":[11,0,0,1,18,0],
 "dc/d71/structLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_01_4_1_1RebindTraversal.html#a66c4d7a6af73895c490040ddbcdf8e07":[11,0,0,1,18,0,0],
 "dc/d73/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_00_01PLO_01_4.html":[11,0,0,72],
@@ -248,6 +249,5 @@ var NAVTREEINDEX8 =
 "dc/d97/structNetBuilder_1_1Parser_1_1SizeParameterParser_3_01NetConstruction_1_1SOBOL_00_01ET_01_4.html#affae3a644810024b2b40ef8cc6a5b285":[11,0,2,3,25,0],
 "dc/d98/classLatBuilder_1_1MeritFilterListPolicy_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html":[11,0,0,54],
 "dc/d98/classLatBuilder_1_1MeritFilterListPolicy_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html#a06fdbda5387c5c8dd8581c8e984baacc":[11,0,0,54,0],
-"dc/d98/classLatBuilder_1_1MeritFilterListPolicy_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html#a657f9a4307f218b34ea4c27d6a8fe934":[11,0,0,54,1],
-"dc/d9a/classLatticeTester_1_1Random.html":[11,0,1,22]
+"dc/d98/classLatBuilder_1_1MeritFilterListPolicy_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html#a657f9a4307f218b34ea4c27d6a8fe934":[11,0,0,54,1]
 };

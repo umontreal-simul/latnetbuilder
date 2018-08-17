@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.1-10</span>
+   &#160;<span id="projectnumber">2.0.1-11</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -124,6 +124,14 @@ A first example</h1>
 <p>Option names come in long and short forms. For example, the following has the same effect as the previous example: </p><pre class="fragment">latnetbuilder -t lattice -c ordinary -s 2053 -d 5 -e full-CBC -f CU:P2 -q 2 -w product:0.7
 </pre><p> The long forms are favored in this tutorial to make the examples self-explanatory.</p>
 <p>For the sake of conciseness, in the derived examples, we often only show the command-line parameters that need to be changed, or added; other parameters should be left as in the basic example.</p>
+<h1><a class="anchor" id="cmdtut_quickrecipes_outputfolder"></a>
+Saving the results in a folder</h1>
+<p>It is possible to save the results of LatNet Builder in a folder. The <code>&ndash;output-folder</code> option indicates the path of the folder to use. This path can either be absolute or relative. If the folder does not exist, it will be created. <b>If the folder already exists, some existing files may be lost.</b> For instance, if you want the output folder to be located at <code>/home/results</code>, use <code> &ndash;output-folder /home/results </code></p>
+<p>This folder contains three files:</p><ul>
+<li><code>input.txt</code> which contains the summary of the input parameters of LatNet Builder</li>
+<li><code>output.txt</code> which contains the result of the search in a human readable format</li>
+<li><code>outputMachine.txt</code> which contains an easily parsable formatting of the results</li>
+</ul>
 <h1><a class="anchor" id="cmdtut_quickrecipes_explorations"></a>
 Exploring the search space with other methods</h1>
 <p>LatNet Builder supports a variety of exploration methods. The <code>&ndash;exploration-method</code> option controls which one is used to explore the search space.</p>
@@ -282,7 +290,7 @@ Extending point sets</h1>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../d5/d56/cmdtut.html">Command-Line Tutorial</a></li>
-    <li class="footer">Generated on Thu Aug 16 2018 10:33:27 for LatNet Builder Manual by
+    <li class="footer">Generated on Fri Aug 17 2018 17:21:02 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

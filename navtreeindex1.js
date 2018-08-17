@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a4d6c888217b3bf24263ec8ea577f7964":[11,0,1,4,50],
 "d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a4ea226c937b5156aa98d66c42643e100":[11,0,1,4,47],
 "d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a4ee626bcafc762ae00166fc8fe9bb276":[11,0,1,4,25],
 "d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a501e39a4de8c05fd4389174eebd86ba9":[11,0,1,4,14],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "d2/db8/classLatBuilder_1_1BridgeIteratorCached.html#ae8aae09e5a4d898a9a419a2af6e3cf8a":[11,0,0,20,5],
 "d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html":[11,0,0,1,0,0],
 "d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#a1018c5f1b4caa255883a49b26ece336d":[11,0,0,1,0,0,1],
-"d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#a525de2b730135a1e9b8eafa576f1bf5c":[11,0,0,1,0,0,2],
-"d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#aca817cacbe879704facbc61e6ad6d4ef":[11,0,0,1,0,0,0]
+"d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#a525de2b730135a1e9b8eafa576f1bf5c":[11,0,0,1,0,0,2]
 };

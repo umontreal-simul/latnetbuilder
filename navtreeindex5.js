@@ -1,5 +1,6 @@
 var NAVTREEINDEX5 =
 {
+"d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html":[11,0,0,1,20],
 "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html#a2a2c15d5c1c85918621fdb1382ba1201":[11,0,0,1,20,2],
 "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html#a3cab6b49b3f4f692e73b853dccf1a3f1":[11,0,0,1,20,0],
 "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html#a7694b6eab9475661572922a9e2705713":[11,0,0,1,20,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX5 =
 "d7/dfb/quantiles_8cc-example.html":[13,0],
 "d8/d01/tutorial_2WeightedFigureOfMerit_8cc-example.html":[13,28],
 "d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html":[11,0,0,13,0],
-"d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a076d81c341baa0a7736a981b836104b7":[11,0,0,13,0,2],
-"d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a1815a81b470dd97a89107336579c750f":[11,0,0,13,0,0]
+"d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a076d81c341baa0a7736a981b836104b7":[11,0,0,13,0,2]
 };

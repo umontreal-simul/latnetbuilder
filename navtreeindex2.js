@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#aca817cacbe879704facbc61e6ad6d4ef":[11,0,0,1,0,0,0],
 "d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#ace5214e89558e7abe3a4740704d20e38":[11,0,0,1,0,0,3],
 "d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#afa5390a883aead94578df95d5e525ff4":[11,0,0,1,0,0,4],
 "d2/dc8/classNetBuilder_1_1Task_1_1MixedCBCExplorer.html":[11,0,2,4,5],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "d4/d58/structNetBuilder_1_1LevelCombiner_1_1LevelCombiner.html#a0444a9cf909f030d5ffdd9f6bd41b3d4":[11,0,2,2,0,2],
 "d4/d58/structNetBuilder_1_1LevelCombiner_1_1LevelCombiner.html#a4f128ceaeaa5d69117f52fbe92e5e634":[11,0,2,2,0,0],
 "d4/d58/structNetBuilder_1_1LevelCombiner_1_1LevelCombiner.html#a9bc8f5dc63e83994fd1de46ce509902c":[11,0,2,2,0,1],
-"d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html":[11,0,0,0,7],
-"d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a185bd13c806599499614055868cf5ceb":[11,0,0,0,7,6]
+"d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html":[11,0,0,0,7]
 };

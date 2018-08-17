@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a185bd13c806599499614055868cf5ceb":[11,0,0,0,7,6],
 "d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a31a5409e307a42af9993078e44e9f181":[11,0,0,0,7,3],
 "d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a5d9b62e879b494efdefcd58449f8ecf7":[11,0,0,0,7,4],
 "d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a9e737dc270b091e09e1eedbd2c1dcde0":[11,0,0,0,7,5],
@@ -20,14 +21,14 @@ var NAVTREEINDEX3 =
 "d4/d6f/classNTL_1_1matrix.html#a904dcf3e38cb850ea08f0a1234f99ef9":[11,0,3,0,10],
 "d4/d6f/classNTL_1_1matrix.html#aafb33f5a0a25d024f9745e4c85f99d99":[11,0,3,0,3],
 "d4/d6f/classNTL_1_1matrix.html#aafb33f5a0a25d024f9745e4c85f99d99":[11,0,3,0,6],
-"d4/d6f/classNTL_1_1matrix.html#ac642b4a5afc2a742f30c50467ecf9559":[11,0,3,0,16],
 "d4/d6f/classNTL_1_1matrix.html#ac642b4a5afc2a742f30c50467ecf9559":[11,0,3,0,17],
+"d4/d6f/classNTL_1_1matrix.html#ac642b4a5afc2a742f30c50467ecf9559":[11,0,3,0,16],
 "d4/d6f/classNTL_1_1matrix.html#accc96531e7fef556bbc9385321f4c8f6":[11,0,3,0,4],
 "d4/d6f/classNTL_1_1matrix.html#accc96531e7fef556bbc9385321f4c8f6":[11,0,3,0,7],
-"d4/d6f/classNTL_1_1matrix.html#ad383779a5349fc34c11f6efd5db11d3f":[11,0,3,0,13],
 "d4/d6f/classNTL_1_1matrix.html#ad383779a5349fc34c11f6efd5db11d3f":[11,0,3,0,11],
-"d4/d6f/classNTL_1_1matrix.html#aebda7ca773598e637b44c29e702b1d19":[11,0,3,0,9],
+"d4/d6f/classNTL_1_1matrix.html#ad383779a5349fc34c11f6efd5db11d3f":[11,0,3,0,13],
 "d4/d6f/classNTL_1_1matrix.html#aebda7ca773598e637b44c29e702b1d19":[11,0,3,0,8],
+"d4/d6f/classNTL_1_1matrix.html#aebda7ca773598e637b44c29e702b1d19":[11,0,3,0,9],
 "d4/d71/structLatBuilder_1_1MeritSeq_1_1detail_1_1IsFastCompatible.html":[11,0,0,7,0,0],
 "d4/d7f/classLatBuilder_1_1FigureOfMerit.html":[11,0,0,40],
 "d4/d7f/classLatBuilder_1_1FigureOfMerit.html#a2e88f7c058159b36eefd20ccff08700a":[11,0,0,40,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX3 =
 "d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a2df529bba718eecb8e6f17cb0ef78d18":[11,0,0,7,1,4],
 "d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a3dd7aecd20282b309c0f9393554fbc4c":[11,0,0,7,1,10],
 "d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a4bda891e9953429bc47ee199bfe41a3f":[11,0,0,7,1,13],
-"d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a74e945478a7bd09a6769b7baf1297da0":[11,0,0,7,1,9],
-"d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a7a113a6d644a772a6ae504943ecebb72":[11,0,0,7,1,6]
+"d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a74e945478a7bd09a6769b7baf1297da0":[11,0,0,7,1,9]
 };

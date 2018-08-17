@@ -1,5 +1,6 @@
 var NAVTREEINDEX11 =
 {
+"df/d59/classLatticeTester_1_1LatticeAnalysis.html#a1fc0539cd051f00ce329117b903736f3":[11,0,1,8,14],
 "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a2109e3f2cb6ed0a3b4c597ff7d2ffdf1":[11,0,1,8,2],
 "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a2239d3bd45728d24b3bfa99d95658323":[11,0,1,8,17],
 "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a6eacebf167473976ff5ffd4a8f05c1c9":[11,0,1,8,13],
@@ -124,8 +125,8 @@ var NAVTREEINDEX11 =
 "dir_d44c64559bbebec7f509842c48db8b23.html":[12,0,0],
 "examples.html":[13],
 "files.html":[12,0],
-"functions.html":[11,3,0],
 "functions.html":[11,3,0,0],
+"functions.html":[11,3,0],
 "functions_0x7e.html":[11,3,0,22],
 "functions_b.html":[11,3,0,1],
 "functions_c.html":[11,3,0,2],
