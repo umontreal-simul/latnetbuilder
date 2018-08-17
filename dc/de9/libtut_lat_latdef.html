@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.1-10</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -97,8 +97,8 @@ $(document).ready(function(){initNavTree('dc/de9/libtut_lat_latdef.html','../../
 <div class="title">Lattice Types and Definitions </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>LatBuilder supports two types of lattices: ordinary lattices and polynomial lattices.</p>
-<p>One has also the choice between simple (unilevel) lattices and embedded (multilevel) lattices. The first choice corresponds to the LatticeType enumeration and the second to the EmbeddingType enumeration. These two enumerations are used across all the library as non-type template parameters to implement different policies accordingly with the type of lattices.</p>
+<div class="textblock"><p>LatBuilder supports two types of <a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1">lattices</a>: <a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1_ord">ordinary lattices</a> and <a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1_poly">polynomial lattices</a>.</p>
+<p>One has also the choice between <a class="el" href="../../d6/d6f/feats_multilevel.html#feats_multilevel_lat">simple (unilevel) lattices and embedded (multilevel) lattices</a>. The first choice corresponds to the LatticeType enumeration and the second to the EmbeddingType enumeration. These two enumerations are used across all the library as non-type template parameters to implement different policies accordingly with the type of lattices.</p>
 <p>Their representation in LatBuilder differs by the type of their size parameter. The <a class="el" href="../../d3/d02/classLatBuilder_1_1SizeParam.html" title="Lattice size parameter. ">SizeParam</a> class accounts for this differences. A lattice of either type can be defined by its size parameter(s), together with its dimension \(s\) and the components of its generating vector \(\boldsymbol a = (a_1, \dots, a_s)\). The <a class="el" href="../../db/d29/classLatBuilder_1_1LatDef.html" title="Definition of a rank-1 lattice. ">LatDef</a> class can be used for this purpose, as in <a class="el" href="../../d3/db2/tutorial_2LatDef_8cc-example.html">tutorial/LatDef.cc</a>.</p>
 <p>The following function calls some members of <a class="el" href="../../db/d29/classLatBuilder_1_1LatDef.html" title="Definition of a rank-1 lattice. ">LatDef</a>: </p><div class="fragment"><div class="line"><span class="keyword">template</span> &lt;LatticeType LA, EmbeddingType L&gt;</div><div class="line"><span class="keywordtype">void</span> printLatDef(<span class="keyword">const</span> LatDef&lt;LA, L&gt;&amp; def)</div><div class="line">{</div><div class="line">   std::cout &lt;&lt; <span class="stringliteral">&quot;dimension:         &quot;</span> &lt;&lt; def.dimension() &lt;&lt; std::endl;</div><div class="line">   std::cout &lt;&lt; <span class="stringliteral">&quot;size parameter:    &quot;</span> &lt;&lt; def.sizeParam() &lt;&lt; std::endl;</div><div class="line">   std::cout &lt;&lt; <span class="stringliteral">&quot;generating vector: &quot;</span> &lt;&lt; def.gen() &lt;&lt; std::endl;</div><div class="line">   std::cout &lt;&lt; <span class="stringliteral">&quot;definition:        &quot;</span> &lt;&lt; std::endl &lt;&lt; def &lt;&lt; std::endl;</div><div class="line">}</div></div><!-- fragment --><p> The following examples show how to use <a class="el" href="../../db/d29/classLatBuilder_1_1LatDef.html" title="Definition of a rank-1 lattice. ">LatDef</a> to construct the different lattice types and print some basic information about the constructed lattices:</p>
 <ul>
@@ -151,7 +151,7 @@ Polynomial Lattice - Modulus = [0 1]^5 - Generating vector =
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../da/d6f/libtut.html">Library Tutorial</a></li><li class="navelem"><a class="el" href="../../da/d10/libtut_lat.html">%LatBuilder tutorial</a></li>
-    <li class="footer">Generated on Tue Aug 14 2018 12:11:09 for LatNet Builder Manual by
+    <li class="footer">Generated on Thu Aug 16 2018 10:33:27 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

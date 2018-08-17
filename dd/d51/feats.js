@@ -10,9 +10,9 @@ var feats =
         [ "Sobol' construction", "dc/d5a/feats_pointsets.html#feats_pointsets_net_sobol", null ],
         [ "Polynomial construction", "dc/d5a/feats_pointsets.html#feats_pointsets_net_poly", null ],
         [ "Explicit construction", "dc/d5a/feats_pointsets.html#feats_pointsets_net_explicit", null ]
-      ] ]
+      ] ],
+      [ "Interlaced digital nets and polynomial lattice rules", "dc/d5a/feats_pointsets.html#feats_pointsets_interlaced", null ]
     ] ],
-    [ "Detailed guidelines for polynomial lattice rules", "da/d25/feats_poly.html", null ],
     [ "Figures of merit", "d6/d4c/feats_figures.html", "d6/d4c/feats_figures" ],
     [ "Weights", "d2/de0/feats_weights.html", null ],
     [ "Exploration methods", "dd/d56/feats_exploration.html", null ],
@@ -23,6 +23,5 @@ var feats =
     [ "Normalizations and filters", "d9/d80/feats_filters.html", [
       [ "Normalizations and filters for multilevel point sets", "d9/d80/feats_filters.html#feats_filters_multilevel", null ],
       [ "List of normalizations", "d9/d80/feats_filters.html#feats_filters_norms", null ]
-    ] ],
-    [ "Interlaced digital nets and polynomial lattice rules", "d3/d3f/feats_interlaced.html", null ]
+    ] ]
 ];

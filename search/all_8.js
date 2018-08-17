@@ -1,7 +1,6 @@
 var searchData=
 [
   ['interlaced_20digital_20nets_20and_20polynomial_20lattice_20rules',['Interlaced digital nets and polynomial lattice rules',['../d6/d9e/cmdtut_advanced_interlaced.html',1,'cmdtut_spec']]],
-  ['interlaced_20digital_20nets_20and_20polynomial_20lattice_20rules',['Interlaced digital nets and polynomial lattice rules',['../d3/d3f/feats_interlaced.html',1,'feats']]],
   ['iaalpha',['IAAlpha',['../dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html',1,'LatBuilder::Functor::IAAlpha'],['../d3/dbb/classLatBuilder_1_1Kernel_1_1IAAlpha.html',1,'LatBuilder::Kernel::IAAlpha'],['../db/d1d/classLatBuilder_1_1Norm_1_1IAAlpha.html',1,'LatBuilder::Norm::IAAlpha'],['../dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html#ab7ca1d090a575966bedd9a3a41514c49',1,'LatBuilder::Functor::IAAlpha::IAAlpha()'],['../db/d1d/classLatBuilder_1_1Norm_1_1IAAlpha.html#a90c5ce9009e40821543055c06d0fde35',1,'LatBuilder::Norm::IAAlpha::IAAlpha()']]],
   ['ib',['IB',['../df/da2/classLatBuilder_1_1Functor_1_1IB.html',1,'LatBuilder::Functor::IB'],['../de/d94/classLatBuilder_1_1Kernel_1_1IB.html',1,'LatBuilder::Kernel::IB'],['../dc/d4f/classLatBuilder_1_1Norm_1_1IB.html',1,'LatBuilder::Norm::IB'],['../df/da2/classLatBuilder_1_1Functor_1_1IB.html#a70c66605c5e82ef1d03ddccc29b80c06',1,'LatBuilder::Functor::IB::IB()'],['../dc/d4f/classLatBuilder_1_1Norm_1_1IB.html#a48e0465b97f43f03e3f22902ba6eb156',1,'LatBuilder::Norm::IB::IB()']]],
   ['ifft',['ifft',['../dd/df2/structfftw.html#ae91ea5217322ec4da5d220d565a0e0fe',1,'fftw']]],

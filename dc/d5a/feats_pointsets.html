@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LatNet Builder Manual
-   &#160;<span id="projectnumber">2.0.1</span>
+   &#160;<span id="projectnumber">2.0.1-10</span>
    </div>
    <div id="projectbrief">Software Package for Constructing Highly Uniform Point Sets</div>
   </td>
@@ -102,17 +102,19 @@ $(document).ready(function(){initNavTree('dc/d5a/feats_pointsets.html','../../')
 <li><a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1">Rank-1 lattices</a></li>
 <li><a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_net">Digital nets in base 2</a></li>
 </ul>
+<p>LatNet Builder also supports the construction of <a class="el" href="../../dc/d5a/feats_pointsets.html#feats_pointsets_interlaced">interlaced digital nets and polynomial lattice rules</a>.</p>
 <h1><a class="anchor" id="feats_pointsets_latrank1"></a>
 Rank-1 lattices</h1>
 <h2><a class="anchor" id="feats_pointsets_latrank1_ord"></a>
 Ordinary lattices</h2>
-<p>A rank-1 ordinary lattice rule is a point set \(P_n\) in dimension \(s\) which can be written: </p><p class="formulaDsp">
+<p>A rank-1 ordinary lattice rule <b>[rLEC16a]</b> is a point set \(P_n\) in dimension \(s\) which can be written: </p><p class="formulaDsp">
 \[ P_n = \left\{\boldsymbol x_i = (i \boldsymbol a / n) \mod 1 : i = 0, \dots, n - 1\right\}. \]
 </p>
 <p> where \(\boldsymbol a = (a_1, \dots, a_s)\) is an integer generating vector. In LatNet Builder, we only consider fully projection-regular <a class="el" href="../../d0/de3/citelist.html#CITEREF_vLEC00b">[17]</a> lattice rules, that is lattice rules for which all the points never superpose on each other in lower-dimensional projections. This happens if and only if the coordinates of \(\boldsymbol a\) are coprimes with \(n\). In this case, for each coordinate \(j \in \{1, \dots, s\}\), the \(\{x_{i,j}, 0 \leq i &lt; n\}\) are all distinct and form a permutation of the multiples of \(\frac1n\).</p>
 <p>For simplicity, in this documentation, the term ordinary lattice rule will always refer to fully projection-regular rank-1 ordinary lattice rules.</p>
 <h2><a class="anchor" id="feats_pointsets_latrank1_poly"></a>
 Polynomial lattices in base 2</h2>
+<p>The following definition is from <a class="el" href="../../d0/de3/citelist.html#CITEREF_rDIC10a">[6]</a>.</p>
 <p>Recall that \(\mathbb F_2[z]\) is the ring of polynomials over \(\mathbb F_2\), the field with two element, and \(\mathbb L_2\) is the ring of formal Laurent series over \(\mathbb F_2\). For a series \(v(z) = \sum_{l = w}^{\infty} x_l z^{-l} \in \mathbb L_2\), with \(x_w \neq 0\), we note \(\deg(v) = - w \) where \(\deg(0) = - \infty\) by convention.</p>
 <p>For \(k \in \mathbb N\), define the mapping \( {\nu}_k: \mathbb L_2 \rightarrow \mathbb R \) by: </p><p class="formulaDsp">
 \[ {\nu}_k\left(\sum_{l = w}^{\infty} x_l z^{-l}\right) = \sum_{l = \max(w, 1)}^{\infty} x_l 2^{-l}. \]
@@ -127,6 +129,7 @@ Polynomial lattices in base 2</h2>
 Digital nets in base 2</h1>
 <h2><a class="anchor" id="feats_pointsets_net_def"></a>
 Definition</h2>
+<p>The following definition is from <a class="el" href="../../d0/de3/citelist.html#CITEREF_rDIC10a">[6]</a>.</p>
 <p>Let \(\mathbb{F}_2\) be the finite field with 2 elements (denoted 0 and 1). For a given dimension \(s \geq 1\), a positive integer \(k\), let \(M_1, \dots, M_s\) be \(r \times k\) matrices over \(\mathbb{F}_2\). The digital net associated with these matrices is the point set \(P_n = \{\boldsymbol x_0, \dots, \boldsymbol x_{2^k-1} \}\) in dimension \(s\) defined as follows:</p>
 <p>For each \(0 \leq i \leq 2^k-1\), let \( \boldsymbol i = (a_0, \dots, a_{k-1})\) be the digits (in \(\mathbb{F}_2\)) of the 2-adic expansion \(i = \sum_{j=0}^{k-1} a_j 2^j\). For each coordinate \(l\), let \( \boldsymbol y_l= M_l \times \boldsymbol i = (y_{i, l, 1}, \dots,y_{i, l, r})\). Write \(\boldsymbol x_i = (x_{i, 1}, \dots, x_{i, s})\). Then: </p><p class="formulaDsp">
 \[ x_{i, l} = \sum_{j=1}^{r} y_{i, l, j}2^{-j}. \]
@@ -212,14 +215,28 @@ Polynomial construction</h2>
 <p>Then, the digital net corresponding to these matrices coincides with the polynomial lattice rule defined by the generating vector \(\boldsymbol a\). Provided that all the components of the generating vector are coprime with the modulus, these generating matrices are full-rank and the digital net is fully projection-regular.</p>
 <h2><a class="anchor" id="feats_pointsets_net_explicit"></a>
 Explicit construction</h2>
-<p>LatNet Builder also supports the construction of random generating matrices. To ensure the fully projection-regular property, all the generating matrices constructed by the random generator are full-rank. It is not possible to explore exhaustively the space of all generating matrices as it is often really huge. Only the random variants of the exploration methods are available with the explicit construction. </p>
+<p>LatNet Builder also supports the construction of random generating matrices. To ensure the fully projection-regular property, all the generating matrices constructed by the random generator are full-rank. It is not possible to explore exhaustively the space of all generating matrices as it is often really huge. Only the random variants of the exploration methods are available with the explicit construction.</p>
+<h1><a class="anchor" id="feats_pointsets_interlaced"></a>
+Interlaced digital nets and polynomial lattice rules</h1>
+<p>LatNet Builder supports the construction of interlaced polynomial lattice rules and interlaced digital nets.</p>
+<p>We adapt the definition of interlaced polynomial lattice rules from Definition 4. in <a class="el" href="../../d0/de3/citelist.html#CITEREF_rGOD13a">[10]</a> to the interlaced digital nets case.</p>
+<p>Let \(s\) and \(d\) be positive integers. \(s\) is the dimension of the point set, \(d\) is called the interlacing factor and \(ds\) is called the number of components.</p>
+<p>Let \(\bar{P}_n \{\boldsymbol z_i, 0 \leq i &lt; n \}\) be a digital net in dimension \(ds\). For \( 0 \leq i &lt; n\), note \(\boldsymbol z_i = (z_{i,1}, \dots, z_{i,ds})\).</p>
+<p>Define the digit interlacing function \(D_d: [0,1)^d \rightarrow [0,1)\) by: </p><p class="formulaDsp">
+\[ D_d(z_1, \dots, z_d) = \sum_{a = 1}^{\infty} \sum_{r = 1}^d z_{r,a} 2^{-r-(a-1)d}, \]
+</p>
+<p> where we denote the 2-adic expansion of \(z_l\) by \(z_l = z_{l,1} 2^{-1} + z_{l,2} 2^{-2} + \dots\) for \(1 \leq l \leq d\) and where we assume that the expansion is unique in the sense that infinitely many digits are different from 1.</p>
+<p>Then define \(\boldsymbol x_i = (D_d(z_{i,1}, \dots, z_{i,d}), \dots, D_d(z_{i,(s-1)d + 1}, \dots, z_{i,sd}) )\) for \(0 \leq i &lt; n\).</p>
+<p>Then the point set \(P_n = \{\boldsymbol x_i, 0 \leq i &lt; n \}\) is the interlaced digital net associated with the digital net \(\bar{P}_n\). \(\bar{P}_n\) is called the underlying net and its components the interlaced components.</p>
+<p>An interlaced polynomial lattice rule is simply an interlaced digital net whose underlying net is a polynomial lattice rule.</p>
+<p>The construction of interlaced digital nets boils down to the construction of digital nets in higher dimension. This is the point of view adopted by LatNet Builder for all the interlacing functionalities. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="../../index.html">LatNet Builder Manual</a></li><li class="navelem"><a class="el" href="../../dd/d51/feats.html">Main features</a></li>
-    <li class="footer">Generated on Tue Aug 14 2018 12:11:09 for LatNet Builder Manual by
+    <li class="footer">Generated on Thu Aug 16 2018 10:33:27 for LatNet Builder Manual by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.14 </li>
   </ul>

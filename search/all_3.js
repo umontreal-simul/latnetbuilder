@@ -26,5 +26,5 @@ var searchData=
   ['dotestfromdirectory',['doTestFromDirectory',['../df/d59/classLatticeTester_1_1LatticeAnalysis.html#ae4ea746678d3ddf687edbfa6d67089b2',1,'LatticeTester::LatticeAnalysis']]],
   ['dotestfrominputfile',['doTestFromInputFile',['../df/d59/classLatticeTester_1_1LatticeAnalysis.html#a80dc121973168ab4a0640890da993ac7',1,'LatticeTester::LatticeAnalysis']]],
   ['dualize',['dualize',['../d6/dc0/classLatticeTester_1_1IntLattice.html#a5e1b05159ba762a632273f2d3273ec9e',1,'LatticeTester::IntLattice::dualize()'],['../de/dfe/classLatticeTester_1_1Rank1Lattice.html#aad299f05cc3c03540b2cc44e23b13473',1,'LatticeTester::Rank1Lattice::dualize()']]],
-  ['detailed_20guidelines_20for_20polynomial_20lattice_20rules',['Detailed guidelines for polynomial lattice rules',['../da/d25/feats_poly.html',1,'feats']]]
+  ['detailed_20guidelines_20for_20polynomial_20lattice_20rules',['Detailed guidelines for polynomial lattice rules',['../da/d25/feats_poly.html',1,'']]]
 ];

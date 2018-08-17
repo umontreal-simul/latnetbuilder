@@ -1,7 +1,5 @@
 var libtut_lat =
 [
-    [ "Text Output", "d6/d44/libtut_lat_textstream.html", null ],
-    [ "Implementation of Polynomials", "d4/d56/libtut_lat_polynomial.html", null ],
     [ "Lattice Types and Definitions", "dc/de9/libtut_lat_latdef.html", null ],
     [ "Sequences of Generator Values", "dd/df1/libtut_lat_genseq.html", [
       [ "Coprime Integers-Polynomials", "dd/df1/libtut_lat_genseq.html#libtut_lat_genseq_coprime", null ],
@@ -39,5 +37,7 @@ var libtut_lat =
     ] ],
     [ "Extending LatBuilder", "d7/de1/libtut_lat_extending.html", [
       [ "Implementing Custom Weights", "d7/de1/libtut_lat_extending.html#libtut_lat_extending_weights", null ]
-    ] ]
+    ] ],
+    [ "Text Output", "d6/d44/libtut_lat_textstream.html", null ],
+    [ "Implementation of Polynomials", "d4/d56/libtut_lat_polynomial.html", null ]
 ];
