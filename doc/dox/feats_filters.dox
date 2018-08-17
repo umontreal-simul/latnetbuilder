@@ -31,7 +31,8 @@ where \f$D^\ast_q(n)\f$ is a normalization factor. This is why transformations i
 called normalizations. The normalization factor can be a bound on (or an estimate of) the best possible value
 of \f$D_q(P_n)\f$, or a bound on the average of \f$D_q(P_n)\f$ among all the possible point sets.
 
-It is worth mentioning that the bounds are often a family of bounds parametrized by a scalar \f$\lambda \in \mathcal A\f$. In LatNet Builder,
+It is worth mentioning that the bounds are often a family of bounds parametrized by a scalar \f$\lambda \in \mathcal A\f$ where \f$\mathcal A\f$ is an admissible
+interval of the form \f$[\frac{1}{\alpha}, 1)\f$ which depends on the normalization. In LatNet Builder,
 the best (smallest) bound is selected with the Brent minimizer:
 
 \f[

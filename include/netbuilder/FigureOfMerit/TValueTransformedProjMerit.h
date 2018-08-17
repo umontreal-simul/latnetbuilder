@@ -26,14 +26,19 @@ using LatticeTester::Coordinates;
 
 namespace{
     /** Function implementing a transformation of the t-value to obtain a transformed t-value based figure of merit.
-     *  This function implements the formula from Corollary 5.3 in \cite rDIC10a
+     *  This function implements :
+     *   1) the formula from Corollary 5.3 in \cite rDIC10a
      *  \f[
      *  h(|\mathfrak{u}|, m, t) = 2^{t-m} \sum_{i=0}^{|\mathfrak{u}|-1} \binom{m-t}{i}.
+     *  \f]
+     *   2) the formula from Exercice 16.11 in \cite rDIC10a
+     *  \f[
+     *  h(|\mathfrak{u}|, m, t) = \frac{1}{6} + 4^{t} (m-t)^{|\mathfrak{u}|-1}.
      *  \f]
      * @param t t-value of the projection.
      * @param m Number of columns of the digital net matrices.
      * @param s Size of the projection.
-     * 
+     * @param type Identifier of the transformation to use (1 or 2)
      */
     Real h(uInteger t, uInteger m, uInteger s, int type){
         Real res = 0.0;
@@ -46,8 +51,11 @@ namespace{
             }
             return intPow(0.5, m - t) * res;
         }
-        else{
+        else if (type == 2){
             return 1.0/6 + intPow(4.0, t) * intPow(m-t, s-1);
+        }
+        else {
+            throw runtime_error("t-value transformer not implemented.");
         }
     }
 }
@@ -76,6 +84,7 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
          * Constructs a transformed projection-dependent merit based on the t-value of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
+         * @param cost_function Identifier for the figure of merit to be used.
          */  
         TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner=std::make_unique<LevelCombiner::LevelCombiner>(), int cost_function=1): TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>(maxCardinal, std::move(combiner))
         {
@@ -119,6 +128,7 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
          * Constructs a transformed projection-dependent merit based on the t-value of projections.
          * @param maxCardinal Maximum order of the subprojections.
          * @param combiner Not used. For sake of uniformity.
+         * @param cost_function Identifier for the figure of merit to be used.
          */  
         TValueTransformedProjMerit(unsigned int maxCardinal, pCombiner combiner, int cost_function): TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>(maxCardinal, std::move(combiner))
         {

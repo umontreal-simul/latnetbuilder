@@ -74,16 +74,10 @@ The features of LatNet Builder are summed up in the following table:
   </tr>
   <tr align="center">
     <td class="tg-uys7"> \subpage feats_filters </td>
-    <td class="tg-uys7" colspan="2">yes</td>
-    <td class="tg-uys7">no</td>
+    <td class="tg-uys7" colspan="2">available</td>
+    <td class="tg-uys7">not implemented</td>
   </tr>
   <tr align="center">
-    <td class="tg-uys7">\ref feats_exploration_extend "Extensible point sets"</td>
-    <td class="tg-uys7">yes</td>
-    <td class="tg-uys7">yes</td>
-    <td class="tg-uys7">no</td>
-  </tr>
-    <tr align="center">
     <td class="tg-uys7">\subpage feats_pointsets_interlaced "Interlaced point sets"</td>
     <td class="tg-uys7">not applicable</td>
     <td class="tg-uys7">interlaced polynomial lattice rules</td>

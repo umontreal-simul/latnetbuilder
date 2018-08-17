@@ -59,7 +59,7 @@ The number of points will thus always be a power of two.
 In the case of unilevel point sets, one can specify the number of points of the polynomial 
 lattice rule to equal \f$2^k\f$ with <code>--size-parameter 2^<var>k</var></code>. In this case, a predefined polynomial with degree 
 \f$k\f$ will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used
-with the fast-CBC exploration method.
+with the fast-CBC exploration method. These polynomials are from <a href="http://www.partow.net/programming/polynomials/index.html"> Arash Partow </a>.
 
 Otherwise, one can also specify a custom polynomial modulus. The number of points will be two to the power of its degree.
 Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by

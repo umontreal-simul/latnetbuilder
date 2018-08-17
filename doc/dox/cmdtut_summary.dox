@@ -292,7 +292,7 @@ options:
 	<dt><code>\--output-folder</code> / <code>-o</code></dt>
 	<dd><em>Optional.</em>
 		Specify a path to a folder where to store the log files 
-		of the search. If the folder does not exist, it will be created.
+		of the search. The path can be absolute or relative. If the folder does not exist, it will be created.
 		If the folder already exists, some existing files may be lost.  
 	</dd>
 	<dt><code>\--merit-digits-displayed</code></dt>

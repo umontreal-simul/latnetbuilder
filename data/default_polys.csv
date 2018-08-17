@@ -17,7 +17,7 @@
 This file contains default polynomials to be used as modulus for polynomial lattice rules.
 A part from the first polynomial of degree 0, all the polynomials are irreducible.
 In fact, all the polynomials apart from the two first ones are primitive polynomials.
-
+This list of polynomials is extracted from http://www.partow.net/programming/polynomials/index.html
 ###
 
 1

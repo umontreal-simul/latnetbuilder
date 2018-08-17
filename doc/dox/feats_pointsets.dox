@@ -26,7 +26,7 @@ LatNet Builder also supports the construction of \ref feats_pointsets_interlaced
 
 \subsection feats_pointsets_latrank1_ord Ordinary lattices
 
-A rank-1 ordinary lattice rule \cite rLEC16a is a point set \f$P_n\f$ in dimension \f$s\f$ which can be written:
+A rank-1 ordinary lattice rule \cite vLEC16a is a point set \f$P_n\f$ in dimension \f$s\f$ which can be written:
 \f[
     P_n = \left\{\boldsymbol x_i = (i \boldsymbol a / n) \mod 1 : i = 0, \dots, n - 1\right\}.
 \f]

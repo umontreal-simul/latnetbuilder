@@ -87,6 +87,19 @@ command-line parameters that need to be changed, or added; other parameters
 should be left as in the basic example.
 
 
+\section cmdtut_quickrecipes_outputfolder Saving the results in a folder
+
+It is possible to save the results of LatNet Builder in a folder. The <code>--output-folder</code>
+option indicates the path of the folder to use. This path can either be absolute or relative. If the folder does not exist, it will be created.
+<b>If the folder already exists, some existing files may be lost.</b> For instance, if you want the output folder
+to be located at <code>/home/results</code>, use
+<code> --output-folder /home/results </code>
+
+This folder contains three files: 
+  - <code>input.txt</code> which contains the summary of the input parameters of LatNet Builder
+  - <code>output.txt</code> which contains the result of the search in a human readable format
+  - <code>outputMachine.txt</code> which contains an easily parsable formatting of the results
+
 \section cmdtut_quickrecipes_explorations Exploring the search space with other methods
 
 LatNet Builder supports a variety of exploration methods. The <code>--exploration-method</code> option
