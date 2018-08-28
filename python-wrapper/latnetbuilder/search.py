@@ -89,7 +89,7 @@ class Search():
         This function is used by the GUI, but should NOT be called directly by the end user.'''
 
         command = self.construct_command_line()
-        if 'win' in sys.platform:
+        if sys.platform.startswith('win'):
             process = subprocess.Popen(command, stdout=stdout_file, stderr=stderr_file, shell=True)
         else:
             process = subprocess.Popen(['exec ' + ' '.join(command)], stdout=stdout_file, stderr=stderr_file, shell=True)
