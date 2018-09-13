@@ -18,6 +18,8 @@
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Util.h"
 
+#include "latticetester/CoordinateSets.h"
+
 #include <boost/math/special_functions/binomial.hpp>
 #include <boost/math/tools/polynomial.hpp>
 #include <vector>
