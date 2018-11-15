@@ -45,7 +45,7 @@ namespace {
     struct WeightsInterlacerHelper {
         std::unique_ptr<LatticeTester::Weights> operator()(std::unique_ptr<WEIGHTS> w, const KERNEL& kernel) const
         { 
-            throw runtime_error("General weights cannot be interlaced.");
+            throw std::runtime_error("General weights cannot be interlaced.");
             std::unique_ptr<LatticeTester::Weights> res;
             return res;
         }

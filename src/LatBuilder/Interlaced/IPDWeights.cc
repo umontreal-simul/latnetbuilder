@@ -61,7 +61,7 @@ m_baseWeights(std::move(weights))
 
 template <class KERNEL>
 void IPDWeights<KERNEL>::setWeight (const LatticeTester::Coordinates & projection, double weight){
-    throw runtime_error("IPD weights cannot be directly set.");
+    throw std::runtime_error("IPD weights cannot be directly set.");
 }
 
 template <class KERNEL>

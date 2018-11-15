@@ -28,7 +28,7 @@
 
 namespace NetBuilder {
 
-    const string NetConstructionTraits<NetConstruction::SOBOL>::name = "Sobol";
+    const std::string NetConstructionTraits<NetConstruction::SOBOL>::name = "Sobol";
 
     typedef typename NetConstructionTraits<NetConstruction::SOBOL>::GenValue GenValue;
 
