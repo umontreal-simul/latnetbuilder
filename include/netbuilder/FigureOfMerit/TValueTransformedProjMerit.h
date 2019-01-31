@@ -55,7 +55,7 @@ namespace{
             return 1.0/6 + intPow(4.0, t) * intPow(m-t, s-1);
         }
         else {
-            throw runtime_error("t-value transformer not implemented.");
+            throw std::runtime_error("t-value transformer not implemented.");
         }
     }
 }

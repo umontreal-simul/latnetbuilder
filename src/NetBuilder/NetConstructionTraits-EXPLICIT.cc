@@ -21,7 +21,7 @@
 
 namespace NetBuilder {
 
-    const string NetConstructionTraits<NetConstruction::EXPLICIT>::name = "Explicit";
+    const std::string NetConstructionTraits<NetConstruction::EXPLICIT>::name = "Explicit";
     
     typedef typename NetConstructionTraits<NetConstruction::EXPLICIT>::GenValue GenValue;
 

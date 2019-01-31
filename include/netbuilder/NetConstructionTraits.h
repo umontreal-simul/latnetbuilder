@@ -85,7 +85,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
     static constexpr bool isSequenceViewable = true;
 
-    static const string name;
+    static const std::string name;
 
     static constexpr bool hasSpecialFirstCoordinate = true;
 
@@ -218,7 +218,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
     static constexpr bool isSequenceViewable = false;
 
-    static const string name;
+    static const std::string name;
 
     static constexpr bool hasSpecialFirstCoordinate = true;
 
@@ -277,7 +277,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
     static constexpr bool isSequenceViewable = true;
 
-    static const string name;
+    static const std::string name;
 
     static constexpr bool hasSpecialFirstCoordinate = false;
 

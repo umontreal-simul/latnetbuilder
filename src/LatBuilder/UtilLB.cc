@@ -64,7 +64,7 @@ uInteger IndexOfPolynomial(Polynomial P)
 
 std::vector<uInteger> primeFactors(uInteger n, bool raise)
 {
-   PrimeSeq s;
+  NTL::PrimeSeq s;
    unsigned long p;
    p = s.next();
    std::vector<uInteger> factors;
@@ -89,7 +89,7 @@ std::vector<uInteger> primeFactors(uInteger n, bool raise)
 
 std::map<uInteger, uInteger> primeFactorsMap(uInteger n)
 {
-   PrimeSeq s;
+  NTL::PrimeSeq s;
    unsigned long factor;
    factor = s.next();
    std::map<uInteger, uInteger> factors;
@@ -130,11 +130,11 @@ uInteger Vm(const Polynomial& h, const Polynomial& P)
 {
    
    long m = deg(P);
-   NTL::vector<GF2> w;
+   NTL::vector<NTL::GF2> w;
    w.resize(m);
    uInteger res = 0;
    for(long i=0; i<m; i++){
-      w[i] = (m-i-1>deg(h)) ? GF2(0) : coeff(h,m-i-1);
+      w[i] = (m-i-1>deg(h)) ? NTL::GF2(0) : coeff(h,m-i-1);
       for(long j=0; j<i; j++){
          w[i] += w[j]* coeff(P,m-(i-j));
       }  
@@ -206,7 +206,7 @@ std::string getDefaultPolynomial(unsigned int degree)
             return sent;
         }
         else{
-            throw runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER_DIR is probably incorrect. See netbuilder/Path.h.");
+            throw std::runtime_error("Unable to locate data folder. The value of PATH_TO_LATNETBUILDER_DIR is probably incorrect. See netbuilder/Path.h.");
         }
     }
     return "";

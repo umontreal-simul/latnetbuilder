@@ -224,7 +224,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
   
    std::cout << separator << "    Input" << std::endl << separator << *search << std::endl;
     if (outputFolder != ""){
-      ofstream outFile;
+      std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
       outFile << *search;
@@ -263,7 +263,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
          std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl << std::endl;
 
       if (outputFolder != ""){
-          ofstream outFile;
+        std::ofstream outFile;
           std::string fileName = outputFolder + "/output.txt";
           outFile.open(fileName);
           outFile << lat << "Merit: " << search->bestMeritValue() << std::endl;
@@ -310,7 +310,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
   
    std::cout << separator << "    Input" << std::endl << separator << *search << std::endl;
     if (outputFolder != ""){
-      ofstream outFile;
+      std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
       outFile << *search;
@@ -352,7 +352,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
       if (outputFolder != ""){
           NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
           
-          ofstream outFile;
+          std::ofstream outFile;
           std::string fileName = outputFolder + "/output.txt";
           outFile.open(fileName);
           outFile << net.format(NetBuilder::OutputFormat::HUMAN, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
