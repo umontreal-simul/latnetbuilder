@@ -25,7 +25,7 @@
 
 namespace NetBuilder {
 
-    const string NetConstructionTraits<NetConstruction::POLYNOMIAL>::name = "Polynomial";
+    const std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::name = "Polynomial";
     
     typedef typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValue GenValue;
 
@@ -47,7 +47,7 @@ namespace NetBuilder {
             int res =  (m-l >=0 && IsOne(coeff(genValue, m-l)))? 1 : 0;
             int start = (l-m > 1) ? (l-m) : 1;
             for( int p = start; p < l; p++){
-                res = ( res + expansion[p-1] * conv<int>(coeff(sizeParameter, m-(l-p)))) %2;        
+                res = ( res + expansion[p-1] * NTL::conv<int>(coeff(sizeParameter, m-(l-p)))) %2;        
             }
             expansion[l-1] = res;
         }

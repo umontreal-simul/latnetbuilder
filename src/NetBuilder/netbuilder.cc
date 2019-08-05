@@ -48,7 +48,7 @@ void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int i
   std::cout << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
   if (outputFolder != ""){
-    ofstream outFile;
+    std::ofstream outFile;
     std::string fileName = outputFolder + "/output.txt";
     outFile.open(fileName);
     outFile << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
@@ -294,7 +294,7 @@ int main(int argc, const char *argv[])
           std::cout << std::endl;
 
           if (outputFolder != ""){
-            ofstream outFile;
+            std::ofstream outFile;
             std::string fileName = outputFolder + "/input.txt";
             outFile.open(fileName);
             outFile << task->format();
