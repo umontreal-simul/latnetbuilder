@@ -215,6 +215,34 @@ class WeightedFigureOfMerit<TValueTransformedProjMerit<EmbeddingType::MULTILEVEL
         {}
 };
 
+/**
+ * Template specialization of the evaluator for the weighted figure of merit based on the transformed t-value projection-dependent merit 
+ * in the case of unilevel nets.
+ */ 
+template<>
+class WeightedFigureOfMerit<TValueTransformedProjMerit<EmbeddingType::UNILEVEL, PirsicSchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueTransformedProjMerit<EmbeddingType::UNILEVEL, PirsicSchmidMethod>>
+{
+    public:
+
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueTransformedProjMerit<EmbeddingType::UNILEVEL, PirsicSchmidMethod>>* figure):
+            ProjectionDependentEvaluator(figure)
+        {}
+};
+
+/**
+ * Template specialization of the evaluator for the weighted figure of merit based on the transformed t-value projection-dependent merit 
+ * in the case of multilevel nets.
+ */ 
+template<>
+class WeightedFigureOfMerit<TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, PirsicSchmidMethod>>::WeightedFigureOfMeritEvaluator : public ProjectionDependentEvaluator<TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, PirsicSchmidMethod>>
+{
+    public:
+
+        WeightedFigureOfMeritEvaluator(WeightedFigureOfMerit<TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, PirsicSchmidMethod>>* figure):
+            ProjectionDependentEvaluator(figure)
+        {}
+};
+
 
 
 }}

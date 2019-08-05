@@ -93,6 +93,45 @@ namespace NetBuilder {
         static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
     };
 
+    /**
+     * Class to compute the t-value of a projection of a digital net in base 2.
+     * This class uses the algorithm described in \cite rPIR01a.
+     */  
+    struct PirsicSchmidMethod
+    {
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, using the prior knowledge that the maximum of the
+         * t-values of the subprojections is \c maxTValuesSubProj.
+         * @param baseMatrices Generating matrices.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
+         */ 
+        static unsigned int computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int maxTValuesSubProj, int verbose);
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, for each level, using the prior knowledge that the maximum of the
+         * t-values of the subprojections, for each level \c i is \c maxTValuesSubProj[i].
+         * @param baseMatrices Generating matrices.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
+         */ 
+        static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, const std::vector<unsigned int>& maxTValuesSubProj, int verbose)
+        {
+            return computeTValue(baseMatrices, 0, maxTValuesSubProj, verbose);
+        };
+
+        /**
+         * Compute the t-value corresponding to the generating matrices \c baseMatrices, for each level greater or equal to \c mMin, using the prior knowledge that the maximum of the
+         * t-values of the subprojections, for each level <CODE> i + mMin </CODE> is \c maxTValuesSubProj[i]. We do not compute the t-value for the lower levels.
+         * @param baseMatrices Generating matrices.
+         * @param mMin Minimul level.
+         * @param maxTValuesSubProj Maximum of the t-value of the subprojections.
+         * @param verbose Verbosity level.
+         */ 
+        static std::vector<unsigned int> computeTValue(std::vector<GeneratingMatrix> baseMatrices, unsigned int mMin, const std::vector<unsigned int>& maxTValuesSubProj, int verbose);
+    };
+
 }
 
 #endif
