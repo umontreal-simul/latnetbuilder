@@ -43,7 +43,7 @@ def build(ctx):
         cmd2 = '%s install -y anaconda-client conda-build || echo "Tried to install the anaconda-client and the conda-build package"' % (ctx.env.get_flat('CONDA'))
         cmd3 = 'export WITHOUT_WAF=' + str(int(not ctx.env.EMBED_LATNET_CONDA)) + \
         ' && export LATNETBUILDER_INSTALL_DIR=' + install_dir + \
-        ' && %s config --add channels conda-forge &&  %s build python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
+        ' && %s config --add channels conda-forge &&  %s build --prefix-length 80 python-wrapper/conda_recipe' % (ctx.env.get_flat('CONDA'), ctx.env.get_flat('CONDA'))
         cmd4 = 'echo Installing the conda package, this could take a few minutes...'
         cmd5 = 'conda create -y -n latnetbuilder || echo "Tried to create latnetbuilder environment"'
         cmd6 = 'conda remove -y latnetbuilder -n latnetbuilder || echo "Tried to remove package latnetbuilder from environment latnetbuilder"'
