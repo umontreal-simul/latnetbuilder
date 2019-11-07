@@ -4,5 +4,5 @@ channels:
   - umontreal-simul
 
 dependencies:
-  - python>=3.8
+  - python==3.7.0
   - latnetbuilder
