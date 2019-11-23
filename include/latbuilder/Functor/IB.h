@@ -80,7 +80,6 @@ public:
 
 private:
    unsigned int m_interlacingFactor;
-   unsigned int m_min;
    result_type m_factor;
 
 };
