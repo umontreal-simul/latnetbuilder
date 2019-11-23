@@ -474,6 +474,8 @@ To compile a portable executable, you first need to compile a portable static li
 The following commands **should** do the job. 
 - If you compile on Linux:
 	- replace `<OS>` by `linux`
+  - add `-fPIC` to the list of CXXFLAGS and CFLAGS for FFTW, GMP, NTL
+  - add `cxxflags=-fPIC cflags=-fPIC` to the ./b2 command for Boost
 - If you compile on Mac OS X:
 	- replace `<OS>` by `darwin`
 	- add `--enable-assembly=no` to the configuration of GMP
@@ -485,6 +487,8 @@ The following commands **should** do the job.
 export CXXFLAGS='-m64 -march=k8'
 export CFLAGS='-m64 -march=k8'
 ./configure --prefix=$HOME/fftw --enable-static --enable-threads --with-combined-threads --enable-sse2
+make
+make install
 ```
 
 **GMP**
