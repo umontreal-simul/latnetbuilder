@@ -469,7 +469,7 @@ Help on usage can be obtained by replacing the `--version` switch with the
 
 ### Binary pre-compiled releases 
 
-To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). 
+To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). If the libraries are somewhere in your path (typically in /usr/local/lib), we advise to remove them beforehand, to make sure dynamic libraries do not get linked by error.
 
 The following commands **should** do the job. 
 - If you compile on Linux:
