@@ -1,7 +1,7 @@
 # LatNet Builder
 _A general software tool for constructing highly uniform point sets_
 
-[**LatNet Builder Manual**](https://umontreal-simul.github.io/latnetbuilder/)
+[**LatNet Builder Manual**](http://umontreal-simul.github.io/latnetbuilder/)
 
 **Outline**:
 1) [A software for quasi-Monte Carlo](#a-software-for-quasi-monte-carlo)
