@@ -19,6 +19,7 @@
 
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
+#include "latbuilder/Kernel/ICAlpha.h"
 
 #include "latticetester/Coordinates.h"
 #include "latticetester/ProjectionDependentWeights.h"
@@ -96,6 +97,7 @@ class IPDWeights: public LatticeTester::ProjectionDependentWeights
 
 extern template class IPDWeights<LatBuilder::Kernel::IAAlpha>;
 extern template class IPDWeights<LatBuilder::Kernel::IB>;
+extern template class IPDWeights<LatBuilder::Kernel::ICAlpha>;
 
 }}
 

@@ -86,5 +86,6 @@ void IPDWeights<KERNEL>::format(std::ostream& os) const
 
 template class IPDWeights<LatBuilder::Kernel::IAAlpha>;
 template class IPDWeights<LatBuilder::Kernel::IB>;
+template class IPDWeights<LatBuilder::Kernel::ICAlpha>;
 
 }}

@@ -129,6 +129,7 @@ template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MU
 
 CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::IAAlpha);
 CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::IB);
+CONCRETE_COORD_UNIF_STATE(LatBuilder::Kernel::ICAlpha);
 
 #undef CONCRETE_COORD_UNIF_STATE
 

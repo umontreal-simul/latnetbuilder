@@ -19,6 +19,7 @@
 
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
+#include "latbuilder/Kernel/ICAlpha.h"
 
 #include "latticetester/Coordinates.h"
 #include "latticetester/Weights.h"
@@ -124,6 +125,7 @@ class IPODWeights:
 
 extern template class IPODWeights<LatBuilder::Kernel::IAAlpha>;
 extern template class IPODWeights<LatBuilder::Kernel::IB>;
+extern template class IPODWeights<LatBuilder::Kernel::ICAlpha>;
 
 }}
 

@@ -31,6 +31,7 @@
 #include "latbuilder/Kernel/RPLR.h"
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
+#include "latbuilder/Kernel/ICAlpha.h"
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Util.h"
@@ -138,6 +139,17 @@ struct FigureParser
                 auto kernel = LatBuilder::Kernel::IAAlpha(alpha, commandLine.m_interlacingFactor);
                 weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                 return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::IAAlpha, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
+            }
+            else if (figureDescriptionStrings.back().substr(0,2) == "IC")
+            {
+                if(commandLine.m_normType != 1)
+                    throw BadFigure("norm must be `1' for this coordinate-uniform implementation");
+                if (commandLine.m_interlacingFactor == 1)
+                    throw BadFigure("interlacing factor must be larger than `1' for " + commandLine.s_figure + ".");
+                unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(2));
+                auto kernel = LatBuilder::Kernel::ICAlpha(alpha, commandLine.m_interlacingFactor);
+                weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::ICAlpha, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else
             {

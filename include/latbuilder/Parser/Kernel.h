@@ -24,6 +24,7 @@
 #include "latbuilder/Kernel/RPLR.h"
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
+#include "latbuilder/Kernel/ICAlpha.h"
 
 #include "latbuilder/Interlaced/WeightsInterlacer.h"
 
@@ -113,6 +114,13 @@ template <typename FUNC, typename... ARGS>
                 }
                 else if (str[1] == 'B') {
                     LatBuilder::Kernel::IB kernel(interlacingFactor);
+                    weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
+                    func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
+                    return;
+                }
+                else if (str[1] == 'C') {
+                    auto alpha = boost::lexical_cast<unsigned int>(str.substr(2));
+                    LatBuilder::Kernel::ICAlpha kernel(alpha, interlacingFactor);
                     weights = LatBuilder::WeightsDispatcher::dispatchPtr<LatBuilder::Interlaced::WeightsInterlacer>(std::move(weights), kernel);
                     func(std::move(kernel), std::move(weights), std::forward<ARGS>(args)...);
                     return;

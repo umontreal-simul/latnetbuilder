@@ -43,8 +43,10 @@ public:
       try { return tryDispatch<F, CombinedWeights                                       >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatBuilder::Interlaced::IPODWeights<Kernel::IAAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatBuilder::Interlaced::IPODWeights<Kernel::IB>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatBuilder::Interlaced::IPODWeights<Kernel::ICAlpha>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatBuilder::Interlaced::IPDWeights<Kernel::IAAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatBuilder::Interlaced::IPDWeights<Kernel::IB>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatch<F, LatBuilder::Interlaced::IPDWeights<Kernel::ICAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::ProductWeights                         >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::OrderDependentWeights                  >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatch<F, LatticeTester::PODWeights                             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
@@ -65,8 +67,10 @@ public:
       try { return tryDispatchPtr<F, CombinedWeights                                       >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPODWeights<Kernel::IAAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPODWeights<Kernel::IB>     >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPODWeights<Kernel::ICAlpha>>(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPDWeights<Kernel::IAAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPDWeights<Kernel::IB>      >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
+      try { return tryDispatchPtr<F, LatBuilder::Interlaced::IPDWeights<Kernel::ICAlpha> >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::ProductWeights                         >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::OrderDependentWeights                  >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
       try { return tryDispatchPtr<F, LatticeTester::PODWeights                             >(weights, std::forward<ARGS>(args)...); } catch (std::bad_cast&) {}
