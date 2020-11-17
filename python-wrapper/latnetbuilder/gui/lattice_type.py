@@ -29,7 +29,7 @@ def change_lattice_type(change, gui):
         if gui.properties.interlacing.value == 1:
             gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('R', 'R')]
         else:
-            gui.figure_of_merit.figure_type.options = [('Balpha,d_1', 'IAalpha') , ('Bd_2', 'IB'), ('Balpha,d_3', 'ICAlpha')]
+            gui.figure_of_merit.figure_type.options = [('Balpha,d_1', 'IAalpha') , ('Bd_2', 'IB'), ('Balpha,d_3', 'ICalpha')]
 
 
 def lattice_type():

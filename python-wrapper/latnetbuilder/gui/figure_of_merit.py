@@ -46,10 +46,10 @@ def change_figure_type(change, gui):
 
     if change['new'] in ['spectral', 'R', 't-value', 'projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'IB']:
         gui.figure_of_merit.figure_alpha.layout.display = 'none'
-    elif change['new'] in ['Ralpha', 'Palpha', 'IAalpha', 'ICAlpha']:
+    elif change['new'] in ['Ralpha', 'Palpha', 'IAalpha', 'ICalpha']:
         gui.figure_of_merit.figure_alpha.layout.display = 'flex'
 
-    if change['new'] in ['IAalpha', 'IB', 'ICAlpha']:
+    if change['new'] in ['IAalpha', 'IB', 'ICalpha']:
         gui.figure_of_merit.norm_type.disabled = True
         gui.figure_of_merit.norm_type.value = '1'
     elif change['new'] in ['projdep:resolution-gap', 'projdep:t-value', 'projdep:t-value:starDisc', 'spectral']:
