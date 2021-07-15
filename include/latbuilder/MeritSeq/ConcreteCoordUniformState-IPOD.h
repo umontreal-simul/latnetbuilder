@@ -127,6 +127,33 @@ private:
    std::vector<RealVector> m_state;
 };
 
+
+
+template <LatticeType LR, EmbeddingType ET, Compress COMPRESS, PerLevelOrder PLO>
+class ConcreteCoordUniformState<LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>> :
+   public CoordUniformState<LR, ET, COMPRESS, PLO> {
+public:
+     ConcreteCoordUniformState(
+         const Storage<LR, ET, COMPRESS, PLO>& storage,
+         const LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>& weights
+         );
+
+   void reset();
+   void update(const RealVector& kernelValues, typename LatticeTraits<LR>::GenValue gen);
+   RealVector weightedState() const;
+   std::unique_ptr<CoordUniformState<LR, ET, COMPRESS, PLO>> clone() const
+   { return std::unique_ptr<CoordUniformState<LR, ET, COMPRESS, PLO>>(new ConcreteCoordUniformState(*this)); }
+
+private:
+   const LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>& m_weights;
+   unsigned int m_interlacingFactor;
+
+   RealVector m_elemPolySum; // equals the left sum in the formula for the weighted state q
+   RealVector m_partialWeightedState; // equals the right sum in the formula for the weighted state q
+   std::vector<RealVector> m_state;
+};
+
+
 extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
 extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
 extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IAAlpha>>;
@@ -157,6 +184,23 @@ extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, Embeddi
 
 extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
 extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::IB>>;
+
+
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::UNILEVEL, Compress::SYMMETRIC, PerLevelOrder::BASIC,  LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL, Compress::SYMMETRIC, PerLevelOrder::CYCLIC,  LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::CYCLIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+
+
+extern template class ConcreteCoordUniformState<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::UNILEVEL, Compress::NONE, PerLevelOrder::BASIC,       LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+extern template class ConcreteCoordUniformState<LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, Compress::NONE, PerLevelOrder::BASIC,  LatBuilder::Interlaced::IPODWeights<LatBuilder::Kernel::ICAlpha>>;
+
 
 }}
 

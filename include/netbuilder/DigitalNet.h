@@ -91,12 +91,17 @@ class DigitalNet
             return *m_generatingMatrices[coord];
         }
 
+        const std::vector<int>& generatingVector(Dimension coord) const 
+        {
+            return *m_generatingVectors[coord];
+        }
+
         /**
          * Formats the net for output.
          * @param outputFormat Format of output.
          * @param interlacingFactor Interlacing factor of the net.
          */ 
-        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, unsigned int interlacingFactor = 1) const = 0;
+        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputMachineFormat outputMachineFormat = OutputMachineFormat::NONE, unsigned int interlacingFactor = 1) const = 0;
 
         /** 
          * Returns a bool indicating whether the net can be viewed as a digital sequence.
@@ -109,6 +114,7 @@ class DigitalNet
         unsigned int m_nRows; // number of rows in generating matrices
         unsigned int m_nCols; // number of columns in generating matrices
         mutable std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
+        mutable std::vector<std::shared_ptr<std::vector<int>>> m_generatingVectors;
 
         /** 
          * Most general constructor. Designed to be used by derived classes. 
@@ -117,11 +123,12 @@ class DigitalNet
          * @param nCols Number of columns of the generating matrices.
          * @param genMatrices Vector of shared pointers to the generating matrices.
          */
-        DigitalNet(Dimension dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
+        DigitalNet(Dimension dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices, std::vector<std::shared_ptr<std::vector<int>>> genVectors):
             m_dimension(dimension),
             m_nRows(nRows),
             m_nCols(nCols),
-            m_generatingMatrices(genMatrices)
+            m_generatingMatrices(genMatrices),
+            m_generatingVectors(genVectors)
         {};
 
 };
@@ -164,6 +171,8 @@ class DigitalNetConstruction : public DigitalNet
             {
                 // construct the generating matrix and store them and the generating values
                 m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_sizeParameter)));
+                //construct m_generatingVectors qui appelera createGeneratingVector, cree dans NetConstructionTraits-POLYNOMIAL  (par exemple)
+                m_generatingVectors.push_back(std::shared_ptr<std::vector<int>>(ConstructionMethod::createGeneratingVector(genValue,m_sizeParameter)));
                 m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
             }
         }
@@ -194,28 +203,31 @@ class DigitalNetConstruction : public DigitalNet
         std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue) const 
         {
             std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(newGenValue,m_sizeParameter));
+            std::shared_ptr<std::vector<int>> newVec(ConstructionMethod::createGeneratingVector(newGenValue,m_sizeParameter));
 
             // copy the vector of pointers to matrices and add the new matrix
             auto genMats = m_generatingMatrices; 
             genMats.push_back(std::move(newMat));
+            auto genVecs = m_generatingVectors; 
+            genVecs.push_back(std::move(newVec));
 
             // copy the vector of pointers to generating values and add the new generating value
             auto genVals = m_genValues;
             genVals.push_back(std::shared_ptr<GenValue>(new GenValue(newGenValue)));
 
             // instantiate the new net and return the unique pointer to it
-            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>(m_dimension+1, m_sizeParameter, std::move(genVals), std::move(genMats)));
+            return std::unique_ptr<DigitalNetConstruction<NC>>(new DigitalNetConstruction<NC>(m_dimension+1, m_sizeParameter, std::move(genVals), std::move(genMats), std::move(genVecs)));
         }
 
 
         /**
          * {@inheritDoc}
          */ 
-        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, unsigned int interlacingFactor = 1) const
+        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputMachineFormat outputMachineFormat = OutputMachineFormat::NONE, unsigned int interlacingFactor = 1) const
         {   
             std::string res;
 
-            if (outputFormat == OutputFormat::MACHINE){
+            if (outputFormat == OutputFormat::HUMAN){
                 std::ostringstream stream;
                 stream << numColumns() << "  // Number of columns" << std::endl;
                 stream << numRows() << "  // Number of rows" << std::endl;
@@ -225,9 +237,18 @@ class DigitalNetConstruction : public DigitalNet
                 res+=stream.str();
             }
 
-            res += ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat, interlacingFactor);
+             /*if (outputFormat == OutputFormat::STDFILE){
+                std::ostringstream stream;
+                stream << "# Parameters for a digital net in base 2 " << std::endl;
+                stream << dimension() << "   # dimensions" << std::endl;
+                stream << numColumns() << "   # k = "<< numColumns() << ", n = 2^"<<  numColumns() << " = " << numPoints() << std::endl;
+                res+=stream.str();
+            }*/
 
-            if (outputFormat==OutputFormat::MACHINE)
+
+            res += ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat,outputMachineFormat, interlacingFactor);
+
+            if (outputFormat==OutputFormat::HUMAN)
             {
                 std::ostringstream stream;
                 for(Dimension dim = 0; dim < m_dimension; ++dim)
@@ -238,6 +259,20 @@ class DigitalNetConstruction : public DigitalNet
                 res+=stream.str();
             }
 
+            /*if (outputFormat==OutputFormat::STDFILE)
+            {
+                std::ostringstream stream;
+                for(Dimension dim = 0; dim < m_dimension; ++dim)
+                {
+                    stream << dim << " ";
+                    for(unsigned int i = 0; i < generatingVector(dim).size(); ++i)
+                    {
+                        stream << generatingVector(dim)[i] << " ";
+                    }
+                    stream << std::endl;
+                }
+                res+=stream.str();
+            }*/
             return res;
         }
 
@@ -266,8 +301,10 @@ class DigitalNetConstruction : public DigitalNet
             Dimension dimension,
             SizeParameter sizeParameter,
             std::vector<std::shared_ptr<GenValue>> genValues,
-            std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
-                DigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter), std::move(genMatrices)),
+            std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices,
+            std::vector<std::shared_ptr<std::vector<int>>> genVectors
+            ):
+                DigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter), std::move(genMatrices), std::move(genVectors)),
                 m_sizeParameter(std::move(sizeParameter)),
                 m_genValues(std::move(genValues))
         {};

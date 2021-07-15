@@ -1,7 +1,7 @@
 # LatNet Builder
 _A general software tool for constructing highly uniform point sets_
 
-[**LatNet Builder Manual**](https://umontreal-simul.github.io/latnetbuilder/)
+[**LatNet Builder Manual**](http://umontreal-simul.github.io/latnetbuilder/)
 
 **Outline**:
 1) [A software for quasi-Monte Carlo](#a-software-for-quasi-monte-carlo)
@@ -220,6 +220,12 @@ After installing Conda, you can run the following commands:
 conda create -n latnetbuilder   # create a conda environment named latnetbuilder
 conda config --add channels conda-forge         # add conda-forge as a default conda channel
 conda install -c umontreal-simul latnetbuilder   # installs the latnetbuilder package from the channel umontreal-simul
+```
+
+Temporary fix of [issue 8](https://github.com/umontreal-simul/latnetbuilder/issues/8): On MacOS, please specify the version of the package, as follows
+
+```bash
+conda install -c umontreal-simul latnetbuilder=2.1.1
 ```
 
 #### For Windows
@@ -469,11 +475,13 @@ Help on usage can be obtained by replacing the `--version` switch with the
 
 ### Binary pre-compiled releases 
 
-To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). 
+To compile a portable executable, you first need to compile a portable static library for each dependency (GMP, NTL, Boost and FFTW). If the libraries are somewhere in your path (typically in /usr/local/lib), we advise to remove them beforehand, to make sure dynamic libraries do not get linked by error.
 
 The following commands **should** do the job. 
 - If you compile on Linux:
 	- replace `<OS>` by `linux`
+  - add `-fPIC` to the list of CXXFLAGS and CFLAGS for FFTW, GMP, NTL
+  - add `cxxflags=-fPIC cflags=-fPIC` to the ./b2 command for Boost
 - If you compile on Mac OS X:
 	- replace `<OS>` by `darwin`
 	- add `--enable-assembly=no` to the configuration of GMP
@@ -485,6 +493,8 @@ The following commands **should** do the job.
 export CXXFLAGS='-m64 -march=k8'
 export CFLAGS='-m64 -march=k8'
 ./configure --prefix=$HOME/fftw --enable-static --enable-threads --with-combined-threads --enable-sse2
+make
+make install
 ```
 
 **GMP**

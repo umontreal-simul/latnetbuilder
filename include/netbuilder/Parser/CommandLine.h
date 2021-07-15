@@ -25,6 +25,8 @@
 
 #include "latbuilder/SizeParam.h"
 
+using namespace std::placeholders;
+
 namespace NetBuilder { namespace Parser {
 
 /**

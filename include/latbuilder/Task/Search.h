@@ -36,6 +36,8 @@
 
 #include <memory>
 
+using namespace std::placeholders;
+
 namespace LatBuilder { namespace Task {
 
 /**

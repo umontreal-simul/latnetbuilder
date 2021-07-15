@@ -42,6 +42,7 @@ struct CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
    std::vector<std::string> weights;
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
+   std::string machine;
 
    std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::EmbeddingType::UNILEVEL>> parse() const;
 };

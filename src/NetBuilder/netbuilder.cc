@@ -27,6 +27,7 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
+#include "netbuilder/Parser/OutputMachineFormatParser.h"
 #include "netbuilder/Task/Task.h"
 
 #include "latbuilder/Parser/Common.h"
@@ -38,29 +39,37 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int interlacingFactor, Real time)
+void TaskOutput(const Task::Task &task, std::string outputFolder, OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor, Real time)
 {
   unsigned int old_precision = (unsigned int)std::cout.precision();
   if (merit_digits_displayed){
     std::cout.precision(merit_digits_displayed);
   }
   std::cout << "====================\n       Result\n====================" << std::endl;
-  std::cout << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+  std::cout << task.outputNet(OutputFormat::HUMAN, OutputMachineFormat::NONE, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
   if (outputFolder != ""){
     std::ofstream outFile;
     std::string fileName = outputFolder + "/output.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(OutputFormat::HUMAN, OutputMachineFormat::NONE, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
     outFile << "ELAPSED CPU TIME: " << time << " seconds" << std::endl;
     outFile.close();
 
+    if (outputMachineFormat != NetBuilder::OutputMachineFormat::NONE){
 
-    fileName = outputFolder + "/outputMachine.txt";
-    outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::MACHINE, interlacingFactor) << task.outputMeritValue() << "  // Merit" << std::endl;
-    outFile << time << "  // Time" << std::endl;
-    outFile.close();
+      fileName = outputFolder + "/outputMachine.txt";
+      outFile.open(fileName);
+      outFile << task.outputNet(OutputFormat::MACHINE, outputMachineFormat, interlacingFactor) << std::endl;
+      /*outFile << task.outputMeritValue() << "  // Merit" <<  std::endl;
+      outFile << time << "  // Time" << std::endl;*/
+      outFile.close();
+  /*
+      fileName = outputFolder + "/outputSTDFILE.txt";
+      outFile.open(fileName);
+      outFile << task.outputNet(OutputFormat::STDFILE, netMachineFormat, interlacingFactor) << std::endl;
+      outFile.close();*/
+    }
   }
   
   if (merit_digits_displayed){
@@ -154,6 +163,8 @@ makeOptionsDescription()
    "ranges between 0 (default) and 3\n")
     ("output-folder,o", po::value<std::string>(),
     "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
+    ("machine,m", po::value<std::string>()->default_value(""),
+    "(optional) TBD\n")
     ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -253,6 +264,7 @@ int main(int argc, const char *argv[])
 
         std::string s_multilevel = opt["multilevel"].as<std::string>();
         std::string s_construction = opt["construction"].as<std::string>();
+        std::string s_outputMachineFormat = opt["machine"].as<std::string>();
         NetBuilder::EmbeddingType embeddingType = NetBuilder::Parser::EmbeddingTypeParser::parse(s_multilevel);
 
         NetBuilder::NetConstruction netConstruction;
@@ -270,22 +282,30 @@ int main(int argc, const char *argv[])
         unsigned int interlacingFactor = 0;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
+       
+       NetBuilder::OutputMachineFormat outputMachineFormat = NetBuilder::OutputMachineFormat::NONE;
 
-        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
-          BUILD_TASK(SOBOL, UNILEVEL)
+       if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+          BUILD_TASK(SOBOL, UNILEVEL);
+          outputMachineFormat = NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputMachineFormat);
        }
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(SOBOL, MULTILEVEL)
+          outputMachineFormat = NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputMachineFormat);
        }
        if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
+          outputMachineFormat =  NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(s_outputMachineFormat);
        }
         if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
+          outputMachineFormat =  NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputMachineFormat);
        }
        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(EXPLICIT, MULTILEVEL)
+          outputMachineFormat =  NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputMachineFormat);
        }
+
 
       for (unsigned i=0; i<repeat; i++){
         if (i == 0){
@@ -315,7 +335,7 @@ int main(int argc, const char *argv[])
           auto dt = duration_cast<duration<double>>(t1 - t0);
 
           std::cout << std::endl;
-          TaskOutput(*task, outputFolder, interlacingFactor, dt.count());
+          TaskOutput(*task, outputFolder, outputMachineFormat, interlacingFactor, dt.count());
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
           task->reset();

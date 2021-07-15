@@ -23,6 +23,8 @@
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/Types.h"
 
+#include "netbuilder/Parser/OutputMachineFormatParser.h"
+
 #include <fstream>
 #include <chrono>
 #include <boost/filesystem.hpp>
@@ -159,6 +161,8 @@ makeOptionsDescription()
    "ranges between 0 (default) and 3\n")
     ("output-folder,o", po::value<std::string>(),
     "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
+    ("machine,m", po::value<std::string>()->default_value(""),
+    "(optional) TBD")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -212,6 +216,24 @@ std::string helper(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVE
   return "0  // Base\n0  // Maximum level\n";
 }
 
+
+template <EmbeddingType ET>
+std::string helper2(const SizeParam<LatticeType::ORDINARY, ET>& param);
+
+template<>
+std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& param)
+{
+  return "embedded from " + std::to_string(param.base()) + " to " + std::to_string(param.maxLevel()) + "\n";
+}
+
+template<>
+std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& param)
+{
+  return "non - embedded\n";
+}
+
+
+
 template <EmbeddingType ET>
 void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
 {
@@ -227,7 +249,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
       std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
-      outFile << *search;
+      outFile << *search; 
       outFile.close();
     }
 
@@ -271,7 +293,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
           outFile.close();
 
 
-          fileName = outputFolder + "/outputMachine.txt";
+          /*fileName = outputFolder + "/outputMachine.txt";
           outFile.open(fileName);
           outFile << "Ordinary  // Construction method\n" << lat.sizeParam().numPoints() << "  // Number of points\n" << lat.dimension() << "  // Dimension of points\n";
           outFile << helper<ET>(lat.sizeParam());
@@ -281,6 +303,18 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
           }          
           outFile << search->bestMeritValue() << "  // Merit" << std::endl;
           outFile << dt.count() << "  // Time" << std::endl;
+          outFile.close();*/
+
+          fileName = outputFolder + "/outputMachine.txt";
+          outFile.open(fileName);
+          outFile << "# Parameters for a lattice rule , ";
+          outFile << helper2<ET>(lat.sizeParam());
+          outFile << lat.dimension() <<"      # "<< lat.dimension() << "dimensions\n";
+          outFile << lat.sizeParam().numPoints() <<" # modulus = n = "<< lat.sizeParam().numPoints() << " points\n";
+          auto vec = lat.gen();
+          for (unsigned int coord = 0; coord < vec.size(); coord++){
+            outFile << vec[coord] << std::endl;
+          }
           outFile.close();
       }
       
@@ -293,7 +327,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
 
 template <EmbeddingType ET>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder, NetBuilder::OutputMachineFormat outputMachineFormat)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -355,15 +389,26 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
           std::ofstream outFile;
           std::string fileName = outputFolder + "/output.txt";
           outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::HUMAN, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
+          outFile << net.format(NetBuilder::OutputFormat::HUMAN, NetBuilder::OutputMachineFormat::NONE, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
           outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
           outFile.close();
 
-          fileName = outputFolder + "/outputMachine.txt";
+          if (outputMachineFormat != NetBuilder::OutputMachineFormat::NONE){
+            fileName = outputFolder + "/outputMachine.txt";
+            outFile.open(fileName);
+            outFile << net.format(NetBuilder::OutputFormat::MACHINE, outputMachineFormat, interlacingFactor) ;//<< search->bestMeritValue() << "  // Merit" << std::endl;
+            //outFile << dt.count() << "  // Time" << std::endl;
+            outFile.close();
+          }
+
+/*
+          fileName = outputFolder + "/outputSTD.txt";
           outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::MACHINE, interlacingFactor) << search->bestMeritValue() << "  // Merit" << std::endl;
-          outFile << dt.count() << "  // Time" << std::endl;
+          outFile << net.format(NetBuilder::OutputFormat::STDFILE, interlacingFactor,) << std::endl;
+          //outFile << net.format(NetBuilder::OutputFormat::STDFILE, interlacingFactor) << search->bestMeritValue() << "  // Merit" << std::endl;
+          //outFile << dt.count() << "  // Time" << std::endl;
           outFile.close();
+*/
 
       }
 
@@ -403,6 +448,8 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
+        std::string machine = opt["machine"].as<std::string>();
+
        LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["construction"].as<std::string>());
 
        if(lattice == LatticeType::ORDINARY){
@@ -417,6 +464,7 @@ int main(int argc, const char *argv[])
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
             cmd.weights       = opt["weights"].as<std::vector<std::string>>();
+
             if (opt.count("combiner") == 1){
               cmd.combiner      = opt["combiner"].as<std::string>();
             }
@@ -453,7 +501,6 @@ int main(int argc, const char *argv[])
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
             if (latType == EmbeddingType::UNILEVEL){
-
                executeOrdinary<EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder);
                
              }
@@ -502,12 +549,15 @@ int main(int argc, const char *argv[])
 
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
+            NetBuilder::OutputMachineFormat outputMachineFormat = NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(machine);
+
+
             if (latType == EmbeddingType::UNILEVEL){
-               executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder);
+              executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder, outputMachineFormat);
                
              }
             else{
-               executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder);
+              executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder, outputMachineFormat);
                
              }
       }

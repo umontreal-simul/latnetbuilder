@@ -175,8 +175,8 @@ public:
     /**
      *  Returns the best net found by the search task.
      */
-    virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const override
-    { return bestNet().format(outputFormat, interlacingFactor); }
+    virtual std::string outputNet(OutputFormat outputFormat, OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor) const override
+    { return bestNet().format(outputFormat, outputMachineFormat, interlacingFactor); }
 
     /**
      *  Returns information about the task

@@ -68,6 +68,29 @@ namespace NetBuilder {
         }
         return genMat;
     }
+    std::vector<int>*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter)
+    {
+        // TO DO to return genVector
+
+        unsigned int m = (unsigned int) (deg(sizeParameter));
+        std::vector<int>* cj = new std::vector<int>;
+       
+        for(unsigned int c =0; c<m; c++ )
+        {
+            cj->push_back(0); 
+        }
+ 
+        std::vector<unsigned int> expansion(31 + m);
+        expandSeries(genValue, sizeParameter, expansion, 31 + m);
+        for(unsigned int c =0; c<m; c++ )
+        {
+            for(unsigned int row =0; row <31; row++ )
+            {
+                (*cj)[c] += expansion[c + row]*pow(2, 31-1-row);
+            }
+        }
+        return cj;
+    }
 
     typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
     {
@@ -94,10 +117,11 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor)
     {
         std::string res;
         std::ostringstream stream;
+        //unsigned int m = (unsigned int) (deg(sizeParameter));
 
         if (outputFormat == OutputFormat::HUMAN){
             stream << "Polynomial Digital Net - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
@@ -108,14 +132,52 @@ namespace NetBuilder {
                 stream << "  " << *(genVals[coord]) << std::endl;
             }
         }
-        else{
-            stream << "Polynomial  // Construction method" << std::endl;
-            stream << sizeParameter << "  // modulus" << std::endl;
-            for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                stream << *(genVals[coord]) << std::endl;
-            }
-        }
+        else if (outputFormat == OutputFormat::MACHINE){
 
+            if (outputMachineFormat == OutputMachineFormat::POLYNOME){
+                stream << "# Parameters for a polynomial lattice rule in base 2, non - embedded" << std::endl;
+                /*if (interlacingFactor > 1){
+                        stream << ", embedded with interlacing factor " << interlacingFactor << ":" << std::endl;
+                }
+                else {stream << ", non - embedded" << std::endl;}*/
+                stream << genVals.size()/interlacingFactor << "     # dimensions" << std::endl;
+                stream << (int) deg(sizeParameter) << "     # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
+                stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
+                stream << sizeParameter << " # polynomial modulus" << std::endl;
+                stream << *(genVals[0]) << " # coordinates of generating vector , starting at j =1" <<std::endl;
+                for (unsigned int coord = 1; coord < genVals.size(); coord++){
+                    stream << *(genVals[coord]) << std::endl;
+                }
+                std::string foo(stream.str());
+                foo.pop_back();
+                stream.str(foo);
+                stream.seekp (0, stream.end);
+            }
+            else if (outputMachineFormat == OutputMachineFormat::DIGITALNET) {
+                stream << "# Parameters for a digital net in base 2 " << std::endl;
+                stream << genVals.size()/interlacingFactor << "   # dimensions" << std::endl;
+                stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter) << ", n = 2^"<<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << std::endl;
+                stream << "31   # r = 31 digits" << std::endl;
+                stream << "# The next row gives the columns of C_1 , the first gen . matrix" << std::endl;
+                for(unsigned int coord = 0; coord < genVals.size(); coord++)
+                {
+                    const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
+                    //stream << coord +1 << " ";
+                    for(unsigned int i = 0; i < (unsigned int) deg(sizeParameter); ++i)
+                    {
+                        stream << (*generatingVector)[i] << " ";
+                    }
+                    stream << std::endl;
+                }
+                //stream << *last;
+                std::string foo(stream.str());
+                foo.pop_back();
+                stream.str(foo);
+                stream.seekp (0, stream.end);
+            }
+            else{ stream << std::endl;}
+        }
+        else{ stream << std::endl;}
         res += stream.str();
         boost::algorithm::erase_all(res, "[");
         boost::algorithm::erase_all(res, "]");

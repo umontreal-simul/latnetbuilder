@@ -42,7 +42,7 @@ def change_interlacing(change, gui):
             gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('R', 'R'), ('t-value', 't-value'), ('proj dep t-value', 'projdep:t-value'), ('star discr t-value', 'projdep:t-value:starDisc'),  ('resolution-gap', 'projdep:resolution-gap')]
             gui.figure_of_merit.figure_type.value = 'Palpha'
     else:
-        gui.figure_of_merit.figure_type.options = [('Balpha,d_1', 'IAalpha'), ('Bd_2', 'IB')]    
+        gui.figure_of_merit.figure_type.options = [('Balpha,d_1', 'IAalpha'), ('Bd_2', 'IB'), ('Balpha,d_3', 'ICalpha')]    
         gui.figure_of_merit.figure_type.value = 'IAalpha'
     update(gui.exploration_method.generating_vector.children[0], change['new']*gui.properties.dimension.value, '1', '100px')
     update(gui.exploration_method.generating_vector_simple, change['new']*gui.properties.dimension.value, '1', '100px')

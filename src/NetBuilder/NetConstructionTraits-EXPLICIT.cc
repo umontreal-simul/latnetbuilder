@@ -43,6 +43,24 @@ namespace NetBuilder {
         return genMat;
     }
 
+    std::vector<int>*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter)
+    {
+      unsigned int m = (unsigned int) (nCols(sizeParameter));
+      std::vector<int>* cj = new std::vector<int>;
+      for(unsigned int c =0; c<m; c++ ){
+          cj->push_back(0);
+      }
+      GeneratingMatrix* tmp = createGeneratingMatrix(genValue,sizeParameter);
+      for(unsigned int c =0; c<m; c++ )
+      {
+          for(unsigned int r =0; r<m; r++ )
+          {
+             (*cj)[c] += (*tmp)[r][c]*pow(2, m-1-r); 
+          }
+      }
+        return cj;
+    }
+
     std::vector<GenValue> NetConstructionTraits<NetConstruction::EXPLICIT>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
     {
         throw std::logic_error("The space of all matrices is far too big to be exhautively explored.");
@@ -55,13 +73,13 @@ namespace NetBuilder {
         return std::vector<std::vector<GenValue>>{};
     }
 
-    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor)
     {
         std::ostringstream stream;
         
         if (outputFormat == OutputFormat::HUMAN){
             stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
-            for (unsigned int coord = 0; coord < genVals.size(); coord++){
+            /*for (unsigned int coord = 0; coord < genVals.size(); coord++){
                 if (interlacingFactor == 1){
                     stream << "Coordinate " << coord+1 << ":" << std::endl;
                 }
@@ -72,12 +90,31 @@ namespace NetBuilder {
                     stream << "    Component " << (coord % interlacingFactor) + 1  << ":" << std::endl;
                 }
                 stream << *(genVals[coord]) << std::endl;
-            }
+            }*/
         }
         else{
+            unsigned int m = (unsigned int) (nCols(sizeParameter));
             stream << "Explicit  // Construction method" << std::endl;
+            stream << "# Parameters for a digital net in base 2 " << std::endl;
+            stream << genVals.size()/interlacingFactor << "   # dimensions" << std::endl;
+            stream << m << "   # k = "<<m << ", n = 2^"<<  m << " = " << (int)pow(2,m ) << std::endl;
+            stream << "m   # r = " << m << " digits" << std::endl;
+            stream << "# The next row gives the columns of C_1 , the first gen . matrix" << std::endl;
+            for(unsigned int coord = 0; coord < genVals.size(); coord++)
+            {
+                const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
+                //stream << coord +1 << " ";
+                for(unsigned int i = 0; i < m; ++i)
+                {
+                    stream << (*generatingVector)[i] << " ";
+                }
+                stream << std::endl;
+            }
+            std::string foo(stream.str());
+            foo.pop_back();
+            stream.str(foo);
+            stream.seekp (0, stream.end);
         }
-
         return stream.str();
     }  
 }
