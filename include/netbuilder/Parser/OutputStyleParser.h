@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef NETBUILDER__PARSER__OUTPUT_MACHINE_FORMAT_PARSER_H
-#define NETBUILDER__PARSER__OUTPUT_MACHINE_FORMAT_PARSER_H
+#ifndef NETBUILDER__PARSER__OUTPUT_STYLE_PARSER_H
+#define NETBUILDER__PARSER__OUTPUT_STYLE_PARSER_H
 
 #include "netbuilder/Types.h"
 
@@ -53,10 +53,10 @@ private:
  * Parser for machine formats.
  */
 template <NetConstruction NC>
-struct OutputMachineFormatParser {};
+struct OutputStyleParser {};
 
 template<>
-struct OutputMachineFormatParser<NetConstruction::SOBOL>
+struct OutputStyleParser<NetConstruction::SOBOL>
 {
    typedef NetBuilder::OutputMachineFormat result_type;
 
@@ -87,7 +87,7 @@ struct OutputMachineFormatParser<NetConstruction::SOBOL>
 };
 
 template<>
-struct OutputMachineFormatParser<NetConstruction::POLYNOMIAL>
+struct OutputStyleParser<NetConstruction::POLYNOMIAL>
 {
    typedef NetBuilder::OutputMachineFormat result_type;
 
@@ -114,7 +114,7 @@ struct OutputMachineFormatParser<NetConstruction::POLYNOMIAL>
 };
 
 template<>
-struct OutputMachineFormatParser<NetConstruction::EXPLICIT>
+struct OutputStyleParser<NetConstruction::EXPLICIT>
 {
    typedef NetBuilder::OutputMachineFormat result_type;
 

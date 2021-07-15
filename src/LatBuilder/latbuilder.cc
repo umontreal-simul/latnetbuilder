@@ -23,7 +23,7 @@
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/Types.h"
 
-#include "netbuilder/Parser/OutputMachineFormatParser.h"
+#include "netbuilder/Parser/OutputStyleParser.h"
 
 #include <fstream>
 #include <chrono>
@@ -549,7 +549,7 @@ int main(int argc, const char *argv[])
 
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
-            NetBuilder::OutputMachineFormat outputMachineFormat = NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(machine);
+            NetBuilder::OutputMachineFormat outputMachineFormat = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(machine);
 
 
             if (latType == EmbeddingType::UNILEVEL){

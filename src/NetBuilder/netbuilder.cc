@@ -27,7 +27,7 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
-#include "netbuilder/Parser/OutputMachineFormatParser.h"
+#include "netbuilder/Parser/OutputStyleParser.h"
 #include "netbuilder/Task/Task.h"
 
 #include "latbuilder/Parser/Common.h"
@@ -287,23 +287,23 @@ int main(int argc, const char *argv[])
 
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL);
-          outputMachineFormat = NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputMachineFormat);
+          outputMachineFormat = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputMachineFormat);
        }
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(SOBOL, MULTILEVEL)
-          outputMachineFormat = NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputMachineFormat);
+          outputMachineFormat = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputMachineFormat);
        }
        if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
-          outputMachineFormat =  NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(s_outputMachineFormat);
+          outputMachineFormat =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(s_outputMachineFormat);
        }
         if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
-          outputMachineFormat =  NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputMachineFormat);
+          outputMachineFormat =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputMachineFormat);
        }
        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(EXPLICIT, MULTILEVEL)
-          outputMachineFormat =  NetBuilder::Parser::OutputMachineFormatParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputMachineFormat);
+          outputMachineFormat =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputMachineFormat);
        }
 
 
