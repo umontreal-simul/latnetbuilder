@@ -161,7 +161,7 @@ makeOptionsDescription()
    "ranges between 0 (default) and 3\n")
     ("output-folder,o", po::value<std::string>(),
     "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
-    ("machine,m", po::value<std::string>()->default_value(""),
+    ("output-style,y", po::value<std::string>()->default_value(""),
     "(optional) TBD")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
@@ -327,7 +327,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
 
 template <EmbeddingType ET>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder, NetBuilder::OutputMachineFormat outputMachineFormat)
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder, NetBuilder::OutputStyle outputStyle)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -389,27 +389,17 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
           std::ofstream outFile;
           std::string fileName = outputFolder + "/output.txt";
           outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::HUMAN, NetBuilder::OutputMachineFormat::NONE, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
+          outFile << net.format(NetBuilder::OutputFormat::HUMAN, NetBuilder::OutputStyle::NONE, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
           outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
           outFile.close();
 
-          if (outputMachineFormat != NetBuilder::OutputMachineFormat::NONE){
+          if (outputStyle != NetBuilder::OutputStyle::NONE){
             fileName = outputFolder + "/outputMachine.txt";
             outFile.open(fileName);
-            outFile << net.format(NetBuilder::OutputFormat::MACHINE, outputMachineFormat, interlacingFactor) ;//<< search->bestMeritValue() << "  // Merit" << std::endl;
+            outFile << net.format(NetBuilder::OutputFormat::MACHINE, outputStyle, interlacingFactor) ;//<< search->bestMeritValue() << "  // Merit" << std::endl;
             //outFile << dt.count() << "  // Time" << std::endl;
             outFile.close();
           }
-
-/*
-          fileName = outputFolder + "/outputSTD.txt";
-          outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::STDFILE, interlacingFactor,) << std::endl;
-          //outFile << net.format(NetBuilder::OutputFormat::STDFILE, interlacingFactor) << search->bestMeritValue() << "  // Merit" << std::endl;
-          //outFile << dt.count() << "  // Time" << std::endl;
-          outFile.close();
-*/
-
       }
 
         
@@ -448,7 +438,7 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
-        std::string machine = opt["machine"].as<std::string>();
+        std::string outputstyle = opt["output-style"].as<std::string>();
 
        LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["construction"].as<std::string>());
 
@@ -549,15 +539,15 @@ int main(int argc, const char *argv[])
 
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
-            NetBuilder::OutputMachineFormat outputMachineFormat = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(machine);
+            NetBuilder::OutputStyle outputStyle = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(outputstyle);
 
 
             if (latType == EmbeddingType::UNILEVEL){
-              executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder, outputMachineFormat);
+              executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder, outputStyle);
                
              }
             else{
-              executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder, outputMachineFormat);
+              executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder, outputStyle);
                
              }
       }

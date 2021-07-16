@@ -1,23 +1,23 @@
 Liste des commandes :
 
-latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test11111
+latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_lat
 
-latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test11111 --multilevel true --combiner sum
+latnetbuilder -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_lat_embedded --multilevel true --combiner sum
 
-latnetbuilder -t lattice -c polynomial -s 2^10 -d 10 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test22222 -m net
+latnetbuilder -t lattice -c polynomial -s 2^10 -d 10 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_l_polynomial_net -y net
 
-latnetbuilder -t lattice -c polynomial -s 2^10 -d 10 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test22222 -m lattice
+latnetbuilder -t lattice -c polynomial -s 2^10 -d 10 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_l_polynomial_lat -y lattice
 
-latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test33333 -m net
+latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_sobol_net -y net
 
-latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test33333 -m sobol
+latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_sobol_sob -y sobol
 
-latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test33333 -m soboljk
+latnetbuilder -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_sobol_jk -y soboljk
 
-latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test22222 -m net
+latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_n_polynomial_net -y net
 
-latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test22222 -m lattice
+latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_n_polynomial_lat -y lattice
 
-latnetbuilder --set-type net --construction explicit --multilevel true --size-parameter 2^10 --figure-of-merit CU:IA2 --norm-type 1 --exploration-method random-CBC:10 --verbose 2 --dimension 2 --interlacing 2 --output-folder test44444 --weights order-dependent:0:0.8,0.64 --combiner sum --machine net
+latnetbuilder --set-type net --construction explicit --multilevel true --size-parameter 2^10 --figure-of-merit CU:IA2 --norm-type 1 --exploration-method random-CBC:10 --verbose 2 --dimension 2 --interlacing 2 --output-folder test_explicit --weights order-dependent:0:0.8,0.64 --combiner sum --output-style net
 
 

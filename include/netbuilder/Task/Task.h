@@ -41,7 +41,7 @@ public:
     /**
      * Outputs the resulting net of the task.
      */ 
-    virtual std::string outputNet(OutputFormat outputFormat, OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor) const = 0;
+    virtual std::string outputNet(OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor) const = 0;
 
     /**
      * Output information about the task.

@@ -101,7 +101,7 @@ class DigitalNet
          * @param outputFormat Format of output.
          * @param interlacingFactor Interlacing factor of the net.
          */ 
-        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputMachineFormat outputMachineFormat = OutputMachineFormat::NONE, unsigned int interlacingFactor = 1) const = 0;
+        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputStyle outputStyle = OutputStyle::NONE, unsigned int interlacingFactor = 1) const = 0;
 
         /** 
          * Returns a bool indicating whether the net can be viewed as a digital sequence.
@@ -223,7 +223,7 @@ class DigitalNetConstruction : public DigitalNet
         /**
          * {@inheritDoc}
          */ 
-        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputMachineFormat outputMachineFormat = OutputMachineFormat::NONE, unsigned int interlacingFactor = 1) const
+        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputStyle outputStyle = OutputStyle::NONE, unsigned int interlacingFactor = 1) const
         {   
             std::string res;
 
@@ -237,16 +237,7 @@ class DigitalNetConstruction : public DigitalNet
                 res+=stream.str();
             }
 
-             /*if (outputFormat == OutputFormat::STDFILE){
-                std::ostringstream stream;
-                stream << "# Parameters for a digital net in base 2 " << std::endl;
-                stream << dimension() << "   # dimensions" << std::endl;
-                stream << numColumns() << "   # k = "<< numColumns() << ", n = 2^"<<  numColumns() << " = " << numPoints() << std::endl;
-                res+=stream.str();
-            }*/
-
-
-            res += ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat,outputMachineFormat, interlacingFactor);
+            res += ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat,outputStyle, interlacingFactor);
 
             if (outputFormat==OutputFormat::HUMAN)
             {
@@ -258,21 +249,6 @@ class DigitalNetConstruction : public DigitalNet
                 }
                 res+=stream.str();
             }
-
-            /*if (outputFormat==OutputFormat::STDFILE)
-            {
-                std::ostringstream stream;
-                for(Dimension dim = 0; dim < m_dimension; ++dim)
-                {
-                    stream << dim << " ";
-                    for(unsigned int i = 0; i < generatingVector(dim).size(); ++i)
-                    {
-                        stream << generatingVector(dim)[i] << " ";
-                    }
-                    stream << std::endl;
-                }
-                res+=stream.str();
-            }*/
             return res;
         }
 

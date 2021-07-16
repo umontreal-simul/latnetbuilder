@@ -1,0 +1,9 @@
+Task: LatBuilder Search for Ordinary lattices
+Exploration method: CBC - Fast Explorer
+Dimension: 100
+Embedding type: Multilevel
+Combiner: Sum
+Modulus: 2^16
+Figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.1)
+Norm type: 2

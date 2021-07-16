@@ -20,10 +20,12 @@
 #include "netbuilder/Types.h"
 
 namespace NetBuilder { namespace Parser {
+
 /**
- * Exception thrown when trying to parse an invalid machine format.
+ * Exception thrown when trying to parse an invalid output style.
  */
-class BadMachineFormat : public std::exception {
+
+/*class BadMachineFormat : public std::exception {
 public:
    BadMachineFormat(const std::string& message, NetConstruction netConstruction){
       GetDefaultMachineFormat(netConstruction);
@@ -32,25 +34,25 @@ public:
 private:
    std::string message;
 
-   OutputMachineFormat GetDefaultMachineFormat(NetConstruction netConstruction)
+   OutputStyle GetDefaultMachineFormat(NetConstruction netConstruction)
    {
       if(netConstruction == NetConstruction::SOBOL)
       {
-        return NetBuilder::OutputMachineFormat::SOBOL;
+        return NetBuilder::OutputStyle::SOBOL;
       }
       else if(netConstruction == NetConstruction::POLYNOMIAL)
       {
-        return NetBuilder::OutputMachineFormat::POLYNOME;
+        return NetBuilder::OutputStyle::LATTICE;
       }
       else
       {
-        return NetBuilder::OutputMachineFormat::EXPLICIT;
+        return NetBuilder::OutputStyle::NET;
       }
    }  
-};
+};*/
 
 /**
- * Parser for machine formats.
+ * Parser for output style.
  */
 template <NetConstruction NC>
 struct OutputStyleParser {};
@@ -58,30 +60,30 @@ struct OutputStyleParser {};
 template<>
 struct OutputStyleParser<NetConstruction::SOBOL>
 {
-   typedef NetBuilder::OutputMachineFormat result_type;
+   typedef NetBuilder::OutputStyle result_type;
 
    static result_type parse(const std::string& str)
    {
       if (str == "sobol")
       {
-        return NetBuilder::OutputMachineFormat::SOBOL;
+        return NetBuilder::OutputStyle::SOBOL;
       }
       else if (str == "soboljk")
       {
-        return NetBuilder::OutputMachineFormat::SOBOLJK;
+        return NetBuilder::OutputStyle::SOBOLJK;
       }
       else if (str == "net")
       {
-        return NetBuilder::OutputMachineFormat::DIGITALNET;
+        return NetBuilder::OutputStyle::NET;
       }
       else if (str == "")
       {
-        return NetBuilder::OutputMachineFormat::NONE;
+        return NetBuilder::OutputStyle::SOBOL;
       }
       else
       {
-        std::cout << "WARNING: cannot parse output machine format string. Default output machine format: SOBOL" << std::endl;
-        return NetBuilder::OutputMachineFormat::SOBOL;
+        std::cout << "WARNING: cannot parse output style  string. Default output style: SOBOL" << std::endl;
+        return NetBuilder::OutputStyle::SOBOL;
       }
    }
 };
@@ -89,26 +91,26 @@ struct OutputStyleParser<NetConstruction::SOBOL>
 template<>
 struct OutputStyleParser<NetConstruction::POLYNOMIAL>
 {
-   typedef NetBuilder::OutputMachineFormat result_type;
+   typedef NetBuilder::OutputStyle result_type;
 
    static result_type parse(const std::string& str)
    {
       if (str == "lattice")
       {
-        return NetBuilder::OutputMachineFormat::POLYNOME;
+        return NetBuilder::OutputStyle::LATTICE;
       }
       else if (str == "net")
       {
-        return NetBuilder::OutputMachineFormat::DIGITALNET;
+        return NetBuilder::OutputStyle::NET;
       }
       else if (str == "")
       {
-        return NetBuilder::OutputMachineFormat::NONE;
+        return NetBuilder::OutputStyle::LATTICE;
       }
       else
       {
-        std::cout << "WARNING: cannot parse output machine format string. Default output machine format: POLYNOME" << std::endl;
-        return NetBuilder::OutputMachineFormat::POLYNOME;
+        std::cout << "WARNING: cannot parse output style  string. Default output style: LATTICE" << std::endl;
+        return NetBuilder::OutputStyle::LATTICE;
       }
    }
 };
@@ -116,22 +118,22 @@ struct OutputStyleParser<NetConstruction::POLYNOMIAL>
 template<>
 struct OutputStyleParser<NetConstruction::EXPLICIT>
 {
-   typedef NetBuilder::OutputMachineFormat result_type;
+   typedef NetBuilder::OutputStyle result_type;
 
    static result_type parse(const std::string& str)
    {
       if (str == "net")
       {
-        return NetBuilder::OutputMachineFormat::EXPLICIT;
+        return NetBuilder::OutputStyle::NET;
       }
       else if (str == "")
       {
-        return NetBuilder::OutputMachineFormat::NONE;
+        return NetBuilder::OutputStyle::NET;
       }
       else
       {
-        std::cout << "WARNING: cannot parse output machine format string. Default output machine format: EXPLICIT" << std::endl;
-        return NetBuilder::OutputMachineFormat::EXPLICIT;
+        std::cout << "WARNING: cannot parse output style  string. Default output style: NET" << std::endl;
+        return NetBuilder::OutputStyle::NET;
       }
    }
 };

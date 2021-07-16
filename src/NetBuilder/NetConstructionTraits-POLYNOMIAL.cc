@@ -117,7 +117,7 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::string res;
         std::ostringstream stream;
@@ -134,14 +134,14 @@ namespace NetBuilder {
         }
         else if (outputFormat == OutputFormat::MACHINE){
 
-            if (outputMachineFormat == OutputMachineFormat::POLYNOME){
+            if (outputStyle == OutputStyle::LATTICE){
                 stream << "# Parameters for a polynomial lattice rule in base 2, non - embedded" << std::endl;
                 /*if (interlacingFactor > 1){
                         stream << ", embedded with interlacing factor " << interlacingFactor << ":" << std::endl;
                 }
                 else {stream << ", non - embedded" << std::endl;}*/
-                stream << genVals.size()/interlacingFactor << "     # dimensions" << std::endl;
-                stream << (int) deg(sizeParameter) << "     # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
+                stream << genVals.size()/interlacingFactor << "   # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
+                stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
                 stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
                 stream << sizeParameter << " # polynomial modulus" << std::endl;
                 stream << *(genVals[0]) << " # coordinates of generating vector , starting at j =1" <<std::endl;
@@ -153,9 +153,9 @@ namespace NetBuilder {
                 stream.str(foo);
                 stream.seekp (0, stream.end);
             }
-            else if (outputMachineFormat == OutputMachineFormat::DIGITALNET) {
+            else if (outputStyle == OutputStyle::NET) {
                 stream << "# Parameters for a digital net in base 2 " << std::endl;
-                stream << genVals.size()/interlacingFactor << "   # dimensions" << std::endl;
+                stream<< genVals.size()/interlacingFactor << "   # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
                 stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter) << ", n = 2^"<<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << std::endl;
                 stream << "31   # r = 31 digits" << std::endl;
                 stream << "# The next row gives the columns of C_1 , the first gen . matrix" << std::endl;

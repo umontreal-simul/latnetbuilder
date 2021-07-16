@@ -288,7 +288,7 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputMachineFormat outputMachineFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::string res;
 
@@ -327,7 +327,7 @@ namespace NetBuilder {
         */
        
         else if (outputFormat == OutputFormat::MACHINE){
-            if (outputMachineFormat == OutputMachineFormat::DIGITALNET) {
+            if (outputStyle == OutputStyle::NET) {
                 res += "# Parameters for a digital net in base 2\n ";
                 res += "# " + std::to_string(genVals.size()/interlacingFactor) + "   # dimensions\n";
                 res += std::to_string((int) nCols(sizeParameter)) + "   # k = " 
@@ -348,7 +348,7 @@ namespace NetBuilder {
                 }
                 res.pop_back();
             }
-            else if (outputMachineFormat == OutputMachineFormat::SOBOLJK){
+            else if (outputStyle == OutputStyle::SOBOLJK){
                 res +="# Parameters for Sobol points , in JK format\n";
                 res +="# " + std::to_string(genVals.size()/interlacingFactor) + " dimensions\n";
                 res +="# d  a  m_ {j , c }\n";

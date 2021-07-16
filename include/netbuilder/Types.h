@@ -71,10 +71,10 @@ typedef LatBuilder::Polynomial Polynomial;
 typedef NTL::ZZX IntPolynomial;
 
 /// Output format for nets
-enum class OutputFormat {HUMAN, MACHINE, STDFILE, SOBFILE};
+enum class OutputFormat {HUMAN, MACHINE};
 
-/// Outputs Machine Formats
-enum class OutputMachineFormat {NONE, SOBOL, SOBOLJK, POLYNOME, DIGITALNET, EXPLICIT, ORDINARY};
+/// Outputs Style
+enum class OutputStyle {NONE, SOBOL, SOBOLJK, LATTICE, NET};
 
 
 //@}
