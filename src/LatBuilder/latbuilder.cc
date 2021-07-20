@@ -161,7 +161,7 @@ makeOptionsDescription()
    "ranges between 0 (default) and 3\n")
     ("output-folder,o", po::value<std::string>(),
     "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
-    ("output-style,y", po::value<std::string>()->default_value(""),
+    ("output-style,O", po::value<std::string>()->default_value(""),
     "(optional) TBD")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");

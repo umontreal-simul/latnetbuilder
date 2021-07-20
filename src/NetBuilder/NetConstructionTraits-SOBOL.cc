@@ -170,11 +170,16 @@ namespace NetBuilder {
             cj->push_back(0); 
         }
       GeneratingMatrix* tmp = createGeneratingMatrix(genValue,sizeParameter);
+      std::vector<std::vector<int>> genMat (31, std::vector<int> (m, 0));
       for(unsigned int c =0; c<m; c++ )
       {
           for(unsigned int r =0; r<m; r++ )
           {
-             (*cj)[c] += (*tmp)[r][c]*pow(2, m-1-r); 
+             genMat[r][c]=(*tmp)[r][c];
+          }
+          for(unsigned int r =0; r<31; r++ )
+          {
+             (*cj)[c] += genMat[r][c]*pow(2, 31-1-r); 
           }
       }
 
@@ -333,7 +338,10 @@ namespace NetBuilder {
                 res += std::to_string((int) nCols(sizeParameter)) + "   # k = " 
                 + std::to_string((int) nCols(sizeParameter)) + ", n = 2^"+  std::to_string((int) nCols(sizeParameter)) 
                 + " = " + std::to_string((int)pow(2,nCols(sizeParameter) )) + "\n";
-                res +=  "31   # r = 31 digits\n";
+                //res += std::to_string((int) nCols(sizeParameter))  + "   # r = ";
+                //res += std::to_string((int) nCols(sizeParameter))+" digits\n";
+                res += "31   # r = ";
+                res += "31 digits\n";
                 res += "# The next row gives the columns of C_1 , the first gen . matrix\n";
                 for(unsigned int coord = 0; coord < genVals.size(); coord++)
                 {

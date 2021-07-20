@@ -49,4 +49,4 @@ Explicit Digital Net - Matrix size = 10x10
 0 0 0 0 0 0 0 0 1 1
 0 0 0 0 0 0 0 0 0 1
 Merit: 37.2087
-ELAPSED CPU TIME: 0.00172285 seconds
+ELAPSED CPU TIME: 0.00204618 seconds

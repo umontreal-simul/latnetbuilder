@@ -185,4 +185,4 @@ Sobol Digital Net - Direction numbers =
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1
 Merit: 5
-ELAPSED CPU TIME: 0.358875 seconds
+ELAPSED CPU TIME: 0.315393 seconds
