@@ -23,6 +23,8 @@
 #include <sstream>
 #include <boost/algorithm/string/erase.hpp>
 
+#include "latticetester/ntlwrap.h"
+
 namespace NetBuilder {
 
     const std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::name = "Polynomial";
@@ -135,18 +137,44 @@ namespace NetBuilder {
         else if (outputFormat == OutputFormat::MACHINE){
 
             if (outputStyle == OutputStyle::LATTICE){
-                stream << "# Parameters for a polynomial lattice rule in base 2, non - embedded" << std::endl;
+                stream << "# Parameters for a polynomial lattice rule in base 2, non-embedded" << std::endl;
                 /*if (interlacingFactor > 1){
                         stream << ", embedded with interlacing factor " << interlacingFactor << ":" << std::endl;
                 }
                 else {stream << ", non - embedded" << std::endl;}*/
-                stream << genVals.size()/interlacingFactor << "   # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
-                stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
+                stream << genVals.size()/interlacingFactor << "       # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
+                stream << (int) deg(sizeParameter) << "      # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
                 stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
-                stream << sizeParameter << " # polynomial modulus" << std::endl;
-                stream << *(genVals[0]) << " # coordinates of generating vector , starting at j =1" <<std::endl;
+                
+                NTL::ZZ modulus;
+                clear(modulus);
+                long degree = deg(sizeParameter);
+                for(long i = 0; i <= degree; ++i){
+                    modulus += NTL::conv<NTL::ZZ>(sizeParameter[i]) * NTL::power2_ZZ(degree-i);
+                }
+                stream << modulus << "   # polynomial modulus" << std::endl;
+                //stream << sizeParameter << "   # polynomial modulus" << std::endl;
+
+                const GenValue& genValue =*(genVals[0]);
+                NTL::ZZ generating_vector;
+                clear(generating_vector);
+                degree = deg(genValue);
+                for(long i = 0; i <= degree; ++i){
+                    generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
+                }
+                stream << generating_vector << "   # coordinates of generating vector, starting at j=1" <<std::endl;
+                //stream << *(genVals[0]) << "   # coordinates of generating vector, starting at j=1" <<std::endl;
+
                 for (unsigned int coord = 1; coord < genVals.size(); coord++){
-                    stream << *(genVals[coord]) << std::endl;
+                    const GenValue& genValue =*(genVals[coord]);
+                    NTL::ZZ generating_vector;
+                    clear(generating_vector);
+                    degree = deg(genValue);
+                    for(long i = 0; i <= degree; ++i){
+                        generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
+                    }
+                    stream << generating_vector << std::endl;
+                    //stream << *(genVals[coord]) << std::endl;
                 }
                 std::string foo(stream.str());
                 foo.pop_back();
@@ -155,8 +183,8 @@ namespace NetBuilder {
             }
             else if (outputStyle == OutputStyle::NET) {
                 stream << "# Parameters for a digital net in base 2 " << std::endl;
-                stream<< genVals.size()/interlacingFactor << "   # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
-                stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter) << ", n = 2^"<<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << std::endl;
+                stream<< genVals.size()/interlacingFactor << "    # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
+                stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter) << ", n = 2^"<<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
                 stream << "31   # r = 31 digits" << std::endl;
                 stream << "# The next row gives the columns of C_1 , the first gen . matrix" << std::endl;
                 for(unsigned int coord = 0; coord < genVals.size(); coord++)

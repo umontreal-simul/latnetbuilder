@@ -99,10 +99,10 @@ namespace NetBuilder {
         }
         else{
             unsigned int m = (unsigned int) (nCols(sizeParameter));
-            stream << "Explicit  // Construction method" << std::endl;
-            stream << "# Parameters for a digital net in base 2 " << std::endl;
-            stream << genVals.size()/interlacingFactor << "   #" <<  genVals.size()/interlacingFactor << " dimensions" << std::endl;
-            stream << m << "   # k = "<<m << ", n = 2^"<<  m << " = " << (int)pow(2,m ) << std::endl;
+            //stream << "Explicit  // Construction method" << std::endl;
+            stream << "# Parameters for a digital net in base 2" << std::endl;
+            stream << genVals.size()/interlacingFactor << "    #" <<  genVals.size()/interlacingFactor << " dimensions" << std::endl;
+            stream << m << "   # k = "<< m << ", n = 2^"<<  m << " = " << (int)pow(2,m ) << " points"<< std::endl;
             //stream << m << "   # r = " << m << " digits" << std::endl;
             stream << 31 << "   # r = 31 digits" << std::endl;
             stream << "# The next row gives the columns of C_1 , the first gen . matrix" << std::endl;

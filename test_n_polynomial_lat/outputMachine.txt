@@ -1,14 +1,7 @@
-# Parameters for a polynomial lattice rule in base 2, non - embedded
-10   # 10 dimensions
-16   # k = 16, n = 2^16 = 65536 points
-1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 0 1 # polynomial modulus
-1 # coordinates of generating vector , starting at j =1
-1 0 1 0 0 1 1 1 0 0 1 1 0 0 1 1
-0 1 0 0 1 1 0 1 0 0 1 0 1 1 1
-1 1 0 1 1 1 1 0 1 0 0 0 1 1
-0 1 0 1 0 0 1 1 0 0 0 1 0 1 1
-1 1 0 0 1 1 1 0 1 0 1 0 0 0 0 1
-1 0 1 0 1 0 1 0 0 0 1 1 1 0 1
-0 1 1 0 0 1 1 0 1 1 0 1 1 0 0 1
-1 1 1 1 1 1 0 1 1 1 0 0 0 0 0 1
-0 1 0 0 1 0 1 1 1 0 0 0 0 1 1
+# Parameters for a polynomial lattice rule in base 2, non-embedded
+3       # 3 dimensions
+9      # k = 9, n = 2^9 = 512 points
+769   # polynomial modulus
+1   # coordinates of generating vector, starting at j=1
+47
+97
