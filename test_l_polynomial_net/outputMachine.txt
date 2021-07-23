@@ -1,6 +1,6 @@
 # Parameters for a digital net in base 2 
-10   # 10 dimensions
-10   # k = 10, n = 2^10 = 1024
+10    # 10 dimensions
+10   # k = 10, n = 2^10 = 1024 points
 31   # r = 31 digits
 # The next row gives the columns of C_1 , the first gen . matrix
 2115715 4231430 8462860 16925721 33851442 67702884 135405769 270811539 541623078 1083246157 

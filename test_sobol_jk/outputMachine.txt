@@ -1,6 +1,6 @@
-# Parameters for Sobol points , in JK format
+# Parameters for Sobol points, in JK format
 # 10 dimensions
-# d  a  m_ {j , c }
+#  d  a  m_{j,c}
 2  1  0  1
 3  2  1  1 1
 4  3  1  1 3 1

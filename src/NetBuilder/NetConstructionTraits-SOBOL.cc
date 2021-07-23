@@ -296,6 +296,8 @@ namespace NetBuilder {
     std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::string res;
+        std::string dimension = std::to_string(genVals.size()/interlacingFactor);
+        std::string k = std::to_string((int) nCols(sizeParameter));
 
         if (outputFormat == OutputFormat::HUMAN){
             res += "Sobol Digital Net - Direction numbers = \n";
@@ -330,19 +332,15 @@ namespace NetBuilder {
             }
         }
         */
-       
-        else if (outputFormat == OutputFormat::MACHINE){
+        else {
             if (outputStyle == OutputStyle::NET) {
-                res += "# Parameters for a digital net in base 2\n ";
-                res += "# " + std::to_string(genVals.size()/interlacingFactor) + "   # dimensions\n";
-                res += std::to_string((int) nCols(sizeParameter)) + "   # k = " 
-                + std::to_string((int) nCols(sizeParameter)) + ", n = 2^"+  std::to_string((int) nCols(sizeParameter)) 
-                + " = " + std::to_string((int)pow(2,nCols(sizeParameter) )) + "\n";
-                //res += std::to_string((int) nCols(sizeParameter))  + "   # r = ";
-                //res += std::to_string((int) nCols(sizeParameter))+" digits\n";
-                res += "31   # r = ";
-                res += "31 digits\n";
-                res += "# The next row gives the columns of C_1 , the first gen . matrix\n";
+                res += "# Parameters for a digital net in base 2\n";
+                res +=dimension + "    # " + dimension + " dimensions\n";
+                res += k + "   # k = " + k + ",  n = 2^"+  k + " = "; 
+                res += std::to_string((int)pow(2,nCols(sizeParameter) )) + "points\n";
+                //res += k  + "   # r = "+ k +" digits\n";
+                res += "31   # r = 31 digits\n";
+                res += "# The next row gives the columns of C_1, the first gen. matrix\n";
                 for(unsigned int coord = 0; coord < genVals.size(); coord++)
                 {
                     const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
@@ -357,9 +355,9 @@ namespace NetBuilder {
                 res.pop_back();
             }
             else if (outputStyle == OutputStyle::SOBOLJK){
-                res +="# Parameters for Sobol points , in JK format\n";
-                res +="# " + std::to_string(genVals.size()/interlacingFactor) + " dimensions\n";
-                res +="# d  a  m_ {j , c }\n";
+                res +="# Parameters for Sobol points, in JK format\n";
+                res +="# " + dimension + " dimensions\n";
+                res +="#  d  a  m_{j,c}\n";
                 for (unsigned int coord = 1; coord < genVals.size(); coord++){
                     res+= std::to_string(coord +1) + "  ";
                     PrimitivePolynomial p = nthPrimitivePolynomial(coord);
@@ -380,9 +378,9 @@ namespace NetBuilder {
             }
             else 
             {
-                res +="# Parameters m_ {j , c } for Sobol points\n";
-                res +="# " + std::to_string(genVals.size()/interlacingFactor) + " dimensions\n";
-                res +="# m_ {j , c }\n";
+                res +="# Parameters m_{j,c} for Sobol points\n";
+                res +="# " + dimension + " dimensions\n";
+                res +="# m_{j,c}\n";
                 for(const auto& dirNum : genVals[1]->second){
                     res += std::to_string(dirNum);
                     res += " ";

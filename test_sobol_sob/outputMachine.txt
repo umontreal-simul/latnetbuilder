@@ -1,6 +1,6 @@
-# Parameters m_ {j , c } for Sobol points
+# Parameters m_{j,c} for Sobol points
 # 10 dimensions
-# m_ {j , c }
+# m_{j,c}
 1 # This is for the second coordinate
 1 1
 1 3 1

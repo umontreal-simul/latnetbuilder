@@ -1,7 +1,7 @@
 Task: NetBuilder Search - Net Construction : Polynomial
-Number of components: 3
-Modulus: [1 1 0 0 0 0 0 0 0 1]
-Number of rows: 9 - Number of columns: 9
+Number of components: 10
+Modulus: [1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 0 1]
+Number of rows: 16 - Number of columns: 16
 Exploration method: CBC - Random Explorer - 70 samples
 Figure of merit: t-value based figure of merit
 Embedding type: Unilevel

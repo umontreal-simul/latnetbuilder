@@ -125,4 +125,4 @@ Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
 0 1 0 1 1 0 1 0 0 1
 1 0 1 1 0 1 0 0 1 1
 Merit: 0.000818148
-ELAPSED CPU TIME: 0.0338911 seconds
+ELAPSED CPU TIME: 0.0244831 seconds
