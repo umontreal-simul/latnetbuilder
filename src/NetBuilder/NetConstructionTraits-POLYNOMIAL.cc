@@ -186,7 +186,7 @@ namespace NetBuilder {
                 stream<< genVals.size()/interlacingFactor << "    # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
                 stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter) << ", n = 2^"<<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
                 stream << "31   # r = 31 digits" << std::endl;
-                stream << "# The next row gives the columns of C_1 , the first gen . matrix" << std::endl;
+                stream << "# The next row gives the columns of C_1, the first gen. matrix" << std::endl;
                 for(unsigned int coord = 0; coord < genVals.size(); coord++)
                 {
                     const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);

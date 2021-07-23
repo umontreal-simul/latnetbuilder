@@ -1,5 +1,5 @@
-# Parameters for a lattice rule , embedded from 2 to 16
-100      # 100dimensions
+# Parameters for a lattice rule, embedded from 2 to 16
+100      # 100 dimensions
 65536 # modulus = n = 65536 points
 1
 25811

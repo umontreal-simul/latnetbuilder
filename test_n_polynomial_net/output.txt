@@ -185,4 +185,4 @@ Polynomial Digital Net - Modulus = 1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 0 1 - Generatin
 0 1 1 1 1 0 0 1 0 0 1 0 1 1 1 1
 1 1 1 1 0 0 1 0 0 1 0 1 1 1 1 0
 Merit: 6
-ELAPSED CPU TIME: 0.296947 seconds
+ELAPSED CPU TIME: 0.313662 seconds

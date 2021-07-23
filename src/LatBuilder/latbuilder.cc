@@ -229,7 +229,7 @@ std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTIL
 template<>
 std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& param)
 {
-  return "non - embedded\n";
+  return "non-embedded\n";
 }
 
 
@@ -307,9 +307,9 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
           fileName = outputFolder + "/outputMachine.txt";
           outFile.open(fileName);
-          outFile << "# Parameters for a lattice rule , ";
+          outFile << "# Parameters for a lattice rule, ";
           outFile << helper2<ET>(lat.sizeParam());
-          outFile << lat.dimension() <<"      # "<< lat.dimension() << "dimensions\n";
+          outFile << lat.dimension() <<"      # "<< lat.dimension() << " dimensions\n";
           outFile << lat.sizeParam().numPoints() <<" # modulus = n = "<< lat.sizeParam().numPoints() << " points\n";
           auto vec = lat.gen();
           for (unsigned int coord = 0; coord < vec.size(); coord++){
