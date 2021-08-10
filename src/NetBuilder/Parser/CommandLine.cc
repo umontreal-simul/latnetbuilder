@@ -40,7 +40,8 @@ CommandLine<NC, ET>::parse()
       m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized and moved to m_figure as a side effect 
       return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task
 }
-
+template struct CommandLine<NetConstruction::LMS, EmbeddingType::UNILEVEL>;
+template struct CommandLine<NetConstruction::LMS, EmbeddingType::MULTILEVEL>;
 template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
 template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
 template struct CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;

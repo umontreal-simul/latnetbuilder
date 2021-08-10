@@ -20,4 +20,6 @@ latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w or
 
 latnetbuilder --set-type net --construction explicit --multilevel true --size-parameter 2^10 --figure-of-merit CU:IA2 --norm-type 1 --exploration-method random-CBC:10 --verbose 2 --dimension 2 --interlacing 2 --output-folder test_explicit --weights order-dependent:0:0.8,0.64 --combiner sum --output-style net
 
+latnetbuilder --set-type net --construction lms --multilevel true --size-parameter 2^10 --figure-of-merit CU:IA2 --norm-type 1 --exploration-method random-CBC:10 --verbose 2 --dimension 2 --interlacing 2 --output-folder test_lms --weights order-dependent:0:0.8,0.64 --combiner sum --output-style net
+
 

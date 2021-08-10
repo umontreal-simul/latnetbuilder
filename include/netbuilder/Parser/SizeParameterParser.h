@@ -114,7 +114,26 @@ struct SizeParameterParser<NetConstruction::EXPLICIT, ET>
       }
 };
 
+template<EmbeddingType ET>
+struct SizeParameterParser<NetConstruction::LMS, ET>
+{
+      typedef typename NetConstructionTraits<NetConstruction::LMS>::SizeParameter result_type;
 
+      static void parse(Parser::CommandLine<NetConstruction::LMS, ET>& commandLine)
+      {
+         std::vector<std::string> sizeParamStrings;
+         boost::split(sizeParamStrings, commandLine.s_size, boost::is_any_of("^"));
+         if (sizeParamStrings.size() == 2 && sizeParamStrings.front() == "2")
+         {
+               unsigned int nCols = boost::lexical_cast<unsigned int>(sizeParamStrings.back());
+               commandLine.m_sizeParameter = result_type(nCols,nCols);
+         }
+         else
+         {
+            throw BadSizeParameter(commandLine.s_size);
+         }
+      }
+};
 
 }}
 

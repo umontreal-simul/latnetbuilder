@@ -55,7 +55,7 @@ namespace NetBuilder {
         }
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
     {
         unsigned int m = (unsigned int) (deg(sizeParameter));
         GeneratingMatrix* genMat = new GeneratingMatrix(m,m);
@@ -70,7 +70,7 @@ namespace NetBuilder {
         }
         return genMat;
     }
-    std::vector<int>*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter)
+    std::vector<int>*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
     {
         // TO DO to return genVector
 
@@ -123,7 +123,6 @@ namespace NetBuilder {
     {
         std::string res;
         std::ostringstream stream;
-        //unsigned int m = (unsigned int) (deg(sizeParameter));
 
         if (outputFormat == OutputFormat::HUMAN){
             stream << "Polynomial Digital Net - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
@@ -138,10 +137,6 @@ namespace NetBuilder {
 
             if (outputStyle == OutputStyle::LATTICE){
                 stream << "# Parameters for a polynomial lattice rule in base 2, non-embedded" << std::endl;
-                /*if (interlacingFactor > 1){
-                        stream << ", embedded with interlacing factor " << interlacingFactor << ":" << std::endl;
-                }
-                else {stream << ", non - embedded" << std::endl;}*/
                 stream << genVals.size()/interlacingFactor << "       # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
                 stream << (int) deg(sizeParameter) << "      # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
                 stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
@@ -153,7 +148,6 @@ namespace NetBuilder {
                     modulus += NTL::conv<NTL::ZZ>(sizeParameter[i]) * NTL::power2_ZZ(degree-i);
                 }
                 stream << modulus << "   # polynomial modulus" << std::endl;
-                //stream << sizeParameter << "   # polynomial modulus" << std::endl;
 
                 const GenValue& genValue =*(genVals[0]);
                 NTL::ZZ generating_vector;
@@ -163,7 +157,6 @@ namespace NetBuilder {
                     generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
                 }
                 stream << generating_vector << "   # coordinates of generating vector, starting at j=1" <<std::endl;
-                //stream << *(genVals[0]) << "   # coordinates of generating vector, starting at j=1" <<std::endl;
 
                 for (unsigned int coord = 1; coord < genVals.size(); coord++){
                     const GenValue& genValue =*(genVals[coord]);
@@ -174,7 +167,6 @@ namespace NetBuilder {
                         generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
                     }
                     stream << generating_vector << std::endl;
-                    //stream << *(genVals[coord]) << std::endl;
                 }
                 std::string foo(stream.str());
                 foo.pop_back();
@@ -190,18 +182,12 @@ namespace NetBuilder {
                 for(unsigned int coord = 0; coord < genVals.size(); coord++)
                 {
                     const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
-                    //stream << coord +1 << " ";
                     for(unsigned int i = 0; i < (unsigned int) deg(sizeParameter); ++i)
                     {
                         stream << (*generatingVector)[i] << " ";
                     }
-                    stream << std::endl;
+                    if(coord < genVals.size() - 1){stream << std::endl;}
                 }
-                //stream << *last;
-                std::string foo(stream.str());
-                foo.pop_back();
-                stream.str(foo);
-                stream.seekp (0, stream.end);
             }
             else{ stream << std::endl;}
         }

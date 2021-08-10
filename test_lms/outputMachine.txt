@@ -1,0 +1,7 @@
+# Parameters for a digital net in base 2
+2    # 2 dimensions
+6   # k = 6, n = 2^6 = 64 points
+31   # r = 31 digits
+# The next row gives the columns of C_1, the first gen. matrix
+536870912 2046820352 1107296256 469762048 1308622848 1342177280 
+1778384896 100663296 738197504 1946157056 1342177280 1107296256 

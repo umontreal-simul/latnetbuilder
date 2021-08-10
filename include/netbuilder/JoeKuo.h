@@ -90,7 +90,15 @@ struct Combiner
 };
 
 /**
- * Get the direction numbers suggested by Joe and Kuo in \cite rJOE08a. These can be used
+ * Read the raw direction numbers suggested by Joe and Kuo in \cite rJOE08a. These can be used
+ * to compute generating matrices for a Sobol' net in dimension \c dimension.
+ * @param dimension Dimension of the net.
+ */ 
+std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(Dimension dimension);
+
+/**
+ * Get the direction numbers suggested by Joe and Kuo in \cite rJOE08a, composed by the pairs of
+ * raws vector values and associated dimension of the net. These can be used
  * to compute generating matrices for a Sobol' net in dimension \c dimension.
  * @param dimension Dimension of the net.
  */ 

@@ -21,35 +21,6 @@
 
 namespace NetBuilder { namespace Parser {
 
-/**
- * Exception thrown when trying to parse an invalid output style.
- */
-
-/*class BadMachineFormat : public std::exception {
-public:
-   BadMachineFormat(const std::string& message, NetConstruction netConstruction){
-      GetDefaultMachineFormat(netConstruction);
-   }
-   const char* what() { return message.c_str(); } //message of warning
-private:
-   std::string message;
-
-   OutputStyle GetDefaultMachineFormat(NetConstruction netConstruction)
-   {
-      if(netConstruction == NetConstruction::SOBOL)
-      {
-        return NetBuilder::OutputStyle::SOBOL;
-      }
-      else if(netConstruction == NetConstruction::POLYNOMIAL)
-      {
-        return NetBuilder::OutputStyle::LATTICE;
-      }
-      else
-      {
-        return NetBuilder::OutputStyle::NET;
-      }
-   }  
-};*/
 
 /**
  * Parser for output style.
@@ -82,7 +53,7 @@ struct OutputStyleParser<NetConstruction::SOBOL>
       }
       else
       {
-        std::cout << "WARNING: cannot parse output style  string. Default output style: SOBOL" << std::endl;
+        std::cout << "WARNING: cannot parse output style string. Default output style: SOBOL" << std::endl;
         return NetBuilder::OutputStyle::SOBOL;
       }
    }
@@ -109,7 +80,7 @@ struct OutputStyleParser<NetConstruction::POLYNOMIAL>
       }
       else
       {
-        std::cout << "WARNING: cannot parse output style  string. Default output style: LATTICE" << std::endl;
+        std::cout << "WARNING: cannot parse output style string. Default output style: LATTICE" << std::endl;
         return NetBuilder::OutputStyle::LATTICE;
       }
    }
@@ -132,7 +103,30 @@ struct OutputStyleParser<NetConstruction::EXPLICIT>
       }
       else
       {
-        std::cout << "WARNING: cannot parse output style  string. Default output style: NET" << std::endl;
+        std::cout << "WARNING: cannot parse output style string. Default output style: NET" << std::endl;
+        return NetBuilder::OutputStyle::NET;
+      }
+   }
+};
+
+template<>
+struct OutputStyleParser<NetConstruction::LMS>
+{
+   typedef NetBuilder::OutputStyle result_type;
+
+   static result_type parse(const std::string& str)
+   {
+      if (str == "net")
+      {
+        return NetBuilder::OutputStyle::NET;
+      }
+      else if (str == "")
+      {
+        return NetBuilder::OutputStyle::NET;
+      }
+      else
+      {
+        std::cout << "WARNING: cannot parse output style string. Default output style: NET" << std::endl;
         return NetBuilder::OutputStyle::NET;
       }
    }

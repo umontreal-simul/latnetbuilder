@@ -47,10 +47,10 @@ namespace{
 
 /**
  * Virtual base class for search task.
- * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...).
+ * @tparam NC Net construction type (eg. SOBOL, POLYNOMIAL, LMS, EXPLICIT, ...).
  * @tparam ET Embedding type (UNILEVEL or MULTILEVEL)
  * @tparam OBSERVER Template template parameter whose template parameter is a net construction type
- *                  (eg. SOBOL, POLYNOMIAL, EXPLICIT, ...). Should mimick the MinimumObserver class template.
+ *                  (eg. SOBOL, POLYNOMIAL, LMS, EXPLICIT, ...). Should mimick the MinimumObserver class template.
  */
 template <NetConstruction NC, EmbeddingType ET, template <NetConstruction> class OBSERVER = MinimumObserver> 
 class Search : public Task {

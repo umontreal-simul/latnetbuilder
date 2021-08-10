@@ -61,8 +61,6 @@ void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle ou
       fileName = outputFolder + "/outputMachine.txt";
       outFile.open(fileName);
       outFile << task.outputNet(OutputFormat::MACHINE, outputStyle, interlacingFactor) << std::endl;
-      /*outFile << task.outputMeritValue() << "  // Merit" <<  std::endl;
-      outFile << time << "  // Time" << std::endl;*/
       outFile.close();
     }
   }
@@ -89,6 +87,7 @@ makeOptionsDescription()
    "digital net; possible constructions:\n"
    "  sobol\n"
    "  polynomial\n"
+   "  lms\n"
    "  explicit\n")
     ("dimension,d", po::value<std::string>(),
     "(required) point set dimension\n")
@@ -299,6 +298,14 @@ int main(int argc, const char *argv[])
        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(EXPLICIT, MULTILEVEL)
           outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputStyle);
+       }
+       if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+          BUILD_TASK(LMS, UNILEVEL)
+          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::LMS>::parse(s_outputStyle);
+       }
+       if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+          BUILD_TASK(LMS, MULTILEVEL)
+          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::LMS>::parse(s_outputStyle);
        }
 
 

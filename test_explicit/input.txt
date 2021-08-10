@@ -1,4 +1,4 @@
-Task: NetBuilder Search - Net Construction : Explicit
+Task: NetBuilder Search - Net Construction : LMS
 Number of components: 4
 Number of rows: 10 - Number of columns: 10
 Exploration method: CBC - Random Explorer - 10 samples

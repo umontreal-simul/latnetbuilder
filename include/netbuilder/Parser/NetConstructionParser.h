@@ -59,6 +59,10 @@ struct NetConstructionParser<EmbeddingType::UNILEVEL>
       {
         return NetBuilder::NetConstruction::EXPLICIT;
       }
+      else if (str == "lms")
+      {
+        return NetBuilder::NetConstruction::LMS;
+      }
       else
       {
         throw BadNetConstruction(str);
@@ -76,9 +80,9 @@ struct NetConstructionParser<EmbeddingType::MULTILEVEL>
 
       result_type tmp = NetConstructionParser<EmbeddingType::UNILEVEL>::parse(str);
 
-      if (tmp != NetConstruction::SOBOL && tmp != NetConstruction::EXPLICIT)
+      if (tmp != NetConstruction::SOBOL && tmp != NetConstruction::EXPLICIT && tmp != NetConstruction::LMS)
       {
-        throw BadNetConstruction("Multilevel point sets only work with Sobol and explicit constructions.");
+        throw BadNetConstruction("Multilevel point sets only work with Sobol, LMS and explicit constructions.");
       }
       return tmp;
    }

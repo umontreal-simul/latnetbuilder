@@ -60,7 +60,8 @@ struct CommandLine {
 
    std::unique_ptr<Task::Task> parse();
 };
-
+extern template struct CommandLine<NetConstruction::LMS, EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<NetConstruction::LMS, EmbeddingType::MULTILEVEL>;
 extern template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
 extern template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
 extern template struct CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;

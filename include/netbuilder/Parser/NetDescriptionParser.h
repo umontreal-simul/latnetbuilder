@@ -163,6 +163,53 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
    }
 };
 
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::LMS, ET>
+{
+    typedef typename NetConstructionTraits<NetConstruction::LMS>::GenValue GenValue;
+    typedef std::vector<GenValue> result_type;
+
+   static result_type parse(CommandLine<NetConstruction::LMS, ET>& commandLine, const std::string& str)
+   {
+       std::vector<std::string> netDescriptionStrings;
+       boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
+       result_type genValues;
+       genValues.reserve(commandLine.m_dimension);
+       for(const auto& matrixString : netDescriptionStrings)
+       {
+           std::vector<std::string> rowsStrings;
+           boost::split(rowsStrings, matrixString, boost::is_any_of(","));
+           if (rowsStrings.size()==0)
+           {
+               throw BadNetDescription("bad matrix.");
+           }
+           for(const auto& rowString : rowsStrings)
+           {
+               if (rowString.size() != rowsStrings.front().size())
+               {
+                   throw BadNetDescription("bad matrix (different row lengths).");
+               }
+           }
+           GenValue genVal((unsigned int) rowsStrings.size(),(unsigned int) rowsStrings.front().size());
+           for(unsigned int i = 0; i < (unsigned int) rowsStrings.size(); ++i)
+           {
+               std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
+               genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);
+           }
+           if(!NetConstructionTraits<NetConstruction::LMS>::checkGenValue(genVal, commandLine.m_sizeParameter))
+           {
+               throw BadNetDescription("bad generating matrix size.");
+           }
+           genValues.push_back(std::move(genVal));
+       }
+        if (genValues.size() != commandLine.m_dimension )
+        {
+           throw BadNetDescription("incompatible dimension and number of matrices.");
+        }
+        return genValues;
+   }
+};
+
 }}
 
 #endif

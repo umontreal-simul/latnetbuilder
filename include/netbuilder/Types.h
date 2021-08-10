@@ -59,7 +59,7 @@ typedef size_t Dimension;
 typedef LatBuilder::EmbeddingType EmbeddingType;
 
 /// Net construction methods
-enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};
+enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT, LMS};
 
 // Level combiner for multilevel nets
 // typedef std::function<Real (const RealVector&)> Combiner;

@@ -120,7 +120,7 @@ namespace NetBuilder {
         reg.push_back(std::move(newDirNum));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j)
     {
         unsigned int m  = nCols(sizeParam);
         Dimension coord = genValue.first;
@@ -161,7 +161,7 @@ namespace NetBuilder {
         return tmp;
     }
 
-    std::vector<int>*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter)
+    std::vector<int>*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
     {
       std::vector<int>* cj = new std::vector<int>;
       unsigned int m = (unsigned int) (nCols(sizeParameter));
@@ -301,10 +301,6 @@ namespace NetBuilder {
 
         if (outputFormat == OutputFormat::HUMAN){
             res += "Sobol Digital Net - Direction numbers = \n";
-            /*res += "Sobol  // Construction method\n";
-            res +="# Parameters m_ {j , c } for Sobol points";
-            res +="# " + std::to_string(genVals.size()) + " dimensions\n";
-            res +="# m_ {j , c }\n";*/
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
                 if (interlacingFactor > 1 && coord % interlacingFactor == 0){
                     res += "Coordinate " + std::to_string((coord / interlacingFactor) + 1)  + ":\n";
@@ -318,33 +314,17 @@ namespace NetBuilder {
                 res+="\n";
             }
         }
-        /*
-        else if (outputFormat == OutputFormat::MACHINE){
-            res += "Sobol  // Construction method\n";
-            for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                for(const auto& dirNum : genVals[coord]->second)
-                {
-                    res+= std::to_string(dirNum);
-                    res+= " ";
-                }
-                res.pop_back();
-                res+="\n";
-            }
-        }
-        */
         else {
             if (outputStyle == OutputStyle::NET) {
                 res += "# Parameters for a digital net in base 2\n";
                 res +=dimension + "    # " + dimension + " dimensions\n";
                 res += k + "   # k = " + k + ",  n = 2^"+  k + " = "; 
                 res += std::to_string((int)pow(2,nCols(sizeParameter) )) + "points\n";
-                //res += k  + "   # r = "+ k +" digits\n";
                 res += "31   # r = 31 digits\n";
                 res += "# The next row gives the columns of C_1, the first gen. matrix\n";
                 for(unsigned int coord = 0; coord < genVals.size(); coord++)
                 {
                     const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
-                    //res += std::to_string(coord +1) + " ";
                     for(unsigned int i = 0; i < (unsigned int) nCols(sizeParameter); ++i)
                     {
                         res += std::to_string((*generatingVector)[i]) + " ";

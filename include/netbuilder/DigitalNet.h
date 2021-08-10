@@ -91,6 +91,10 @@ class DigitalNet
             return *m_generatingMatrices[coord];
         }
 
+        /** 
+         * Returns the generating vector corresponding to coordinate \c coord.
+         * @param coord A coordinate (between 0 and dimension() - 1 ).
+         */
         const std::vector<int>& generatingVector(Dimension coord) const 
         {
             return *m_generatingVectors[coord];
@@ -100,6 +104,7 @@ class DigitalNet
          * Formats the net for output.
          * @param outputFormat Format of output.
          * @param interlacingFactor Interlacing factor of the net.
+         * @param outputStyle Specific Format of output Machine format.
          */ 
         virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputStyle outputStyle = OutputStyle::NONE, unsigned int interlacingFactor = 1) const = 0;
 
@@ -167,13 +172,14 @@ class DigitalNetConstruction : public DigitalNet
                 m_sizeParameter(std::move(sizeParameter))
         {
             m_genValues.reserve(m_dimension);
+            Dimension dimension_j = 0; //index of the dimension of the net, used for creating JoeKuo net 
             for(const auto& genValue : genValues)
             {
                 // construct the generating matrix and store them and the generating values
-                m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_sizeParameter)));
-                //construct m_generatingVectors qui appelera createGeneratingVector, cree dans NetConstructionTraits-POLYNOMIAL  (par exemple)
-                m_generatingVectors.push_back(std::shared_ptr<std::vector<int>>(ConstructionMethod::createGeneratingVector(genValue,m_sizeParameter)));
+                m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_sizeParameter,dimension_j)));
+                m_generatingVectors.push_back(std::shared_ptr<std::vector<int>>(ConstructionMethod::createGeneratingVector(genValue,m_sizeParameter,dimension_j)));
                 m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
+                dimension_j++;
             }
         }
 
@@ -194,16 +200,17 @@ class DigitalNetConstruction : public DigitalNet
          */
         ~DigitalNetConstruction() = default;
 
-        /** Instantiates a digital net with a dimension increased by one using the generating value \c newGenValue. 
+        /** Instantiates a digital net with a dimension increased by one using the generating value \c newGenValue for the current \c dimension_j of the net. 
          * Note that the resources (generating matrices, generatins values and computation data) for the lower dimensions are not copied. The net on 
          * which this method is called and the new net share these resources.
          * @param newGenValue  Generating value used to extend the net.
+         * @param dimension_j  Generating value used to extend the net.
          * @return A <code>std::unique_ptr</code> to the instantiated net.
          */ 
-        std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue) const 
-        {
-            std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(newGenValue,m_sizeParameter));
-            std::shared_ptr<std::vector<int>> newVec(ConstructionMethod::createGeneratingVector(newGenValue,m_sizeParameter));
+        std::unique_ptr<DigitalNetConstruction<NC>> extendDimension(const GenValue& newGenValue, const Dimension& dimension_j) const 
+        { 
+            std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(newGenValue,m_sizeParameter,dimension_j));
+            std::shared_ptr<std::vector<int>> newVec(ConstructionMethod::createGeneratingVector(newGenValue,m_sizeParameter,dimension_j));
 
             // copy the vector of pointers to matrices and add the new matrix
             auto genMats = m_generatingMatrices; 

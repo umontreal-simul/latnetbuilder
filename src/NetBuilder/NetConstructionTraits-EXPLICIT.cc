@@ -36,14 +36,14 @@ namespace NetBuilder {
 
     unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(const SizeParameter& sizeParameter) {return (unsigned int) sizeParameter.second; }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
     {
         GeneratingMatrix* genMat = new GeneratingMatrix(genValue);
         genMat->resize(nRows(sizeParameter),nCols(sizeParameter));
         return genMat;
     }
 
-    std::vector<int>*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter)
+    std::vector<int>*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
     {
       unsigned int m = (unsigned int) (nCols(sizeParameter));
       std::vector<int>* cj = new std::vector<int>;
@@ -84,42 +84,23 @@ namespace NetBuilder {
         
         if (outputFormat == OutputFormat::HUMAN){
             stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
-            /*for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                if (interlacingFactor == 1){
-                    stream << "Coordinate " << coord+1 << ":" << std::endl;
-                }
-                else{
-                    if (coord % interlacingFactor == 0){
-                        stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;
-                    }
-                    stream << "    Component " << (coord % interlacingFactor) + 1  << ":" << std::endl;
-                }
-                stream << *(genVals[coord]) << std::endl;
-            }*/
         }
         else{
             unsigned int m = (unsigned int) (nCols(sizeParameter));
-            //stream << "Explicit  // Construction method" << std::endl;
             stream << "# Parameters for a digital net in base 2" << std::endl;
             stream << genVals.size()/interlacingFactor << "    # " <<  genVals.size()/interlacingFactor << " dimensions" << std::endl;
             stream << m << "   # k = "<< m << ", n = 2^"<<  m << " = " << (int)pow(2,m ) << " points"<< std::endl;
-            //stream << m << "   # r = " << m << " digits" << std::endl;
             stream << 31 << "   # r = 31 digits" << std::endl;
             stream << "# The next row gives the columns of C_1, the first gen. matrix" << std::endl;
             for(unsigned int coord = 0; coord < genVals.size(); coord++)
             {
                 const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
-                //stream << coord +1 << " ";
                 for(unsigned int i = 0; i < m; ++i)
                 {
                     stream << (*generatingVector)[i] << " ";
                 }
-                stream << std::endl;
+                if(coord < genVals.size() - 1){stream << std::endl;}
             }
-            std::string foo(stream.str());
-            foo.pop_back();
-            stream.str(foo);
-            stream.seekp (0, stream.end);
         }
         return stream.str();
     }  

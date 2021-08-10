@@ -78,7 +78,6 @@ std::vector<std::vector<uInteger>> readJoeKuoDirectionNumbers(Dimension dimensio
       assert(dimension >= 1 && dimension <= 21201);
       std::string path = PATH_TO_LATNETBUILDER_DIR + "/../share/latnetbuilder/data/JoeKuoSobolNets.csv";
       std::vector<std::vector<uInteger>> res(dimension);
-
       if (boost::filesystem::exists(path)){
             std::ifstream file(path);
             std::string sent;

@@ -396,8 +396,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
           if (outputStyle != NetBuilder::OutputStyle::NONE){
             fileName = outputFolder + "/outputMachine.txt";
             outFile.open(fileName);
-            outFile << net.format(NetBuilder::OutputFormat::MACHINE, outputStyle, interlacingFactor) ;//<< search->bestMeritValue() << "  // Merit" << std::endl;
-            //outFile << dt.count() << "  // Time" << std::endl;
+            outFile << net.format(NetBuilder::OutputFormat::MACHINE, outputStyle, interlacingFactor) ;
             outFile.close();
           }
       }
