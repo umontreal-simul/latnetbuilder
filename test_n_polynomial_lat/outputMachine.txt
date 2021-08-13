@@ -3,12 +3,12 @@
 16      # k = 16, n = 2^16 = 65536 points
 96129   # polynomial modulus
 1   # coordinates of generating vector, starting at j=1
-42803
-9879
-14243
-10635
-52897
-21789
-26329
-64961
-9667
+52453
+29874
+12667
+26826
+34163
+23637
+39782
+33727
+25042

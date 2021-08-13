@@ -154,7 +154,8 @@ namespace NetBuilder {
                 clear(generating_vector);
                 degree = deg(genValue);
                 for(long i = 0; i <= degree; ++i){
-                    generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
+                    //generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
+                    generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(i);
                 }
                 stream << generating_vector << "   # coordinates of generating vector, starting at j=1" <<std::endl;
 
@@ -164,7 +165,7 @@ namespace NetBuilder {
                     clear(generating_vector);
                     degree = deg(genValue);
                     for(long i = 0; i <= degree; ++i){
-                        generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
+                        generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(i);
                     }
                     stream << generating_vector << std::endl;
                 }
