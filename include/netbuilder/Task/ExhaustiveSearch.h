@@ -79,8 +79,8 @@ class ExhaustiveSearch : public Search<NC, ET, OBSERVER>
             
             if (this->m_earlyAbortion)
             {
-                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), _1));
-                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), boost::placeholders::_1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), boost::placeholders::_1));
             }
             
             auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_sizeParameter);

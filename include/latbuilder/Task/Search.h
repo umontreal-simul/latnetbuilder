@@ -332,21 +332,21 @@ private:
       m_minElement.onStart().connect(boost::bind(
                &MinObserver::start,
                &minObserver(),
-               _1
+               boost::placeholders::_1
                ));
 
       // notify minObserver when minElement visits a new element
       m_minElement.onElementVisited().connect(boost::bind(
                &MinObserver::visited,
                &minObserver(),
-               _1
+               boost::placeholders::_1
                ));
 
       // notify minObserver when the minimum value is updated
       m_minElement.onMinUpdated().connect(boost::bind(
                &MinObserver::minUpdated,
                &minObserver(),
-               _1
+               boost::placeholders::_1
                ));
 
       connectSignals(filters());
@@ -358,7 +358,7 @@ private:
       filters.template onReject<EmbeddingType::UNILEVEL>().connect(boost::bind(
                &MinObserver::template reject<LR, EmbeddingType::UNILEVEL>,
                &minObserver(),
-               _1
+               boost::placeholders::_1
                ));
    }
 
@@ -368,12 +368,12 @@ private:
       filters.template onReject<EmbeddingType::UNILEVEL>().connect(boost::bind(
                &MinObserver::template reject<LR, EmbeddingType::UNILEVEL>,
                &minObserver(),
-               _1
+               boost::placeholders::_1
                ));
       filters.template onReject<EmbeddingType::MULTILEVEL>().connect(boost::bind(
                &MinObserver::template reject<LR, EmbeddingType::MULTILEVEL>,
                &minObserver(),
-               _1
+               boost::placeholders::_1
                ));
    }
 };
@@ -428,7 +428,7 @@ void connectCBCProgress(const MeritSeq::CBC<LR, ET, COMPRESS, PLO, PROJDEP, ACC>
    // current minimum value is greater than the partial sum/max.
    //
    // NOTE: this doesn't work for embedded lattices.
-   cbc.evaluator().onProgress().connect(boost::bind(progress, &obs, _1));
+   cbc.evaluator().onProgress().connect(boost::bind(progress, &obs, boost::placeholders::_1));
 
    // truncate the sum over projections only if no filters are applied
    // downstream

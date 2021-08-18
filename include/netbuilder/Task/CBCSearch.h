@@ -122,8 +122,8 @@ class CBCSearch : public Search<NC, ET, OBSERVER>
 
             if (this->m_earlyAbortion) // if the switch is on, connect the abortion signals of the evaluator to the observer
             {
-                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), _1));
-                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), boost::placeholders::_1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), boost::placeholders::_1));
             }
 
             m_explorer->switchToCoordinate(this->observer().bestNet().dimension()); // to to the first dimension to explore
