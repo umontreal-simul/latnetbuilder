@@ -18,8 +18,8 @@
 #define NET_BUILDER__FIGURE_OF_MERIT__BIT_EQUIDISTRIBUTION_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/ProgressiveRowReducer.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/Helpers/RankComputer.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 
 namespace NetBuilder { namespace FigureOfMerit {
@@ -116,9 +116,9 @@ class BitEquidistribution : public CBCFigureOfMerit{
                 */
                 BitEquidistributionEvaluator(BitEquidistribution* figure):
                     m_figure(figure),
-                    m_tmpReducer(m_figure->nbBits()),
-                    m_memReducer(m_figure->nbBits()),
-                    m_newReducer(m_figure->nbBits())
+                    m_tmpRankComputer(m_figure->nbBits()),
+                    m_memRankComputer(m_figure->nbBits()),
+                    m_newRankComputer(m_figure->nbBits())
                 {};
 
                 /** 
@@ -129,7 +129,7 @@ class BitEquidistribution : public CBCFigureOfMerit{
                  *  @param initialValue Initial value of the merit.
                  *  @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator()(const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     return initialValue;
                 }
@@ -139,9 +139,9 @@ class BitEquidistribution : public CBCFigureOfMerit{
                  */ 
                 virtual void reset() override
                 {
-                    m_tmpReducer.reset(0);
-                    m_memReducer.reset(0);
-                    m_newReducer = m_memReducer;
+                    m_tmpRankComputer.reset(0);
+                    m_memRankComputer.reset(0);
+                    m_newRankComputer = m_memRankComputer;
                 }
 
                 /**
@@ -149,7 +149,7 @@ class BitEquidistribution : public CBCFigureOfMerit{
                  */  
                 virtual void lastNetWasBest() override
                 {
-                    m_tmpReducer = std::move(m_newReducer);
+                    m_tmpRankComputer = std::move(m_newRankComputer);
                 }
                 
                 /**
@@ -159,14 +159,14 @@ class BitEquidistribution : public CBCFigureOfMerit{
                  */ 
                 virtual void prepareForNextDimension() override
                 {
-                    m_memReducer = m_tmpReducer;
+                    m_memRankComputer = m_tmpRankComputer;
                 }
 
             private:
                 BitEquidistribution* m_figure; // pointer to the figure of merit
-                ProgressiveRowReducer m_tmpReducer; // contains the reduction for the best net so far
-                ProgressiveRowReducer m_memReducer; // contains the reduction for the best net of the previous dimension
-                ProgressiveRowReducer m_newReducer; // contains the reduction for the latest evaluated net
+                RankComputer m_tmpRankComputer; // contains the reduction for the best net so far
+                RankComputer m_memRankComputer; // contains the reduction for the best net of the previous dimension
+                RankComputer m_newRankComputer; // contains the reduction for the latest evaluated net
 
         };
 
@@ -205,23 +205,23 @@ std::string BitEquidistribution<EmbeddingType::MULTILEVEL>::format() const
 
 // template specialization for the unilevel case
 template<>
-MeritValue BitEquidistribution<EmbeddingType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
+MeritValue BitEquidistribution<EmbeddingType::UNILEVEL>::BitEquidistributionEvaluator::operator()(const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
 {
 
     unsigned int nCols = net.numColumns();
     if (dimension==0)
     {
-        m_memReducer.reset(nCols); // if the dimension is the first dimension, initiate the data structure
+        m_memRankComputer.reset(nCols); // if the dimension is the first dimension, initiate the data structure
     }
 
     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-    m_newReducer = m_memReducer; // copy the reduction of the best net for the previous dimension
+    m_newRankComputer = m_memRankComputer; // copy the reduction of the best net for the previous dimension
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit) // for each bit of equidistribution
     {
-        m_newReducer.addRow(net.generatingMatrix(dimension).subMatrix(bit, 0, 1, nCols )); // add the new row
-        if (m_newReducer.computeRank() < m_newReducer.numRows())
+        m_newRankComputer.addRow(net.generatingMatrix(dimension).subMatrix(bit, 0, 1, nCols )); // add the new row
+        if (m_newRankComputer.computeRank() < m_newRankComputer.numRows())
         {
             acc.accumulate(m_figure->weight(), 1, m_figure->expNorm()); // the points are not equidistributed: set the merit
             break;
@@ -239,30 +239,30 @@ MeritValue BitEquidistribution<EmbeddingType::UNILEVEL>::BitEquidistributionEval
 
 //template specialization for the multilevel case
 template<>
-MeritValue BitEquidistribution<EmbeddingType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
+MeritValue BitEquidistribution<EmbeddingType::MULTILEVEL>::BitEquidistributionEvaluator::operator()(const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose)
 {
 
     unsigned int nCols = net.numColumns();
 
     if (dimension==0) // if the dimension is the first dimension, initiate the data structure
     {
-        m_memReducer.reset(nCols);
+        m_memRankComputer.reset(nCols);
     }
 
     auto acc = m_figure->accumulator(std::move(initialValue)); // create the accumulator from the initial value
 
-    m_newReducer = m_memReducer; // copy the reduction of the best net for the previous dimension
+    m_newRankComputer = m_memRankComputer; // copy the reduction of the best net for the previous dimension
 
     std::vector<unsigned int> merits(nCols,0);
 
     for(unsigned int bit = 0; bit < m_figure->nbBits(); ++bit) // for each bit of equidistribution
     {
-        m_newReducer.addRow(net.generatingMatrix(dimension).subMatrix(bit, 0, 1, nCols )); // add the new row
-        std::vector<unsigned int> ranks = m_newReducer.computeRanks(0,nCols); // compute the rank
+        m_newRankComputer.addRow(net.generatingMatrix(dimension).subMatrix(bit, 0, 1, nCols )); // add the new row
+        std::vector<unsigned int> ranks = m_newRankComputer.computeRanks(0,nCols); // compute the rank
 
         for(unsigned int m = 1; m <= nCols; ++m) // for each level of points
         {
-            if (m >= m_newReducer.numRows() && ranks[m-1] <  m_newReducer.numRows() ) // if the system is not full row-rank and could have been
+            if (m >= m_newRankComputer.numRows() && ranks[m-1] <  m_newRankComputer.numRows() ) // if the system is not full row-rank and could have been
             {
                 merits[m-1] = 1; // the points could have been equidistributed but are not: put the merit to 1
             }

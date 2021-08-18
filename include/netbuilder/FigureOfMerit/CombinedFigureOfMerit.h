@@ -18,7 +18,7 @@
 #define NET_BUILDER__FIGURE_OF_MERIT_BIT__COMBINED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 
@@ -129,7 +129,7 @@ class CombinedFigureOfMerit : public CBCFigureOfMerit{
                  *  @param initialValue Initial value of the merit.
                  *  @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator()(const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     auto acc = m_figure->accumulator(0); // create the accumulator from the initial value
 

@@ -65,7 +65,7 @@ class QuantilesObserver : public Task::MinimumObserver<NC>
             m_acc = QuantilesAccumulator(tag::tail<boost::accumulators::left>::cache_size = m_numSamples);
         }
 
-        virtual bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit) override
+        virtual bool observe(std::unique_ptr<DigitalNet<NC>> net, const Real& merit) override
         {
             m_acc(merit);
             return Task::MinimumObserver<NC>::observe(std::move(net), merit);

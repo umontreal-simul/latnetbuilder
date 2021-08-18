@@ -15,7 +15,7 @@
 // limitations under the License.
 
 #include "latbuilder/Util.h"
-#include "netbuilder/Path.h"
+#include "netbuilder/Helpers/Path.h"
 #include <cmath>
 #include <cstdlib>
 #include <fstream>

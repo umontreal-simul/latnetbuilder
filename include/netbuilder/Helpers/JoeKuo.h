@@ -22,7 +22,7 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Util.h"
+#include "netbuilder/Helpers/Util.h"
 
 namespace NetBuilder { 
 /**
@@ -109,7 +109,7 @@ std::vector<DirectionNumbers> getJoeKuoDirectionNumbers(Dimension dimension);
  * @param dimension Dimension of the net.
  * @param size Size of the generating matrices.
  */ 
-DigitalNetConstruction<NetConstruction::SOBOL> createJoeKuoSobolNet(Dimension dimension, MatrixSize size);
+DigitalNet<NetConstruction::SOBOL> createJoeKuoSobolNet(Dimension dimension, MatrixSize size);
 
 /**
  * Constructs a Sobol' net using the direction numbers suggested by Joe and Kuo in \cite rJOE08a.
@@ -117,7 +117,7 @@ DigitalNetConstruction<NetConstruction::SOBOL> createJoeKuoSobolNet(Dimension di
  * @param size Size of the generating matrices.
  * @return A <code>std::unique_ptr</code> to the constructed net.
  */ 
-std::unique_ptr<DigitalNetConstruction<NetConstruction::SOBOL>> createPtrToJoeKuoSobolNet(Dimension dimension, MatrixSize size);
+std::unique_ptr<DigitalNet<NetConstruction::SOBOL>> createPtrToJoeKuoSobolNet(Dimension dimension, MatrixSize size);
 
 }}
 

@@ -83,7 +83,7 @@ class ExhaustiveSearch : public Search<NC, ET, OBSERVER>
                 evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), boost::placeholders::_1));
             }
             
-            auto searchSpace = DigitalNetConstruction<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_sizeParameter);
+            auto searchSpace = DigitalNet<NC>::ConstructionMethod::genValueSpace(this->dimension(), this->m_sizeParameter);
             
             uInteger nbNets = 1;
             for(const auto& genVal : searchSpace)
@@ -93,7 +93,7 @@ class ExhaustiveSearch : public Search<NC, ET, OBSERVER>
                     std::cout << "Net " << nbNets << "/" << searchSpace.size() << std::endl;
                 }
                 nbNets++;
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_sizeParameter, genVal);
+                auto net = std::make_unique<DigitalNet<NC>>(this->m_dimension, this->m_sizeParameter, genVal);
                 double merit = (*evaluator)(*net, this->m_verbose-3);
                 this->m_observer->observe(std::move(net),merit);
             }

@@ -14,19 +14,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/ProgressiveRowReducer.h"
+#include "netbuilder/Helpers/RankComputer.h"
 
 #include <algorithm>
 #include <iterator>
 
 namespace NetBuilder{
 
-    ProgressiveRowReducer::ProgressiveRowReducer(unsigned int nCols)
+    RankComputer::RankComputer(unsigned int nCols)
     {
         reset(nCols);
     };
 
-    void ProgressiveRowReducer::reset(unsigned int nCols)  
+    void RankComputer::reset(unsigned int nCols)  
     {
         m_nCols = nCols;
         m_nRows = 0;
@@ -46,12 +46,12 @@ namespace NetBuilder{
         m_rowOperations.resize(0,m_nCols);
     }
 
-    unsigned int ProgressiveRowReducer::computeRank() const
+    unsigned int RankComputer::computeRank() const
     {
         return (unsigned int) m_pivotsColRowPositions.size();
     }
 
-    std::vector<unsigned int> ProgressiveRowReducer::computeRanks(unsigned int firstCol, unsigned int numCol) const
+    std::vector<unsigned int> RankComputer::computeRanks(unsigned int firstCol, unsigned int numCol) const
     {
         unsigned int rank = 0;
         std::vector<unsigned int> ranks(numCol, rank);
@@ -85,7 +85,7 @@ namespace NetBuilder{
         return ranks;
     }
 
-    unsigned int ProgressiveRowReducer::pivotRowAndFindNewPivot(unsigned int rowIndex)
+    unsigned int RankComputer::pivotRowAndFindNewPivot(unsigned int rowIndex)
     {
 
         for( const auto& colRowPivot : m_pivotsColRowPositions)
@@ -132,7 +132,7 @@ namespace NetBuilder{
     }
 
 
-    void ProgressiveRowReducer::addRow(GeneratingMatrix newRow)
+    void RankComputer::addRow(GeneratingMatrix newRow)
     {
         unsigned int row = m_nRows;
         ++m_nRows;
@@ -159,7 +159,7 @@ namespace NetBuilder{
 
     }
 
-    void ProgressiveRowReducer::addColumn(GeneratingMatrix newCol)
+    void RankComputer::addColumn(GeneratingMatrix newCol)
     {
         newCol = m_rowOperations * newCol; // apply the row operations to the new column
         m_redMat.stackRight(newCol); // stack right the new column
@@ -202,7 +202,7 @@ namespace NetBuilder{
         }
     }
 
-    void ProgressiveRowReducer::replaceRow(unsigned int rowIndex, GeneratingMatrix&& newRow, int verbose)
+    void RankComputer::replaceRow(unsigned int rowIndex, GeneratingMatrix&& newRow, int verbose)
     {
         auto rowIndexColPivPos = m_pivotsRowColPositions.find(rowIndex);
 
@@ -266,7 +266,7 @@ namespace NetBuilder{
         m_smallestFullRank = std::max(m_smallestFullRank, newPivotPos + 1);
     }
 
-    bool ProgressiveRowReducer::checkIfInvertible(GeneratingMatrix matrix)
+    bool RankComputer::checkIfInvertible(GeneratingMatrix matrix)
     {
         int k = matrix.nRows();
         int m = matrix.nCols();
@@ -307,7 +307,7 @@ namespace NetBuilder{
     }
 
 #ifdef DEBUG_ROW_REDUCER
-void ProgressiveRowReducer::check(){
+void RankComputer::check(){
 
     if (!checkIfInvertible(m_rowOperations))
     {

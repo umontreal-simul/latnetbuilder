@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/Util.h"
+#include "netbuilder/Helpers/Util.h"
 #include "latbuilder/Parser/SizeParam.h"
 #include "latbuilder/Parser/Common.h"
 

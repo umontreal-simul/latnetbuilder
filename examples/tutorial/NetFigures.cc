@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "netbuilder/Types.h"
-#include "netbuilder/JoeKuo.h"
+#include "netbuilder/Helpers/JoeKuo.h"
 #include "netbuilder/FigureOfMerit/TValue.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 

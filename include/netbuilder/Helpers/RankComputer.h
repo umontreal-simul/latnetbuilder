@@ -19,8 +19,8 @@
  * This file defines a class which computes the rank of matrices in \f$ F_2 \f$ using the gaussian elimination
  */ 
 
-#ifndef NETBUILDER__PROGRESSIVE_ROW_REDUCER_H
-#define NETBUILDER__PROGRESSIVE_ROW_REDUCER_H
+#ifndef NETBUILDER__RANK_COMPUTER_H
+#define NETBUILDER__RANK_COMPUTER_H
 
 #include "netbuilder/GeneratingMatrix.h"
 
@@ -35,17 +35,17 @@ namespace NetBuilder {
 /**
  * Class used to perform row reduction operations on a matrix.
  */ 
-class ProgressiveRowReducer
+class RankComputer
 {
     public:
         /** Constructor.
-         * @param nCols number of columns of the reducer.
+         * @param nCols number of columns of the rank computer.
          */ 
-        ProgressiveRowReducer(unsigned int nCols = 0);
+        RankComputer(unsigned int nCols = 0);
 
         /**
-         * Clears the reducer and set the number of columns to \c nCols.
-         * @param nCols New number of columns of the reducer.
+         * Clears the rank computer and set the number of columns to \c nCols.
+         * @param nCols New number of columns of the rank computer.
          */ 
         void reset(unsigned int nCols);
         
@@ -98,12 +98,12 @@ class ProgressiveRowReducer
         const GeneratingMatrix& rowOperations() const {return m_rowOperations; }
 
         /**
-         * Returns the number of rows in the reducer.
+         * Returns the number of rows in the rank computer.
          */ 
         unsigned int numRows() const {return m_nRows; }
 
         /**
-         * Returns the number of columns in the reducer.
+         * Returns the number of columns in the rank computer.
          */ 
         unsigned int numCols() const {return m_nCols; }
 
@@ -126,8 +126,8 @@ class ProgressiveRowReducer
 
     private:
     
-        unsigned int m_nRows = 0; // number of rows in the reducer
-        unsigned int m_nCols; // number of columns of the reducer
+        unsigned int m_nRows = 0; // number of rows in the rank computer
+        unsigned int m_nCols; // number of columns of the rank computer
         unsigned int m_smallestFullRank; // minimal number of columns necessary for the system spanned by the rows to be full-rank.
         GeneratingMatrix m_redMat; // row-reduced matrix
         GeneratingMatrix m_rowOperations; // row operations matrix

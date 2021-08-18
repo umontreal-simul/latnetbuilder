@@ -18,9 +18,9 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__RESOLUTION_GAP_PROJ_MERIT
 
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
-#include "netbuilder/CBCCoordinateSet.h"
-#include "netbuilder/ProgressiveRowReducer.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/Helpers/CBCCoordinateSet.h"
+#include "netbuilder/Helpers/RankComputer.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 
@@ -75,12 +75,12 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
          * @param net Digital to evaluate.
          * @param projection Projection to use.
          */ 
-        Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
+        Real operator()(const AbstractDigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
             Dimension dimension = projection.size();
             unsigned int numCols = net.numColumns();
 
-            m_rowReducer.reset(numCols);
+            m_rankComputer.reset(numCols);
 
             unsigned int maxResolution = numCols/dimension;
             unsigned int merit = maxResolution; 
@@ -88,9 +88,9 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.generatingMatrix(coord).subMatrix(resolution, 0, 1,numCols));
+                    m_rankComputer.addRow(net.generatingMatrix(coord).subMatrix(resolution, 0, 1,numCols));
                 }
-                if(m_rowReducer.computeRank() == m_rowReducer.numRows())
+                if(m_rankComputer.computeRank() == m_rankComputer.numRows())
                 {
                     --merit;
                 }
@@ -113,7 +113,7 @@ class ResolutionGapProjMerit<EmbeddingType::UNILEVEL>
 
     private:
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account
-        ProgressiveRowReducer m_rowReducer; // use to compute the rank of matrices
+        RankComputer m_rankComputer; // use to compute the rank of matrices
 };
 
 /** Template specialization of the projection-dependent merit defined by the resolution-gap of the projection
@@ -159,14 +159,14 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
          * @param net Digital to evaluate.
          * @param projection Projection to use.
          */ 
-        Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection) 
+        Real operator()(const AbstractDigitalNet& net , const LatticeTester::Coordinates& projection) 
         {
             Dimension dimension = projection.size();
 
             unsigned int numRows = net.numRows();
             unsigned int numCols = net.numColumns();
 
-            m_rowReducer.reset(numCols);
+            m_rankComputer.reset(numCols);
 
             std::vector<unsigned int> merits(numRows);
 
@@ -181,17 +181,17 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
             {
                 for(auto coord : projection)
                 {
-                    m_rowReducer.addRow(net.generatingMatrix(coord).subMatrix(resolution, 0,  1, numCols));
+                    m_rankComputer.addRow(net.generatingMatrix(coord).subMatrix(resolution, 0,  1, numCols));
                 }
-                std::vector<unsigned int> ranks = m_rowReducer.computeRanks(0,numCols);
+                std::vector<unsigned int> ranks = m_rankComputer.computeRanks(0,numCols);
                 for(unsigned int m = 1; m <= numCols; ++m)
                 {
-                    if (ranks[m-1] == m_rowReducer.numRows())
+                    if (ranks[m-1] == m_rankComputer.numRows())
                     {
                         --merits[m-1];
                     }
                 }
-                if (ranks[numCols-1] <  m_rowReducer.numRows())
+                if (ranks[numCols-1] <  m_rankComputer.numRows())
                 {
                     break;
                 }
@@ -226,7 +226,7 @@ class ResolutionGapProjMerit<EmbeddingType::MULTILEVEL>
     private:
         unsigned int m_maxCardinal; // maximum order of subprojections to take into account 
         pCombiner m_combiner; 
-        ProgressiveRowReducer m_rowReducer;
+        RankComputer m_rankComputer;
 };
 
 }}

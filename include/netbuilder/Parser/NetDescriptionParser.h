@@ -21,7 +21,7 @@
 
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
+#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/NetConstructionTraits.h"
 
 #include <algorithm>

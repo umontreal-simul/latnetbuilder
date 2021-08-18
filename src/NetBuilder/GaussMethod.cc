@@ -18,10 +18,10 @@
 #include <fstream>
 #include <algorithm>
 
-#include "netbuilder/TValueComputation.h"
-#include "netbuilder/Util.h"
-#include "netbuilder/ProgressiveRowReducer.h"
-#include "netbuilder/CompositionMaker.h"
+#include "netbuilder/FigureOfMerit/TValueComputation.h"
+#include "netbuilder/Helpers/Util.h"
+#include "netbuilder/Helpers/RankComputer.h"
+#include "netbuilder/Helpers/CompositionMaker.h"
 
 
 
@@ -34,18 +34,18 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& baseMatrices, unsigne
     // Initialization of row map from original matrices to computation matrix
     std::map<std::pair<int, int>, int> Origin_to_M;
 
-    ProgressiveRowReducer rowReducer(nCols);
+    RankComputer rankComputer(nCols);
 
     for (unsigned int i=0; i<k-s+1; i++){
         Origin_to_M[{1, i+1}] = i;
-        rowReducer.addRow(baseMatrices[s-1].subMatrix(i, 0, 1, nCols));
+        rankComputer.addRow(baseMatrices[s-1].subMatrix(i, 0, 1, nCols));
     }
     for (unsigned int i=1; i<s; i++){
         Origin_to_M[{i+1, 1}] = k-s+i;
-        rowReducer.addRow(baseMatrices[s-1-i].subMatrix(0, 0, 1, nCols));
+        rankComputer.addRow(baseMatrices[s-1-i].subMatrix(0, 0, 1, nCols));
     }
 
-    unsigned int smallestFullRankIndex = rowReducer.smallestFullRank() - 1;
+    unsigned int smallestFullRankIndex = rankComputer.smallestFullRank() - 1;
 
     if (smallestFullRankIndex == nCols){
         return nCols;
@@ -63,9 +63,9 @@ unsigned int iteration_on_k(std::vector<GeneratingMatrix>& baseMatrices, unsigne
         
         GeneratingMatrix newRow = baseMatrices[s-rowChange.second.first].subMatrix(rowChange.second.second-1, 0, 1, nCols);
 
-        rowReducer.replaceRow(ind_exchange, std::move(newRow), verbose-1);
+        rankComputer.replaceRow(ind_exchange, std::move(newRow), verbose-1);
 
-        smallestFullRankIndex = rowReducer.smallestFullRank() - 1;
+        smallestFullRankIndex = rankComputer.smallestFullRank() - 1;
 
         if (smallestFullRankIndex == nCols){
             return smallestFullRankIndex;
@@ -94,11 +94,11 @@ std::vector<unsigned int> GaussMethod::computeTValue(std::vector<GeneratingMatri
     unsigned int nLevel = (unsigned int) maxSubProj.size();
     
     if (s == 1){
-        ProgressiveRowReducer rowReducer(nCols);
+        RankComputer rankComputer(nCols);
         for (unsigned int r=0; r<nRows; r++){
-            rowReducer.addRow(baseMatrices[0].subMatrix(r, 0, 1, nCols));
+            rankComputer.addRow(baseMatrices[0].subMatrix(r, 0, 1, nCols));
         }
-        std::map<unsigned int, unsigned int> pivotPos = rowReducer.getPivots();
+        std::map<unsigned int, unsigned int> pivotPos = rankComputer.getPivots();
         
         std::vector<unsigned int> countPivot(nCols);
         for (const auto &rowCol : pivotPos){

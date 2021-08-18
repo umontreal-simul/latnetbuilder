@@ -111,7 +111,7 @@ class RandomSearch : public Search<NC, ET, OBSERVER>
                     auto tmp = m_randomGenValueGenerator(dim);
                     genVals.push_back(std::move(tmp));
                 }
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_sizeParameter, std::move(genVals));
+                auto net = std::make_unique<DigitalNet<NC>>(this->m_dimension, this->m_sizeParameter, std::move(genVals));
                 double merit = (*evaluator)(*net,this->m_verbose-3);
                 this->m_observer->observe(std::move(net),merit);
             }

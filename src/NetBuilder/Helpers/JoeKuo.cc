@@ -15,9 +15,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/JoeKuo.h"
-#include "netbuilder/Util.h"
-#include "netbuilder/Path.h"
+#include "netbuilder/Helpers/JoeKuo.h"
+#include "netbuilder/Helpers/Util.h"
+#include "netbuilder/Helpers/Path.h"
 #include <cmath>
 
 #include <string>
@@ -125,16 +125,16 @@ std::vector<DirectionNumbers> getJoeKuoDirectionNumbers(Dimension dimension)
       return genVals;
 }
 
-DigitalNetConstruction<NetConstruction::SOBOL> createJoeKuoSobolNet(Dimension dimension, MatrixSize size)
+DigitalNet<NetConstruction::SOBOL> createJoeKuoSobolNet(Dimension dimension, MatrixSize size)
 {
       auto genVals = getJoeKuoDirectionNumbers(dimension);
-      return DigitalNetConstruction<NetConstruction::SOBOL>(dimension, size, std::move(genVals));
+      return DigitalNet<NetConstruction::SOBOL>(dimension, size, std::move(genVals));
 }
 
-std::unique_ptr<DigitalNetConstruction<NetConstruction::SOBOL>> createPtrToJoeKuoSobolNet(Dimension dimension, MatrixSize size)
+std::unique_ptr<DigitalNet<NetConstruction::SOBOL>> createPtrToJoeKuoSobolNet(Dimension dimension, MatrixSize size)
 {
       auto genVals = getJoeKuoDirectionNumbers(dimension);
-      return std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(dimension, size, std::move(genVals));
+      return std::make_unique<DigitalNet<NetConstruction::SOBOL>>(dimension, size, std::move(genVals));
 }
 
 }} // namespace

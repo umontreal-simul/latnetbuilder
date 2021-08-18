@@ -79,7 +79,7 @@ struct ExplorationMethodParser
                 throw BadExplorationMethod("net description must be specified; see --help");
             }
             auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, explorationDescriptionStrings[1]);
-            auto net = std::make_unique<DigitalNetConstruction<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));
+            auto net = std::make_unique<DigitalNet<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));
             return std::make_unique<Task::Eval>(std::move(net), std::move(commandLine.m_figure), commandLine.m_verbose);
         }
         else if (name == "exhaustive"){

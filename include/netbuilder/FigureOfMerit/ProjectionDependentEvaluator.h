@@ -71,7 +71,7 @@ class ProjectionDependentEvaluator : public CBCFigureOfMeritEvaluator
          *  @param initialValue Initial value of the merit.
          *  @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
+        virtual MeritValue operator() (const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
         {
             unsigned int nLevels = PROJDEP::numLevels(net); // determine the number of levels
 

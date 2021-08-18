@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/CompositionMaker.h"
+#include "netbuilder/Helpers/CompositionMaker.h"
 
 CompositionMaker::CompositionMaker(unsigned int n, unsigned int k):
     m_nbParts(k),

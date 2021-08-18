@@ -31,8 +31,14 @@
 namespace NetBuilder {
 
 /** This class implements a generating matrix of a digital net in base 2.
- *  A matrix is represented as a <code>std::vector</code> of rows implemented by
- *  <code>boost::dynamic_bitset</code>.
+ * 
+ * Internally, a matrix is represented as a <code>std::vector</code> of rows implemented by
+ * <code>boost::dynamic_bitset</code>. This internal representation allows to work with
+ * arbitrarly large matrices. The choice of representing the matrix by its rows and not its columns
+ * comes from the rank computation algorithm, which is the most complicated algorithm handling matrices in the software.
+ * 
+ * For now, the computation of the points from the matrices is done in latbuilder/Storage-SIMPLE-DIGITAL.h.
+ * 
  */ 
 class GeneratingMatrix {
 
@@ -62,8 +68,6 @@ class GeneratingMatrix {
          * @param init  Vector of uInteger of length nRows
          */  
         GeneratingMatrix(unsigned int nRows, unsigned int nCols, std::vector<uInteger> init);
-
-        // GeneratingMatrix(unsigned int nRows, unsigned int nCols, bool uniTriangular);
 
         /** Returns the number of columns of the matrix. */
         unsigned int nCols() const;
@@ -151,9 +155,10 @@ class GeneratingMatrix {
         friend std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat);
 
         /** Returns an integer representation of the columns of the matrix. A column is read as a bit string
-         * with highest bit in first position.
+         * with highest bit in first position. This function is used to generate the points from the digital net.
          */ 
         std::vector<unsigned long> getColsReverse() const;
+
     private:
         std::vector<boost::dynamic_bitset<>> m_data; // data internal representantion
         unsigned int m_nRows; // number of rows of the matrix

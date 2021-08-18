@@ -34,7 +34,7 @@
 #include "latbuilder/Kernel/ICAlpha.h"
 
 #include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
+#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/Parser/ComputeMaxCardFromWeights.h"
 #include "netbuilder/Parser/LevelCombinerParser.h"
 #include "netbuilder/Parser/CommandLine.h"

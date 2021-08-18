@@ -23,9 +23,9 @@
 #define NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
+#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/GeneratingMatrix.h"
-#include "netbuilder/ProgressiveRowReducer.h"
+#include "netbuilder/Helpers/RankComputer.h"
 
 #include "latbuilder/GenSeq/GeneratingValues.h"
 #include "latbuilder/SeqCombiner.h"
@@ -316,18 +316,18 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             {
                 GeneratingMatrix matrix(0, m_sizeParameter.second);
 
-                ProgressiveRowReducer rowReducer(m_sizeParameter.second);
+                RankComputer rankComputer(m_sizeParameter.second);
 
                 for (unsigned int i = 1; i <= m_sizeParameter.second; i++){
                     bool goToNext = false;
                     while (! goToNext){
                         GeneratingMatrix newRow(1, m_sizeParameter.second, {m_unif(m_randomGen)});
-                        ProgressiveRowReducer rowReducerTemp = rowReducer;
-                        rowReducerTemp.addRow(newRow);
+                        RankComputer rankComputerTemp = rankComputer;
+                        rankComputerTemp.addRow(newRow);
 
-                        if (rowReducerTemp.computeRank() == i){
+                        if (rankComputerTemp.computeRank() == i){
                             goToNext = true;
-                            rowReducer = rowReducerTemp;
+                            rankComputer = rankComputerTemp;
                             matrix.stackBelow(newRow);
                         }
                     }
@@ -422,18 +422,18 @@ struct NetConstructionTraits<NetConstruction::LMS>
             {
                 GeneratingMatrix matrix(0, m_sizeParameter.second);
 
-                ProgressiveRowReducer rowReducer(m_sizeParameter.second);
+                RankComputer rankComputer(m_sizeParameter.second);
 
                 for (unsigned int i = 1; i <= m_sizeParameter.second; i++){
                     bool goToNext = false;
                     while (! goToNext){
                         GeneratingMatrix newRow(1, m_sizeParameter.second, {m_unif(m_randomGen)});
-                        ProgressiveRowReducer rowReducerTemp = rowReducer;
-                        rowReducerTemp.addRow(newRow);
+                        RankComputer rankComputerTemp = rankComputer;
+                        rankComputerTemp.addRow(newRow);
 
-                        if (rowReducerTemp.computeRank() == i){
+                        if (rankComputerTemp.computeRank() == i){
                             goToNext = true;
-                            rowReducer = rowReducerTemp;
+                            rankComputer = rankComputerTemp;
                             matrix.stackBelow(newRow);
                         }
                     }

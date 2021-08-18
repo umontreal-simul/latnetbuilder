@@ -18,7 +18,7 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__TVALUE_TRANSFORMED_PROJ_MERIT
 
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 
@@ -91,7 +91,7 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
             this->cost_function = cost_function;
         }
 
-        virtual Real combine(Merit merit, const DigitalNet& net, const LatticeTester::Coordinates& projection)
+        virtual Real combine(Merit merit, const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection)
         {
             return h(merit, net.numColumns(), projection.size(), cost_function);
         }
@@ -135,7 +135,7 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
             this->cost_function = cost_function;
         }
 
-        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) {
+        virtual Real combine(const Merit& merits, const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection) {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
                 tmp[i] = h(merits[i], net.numColumns(), projection.size(), cost_function);

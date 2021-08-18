@@ -15,7 +15,7 @@
 // limitations under the License.
 
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/JoeKuo.h"
+#include "netbuilder/Helpers/JoeKuo.h"
 
 #include <sstream>
 #include <boost/algorithm/string/erase.hpp>

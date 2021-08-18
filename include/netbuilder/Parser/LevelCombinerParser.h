@@ -19,7 +19,7 @@
 
 #include "latbuilder/Parser/Common.h"
 #include "netbuilder/Types.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Parser/CommandLine.h"
 

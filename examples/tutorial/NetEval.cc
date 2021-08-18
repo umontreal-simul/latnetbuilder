@@ -18,7 +18,7 @@
 #include <memory>
 
 #include "netbuilder/Types.h"
-#include "netbuilder/JoeKuo.h"
+#include "netbuilder/Helpers/JoeKuo.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 #include "netbuilder/Task/Eval.h"
 #include "latticetester/ProductWeights.h"
