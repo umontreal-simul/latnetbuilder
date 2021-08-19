@@ -133,15 +133,6 @@ class AbstractDigitalNet
             return *m_generatingMatrices[coord];
         }
 
-        /** 
-         * Returns the generating vector corresponding to coordinate \c coord.
-         * @param coord A coordinate (between 0 and dimension() - 1 ).
-         */
-        const std::vector<int>& generatingVector(Dimension coord) const 
-        {
-            return *m_generatingVectors[coord];
-        }
-
         /**
          * Formats the net for output.
          * @param outputFormat Format of output.
@@ -163,8 +154,6 @@ class AbstractDigitalNet
         mutable std::vector<std::shared_ptr<GeneratingMatrix>> m_generatingMatrices; // vector of shared pointers to the generating matrices
         // The generating matrix class is defined in GeneratingMatrix.h.
 
-        mutable std::vector<std::shared_ptr<std::vector<int>>> m_generatingVectors;  // TODO: remove this
-
         /** 
          * Most general constructor. Designed to be used by derived classes. 
          * @param dimension Dimension of the net.
@@ -172,12 +161,11 @@ class AbstractDigitalNet
          * @param nCols Number of columns of the generating matrices.
          * @param genMatrices Vector of shared pointers to the generating matrices.
          */
-        AbstractDigitalNet(Dimension dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices, std::vector<std::shared_ptr<std::vector<int>>> genVectors):
+        AbstractDigitalNet(Dimension dimension, unsigned int nRows, unsigned int nCols, std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices):
             m_dimension(dimension),
             m_nRows(nRows),
             m_nCols(nCols),
-            m_generatingMatrices(genMatrices),
-            m_generatingVectors(genVectors)
+            m_generatingMatrices(genMatrices)
         {};
 
 };
@@ -227,7 +215,6 @@ class DigitalNet : public AbstractDigitalNet
             {
                 // construct the generating matrix and store them and the generating values
                 m_generatingMatrices.push_back(std::shared_ptr<GeneratingMatrix>(ConstructionMethod::createGeneratingMatrix(genValue,m_sizeParameter,dimension_j)));
-                m_generatingVectors.push_back(std::shared_ptr<std::vector<int>>(ConstructionMethod::createGeneratingVector(genValue,m_sizeParameter,dimension_j)));
                 m_genValues.push_back(std::shared_ptr<GenValue>(new GenValue(std::move(genValue))));
                 dimension_j++;
             }
@@ -259,20 +246,17 @@ class DigitalNet : public AbstractDigitalNet
         std::unique_ptr<DigitalNet<NC>> appendNewCoordinate(const GenValue& newGenValue) const 
         {
             std::shared_ptr<GeneratingMatrix> newMat(ConstructionMethod::createGeneratingMatrix(newGenValue, m_sizeParameter, m_dimension));
-            std::shared_ptr<std::vector<int>> newVec(ConstructionMethod::createGeneratingVector(newGenValue, m_sizeParameter, m_dimension));
 
             // copy the vector of pointers to matrices and add the new matrix
             auto genMats = m_generatingMatrices; 
             genMats.push_back(std::move(newMat));
-            auto genVecs = m_generatingVectors; 
-            genVecs.push_back(std::move(newVec));
 
             // copy the vector of pointers to generating values and add the new generating value
             auto genVals = m_genValues;
             genVals.push_back(std::shared_ptr<GenValue>(new GenValue(newGenValue)));
 
             // instantiate the new net and return the unique pointer to it
-            return std::unique_ptr<DigitalNet<NC>>(new DigitalNet<NC>(m_dimension+1, m_sizeParameter, std::move(genVals), std::move(genMats), std::move(genVecs)));
+            return std::unique_ptr<DigitalNet<NC>>(new DigitalNet<NC>(m_dimension+1, m_sizeParameter, std::move(genVals), std::move(genMats)));
         }
 
 
@@ -293,7 +277,30 @@ class DigitalNet : public AbstractDigitalNet
                 res+=stream.str();
             }
 
-            res += ConstructionMethod::format(m_genValues,m_sizeParameter,outputFormat,outputStyle, interlacingFactor);
+            if (outputStyle == OutputStyle::NET) {
+                std::string dimension_as_str = std::to_string(dimension());
+                std::string nb_col_as_str = std::to_string(numColumns());
+                res += "# Parameters for a digital net in base 2\n";
+                res += dimension_as_str + "    # " + dimension_as_str + " dimensions\n";
+                res += nb_col_as_str + "   # k = " + nb_col_as_str + ",  n = 2^"+ nb_col_as_str + " = "; 
+                res += std::to_string(numPoints()) + " points\n";
+                res += "31   # r = 31 digits\n";
+                res += "# The next row gives the columns of C_1, the first gen. matrix\n";
+                for(unsigned int coord = 0; coord < m_genValues.size(); coord++)
+                {
+                    const std::vector<unsigned long> columns =  (*(m_generatingMatrices[coord])).getColsReverse();
+
+                    for(unsigned int i = 0; i < (unsigned int) numColumns(); ++i)
+                    {
+                        res += std::to_string(columns[i] << (31 - numRows())) + " ";
+                    }
+                    res.pop_back();
+                    res += "\n";
+                }
+                res.pop_back();
+            }
+
+            res += ConstructionMethod::format(m_generatingMatrices, m_genValues, m_sizeParameter, outputFormat, outputStyle, interlacingFactor);
 
             if (outputFormat==OutputFormat::HUMAN)
             {
@@ -333,10 +340,9 @@ class DigitalNet : public AbstractDigitalNet
             Dimension dimension,
             SizeParameter sizeParameter,
             std::vector<std::shared_ptr<GenValue>> genValues,
-            std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices,
-            std::vector<std::shared_ptr<std::vector<int>>> genVectors
+            std::vector<std::shared_ptr<GeneratingMatrix>> genMatrices
             ):
-                AbstractDigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter), std::move(genMatrices), std::move(genVectors)),
+                AbstractDigitalNet(dimension, ConstructionMethod::nRows(sizeParameter), ConstructionMethod::nCols(sizeParameter), std::move(genMatrices)),
                 m_sizeParameter(std::move(sizeParameter)),
                 m_genValues(std::move(genValues))
         {};

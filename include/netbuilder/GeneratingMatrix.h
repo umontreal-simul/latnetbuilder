@@ -79,8 +79,8 @@ class GeneratingMatrix {
          * @param nRows is the new number of rows of the matrix
          * @param nCols is the new number of columns of the matrix
          */ 
-
         void resize(unsigned int nRows, unsigned int nCols);
+
         /** Returns the element at position \c i, \c j of the matrix.
          * @param i Row index.
          * @param j Column index.

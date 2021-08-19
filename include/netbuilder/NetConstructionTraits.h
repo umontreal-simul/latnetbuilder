@@ -97,8 +97,6 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
     static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
 
-    static std::vector<int>* createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
-
     class GenValueSpaceCoordSeq
     {
         public:
@@ -198,7 +196,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
             LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
+    static std::string format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
 
     typedef std::pair<unsigned int,uInteger> PrimitivePolynomial; 
 
@@ -231,8 +229,6 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
     static unsigned int nCols(const SizeParameter& param);
 
     static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
-
-    static std::vector<int>* createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
 
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
@@ -267,7 +263,7 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
             LatBuilder::UniformUIntDistribution<size_t, RAND> m_unif;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle , unsigned int interlacingFactor);
+    static std::string format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle , unsigned int interlacingFactor);
 };
 
 template<>
@@ -293,8 +289,6 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
     static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
 
-    static std::vector<int>* createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParam,  const Dimension& dimension_j = 1);
-
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
     static std::vector<GenValueSpaceCoordSeq> genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
@@ -373,7 +367,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             uInteger m_totient;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
+    static std::string format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
 };
 
 template<>
@@ -399,8 +393,6 @@ struct NetConstructionTraits<NetConstruction::LMS>
 
     static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
 
-    static std::vector<int>* createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
-
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
     static std::vector<GenValueSpaceCoordSeq> genValueSpace(Dimension dimension , const SizeParameter& sizeParameter);
@@ -479,7 +471,7 @@ struct NetConstructionTraits<NetConstruction::LMS>
             uInteger m_totient;
     };
 
-    static std::string format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
+    static std::string format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
 };
 
 

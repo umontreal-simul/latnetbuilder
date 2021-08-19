@@ -70,29 +70,6 @@ namespace NetBuilder {
         }
         return genMat;
     }
-    std::vector<int>*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
-    {
-        // TO DO to return genVector
-
-        unsigned int m = (unsigned int) (deg(sizeParameter));
-        std::vector<int>* cj = new std::vector<int>;
-       
-        for(unsigned int c =0; c<m; c++ )
-        {
-            cj->push_back(0); 
-        }
- 
-        std::vector<unsigned int> expansion(31 + m);
-        expandSeries(genValue, sizeParameter, expansion, 31 + m);
-        for(unsigned int c =0; c<m; c++ )
-        {
-            for(unsigned int row =0; row <31; row++ )
-            {
-                (*cj)[c] += expansion[c + row]*pow(2, 31-1-row);
-            }
-        }
-        return cj;
-    }
 
     typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::GenValueSpaceCoordSeq NetConstructionTraits<NetConstruction::POLYNOMIAL>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
     {
@@ -119,7 +96,7 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputStyle outputStyle, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat,OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::string res;
         std::ostringstream stream;
@@ -173,22 +150,6 @@ namespace NetBuilder {
                 foo.pop_back();
                 stream.str(foo);
                 stream.seekp (0, stream.end);
-            }
-            else if (outputStyle == OutputStyle::NET) {
-                stream << "# Parameters for a digital net in base 2 " << std::endl;
-                stream<< genVals.size()/interlacingFactor << "    # "<< genVals.size()/interlacingFactor <<" dimensions" << std::endl;
-                stream << (int) deg(sizeParameter) << "   # k = "<<(int) deg(sizeParameter) << ", n = 2^"<<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
-                stream << "31   # r = 31 digits" << std::endl;
-                stream << "# The next row gives the columns of C_1, the first gen. matrix" << std::endl;
-                for(unsigned int coord = 0; coord < genVals.size(); coord++)
-                {
-                    const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter);
-                    for(unsigned int i = 0; i < (unsigned int) deg(sizeParameter); ++i)
-                    {
-                        stream << (*generatingVector)[i] << " ";
-                    }
-                    if(coord < genVals.size() - 1){stream << std::endl;}
-                }
             }
             else{ stream << std::endl;}
         }

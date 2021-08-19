@@ -68,11 +68,11 @@ namespace NetBuilder {
      * @param a first vector
      * @param b second vector 
      */ 
-    unsigned int xor_prod_reduce(const std::vector<unsigned int>& a, const std::vector<unsigned int>& b)
+    unsigned long xor_prod_reduce(const std::vector<unsigned long>& a, const std::vector<unsigned long>& b)
     {
-        unsigned int res = 0;
-        unsigned int n = a.size();
-        for (unsigned int i = 0; i<n; ++i){
+        unsigned long res = 0;
+        unsigned long n = a.size();
+        for (unsigned long i = 0; i<n; ++i){
             res ^= a[i]*b[i];
         }
         return res;
@@ -81,19 +81,19 @@ namespace NetBuilder {
     /** Compute the m-bit binary representation of the given integer. The most significant bit is the leftest non zero
      * bit in the returned vector.
      * @param num non-negative integer
-     * @param unsigned int size of the binary representation
+     * @param m size of the binary representation
      */
-    std::vector<unsigned int> bin_vector(unsigned int num, unsigned int m)
+    std::vector<unsigned long> bin_vector(unsigned long num, unsigned long m)
     {
-        std::vector<unsigned int> res(m);
-        for(unsigned int i = 0; i<m; ++i){
+        std::vector<unsigned long> res(m);
+        for(unsigned long i = 0; i<m; ++i){
             res[m-i-1] = num % 2;
             num = num >> 1;
         }
         return res;
     }
 
-    BinaryMatrix createGeneratingSobolMatrix(const DirectionNumber& directionNumber, unsigned int m, unsigned int coord) 
+    BinaryMatrix createGeneratingSobolMatrix(const DirectionNumber& directionNumber, unsigned int m, unsigned long coord) 
     {
         std::vector<std::vector<bool>> tmp (m, std::vector<bool>(m, 0));
 
@@ -112,7 +112,7 @@ namespace NetBuilder {
         auto degree = p.first;
         auto poly_rep = p.second;
 
-        std::vector<unsigned int> a = bin_vector(poly_rep,degree-1);
+        std::vector<unsigned long> a = bin_vector(poly_rep, degree-1);
         a.push_back(1);
 
         for(unsigned int i = 0; i<degree; ++i){
@@ -131,12 +131,12 @@ namespace NetBuilder {
 
         if (m > degree)
         {
-            std::vector<unsigned int> reg(degree); // register for the linear reccurence
+            std::vector<unsigned long> reg(degree); // register for the linear reccurence
             std::reverse_copy(directionNumber.begin(),directionNumber.end(), reg.begin()); // should be reversed
 
             // computation of the recurrence
             for(unsigned int k = degree; k<m; ++k){
-                unsigned int new_num = xor_prod_reduce(a,reg) ^ reg[degree-1];
+                unsigned long new_num = xor_prod_reduce(a,reg) ^ reg[degree-1];
                 reg.pop_back();
                 reg.insert(reg.begin(),new_num);
                 auto dirNum = bin_vector(new_num,k+1);
@@ -195,29 +195,6 @@ namespace NetBuilder {
         return lmsMat;
     }
 
-    std::vector<int>*  NetConstructionTraits<NetConstruction::LMS>::createGeneratingVector(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
-    {
-      unsigned int m = (unsigned int) (nCols(sizeParameter));
-      std::vector<int>* cj = new std::vector<int>;
-      for(unsigned int c =0; c<m; c++ ){
-          cj->push_back(0);
-      }
-      GeneratingMatrix* tmp = createGeneratingMatrix(genValue,sizeParameter,dimension_j);
-      std::vector<std::vector<int>> genMat (31, std::vector<int> (m, 0));
-      for(unsigned int c =0; c<m; c++ )
-      {
-          for(unsigned int r =0; r<m; r++ )
-          {
-             genMat[r][c]=(*tmp)[r][c];
-          }
-          for(unsigned int r =0; r<31; r++ )
-          {
-             (*cj)[c] += genMat[r][c]*pow(2, 31-1-r); 
-          }
-      }
-        return cj;
-    }
-
     std::vector<GenValue> NetConstructionTraits<NetConstruction::LMS>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
     {
         throw std::logic_error("The space of all matrices is far too big to be exhautively explored.");
@@ -230,29 +207,12 @@ namespace NetBuilder {
         return std::vector<std::vector<GenValue>>{};
     }
 
-    std::string NetConstructionTraits<NetConstruction::LMS>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::LMS>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::ostringstream stream;
         
         if (outputFormat == OutputFormat::HUMAN){
-            stream << "LMS Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
-        }
-        else{
-            unsigned int m = (unsigned int) (nCols(sizeParameter));
-            stream << "# Parameters for a digital net in base 2" << std::endl;
-            stream << genVals.size()/interlacingFactor << "    # " <<  genVals.size()/interlacingFactor << " dimensions" << std::endl;
-            stream << m << "   # k = "<< m << ", n = 2^"<<  m << " = " << (int)pow(2,m ) << " points"<< std::endl;
-            stream << 31 << "   # r = 31 digits" << std::endl;
-            stream << "# The next row gives the columns of C_1, the first gen. matrix" << std::endl;
-            for(unsigned int coord = 0; coord < genVals.size(); coord++)
-            {
-                const std::vector<int>* generatingVector = createGeneratingVector(*(genVals[coord]), sizeParameter, coord);
-                for(unsigned int i = 0; i < m; ++i)
-                {
-                    stream << (*generatingVector)[i] << " ";
-                }
-                if(coord < genVals.size() - 1){stream << std::endl;}
-            }
+            stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
         }
         return stream.str();
     }  
