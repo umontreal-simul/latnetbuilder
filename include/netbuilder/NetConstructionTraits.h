@@ -333,8 +333,6 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             SizeParameter m_sizeParameter;
             RAND m_randomGen;
             LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
-            std::vector<GenValue> m_primes;
-            uInteger m_totient;
     };
 
     template<typename RAND>
@@ -363,8 +361,6 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
             SizeParameter m_sizeParameter;
             RAND m_randomGen;
             LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
-            std::vector<GenValue> m_primes;
-            uInteger m_totient;
     };
 
     static std::string format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);
@@ -375,11 +371,11 @@ struct NetConstructionTraits<NetConstruction::LMS>
 {
     typedef GeneratingMatrix GenValue ;
 
-    typedef std::pair<unsigned int, unsigned int> SizeParameter;
+    typedef std::pair<std::pair<unsigned int, unsigned int>, std::vector<std::shared_ptr<GeneratingMatrix>>> SizeParameter;
     
     typedef std::vector<GenValue> GenValueSpaceCoordSeq;
 
-    static constexpr bool isSequenceViewable = true;
+    static constexpr bool isSequenceViewable = false;
 
     static const std::string name;
 
@@ -406,39 +402,17 @@ struct NetConstructionTraits<NetConstruction::LMS>
         public:
             RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
                 m_sizeParameter(std::move(sizeParameter)),
-                m_randomGen(std::move(randomGen)),
-                m_unif(0, (1 << m_sizeParameter.second) - 1)
+                m_randomGen(std::move(randomGen))
             {};
             
             GenValue operator()(Dimension dimension)
             {
-                GeneratingMatrix matrix(0, m_sizeParameter.second);
-
-                RankComputer rankComputer(m_sizeParameter.second);
-
-                for (unsigned int i = 1; i <= m_sizeParameter.second; i++){
-                    bool goToNext = false;
-                    while (! goToNext){
-                        GeneratingMatrix newRow(1, m_sizeParameter.second, {m_unif(m_randomGen)});
-                        RankComputer rankComputerTemp = rankComputer;
-                        rankComputerTemp.addRow(newRow);
-
-                        if (rankComputerTemp.computeRank() == i){
-                            goToNext = true;
-                            rankComputer = rankComputerTemp;
-                            matrix.stackBelow(newRow);
-                        }
-                    }
-                }
-                return matrix;
+                return GeneratingMatrix::createRandomLowerTriangularMatrix(m_sizeParameter.first.first, m_sizeParameter.first.second);
             }
 
         private:
             SizeParameter m_sizeParameter;
             RAND m_randomGen;
-            LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
-            std::vector<GenValue> m_primes;
-            uInteger m_totient;
     };
 
     template<typename RAND>
@@ -447,28 +421,18 @@ struct NetConstructionTraits<NetConstruction::LMS>
         public:
             RandomGenValueGenerator(SizeParameter sizeParameter, RAND randomGen = RAND()):
                 m_sizeParameter(std::move(sizeParameter)),
-                m_randomGen(std::move(randomGen)),
-                m_unif(0, (1 << m_sizeParameter.second) - 1)
+                m_randomGen(std::move(randomGen))
             {};
             
             GenValue operator()(Dimension dimension)
             {
-                std::vector<uInteger> init;
-                init.reserve(m_sizeParameter.first);
-                for (unsigned int i = 0; i < m_sizeParameter.first; ++i)
-                {
-                    uInteger nb = m_randomGen();
-                    init.push_back( (1 << i) + (nb - (nb % (1 << (i + 1)))));
-                }
-                return GeneratingMatrix(m_sizeParameter.first, m_sizeParameter.second, std::move(init));
+                // TODO: I am not sure this is correct for the multilevel case.
+                return GeneratingMatrix::createRandomLowerTriangularMatrix(m_sizeParameter.first.first, m_sizeParameter.first.second);
             }
 
         private:
             SizeParameter m_sizeParameter;
             RAND m_randomGen;
-            LatBuilder::UniformUIntDistribution<unsigned long, RAND> m_unif;
-            std::vector<GenValue> m_primes;
-            uInteger m_totient;
     };
 
     static std::string format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor);

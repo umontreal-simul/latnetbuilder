@@ -27,6 +27,9 @@
 #include <string>
 #include <algorithm>
 
+#include "latbuilder/LFSR258.h"
+#include "latbuilder/UniformUIntDistribution.h"
+
 
 namespace NetBuilder {
 
@@ -38,7 +41,8 @@ namespace NetBuilder {
  * comes from the rank computation algorithm, which is the most complicated algorithm handling matrices in the software.
  * 
  * For now, the computation of the points from the matrices is done in latbuilder/Storage-SIMPLE-DIGITAL.h.
- * 
+ * TODO: add more explanation on this. The basic idea is that we do not need to explicitely compute the points anywhere 
+ * in LatNet Builder, but map a matrix to a permutation of {0, 1/n, ...,  1}.
  */ 
 class GeneratingMatrix {
 
@@ -158,6 +162,29 @@ class GeneratingMatrix {
          * with highest bit in first position. This function is used to generate the points from the digital net.
          */ 
         std::vector<unsigned long> getColsReverse() const;
+
+        /**
+         * Creates a matrix with ones on the main diagonal, random bits below the main diagonal, and zeros above.
+         * TODO: give the maximum values for nRows and nCols for this to work.
+         * @param nRows Number of rows of the matrix.
+         * @param nCols Number of columns of the matrix.
+         * @param randomGen Random Number Generator. By default it is the <tt>LFSR258</tt> generator by L'Ecuyer \cite rLEC99a.
+         */ 
+        template<typename RAND = LatBuilder::LFSR258>
+        static GeneratingMatrix createRandomLowerTriangularMatrix(unsigned int nRows, unsigned int nCols, RAND randomGen = RAND()) {
+            std::vector<GeneratingMatrix::uInteger> res(nRows, 0);
+            unsigned long diagonalCoeff = 1 << (nCols);
+            LatBuilder::UniformUIntDistribution<unsigned long, LatBuilder::LFSR258> m_unif(0, diagonalCoeff - 1);
+            for(unsigned int i = 0; i < std::min(nCols, nRows); ++i)
+            {
+                res[i] = ((diagonalCoeff + m_unif(randomGen)) >> (nCols-i));
+            }
+            for(unsigned int i = nCols; i < nRows; ++i)
+            {
+                res[i] = m_unif(randomGen);
+            }
+            return GeneratingMatrix(nRows, nCols, res);
+        };
 
     private:
         std::vector<boost::dynamic_bitset<>> m_data; // data internal representantion

@@ -23,6 +23,8 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Helpers/Util.h"
+#include "netbuilder/Helpers/JoeKuo.h"
+#include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Parser/CommandLine.h"
 
@@ -126,7 +128,17 @@ struct SizeParameterParser<NetConstruction::LMS, ET>
          if (sizeParamStrings.size() == 2 && sizeParamStrings.front() == "2")
          {
                unsigned int nCols = boost::lexical_cast<unsigned int>(sizeParamStrings.back());
-               commandLine.m_sizeParameter = result_type(nCols,nCols);
+               std::vector<JoeKuo::DirectionNumbers> joeKuoDirectionNumbers = JoeKuo::getJoeKuoDirectionNumbers(commandLine.m_dimension);
+               Dimension dimension_j = 0; //index of the dimension of the net, used for creating JoeKuo net 
+               std::vector<std::shared_ptr<GeneratingMatrix>> baseNet;
+               for(const auto& genValue : joeKuoDirectionNumbers)
+               {
+                  // construct the generating matrix and store them
+                  baseNet.push_back(std::shared_ptr<GeneratingMatrix>(NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(genValue, nCols, dimension_j)));
+                  dimension_j++;
+               }
+               
+               commandLine.m_sizeParameter = result_type(std::pair<unsigned int, unsigned int>(nCols, nCols), baseNet);
          }
          else
          {

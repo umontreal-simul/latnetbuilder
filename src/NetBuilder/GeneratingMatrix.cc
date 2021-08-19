@@ -151,22 +151,37 @@ std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat)
 
 GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
 {
+    assert ((*this).nCols() == m.nRows());
     GeneratingMatrix res(nRows(),m.nCols());
-    for(unsigned int i = 0; i < res.nRows(); ++ i)
-    {
-        for(unsigned int j = 0; j < m.nCols(); ++j)
-        {
-            unsigned int val = 0;
-            for(unsigned int k = 0; k < m_nRows; ++k)
-            {
-                val += (*this)(i,k) * m(k,j);
-                val %= 2;
+
+    for (unsigned int i=0; i<(*this).nRows(); i++){
+        for (unsigned int j=0; j<(*this).nCols(); j++){
+            if ((*this)(i, j)){
+                res[i] ^= m[j];
             }
-            res(i,j) = val; 
         }
     }
     return res;
 }
+
+// GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
+// {
+//     GeneratingMatrix res(nRows(),m.nCols());
+//     for(unsigned int i = 0; i < res.nRows(); ++ i)
+//     {
+//         for(unsigned int j = 0; j < m.nCols(); ++j)
+//         {
+//             unsigned int val = 0;
+//             for(unsigned int k = 0; k < m_nRows; ++k)
+//             {
+//                 val += (*this)(i,k) * m(k,j);
+//                 val %= 2;
+//             }
+//             res(i,j) = val; 
+//         }
+//     }
+//     return res;
+// }
 
 void GeneratingMatrix::stackRight(const GeneratingMatrix& block)
 {
