@@ -18,6 +18,7 @@
 #define NETBUILDER__PARSER__FIGURE_PARSER_H
 
 #include <limits>
+#include <fstream>
 
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -84,15 +85,28 @@ struct FigureParser
             weightsPowerScale = commandLine.m_normType / commandLine.m_weightPower;
         }
 
+        std::vector<std::string> weightsStrings;
         std::unique_ptr<LatticeTester::Weights> weights;
-        
-        if (commandLine.s_weights.size() == 1)
+
+        if (commandLine.s_weights.size() == 1 && commandLine.s_weights.front().compare(0, 4, "file") == 0)
         {
-            weights = LatBuilder::Parser::Weights::parse(commandLine.s_weights.front(), weightsPowerScale);
+            std::ifstream t(commandLine.s_weights.front().substr(5));
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            std::string fileContent = buffer.str();
+            boost::split(weightsStrings, fileContent, boost::is_any_of(" "));
+        }
+        else {
+            weightsStrings = commandLine.s_weights;
+        }
+        
+        if (weightsStrings.size() == 1)
+        {
+            weights = LatBuilder::Parser::Weights::parse(weightsStrings.front(), weightsPowerScale);
         }
         else
         {
-            weights = LatBuilder::Parser::CombinedWeights::parse(commandLine.s_weights, weightsPowerScale);
+            weights = LatBuilder::Parser::CombinedWeights::parse(weightsStrings, weightsPowerScale);
         }
 
         std::vector<std::string> figureDescriptionStrings;
