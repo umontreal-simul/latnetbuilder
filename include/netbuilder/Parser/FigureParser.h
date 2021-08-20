@@ -27,7 +27,7 @@
 #include "latbuilder/Parser/Weights.h"
 #include "latbuilder/Parser/CombinedWeights.h"
 #include "latbuilder/WeightsDispatcher.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Kernel/RPLR.h"
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
@@ -126,8 +126,8 @@ struct FigureParser
                 if (commandLine.m_interlacingFactor != 1)
                     throw BadFigure("interlacing factor must be `1' for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
-                auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
+                auto kernel = LatBuilder::Kernel::PAlphaTilde(alpha);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaTilde, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else if (figureDescriptionStrings.back().substr(0,2) == "IA")
             {

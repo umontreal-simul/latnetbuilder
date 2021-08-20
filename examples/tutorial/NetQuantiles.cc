@@ -21,7 +21,7 @@
 #include "netbuilder/Task/RandomSearch.h"
 
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latticetester/ProductWeights.h"
 
 #include "latbuilder/TextStream.h"
@@ -97,9 +97,9 @@ int main(int argc, const char *argv[])
     Dimension s = 10;
     NetConstructionTraits<NetConstruction::EXPLICIT>::SizeParameter sizeParam(10, 10);
     unsigned int alpha = 2;
-    auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
+    auto kernel = LatBuilder::Kernel::PAlphaTilde(alpha);
     auto weights = std::make_unique<LatticeTester::ProductWeights>(.7);
-    auto figure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
+    auto figure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaTilde, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
     std::cout << figure->format() << std::endl;
     //! [search_params]
 

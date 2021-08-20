@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__FUNCTOR__PALPHA_PLR_H
-#define LATBUILDER__FUNCTOR__PALPHA_PLR_H
+#ifndef LATBUILDER__FUNCTOR__PALPHA_TILDE_H
+#define LATBUILDER__FUNCTOR__PALPHA_TILDE_H
 
 
 #include "latbuilder/Types.h"
@@ -27,7 +27,7 @@
 namespace LatBuilder { namespace Functor {
 
 /**
- * One-dimensional merit function for the \f$\mathcal{P}_{\alpha,PLR}\f$ discrepancy.
+ * One-dimensional merit function for the \f$\tilde{\mathcal{P}}_{\alpha}\f$ discrepancy.
  *
  * This merit function is defined as
  * \f[
@@ -35,7 +35,7 @@ namespace LatBuilder { namespace Functor {
  * \f]
  * for \f$\alpha >1\f$ 
  */
-class PAlphaPLR {
+class PAlphaTilde {
 public:
    typedef Real value_type;
    typedef Real result_type;
@@ -45,7 +45,7 @@ public:
     *
     * \param alpha     Value of \f$\alpha\f$.
     */
-   PAlphaPLR(unsigned int alpha):
+   PAlphaTilde(unsigned int alpha):
       m_alpha(alpha)
    {
       m_mu = 1/ (1 - std::pow( (Real)(2),  (1 - (Real) (m_alpha)) )) ;
@@ -82,7 +82,7 @@ private:
  * Formats \c functor and outputs it on \c os.
  */
 inline
-std::ostream& operator<<(std::ostream& os, const PAlphaPLR& functor)
+std::ostream& operator<<(std::ostream& os, const PAlphaTilde& functor)
 { return os << functor.name(); }
 
 }}

@@ -14,8 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__NORM__PALPHA_PLR_H
-#define LATBUILDER__NORM__PALPHA_PLR_H
+#ifndef LATBUILDER__NORM__PALPHA_TILDE_H
+#define LATBUILDER__NORM__PALPHA_TILDE_H
 
 #include "latbuilder/Norm/NormAlphaBase.h"
 #include "latbuilder/Types.h"
@@ -29,12 +29,12 @@
 namespace LatBuilder { namespace Norm {
 
 /**
- * Bound on the weighted \f$\mathcal P_\alpha\f$PLR discrepancy.
+ * Bound on the weighted \f$\mathcal \tilde{P}_\alpha\f$ discrepancy.
  *
  * This is the general bound derived in Theorem 3 of \cite rDIC15a for
  * projection-dependent weights.
  * The theorem states that, for \f$\mathcal D^2(\boldsymbol a_s, n)
- * = \mathcal P_\alphaPLR(\boldsymbol a_s, n)\f$, there exists a generating vector
+ * = \mathcal tilde{P}_\alpha(\boldsymbol a_s, n)\f$, there exists a generating vector
  * \f$\boldsymbol a_s\f$ such that
  * \f[
  *    \mathcal D^2(\boldsymbol a_s, n) \leq N_{n,s}(\lambda)
@@ -91,7 +91,7 @@ namespace LatBuilder { namespace Norm {
  * where \f$e_\ell^d\f$ designates the elementary symmetric polynomial of degree \f$l\f$ with \f$d\f$ variables.
  *
  */
-class PAlphaPLR : public NormAlphaBase<PAlphaPLR> {
+class PAlphaTilde : public NormAlphaBase<PAlphaTilde> {
 public:
    /**
     * Constructor.
@@ -101,7 +101,7 @@ public:
     * \param normType      Type of cross-projection norm used by the figure of
     *                      merit.
     */
-   PAlphaPLR(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
+   PAlphaTilde(unsigned int alpha, const LatticeTester::Weights& weights, Real normType=2);
 
    template <LatticeType LR, EmbeddingType L>
    Real value(
@@ -112,7 +112,7 @@ public:
          ) const;
 
    std::string name() const
-   { return "PAlphaPLR"; }
+   { return "PAlphaTilde"; }
 
 private:
    const LatticeTester::Weights& m_weights;

@@ -14,18 +14,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATBUILDER__KERNEL__P_ALPHA_PLR_H
-#define LATBUILDER__KERNEL__P_ALPHA_PLR_H
+#ifndef LATBUILDER__KERNEL__P_ALPHA_TILDE_H
+#define LATBUILDER__KERNEL__P_ALPHA_TILDE_H
 
 #include "latbuilder/Kernel/Base.h"
 #include "latbuilder/Kernel/FunctorAdaptor.h"
-#include "latbuilder/Functor/PAlphaPLR.h"
+#include "latbuilder/Functor/PAlphaTilde.h"
 
 namespace LatBuilder { namespace Kernel {
 
-class PAlphaPLR : public FunctorAdaptor<Functor::PAlphaPLR> {
+class PAlphaTilde : public FunctorAdaptor<Functor::PAlphaTilde> {
 public:
-   PAlphaPLR(unsigned int alpha):
+   PAlphaTilde(unsigned int alpha):
 	  FunctorAdaptor<Functor>(Functor(alpha))
    {}
 
