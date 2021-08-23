@@ -95,10 +95,9 @@ option indicates the path of the folder to use. This path can either be absolute
 to be located at <code>/home/results</code>, use
 <code> --output-folder /home/results </code>
 
-This folder contains three files: 
+This folder contains two files: 
   - <code>input.txt</code> which contains the summary of the input parameters of LatNet Builder
-  - <code>output.txt</code> which contains the result of the search in a human readable format
-  - <code>outputMachine.txt</code> which contains an easily parsable formatting of the results
+  - <code>output.txt</code> which contains an easily parsable formatting of the results
 
 \section cmdtut_quickrecipes_explorations Exploring the search space with other methods
 

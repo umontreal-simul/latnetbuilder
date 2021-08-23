@@ -139,7 +139,7 @@ class AbstractDigitalNet
          * @param interlacingFactor Interlacing factor of the net.
          * @param outputStyle Specific Format of output Machine format.
          */ 
-        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputStyle outputStyle = OutputStyle::NONE, unsigned int interlacingFactor = 1) const = 0;
+        virtual std::string format(OutputStyle outputStyle = OutputStyle::TERMINAL, unsigned int interlacingFactor = 1) const = 0;
 
         /** 
          * Returns a bool indicating whether the net can be viewed as a digital sequence.
@@ -263,29 +263,41 @@ class DigitalNet : public AbstractDigitalNet
         /**
          * {@inheritDoc}
          */ 
-        virtual std::string format(OutputFormat outputFormat = OutputFormat::HUMAN, OutputStyle outputStyle = OutputStyle::NONE, unsigned int interlacingFactor = 1) const
+        virtual std::string format(OutputStyle outputStyle = OutputStyle::TERMINAL, unsigned int interlacingFactor = 1) const
         {   
             std::string res;
 
-            if (outputFormat == OutputFormat::HUMAN){
+            if (outputStyle == OutputStyle::TERMINAL){
                 std::ostringstream stream;
                 stream << numColumns() << "  // Number of columns" << std::endl;
                 stream << numRows() << "  // Number of rows" << std::endl;
                 stream << numPoints() << "  // Number of points" << std::endl;
-                stream << dimension() << "  // Dimension of points" << std::endl;
-                stream << interlacingFactor << "  // Interlacing factor" << std::endl;
+                stream << dimension() / interlacingFactor << "  // Dimension of points" << std::endl;
+                if (interlacingFactor > 1){
+                    stream << interlacingFactor << "  // Interlacing factor" << std::endl;
+                    stream << dimension() << "  // Number of components = interlacing factor x dimension" << std::endl;
+                }
                 res+=stream.str();
             }
 
-            if (outputStyle == OutputStyle::NET) {
+            else if (outputStyle == OutputStyle::NET) {
                 std::string dimension_as_str = std::to_string(dimension());
                 std::string nb_col_as_str = std::to_string(numColumns());
                 res += "# Parameters for a digital net in base 2\n";
                 res += dimension_as_str + "    # " + dimension_as_str + " dimensions\n";
+                if (interlacingFactor > 1){
+                    res += std::to_string(interlacingFactor) + "  // Interlacing factor" + "\n";
+                    res += std::to_string(dimension()) + "  // Number of components = interlacing factor x dimension" + "\n";
+                }
                 res += nb_col_as_str + "   # k = " + nb_col_as_str + ",  n = 2^"+ nb_col_as_str + " = "; 
                 res += std::to_string(numPoints()) + " points\n";
-                res += "31   # r = 31 digits\n";
-                res += "# The next row gives the columns of C_1, the first gen. matrix\n";
+                res += "31   # r = 31 binary output digits\n";
+                if (interlacingFactor == 1){
+                    res += "# Columns of gen. matrices C_1,...,C_s, one matrix per line:\n";
+                }
+                else {
+                    res += "# Columns of gen. matrices C_1,...,C_{ds}, one matrix per line:\n";
+                }
                 for(unsigned int coord = 0; coord < m_genValues.size(); coord++)
                 {
                     const std::vector<unsigned long> columns =  (*(m_generatingMatrices[coord])).getColsReverse();
@@ -300,18 +312,8 @@ class DigitalNet : public AbstractDigitalNet
                 res.pop_back();
             }
 
-            res += ConstructionMethod::format(m_generatingMatrices, m_genValues, m_sizeParameter, outputFormat, outputStyle, interlacingFactor);
+            res += ConstructionMethod::format(m_generatingMatrices, m_genValues, m_sizeParameter, outputStyle, interlacingFactor);
 
-            if (outputFormat==OutputFormat::HUMAN)
-            {
-                std::ostringstream stream;
-                for(Dimension dim = 0; dim < m_dimension; ++dim)
-                {
-                    stream << "//dim = " << dim << std::endl;
-                    stream << generatingMatrix(dim);
-                }
-                res+=stream.str();
-            }
             return res;
         }
 

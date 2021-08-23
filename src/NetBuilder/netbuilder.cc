@@ -20,6 +20,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <iostream>
 #include <limits>
 
@@ -46,23 +47,15 @@ void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle ou
     std::cout.precision(merit_digits_displayed);
   }
   std::cout << "====================\n       Result\n====================" << std::endl;
-  std::cout << task.outputNet(OutputFormat::HUMAN, OutputStyle::NONE, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+  std::cout << task.outputNet(OutputStyle::TERMINAL, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
 
   if (outputFolder != ""){
     std::ofstream outFile;
     std::string fileName = outputFolder + "/output.txt";
     outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::HUMAN, OutputStyle::NONE, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
-    outFile << "ELAPSED CPU TIME: " << time << " seconds" << std::endl;
+    outFile << "# Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(outputStyle, interlacingFactor) << std::endl;
     outFile.close();
-
-    if (outputStyle != NetBuilder::OutputStyle::NONE){
-
-      fileName = outputFolder + "/outputMachine.txt";
-      outFile.open(fileName);
-      outFile << task.outputNet(OutputFormat::MACHINE, outputStyle, interlacingFactor) << std::endl;
-      outFile.close();
-    }
   }
   
   if (merit_digits_displayed){
@@ -277,7 +270,7 @@ int main(int argc, const char *argv[])
       
         std::unique_ptr<NetBuilder::Task::Task> task;
        
-       NetBuilder::OutputStyle outputStyle = NetBuilder::OutputStyle::NONE;
+       NetBuilder::OutputStyle outputStyle = NetBuilder::OutputStyle::TERMINAL;
 
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL);
@@ -308,6 +301,11 @@ int main(int argc, const char *argv[])
           outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::LMS>::parse(s_outputStyle);
        }
 
+      std::vector<std::string> all_args;
+      if (argc > 1) {
+        all_args.assign(argv + 1, argv + argc);
+      }
+
 
       for (unsigned i=0; i<repeat; i++){
         if (i == 0){
@@ -319,6 +317,7 @@ int main(int argc, const char *argv[])
             std::ofstream outFile;
             std::string fileName = outputFolder + "/input.txt";
             outFile.open(fileName);
+            outFile << "Input Command Line: " << boost::algorithm::join(all_args, " ") << std::endl << std::endl;
             outFile << task->format();
             outFile.close();
           }

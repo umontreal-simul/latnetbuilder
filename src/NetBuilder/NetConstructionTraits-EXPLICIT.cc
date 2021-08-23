@@ -55,12 +55,17 @@ namespace NetBuilder {
         return std::vector<std::vector<GenValue>>{};
     }
 
-    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::ostringstream stream;
         
-        if (outputFormat == OutputFormat::HUMAN){
+        if (outputStyle == OutputStyle::TERMINAL){
             stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
+            for(Dimension dim = 0; dim < genMatrices.size(); ++dim)
+            {
+                stream << "Coordinate " << dim << std::endl;
+                stream << *genMatrices[dim] << std::endl;
+            }
         }
         return stream.str();
     }  

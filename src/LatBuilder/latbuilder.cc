@@ -28,6 +28,7 @@
 #include <fstream>
 #include <chrono>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 namespace LatBuilder{
 using TextStream::operator<<;
@@ -223,13 +224,13 @@ std::string helper2(const SizeParam<LatticeType::ORDINARY, ET>& param);
 template<>
 std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& param)
 {
-  return "embedded from " + std::to_string(param.base()) + " to " + std::to_string(param.maxLevel()) + "\n";
+  return ", embedded from " + std::to_string(param.base()) + " to " + std::to_string(param.maxLevel()) + "\n";
 }
 
 template<>
 std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& param)
 {
-  return "non-embedded\n";
+  return "\n";
 }
 
 
@@ -249,6 +250,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
       std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
+      outFile << "Input Command Line: " << cmd.originalCommandLine << std::endl << std::endl;
       outFile << *search; 
       outFile.close();
     }
@@ -286,36 +288,18 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
       if (outputFolder != ""){
         std::ofstream outFile;
-          std::string fileName = outputFolder + "/output.txt";
-          outFile.open(fileName);
-          outFile << lat << "Merit: " << search->bestMeritValue() << std::endl;
-          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
-          outFile.close();
-
-
-          /*fileName = outputFolder + "/outputMachine.txt";
-          outFile.open(fileName);
-          outFile << "Ordinary  // Construction method\n" << lat.sizeParam().numPoints() << "  // Number of points\n" << lat.dimension() << "  // Dimension of points\n";
-          outFile << helper<ET>(lat.sizeParam());
-          auto vec = lat.gen();
-          for (unsigned int coord = 0; coord < vec.size(); coord++){
-              outFile << vec[coord] << std::endl;
-          }          
-          outFile << search->bestMeritValue() << "  // Merit" << std::endl;
-          outFile << dt.count() << "  // Time" << std::endl;
-          outFile.close();*/
-
-          fileName = outputFolder + "/outputMachine.txt";
-          outFile.open(fileName);
-          outFile << "# Parameters for a lattice rule, ";
-          outFile << helper2<ET>(lat.sizeParam());
-          outFile << lat.dimension() <<"      # "<< lat.dimension() << " dimensions\n";
-          outFile << lat.sizeParam().numPoints() <<" # modulus = n = "<< lat.sizeParam().numPoints() << " points\n";
-          auto vec = lat.gen();
-          for (unsigned int coord = 0; coord < vec.size(); coord++){
-            outFile << vec[coord] << std::endl;
-          }
-          outFile.close();
+        std::string fileName = outputFolder + "/output.txt";
+        outFile.open(fileName);
+        outFile << "# Merit: " << search->bestMeritValue() << std::endl;
+        outFile << "# Parameters for a lattice rule";
+        outFile << helper2<ET>(lat.sizeParam());
+        outFile << lat.dimension() <<"      # "<< lat.dimension() << " dimensions\n";
+        outFile << lat.sizeParam().numPoints() <<" # modulus = n = "<< lat.sizeParam().numPoints() << " points\n";
+        auto vec = lat.gen();
+        for (unsigned int coord = 0; coord < vec.size(); coord++){
+          outFile << vec[coord] << std::endl;
+        }
+        outFile.close();
       }
       
       if (merit_digits_displayed)
@@ -347,6 +331,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
       std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
+      outFile << "Input Command Line: " << cmd.originalCommandLine << std::endl << std::endl;
       outFile << *search;
       outFile.close();
     }
@@ -386,17 +371,12 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
       if (outputFolder != ""){
           NetBuilder::DigitalNet<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
           
-          std::ofstream outFile;
-          std::string fileName = outputFolder + "/output.txt";
-          outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::HUMAN, NetBuilder::OutputStyle::NONE, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
-          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
-          outFile.close();
-
-          if (outputStyle != NetBuilder::OutputStyle::NONE){
-            fileName = outputFolder + "/outputMachine.txt";
+          if (outputStyle != NetBuilder::OutputStyle::TERMINAL){
+            std::ofstream outFile;
+            std::string fileName = outputFolder + "/output.txt";
             outFile.open(fileName);
-            outFile << net.format(NetBuilder::OutputFormat::MACHINE, outputStyle, interlacingFactor) ;
+            outFile << "# Merit: " << search->bestMeritValue() << std::endl;
+            outFile << net.format(outputStyle, interlacingFactor) ;
             outFile.close();
           }
       }
@@ -441,12 +421,17 @@ int main(int argc, const char *argv[])
 
        LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["construction"].as<std::string>());
 
+       std::vector<std::string> all_args;
+       if (argc > 1) {
+          all_args.assign(argv + 1, argv + argc);
+        }
+
        if(lattice == LatticeType::ORDINARY){
 
             Parser::CommandLine<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL> cmd;
 
             
-
+            cmd.originalCommandLine = boost::algorithm::join(all_args, " ");
             cmd.construction  = opt["exploration-method"].as<std::string>();
             cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
@@ -504,7 +489,7 @@ int main(int argc, const char *argv[])
             Parser::CommandLine<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL> cmd;
 
             
-
+            cmd.originalCommandLine = boost::algorithm::join(all_args, " ");
             cmd.construction  = opt["exploration-method"].as<std::string>();
             cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();

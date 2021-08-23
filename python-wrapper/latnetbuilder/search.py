@@ -187,7 +187,7 @@ class Search():
                 abort.disabled = True
 
             if process.poll() == 0:     # the C++ process has finished normally
-                with open(os.path.join(self._output_folder, 'outputMachine.txt')) as f:
+                with open(os.path.join(self._output_folder, 'output.txt')) as f:
                     file_output = f.read()
                 result_obj = parse_output(file_output)
 

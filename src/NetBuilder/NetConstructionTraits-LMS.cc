@@ -59,13 +59,8 @@ namespace NetBuilder {
         return std::vector<std::vector<GenValue>>{};
     }
 
-    std::string NetConstructionTraits<NetConstruction::LMS>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::LMS>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputStyle outputStyle, unsigned int interlacingFactor)
     {
-        std::ostringstream stream;
-        
-        if (outputFormat == OutputFormat::HUMAN){
-            stream << "LMS Digital Net - Matrix size = " << sizeParameter.first.first << "x" << sizeParameter.first.second << std::endl;
-        }
-        return stream.str();
+        return "";
     }  
 }
