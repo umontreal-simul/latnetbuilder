@@ -19,8 +19,9 @@
 
 #include "netbuilder/Task/Task.h"
 #include "netbuilder/Task/MinimumObserver.h"
-
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+
+#include "latbuilder/Util.h"
 
 #include <ostream>
 #include <memory>
@@ -39,7 +40,7 @@ namespace{
     std::string output<NetConstruction::POLYNOMIAL>(typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::SizeParameter sizeParameter)
     {
         std::ostringstream stream;
-        stream << "Modulus: " << sizeParameter << std::endl;
+        stream << "Modulus: " << LatBuilder::IndexOfPolynomial(sizeParameter) << std::endl;
         return stream.str();
     }
 }

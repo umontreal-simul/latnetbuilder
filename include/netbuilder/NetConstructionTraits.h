@@ -23,7 +23,6 @@
 #define NETBUILDER__NET_CONSTRUCTION_TRAITS_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/Helpers/RankComputer.h"
 

@@ -22,7 +22,8 @@
 #include "netbuilder/Types.h"
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Helpers/Util.h"
+
+#include "latbuilder/Util.h"
 
 namespace NetBuilder { 
 /**
@@ -83,7 +84,7 @@ struct Combiner
         for(Real merit : merits)
         {
             ++level;
-            res = std::max(res, intPow(merit,q)/(level-merit+1));
+            res = std::max(res, LatBuilder::intPow(merit,q)/(level-merit+1));
         }
         return res;
     }

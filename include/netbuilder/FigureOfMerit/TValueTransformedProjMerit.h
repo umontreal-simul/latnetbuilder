@@ -20,6 +20,8 @@
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
 #include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
+#include "latbuilder/Util.h"
+
 namespace NetBuilder { namespace FigureOfMerit {
 
 using LatticeTester::Coordinates;
@@ -49,10 +51,10 @@ namespace{
                 res += binom_coeff;
                 binom_coeff *= (Real) (m-t-i) / (i+1);
             }
-            return intPow(0.5, m - t) * res;
+            return LatBuilder::intPow(0.5, m - t) * res;
         }
         else if (type == 2){
-            return 1.0/6 + intPow(4.0, t) * intPow(m-t, s-1);
+            return 1.0/6 + LatBuilder::intPow(4.0, t) * LatBuilder::intPow(m-t, s-1);
         }
         else {
             throw std::runtime_error("t-value transformer not implemented.");

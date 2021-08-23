@@ -58,8 +58,9 @@
 #ifndef NETBUILDER__DIGITAL_NET_H
 #define NETBUILDER__DIGITAL_NET_H
 
+#include "latbuilder/Util.h"
+
 #include "netbuilder/Types.h"
-#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
 
@@ -112,12 +113,12 @@ class AbstractDigitalNet
         /** 
          * Returns the number of points of the net 
          */
-        uInteger numPoints() const { return intPow(2, m_nCols) ; }
+        uInteger numPoints() const { return LatBuilder::intPow(2, m_nCols) ; }
 
         /** 
          * Returns the number of points of the net 
          */
-        uInteger size() const { return intPow(2, m_nCols) ; }
+        uInteger size() const { return LatBuilder::intPow(2, m_nCols) ; }
 
         /** 
          * Returns the dimension (number of coordinates) of the net.

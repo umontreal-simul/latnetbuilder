@@ -63,9 +63,19 @@ void
 SizeParam<LR,EmbeddingType::UNILEVEL>::normalize(RealVector& merit) const
 { merit /= this->numPoints(); }
 
-template <LatticeType LR>
+template <>
 std::ostream&
-SizeParam<LR,EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+{ return os << this->modulus(); }
+
+template <>
+std::ostream&
+SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+{ return os << IndexOfPolynomial(this->modulus()); }
+
+template <>
+std::ostream&
+SizeParam<LatticeType::DIGITAL, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
 { return os << this->modulus(); }
 
 //==================================================================================================

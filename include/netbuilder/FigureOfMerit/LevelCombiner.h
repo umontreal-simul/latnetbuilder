@@ -18,7 +18,6 @@
 #define NETBUILDER__LEVEL_COMBINER_H
 
 #include "netbuilder/Types.h"
-#include "netbuilder/Helpers/Util.h"
 #include <limits>
 #include <boost/numeric/ublas/blas.hpp>
 

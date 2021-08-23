@@ -16,8 +16,6 @@
 
 #include "latbuilder/Interlaced/IPODWeights.h"
 
-#include "netbuilder/Helpers/Util.h"
-
 namespace LatBuilder { namespace Interlaced
 {
 

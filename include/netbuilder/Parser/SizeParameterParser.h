@@ -22,7 +22,6 @@
 #include "latbuilder/Parser/SizeParam.h"
 
 #include "netbuilder/Types.h"
-#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/Helpers/JoeKuo.h"
 #include "netbuilder/GeneratingMatrix.h"
 #include "netbuilder/NetConstructionTraits.h"
@@ -77,21 +76,7 @@ struct SizeParameterParser<NetConstruction::POLYNOMIAL, ET>
 
    static void parse(Parser::CommandLine<NetConstruction::POLYNOMIAL, ET>& commandLine)
    {
-         std::vector<std::string> sizeParamStrings;
-         boost::split(sizeParamStrings, commandLine.s_size, boost::is_any_of("^"));
-         if (sizeParamStrings.size() == 2 && sizeParamStrings.front() == "2")
-         {
-               unsigned int degree = boost::lexical_cast<unsigned int>(sizeParamStrings.back());
-               if (degree <= 32)
-               {
-                  commandLine.s_size = LatBuilder::getDefaultPolynomial(degree);
-               }
-               else
-               {
-                  throw BadSizeParameter("default polynomials are not available for degree " + std::to_string(degree) + ".");
-               }
-         }
-         commandLine.m_sizeParameter = polynomialParserHelper(commandLine.s_size);
+      commandLine.m_sizeParameter = (NetConstructionTraits<NetConstruction::POLYNOMIAL>::SizeParameter) LatBuilder::Parser::SizeParam<LatBuilder::LatticeType::POLYNOMIAL, ET>::parse(commandLine.s_size);
    }
 };
 

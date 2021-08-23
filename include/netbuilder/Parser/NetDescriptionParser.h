@@ -18,10 +18,10 @@
 #define NETBUILDER__PARSER__NET_DESCRIPTION_PARSER_H
 
 #include "latbuilder/Parser/Common.h"
+#include "latbuilder/Parser/SizeParam.h"
 
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Types.h"
-#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/NetConstructionTraits.h"
 
 #include <algorithm>
@@ -101,7 +101,7 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, ET>
        genValues.reserve(commandLine.m_dimension);
        for(const auto& polyString : netDescriptionStrings)
        {
-           GenValue genVal = polynomialParserHelper(polyString);
+           GenValue genVal = (GenValue) LatBuilder::Parser::SizeParam<LatBuilder::LatticeType::POLYNOMIAL, ET>::parse(polyString);
            if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating polynomial.");

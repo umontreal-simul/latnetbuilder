@@ -19,7 +19,6 @@
 #include <algorithm>
 
 #include "netbuilder/FigureOfMerit/TValueComputation.h"
-#include "netbuilder/Helpers/Util.h"
 #include "netbuilder/Helpers/RankComputer.h"
 #include "netbuilder/Helpers/CompositionMaker.h"
 

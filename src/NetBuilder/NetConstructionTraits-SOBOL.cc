@@ -15,7 +15,6 @@
 // limitations under the License.
 
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Helpers/Util.h"
 
 #include "latbuilder/SeqCombiner.h"
 #include "latbuilder/Traversal.h"

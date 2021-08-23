@@ -18,6 +18,7 @@
 
 #include "latbuilder/GenSeq/GeneratingValues-PLR.h"
 #include "latbuilder/SeqCombiner.h"
+#include "latbuilder/Util.h"
 
 #include <NTL/GF2X.h>
 #include <sstream>
@@ -102,9 +103,9 @@ namespace NetBuilder {
         std::ostringstream stream;
 
         if (outputStyle == OutputStyle::TERMINAL){
-            stream << "Polynomial Digital Net - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
+            stream << "Polynomial Digital Net - Modulus = " << LatBuilder::IndexOfPolynomial(sizeParameter) << " - GeneratingVector =" << std::endl;
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                stream << "  " << *(genVals[coord]) << std::endl;
+                stream << "  " << LatBuilder::IndexOfPolynomial(*(genVals[coord])) << std::endl;
             }
         }
 
@@ -118,44 +119,19 @@ namespace NetBuilder {
             stream << (int) deg(sizeParameter) << "      # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
             stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
             
-            NTL::ZZ modulus;
-            clear(modulus);
-            long degree = deg(sizeParameter);
-            for(long i = 0; i <= degree; ++i){
-                modulus += NTL::conv<NTL::ZZ>(sizeParameter[i]) * NTL::power2_ZZ(degree-i);
-            }
-            stream << modulus << "   # polynomial modulus" << std::endl;
+            stream << LatBuilder::IndexOfPolynomial(sizeParameter) << "   # polynomial modulus" << std::endl;
 
-            const GenValue& genValue =*(genVals[0]);
-            NTL::ZZ generating_vector;
-            clear(generating_vector);
-            degree = deg(genValue);
-            for(long i = 0; i <= degree; ++i){
-                //generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(degree-i);
-                generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(i);
-            }
-            stream << generating_vector << "   # coordinates of generating vector, starting at j=1" <<std::endl;
-
-            for (unsigned int coord = 1; coord < genVals.size(); coord++){
-                const GenValue& genValue =*(genVals[coord]);
-                NTL::ZZ generating_vector;
-                clear(generating_vector);
-                degree = deg(genValue);
-                for(long i = 0; i <= degree; ++i){
-                    generating_vector += NTL::conv<NTL::ZZ>(genValue[i]) * NTL::power2_ZZ(i);
+            for (unsigned int coord = 0; coord < genVals.size(); coord++){
+                stream << LatBuilder::IndexOfPolynomial(*(genVals[coord]));
+                if (coord == 0){
+                    stream << "   # coordinates of generating vector, starting at j=1";
                 }
-                stream << generating_vector << std::endl;
+                stream << std::endl;
             }
-            std::string foo(stream.str());
-            foo.pop_back();
-            stream.str(foo);
-            stream.seekp (0, stream.end);
         }
         else{ stream << std::endl;}
 
         res += stream.str();
-        boost::algorithm::erase_all(res, "[");
-        boost::algorithm::erase_all(res, "]");
         return res;
     }  
 }
