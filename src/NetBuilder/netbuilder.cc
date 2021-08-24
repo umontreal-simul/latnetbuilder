@@ -197,7 +197,8 @@ else{\
     cmd.m_weightPower = 1;\
   }\
 }\
-task = cmd.parse();
+task = cmd.parse();\
+outputStyle = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::net_construction>::parse(s_outputStyle);
 
 
 void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle outputStyle, unsigned int interlacingFactor, std::vector<std::string> inputCL)
@@ -269,36 +270,31 @@ int main(int argc, const char *argv[])
         unsigned int interlacingFactor = 0;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
-       
-       NetBuilder::OutputStyle outputStyle = NetBuilder::OutputStyle::TERMINAL;
+        NetBuilder::OutputStyle outputStyle;
 
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
-          BUILD_TASK(SOBOL, UNILEVEL);
-          outputStyle = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputStyle);
+          BUILD_TASK(SOBOL, UNILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(SOBOL, MULTILEVEL)
-          outputStyle = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::SOBOL>::parse(s_outputStyle);
        }
-       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
-          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(s_outputStyle);
        }
-        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
-          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputStyle);
        }
-       if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(EXPLICIT, MULTILEVEL)
-          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::EXPLICIT>::parse(s_outputStyle);
        }
-       if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(LMS, UNILEVEL)
-          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::LMS>::parse(s_outputStyle);
        }
-       if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(LMS, MULTILEVEL)
-          outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::LMS>::parse(s_outputStyle);
+       }
+       else {
+         throw std::runtime_error("Unknown combination of NetConstruction and EmbeddingType");
        }
 
       std::vector<std::string> inputCL;
