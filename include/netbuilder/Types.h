@@ -71,7 +71,7 @@ typedef LatBuilder::Polynomial Polynomial;
 typedef NTL::ZZX IntPolynomial;
 
 /// Outputs Style for nets
-enum class OutputStyle {TERMINAL, SOBOL, SOBOLJK, LATTICE, NET};
+enum class OutputStyle {TERMINAL, SOBOL, SOBOLJK, LATTICE, NET, RANDOMIZED_NET};
 
 
 //@}

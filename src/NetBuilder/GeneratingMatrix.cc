@@ -149,6 +149,18 @@ std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat)
     return os; 
 }
 
+std::string GeneratingMatrix::formatToColumnsReverse(unsigned int nBits) const
+{
+    const std::vector<unsigned long> columns =  getColsReverse();
+    std::string res;
+    for(unsigned int i = 0; i < (unsigned int) nCols(); ++i)
+    {
+        res += std::to_string(columns[i] << (nBits - nRows())) + " ";
+    }
+    res.pop_back();
+    return res;
+}
+
 GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
 {
     assert ((*this).nCols() == m.nRows());

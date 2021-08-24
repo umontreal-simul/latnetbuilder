@@ -301,13 +301,7 @@ class DigitalNet : public AbstractDigitalNet
                 }
                 for(unsigned int coord = 0; coord < m_genValues.size(); coord++)
                 {
-                    const std::vector<unsigned long> columns =  (*(m_generatingMatrices[coord])).getColsReverse();
-
-                    for(unsigned int i = 0; i < (unsigned int) numColumns(); ++i)
-                    {
-                        res += std::to_string(columns[i] << (31 - numRows())) + " ";
-                    }
-                    res.pop_back();
+                    res += m_generatingMatrices[coord]->formatToColumnsReverse();
                     res += "\n";
                 }
                 res.pop_back();

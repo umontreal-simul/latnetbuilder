@@ -406,7 +406,7 @@ struct NetConstructionTraits<NetConstruction::LMS>
             
             GenValue operator()(Dimension dimension)
             {
-                return GeneratingMatrix::createRandomLowerTriangularMatrix(m_sizeParameter.first.first, m_sizeParameter.first.second);
+                return GeneratingMatrix::createRandomLowerTriangularMatrix(m_sizeParameter.first.first, m_sizeParameter.first.second, m_randomGen);
             }
 
         private:
@@ -425,8 +425,7 @@ struct NetConstructionTraits<NetConstruction::LMS>
             
             GenValue operator()(Dimension dimension)
             {
-                // TODO: I am not sure this is correct for the multilevel case.
-                return GeneratingMatrix::createRandomLowerTriangularMatrix(m_sizeParameter.first.first, m_sizeParameter.first.second);
+                return GeneratingMatrix::createRandomLowerTriangularMatrix(m_sizeParameter.first.first, m_sizeParameter.first.second, m_randomGen);
             }
 
         private:

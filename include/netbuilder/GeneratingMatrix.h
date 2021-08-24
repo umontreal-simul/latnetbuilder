@@ -158,6 +158,8 @@ class GeneratingMatrix {
         /** Overloads of << operator to print matrices. */
         friend std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat);
 
+        std::string formatToColumnsReverse(unsigned int nBits = 31) const;
+
         /** Returns an integer representation of the columns of the matrix. A column is read as a bit string
          * with highest bit in first position. This function is used to generate the points from the digital net.
          */ 
@@ -170,8 +172,8 @@ class GeneratingMatrix {
          * @param nCols Number of columns of the matrix.
          * @param randomGen Random Number Generator. By default it is the <tt>LFSR258</tt> generator by L'Ecuyer \cite rLEC99a.
          */ 
-        template<typename RAND = LatBuilder::LFSR258>
-        static GeneratingMatrix createRandomLowerTriangularMatrix(unsigned int nRows, unsigned int nCols, RAND randomGen = RAND()) {
+        template<typename RAND>
+        static GeneratingMatrix createRandomLowerTriangularMatrix(unsigned int nRows, unsigned int nCols, RAND& randomGen) {
             std::vector<GeneratingMatrix::uInteger> res(nRows, 0);
             unsigned long diagonalCoeff = 1 << (nCols);
             LatBuilder::UniformUIntDistribution<unsigned long, LatBuilder::LFSR258> m_unif(0, diagonalCoeff - 1);

@@ -120,14 +120,18 @@ struct OutputStyleParser<NetConstruction::LMS>
       {
         return NetBuilder::OutputStyle::NET;
       }
+      else if (str == "randomized")
+      {
+        return NetBuilder::OutputStyle::RANDOMIZED_NET;
+      }
       else if (str == "")
       {
-        return NetBuilder::OutputStyle::NET;
+        return NetBuilder::OutputStyle::RANDOMIZED_NET;
       }
       else
       {
-        std::cout << "WARNING: cannot parse output style string. Default output style: NET" << std::endl;
-        return NetBuilder::OutputStyle::NET;
+        std::cout << "WARNING: cannot parse output style string. Default output style: RANDOMIZED" << std::endl;
+        return NetBuilder::OutputStyle::RANDOMIZED_NET;
       }
    }
 };
