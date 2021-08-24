@@ -290,6 +290,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
         std::ofstream outFile;
         std::string fileName = outputFolder + "/output.txt";
         outFile.open(fileName);
+        outFile << "# Input Command Line: " << cmd.originalCommandLine << std::endl;
         outFile << "# Merit: " << search->bestMeritValue() << std::endl;
         outFile << "# Parameters for a lattice rule";
         outFile << helper2<ET>(lat.sizeParam());
@@ -375,6 +376,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
             std::ofstream outFile;
             std::string fileName = outputFolder + "/output.txt";
             outFile.open(fileName);
+            outFile << "# Input Command Line: " << cmd.originalCommandLine << std::endl;
             outFile << "# Merit: " << search->bestMeritValue() << std::endl;
             outFile << net.format(outputStyle, interlacingFactor) ;
             outFile.close();

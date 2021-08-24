@@ -40,29 +40,6 @@
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
 
-void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle outputStyle, unsigned int interlacingFactor, Real time)
-{
-  unsigned int old_precision = (unsigned int)std::cout.precision();
-  if (merit_digits_displayed){
-    std::cout.precision(merit_digits_displayed);
-  }
-  std::cout << "====================\n       Result\n====================" << std::endl;
-  std::cout << task.outputNet(OutputStyle::TERMINAL, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
-
-  if (outputFolder != ""){
-    std::ofstream outFile;
-    std::string fileName = outputFolder + "/output.txt";
-    outFile.open(fileName);
-    outFile << "# Merit: " << task.outputMeritValue() << std::endl;
-    outFile << task.outputNet(outputStyle, interlacingFactor) << std::endl;
-    outFile.close();
-  }
-  
-  if (merit_digits_displayed){
-    std::cout.precision(old_precision);
-  }
-}
-
 boost::program_options::options_description
 makeOptionsDescription()
 {
@@ -223,6 +200,29 @@ else{\
 task = cmd.parse();
 
 
+void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle outputStyle, unsigned int interlacingFactor, std::vector<std::string> inputCL)
+{
+  unsigned int old_precision = (unsigned int)std::cout.precision();
+  if (merit_digits_displayed){
+    std::cout.precision(merit_digits_displayed);
+  }
+  std::cout << "====================\n       Result\n====================" << std::endl;
+  std::cout << task.outputNet(OutputStyle::TERMINAL, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+
+  if (outputFolder != ""){
+    std::ofstream outFile;
+    std::string fileName = outputFolder + "/output.txt";
+    outFile.open(fileName);
+    outFile << "# Input Command Line: " << boost::algorithm::join(inputCL, " ") << std::endl;
+    outFile << "# Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(outputStyle, interlacingFactor) << std::endl;
+    outFile.close();
+  }
+  
+  if (merit_digits_displayed){
+    std::cout.precision(old_precision);
+  }
+}
 
 
 int main(int argc, const char *argv[])
@@ -301,9 +301,9 @@ int main(int argc, const char *argv[])
           outputStyle =  NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::LMS>::parse(s_outputStyle);
        }
 
-      std::vector<std::string> all_args;
+      std::vector<std::string> inputCL;
       if (argc > 1) {
-        all_args.assign(argv + 1, argv + argc);
+        inputCL.assign(argv + 1, argv + argc);
       }
 
 
@@ -317,7 +317,7 @@ int main(int argc, const char *argv[])
             std::ofstream outFile;
             std::string fileName = outputFolder + "/input.txt";
             outFile.open(fileName);
-            outFile << "Input Command Line: " << boost::algorithm::join(all_args, " ") << std::endl << std::endl;
+            outFile << "Input Command Line: " << boost::algorithm::join(inputCL, " ") << std::endl << std::endl;
             outFile << task->format();
             outFile.close();
           }
@@ -336,7 +336,7 @@ int main(int argc, const char *argv[])
           auto dt = duration_cast<duration<double>>(t1 - t0);
 
           std::cout << std::endl;
-          TaskOutput(*task, outputFolder, outputStyle, interlacingFactor, dt.count());
+          TaskOutput(*task, outputFolder, outputStyle, interlacingFactor, inputCL);
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
           task->reset();
