@@ -165,6 +165,13 @@ class GeneratingMatrix {
          */ 
         std::vector<unsigned long> getColsReverse() const;
 
+        /** Creates a matrix from its reversed column representation.
+         * @param nInputRows Number of bits in the integer representation of the columns. Typically equals 31.
+         * @param nOutputRows Number of rows of the matrix returned by the function. Rows below are ignored. Typically equals the number of columns.
+         * @param columns Integer representation of the columns of the matrix.
+         */ 
+        static GeneratingMatrix fromColsReverse(unsigned int nInputBits, unsigned int nOutputRows, std::vector<unsigned long> columns);
+
         /**
          * Creates a matrix with ones on the main diagonal, random bits below the main diagonal, and zeros above.
          * TODO: give the maximum values for nRows and nCols for this to work.

@@ -58,6 +58,10 @@ struct NetDescriptionParser<NetConstruction::SOBOL, ET>
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
+       if (netDescriptionStrings.size() == commandLine.m_dimension - 1){
+           // If there is one missing coordinate, we assume it is the first, and we add the direction number (always 0).
+           netDescriptionStrings.insert(netDescriptionStrings.begin(), "0");
+       }
        Dimension dim = 0;
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
@@ -124,30 +128,26 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
 
    static result_type parse(CommandLine<NetConstruction::EXPLICIT, ET>& commandLine, const std::string& str)
    {
+       std::cout << str << std::endl;
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
        for(const auto& matrixString : netDescriptionStrings)
        {
-           std::vector<std::string> rowsStrings;
-           boost::split(rowsStrings, matrixString, boost::is_any_of(","));
-           if (rowsStrings.size()==0)
-           {
-               throw BadNetDescription("bad matrix.");
-           }
-           for(const auto& rowString : rowsStrings)
-           {
-               if (rowString.size() != rowsStrings.front().size())
-               {
-                   throw BadNetDescription("bad matrix (different row lengths).");
+           std::vector<std::string> columnsStrings;
+           boost::split(columnsStrings, matrixString, boost::is_any_of(","));
+           GeneratingMatrix genVal;
+           try {
+               std::vector<unsigned long> columns;
+               columns.reserve(columnsStrings.size());
+               for (const auto& columnString: columnsStrings){
+                   columns.push_back(boost::lexical_cast<unsigned long>(columnString));
                }
+                genVal = GeneratingMatrix::fromColsReverse(31, commandLine.m_sizeParameter.first, columns);
            }
-           GenValue genVal((unsigned int) rowsStrings.size(),(unsigned int) rowsStrings.front().size());
-           for(unsigned int i = 0; i < (unsigned int) rowsStrings.size(); ++i)
-           {
-               std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
-               genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);
+           catch (std::exception& e) {
+               throw BadNetDescription("Could not parse " + matrixString);
            }
            if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {

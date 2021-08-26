@@ -55,6 +55,26 @@ std::vector<unsigned long> GeneratingMatrix::getColsReverse() const{
     
 }
 
+GeneratingMatrix GeneratingMatrix::fromColsReverse(unsigned int nInputBits, unsigned int nOutputRows, std::vector<unsigned long> columns){
+    GeneratingMatrix result(nInputBits, columns.size());
+    for (unsigned int c=0; c<columns.size(); c++){
+        unsigned long s = columns[c];
+        unsigned long row = nInputBits - 1;
+        while (s > 0){
+            if (s % 2 == 1){
+                if (row < 0){
+                    throw std::runtime_error("The column in integer representation " + std::to_string(columns[c]) + "has more than " + std::to_string(nInputBits) + " bits.");
+                }
+                result(row, c) = 1;
+            }
+            s = s / 2;
+            row -= 1;
+        }
+    }
+    return result.subMatrix(0, 0, nOutputRows, columns.size());
+    
+}
+
 GeneratingMatrix::Row GeneratingMatrix::operator[](unsigned int i) const
 {
     return m_data[i];
@@ -175,25 +195,6 @@ GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
     }
     return res;
 }
-
-// GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
-// {
-//     GeneratingMatrix res(nRows(),m.nCols());
-//     for(unsigned int i = 0; i < res.nRows(); ++ i)
-//     {
-//         for(unsigned int j = 0; j < m.nCols(); ++j)
-//         {
-//             unsigned int val = 0;
-//             for(unsigned int k = 0; k < m_nRows; ++k)
-//             {
-//                 val += (*this)(i,k) * m(k,j);
-//                 val %= 2;
-//             }
-//             res(i,j) = val; 
-//         }
-//     }
-//     return res;
-// }
 
 void GeneratingMatrix::stackRight(const GeneratingMatrix& block)
 {

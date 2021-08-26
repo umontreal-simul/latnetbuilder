@@ -113,23 +113,21 @@ namespace NetBuilder {
             stream << "# Parameters for a polynomial lattice rule in base 2" << std::endl;
             stream << genVals.size() / interlacingFactor << "       # " << genVals.size() / interlacingFactor << " dimensions" << std::endl;
             if (interlacingFactor > 1){
-                stream << interlacingFactor << "  // Interlacing factor" << std::endl;
-                stream << genVals.size() << "  // Number of components = interlacing factor x dimension" << std::endl;
+                stream << interlacingFactor << "    # Interlacing factor" << std::endl;
+                stream << genVals.size() << "    # Number of components = interlacing factor x dimension" << std::endl;
             }
             stream << (int) deg(sizeParameter) << "      # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
             stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
             
             stream << LatBuilder::IndexOfPolynomial(sizeParameter) << "   # polynomial modulus" << std::endl;
-
+            stream << "# Coordinates of generating vector, starting at j=1" << std::endl;
+            std::string res;
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                stream << LatBuilder::IndexOfPolynomial(*(genVals[coord]));
-                if (coord == 0){
-                    stream << "   # coordinates of generating vector, starting at j=1";
-                }
-                stream << std::endl;
+                res += std::to_string(LatBuilder::IndexOfPolynomial(*(genVals[coord]))) + "\n";
             }
+            res.pop_back();
+            stream << res;
         }
-        else{ stream << std::endl;}
 
         res += stream.str();
         return res;

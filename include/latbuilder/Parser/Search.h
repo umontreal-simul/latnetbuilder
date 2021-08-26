@@ -33,6 +33,12 @@
 #include <string>
 #include <vector>
 
+#include <boost/algorithm/string/erase.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/replace.hpp>
+
 namespace LatBuilder { namespace Parser {
 
 /**
@@ -145,6 +151,20 @@ public:
             std::stringstream buffer;
             buffer << t.rdbuf();
             genVecString = buffer.str();
+            std::vector<std::string> fileLines;
+            boost::split(fileLines, genVecString, boost::is_any_of("\n"));
+            unsigned int firstLineCoordinate;
+            for (unsigned int i=0; i<fileLines.size(); i++){
+                if (fileLines[i][0] == '#'){
+                    firstLineCoordinate = i+1;
+                }
+            }
+            std::vector<std::string> filteredFileLines;
+            for (unsigned int i=firstLineCoordinate; i<fileLines.size(); i++){
+                filteredFileLines.push_back(fileLines[i]);
+            }
+            genVecString = boost::algorithm::join(filteredFileLines, "-");
+            boost::replace_all(genVecString, " ", ",");
       }
       else {
          throw ParserError("evaluation or exploration parameter is not well specified.");

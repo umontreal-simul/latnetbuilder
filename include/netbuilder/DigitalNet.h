@@ -282,22 +282,22 @@ class DigitalNet : public AbstractDigitalNet
             }
 
             else if (outputStyle == OutputStyle::NET) {
-                std::string dimension_as_str = std::to_string(dimension());
+                std::string dimension_as_str = std::to_string(dimension() / interlacingFactor);
                 std::string nb_col_as_str = std::to_string(numColumns());
                 res += "# Parameters for a digital net in base 2\n";
                 res += dimension_as_str + "    # " + dimension_as_str + " dimensions\n";
                 if (interlacingFactor > 1){
-                    res += std::to_string(interlacingFactor) + "  // Interlacing factor" + "\n";
-                    res += std::to_string(dimension()) + "  // Number of components = interlacing factor x dimension" + "\n";
+                    res += std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
+                    res += std::to_string(dimension()) + "    # Number of components = interlacing factor x dimension" + "\n";
                 }
                 res += nb_col_as_str + "   # k = " + nb_col_as_str + ",  n = 2^"+ nb_col_as_str + " = "; 
                 res += std::to_string(numPoints()) + " points\n";
                 res += "31   # r = 31 binary output digits\n";
                 if (interlacingFactor == 1){
-                    res += "# Columns of gen. matrices C_1,...,C_s, one matrix per line:\n";
+                    res += "# Columns of gen. matrices C_1,...,C_s, one matrix per line\n";
                 }
                 else {
-                    res += "# Columns of gen. matrices C_1,...,C_{ds}, one matrix per line:\n";
+                    res += "# Columns of gen. matrices C_1,...,C_{ds}, one matrix per line\n";
                 }
                 for(unsigned int coord = 0; coord < m_genValues.size(); coord++)
                 {

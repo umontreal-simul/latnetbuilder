@@ -287,11 +287,11 @@ namespace NetBuilder {
         }
 
         else if (outputStyle == OutputStyle::SOBOLJK){
-            res +="# Parameters for Sobol points, in JK format\n";
-            res +="# " + dimension + " dimensions\n";
+            res += "# Parameters for Sobol points, in JK format\n";
+            res += dimension + "    # " + dimension + " dimensions\n";
             if (interlacingFactor > 1){
-                res+= "# " + std::to_string(interlacingFactor) + "  // Interlacing factor" + "\n";
-                res+= "# " + std::to_string(genVals.size()) + "  // Number of components = interlacing factor x dimension" + "\n";
+                res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
+                res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";
             }
             res +="#  d  a  m_{j,c}\n";
             for (unsigned int coord = 1; coord < genVals.size(); coord++){
@@ -314,19 +314,14 @@ namespace NetBuilder {
         }
 
         else if (outputStyle == OutputStyle::SOBOL){
-            res +="# Parameters m_{j,c} for Sobol points\n";
-            res +="# " + dimension + " dimensions\n";
+            res += "# Parameters m_{j,c} for Sobol points\n";
+            res += dimension + "    # " + dimension + " dimensions\n";
             if (interlacingFactor > 1){
-                res+= "# " + std::to_string(interlacingFactor) + "  // Interlacing factor" + "\n";
-                res+= "# " + std::to_string(genVals.size()) + "  // Number of components = interlacing factor x dimension" + "\n";
+                res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
+                res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";
             }
-            res +="# m_{j,c}\n";
-            for(const auto& dirNum : genVals[1]->second){
-                res += std::to_string(dirNum);
-                res += " ";
-            }
-            res +="# This is for the second coordinate\n";
-            for (unsigned int coord = 2; coord < genVals.size(); coord++){
+            res +="# m_{j,c}, starting from the second coordinate\n";
+            for (unsigned int coord = 1; coord < genVals.size(); coord++){
                 for(const auto& dirNum : genVals[coord]->second)
                 {
                     res += std::to_string(dirNum);

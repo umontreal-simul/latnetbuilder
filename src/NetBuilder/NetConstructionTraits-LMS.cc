@@ -77,20 +77,20 @@ namespace NetBuilder {
             unsigned long dimension = genMatrices.size();
             unsigned int nb_col = sizeParameter.first.second;
             stream << "# Parameters for a digital net in base 2\n";
-            stream << dimension << "    # " << dimension << " dimensions\n";
+            stream << dimension / interlacingFactor << "    # " << dimension / interlacingFactor << " dimensions\n";
             if (interlacingFactor > 1){
-                stream << interlacingFactor << "  // Interlacing factor" << "\n";
-                stream << dimension << "  // Number of components = interlacing factor x dimension" << "\n";
+                stream << interlacingFactor << "    # Interlacing factor" << "\n";
+                stream << dimension << "    # Number of components = interlacing factor x dimension" << "\n";
             }
             stream << nb_col << "   # k = " << nb_col << ",  n = 2^" << nb_col << " = "; 
             stream << (int)pow(2,nb_col) << " points"<< std::endl;
             stream << "31   # r = 31 binary output digits\n";
 
             if (interlacingFactor == 1){
-                stream << "# Columns of original gen. matrices C_1,...,C_s, one matrix per line:\n";
+                stream << "# Columns of original gen. matrices C_1,...,C_s, one matrix per line\n";
             }
             else {
-                stream << "# Columns of original gen. matrices C_1,...,C_{ds}, one matrix per line:\n";
+                stream << "# Columns of original gen. matrices C_1,...,C_{ds}, one matrix per line\n";
             }
             for(unsigned int coord = 0; coord < dimension; coord++)
             {
@@ -99,10 +99,10 @@ namespace NetBuilder {
             }
 
             if (interlacingFactor == 1){
-                stream << "# Columns of scrambling matrices C_1,...,C_s, one matrix per line:\n";
+                stream << "# Columns of scrambling matrices C_1,...,C_s, one matrix per line\n";
             }
             else {
-                stream << "# Columns of scrambling matrices C_1,...,C_{ds}, one matrix per line:\n";
+                stream << "# Columns of scrambling matrices C_1,...,C_{ds}, one matrix per line\n";
             }
             for(unsigned int coord = 0; coord < dimension; coord++)
             {
@@ -111,17 +111,18 @@ namespace NetBuilder {
             }
 
             if (interlacingFactor == 1){
-                stream << "# Columns of scrambled gen. matrices C_1,...,C_s, one matrix per line:\n";
+                stream << "# Columns of scrambled gen. matrices C_1,...,C_s, one matrix per line\n";
             }
             else {
-                stream << "# Columns of scrambled gen. matrices C_1,...,C_{ds}, one matrix per line:\n";
+                stream << "# Columns of scrambled gen. matrices C_1,...,C_{ds}, one matrix per line\n";
             }
             for(unsigned int coord = 0; coord < dimension; coord++)
             {
                 stream << genMatrices[coord]->formatToColumnsReverse();
-                stream << "\n";
+                if (coord < dimension - 1){
+                    stream << "\n";
+                }
             }
-            // res.pop_back();
         }
         return stream.str();
     }  

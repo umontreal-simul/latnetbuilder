@@ -20,6 +20,8 @@
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
 #include <fstream>
 
@@ -89,6 +91,21 @@ struct ExplorationMethodParser
                 buffer << t.rdbuf();
                 netDescritionString = buffer.str();
             }
+            std::vector<std::string> fileLines;
+            boost::split(fileLines, netDescritionString, boost::is_any_of("\n"));
+            unsigned int firstLineCoordinate;
+            for (unsigned int i=0; i<fileLines.size(); i++){
+                if (fileLines[i][0] == '#'){
+                    firstLineCoordinate = i+1;
+                }
+            }
+            std::vector<std::string> filteredFileLines;
+            for (unsigned int i=firstLineCoordinate; i<fileLines.size(); i++){
+                filteredFileLines.push_back(fileLines[i]);
+            }
+            netDescritionString = boost::algorithm::join(filteredFileLines, "-");
+            boost::replace_all(netDescritionString, " ", ",");
+
             auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, netDescritionString);
             auto net = std::make_unique<DigitalNet<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));
             return std::make_unique<Task::Eval>(std::move(net), std::move(commandLine.m_figure), commandLine.m_verbose);

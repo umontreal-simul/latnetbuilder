@@ -216,7 +216,7 @@ void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle ou
     outFile.open(fileName);
     outFile << "# Input Command Line: " << boost::algorithm::join(inputCL, " ") << std::endl;
     outFile << "# Merit: " << task.outputMeritValue() << std::endl;
-    outFile << task.outputNet(outputStyle, interlacingFactor) << std::endl;
+    outFile << task.outputNet(outputStyle, interlacingFactor);
     outFile.close();
   }
   
