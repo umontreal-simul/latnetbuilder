@@ -18,6 +18,7 @@
 #define NETBUILDER__PARSER__FIGURE_PARSER_H
 
 #include <limits>
+#include <fstream>
 
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -27,14 +28,13 @@
 #include "latbuilder/Parser/Weights.h"
 #include "latbuilder/Parser/CombinedWeights.h"
 #include "latbuilder/WeightsDispatcher.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Kernel/RPLR.h"
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
 #include "latbuilder/Kernel/ICAlpha.h"
 
 #include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
 #include "netbuilder/Parser/ComputeMaxCardFromWeights.h"
 #include "netbuilder/Parser/LevelCombinerParser.h"
 #include "netbuilder/Parser/CommandLine.h"
@@ -84,15 +84,28 @@ struct FigureParser
             weightsPowerScale = commandLine.m_normType / commandLine.m_weightPower;
         }
 
+        std::vector<std::string> weightsStrings;
         std::unique_ptr<LatticeTester::Weights> weights;
-        
-        if (commandLine.s_weights.size() == 1)
+
+        if (commandLine.s_weights.size() == 1 && commandLine.s_weights.front().compare(0, 4, "file") == 0)
         {
-            weights = LatBuilder::Parser::Weights::parse(commandLine.s_weights.front(), weightsPowerScale);
+            std::ifstream t(commandLine.s_weights.front().substr(5));
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            std::string fileContent = buffer.str();
+            boost::split(weightsStrings, fileContent, boost::is_any_of(" "));
+        }
+        else {
+            weightsStrings = commandLine.s_weights;
+        }
+        
+        if (weightsStrings.size() == 1)
+        {
+            weights = LatBuilder::Parser::Weights::parse(weightsStrings.front(), weightsPowerScale);
         }
         else
         {
-            weights = LatBuilder::Parser::CombinedWeights::parse(commandLine.s_weights, weightsPowerScale);
+            weights = LatBuilder::Parser::CombinedWeights::parse(weightsStrings, weightsPowerScale);
         }
 
         std::vector<std::string> figureDescriptionStrings;
@@ -126,8 +139,8 @@ struct FigureParser
                 if (commandLine.m_interlacingFactor != 1)
                     throw BadFigure("interlacing factor must be `1' for " + commandLine.s_figure + ".");
                 unsigned int alpha = boost::lexical_cast<unsigned int>(figureDescriptionStrings.back().substr(1));
-                auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
-                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
+                auto kernel = LatBuilder::Kernel::PAlphaTilde(alpha);
+                return std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaTilde, ET>>(std::move(weights), kernel, std::move(commandLine.m_combiner));
             }
             else if (figureDescriptionStrings.back().substr(0,2) == "IA")
             {

@@ -21,7 +21,7 @@
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Task/Task.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 #include "latbuilder/SizeParam.h"
 

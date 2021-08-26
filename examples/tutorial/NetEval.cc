@@ -18,14 +18,14 @@
 #include <memory>
 
 #include "netbuilder/Types.h"
-#include "netbuilder/JoeKuo.h"
+#include "netbuilder/Helpers/JoeKuo.h"
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
 #include "netbuilder/Task/Eval.h"
 #include "latticetester/ProductWeights.h"
 
 #include "Path.h"
 
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 
 using namespace NetBuilder;
 using namespace NetBuilder::FigureOfMerit;
@@ -37,9 +37,9 @@ int main(int argc, char** argv)
         SET_PATH_TO_LATNETBUILDER_FOR_EXAMPLES();
         //! [figure]
         unsigned int alpha = 2;
-        auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
+        auto kernel = LatBuilder::Kernel::PAlphaTilde(alpha);
         auto weights = std::make_unique<LatticeTester::ProductWeights>(.7);
-        auto figure = std::make_unique<CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
+        auto figure = std::make_unique<CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaTilde, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
         //! [figure]
 
         //! [task]

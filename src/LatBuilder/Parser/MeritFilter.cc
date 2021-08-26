@@ -20,7 +20,7 @@
 #include "latbuilder/Norm/Normalizer.h"
 #include "latbuilder/Norm/PAlphaSL10.h"
 #include "latbuilder/Norm/PAlphaDPW08.h"
-#include "latbuilder/Norm/PAlphaPLR.h"
+#include "latbuilder/Norm/PAlphaTilde.h"
 #include "latbuilder/Norm/IAAlpha.h"
 #include "latbuilder/Norm/IB.h"
 #include "latbuilder/Functor/LowPass.h"
@@ -160,7 +160,7 @@ namespace {
                   }
                   else if (LR == LatticeType::POLYNOMIAL)
                   {
-                        return createNormalizer<LR, LatBuilder::Norm::PAlphaPLR, ET>(alpha, sizeParam, weights, normType, args.second);
+                        return createNormalizer<LR, LatBuilder::Norm::PAlphaTilde, ET>(alpha, sizeParam, weights, normType, args.second);
                   }
             }
             if (strSplit.second == "SL10")

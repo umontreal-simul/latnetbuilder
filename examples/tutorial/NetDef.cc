@@ -43,7 +43,7 @@ int main(int argc, char** argv)
         //! [Sobol_first_net]
         GeneratingValue firstGenValue(0, {0});
         std::vector<GeneratingValue> genVals{firstGenValue};
-        auto sobolNet = std::make_unique<DigitalNetConstruction<NetConstruction::SOBOL>>(1, SizeParameter(10), genVals);
+        auto sobolNet = std::make_unique<DigitalNet<NetConstruction::SOBOL>>(1, SizeParameter(10), genVals);
         std::cout << "First generating matrix:" << std::endl << sobolNet->generatingMatrix(0) << std::endl;
         //! [Sobol_first_net]
 
@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 
         std::vector<GeneratingValue> genVals{firstGenValue};
 
-        auto polynomialNet = std::make_unique<DigitalNetConstruction<NetConstruction::POLYNOMIAL>>(1, modulus, genVals);
+        auto polynomialNet = std::make_unique<DigitalNet<NetConstruction::POLYNOMIAL>>(1, modulus, genVals);
         std::cout << "First generating matrix:" << std::endl << polynomialNet->generatingMatrix(0) << std::endl;
         //! [Polynomial_modulus_and_first_net]
 
@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 
         SizeParameter sizeParam(10,10);
 
-        auto explicitNet = std::make_unique<DigitalNetConstruction<NetConstruction::EXPLICIT>>(2, sizeParam, genVals);
+        auto explicitNet = std::make_unique<DigitalNet<NetConstruction::EXPLICIT>>(2, sizeParam, genVals);
         //! [Explicit_net]
         
         //! [Explicit]

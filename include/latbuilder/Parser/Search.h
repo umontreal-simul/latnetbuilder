@@ -33,6 +33,12 @@
 #include <string>
 #include <vector>
 
+#include <boost/algorithm/string/erase.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/replace.hpp>
+
 namespace LatBuilder { namespace Parser {
 
 /**
@@ -87,7 +93,8 @@ public:
 
       auto storage = createStorage< FIGURE::suggestedCompression(), P>(std::move(size));
 
-      auto strSplit = splitPair<std::string, std::string>(str, ':');
+      std::vector<std::string> strSplit;
+      boost::split(strSplit, str, boost::is_any_of(":"));
 
       if (str == "full-CBC") {
          func(Task::cbc(std::move(storage), dimension, std::move(figure)), std::forward<ARGS>(args)...);
@@ -107,38 +114,77 @@ public:
       }
 
       try {
-         auto nrand = boost::lexical_cast<unsigned int>(strSplit.second);
-         if (strSplit.first == "random") {
+         auto nrand = boost::lexical_cast<unsigned int>(strSplit[1]);
+         if (strSplit[0] == "random") {
             func(Task::random(std::move(storage), dimension, std::move(figure), nrand), std::forward<ARGS>(args)...);
             return;
          }
-         if (strSplit.first == "random-CBC") {
+         if (strSplit[0] == "random-CBC") {
             func(Task::randomCBC(std::move(storage), dimension, std::move(figure), nrand), std::forward<ARGS>(args)...);
             return;
          }
-         if (strSplit.first == "random-Korobov") {
+         if (strSplit[0] == "random-Korobov") {
             func(Task::randomKorobov(std::move(storage), dimension, std::move(figure), nrand), std::forward<ARGS>(args)...);
             return;
          }
       }
       catch (boost::bad_lexical_cast&) {}
 
-      if (strSplit.first == "evaluation") {
-         auto genVec = LatticeParametersParseHelper<LR>::ParseGeneratingVector(strSplit.second);
+      
+      int splitSizeWithoutFile;
+      if (strSplit[0] == "evaluation"){
+         splitSizeWithoutFile = 2;
+      }
+      else if (strSplit[0] == "extend"){
+         splitSizeWithoutFile = 3;
+      }
+      else {
+         throw ParserError("unsupported construction method: " + str);
+      }
+
+      std::string genVecString;
+      if (strSplit.size() == splitSizeWithoutFile){
+            genVecString = strSplit[splitSizeWithoutFile-1];
+      }
+      else if (strSplit.size() == splitSizeWithoutFile + 1){
+            std::ifstream t(strSplit[splitSizeWithoutFile]);
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            genVecString = buffer.str();
+            std::vector<std::string> fileLines;
+            boost::split(fileLines, genVecString, boost::is_any_of("\n"));
+            unsigned int firstLineCoordinate;
+            for (unsigned int i=0; i<fileLines.size(); i++){
+                if (fileLines[i][0] == '#'){
+                    firstLineCoordinate = i+1;
+                }
+            }
+            std::vector<std::string> filteredFileLines;
+            for (unsigned int i=firstLineCoordinate; i<fileLines.size(); i++){
+                filteredFileLines.push_back(fileLines[i]);
+            }
+            genVecString = boost::algorithm::join(filteredFileLines, "-");
+            boost::replace_all(genVecString, " ", ",");
+      }
+      else {
+         throw ParserError("evaluation or exploration parameter is not well specified.");
+      }
+
+      if (strSplit[0] == "evaluation") {
+         auto genVec = LatticeParametersParseHelper<LR>::ParseGeneratingVector(genVecString);
          func(Task::eval(std::move(storage), dimension, std::move(figure), genVec), std::forward<ARGS>(args)...);
          return;
       }
 
-      if (strSplit.first == "extend") {
-         auto strSplit2 = splitPair<std::string, std::string>(strSplit.second, ':');
-         auto sizeParam = Parser::SizeParam<LR, ET>::parse(strSplit2.first);
-         auto genVec =  LatticeParametersParseHelper<LR>::ParseGeneratingVector(strSplit2.second);
+      if (strSplit[0] == "extend") {
+         auto sizeParam = Parser::SizeParam<LR, ET>::parse(strSplit[1]);
+         auto genVec =  LatticeParametersParseHelper<LR>::ParseGeneratingVector(genVecString);
          auto lat = createLatDef(std::move(sizeParam), std::move(genVec));
          func(Task::extend(std::move(storage), std::move(lat), std::move(figure)), std::forward<ARGS>(args)...);
          return;
       }
 
-      throw ParserError("unsupported construction method: " + str);
+      
    }
 
 private:

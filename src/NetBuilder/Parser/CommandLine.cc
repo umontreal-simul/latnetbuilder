@@ -28,8 +28,8 @@ CommandLine<NC, ET>::parse()
 {
       namespace lbp = LatBuilder::Parser;
       
-      SizeParameterParser<NC,ET>::parse(*this);
       m_dimension = boost::lexical_cast<Dimension>(s_dimension) * m_interlacingFactor;
+      SizeParameterParser<NC,ET>::parse(*this);
       if (m_interlacingFactor > 1){
             std::cout << "Warning: interlacing factor is > 1." << std::endl;
             std::cout << "    Dimension: " <<  boost::lexical_cast<Dimension>(s_dimension) << std::endl;

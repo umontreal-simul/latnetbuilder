@@ -17,7 +17,7 @@
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latticetester/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Functor/binary.h"
 #include "latbuilder/Storage.h"
@@ -90,7 +90,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   CoordUniformFigureOfMerit<Kernel::PAlphaPLR> figure(std::move(weights), 2);
+   CoordUniformFigureOfMerit<Kernel::PAlphaTilde> figure(std::move(weights), 2);
    std::cout << "figure of merit: " << figure << std::endl;
    //! [pfigure]
    */

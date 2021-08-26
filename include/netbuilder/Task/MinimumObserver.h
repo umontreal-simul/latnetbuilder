@@ -47,7 +47,7 @@ class MinimumObserver
          * @param verbose Verbosity level.
         */
         MinimumObserver(typename NetConstructionTraits<NC>::SizeParameter sizeParameter, int verbose = 0):
-            m_bestNet(new DigitalNetConstruction<NC>(0,sizeParameter)),
+            m_bestNet(new DigitalNet<NC>(0,sizeParameter)),
             m_verbose(verbose)
         {
             reset(false);
@@ -58,7 +58,7 @@ class MinimumObserver
          * @param baseNet Net from which to start the search.
          * @param verbose Verbosity level.
         */
-        MinimumObserver(std::unique_ptr<DigitalNetConstruction<NC>> baseNet, int verbose = 0):
+        MinimumObserver(std::unique_ptr<DigitalNet<NC>> baseNet, int verbose = 0):
             m_verbose(verbose)
         {
             reset(std::move(baseNet));
@@ -75,7 +75,7 @@ class MinimumObserver
             m_bestMerit = std::numeric_limits<Real>::infinity();
             m_foundBestNet = false;
             if (hard)
-                m_bestNet = std::make_unique<DigitalNetConstruction<NC>>(0, m_bestNet->sizeParameter());
+                m_bestNet = std::make_unique<DigitalNet<NC>>(0, m_bestNet->sizeParameter());
         }
 
         /** 
@@ -83,7 +83,7 @@ class MinimumObserver
          * set the found net flag to \c false, and the starting net to baseNet. 
          * @param baseNet The net from which the search starts.
          */
-        virtual void reset(std::unique_ptr<DigitalNetConstruction<NC>> baseNet) 
+        virtual void reset(std::unique_ptr<DigitalNet<NC>> baseNet) 
         { 
             reset(false);
             m_bestNet = std::move(baseNet);
@@ -92,7 +92,7 @@ class MinimumObserver
         /** 
          * Returns the best observed net. 
          */
-        const DigitalNetConstruction<NC>& bestNet() { return *m_bestNet; }
+        const DigitalNet<NC>& bestNet() { return *m_bestNet; }
         
         /** 
          * Returns the best observed merit value. 
@@ -103,7 +103,7 @@ class MinimumObserver
          * Notifies the observer that the merit value of a new candidate net has
          * been observed, updates the best observed candidate net if necessary.
          */
-        virtual bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit)
+        virtual bool observe(std::unique_ptr<DigitalNet<NC>> net, const Real& merit)
         {
                 if (merit < m_bestMerit){
                     m_bestMerit = merit;
@@ -113,7 +113,7 @@ class MinimumObserver
                     if (m_verbose>0)
                     {
                         std::cout << "Current merit: " << merit << " (best) with net:" << std::endl;
-                        std::cout << m_bestNet->format(OutputFormat::HUMAN, OutputStyle::NONE, 1);
+                        std::cout << m_bestNet->format(OutputStyle::TERMINAL, 1);
                         std::cout << std::endl;
                         std::cout << std::endl;
                     }
@@ -124,7 +124,7 @@ class MinimumObserver
                     if (m_verbose>0)
                     {
                         std::cout << "Current merit: " << merit << " (rejected) with net:" << std::endl;
-                        std::cout << net->format(OutputFormat::HUMAN, OutputStyle::NONE, 1);
+                        std::cout << net->format(OutputStyle::TERMINAL, 1);
                         std::cout << std::endl;
                         std::cout << std::endl;
                     }
@@ -147,11 +147,11 @@ class MinimumObserver
         /**
          * Does nothing.
          */ 
-        void onAbort(const DigitalNet& net) const
+        void onAbort(const AbstractDigitalNet& net) const
         {};
 
         private:
-            std::unique_ptr<DigitalNetConstruction<NC>> m_bestNet;
+            std::unique_ptr<DigitalNet<NC>> m_bestNet;
             bool m_foundBestNet;
             Real m_bestMerit;
             int m_verbose;

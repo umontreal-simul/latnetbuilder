@@ -1,0 +1,9 @@
+Input Command Line: --set-type lattice --construction ordinary --size-parameter 2^16 --dimension 100 --exploration-method evaluation:file:test_lat/output.txt --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_evaluate_lattice_from_file --output-style lattice
+
+Task: LatBuilder Evaluation of a Ordinary lattice
+Dimension: 100
+Embedding type: Unilevel
+Modulus: 65536
+Figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.1)
+Norm type: 2

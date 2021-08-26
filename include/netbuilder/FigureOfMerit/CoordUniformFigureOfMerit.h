@@ -18,7 +18,7 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__COORD_UNIFORM_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 #include "latticetester/Weights.h"
 
@@ -227,7 +227,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
                          *  @param initialValue Initial value of the merit.
                          *  @param verbose Verbosity level.
                          */ 
-                        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
+                        virtual MeritValue operator() (const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                         {
                             using namespace LatticeTester;
 

@@ -18,7 +18,7 @@
 #define NET_BUILDER__FIGURE_OF_MERIT__TVALUE_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 #include "latbuilder/Storage.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
@@ -97,7 +97,7 @@ class TValue : public FigureOfMerit
                  * @param net Net to evaluate.
                  * @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) override
+                virtual MeritValue operator() (const AbstractDigitalNet& net, int verbose = 0) override
                 {
                     Dimension s = net.dimension();
                     unsigned int k = net.numColumns();
@@ -249,7 +249,7 @@ std::string TValue<EmbeddingType::MULTILEVEL>::format() const
  * Templace specialization of <code>operator()</code> of TValueEvaluator in the multilevel case.
  */ 
 template<>
-MeritValue TValue<EmbeddingType::MULTILEVEL>::TValueEvaluator::operator()(const DigitalNet& net, int verbose)
+MeritValue TValue<EmbeddingType::MULTILEVEL>::TValueEvaluator::operator()(const AbstractDigitalNet& net, int verbose)
 {
     Dimension s = net.dimension();
     unsigned int k = net.numColumns();

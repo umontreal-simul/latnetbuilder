@@ -20,7 +20,7 @@
 #include "latbuilder/ProjDepMerit/Spectral.h"
 #include "latticetester/NormaBestLat.h"
 #include "latbuilder/ProjDepMerit/CoordUniform.h" 
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Storage.h"
 #include "latbuilder/Functor/binary.h"
@@ -63,7 +63,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    weights->setDefaultWeight(0.7);
 
    //! [pProjDepMerit]
-   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaPLR> ProjDep;
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaTilde> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(2, std::move(weights), ProjDep(2));
    //! [pProjDepMerit]
    std::cout << "figure of merit: " << figure << std::endl;

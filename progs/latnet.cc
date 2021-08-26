@@ -17,7 +17,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 
-#include "netbuilder/Path.h"
+#include "netbuilder/Helpers/Path.h"
 #include "latbuilder/LatBuilder.h"
 #include "netbuilder/NetBuilder.h"
 

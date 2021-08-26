@@ -14,13 +14,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "netbuilder/TValueComputation.h"
+#include "netbuilder/FigureOfMerit/TValueComputation.h"
 #include "netbuilder/Types.h"
-#include "netbuilder/CompositionMaker.h"
+#include "netbuilder/Helpers/CompositionMaker.h"
 
 #include <list>
-
-#include "netbuilder/Util.h"
 
 namespace NetBuilder {
 

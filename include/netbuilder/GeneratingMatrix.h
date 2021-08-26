@@ -27,12 +27,22 @@
 #include <string>
 #include <algorithm>
 
+#include "latbuilder/LFSR258.h"
+#include "latbuilder/UniformUIntDistribution.h"
+
 
 namespace NetBuilder {
 
 /** This class implements a generating matrix of a digital net in base 2.
- *  A matrix is represented as a <code>std::vector</code> of rows implemented by
- *  <code>boost::dynamic_bitset</code>.
+ * 
+ * Internally, a matrix is represented as a <code>std::vector</code> of rows implemented by
+ * <code>boost::dynamic_bitset</code>. This internal representation allows to work with
+ * arbitrarly large matrices. The choice of representing the matrix by its rows and not its columns
+ * comes from the rank computation algorithm, which is the most complicated algorithm handling matrices in the software.
+ * 
+ * For now, the computation of the points from the matrices is done in latbuilder/Storage-SIMPLE-DIGITAL.h.
+ * TODO: add more explanation on this. The basic idea is that we do not need to explicitely compute the points anywhere 
+ * in LatNet Builder, but map a matrix to a permutation of {0, 1/n, ...,  1}.
  */ 
 class GeneratingMatrix {
 
@@ -63,8 +73,6 @@ class GeneratingMatrix {
          */  
         GeneratingMatrix(unsigned int nRows, unsigned int nCols, std::vector<uInteger> init);
 
-        // GeneratingMatrix(unsigned int nRows, unsigned int nCols, bool uniTriangular);
-
         /** Returns the number of columns of the matrix. */
         unsigned int nCols() const;
 
@@ -75,8 +83,8 @@ class GeneratingMatrix {
          * @param nRows is the new number of rows of the matrix
          * @param nCols is the new number of columns of the matrix
          */ 
-
         void resize(unsigned int nRows, unsigned int nCols);
+
         /** Returns the element at position \c i, \c j of the matrix.
          * @param i Row index.
          * @param j Column index.
@@ -150,10 +158,43 @@ class GeneratingMatrix {
         /** Overloads of << operator to print matrices. */
         friend std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat);
 
+        std::string formatToColumnsReverse(unsigned int nBits = 31) const;
+
         /** Returns an integer representation of the columns of the matrix. A column is read as a bit string
-         * with highest bit in first position.
+         * with highest bit in first position. This function is used to generate the points from the digital net.
          */ 
         std::vector<unsigned long> getColsReverse() const;
+
+        /** Creates a matrix from its reversed column representation.
+         * @param nInputRows Number of bits in the integer representation of the columns. Typically equals 31.
+         * @param nOutputRows Number of rows of the matrix returned by the function. Rows below are ignored. Typically equals the number of columns.
+         * @param columns Integer representation of the columns of the matrix.
+         */ 
+        static GeneratingMatrix fromColsReverse(unsigned int nInputBits, unsigned int nOutputRows, std::vector<unsigned long> columns);
+
+        /**
+         * Creates a matrix with ones on the main diagonal, random bits below the main diagonal, and zeros above.
+         * TODO: give the maximum values for nRows and nCols for this to work.
+         * @param nRows Number of rows of the matrix.
+         * @param nCols Number of columns of the matrix.
+         * @param randomGen Random Number Generator. By default it is the <tt>LFSR258</tt> generator by L'Ecuyer \cite rLEC99a.
+         */ 
+        template<typename RAND>
+        static GeneratingMatrix createRandomLowerTriangularMatrix(unsigned int nRows, unsigned int nCols, RAND& randomGen) {
+            std::vector<GeneratingMatrix::uInteger> res(nRows, 0);
+            unsigned long diagonalCoeff = 1 << (nCols);
+            LatBuilder::UniformUIntDistribution<unsigned long, LatBuilder::LFSR258> m_unif(0, diagonalCoeff - 1);
+            for(unsigned int i = 0; i < std::min(nCols, nRows); ++i)
+            {
+                res[i] = ((diagonalCoeff + m_unif(randomGen)) >> (nCols-i));
+            }
+            for(unsigned int i = nCols; i < nRows; ++i)
+            {
+                res[i] = m_unif(randomGen);
+            }
+            return GeneratingMatrix(nRows, nCols, res);
+        };
+
     private:
         std::vector<boost::dynamic_bitset<>> m_data; // data internal representantion
         unsigned int m_nRows; // number of rows of the matrix

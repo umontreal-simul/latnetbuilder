@@ -65,7 +65,7 @@ class CBCSearch : public Search<NC, ET, OBSERVER>
          * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
          */
         CBCSearch(  Dimension dimension, 
-                    std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
+                    std::unique_ptr<DigitalNet<NC>> baseNet,
                     std::unique_ptr<FigureOfMerit::CBCFigureOfMerit> figure,
                     std::unique_ptr<Explorer> explorer = std::make_unique<Explorer>(),
                     int verbose = 0,
@@ -122,8 +122,8 @@ class CBCSearch : public Search<NC, ET, OBSERVER>
 
             if (this->m_earlyAbortion) // if the switch is on, connect the abortion signals of the evaluator to the observer
             {
-                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), _1));
-                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), boost::placeholders::_1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), boost::placeholders::_1));
             }
 
             m_explorer->switchToCoordinate(this->observer().bestNet().dimension()); // to to the first dimension to explore
@@ -138,7 +138,7 @@ class CBCSearch : public Search<NC, ET, OBSERVER>
                 auto net = this->m_observer->bestNet(); // base net of the search
                 while(!m_explorer->isOver()) // for each generating values provided by the explorer
                 {
-                    auto newNet = net.extendDimension(m_explorer->nextGenValue(),coord);
+                    auto newNet = net.appendNewCoordinate(m_explorer->nextGenValue());
                     unsigned long totalSize = m_explorer->size();
                     if (this->m_verbose>=2 && ((totalSize > 100 && m_explorer->count() % 100 == 0) || (m_explorer->count() % 10 == 0)))
                     {

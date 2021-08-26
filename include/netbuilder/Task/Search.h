@@ -19,8 +19,9 @@
 
 #include "netbuilder/Task/Task.h"
 #include "netbuilder/Task/MinimumObserver.h"
-
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
+
+#include "latbuilder/Util.h"
 
 #include <ostream>
 #include <memory>
@@ -39,7 +40,7 @@ namespace{
     std::string output<NetConstruction::POLYNOMIAL>(typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::SizeParameter sizeParameter)
     {
         std::ostringstream stream;
-        stream << "Modulus: " << sizeParameter << std::endl;
+        stream << "Modulus: " << LatBuilder::IndexOfPolynomial(sizeParameter) << std::endl;
         return stream.str();
     }
 }
@@ -75,7 +76,7 @@ public:
     virtual void reset() override
     {
         m_observer->reset();
-        m_bestNet = DigitalNetConstruction<NC>(0,m_sizeParameter);
+        m_bestNet = DigitalNet<NC>(0,m_sizeParameter);
         m_bestMerit = std::numeric_limits<Real>::infinity();
     }
 
@@ -118,7 +119,7 @@ public:
      * @param earlyAbortion Early-abortion switch. If true, the computations will be stopped if the net is worse than the best one so far.
      */
     Search( Dimension dimension, 
-            std::unique_ptr<DigitalNetConstruction<NC>> baseNet,
+            std::unique_ptr<DigitalNet<NC>> baseNet,
             int verbose = 0,
             bool earlyAbortion = false ):
         m_onNetSelected(new OnNetSelected),
@@ -158,7 +159,7 @@ public:
     /** 
      * Returns the best net found by the search. 
      */
-    const DigitalNetConstruction<NC>& bestNet() const
+    const DigitalNet<NC>& bestNet() const
     { return m_bestNet; }
 
     /** 
@@ -175,8 +176,8 @@ public:
     /**
      *  Returns the best net found by the search task.
      */
-    virtual std::string outputNet(OutputFormat outputFormat, OutputStyle outputStyle, unsigned int interlacingFactor) const override
-    { return bestNet().format(outputFormat, outputStyle, interlacingFactor); }
+    virtual std::string outputNet(OutputStyle outputStyle, unsigned int interlacingFactor) const override
+    { return bestNet().format(outputStyle, interlacingFactor); }
 
     /**
      *  Returns information about the task
@@ -255,7 +256,7 @@ public:
         /**
          * Selects a new best net and emits an OnNetSelected signal.
          */
-        void selectBestNet(const DigitalNetConstruction<NC>& net, Real merit)
+        void selectBestNet(const DigitalNet<NC>& net, Real merit)
         {
             m_bestNet = net;
             m_bestMerit = merit;
@@ -268,7 +269,7 @@ public:
         typename NetConstructionTraits<NC>::SizeParameter m_sizeParameter; // size parameter of the search
         unsigned int m_nRows; // number of rows of the generating matrices
         unsigned int m_nCols; // number of columns of the generating matrices
-        DigitalNetConstruction<NC> m_bestNet; // best net 
+        DigitalNet<NC> m_bestNet; // best net 
         Real m_bestMerit; // best merit
         std::unique_ptr<Observer> m_observer; // minimum observer
         int m_verbose; // verbosity level
