@@ -314,7 +314,7 @@ namespace NetBuilder {
         }
 
         else if (outputStyle == OutputStyle::SOBOL){
-            res += "# Parameters m_{j,c} for Sobol points\n";
+            res += " Initial direction numbers m_{j,c} for Sobol points\n";
             res += dimension + "    # " + dimension + " dimensions\n";
             if (interlacingFactor > 1){
                 res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
