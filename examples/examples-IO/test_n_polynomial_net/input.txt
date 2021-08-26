@@ -1,0 +1,11 @@
+Input Command Line: -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_n_polynomial_net -O net
+
+Task: NetBuilder Search - Net Construction : Polynomial
+Number of components: 10
+Modulus: 66525
+Number of rows: 16 - Number of columns: 16
+Exploration method: CBC - Random Explorer - 70 samples
+Figure of merit: t-value based figure of merit
+Embedding type: Unilevel
+Weights: OrderDependentWeights([0, 0, 1, 1], default=0)
+Norm type: inf

@@ -1,8 +1,0 @@
-Task: NetBuilder Search - Net Construction : LMS
-Number of components: 2
-Number of rows: 6 - Number of columns: 6
-Exploration method: random - 5 samples
-Figure of merit: Coordinate Uniform with Kernel: P2_PLR
-Embedding type: Unilevel
-Weights: OrderDependentWeights([0, 0.8, 0.64], default=0)
-Norm type: 2

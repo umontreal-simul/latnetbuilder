@@ -1,0 +1,17 @@
+# Input Command Line: -t lattice -c polynomial -s 2^10 -d 10 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_l_polynomial_lat -O lattice
+# Merit: 0.000818148
+# Parameters for a polynomial lattice rule in base 2
+10       # 10 dimensions
+10      # k = 10, n = 2^10 = 1024 points
+1033   # polynomial modulus
+# Coordinates of generating vector, starting at j=1
+1
+800
+839
+753
+622
+150
+827
+676
+108
+970

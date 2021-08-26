@@ -1,0 +1,10 @@
+Input Command Line: -t lattice -c ordinary -s 2^16 -d 100 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_lat
+
+Task: LatBuilder Search for Ordinary lattices
+Exploration method: CBC - Fast Explorer
+Dimension: 100
+Embedding type: Unilevel
+Modulus: 65536
+Figure of merit: Coordinate Uniform with Kernel: P2
+Weights: ProductWeights([], default=0.1)
+Norm type: 2

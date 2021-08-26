@@ -1,8 +1,0 @@
-Task: LatBuilder Search for Polynomial lattices
-Exploration method: CBC - Fast Explorer
-Dimension: 10
-Embedding type: Unilevel
-Modulus: [1 0 0 1 0 0 0 0 0 0 1]
-Figure of merit: Coordinate Uniform with Kernel: P2_PLR
-Weights: ProductWeights([], default=0.1)
-Norm type: 2
