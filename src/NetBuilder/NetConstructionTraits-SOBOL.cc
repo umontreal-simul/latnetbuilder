@@ -288,7 +288,7 @@ namespace NetBuilder {
 
         else if (outputStyle == OutputStyle::SOBOLJK){
             res += "# Parameters for Sobol points, in JK format\n";
-            res += dimension + "    # " + dimension + " dimensions\n";
+            res += dimension + "    # s = " + dimension + " dimensions\n";
             if (interlacingFactor > 1){
                 res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
                 res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";

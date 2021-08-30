@@ -111,12 +111,12 @@ namespace NetBuilder {
 
         else if (outputStyle == OutputStyle::LATTICE){
             stream << "# Parameters for a polynomial lattice rule in base 2" << std::endl;
-            stream << genVals.size() / interlacingFactor << "       # " << genVals.size() / interlacingFactor << " dimensions" << std::endl;
+            stream << genVals.size() / interlacingFactor << "       #  s =  " << genVals.size() / interlacingFactor << " dimensions" << std::endl;
             if (interlacingFactor > 1){
                 stream << interlacingFactor << "    # Interlacing factor" << std::endl;
                 stream << genVals.size() << "    # Number of components = interlacing factor x dimension" << std::endl;
             }
-            stream << (int) deg(sizeParameter) << "      # k = "<<(int) deg(sizeParameter)<< ", n = 2^";
+            stream << (int) deg(sizeParameter) << "      # n = 2^";
             stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
             
             stream << LatBuilder::IndexOfPolynomial(sizeParameter) << "   # polynomial modulus" << std::endl;

@@ -285,7 +285,7 @@ class DigitalNet : public AbstractDigitalNet
                 std::string dimension_as_str = std::to_string(dimension() / interlacingFactor);
                 std::string nb_col_as_str = std::to_string(numColumns());
                 res += "# Parameters for a digital net in base 2\n";
-                res += dimension_as_str + "    # " + dimension_as_str + " dimensions\n";
+                res += dimension_as_str + "    # s = " + dimension_as_str + " dimensions\n";
                 if (interlacingFactor > 1){
                     res += std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
                     res += std::to_string(dimension()) + "    # Number of components = interlacing factor x dimension" + "\n";
