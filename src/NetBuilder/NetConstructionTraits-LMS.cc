@@ -42,9 +42,12 @@ namespace NetBuilder {
 
     unsigned int NetConstructionTraits<NetConstruction::LMS>::nCols(const SizeParameter& sizeParameter) {return (unsigned int) sizeParameter.first.second; }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::LMS>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::LMS>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j, const unsigned int nRows)
     {
-        return new GeneratingMatrix(genValue * *sizeParameter.second[dimension_j]);
+        GeneratingMatrix* result = new GeneratingMatrix(genValue * *sizeParameter.second[dimension_j]);
+        unsigned int finalnRows = (nRows == 0)? NetConstructionTraits<NetConstruction::LMS>::nRows(sizeParameter) : nRows;
+        result->resize(finalnRows, nCols(sizeParameter));
+        return result;
     }
 
     std::vector<GenValue> NetConstructionTraits<NetConstruction::LMS>::genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)
@@ -77,14 +80,14 @@ namespace NetBuilder {
             unsigned long dimension = genMatrices.size();
             unsigned int nb_col = sizeParameter.first.second;
             stream << "# Parameters for a digital net in base 2\n";
-            stream << dimension / interlacingFactor << "    # " << dimension / interlacingFactor << " dimensions\n";
+            stream << dimension / interlacingFactor << "    # s = " << dimension / interlacingFactor << " dimensions\n";
             if (interlacingFactor > 1){
                 stream << interlacingFactor << "    # Interlacing factor" << "\n";
                 stream << dimension << "    # Number of components = interlacing factor x dimension" << "\n";
             }
-            stream << nb_col << "   # k = " << nb_col << ",  n = 2^" << nb_col << " = "; 
+            stream << nb_col << "    # k = " << nb_col << ",  n = 2^" << nb_col << " = "; 
             stream << (int)pow(2,nb_col) << " points"<< std::endl;
-            stream << "31   # r = 31 binary output digits\n";
+            stream << "31    # r = 31 binary output digits\n";
 
             if (interlacingFactor == 1){
                 stream << "# Columns of original gen. matrices C_1,...,C_s, one matrix per line\n";

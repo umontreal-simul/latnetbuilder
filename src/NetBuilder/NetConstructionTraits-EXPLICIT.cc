@@ -36,10 +36,11 @@ namespace NetBuilder {
 
     unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(const SizeParameter& sizeParameter) {return (unsigned int) sizeParameter.second; }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j, const unsigned int nRows)
     {
+        unsigned int finalnRows = (nRows == 0)? NetConstructionTraits<NetConstruction::EXPLICIT>::nRows(sizeParameter) : nRows;
         GeneratingMatrix* genMat = new GeneratingMatrix(genValue);
-        genMat->resize(nRows(sizeParameter),nCols(sizeParameter));
+        genMat->resize(finalnRows, nCols(sizeParameter));
         return genMat;
     }
 

@@ -56,15 +56,16 @@ namespace NetBuilder {
         }
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j, const unsigned int nRows)
     {
         unsigned int m = (unsigned int) (deg(sizeParameter));
-        GeneratingMatrix* genMat = new GeneratingMatrix(m,m);
-        std::vector<unsigned int> expansion(2 * m);
-        expandSeries(genValue, sizeParameter, expansion, 2 * m);
-        for(unsigned int c =0; c<m; c++ )
+        unsigned int finalnRows = (nRows == 0)? m : nRows;
+        GeneratingMatrix* genMat = new GeneratingMatrix(finalnRows, m);
+        std::vector<unsigned int> expansion(finalnRows + m);
+        expandSeries(genValue, sizeParameter, expansion, finalnRows + m);
+        for(unsigned int c = 0; c < m; c++)
         {
-            for(unsigned int row =0; row <m; row++ )
+            for(unsigned int row = 0; row < finalnRows; row++)
             {
                 (*genMat)(row,c) = expansion[c + row];
             }
@@ -111,7 +112,7 @@ namespace NetBuilder {
 
         else if (outputStyle == OutputStyle::LATTICE){
             stream << "# Parameters for a polynomial lattice rule in base 2" << std::endl;
-            stream << genVals.size() / interlacingFactor << "       #  s =  " << genVals.size() / interlacingFactor << " dimensions" << std::endl;
+            stream << genVals.size() / interlacingFactor << "      #  s =  " << genVals.size() / interlacingFactor << " dimensions" << std::endl;
             if (interlacingFactor > 1){
                 stream << interlacingFactor << "    # Interlacing factor" << std::endl;
                 stream << genVals.size() << "    # Number of components = interlacing factor x dimension" << std::endl;

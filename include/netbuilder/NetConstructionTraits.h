@@ -94,7 +94,7 @@ struct NetConstructionTraits<NetConstruction::SOBOL>
 
     static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1, const unsigned int nRows = 0);
 
     class GenValueSpaceCoordSeq
     {
@@ -227,7 +227,8 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
     static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
+    // TODO: add comment about the nRows parameter.
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1, const unsigned int nRows = 0);
 
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
@@ -286,7 +287,7 @@ struct NetConstructionTraits<NetConstruction::EXPLICIT>
 
     static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1, const unsigned int nRows = 0);
 
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 
@@ -386,7 +387,7 @@ struct NetConstructionTraits<NetConstruction::LMS>
 
     static unsigned int nCols(const SizeParameter& param);
 
-    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1);
+    static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1, const unsigned int nRows = 0);
 
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
 

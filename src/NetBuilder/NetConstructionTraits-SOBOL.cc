@@ -119,9 +119,10 @@ namespace NetBuilder {
         reg.push_back(std::move(newDirNum));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j, const unsigned int nRows)
     {
         unsigned int m  = nCols(sizeParam);
+        unsigned int finalnRows = (nRows == 0)? m : nRows;
         Dimension coord = genValue.first;
 
         if (coord==0) // special case for the first dimension
@@ -156,7 +157,7 @@ namespace NetBuilder {
             makeIteration(*tmp, reg, mask, k);
             ++k;
         }
-        tmp->resize(m, m);
+        tmp->resize(finalnRows, m);
         return tmp;
     }
 
@@ -315,7 +316,7 @@ namespace NetBuilder {
 
         else if (outputStyle == OutputStyle::SOBOL){
             res += " Initial direction numbers m_{j,c} for Sobol points\n";
-            res += dimension + "    # " + dimension + " dimensions\n";
+            res += dimension + "    # s = " + dimension + " dimensions\n";
             if (interlacingFactor > 1){
                 res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
                 res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";

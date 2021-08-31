@@ -294,7 +294,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
         outFile << "# Merit: " << search->bestMeritValue() << std::endl;
         outFile << "# Parameters for a lattice rule";
         outFile << helper2<ET>(lat.sizeParam());
-        outFile << lat.dimension() <<"    # "<< lat.dimension() << " dimensions\n";
+        outFile << lat.dimension() <<"    # s = "<< lat.dimension() << " dimensions\n";
         outFile << lat.sizeParam().numPoints() <<"    # modulus = n = "<< lat.sizeParam().numPoints() << " points\n";
         auto vec = lat.gen();
         outFile << "# Coordinates of generating vector, starting at j=1" << std::endl;

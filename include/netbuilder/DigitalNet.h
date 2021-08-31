@@ -290,9 +290,9 @@ class DigitalNet : public AbstractDigitalNet
                     res += std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
                     res += std::to_string(dimension()) + "    # Number of components = interlacing factor x dimension" + "\n";
                 }
-                res += nb_col_as_str + "   # k = " + nb_col_as_str + ",  n = 2^"+ nb_col_as_str + " = "; 
+                res += nb_col_as_str + "    # k = " + nb_col_as_str + ",  n = 2^"+ nb_col_as_str + " = "; 
                 res += std::to_string(numPoints()) + " points\n";
-                res += "31   # r = 31 binary output digits\n";
+                res += "31    # r = 31 binary output digits\n";
                 if (interlacingFactor == 1){
                     res += "# Columns of gen. matrices C_1,...,C_s, one matrix per line\n";
                 }
@@ -301,7 +301,7 @@ class DigitalNet : public AbstractDigitalNet
                 }
                 for(unsigned int coord = 0; coord < m_genValues.size(); coord++)
                 {
-                    res += m_generatingMatrices[coord]->formatToColumnsReverse();
+                    res += ConstructionMethod::createGeneratingMatrix(*(m_genValues[coord]), m_sizeParameter, coord, 31)->formatToColumnsReverse();
                     res += "\n";
                 }
                 res.pop_back();
