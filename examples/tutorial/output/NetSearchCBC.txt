@@ -1,51 +1,68 @@
 Task: NetBuilder Search - Net Construction : Polynomial
 Number of components: 5
-Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+Modulus: 1033
 Number of rows: 10 - Number of columns: 10
 Exploration method: CBC - Full Explorer
 Figure of merit: t-value based figure of merit
 Embedding type: Unilevel
 Weights: ProductWeights([], default=0.7)
 Norm type: inf
-Best net: Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
+Best net:
+10  // Number of columns
+10  // Number of rows
+1024  // Number of points
+5  // Dimension of points
+Polynomial Digital Net - Modulus = 1033 - GeneratingVector =
   1
-  0 0 0 0 0 1 0 0 1 1
-  0 0 1 0 0 0 1 0 1
-  0 0 1 0 0 0 0 1
-  0 0 0 1 0 1 0 1
+  800
+  324
+  132
+  168
 
 Merit value: 1.029
+============================================================
 Task: NetBuilder Search - Net Construction : Polynomial
 Number of components: 5
-Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+Modulus: 1033
 Number of rows: 10 - Number of columns: 10
 Exploration method: CBC - Random Explorer - 70 samples
 Figure of merit: t-value based figure of merit
 Embedding type: Unilevel
 Weights: ProductWeights([], default=0.7)
 Norm type: inf
-Best net: Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
+Best net:
+10  // Number of columns
+10  // Number of rows
+1024  // Number of points
+5  // Dimension of points
+Polynomial Digital Net - Modulus = 1033 - GeneratingVector =
   1
-  1 0 1 1 0 1 0 0 1 1
-  0 0 0 1 0 0 0 0 1
-  0 0 0 1 1 1 0 1 1 1
-  1 0 1 1 0 1 1 1
+  813
+  264
+  952
+  237
 
 Merit value: 1.372
+============================================================
 Task: NetBuilder Search - Net Construction : Polynomial
 Number of components: 5
-Modulus: [1 0 0 1 0 0 0 0 0 0 1]
+Modulus: 1033
 Number of rows: 10 - Number of columns: 10
 Exploration method: CBC - Mixed Explorer - 3 full coordinates - 70 samples for random coordinates
 Figure of merit: t-value based figure of merit
 Embedding type: Unilevel
 Weights: ProductWeights([], default=0.7)
 Norm type: inf
-Best net: Polynomial Digital Net - Modulus = 1 0 0 1 0 0 0 0 0 0 1 - GeneratingVector =
+Best net:
+10  // Number of columns
+10  // Number of rows
+1024  // Number of points
+5  // Dimension of points
+Polynomial Digital Net - Modulus = 1033 - GeneratingVector =
   1
-  0 0 0 0 0 1 0 0 1 1
-  0 0 1 0 0 0 1 0 1
-  1 0 1 1 1 0 1 1
-  0 0 0 1 0 0 0 0 1
+  800
+  324
+  221
+  264
 
 Merit value: 1.372

@@ -14,13 +14,13 @@ Ordinary Lattice - Modulus = 2^5 - Generating vector = [1, 7, 9]
 
 polynomial - simple lattice:
 dimension:         3
-size parameter:    [1 0 1 1]
+size parameter:    13
 generating vector: [[1], [1 0 1], [1 1]]
 definition:        
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  1 0 1
-  1 1
+  5
+  3
 
 polynomial - embedded lattice:
 dimension:         3
@@ -29,6 +29,6 @@ generating vector: [[1], [0 1 0 1], [1 1]]
 definition:        
 Polynomial Lattice - Modulus = [0 1]^5 - Generating vector = 
   1
-  0 1 0 1
-  1 1
+  10
+  3
 

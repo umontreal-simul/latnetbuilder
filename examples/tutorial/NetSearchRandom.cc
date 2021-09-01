@@ -52,7 +52,8 @@ int main(int argc, char** argv)
 
         //! [task_execute]
         task->execute();
-        std::cout << "Best net: " << task->bestNet().format() << std::endl;
+        std::cout << "Best net:" << std::endl;
+        std::cout << task->bestNet().format() << std::endl;
         std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
         //! [task_execute]
 }

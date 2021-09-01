@@ -31,37 +31,37 @@ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 1]
 
 searching for the best lattice in dimension: 1
 possible choices: 
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 1]
+  3]
 selected lattice: 
-Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
 
 
 searching for the best lattice in dimension: 2
 possible choices: 
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
-  1 1]
+  3]
 selected lattice: 
-Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
@@ -69,23 +69,23 @@ Polynomial Lattice - Modulus = [1 1 1] - Generating vector =
 
 searching for the best lattice in dimension: 3
 possible choices: 
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
-  1 1]
+  3]
 selected lattice: 
-Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1

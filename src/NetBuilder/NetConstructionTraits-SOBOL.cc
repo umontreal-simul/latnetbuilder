@@ -275,7 +275,7 @@ namespace NetBuilder {
         std::string k = std::to_string((int) nCols(sizeParameter));
 
         if (outputStyle == OutputStyle::TERMINAL){
-            res += "Sobol Digital Net - Direction numbers = \n";
+            res += "Sobol Digital Net - Direction numbers =\n";
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
                 res+="  ";
                 for(const auto& dirNum : genVals[coord]->second)
@@ -283,6 +283,7 @@ namespace NetBuilder {
                     res+= std::to_string(dirNum);
                     res+= " ";
                 }
+                res.pop_back();
                 res+="\n";
             }
         }

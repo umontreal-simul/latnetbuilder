@@ -56,8 +56,10 @@ int main(int argc, char** argv)
                 //! [execute_task]
                 std::cout << task->format();
                 task->execute();
-                std::cout << "Best net: " << task->bestNet().format() << std::endl;
+                std::cout << "Best net:" << std::endl;
+                std::cout << task->bestNet().format() << std::endl;
                 std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
+                std::cout << "============================================================" << std::endl;
                 //! [execute_task]
         }
 
@@ -76,8 +78,10 @@ int main(int argc, char** argv)
 
                 std::cout << task->format();
                 task->execute();
-                std::cout << "Best net: " << task->bestNet().format() << std::endl;
+                std::cout << "Best net:" << std::endl;
+                std::cout << task->bestNet().format() << std::endl;
                 std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
+                std::cout << "============================================================" << std::endl;
         }
 
         {
@@ -95,7 +99,8 @@ int main(int argc, char** argv)
 
                 std::cout << task->format();
                 task->execute();
-                std::cout << "Best net: " << task->bestNet().format() << std::endl;
+                std::cout << "Best net:" << std::endl;
+                std::cout << task->bestNet().format() << std::endl;
                 std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
         }
 

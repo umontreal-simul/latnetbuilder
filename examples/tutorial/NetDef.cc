@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 
         //! [Sobol_extend]
         GeneratingValue secondGenValue(1, {1});
-        auto newSobolNet = sobolNet->extendDimension(secondGenValue);
+        auto newSobolNet = sobolNet->appendNewCoordinate(secondGenValue);
         std::cout << "Second generating matrix:" << std::endl << newSobolNet->generatingMatrix(1) << std::endl;
         //! [Sobol_extend]
 
@@ -89,7 +89,7 @@ int main(int argc, char** argv)
         GeneratingValue newGenValue = PolynomialFromInt(512);
         std::cout << "Second generating value: " << newGenValue << std::endl;
 
-        auto newPolynomialNet = polynomialNet->extendDimension(newGenValue);
+        auto newPolynomialNet = polynomialNet->appendNewCoordinate(newGenValue);
         std::cout << "Second generating matrix:" << std::endl << newPolynomialNet->generatingMatrix(1) << std::endl;
         //! [Polynomial_extend]
 
