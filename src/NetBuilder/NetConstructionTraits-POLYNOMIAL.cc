@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@
 
 #include "latbuilder/GenSeq/GeneratingValues-PLR.h"
 #include "latbuilder/SeqCombiner.h"
+#include "latbuilder/Util.h"
 
 #include <NTL/GF2X.h>
 #include <sstream>
 #include <boost/algorithm/string/erase.hpp>
+
+#include "latticetester/ntlwrap.h"
 
 namespace NetBuilder {
 
@@ -53,15 +56,16 @@ namespace NetBuilder {
         }
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::POLYNOMIAL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j, const unsigned int nRows)
     {
         unsigned int m = (unsigned int) (deg(sizeParameter));
-        GeneratingMatrix* genMat = new GeneratingMatrix(m,m);
-        std::vector<unsigned int> expansion(2 * m);
-        expandSeries(genValue, sizeParameter, expansion, 2 * m);
-        for(unsigned int c =0; c<m; c++ )
+        unsigned int finalnRows = (nRows == 0)? m : nRows;
+        GeneratingMatrix* genMat = new GeneratingMatrix(finalnRows, m);
+        std::vector<unsigned int> expansion(finalnRows + m);
+        expandSeries(genValue, sizeParameter, expansion, finalnRows + m);
+        for(unsigned int c = 0; c < m; c++)
         {
-            for(unsigned int row =0; row <m; row++ )
+            for(unsigned int row = 0; row < finalnRows; row++)
             {
                 (*genMat)(row,c) = expansion[c + row];
             }
@@ -94,31 +98,39 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::POLYNOMIAL>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::string res;
         std::ostringstream stream;
 
-        if (outputFormat == OutputFormat::HUMAN){
-            stream << "Polynomial Digital Net - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
+        if (outputStyle == OutputStyle::TERMINAL){
+            stream << "Polynomial Digital Net - Modulus = " << LatBuilder::IndexOfPolynomial(sizeParameter) << " - GeneratingVector =" << std::endl;
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                if (interlacingFactor > 1 && coord % interlacingFactor == 0){
-                    stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;
-                }
-                stream << "  " << *(genVals[coord]) << std::endl;
-            }
-        }
-        else{
-            stream << "Polynomial  // Construction method" << std::endl;
-            stream << sizeParameter << "  // modulus" << std::endl;
-            for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                stream << *(genVals[coord]) << std::endl;
+                stream << "  " << LatBuilder::IndexOfPolynomial(*(genVals[coord])) << std::endl;
             }
         }
 
+        else if (outputStyle == OutputStyle::LATTICE){
+            stream << "# Parameters for a polynomial lattice rule in base 2" << std::endl;
+            stream << genVals.size() / interlacingFactor << "      #  s =  " << genVals.size() / interlacingFactor << " dimensions" << std::endl;
+            if (interlacingFactor > 1){
+                stream << interlacingFactor << "    # Interlacing factor" << std::endl;
+                stream << genVals.size() << "    # Number of components = interlacing factor x dimension" << std::endl;
+            }
+            stream << (int) deg(sizeParameter) << "      # n = 2^";
+            stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
+            
+            stream << LatBuilder::IndexOfPolynomial(sizeParameter) << "   # polynomial modulus" << std::endl;
+            stream << "# Coordinates of generating vector, starting at j=1" << std::endl;
+            std::string res;
+            for (unsigned int coord = 0; coord < genVals.size(); coord++){
+                res += std::to_string(LatBuilder::IndexOfPolynomial(*(genVals[coord]))) + "\n";
+            }
+            res.pop_back();
+            stream << res;
+        }
+
         res += stream.str();
-        boost::algorithm::erase_all(res, "[");
-        boost::algorithm::erase_all(res, "]");
         return res;
     }  
 }

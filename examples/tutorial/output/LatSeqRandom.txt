@@ -2,19 +2,19 @@
  Ordinary Lattice - Modulus = 31 - Generating vector = [1, 14, 17],
  Ordinary Lattice - Modulus = 31 - Generating vector = [1, 21, 22],
  Ordinary Lattice - Modulus = 31 - Generating vector = [1, 23, 27]]
-[Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  1 0 1
-  0 0 1,
- Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  5
+  4,
+ Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  0 1 1 1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  14
+  2,
+ Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  0 1 1
-  1 1 1,
- Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  6
+  7,
+ Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  0 0 0 1
-  0 0 1 1]
+  8
+  12]

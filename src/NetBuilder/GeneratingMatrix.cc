@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,6 +52,26 @@ std::vector<unsigned long> GeneratingMatrix::getColsReverse() const{
         res[j] = s;
     }
     return res;
+    
+}
+
+GeneratingMatrix GeneratingMatrix::fromColsReverse(unsigned int nInputBits, unsigned int nOutputRows, std::vector<unsigned long> columns){
+    GeneratingMatrix result(nInputBits, columns.size());
+    for (unsigned int c=0; c<columns.size(); c++){
+        unsigned long s = columns[c];
+        unsigned long row = nInputBits - 1;
+        while (s > 0){
+            if (s % 2 == 1){
+                if (row < 0){
+                    throw std::runtime_error("The column in integer representation " + std::to_string(columns[c]) + "has more than " + std::to_string(nInputBits) + " bits.");
+                }
+                result(row, c) = 1;
+            }
+            s = s / 2;
+            row -= 1;
+        }
+    }
+    return result.subMatrix(0, 0, nOutputRows, columns.size());
     
 }
 
@@ -149,20 +169,28 @@ std::ostream& operator<<(std::ostream& os, const GeneratingMatrix& mat)
     return os; 
 }
 
+std::string GeneratingMatrix::formatToColumnsReverse(unsigned int nBits) const
+{
+    const std::vector<unsigned long> columns =  getColsReverse();
+    std::string res;
+    for(unsigned int i = 0; i < (unsigned int) nCols(); ++i)
+    {
+        res += std::to_string(columns[i] << (nBits - nRows())) + " ";
+    }
+    res.pop_back();
+    return res;
+}
+
 GeneratingMatrix GeneratingMatrix::operator*(const GeneratingMatrix& m) const
 {
+    assert ((*this).nCols() == m.nRows());
     GeneratingMatrix res(nRows(),m.nCols());
-    for(unsigned int i = 0; i < res.nRows(); ++ i)
-    {
-        for(unsigned int j = 0; j < m.nCols(); ++j)
-        {
-            unsigned int val = 0;
-            for(unsigned int k = 0; k < m_nRows; ++k)
-            {
-                val += (*this)(i,k) * m(k,j);
-                val %= 2;
+
+    for (unsigned int i=0; i<(*this).nRows(); i++){
+        for (unsigned int j=0; j<(*this).nCols(); j++){
+            if ((*this)(i, j)){
+                res[i] ^= m[j];
             }
-            res(i,j) = val; 
         }
     }
     return res;

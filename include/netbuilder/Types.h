@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ typedef size_t Dimension;
 typedef LatBuilder::EmbeddingType EmbeddingType;
 
 /// Net construction methods
-enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT};
+enum class NetConstruction {SOBOL, POLYNOMIAL, EXPLICIT, LMS};
 
 // Level combiner for multilevel nets
 // typedef std::function<Real (const RealVector&)> Combiner;
@@ -70,8 +70,9 @@ typedef LatBuilder::Polynomial Polynomial;
 /// polynomial with arbitrary integers
 typedef NTL::ZZX IntPolynomial;
 
-/// Output format for nets
-enum class OutputFormat {HUMAN, MACHINE};
+/// Outputs Style for nets
+enum class OutputStyle {TERMINAL, SOBOL, SOBOLJK, LATTICE, NET, RANDOMIZED_NET};
+
 
 //@}
 }

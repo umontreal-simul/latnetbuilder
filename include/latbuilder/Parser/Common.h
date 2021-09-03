@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 
 #include "latbuilder/TypeInfo.h"
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 
 #include <memory>
 #include <string>
@@ -126,53 +127,18 @@ struct LatticeParametersParseHelper ;
 
 template <>
 struct LatticeParametersParseHelper<LatticeType::ORDINARY> {
-   
-   static std::string ToParsableModulus (const std::string& str)
-   {return str ;}
-
-   
-   static std::string ToParsableGenValue (const std::string& str)
-   {return str ;}
-
    static typename LatticeTraits<LatticeType::ORDINARY>::GeneratingVector ParseGeneratingVector(const std::string& str)
    {return splitDash<uInteger>(str);}
 };
 
 template <>
-struct LatticeParametersParseHelper<LatticeType::POLYNOMIAL> {
-   
-   static std::string ToParsableModulus (const std::string& str){
-      uInteger size = str.size();
-      std::string str_NTLInput(2*size -1,' ');
-      for(uInteger i = 0; i<size ; i++){
-         if (str[i] != '0' && str[i] != '1')
-            throw LatBuilder::Parser::ParserError("cannot interpret \"" + str + "\" as a polynomial"); 
-         str_NTLInput[2*i] = str[i];
-      }
-      str_NTLInput = "[" + str_NTLInput + "]" ; 
-      return str_NTLInput;
-   }
-
-   
-   static std::string ToParsableGenValue (const std::string& str){
-      uInteger size = str.size();
-      std::string str_NTLInput(2*size -1,' ');
-      for(uInteger i = 0; i<size ; i++){
-          if (str[i] != '0' && str[i] != '1')
-            throw LatBuilder::Parser::ParserError("cannot interpret \"" + str + "\" as a polynomial"); 
-         str_NTLInput[2*i] = str[i];
-      }
-      str_NTLInput = "[" + str_NTLInput + "]" ; 
-      return str_NTLInput;
-   }
-
+struct LatticeParametersParseHelper<LatticeType::POLYNOMIAL> {   
    static typename LatticeTraits<LatBuilder::LatticeType::POLYNOMIAL>::GeneratingVector ParseGeneratingVector(const std::string& str)
    {
-      auto genVec_str = splitDash<std::string>(str);
+      std::vector<std::string> genVec_str = splitDash<std::string>(str);
       typename LatticeTraits<LatticeType::POLYNOMIAL>::GeneratingVector genVec ;
-      for(const auto& gen_str: genVec_str) {
-         std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableGenValue(gen_str);
-         genVec.push_back((boost::lexical_cast<typename LatticeTraits<LatticeType::POLYNOMIAL>::GenValue>(str_NTLInput)));
+      for(unsigned int i=0; i<genVec_str.size(); ++i) {
+         genVec.push_back(PolynomialFromInt(std::stoi(genVec_str[i])));
       }
       return genVec;
    }

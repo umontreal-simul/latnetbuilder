@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -888,7 +888,7 @@ with:
 The same applies for polynomial lattices. For example, we can look for the best Korobov lattice with respect to \f$\mathcal P_{\alpha}\f$:
 we define the weighted figure of merit as follows: 
 \code
-   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaPLR> ProjDep;
+   typedef ProjDepMerit::CoordUniform<Kernel::PAlphaTilde> ProjDep;
    WeightedFigureOfMerit<ProjDep, Functor::Sum> figure(2, std::move(weights), ProjDep(2));
 \endcode
 

@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include "latbuilder/Parser/Common.h"
 #include "latbuilder/Kernel/RAlpha.h"
 #include "latbuilder/Kernel/PAlpha.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Kernel/RPLR.h"
 #include "latbuilder/Kernel/IAAlpha.h"
 #include "latbuilder/Kernel/IB.h"
@@ -94,7 +94,7 @@ template <typename FUNC, typename... ARGS>
       try {
              if (str[0] == 'P') {
                 auto alpha = boost::lexical_cast<unsigned int>(str.substr(1));
-                func(LatBuilder::Kernel::PAlphaPLR(alpha), std::move(weights), std::forward<ARGS>(args)...);
+                func(LatBuilder::Kernel::PAlphaTilde(alpha), std::move(weights), std::forward<ARGS>(args)...);
                 return;
              }
              else if (str[0] == 'R') {

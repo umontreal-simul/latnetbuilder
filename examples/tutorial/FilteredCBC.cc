@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 #include "latbuilder/CoordUniformFigureOfMerit.h"
 #include "latticetester/ProductWeights.h"
 #include "latbuilder/Kernel/PAlpha.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Accumulator.h"
 #include "latbuilder/Functor/binary.h"
 #include "latbuilder/Storage.h"
@@ -90,7 +90,7 @@ void test(const Storage<LA, L, C>& storage, Dimension dimension)
    auto weights = unique<LatticeTester::ProductWeights>();
    weights->setDefaultWeight(0.7);
 
-   CoordUniformFigureOfMerit<Kernel::PAlphaPLR> figure(std::move(weights), 2);
+   CoordUniformFigureOfMerit<Kernel::PAlphaTilde> figure(std::move(weights), 2);
    std::cout << "figure of merit: " << figure << std::endl;
    //! [pfigure]
    */

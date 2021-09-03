@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,6 +59,10 @@ struct NetConstructionParser<EmbeddingType::UNILEVEL>
       {
         return NetBuilder::NetConstruction::EXPLICIT;
       }
+      else if (str == "lms")
+      {
+        return NetBuilder::NetConstruction::LMS;
+      }
       else
       {
         throw BadNetConstruction(str);
@@ -76,9 +80,9 @@ struct NetConstructionParser<EmbeddingType::MULTILEVEL>
 
       result_type tmp = NetConstructionParser<EmbeddingType::UNILEVEL>::parse(str);
 
-      if (tmp != NetConstruction::SOBOL && tmp != NetConstruction::EXPLICIT)
+      if (tmp != NetConstruction::SOBOL && tmp != NetConstruction::EXPLICIT && tmp != NetConstruction::LMS)
       {
-        throw BadNetConstruction("Multilevel point sets only work with Sobol and explicit constructions.");
+        throw BadNetConstruction("Multilevel point sets only work with Sobol, LMS and explicit constructions.");
       }
       return tmp;
    }

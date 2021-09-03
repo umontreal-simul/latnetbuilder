@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,10 +36,11 @@ namespace NetBuilder {
 
     unsigned int NetConstructionTraits<NetConstruction::EXPLICIT>::nCols(const SizeParameter& sizeParameter) {return (unsigned int) sizeParameter.second; }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::EXPLICIT>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j, const unsigned int nRows)
     {
+        unsigned int finalnRows = (nRows == 0)? NetConstructionTraits<NetConstruction::EXPLICIT>::nRows(sizeParameter) : nRows;
         GeneratingMatrix* genMat = new GeneratingMatrix(genValue);
-        genMat->resize(nRows(sizeParameter),nCols(sizeParameter));
+        genMat->resize(finalnRows, nCols(sizeParameter));
         return genMat;
     }
 
@@ -55,29 +56,18 @@ namespace NetBuilder {
         return std::vector<std::vector<GenValue>>{};
     }
 
-    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::EXPLICIT>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::ostringstream stream;
         
-        if (outputFormat == OutputFormat::HUMAN){
+        if (outputStyle == OutputStyle::TERMINAL){
             stream << "Explicit Digital Net - Matrix size = " << sizeParameter.first << "x" << sizeParameter.second << std::endl;
-            for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                if (interlacingFactor == 1){
-                    stream << "Coordinate " << coord+1 << ":" << std::endl;
-                }
-                else{
-                    if (coord % interlacingFactor == 0){
-                        stream << "Coordinate " << (coord / interlacingFactor) + 1  << ":" << std::endl;
-                    }
-                    stream << "    Component " << (coord % interlacingFactor) + 1  << ":" << std::endl;
-                }
-                stream << *(genVals[coord]) << std::endl;
+            for(Dimension dim = 0; dim < genMatrices.size(); ++dim)
+            {
+                stream << "Coordinate " << dim << std::endl;
+                stream << *genMatrices[dim] << std::endl;
             }
         }
-        else{
-            stream << "Explicit  // Construction method" << std::endl;
-        }
-
         return stream.str();
     }  
 }

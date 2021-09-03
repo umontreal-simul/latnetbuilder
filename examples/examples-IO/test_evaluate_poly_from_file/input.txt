@@ -1,0 +1,24 @@
+Input Command Line: --set-type net --construction polynomial --size-parameter 2^10 --dimension 10 --exploration-method evaluation:file:test_l_polynomial_lat/output.txt --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_evaluate_poly_from_file --output-style lattice
+
+Task: NetBuilder Evaluation
+Number of components: 10
+Evaluation of the net:
+10  // Number of columns
+10  // Number of rows
+1024  // Number of points
+10  // Dimension of points
+Polynomial Digital Net - Modulus = 1033 - GeneratingVector =
+  1
+  800
+  839
+  753
+  622
+  150
+  827
+  676
+  108
+  970
+Figure of merit: Coordinate Uniform with Kernel: P2_PLR
+Embedding type: Unilevel
+Weights: ProductWeights([], default=0.1)
+Norm type: 2

@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 #ifndef LATBUILDER__LAT_DEF_H
 #define LATBUILDER__LAT_DEF_H
 
+#include "latbuilder/Parser/Common.h"
 #include "latbuilder/Types.h"
+#include "latbuilder/Util.h"
 #include "latbuilder/SizeParam.h"
 #include "latbuilder/TextStream.h"
 
@@ -125,22 +127,13 @@ std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::ORDINARY,E
 template <EmbeddingType ET>
 std::ostream& operator<< (std::ostream& os, const LatDef<LatticeType::POLYNOMIAL,ET>& lat)
 {
-      using TextStream::operator<<;
-      std::ostringstream stream;
-      std::string res;
-
-      os << "Polynomial Lattice - Modulus = " << lat.sizeParam() << " - Generating vector = " << std::endl;
-      auto vec = lat.gen();
-      for (unsigned int i=0; i<vec.size(); i++){
-      stream << "  " << vec[i] << std::endl;
-      }
-
-      res += stream.str();
-      boost::algorithm::erase_all(res, "[");
-      boost::algorithm::erase_all(res, "]");
-      os << res;
-
-      return os;
+   using TextStream::operator<<;
+   os << "Polynomial Lattice - Modulus = " << lat.sizeParam() << " - Generating vector = " << std::endl;
+   auto vec = lat.gen();
+   for (unsigned int i=0; i<vec.size(); i++){
+      os << "  " << IndexOfPolynomial(vec[i]) << std::endl;
+   }
+   return os;
 }
 
 //====================================================================================

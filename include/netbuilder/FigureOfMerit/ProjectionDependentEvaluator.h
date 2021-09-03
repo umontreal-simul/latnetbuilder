@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ class ProjectionDependentEvaluator : public CBCFigureOfMeritEvaluator
          *  @param initialValue Initial value of the merit.
          *  @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
+        virtual MeritValue operator() (const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
         {
             unsigned int nLevels = PROJDEP::numLevels(net); // determine the number of levels
 

@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,9 +63,19 @@ void
 SizeParam<LR,EmbeddingType::UNILEVEL>::normalize(RealVector& merit) const
 { merit /= this->numPoints(); }
 
-template <LatticeType LR>
+template <>
 std::ostream&
-SizeParam<LR,EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+{ return os << this->modulus(); }
+
+template <>
+std::ostream&
+SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+{ return os << IndexOfPolynomial(this->modulus()); }
+
+template <>
+std::ostream&
+SizeParam<LatticeType::DIGITAL, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
 { return os << this->modulus(); }
 
 //==================================================================================================

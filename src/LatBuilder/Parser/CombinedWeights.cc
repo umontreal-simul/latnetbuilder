@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
 
 #include <fstream>
 #include <iostream>
+
+#include <boost/algorithm/string/split.hpp>
 
 using namespace std;
 
@@ -142,36 +144,22 @@ namespace {
    }
 }
 
-bool
-CombinedWeights::parseFile(
-      const std::string& arg,
-      LatBuilder::CombinedWeights& weights,
-      Real powerScale)
-{
-   Real oldScale = inputPowerScale;
-   // set parameter from anonymous namespace
-   inputPowerScale = powerScale;
-   auto ka = splitPair<>(arg, ':');
-   if (ka.first != "file") return false;
-   if (ka.second == "-")
-      std::cin >> weights;
-   else {
-      std::ifstream is(ka.second.c_str());
-      if (not is.is_open()) throw ParserError("cannot open weights file");
-      is >> weights;
-      is.close();
-   }
-   inputPowerScale = oldScale;
-   return true;
-}
-
 std::unique_ptr<LatBuilder::CombinedWeights>
 CombinedWeights::parse(const std::vector<std::string>& args, Real powerScale)
 {
+   std::vector<std::string> weightsStrings;
    auto w = new LatBuilder::CombinedWeights;
-   for (const auto& s : args) {
-      if (parseFile(s, *w, powerScale))
-         continue;
+   if (args.size() == 1 && args[0].compare(0, 4, "file") == 0){
+      std::ifstream t(args[0].substr(5));
+      std::stringstream buffer;
+      buffer << t.rdbuf();
+      std::string fileContent = buffer.str();
+      boost::split(weightsStrings, fileContent, boost::is_any_of(" "));
+   }
+   else{
+      weightsStrings = args;
+   }
+   for (const auto& s : weightsStrings) {
       w->add(Parser::Weights::parse(s, powerScale));
    }
    return std::unique_ptr<LatBuilder::CombinedWeights>(w);

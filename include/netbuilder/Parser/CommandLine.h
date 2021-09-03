@@ -1,6 +1,6 @@
 // This file is part of Nettice Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,9 +21,11 @@
 #include "netbuilder/NetConstructionTraits.h"
 #include "netbuilder/Task/Task.h"
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 #include "latbuilder/SizeParam.h"
+
+using namespace std::placeholders;
 
 namespace NetBuilder { namespace Parser {
 
@@ -58,7 +60,8 @@ struct CommandLine {
 
    std::unique_ptr<Task::Task> parse();
 };
-
+extern template struct CommandLine<NetConstruction::LMS, EmbeddingType::UNILEVEL>;
+extern template struct CommandLine<NetConstruction::LMS, EmbeddingType::MULTILEVEL>;
 extern template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
 extern template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
 extern template struct CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;

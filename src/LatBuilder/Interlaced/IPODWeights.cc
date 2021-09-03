@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
 // limitations under the License.
 
 #include "latbuilder/Interlaced/IPODWeights.h"
-
-#include "netbuilder/Util.h"
 
 namespace LatBuilder { namespace Interlaced
 {

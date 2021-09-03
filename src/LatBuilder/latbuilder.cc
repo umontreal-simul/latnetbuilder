@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,9 +23,12 @@
 #include "netbuilder/DigitalNet.h"
 #include "netbuilder/Types.h"
 
+#include "netbuilder/Parser/OutputStyleParser.h"
+
 #include <fstream>
 #include <chrono>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 namespace LatBuilder{
 using TextStream::operator<<;
@@ -159,6 +162,8 @@ makeOptionsDescription()
    "ranges between 0 (default) and 3\n")
     ("output-folder,o", po::value<std::string>(),
     "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
+    ("output-style,O", po::value<std::string>()->default_value(""),
+    "(optional) TBD")
    ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -212,6 +217,24 @@ std::string helper(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVE
   return "0  // Base\n0  // Maximum level\n";
 }
 
+
+template <EmbeddingType ET>
+std::string helper2(const SizeParam<LatticeType::ORDINARY, ET>& param);
+
+template<>
+std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>& param)
+{
+  return ", embedded from " + std::to_string(param.base()) + " to " + std::to_string(param.maxLevel()) + "\n";
+}
+
+template<>
+std::string helper2(const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>& param)
+{
+  return "\n";
+}
+
+
+
 template <EmbeddingType ET>
 void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
 {
@@ -227,7 +250,8 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
       std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
-      outFile << *search;
+      outFile << "Input Command Line: " << cmd.originalCommandLine << std::endl << std::endl;
+      outFile << *search; 
       outFile.close();
     }
 
@@ -264,24 +288,25 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
       if (outputFolder != ""){
         std::ofstream outFile;
-          std::string fileName = outputFolder + "/output.txt";
-          outFile.open(fileName);
-          outFile << lat << "Merit: " << search->bestMeritValue() << std::endl;
-          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
-          outFile.close();
-
-
-          fileName = outputFolder + "/outputMachine.txt";
-          outFile.open(fileName);
-          outFile << "Ordinary  // Construction method\n" << lat.sizeParam().numPoints() << "  // Number of points\n" << lat.dimension() << "  // Dimension of points\n";
-          outFile << helper<ET>(lat.sizeParam());
-          auto vec = lat.gen();
-          for (unsigned int coord = 0; coord < vec.size(); coord++){
-              outFile << vec[coord] << std::endl;
-          }          
-          outFile << search->bestMeritValue() << "  // Merit" << std::endl;
-          outFile << dt.count() << "  // Time" << std::endl;
-          outFile.close();
+        std::string fileName = outputFolder + "/output.txt";
+        outFile.open(fileName);
+        outFile << "# Input Command Line: " << cmd.originalCommandLine << std::endl;
+        outFile << "# Merit: " << search->bestMeritValue() << std::endl;
+        outFile << "# Parameters for a lattice rule";
+        outFile << helper2<ET>(lat.sizeParam());
+        outFile << lat.dimension() <<"    # s = "<< lat.dimension() << " dimensions\n";
+        outFile << lat.sizeParam().numPoints() <<"    # modulus = n = "<< lat.sizeParam().numPoints() << " points\n";
+        auto vec = lat.gen();
+        outFile << "# Coordinates of generating vector, starting at j=1" << std::endl;
+        for (unsigned int coord = 0; coord < vec.size(); coord++){
+          if (coord < vec.size() - 1){
+            outFile << vec[coord] << std::endl;
+          }
+          else{
+            outFile << vec[coord];
+          }
+        }
+        outFile.close();
       }
       
       if (merit_digits_displayed)
@@ -293,7 +318,7 @@ void executeOrdinary(const Parser::CommandLine<LatticeType::ORDINARY, ET>& cmd, 
 
 
 template <EmbeddingType ET>
-void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder)
+void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& cmd, int verbose, unsigned int repeat, std::string outputFolder, NetBuilder::OutputStyle outputStyle)
 {
    const LatticeType LR = LatticeType::POLYNOMIAL ;
    using namespace std::chrono;
@@ -313,6 +338,7 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
       std::ofstream outFile;
       std::string fileName = outputFolder + "/input.txt";
       outFile.open(fileName);
+      outFile << "Input Command Line: " << cmd.originalCommandLine << std::endl << std::endl;
       outFile << *search;
       outFile.close();
     }
@@ -350,21 +376,17 @@ void executePolynomial(const Parser::CommandLine<LatticeType::POLYNOMIAL, ET>& c
            std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl << std::endl;
 
       if (outputFolder != ""){
-          NetBuilder::DigitalNetConstruction<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
+          NetBuilder::DigitalNet<NetBuilder::NetConstruction::POLYNOMIAL> net((unsigned int) lat.gen().size(), lat.sizeParam().modulus(),lat.gen());
           
-          std::ofstream outFile;
-          std::string fileName = outputFolder + "/output.txt";
-          outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::HUMAN, interlacingFactor) << "Merit: " << search->bestMeritValue() << std::endl;
-          outFile << "ELAPSED CPU TIME: " << dt.count() << " seconds";
-          outFile.close();
-
-          fileName = outputFolder + "/outputMachine.txt";
-          outFile.open(fileName);
-          outFile << net.format(NetBuilder::OutputFormat::MACHINE, interlacingFactor) << search->bestMeritValue() << "  // Merit" << std::endl;
-          outFile << dt.count() << "  // Time" << std::endl;
-          outFile.close();
-
+          if (outputStyle != NetBuilder::OutputStyle::TERMINAL){
+            std::ofstream outFile;
+            std::string fileName = outputFolder + "/output.txt";
+            outFile.open(fileName);
+            outFile << "# Input Command Line: " << cmd.originalCommandLine << std::endl;
+            outFile << "# Merit: " << search->bestMeritValue() << std::endl;
+            outFile << net.format(outputStyle, interlacingFactor) ;
+            outFile.close();
+          }
       }
 
         
@@ -403,20 +425,28 @@ int main(int argc, const char *argv[])
         // global variable
         merit_digits_displayed = opt["merit-digits-displayed"].as<unsigned int>();
 
+        std::string outputstyle = opt["output-style"].as<std::string>();
+
        LatBuilder::LatticeType lattice = Parser::LatticeParser::parse(opt["construction"].as<std::string>());
+
+       std::vector<std::string> all_args;
+       if (argc > 1) {
+          all_args.assign(argv + 1, argv + argc);
+        }
 
        if(lattice == LatticeType::ORDINARY){
 
             Parser::CommandLine<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL> cmd;
 
             
-
+            cmd.originalCommandLine = boost::algorithm::join(all_args, " ");
             cmd.construction  = opt["exploration-method"].as<std::string>();
             cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
             cmd.weights       = opt["weights"].as<std::vector<std::string>>();
+
             if (opt.count("combiner") == 1){
               cmd.combiner      = opt["combiner"].as<std::string>();
             }
@@ -453,7 +483,6 @@ int main(int argc, const char *argv[])
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
             if (latType == EmbeddingType::UNILEVEL){
-
                executeOrdinary<EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder);
                
              }
@@ -468,7 +497,7 @@ int main(int argc, const char *argv[])
             Parser::CommandLine<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL> cmd;
 
             
-
+            cmd.originalCommandLine = boost::algorithm::join(all_args, " ");
             cmd.construction  = opt["exploration-method"].as<std::string>();
             cmd.size          = opt["size-parameter"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
@@ -502,12 +531,15 @@ int main(int argc, const char *argv[])
 
             EmbeddingType latType = Parser::EmbeddingType::parse(opt["multilevel"].as<std::string>());
 
+            NetBuilder::OutputStyle outputStyle = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::POLYNOMIAL>::parse(outputstyle);
+
+
             if (latType == EmbeddingType::UNILEVEL){
-               executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder);
+              executePolynomial< EmbeddingType::UNILEVEL> (cmd, verbose, repeat, outputFolder, outputStyle);
                
              }
             else{
-               executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder);
+              executePolynomial<EmbeddingType::MULTILEVEL> (cmd, verbose, repeat, outputFolder, outputStyle);
                
              }
       }

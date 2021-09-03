@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 #include "netbuilder/Types.h"
 #include "netbuilder/DigitalNet.h"
-#include "netbuilder/Accumulator.h"
+#include "netbuilder/Helpers/Accumulator.h"
 
 #include "latticetester/Weights.h"
 #include "latticetester/Coordinates.h"
@@ -48,7 +48,7 @@ class FigureOfMeritEvaluator
     public:
 
         typedef boost::signals2::signal<bool (const MeritValue&), LatBuilder::Functor::AllOf> OnProgress;
-        typedef boost::signals2::signal<void (const DigitalNet&)> OnAbort;
+        typedef boost::signals2::signal<void (const AbstractDigitalNet&)> OnAbort;
 
         /**
          * Default virtual destructor.
@@ -91,7 +91,7 @@ class FigureOfMeritEvaluator
          * @param net Net to evaluate.
          * @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) = 0;
+        virtual MeritValue operator() (const AbstractDigitalNet& net, int verbose = 0) = 0;
 
         /**     
          * Resets the evaluator and prepare it to evaluate a new net.
@@ -150,7 +150,7 @@ class CBCFigureOfMeritEvaluator:
         /** 
          * @{inheritDoc}
          */ 
-        virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) override
+        virtual MeritValue operator() (const AbstractDigitalNet& net, int verbose = 0) override
         {
             MeritValue merit = 0; // start from a merit equal to zero
             for(Dimension coord = 0; coord < net.dimension(); ++coord) // for each coordinate
@@ -185,7 +185,7 @@ class CBCFigureOfMeritEvaluator:
          *  @param initialValue Initial value of the merit.
          *  @param verbose Verbosity level.
          */ 
-        virtual MeritValue operator()(const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) = 0;
+        virtual MeritValue operator()(const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) = 0;
 
         /**
          * Tells the evaluator that no more net will be evaluate for the current dimension,

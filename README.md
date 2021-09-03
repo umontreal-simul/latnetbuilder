@@ -8,6 +8,7 @@ _A general software tool for constructing highly uniform point sets_
 2) [How to use the software](#how-to-use-the-software)
 3) [How to get the software](#how-to-get-the-software)
 4) [For developers](#for-developers)
+5) [Further information](#further-information)
 
 ## A software for quasi-Monte Carlo
 
@@ -564,3 +565,29 @@ Therefore, to re-build the online GUI, you have to:
 - first upload the new version of the package to Anaconda Cloud
 - then , after a new push on the master branch, the first connection will trigger
 a rebuild of the online GUI.
+
+
+## Further information
+
+### Publications
+
+P. L'Ecuyer, P. Marion, M. Godin, and F. Puchhammer, _A Tool for Custom Construction of QMC and RQMC Point Sets_, Monte Carlo and Quasi-Monte Carlo Methods 2020, accepted for publication. [arXiv link.](https://arxiv.org/abs/2012.10263)
+
+P. Marion, M. Godin, and P. L'Ecuyer, _An algorithm to compute the t-value of a digital net and of its projections_, Journal of Computational and Applied Mathematics, volume 371, paper 112669, June 2020. [arXiv link.](http://arxiv.org/abs/1910.02277)
+
+P. L'Ecuyer and D. Munger, _Algorithm 958: LatticeBuilder: A General Software Tool for Constructing Rank-1 Lattice Rules_, ACM Transactions on Mathematical Software, 42, 2 (2016), Article 15. [Online access.](http://dl.acm.org/citation.cfm?id=2754929)
+
+See also the `reports` folder for internship reports on LatNet Builder.
+
+### Contributors
+
+This project was supervised by Pierre L'Ecuyer in the Département d’Informatique et de Recherche
+Opérationnelle at the Université de Montreal.
+
+List of contributors (by alphabetical order):
+
++ Yocheved Darmon
++ Maxime Godin
++ Ayman Jemel
++ Pierre Marion
++ David Munger

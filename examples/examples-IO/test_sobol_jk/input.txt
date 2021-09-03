@@ -1,0 +1,10 @@
+Input Command Line: -t net -c sobol -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_sobol_jk -O soboljk
+
+Task: NetBuilder Search - Net Construction : Sobol
+Number of components: 10
+Number of rows: 16 - Number of columns: 16
+Exploration method: CBC - Random Explorer - 70 samples
+Figure of merit: t-value based figure of merit
+Embedding type: Unilevel
+Weights: OrderDependentWeights([0, 0, 1, 1], default=0)
+Norm type: inf

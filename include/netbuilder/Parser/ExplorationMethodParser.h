@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,10 @@
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
+#include <fstream>
 
 #include "netbuilder/Types.h"
 #include "netbuilder/Parser/NetDescriptionParser.h"
@@ -74,12 +77,37 @@ struct ExplorationMethodParser
         unsigned int r = 0;
 
         if (name == "evaluation"){
-            if (explorationDescriptionStrings.size() < 2)
+            std::string netDescritionString;
+            if (explorationDescriptionStrings.size() < 2 || explorationDescriptionStrings.size() > 3)
             {
-                throw BadExplorationMethod("net description must be specified; see --help");
+                throw BadExplorationMethod("net description is not correctly specified; see --help");
             }
-            auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, explorationDescriptionStrings[1]);
-            auto net = std::make_unique<DigitalNetConstruction<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));
+            else if (explorationDescriptionStrings.size() == 2){
+                netDescritionString = explorationDescriptionStrings[1];
+            }
+            else if (explorationDescriptionStrings.size() == 3){
+                std::ifstream t(explorationDescriptionStrings[2]);
+                std::stringstream buffer;
+                buffer << t.rdbuf();
+                netDescritionString = buffer.str();
+                std::vector<std::string> fileLines;
+                boost::split(fileLines, netDescritionString, boost::is_any_of("\n"));
+                unsigned int firstLineCoordinate;
+                for (unsigned int i=0; i<fileLines.size(); i++){
+                    if (fileLines[i][0] == '#'){
+                        firstLineCoordinate = i+1;
+                    }
+                }
+                std::vector<std::string> filteredFileLines;
+                for (unsigned int i=firstLineCoordinate; i<fileLines.size(); i++){
+                    filteredFileLines.push_back(fileLines[i]);
+                }
+                netDescritionString = boost::algorithm::join(filteredFileLines, "-");
+                boost::replace_all(netDescritionString, " ", ",");
+            }
+
+            auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, netDescritionString);
+            auto net = std::make_unique<DigitalNet<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));
             return std::make_unique<Task::Eval>(std::move(net), std::move(commandLine.m_figure), commandLine.m_verbose);
         }
         else if (name == "exhaustive"){

@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latbuilder/Norm/PAlphaPLR.h"
+#include "latbuilder/Norm/PAlphaTilde.h"
 #include "latbuilder/WeightsDispatcher.h"
 #include "latbuilder/Util.h"
 
@@ -27,7 +27,7 @@
 
 namespace LatBuilder { namespace Norm {
 
-namespace SumHelperPAlphaPLR{
+namespace SumHelperPAlphaTilde{
 
    template <typename WEIGHTS>
    struct SumHelper {
@@ -220,13 +220,13 @@ namespace SumHelperPAlphaPLR{
 
 }
 
-PAlphaPLR::PAlphaPLR(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
-   NormAlphaBase<PAlphaPLR>(alpha, normType),
+PAlphaTilde::PAlphaTilde(unsigned int alpha, const LatticeTester::Weights& weights, Real normType):
+   NormAlphaBase<PAlphaTilde>(alpha, normType),
    m_weights(weights)
 {}
 
 template <LatticeType LR, EmbeddingType L>
-Real PAlphaPLR::value(
+Real PAlphaTilde::value(
       Real lambda,
       const SizeParam<LR, L>& sizeParam,
       Dimension dimension,
@@ -234,7 +234,7 @@ Real PAlphaPLR::value(
       ) const
 {
    norm = 2.0 / (norm * sizeParam.numPoints());
-   Real val = WeightsDispatcher::dispatch<SumHelperPAlphaPLR::SumHelper>(
+   Real val = WeightsDispatcher::dispatch<SumHelperPAlphaTilde::SumHelper>(
          m_weights,
          this->normType(),
          lambda,
@@ -245,10 +245,10 @@ Real PAlphaPLR::value(
    return std::pow(norm * val, 1.0 / lambda);
 }
 
-template Real PAlphaPLR::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
-template Real PAlphaPLR::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
+template Real PAlphaTilde::value<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real PAlphaTilde::value<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::ORDINARY, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
-template Real PAlphaPLR::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
-template Real PAlphaPLR::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
+template Real PAlphaTilde::value<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>&, Dimension, Real) const;
+template Real PAlphaTilde::value<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>(Real, const SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::MULTILEVEL>&, Dimension, Real) const;
 
 }}

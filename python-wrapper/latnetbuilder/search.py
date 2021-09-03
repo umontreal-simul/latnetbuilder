@@ -52,10 +52,7 @@ class Search():
 
         # default value for modulus
         if self.modulus == '""':
-            if self.construction == 'polynomial' and self.multilevel == True:
-                modulus = '"01^10"'
-            else:
-                modulus = '"2^10"'
+            modulus = '"2^10"'
         else:
             modulus = self.modulus
 
@@ -187,7 +184,7 @@ class Search():
                 abort.disabled = True
 
             if process.poll() == 0:     # the C++ process has finished normally
-                with open(os.path.join(self._output_folder, 'outputMachine.txt')) as f:
+                with open(os.path.join(self._output_folder, 'output.txt')) as f:
                     file_output = f.read()
                 result_obj = parse_output(file_output)
 

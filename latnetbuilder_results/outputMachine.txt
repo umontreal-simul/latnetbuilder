@@ -1,0 +1,4 @@
+# Parameters m_{j,c} for Sobol points
+# 2 dimensions
+# m_{j,c}
+1 # This is for the second coordinate

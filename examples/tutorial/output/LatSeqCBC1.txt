@@ -2,15 +2,15 @@
  Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 3],
  Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 5],
  Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 7]]
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 0 1
+  5
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 0 1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  5
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 0 1
-  1 1]
+  5
+  3]

@@ -15,7 +15,7 @@ storage name: multilevel storage, PerLevelOrder : inverse-cyclic / symmetric
   virtual size:   16
   actual size:    9
 storage name: flat storage / none
-  size parameter: [1 1 1]
+  size parameter: 7
   virtual size:   4
   actual size:    4
 storage name: multilevel storage, PerLevelOrder : basic / none

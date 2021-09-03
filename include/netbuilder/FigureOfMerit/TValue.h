@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #define NET_BUILDER__FIGURE_OF_MERIT__TVALUE_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 #include "latbuilder/Storage.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
@@ -97,7 +97,7 @@ class TValue : public FigureOfMerit
                  * @param net Net to evaluate.
                  * @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator() (const DigitalNet& net, int verbose = 0) override
+                virtual MeritValue operator() (const AbstractDigitalNet& net, int verbose = 0) override
                 {
                     Dimension s = net.dimension();
                     unsigned int k = net.numColumns();
@@ -249,7 +249,7 @@ std::string TValue<EmbeddingType::MULTILEVEL>::format() const
  * Templace specialization of <code>operator()</code> of TValueEvaluator in the multilevel case.
  */ 
 template<>
-MeritValue TValue<EmbeddingType::MULTILEVEL>::TValueEvaluator::operator()(const DigitalNet& net, int verbose)
+MeritValue TValue<EmbeddingType::MULTILEVEL>::TValueEvaluator::operator()(const AbstractDigitalNet& net, int verbose)
 {
     Dimension s = net.dimension();
     unsigned int k = net.numColumns();

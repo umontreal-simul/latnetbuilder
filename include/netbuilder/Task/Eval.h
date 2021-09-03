@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class Eval : public Task
 {
     public:
 
-        Eval(std::unique_ptr<DigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure, int verbose = 0):
+        Eval(std::unique_ptr<AbstractDigitalNet> net, std::unique_ptr<FigureOfMerit::FigureOfMerit> figure, int verbose = 0):
             m_net(std::move(net)),
             m_merit(0),
             m_figure(std::move(figure)),
@@ -57,14 +57,14 @@ class Eval : public Task
         /**
         * Returns the best net found by the search task.
         */
-        const DigitalNet& net() const
+        const AbstractDigitalNet& net() const
         { return *m_net; }
 
         /**
         * Returns the best net found by the search task.
         */
-        virtual std::string outputNet(OutputFormat outputFormat, unsigned int interlacingFactor) const 
-        { return net().format(outputFormat, interlacingFactor); }
+        virtual std::string outputNet(OutputStyle outputStyle, unsigned int interlacingFactor) const 
+        { return net().format(outputStyle, interlacingFactor); }
 
         /**
          *  Returns information about the task
@@ -76,7 +76,7 @@ class Eval : public Task
             stream << "Task: NetBuilder Evaluation" << std::endl;
             stream << "Number of components: " << this->dimension() << std::endl;
             stream << "Evaluation of the net:" << std::endl;
-            stream << m_net->format(OutputFormat::HUMAN, 1);
+            stream << m_net->format(OutputStyle::TERMINAL, 1);
             stream << "Figure of merit: " << m_figure->format() << std::endl;
             res += stream.str();
             stream.str(std::string());
@@ -116,7 +116,7 @@ class Eval : public Task
             m_merit = 0;
         }
 
-        virtual void reset(std::unique_ptr<DigitalNet> net)
+        virtual void reset(std::unique_ptr<AbstractDigitalNet> net)
         {
             m_net = std::move(net);
             m_merit = 0;
@@ -124,7 +124,7 @@ class Eval : public Task
 
     private:
 
-        std::unique_ptr<DigitalNet> m_net;
+        std::unique_ptr<AbstractDigitalNet> m_net;
         Real m_merit;
         std::unique_ptr<FigureOfMerit::FigureOfMerit> m_figure;
         int m_verbose;

@@ -1,0 +1,10 @@
+Input Command Line: -t lattice -c polynomial -s 2^10 -d 10 -f CU:P2 -q 2 -w product:0.1 -e fast-CBC -o test_l_polynomial_lat -O lattice
+
+Task: LatBuilder Search for Polynomial lattices
+Exploration method: CBC - Fast Explorer
+Dimension: 10
+Embedding type: Unilevel
+Modulus: 1033
+Figure of merit: Coordinate Uniform with Kernel: P2_PLR
+Weights: ProductWeights([], default=0.1)
+Norm type: 2

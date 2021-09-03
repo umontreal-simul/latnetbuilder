@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/join.hpp>
 #include <iostream>
 #include <limits>
 
@@ -27,6 +28,7 @@
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Parser/EmbeddingTypeParser.h"
 #include "netbuilder/Parser/NetConstructionParser.h"
+#include "netbuilder/Parser/OutputStyleParser.h"
 #include "netbuilder/Task/Task.h"
 
 #include "latbuilder/Parser/Common.h"
@@ -37,36 +39,6 @@
 
 namespace NetBuilder{
 static unsigned int merit_digits_displayed = 0;
-
-void TaskOutput(const Task::Task &task, std::string outputFolder, unsigned int interlacingFactor, Real time)
-{
-  unsigned int old_precision = (unsigned int)std::cout.precision();
-  if (merit_digits_displayed){
-    std::cout.precision(merit_digits_displayed);
-  }
-  std::cout << "====================\n       Result\n====================" << std::endl;
-  std::cout << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
-
-  if (outputFolder != ""){
-    std::ofstream outFile;
-    std::string fileName = outputFolder + "/output.txt";
-    outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::HUMAN, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
-    outFile << "ELAPSED CPU TIME: " << time << " seconds" << std::endl;
-    outFile.close();
-
-
-    fileName = outputFolder + "/outputMachine.txt";
-    outFile.open(fileName);
-    outFile << task.outputNet(OutputFormat::MACHINE, interlacingFactor) << task.outputMeritValue() << "  // Merit" << std::endl;
-    outFile << time << "  // Time" << std::endl;
-    outFile.close();
-  }
-  
-  if (merit_digits_displayed){
-    std::cout.precision(old_precision);
-  }
-}
 
 boost::program_options::options_description
 makeOptionsDescription()
@@ -85,6 +57,7 @@ makeOptionsDescription()
    "digital net; possible constructions:\n"
    "  sobol\n"
    "  polynomial\n"
+   "  lms\n"
    "  explicit\n")
     ("dimension,d", po::value<std::string>(),
     "(required) point set dimension\n")
@@ -154,6 +127,8 @@ makeOptionsDescription()
    "ranges between 0 (default) and 3\n")
     ("output-folder,o", po::value<std::string>(),
     "(optional) path to the folder for the outputs of LatNeBuilder. The contents of the folder may be overwritten. If the folder does not exist, it is created. If no path is provided, no output folder is created.")
+    ("output-style,O", po::value<std::string>()->default_value(""),
+    "(optional) TBD\n")
     ("merit-digits-displayed", po::value<unsigned int>()->default_value(0),
     "(optional) number of significant figures to use when displaying merit values\n");
 
@@ -222,9 +197,33 @@ else{\
     cmd.m_weightPower = 1;\
   }\
 }\
-task = cmd.parse();
+task = cmd.parse();\
+outputStyle = NetBuilder::Parser::OutputStyleParser<NetBuilder::NetConstruction::net_construction>::parse(s_outputStyle);
 
 
+void TaskOutput(const Task::Task &task, std::string outputFolder, OutputStyle outputStyle, unsigned int interlacingFactor, std::vector<std::string> inputCL)
+{
+  unsigned int old_precision = (unsigned int)std::cout.precision();
+  if (merit_digits_displayed){
+    std::cout.precision(merit_digits_displayed);
+  }
+  std::cout << "====================\n       Result\n====================" << std::endl;
+  std::cout << task.outputNet(OutputStyle::TERMINAL, interlacingFactor) << "Merit: " << task.outputMeritValue() << std::endl;
+
+  if (outputFolder != ""){
+    std::ofstream outFile;
+    std::string fileName = outputFolder + "/output.txt";
+    outFile.open(fileName);
+    outFile << "# Input Command Line: " << boost::algorithm::join(inputCL, " ") << std::endl;
+    outFile << "# Merit: " << task.outputMeritValue() << std::endl;
+    outFile << task.outputNet(outputStyle, interlacingFactor);
+    outFile.close();
+  }
+  
+  if (merit_digits_displayed){
+    std::cout.precision(old_precision);
+  }
+}
 
 
 int main(int argc, const char *argv[])
@@ -253,6 +252,7 @@ int main(int argc, const char *argv[])
 
         std::string s_multilevel = opt["multilevel"].as<std::string>();
         std::string s_construction = opt["construction"].as<std::string>();
+        std::string s_outputStyle = opt["output-style"].as<std::string>();
         NetBuilder::EmbeddingType embeddingType = NetBuilder::Parser::EmbeddingTypeParser::parse(s_multilevel);
 
         NetBuilder::NetConstruction netConstruction;
@@ -270,22 +270,38 @@ int main(int argc, const char *argv[])
         unsigned int interlacingFactor = 0;
       
         std::unique_ptr<NetBuilder::Task::Task> task;
+        NetBuilder::OutputStyle outputStyle;
 
-        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+       if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(SOBOL, MULTILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(POLYNOMIAL, UNILEVEL)
        }
-        if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(EXPLICIT, UNILEVEL)
        }
-       if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+       else if(netConstruction == NetBuilder::NetConstruction::EXPLICIT && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
           BUILD_TASK(EXPLICIT, MULTILEVEL)
        }
+       else if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
+          BUILD_TASK(LMS, UNILEVEL)
+       }
+       else if(netConstruction == NetBuilder::NetConstruction::LMS && embeddingType == NetBuilder::EmbeddingType::MULTILEVEL){
+          BUILD_TASK(LMS, MULTILEVEL)
+       }
+       else {
+         throw std::runtime_error("Unknown combination of NetConstruction and EmbeddingType");
+       }
+
+      std::vector<std::string> inputCL;
+      if (argc > 1) {
+        inputCL.assign(argv + 1, argv + argc);
+      }
+
 
       for (unsigned i=0; i<repeat; i++){
         if (i == 0){
@@ -297,6 +313,7 @@ int main(int argc, const char *argv[])
             std::ofstream outFile;
             std::string fileName = outputFolder + "/input.txt";
             outFile.open(fileName);
+            outFile << "Input Command Line: " << boost::algorithm::join(inputCL, " ") << std::endl << std::endl;
             outFile << task->format();
             outFile.close();
           }
@@ -315,7 +332,7 @@ int main(int argc, const char *argv[])
           auto dt = duration_cast<duration<double>>(t1 - t0);
 
           std::cout << std::endl;
-          TaskOutput(*task, outputFolder, interlacingFactor, dt.count());
+          TaskOutput(*task, outputFolder, outputStyle, interlacingFactor, inputCL);
           std::cout << std::endl;
           std::cout << "ELAPSED CPU TIME: " << dt.count() << " seconds" << std::endl;
           task->reset();

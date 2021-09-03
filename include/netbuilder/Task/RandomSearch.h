@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -94,8 +94,8 @@ class RandomSearch : public Search<NC, ET, OBSERVER>
 
             if (this->m_earlyAbortion)
             {
-                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), _1));
-                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), _1));
+                evaluator->onProgress().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onProgress, &this->observer(), boost::placeholders::_1));
+                evaluator->onAbort().connect(boost::bind(&Search<NC, ET, OBSERVER>::Observer::onAbort, &this->observer(), boost::placeholders::_1));
             }
 
             for(unsigned int attempt = 1; attempt <= m_nbTries; ++attempt)
@@ -111,7 +111,7 @@ class RandomSearch : public Search<NC, ET, OBSERVER>
                     auto tmp = m_randomGenValueGenerator(dim);
                     genVals.push_back(std::move(tmp));
                 }
-                auto net = std::make_unique<DigitalNetConstruction<NC>>(this->m_dimension, this->m_sizeParameter, std::move(genVals));
+                auto net = std::make_unique<DigitalNet<NC>>(this->m_dimension, this->m_sizeParameter, std::move(genVals));
                 double merit = (*evaluator)(*net,this->m_verbose-3);
                 this->m_observer->observe(std::move(net),merit);
             }

@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ struct CommandLine<LR, LatBuilder::EmbeddingType::UNILEVEL> {
    std::vector<std::string> weights;
    Real weightsPowerScale = 1.0;
    std::vector<std::string> filters;
+   std::string outputstyle;
+   std::string originalCommandLine;
 
    std::unique_ptr<LatBuilder::Task::Search<LR, LatBuilder::EmbeddingType::UNILEVEL>> parse() const;
 };

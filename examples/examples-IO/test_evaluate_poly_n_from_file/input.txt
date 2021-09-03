@@ -1,0 +1,24 @@
+Input Command Line: --set-type net --construction polynomial --size-parameter 2^16 --dimension 10 --exploration-method evaluation:file:test_n_polynomial_lat/output.txt --figure-of-merit projdep:t-value --norm-type inf --weights order-dependent:0:0,1,1 --output-folder test_evaluate_poly_n_from_file --output-style lattice
+
+Task: NetBuilder Evaluation
+Number of components: 10
+Evaluation of the net:
+16  // Number of columns
+16  // Number of rows
+65536  // Number of points
+10  // Dimension of points
+Polynomial Digital Net - Modulus = 66525 - GeneratingVector =
+  1
+  52453
+  29874
+  12667
+  26826
+  34163
+  23637
+  39782
+  33727
+  25042
+Figure of merit: t-value based figure of merit
+Embedding type: Unilevel
+Weights: OrderDependentWeights([0, 0, 1, 1], default=0)
+Norm type: inf

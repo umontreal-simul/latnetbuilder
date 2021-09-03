@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 #include "netbuilder/Task/RandomSearch.h"
 
 #include "netbuilder/FigureOfMerit/CoordUniformFigureOfMerit.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latticetester/ProductWeights.h"
 
 #include "latbuilder/TextStream.h"
@@ -65,7 +65,7 @@ class QuantilesObserver : public Task::MinimumObserver<NC>
             m_acc = QuantilesAccumulator(tag::tail<boost::accumulators::left>::cache_size = m_numSamples);
         }
 
-        virtual bool observe(std::unique_ptr<DigitalNetConstruction<NC>> net, const Real& merit) override
+        virtual bool observe(std::unique_ptr<DigitalNet<NC>> net, const Real& merit) override
         {
             m_acc(merit);
             return Task::MinimumObserver<NC>::observe(std::move(net), merit);
@@ -97,9 +97,9 @@ int main(int argc, const char *argv[])
     Dimension s = 10;
     NetConstructionTraits<NetConstruction::EXPLICIT>::SizeParameter sizeParam(10, 10);
     unsigned int alpha = 2;
-    auto kernel = LatBuilder::Kernel::PAlphaPLR(alpha);
+    auto kernel = LatBuilder::Kernel::PAlphaTilde(alpha);
     auto weights = std::make_unique<LatticeTester::ProductWeights>(.7);
-    auto figure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaPLR, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
+    auto figure = std::make_unique<FigureOfMerit::CoordUniformFigureOfMerit<LatBuilder::Kernel::PAlphaTilde, EmbeddingType::UNILEVEL>>(std::move(weights), kernel);
     std::cout << figure->format() << std::endl;
     //! [search_params]
 

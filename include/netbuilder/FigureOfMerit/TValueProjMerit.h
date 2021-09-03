@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@
 
 #include "netbuilder/FigureOfMerit/WeightedFigureOfMerit.h"
 #include "netbuilder/FigureOfMerit/ProjectionDependentEvaluator.h"
-
-#include "netbuilder/TValueComputation.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/TValueComputation.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 #include <functional>
 #include <stdexcept>
@@ -87,7 +86,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
          * @param projection Projection to use.
          * @param maxMeritsSubProj Maximum of the t-value of the subprojections. 
          */ 
-        Real operator()(const DigitalNet& net , const LatticeTester::Coordinates& projection, SubProjCombination maxMeritsSubProj) const 
+        Real operator()(const AbstractDigitalNet& net , const LatticeTester::Coordinates& projection, SubProjCombination maxMeritsSubProj) const 
         {
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
@@ -97,7 +96,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
             return METHOD::computeTValue(std::move(mats),maxMeritsSubProj, false);
         }
 
-        virtual Real combine(Merit merit, const DigitalNet& net, const LatticeTester::Coordinates& projection)
+        virtual Real combine(Merit merit, const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection)
         {
             return (Real) merit;
         }
@@ -122,7 +121,7 @@ class TValueProjMerit<EmbeddingType::UNILEVEL, METHOD>
         /**
          * Determines the number of levels from a net.
          */ 
-        static unsigned int numLevels(const DigitalNet& net)
+        static unsigned int numLevels(const AbstractDigitalNet& net)
         {
             return 1;
         }
@@ -199,7 +198,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
          * @param projection is the projection to consider
          * @param maxMeritsSubProj is the maximal merit of the subprojections
          */ 
-        std::vector<unsigned int> operator()(const DigitalNet& net, const LatticeTester::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
+        std::vector<unsigned int> operator()(const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection, const std::vector<unsigned int>& maxMeritsSubProj) const 
         {
             std::vector<GeneratingMatrix> mats;
             for(auto dim : projection)
@@ -215,7 +214,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
          * @param net Digital net.
          * @param projection Projection.
          */ 
-        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) {
+        virtual Real combine(const Merit& merits, const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection) {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
                 tmp[i] = (Real) merits[i];
@@ -246,7 +245,7 @@ class TValueProjMerit<EmbeddingType::MULTILEVEL, METHOD>
         /**
          * Determines the number of levels from a net.
          */ 
-        static unsigned int numLevels(const DigitalNet& net)
+        static unsigned int numLevels(const AbstractDigitalNet& net)
         {
             return net.numColumns();
         }

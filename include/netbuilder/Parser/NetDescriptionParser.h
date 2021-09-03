@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 #define NETBUILDER__PARSER__NET_DESCRIPTION_PARSER_H
 
 #include "latbuilder/Parser/Common.h"
+#include "latbuilder/Parser/SizeParam.h"
 
 #include "netbuilder/Parser/CommandLine.h"
 #include "netbuilder/Types.h"
-#include "netbuilder/Util.h"
 #include "netbuilder/NetConstructionTraits.h"
 
 #include <algorithm>
@@ -58,6 +58,10 @@ struct NetDescriptionParser<NetConstruction::SOBOL, ET>
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
+       if (netDescriptionStrings.size() == commandLine.m_dimension - 1){
+           // If there is one missing coordinate, we assume it is the first, and we add the direction number (always 0).
+           netDescriptionStrings.insert(netDescriptionStrings.begin(), "0");
+       }
        Dimension dim = 0;
        result_type genValues;
        genValues.reserve(commandLine.m_dimension);
@@ -101,7 +105,7 @@ struct NetDescriptionParser<NetConstruction::POLYNOMIAL, ET>
        genValues.reserve(commandLine.m_dimension);
        for(const auto& polyString : netDescriptionStrings)
        {
-           GenValue genVal = polynomialParserHelper(polyString);
+           GenValue genVal = (GenValue) LatBuilder::Parser::SizeParam<LatBuilder::LatticeType::POLYNOMIAL, ET>::parse(polyString);
            if(!NetConstructionTraits<NetConstruction::POLYNOMIAL>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating polynomial.");
@@ -123,6 +127,49 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
     typedef std::vector<GenValue> result_type;
 
    static result_type parse(CommandLine<NetConstruction::EXPLICIT, ET>& commandLine, const std::string& str)
+   {
+       std::cout << str << std::endl;
+       std::vector<std::string> netDescriptionStrings;
+       boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
+       result_type genValues;
+       genValues.reserve(commandLine.m_dimension);
+       for(const auto& matrixString : netDescriptionStrings)
+       {
+           std::vector<std::string> columnsStrings;
+           boost::split(columnsStrings, matrixString, boost::is_any_of(","));
+           GeneratingMatrix genVal;
+           try {
+               std::vector<unsigned long> columns;
+               columns.reserve(columnsStrings.size());
+               for (const auto& columnString: columnsStrings){
+                   columns.push_back(boost::lexical_cast<unsigned long>(columnString));
+               }
+                genVal = GeneratingMatrix::fromColsReverse(31, commandLine.m_sizeParameter.first, columns);
+           }
+           catch (std::exception& e) {
+               throw BadNetDescription("Could not parse " + matrixString);
+           }
+           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_sizeParameter))
+           {
+               throw BadNetDescription("bad generating matrix size.");
+           }
+           genValues.push_back(std::move(genVal));
+       }
+        if (genValues.size() != commandLine.m_dimension )
+        {
+           throw BadNetDescription("incompatible dimension and number of matrices.");
+        }
+        return genValues;
+   }
+};
+
+template<EmbeddingType ET>
+struct NetDescriptionParser<NetConstruction::LMS, ET>
+{
+    typedef typename NetConstructionTraits<NetConstruction::LMS>::GenValue GenValue;
+    typedef std::vector<GenValue> result_type;
+
+   static result_type parse(CommandLine<NetConstruction::LMS, ET>& commandLine, const std::string& str)
    {
        std::vector<std::string> netDescriptionStrings;
        boost::split(netDescriptionStrings, str, boost::is_any_of("-"));
@@ -149,7 +196,7 @@ struct NetDescriptionParser<NetConstruction::EXPLICIT, ET>
                std::reverse(rowsStrings[i].begin(), rowsStrings[i].end());
                genVal[i] = GeneratingMatrix::Row(rowsStrings[i]);
            }
-           if(!NetConstructionTraits<NetConstruction::EXPLICIT>::checkGenValue(genVal, commandLine.m_sizeParameter))
+           if(!NetConstructionTraits<NetConstruction::LMS>::checkGenValue(genVal, commandLine.m_sizeParameter))
            {
                throw BadNetDescription("bad generating matrix size.");
            }

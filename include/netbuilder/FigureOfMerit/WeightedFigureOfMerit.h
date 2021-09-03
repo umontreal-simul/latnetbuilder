@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__WEIGHTED_FIGURE_OF_MERIT_H
 
 #include "netbuilder/FigureOfMerit/FigureOfMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
 
 #include "latticetester/Coordinates.h"
 
@@ -30,7 +30,7 @@ namespace NetBuilder{ namespace FigureOfMerit {
  * @tparam PROJDEP The type of the projection dependent merit. This type should implement the following methods:
  *  - container<LatticeTester::Coordinates> projections(Dimension dimension) which returns an iterable container of the projections to consider for the 
  *  given dimension. \n 
- *  - Real operator()(const DigitalNet& net, LatticeTester::Coordinates) which returns the projection-dependent merit of the net for the given projection. \n
+ *  - Real operator()(const AbstractDigitalNet& net, LatticeTester::Coordinates) which returns the projection-dependent merit of the net for the given projection. \n
  *  
  */  
 template<typename PROJDEP>
@@ -126,7 +126,7 @@ class WeightedFigureOfMerit : public CBCFigureOfMerit
                  *  @param initialValue Initial value of the merit.
                  *  @param verbose Verbosity level.
                  */ 
-                virtual MeritValue operator() (const DigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
+                virtual MeritValue operator() (const AbstractDigitalNet& net, Dimension dimension, MeritValue initialValue, int verbose = 0) override
                 {
                     using namespace LatticeTester;
                     auto projections = m_figure->projDepMerit().projections(dimension);

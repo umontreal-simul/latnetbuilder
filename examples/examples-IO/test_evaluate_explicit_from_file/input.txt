@@ -1,0 +1,65 @@
+Input Command Line: --set-type net --construction explicit --size-parameter 2^10 --dimension 2 --interlacing 2 --exploration-method evaluation:file:test_explicit/output.txt --output-folder test_evaluate_explicit_from_file --figure-of-merit CU:IA2 --norm-type 1 --weights order-dependent:0:0.8,0.64 --multilevel true --combiner sum --output-style net
+
+Task: NetBuilder Evaluation
+Number of components: 4
+Evaluation of the net:
+10  // Number of columns
+10  // Number of rows
+1024  // Number of points
+4  // Dimension of points
+Explicit Digital Net - Matrix size = 10x10
+Coordinate 0
+1 0 0 1 1 1 1 0 0 1
+0 1 0 0 0 1 1 0 0 1
+0 0 1 1 1 0 0 1 0 0
+0 0 0 1 1 0 0 1 1 0
+0 0 0 0 1 0 1 1 0 0
+0 0 0 0 0 1 1 1 1 0
+0 0 0 0 0 0 1 0 0 0
+0 0 0 0 0 0 0 1 1 1
+0 0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 0 1
+
+Coordinate 1
+1 1 1 0 1 0 1 1 0 1
+0 1 1 0 0 0 0 1 0 1
+0 0 1 0 1 1 0 1 0 0
+0 0 0 1 1 1 1 1 0 1
+0 0 0 0 1 1 1 0 1 1
+0 0 0 0 0 1 1 0 0 0
+0 0 0 0 0 0 1 0 0 1
+0 0 0 0 0 0 0 1 0 1
+0 0 0 0 0 0 0 0 1 0
+0 0 0 0 0 0 0 0 0 1
+
+Coordinate 2
+1 1 0 0 1 0 1 1 0 0
+0 1 1 0 1 0 1 1 1 1
+0 0 1 0 0 1 0 0 1 0
+0 0 0 1 1 0 1 1 1 0
+0 0 0 0 1 1 1 0 0 0
+0 0 0 0 0 1 0 0 0 0
+0 0 0 0 0 0 1 0 0 1
+0 0 0 0 0 0 0 1 0 1
+0 0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 0 1
+
+Coordinate 3
+1 0 1 0 1 0 1 0 0 0
+0 1 1 0 1 0 1 1 1 1
+0 0 1 0 0 0 0 0 1 1
+0 0 0 1 1 1 1 0 0 0
+0 0 0 0 1 0 0 0 0 0
+0 0 0 0 0 1 1 1 0 0
+0 0 0 0 0 0 1 1 0 1
+0 0 0 0 0 0 0 1 0 0
+0 0 0 0 0 0 0 0 1 1
+0 0 0 0 0 0 0 0 0 1
+
+Figure of merit: Coordinate Uniform with Kernel: IA - alpha: 2 - interlacing: 2
+Embedding type: Multilevel
+Combiner: Sum
+Weights: IPODWeights:
+    Kernel: IA - alpha: 2 - interlacing: 2,
+    Base Weights: PODWeights(OrderDependentWeights([0, 0.8, 0.64], default=0), ProductWeights([], default=8))
+Norm type: 2

@@ -1,6 +1,6 @@
 // This file is part of Nettice Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ CommandLine<NC, ET>::parse()
 {
       namespace lbp = LatBuilder::Parser;
       
-      SizeParameterParser<NC,ET>::parse(*this);
       m_dimension = boost::lexical_cast<Dimension>(s_dimension) * m_interlacingFactor;
+      SizeParameterParser<NC,ET>::parse(*this);
       if (m_interlacingFactor > 1){
             std::cout << "Warning: interlacing factor is > 1." << std::endl;
             std::cout << "    Dimension: " <<  boost::lexical_cast<Dimension>(s_dimension) << std::endl;
@@ -40,7 +40,8 @@ CommandLine<NC, ET>::parse()
       m_figure = FigureParser<NC, ET>::parse(*this); // m_combiner initialized and moved to m_figure as a side effect 
       return ExplorationMethodParser<NC, ET>::parse(*this); // as a side effect, m_figure has been moved to task
 }
-
+template struct CommandLine<NetConstruction::LMS, EmbeddingType::UNILEVEL>;
+template struct CommandLine<NetConstruction::LMS, EmbeddingType::MULTILEVEL>;
 template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::UNILEVEL>;
 template struct CommandLine<NetConstruction::EXPLICIT, EmbeddingType::MULTILEVEL>;
 template struct CommandLine<NetConstruction::POLYNOMIAL, EmbeddingType::UNILEVEL>;

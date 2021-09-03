@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,12 +59,10 @@ SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>::parse(c
       {
             unsigned int degree = (unsigned int) n.second;
             std::string polyString = LatBuilder::getDefaultPolynomial(degree);
-            std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(polyString);
-            Polynomial defaultPoly = boost::lexical_cast<Polynomial>(str_NTLInput);
+            Polynomial defaultPoly = PolynomialFromInt(std::stoi(polyString));
             return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(defaultPoly);
       }
-      std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
-      Polynomial base = boost::lexical_cast<Polynomial>(str_NTLInput);
+      Polynomial base = PolynomialFromInt(std::stoi(n.first));
       // try b^p form first
       
       if (n.second == 0)
@@ -82,10 +80,9 @@ LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTIL
 SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>::parse(const std::string& str)
 {
    auto n = splitPair<std::string, Level>(str, '^', 0);
-   std::string str_NTLInput = LatticeParametersParseHelper<LatticeType::POLYNOMIAL>::ToParsableModulus(n.first);
    try{
 
-      Polynomial base = boost::lexical_cast<Polynomial>(str_NTLInput);
+      Polynomial base = PolynomialFromInt(std::stoi(n.first));
       // try b^p form first
       
       if (n.second == 0)

@@ -20,10 +20,7 @@ def change_constr_choice(change, gui):
     else:
         gui.exploration_method.is_random.disabled = False
 
-    if new_choice == 'polynomial':
-        gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 01^10 or 00000000001'
-    else:
-        gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
+    gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
 
     gui.exploration_method._callbacks[gui.exploration_method.exploration_choice](
         {'name': 'value', 'new': gui.exploration_method.exploration_choice.value}, gui

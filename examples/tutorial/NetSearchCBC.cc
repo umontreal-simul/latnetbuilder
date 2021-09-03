@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,8 +56,10 @@ int main(int argc, char** argv)
                 //! [execute_task]
                 std::cout << task->format();
                 task->execute();
-                std::cout << "Best net: " << task->bestNet().format() << std::endl;
+                std::cout << "Best net:" << std::endl;
+                std::cout << task->bestNet().format() << std::endl;
                 std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
+                std::cout << "============================================================" << std::endl;
                 //! [execute_task]
         }
 
@@ -76,8 +78,10 @@ int main(int argc, char** argv)
 
                 std::cout << task->format();
                 task->execute();
-                std::cout << "Best net: " << task->bestNet().format() << std::endl;
+                std::cout << "Best net:" << std::endl;
+                std::cout << task->bestNet().format() << std::endl;
                 std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
+                std::cout << "============================================================" << std::endl;
         }
 
         {
@@ -95,7 +99,8 @@ int main(int argc, char** argv)
 
                 std::cout << task->format();
                 task->execute();
-                std::cout << "Best net: " << task->bestNet().format() << std::endl;
+                std::cout << "Best net:" << std::endl;
+                std::cout << task->bestNet().format() << std::endl;
                 std::cout << "Merit value: " << task->bestMeritValue() << std::endl;
         }
 

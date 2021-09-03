@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@
 #define NETBUILDER__FIGURE_OF_MERIT_BIT__TVALUE_TRANSFORMED_PROJ_MERIT
 
 #include "netbuilder/FigureOfMerit/TValueProjMerit.h"
-#include "netbuilder/LevelCombiner.h"
+#include "netbuilder/FigureOfMerit/LevelCombiner.h"
+
+#include "latbuilder/Util.h"
 
 namespace NetBuilder { namespace FigureOfMerit {
 
@@ -49,10 +51,10 @@ namespace{
                 res += binom_coeff;
                 binom_coeff *= (Real) (m-t-i) / (i+1);
             }
-            return intPow(0.5, m - t) * res;
+            return LatBuilder::intPow(0.5, m - t) * res;
         }
         else if (type == 2){
-            return 1.0/6 + intPow(4.0, t) * intPow(m-t, s-1);
+            return 1.0/6 + LatBuilder::intPow(4.0, t) * LatBuilder::intPow(m-t, s-1);
         }
         else {
             throw std::runtime_error("t-value transformer not implemented.");
@@ -91,7 +93,7 @@ class TValueTransformedProjMerit<EmbeddingType::UNILEVEL, METHOD>: public TValue
             this->cost_function = cost_function;
         }
 
-        virtual Real combine(Merit merit, const DigitalNet& net, const LatticeTester::Coordinates& projection)
+        virtual Real combine(Merit merit, const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection)
         {
             return h(merit, net.numColumns(), projection.size(), cost_function);
         }
@@ -135,7 +137,7 @@ class TValueTransformedProjMerit<EmbeddingType::MULTILEVEL, METHOD>: public TVal
             this->cost_function = cost_function;
         }
 
-        virtual Real combine(const Merit& merits, const DigitalNet& net, const LatticeTester::Coordinates& projection) {
+        virtual Real combine(const Merit& merits, const AbstractDigitalNet& net, const LatticeTester::Coordinates& projection) {
             RealVector tmp(merits.size());
             for (unsigned int i=0; i<merits.size(); i++){
                 tmp[i] = h(merits[i], net.numColumns(), projection.size(), cost_function);

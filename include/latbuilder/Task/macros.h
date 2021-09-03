@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 #include "latticetester/NormaBestLat.h"
 #include "latbuilder/ProjDepMerit/CoordUniform.h"
 #include "latbuilder/Kernel/PAlpha.h"
-#include "latbuilder/Kernel/PAlphaPLR.h"
+#include "latbuilder/Kernel/PAlphaTilde.h"
 #include "latbuilder/Kernel/RAlpha.h"
 #include "latbuilder/Kernel/RPLR.h"
 #include "latbuilder/Functor/binary.h"
@@ -54,7 +54,7 @@
    func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::RAlpha>)
 
 #define TASK_ADD_ARG_PROJDEP_LATTICE_POLYNOMIAL(func, ...) \
-   func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::PAlphaPLR>); \
+   func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::PAlphaTilde>); \
    func(__VA_ARGS__, ProjDepMerit::CoordUniform<Kernel::RPLR>)
 
 #define TASK_ADD_ARG_KERNEL_LATTICE_ORDINARY(func, ...) \
@@ -62,7 +62,7 @@
    func(__VA_ARGS__, Kernel::RAlpha)
 
 #define TASK_ADD_ARG_KERNEL_LATTICE_POLYNOMIAL(func, ...) \
-   func(__VA_ARGS__, Kernel::PAlphaPLR); \
+   func(__VA_ARGS__, Kernel::PAlphaTilde); \
    func(__VA_ARGS__, Kernel::RPLR)
 
 #define TASK_INDIRECT(func, ...) \

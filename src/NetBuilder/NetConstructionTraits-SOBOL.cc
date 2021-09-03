@@ -1,6 +1,6 @@
 // This file is part of LatNet Builder.
 //
-// Copyright (C) 2012-2018  Pierre L'Ecuyer and Universite de Montreal
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 // limitations under the License.
 
 #include "netbuilder/NetConstructionTraits.h"
-#include "netbuilder/Util.h"
 
 #include "latbuilder/SeqCombiner.h"
 #include "latbuilder/Traversal.h"
@@ -120,9 +119,10 @@ namespace NetBuilder {
         reg.push_back(std::move(newDirNum));
     }
 
-    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam)
+    GeneratingMatrix*  NetConstructionTraits<NetConstruction::SOBOL>::createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j, const unsigned int nRows)
     {
         unsigned int m  = nCols(sizeParam);
+        unsigned int finalnRows = (nRows == 0)? m : nRows;
         Dimension coord = genValue.first;
 
         if (coord==0) // special case for the first dimension
@@ -157,7 +157,7 @@ namespace NetBuilder {
             makeIteration(*tmp, reg, mask, k);
             ++k;
         }
-        tmp->resize(m, m);
+        tmp->resize(finalnRows, m);
         return tmp;
     }
 
@@ -268,28 +268,16 @@ namespace NetBuilder {
         return GenValueSpaceSeq(seqs);
     }
 
-    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputFormat outputFormat, unsigned int interlacingFactor)
+    std::string NetConstructionTraits<NetConstruction::SOBOL>::format(const std::vector<std::shared_ptr<GeneratingMatrix>>& genMatrices, const std::vector<std::shared_ptr<GenValue>>& genVals, const SizeParameter& sizeParameter, OutputStyle outputStyle, unsigned int interlacingFactor)
     {
         std::string res;
+        std::string dimension = std::to_string(genVals.size()/interlacingFactor);
+        unsigned int k = nCols(sizeParameter);
 
-        if (outputFormat == OutputFormat::HUMAN){
-            res += "Sobol Digital Net - Direction numbers = \n";
+        if (outputStyle == OutputStyle::TERMINAL){
+            res += "Sobol Digital Net - Direction numbers =\n";
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                if (interlacingFactor > 1 && coord % interlacingFactor == 0){
-                    res += "Coordinate " + std::to_string((coord / interlacingFactor) + 1)  + ":\n";
-                }            
                 res+="  ";
-                for(const auto& dirNum : genVals[coord]->second)
-                {
-                    res+= std::to_string(dirNum);
-                    res+= " ";
-                }
-                res+="\n";
-            }
-        }
-        else{
-            res += "Sobol  // Construction method\n";
-            for (unsigned int coord = 0; coord < genVals.size(); coord++){
                 for(const auto& dirNum : genVals[coord]->second)
                 {
                     res+= std::to_string(dirNum);
@@ -299,7 +287,56 @@ namespace NetBuilder {
                 res+="\n";
             }
         }
-        
+
+        else if (outputStyle == OutputStyle::SOBOLJK){
+            res += "# Parameters for Sobol points, in JK format\n";
+            res += dimension + "    # s = " + dimension + " dimensions\n";
+            if (interlacingFactor > 1){
+                res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
+                res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";
+            }
+            res += std::to_string(k) + "    # k = " + std::to_string(k) + ",  n = 2^"+ std::to_string(k) + " = " + std::to_string((int)pow(2, k)) + " points\n";
+            res +="#  d  a  m_{j,c}\n";
+            for (unsigned int coord = 1; coord < genVals.size(); coord++){
+                res+= std::to_string(coord +1) + "  ";
+                PrimitivePolynomial p = nthPrimitivePolynomial(coord);
+                auto degree = p.first;
+                auto poly_rep = p.second;
+                res+= std::to_string(degree) + "  ";
+                res+= std::to_string(poly_rep) + "  ";
+                for(const auto& dirNum : genVals[coord]->second)
+                {
+                    res+= std::to_string(dirNum);
+                    res+= " ";
+                }
+                res.pop_back();
+                res+="\n";
+                
+            }
+            res.pop_back();
+        }
+
+        else if (outputStyle == OutputStyle::SOBOL){
+            res += "# Initial direction numbers m_{j,c} for Sobol points\n";
+            res += dimension + "    # s = " + dimension + " dimensions\n";
+            if (interlacingFactor > 1){
+                res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
+                res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";
+            }
+            res += std::to_string(k) + "    # k = " + std::to_string(k) + ",  n = 2^"+ std::to_string(k) + " = " + std::to_string((int)pow(2, k)) + " points\n";
+            res +="# m_{j,c}, starting from the second coordinate\n";
+            for (unsigned int coord = 1; coord < genVals.size(); coord++){
+                for(const auto& dirNum : genVals[coord]->second)
+                {
+                    res += std::to_string(dirNum);
+                    res += " ";
+                }
+                res.pop_back();
+                res+="\n";
+                
+            }
+            res.pop_back();                
+        }  
         return res;
     }  
 }
