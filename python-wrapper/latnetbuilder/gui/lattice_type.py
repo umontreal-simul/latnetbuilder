@@ -24,8 +24,8 @@ def change_lattice_type(change, gui):
 
     elif new_choice == 'polynomial':
         gui.properties.interlacing.disabled = False
-        gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 01^10 or 00000000001'
-        gui.exploration_method.generating_vector.children[1].placeholder = 'e.g. 01^6 or 0000001'
+        gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
+        gui.exploration_method.generating_vector.children[1].placeholder = 'e.g. 2^8 or 256'
         if gui.properties.interlacing.value == 1:
             gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('R', 'R')]
         else:

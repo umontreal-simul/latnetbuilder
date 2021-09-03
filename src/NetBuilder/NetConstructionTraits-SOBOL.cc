@@ -272,7 +272,7 @@ namespace NetBuilder {
     {
         std::string res;
         std::string dimension = std::to_string(genVals.size()/interlacingFactor);
-        std::string k = std::to_string((int) nCols(sizeParameter));
+        unsigned int k = nCols(sizeParameter);
 
         if (outputStyle == OutputStyle::TERMINAL){
             res += "Sobol Digital Net - Direction numbers =\n";
@@ -295,6 +295,7 @@ namespace NetBuilder {
                 res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
                 res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";
             }
+            res += std::to_string(k) + "    # k = " + std::to_string(k) + ",  n = 2^"+ std::to_string(k) + " = " + std::to_string((int)pow(2, k)) + " points\n";
             res +="#  d  a  m_{j,c}\n";
             for (unsigned int coord = 1; coord < genVals.size(); coord++){
                 res+= std::to_string(coord +1) + "  ";
@@ -316,12 +317,13 @@ namespace NetBuilder {
         }
 
         else if (outputStyle == OutputStyle::SOBOL){
-            res += " Initial direction numbers m_{j,c} for Sobol points\n";
+            res += "# Initial direction numbers m_{j,c} for Sobol points\n";
             res += dimension + "    # s = " + dimension + " dimensions\n";
             if (interlacingFactor > 1){
                 res+= std::to_string(interlacingFactor) + "    # Interlacing factor" + "\n";
                 res+= std::to_string(genVals.size()) + "    # Number of components = interlacing factor x dimension" + "\n";
             }
+            res += std::to_string(k) + "    # k = " + std::to_string(k) + ",  n = 2^"+ std::to_string(k) + " = " + std::to_string((int)pow(2, k)) + " points\n";
             res +="# m_{j,c}, starting from the second coordinate\n";
             for (unsigned int coord = 1; coord < genVals.size(); coord++){
                 for(const auto& dirNum : genVals[coord]->second)

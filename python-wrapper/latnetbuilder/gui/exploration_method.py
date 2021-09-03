@@ -25,7 +25,7 @@ explr_data = {
         <ul>\
             <li> direction numbers for Sobol construction (please respect the format given as example)\
             <li> generating vector for the polynomial construction \
-            <li> generating matrices for the explicit construction (please respect the format given as example)\
+            <li> generating matrices for the explicit construction (one matrix per line, each integer encodes a column)\
         </ul>\
     </p>'
 }
@@ -95,26 +95,21 @@ def fill_from_previous_search(change, gui):
         if 'digital' in gui.search.search_type() and gui.main_tab.selected_index == 1:
             if gui.search.search_type() == 'digital-polynomial' and gui.construction_method.construction_choice.value == 'polynomial':
                 done = True
-                for k in range(int(gui.search.dimension)):
-                    gui.exploration_method.generating_vector_simple.children[k].value = "".join(list(map(str, result.gen_vector[k])))
+                for k in range(int(result.dim * result.interlacing)):
+                    gui.exploration_method.generating_vector_simple.children[k].value = str(result.gen_vector[k])
 
             elif gui.search.search_type() == 'digital-sobol' and gui.construction_method.construction_choice.value == 'sobol':
                 done = True
-                gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, result.gen_vector[k]))) for k in range(result.dim)])
+                gui.exploration_method.generating_numbers_sobol.value = '\n'.join([','.join(list(map(str, result.gen_vector[k]))) for k in range(result.dim * result.interlacing)])
             
             elif gui.search.search_type() == 'digital-explicit' and gui.construction_method.construction_choice.value == 'explicit':
                 done = True
-                gui.exploration_method.generating_matrices.value = '\n\n'.join([ '\n'.join([' '.join(list(map(str, result.matrices[coord][i]))) for i in range(result.nb_rows)]) for coord in range(result.dim)])
+                gui.exploration_method.generating_matrices.value = '\n'.join([' '.join(map(str, [result.matrices_cols[coord, j] for j in range(result.nb_cols)])) for coord in range(result.dim * result.interlacing)])
 
         if gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value == gui.search.search_type():
-            if gui.lattice_type.type_choice.value == 'ordinary':
-                done = True
-                for k in range(int(gui.search.dimension)):
-                    gui.exploration_method.generating_vector.children[0].children[k].value = str(result.gen_vector[k])
-            else:
-                done = True
-                for k in range(int(gui.search.dimension)):
-                    gui.exploration_method.generating_vector.children[0].children[k].value = "".join(list(map(str, result.gen_vector[k])))
+            done = True
+            for k in range(int(result.dim * result.interlacing)):
+                gui.exploration_method.generating_vector.children[0].children[k].value = str(result.gen_vector[k])
     if done:
         gui.exploration_method.from_previous_search_warning.layout.display = 'none'
     else:
@@ -142,7 +137,7 @@ def exploration_method():
     generating_numbers_sobol_box = widgets.VBox([generating_numbers_sobol_button, generating_numbers_sobol],
                                     layout=widgets.Layout(display='none'))
 
-    generating_matrices = widgets.Textarea(placeholder='1 0 0\n0 1 0\n0 0 1\n\n1 1 0\n1 0 1\n0 1 1',
+    generating_matrices = widgets.Textarea(placeholder='895483904 868220928 1402994688\n819986432 1296039936 1757413376\n308281344 1266679808 58720256\n278921216 1228931072 838860800',
                                     layout=widgets.Layout(width='inherit', height='150px', display='none'))
 
     from_previous_search = widgets.Button(description='Evaluate from previous search', style=style_default, layout=widgets.Layout(width='200px', display='none', margin='40px 0px 0px 0px'))

@@ -90,21 +90,21 @@ struct ExplorationMethodParser
                 std::stringstream buffer;
                 buffer << t.rdbuf();
                 netDescritionString = buffer.str();
-            }
-            std::vector<std::string> fileLines;
-            boost::split(fileLines, netDescritionString, boost::is_any_of("\n"));
-            unsigned int firstLineCoordinate;
-            for (unsigned int i=0; i<fileLines.size(); i++){
-                if (fileLines[i][0] == '#'){
-                    firstLineCoordinate = i+1;
+                std::vector<std::string> fileLines;
+                boost::split(fileLines, netDescritionString, boost::is_any_of("\n"));
+                unsigned int firstLineCoordinate;
+                for (unsigned int i=0; i<fileLines.size(); i++){
+                    if (fileLines[i][0] == '#'){
+                        firstLineCoordinate = i+1;
+                    }
                 }
+                std::vector<std::string> filteredFileLines;
+                for (unsigned int i=firstLineCoordinate; i<fileLines.size(); i++){
+                    filteredFileLines.push_back(fileLines[i]);
+                }
+                netDescritionString = boost::algorithm::join(filteredFileLines, "-");
+                boost::replace_all(netDescritionString, " ", ",");
             }
-            std::vector<std::string> filteredFileLines;
-            for (unsigned int i=firstLineCoordinate; i<fileLines.size(); i++){
-                filteredFileLines.push_back(fileLines[i]);
-            }
-            netDescritionString = boost::algorithm::join(filteredFileLines, "-");
-            boost::replace_all(netDescritionString, " ", ",");
 
             auto genValues = NetDescriptionParser<NC,ET>::parse(commandLine, netDescritionString);
             auto net = std::make_unique<DigitalNet<NC>>(commandLine.m_dimension, commandLine.m_sizeParameter, std::move(genValues));

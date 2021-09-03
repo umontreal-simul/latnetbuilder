@@ -52,10 +52,7 @@ class Search():
 
         # default value for modulus
         if self.modulus == '""':
-            if self.construction == 'polynomial' and self.multilevel == True:
-                modulus = '"01^10"'
-            else:
-                modulus = '"2^10"'
+            modulus = '"2^10"'
         else:
             modulus = self.modulus
 

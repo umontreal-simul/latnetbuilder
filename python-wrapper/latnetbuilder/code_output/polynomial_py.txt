@@ -4,27 +4,26 @@ modulus = {{mod}}
 genVector = {{genvec}}
 interlacing = {{interlacing}}
 
-def expandSeries(P, h):
+def expandSeries(P, h, m):
     expansion = []
-    m = len(P)-1
     for l in range(1, 2*m):
-        res = 1 if (m-l >=0 and m-l < len(h) and h[m-l]) else 0
+        res = 1 if (m-l >=0 and m-l <= int(np.log2(h)) and (h >> (m-l)) & 1) else 0
         start = l-m if (l-m > 1) else 1
         for p in range(start, l):
-            res = (res + expansion[p-1]*P[m-l+p]) % 2
+            res = (res + expansion[p-1] * ((P >> (m-l+p)) & 1)) % 2
         expansion.append(res)
     return expansion
 
 def generatingMatrices(modulus, genVector):
     matrices = []
-    m = len(modulus)-1
+    m = int(np.log2(modulus))
     for j in range(len(genVector)):
         matrix = np.zeros((m, m), dtype=np.int32)
-        expansion = expandSeries(modulus, genVector[j])
+        expansion = expandSeries(modulus, genVector[j], m)
         for i in range(m):
             for j in range(m):
                 matrix[i][j] = expansion[i+j]
         matrices.append(matrix)
-    return matrices
+    return np.array(matrices)
 
 matrices = generatingMatrices(modulus, genVector)

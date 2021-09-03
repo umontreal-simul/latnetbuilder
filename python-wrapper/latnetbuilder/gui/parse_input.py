@@ -120,7 +120,7 @@ def parse_input_net(gui):
 
         elif s.construction == 'explicit':
             s_matrices = gui.exploration_method.generating_matrices.value
-            s_matrices = s_matrices.replace('\n', ',').replace(',,', '-').replace(' ', '')
+            s_matrices = s_matrices.replace('\n', '-').replace(' ', ',')
             if s_matrices == '':
                 raise ParsingException("The matrices input field cannot be left empty for Evaluation.")
             s.exploration_method += ':' + s_matrices
