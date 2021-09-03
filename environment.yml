@@ -2,7 +2,7 @@ name: latnetbuilder
 channels:
   - conda-forge
   - umontreal-simul
-
+  - defaults
 dependencies:
   - python=3.7
   - latnetbuilder==2.1.3
