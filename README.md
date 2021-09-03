@@ -223,12 +223,6 @@ conda config --add channels conda-forge         # add conda-forge as a default c
 conda install -c umontreal-simul latnetbuilder   # installs the latnetbuilder package from the channel umontreal-simul
 ```
 
-Temporary fix of [issue 8](https://github.com/umontreal-simul/latnetbuilder/issues/8): On MacOS, please specify the version of the package, as follows
-
-```bash
-conda install -c umontreal-simul latnetbuilder=2.1.1
-```
-
 #### For Windows
 
 You have to install Docker first. [Docker](https://docs.docker.com/) provides a way to run applications securely isolated in a container, packaged with all its dependencies and libraries. It is similar to a virtual machine. Depending on your Windows version, as of now, two Docker installations are available:
@@ -549,7 +543,7 @@ docker build -t umontrealsimul/latnetbuilder:complete --no-cache -f DockerfileCo
 docker push umontrealsimul/latnetbuilder:complete
 ```
 
-To update the light docker image, run from the installation directory:
+To update the light docker image, run from the installation directory on a Linux machine:
 
 ```bash
 docker login
