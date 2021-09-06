@@ -1,22 +1,7 @@
 import ipywidgets as widgets
 import numpy as np
 
-from .common import style_default, parse_polynomial, INITIAL_DIM, BaseGUIElement
-
-def change_modulus(change, gui):
-    if change['name'] != 'value':
-        return
-    try:
-        poly_str = parse_polynomial(change['new'])
-        if len(poly_str) > 0 and \
-        ((gui.main_tab.selected_index == 0 and gui.lattice_type.type_choice.value == 'polynomial') or (gui.main_tab.selected_index == 1 and gui.construction_method.construction_choice.value == 'polynomial')):
-            gui.properties.modulus_pretty.layout.display = 'flex'
-            gui.properties.modulus_pretty.value = '\\(' + poly_str + '\\)'
-        else:
-            gui.properties.modulus_pretty.layout.display = 'none'
-    except:
-        gui.properties.modulus_pretty.layout.display = 'none'
-        return
+from .common import style_default, INITIAL_DIM, BaseGUIElement
 
 def change_multilevel(change, gui):
     if change['name'] != 'value':
@@ -100,11 +85,9 @@ def properties():
     interlacing = widgets.BoundedIntText(value=1, min=1, description='Interlacing d:',
                                        style=style_default, layout=widgets.Layout(width='160px'), disabled=True)
 
-    modulus_pretty = widgets.Label('', layout=widgets.Layout(display='none'))
-
     properties_wrapper = widgets.Accordion(
         [widgets.HBox(
-            [widgets.VBox([modulus, modulus_pretty], layout=widgets.Layout(width='460px')), 
+            [modulus,
             is_multilevel, 
             widgets.VBox([dimension, interlacing], layout=widgets.Layout(width='180px'))],
             layout=widgets.Layout(align_items='center')
@@ -115,8 +98,6 @@ def properties():
                           dimension=dimension,
                           interlacing=interlacing,
                           main=properties_wrapper,
-                          modulus_pretty=modulus_pretty,
-                          _callbacks={'modulus': change_modulus,
-                                      'dimension': change_dimension,
+                          _callbacks={'dimension': change_dimension,
                                       'interlacing': change_interlacing,
                                       'is_multilevel': change_multilevel})

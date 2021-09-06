@@ -105,7 +105,7 @@ The figures of merit for interlaced digital nets supported by LatNet Builder hav
     D(P_n) = \sum_{\emptyset \neq \mathfrak u \subseteq \{1, \dots, d s\}}\left(\bar{\gamma}_{\mathfrak u} D_{\mathfrak u}(\bar{P}_n)\right),
 \f]
 
-- The \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+- The \f$\mathcal I^{a}_{\alpha, d}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
 
     \f[
         D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{\alpha, d, (1)}(z_{i, j}),
@@ -124,7 +124,7 @@ The figures of merit for interlaced digital nets supported by LatNet Builder hav
         w(\mathfrak u) = \left\{ \left \lceil \frac{j}{d} \right\rceil, j \in \mathfrak u \right\}.
     \f]
 <br><br>
-- The \f$B_{d, (2)}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+- The \f$\mathcal I^{b}_{d}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
 
     \f[
         D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{d, (2)}(z_{i, j}),
@@ -139,5 +139,27 @@ The figures of merit for interlaced digital nets supported by LatNet Builder hav
         \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} \prod_{j \in \mathfrak u} 2^{- ( (j-1) \mod d) + 1},
     \f]
     where \f$w\f$ denotes the weights interlacing operator.
+
+- The \f$\mathcal I^{c}_{\alpha, d}\f$ interlaced discrepancy, using an \f$\ell_1\f$ norm with a coordinate-uniform evaluation algorithm:
+    \f[
+        D_{\mathfrak u}(\bar{P}_n) = \sum_{i = 0}^{n-1} \prod_{j \in \mathfrak u} \phi_{\alpha, d, (3)}(z_{i, j}),
+    \f]
+    where \f$ \phi_{\alpha, d, (3)}(z) \f$ is defined by:
+    \f[
+        \phi_{\alpha, d, (3)}(z) =
+        \frac{1 - 2^{(\min(\alpha, d)) \lfloor \log_2(z) \rfloor} (2^{2 \min(\alpha, d) + 1} -1)}{2^{\alpha} (2^{2\min(\alpha, d)} -1) }.
+    \f]
+    For this discrepancy, the interlaced weights are defined as:
+    \f[
+        \bar{\gamma}_{\mathfrak u} = \gamma_{w(\mathfrak u)} D_{\alpha, d}^{|w(\mathfrak u)|},
+    \f]
+    where
+    \f[
+      D_{\alpha, d} = 2^{2 \max(d-\alpha, 0) + \alpha (2d-1)},
+    \f]
+    and \f$w\f$ denotes the weights interlacing operator:
+    \f[
+        w(\mathfrak u) = \left\{ \left \lceil \frac{j}{d} \right\rceil, j \in \mathfrak u \right\}.
+    \f]
 */
 vim: ft=doxygen spelllang=en spell

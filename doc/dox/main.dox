@@ -24,15 +24,6 @@ and randomized quasi Monte-Carlo methods using state-of-the-art techniques. The 
 in base 2.
 
 This software is based on a previous version called <a href="https://github.com/umontreal-simul/latnetbuilder/tree/v1.5.0"> Lattice Builder</a>.
-The reference for this previous version can be found below:
-<blockquote>
-<a href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf">
-P. L'Ecuyer and D. Munger.
-<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Lattice Rules.</b>
-ACM Trans. Math. Softw. 42, 2, Article 15 (May 2016), 30 pages.
-</a>
-</blockquote>
-
 The current version of the software is called LatNet Builder, for Lattice & Net Builder, as it handles both rank-1 lattices and digital nets in base 2.
 
 \section outline Manual Outline
@@ -41,11 +32,38 @@ The current version of the software is called LatNet Builder, for Lattice & Net 
 - \subpage gui
 - \subpage libtut
 
-\section links Links
+\section links Links and publications
 
 - <a href="https://github.com/umontreal-simul/latnetbuilder">LatNet Builder Home</a>
 - <a href="https://github.com/umontreal-simul/latnetbuilder/releases">LatNet Builder Downloads</a>
 - <a href="https://github.com/umontreal-simul/latnetbuilder/tree/master#compiling-the-source-code">Compiling LatNet Builder</a>
+
+
+A description of the discrepancies and associated figures of merit, as well as an overview of the types of constructions, weights, and search methods supported by LatNet Builder:
+<blockquote>
+<a href="https://arxiv.org/abs/2012.10263">
+P. L'Ecuyer, P. Marion, M. Godin, and F. Puchhammer.
+<b>A Tool for Custom Construction of QMC and RQMC Point Sets</b>
+</a>
+</blockquote>
+
+The reference for Lattice Builder:
+<blockquote>
+<a href="https://www.iro.umontreal.ca/~lecuyer/myftp/papers/latbuilder-final.pdf">
+P. L'Ecuyer and D. Munger.
+<b>LatticeBuilder: A General Software Tool for Constructing Rank-1 Lattice Rules.</b>
+ACM Trans. Math. Softw. 42, 2, Article 15 (May 2016), 30 pages.
+</a>
+</blockquote>
+
+The algorithm for the computation of the t-value used in LatNet Builders:
+<blockquote>
+<a href="http://arxiv.org/abs/1910.02277">
+P. Marion, M. Godin, and P. L'Ecuyer.
+<b>An algorithm to compute the t-value of a digital net and of its projections</b>
+Journal of Computational and Applied Mathematics, volume 371, paper 112669 (June 2020).
+</a>
+</blockquote>
 
 */
 

@@ -30,7 +30,7 @@ namespace NetBuilder {
      * Class to compute the t-value of a projection of a digital net in base 2.
      * This class uses a refined version of the gaussian elimination to compute efficiently the t-value of
      * a projection, knowing the t-value of the smaller projections. 
-     * \todo add a reference if a paper is made.
+     * The algorithm is described in \cite rMAR20a.
      */  
     struct GaussMethod
     {

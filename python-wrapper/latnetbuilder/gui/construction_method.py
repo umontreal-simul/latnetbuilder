@@ -1,6 +1,6 @@
 import ipywidgets as widgets
 
-from .common import style_default, parse_polynomial, BaseGUIElement
+from .common import style_default, BaseGUIElement
 
 constr_data = {
     'sobol': '<p> The nets follow the Sobol construction, and the direction numbers are optimized. The first matrix is always the same (identity), so the first direction number is arbitrarly set to 0.</p>',

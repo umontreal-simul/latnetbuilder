@@ -565,7 +565,7 @@ a rebuild of the online GUI.
 
 ### Publications
 
-P. L'Ecuyer, P. Marion, M. Godin, and F. Puchhammer, _A Tool for Custom Construction of QMC and RQMC Point Sets_, Monte Carlo and Quasi-Monte Carlo Methods 2020, accepted for publication. [arXiv link.](https://arxiv.org/abs/2012.10263)
+P. L'Ecuyer, P. Marion, M. Godin, and F. Puchhammer, _A Tool for Custom Construction of QMC and RQMC Point Sets_, Monte Carlo and Quasi-Monte Carlo Methods 2020, submitted. [arXiv link.](https://arxiv.org/abs/2012.10263)
 
 P. Marion, M. Godin, and P. L'Ecuyer, _An algorithm to compute the t-value of a digital net and of its projections_, Journal of Computational and Applied Mathematics, volume 371, paper 112669, June 2020. [arXiv link.](http://arxiv.org/abs/1910.02277)
 

@@ -29,16 +29,28 @@ The tutorial is divided into the following sections:
 
 /** \page libtut_net_def Net Construction Types and Definitions
 
-In %NetBuilder, digital nets are represented by the abstract class DigitalNet. This class
+In %NetBuilder, digital nets are represented by the abstract class AbstractDigitalNet. This class
 is basically a wrapper around a vector of pointers to generating matrices.
 
-DigitalNet is an abstract class which is implemented by the DigitalNetConstruction class template.
+AbstractDigitalNet is an abstract class which is implemented by the DigitalNet class template.
 This derived class corresponds to the \ref feats_pointsets_net "various constructions of generating matrices" which are available
 in %NetBuilder. The template parameter is a non-type template parameter whose value belongs to the \link NetConstruction \endlink enumeration.
 To each value of this enumeration corresponds a trait class containing the implementation
 which is used to construct and extend digital nets. These implementations can be found in the
 NetConstructionTraits class.
 
+ A construction method is defined by choosing two main variables:
+    - the list of generating values, which are used to create each net of our subspace. 
+There is one generating value for each coordinate of the net. 
+Generating values are *specific* to each net, and these are the variables which get optimized when exploring the subspace.
+    - the size parameters, which are the parameters *common* to all nets which are needed by the construction rule.
+They are not optimized when exploring the subspace.
+
+There are currently 3 construction methods implemented: Sobol, polynomial, and explicit.
+    - Sobol: the size parameter is the number of columns of the matrices, and the generating values are the direction numbers used to construct a given coordinate. 
+    - Polynomial: the size parameter is the Polynomial modulus, and the generating value is the Polynomial used to construct a given coordinate.
+    - Explicit: the size parameter is the dimensions of the matrices, and the generating value is the matrix itself.
+ 
 \section libtut_net_def_sobol Sobol' construction
 In the case of the Sobol' construction, we have the following types:
 
@@ -100,6 +112,11 @@ The extension of the lattice rule is performed in a very similar way to the Sobo
 Let us finish with the explicit construction. In this case, we have the following types:
 
 \snippet tutorial/NetDef.cc Explicit_typedefs
+
+*/
+TODO: should we change the example in the tutorial to use the column representation? Or maybe put both?
+TODO: go over all examples in the tutorial.
+*/
 
 In this case, the generating values are exactly the generating matrices. The size parameter
 is a pair of integers which represents the size of the matrices (number of rows and number of

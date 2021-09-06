@@ -72,16 +72,17 @@ This page describes how the various
 
 - Figures of merit for interlaced polynomial lattice rules and interlaced digital nets:
 
-    - the \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy:
+    - the \f$\mathcal I^{(a)}_{\alpha, d}\f$ interlaced discrepancy:
     \n Only with an \f$\ell_1\f$ norm.
     \n <code>--figure-of-merit CU:IA<var>alpha</var> --norm-type 1</code> with \f$\alpha\f$=<code><var>alpha</var></code>,
 
-    - the \f$B_{d, (2)}\f$ interlaced discrepancy:
+    - the \f$mathcal I^{(b)}_{\alpha, d}\f$ interlaced discrepancy:
     \n Only with an \f$\ell_1\f$ norm.
     <code>--figure-of-merit CU:IB --norm-type 1</code>.
 
-    For both figures of merit, the <code>CU</code> prefix may be added to fasten the computations by using the coordinate-uniform evaluation
-    algorithm.
+    - the \f$mathcal I^{(c)}_{\alpha, d}\f$ interlaced discrepancy:
+    \n Only with an \f$\ell_1\f$ norm.
+    \n <code>--figure-of-merit CU:IC<var>alpha</var> --norm-type 1</code> with \f$\alpha\f$=<code><var>alpha</var></code>.
 
 */
 vim: ft=doxygen spelllang=en spell

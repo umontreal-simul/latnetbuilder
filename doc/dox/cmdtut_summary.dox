@@ -149,9 +149,11 @@ options:
 		- <code>t-value</code> for the t-value merit (only available with digital nets and incompatible with CBC explorations);
 		- <code>projdep:t-value</code> for the projection-dependent t-value merit (only available wih digital nets);
 		- <code>projdep:resolution-gap</code> for the projection-dependent resolution-gap (only available wih digital nets);
-		- <code>IA<var>alpha</var></code> for the interlaced \f$B_{\alpha, d, (1)}\f$ discrepancy 
-		  with \f$\alpha=\f$<code><var>alpha</var></code> (only available for interlaced polynomial lattice rules and digital nets); or
-		- <code>IB</code> for the interlaced \f$B_{d, (2)}\f$ discrepancy (only available for interlaced polynomial lattice rules and digital nets).
+		- <code>IA<var>alpha</var></code> for the interlaced \f$\mathcal I^{a}_{\alpha, d}\f$ discrepancy 
+		  with \f$\alpha=\f$<code><var>alpha</var></code> (only available for interlaced polynomial lattice rules and digital nets);
+		- <code>IB</code> for the interlaced \f$\mathcal I^{b}_{d}\f$ discrepancy (only available for interlaced polynomial lattice rules and digital nets); or
+		- <code>IC<var>alpha</var></code> for the interlaced \f$\mathcal I^{c}_{\alpha, d}\f$ discrepancy 
+		  with \f$\alpha=\f$<code><var>alpha</var></code> (only available for interlaced polynomial lattice rules and digital nets);
 
 		The definitions of all these figures of merit can be find \ref feats_figures "here". More details on how to use this option 
 		are available on this \ref cmdtut_advanced_figures "page".

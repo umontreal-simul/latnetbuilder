@@ -1,0 +1,207 @@
+// This file is part of LatNet Builder.
+//
+// Copyright (C) 2012-2021  The LatNet Builder author's, supervised by Pierre L'Ecuyer, Universite de Montreal.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/** \page cmdtut_advanced_output_style Output styles
+
+It is possible to save the results of LatNet Builder in a folder. This folder contains two files: 
+  - <code>input.txt</code> which contains the summary of the input parameters of LatNet Builder
+  - <code>output.txt</code> which contains an easily parsable formatting of the results
+
+The contents of the <code>output.txt</code> file depend on the point set type (ordinary lattice rule,
+polynomial lattice rule, sobol digital net, and explicit digital net). For each point set type, several
+formats are available. The user can specify the desired format using the <code>\--output-style</code> option.
+
+Below, we describe the different available output formats.
+
+\section cmdtut_advanced_output_style_summary Summary of available formats
+
+- For ordinary lattice rules: lattice format
+- For polynomial lattice rules: lattice format (default) and net format
+- For Sobol digital net: Sobol format (default), Joe & Kuo format, net format
+- For explicit digital net: net format
+
+
+\section cmdtut_advanced_output_style_lattice Lattice format
+
+It is obtained with the option \n<code>\--output-style lattice</code>.
+For ordinary lattice rules, the output file looks like follows:
+
+\verbatim
+# Parameters for a lattice rule
+8	# 8 dimensions
+65536	# modulus = n = 65536 points
+# Coordinates of generating vector, starting at j=1
+1
+19463
+17213
+5895
+14865
+31925
+30921
+26671
+\endverbatim
+
+The first two lines of the file give the dimension of the net and the modulus (number of points). 
+The following lines give the generating values, one per line.
+
+For polynomial lattice rules, the format is very similar, as follows:
+
+\verbatim
+# Parameters for a polynomial lattice rule in base 2
+8 	# s = 8 dimensions
+16	# n = 2^16 = 65536 points
+45781	# polynomial modulus
+# Coordinates of generating vector, starting at j=1
+1
+17213
+5895
+14865
+31925
+30921
+26671
+17213
+\endverbatim
+
+There are two differences with the previous case: first, the polynomial modulus is in general different
+from the number of points, so we give both information on two separate lines.
+Second, the modulus and the generating values are now polynomials. However, we represent them as
+integers with the (standard) convention that the integer is obtained by replacing the formal
+variable by 2. For example, if the polynomial is \f$Q(z) = z^4 + z^3 + 1\f$, its integer
+representation is \f$2^4 + 2^3 + 1 = 25\f$.
+
+\section cmdtut_advanced_output_style_net Net format
+
+The most general format for digital nets is the <code>\--output-style net</code> format, which looks as follows.
+
+\verbatim
+# Parameters for a digital net in base 2
+8 	# s = 8 dimensions
+10 	# n = 2^10 = 1024 points
+31 	# r = 31 digits
+# The columns of gen. matrices C_1, ..., C_s, one matrix per line :
+1073741824 536870912 268435456 134217728 ...
+2012537125 1382645254 ...
+\endverbatim
+
+The first three lines give:
+\ns : the number of dimensions
+\nk : the number of points, which equals \f$2^k\f$ with \f$k\f$ the number of columns.
+\nr : the number of rows in the binary generating matrices. In general, we have \f$r = 31 \geq k\f$.
+
+The following lines give the representation of the generating matrices, one matrix per line.
+Each matrix is represented by \f$k\f$ integers encoding its columns in the following format: the binary
+representation of the integer gives the r bits in the column, with the bit on the first row of the
+matrix (row \f$0\f$) being the most significant, and the one on the last row (row \f$r − 1\f$) being the least
+significant.
+
+For example:
+\nIf \f$r = 31\f$ and the first column has a 1 in the first row and 0 in all other rows, then the integer representation
+of this column will be \f$2^30= 1 073 741 824\f$.
+\nIf there is a 1 in the last row and 0 elsewhere, the representation will be \f$2^0= 1\f$.
+\nIf all 31 elements of the column are 1, the representation will be \f$2^31 - 1\f$.
+
+\section cmdtut_advanced_output_style_sobol Formats for Sobol digital nets
+
+\subsection cmdtut_advanced_output_style_sobol_jk Joe & Kuo format
+
+This output format, which can be optained with <code>\--output-style soboljk</code> is the one from Joe and Kuo (2008). 
+The output file looks as follows:
+
+\verbatim
+# Parameters for Sobol points, in JK format
+# 8 dimensions
+# 	d 	a 	m_{j, c}
+2	1 	0 	1
+3	2 	1 	1 3
+4	3 	1 	1 3 1
+5	3 	2 	1 1 1
+6 	4 	1 	1 1 3 3
+7 	4 	4 	1 3 5 13
+8 	5 	2 	1 1 5 5 17
+\endverbatim
+
+The only difference with the Joe & Kuo format is that there are more comment lines at the beginning.
+After these comment lines, the other lines of the file specify the primitive polynomials and the
+initial direction numbers for each coordinate \f$j \geq 2\f$, one line per coordinate. 
+
+For coordinate \f$j=1\f$, the generating matrix is the identity and is not given in the
+file (it is implicit). 
+
+Then for each following coordinate:
+- The first number on each line is the coordinate j. 
+- The second number is the degree \f$c_j\f$ of the primitive polynomial \f$p_j(x)\f$ used for this coordinate.
+- The third number is the integer that corresponds to the binary representation of the inner 
+  coefficients of this polynomial (the first and last coefficients are ignored, as they are always 1).
+  For example : 
+  \nIf the polynomial is \f$p_{j}(x) = x^4 + x^3 + 1\f$, the coefficients are “1 1 0 0 1”, and
+  after removing the first and last “1”, we get 100 in base 2, which is 4, so the third column
+  contains the number 4. (Without removing the first and last “1”, the number would be 25
+  instead.)
+- After these three numbers, there are \f$c_j\f$ integers \f$m_{j,1}, \dots, m_{j,c_j}\f$ where
+  \f$m_{j,c}\f$ is the cth (real-valued) initial direction number for this coordinate, multiplied
+  by \f$2^c\f$ to obtain an integer. This \f$m_{j,c}\f$ is the integer formed by taking the bits
+  in row 1 to row c of column c, in this order. The last bit is the bit on the diagonal, which
+  is always 1, so all \f$m_{j,c}\f$’s are odd integers. 
+
+More details are given at :
+\n \link http://umontreal-simul.github.io/ssj/docs/master/classumontreal_1_1ssj_1_1hups_1_1SobolSequence.html \endlink
+
+
+\subsection cmdtut_advanced_output_style_sobol_sobol Simplified Sobol format
+
+This format, which can be used with the <code>\--output-style sobol</code> option is a simplification of the JK format.
+The first three columns are removed of the original Joe and Kuo format, because this numbers never change. 
+We only give the (initial) direction numbers, starting from the second coordinate, as previously.
+
+Example of simplified Sobol output format:
+
+\verbatim
+# Parameters m_{j, c} for Sobol points
+# 8 dimensions
+# m_{j, c} starting from the second coordinate
+1	 
+1 3
+1 3 1
+1 1 1
+1 1 3 3
+1 3 5 13
+1 1 5 5 17
+\endverbatim
+
+\section cmdtut_advanced_output_style_interlaced Interlaced point sets
+
+For interlaced point sets, the output is the underlying point set in dimension \f$ds\f$. 
+The \ref feats_pointsets_interlaced "digit interlacing function" should be applied to this
+point set in dimension \f$ds\f$ to obtain the interlaced point set in dimension \f$s\f$.</b>
+
+Two comment lines are added to signal that we are working with an interlaced point set, for instance:
+
+\verbatim
+# Parameters for a digital net in base 2
+2    # 2 dimensions
+2    # Interlacing factor
+4    # Number of components = interlacing factor x dimension
+10   # k = 10,  n = 2^10 = 1024 points
+31   # r = 31 binary output digits
+# Columns of gen. matrices C_1,...,C_{ds}, one matrix per line
+1073741824 536870912 268435456 1476395008 1543503872 1644167168 1728053248 511705088 180355072 1625292800
+1073741824 1610612736 1879048192 134217728 1543503872 503316480 1325400064 2021654528 71303168 1839202304
+1073741824 1610612736 805306368 134217728 1811939328 369098752 1828716544 1753219072 943718400 568328192
+1073741824 536870912 1879048192 134217728 1811939328 167772160 1795162112 595591168 809500672 828375040
+\endverbatim
+
+*/
+vim: ft=doxygen spelllang=en spell

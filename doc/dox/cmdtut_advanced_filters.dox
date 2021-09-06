@@ -37,10 +37,10 @@ Alternatively, it is possible to choose specific normalizations:
 - Normalizations for the \f$P_\alpha\f$ discrepancy (polynomial lattice rules):
     - <code>norm:P<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code> (default);
 
-- Normalizations for the \f$B_{\alpha, d, (1)}\f$ interlaced discrepancy: 
+- Normalizations for the \f$\mathcal I^{a}_{\alpha, d}\f$ interlaced discrepancy: 
     - <code>norm:IA<var>alpha</var></code> with \f$\alpha=\f$<code><var>alpha</var></code> (default);
 
-- Normalizations for the \f$B_{d, (2)}\f$ interlaced discrepancy: 
+- Normalizations for the \f$\mathcal I^{b}_{d}\f$ interlaced discrepancy: 
     - <code>norm:IB</code> (default).
 
 \section cmdtut_advanced_filters_filters Filters

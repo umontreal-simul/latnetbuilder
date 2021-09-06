@@ -61,6 +61,9 @@ lattice rule to equal \f$2^k\f$ with <code>--size-parameter 2^<var>k</var></code
 \f$k\f$ will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used
 with the fast-CBC exploration method. These polynomials are from <a href="http://www.partow.net/programming/polynomials/index.html"> Arash Partow </a>.
 
+*/
+TODO: correct this to decribe the new encoding of polynomials.
+*/
 Otherwise, one can also specify a custom polynomial modulus. The number of points will be two to the power of its degree.
 Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by
 <code>101001</code>. 
@@ -118,14 +121,16 @@ Constructing a specific digital net depends on its construction method. In the C
   integers. Each comma-separated list correspond to a coordinate. Details on direction numbers, including the number of
   direction numbers required for each coordinate, can be find \ref feats_pointsets "here". For instance <code>0-1-1,1</code>
   stands for the Sobol' net in dimension 3 with direction numbers \f$((0), (1), (1,1))\f$.
-  Note that a dummy direction number equal to zero must be specified for the first coordinate. 
+  Note that a dummy direction number equal to zero must be specified for the first coordinate (which is always equal to the identity matrix). 
 - for polynomial lattice rules:
   \n a (polynomial) \ref cmdtut_advanced_pointsets_lat "generating vector".
 - for explicit digital nets:
-  \n a dash-separated list of comma-separated lists of rows. Each comma-separated list
-  correspond to a generating matrix. The rows are specified as a binary sequence without separators. For instance, 
-  <code>001,010,111-110,001,111-100,110,001</code> stands for the following generating matrices :
-
+  \n a list of integers. Each integer represents a column of a generating matrix with the following format: the binary
+representation of the integer gives the r bits in the column, with the bit on the first row of the
+matrix (row \f$0\f$) being the most significant, and the one on the last row (row \f$r − 1\f$) being the least
+significant. Columns of the same matrix are separated by comma, and different matrices are separated by dashes.
+So for instance, if r=3, we can encode matrices with 3 rows, and
+<code>1,3,5-5,5,3-6,2,1</code> stands for the following generating matrices:
   \f[ 
     \begin{pmatrix}
       0 & 0 & 1 \\
@@ -143,5 +148,6 @@ Constructing a specific digital net depends on its construction method. In the C
       0 & 0 & 1 
     \end{pmatrix}.
   \f]
+In the code, we take r=31. So, for instance, 2^30=1073741824 encodes a column with a 1 on the first row, and 0 elsewhere.
 */
 vim: ft=doxygen spelllang=en spell

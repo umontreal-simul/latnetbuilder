@@ -23,9 +23,9 @@ LatNet Builder supports the construction of interlaced digital nets and
 interlaced polynomial lattice rules. More precisely, it constructs the underlying digital net
 of the interlaced digital net, using various \ref feats_figures_lat_interlaced "quality criteria".
 
-The available figures of merit are the \f$B_{\alpha, d, (1)}\f$ and the \f$B_{d, (2)}\f$ interlaced discrepancies
-from \cite rGOD13a. The interlacing factor (<code>--interlacing-factor</code>) must be greater than one to enable these figures
-of merit.
+The available figures of merit are the \f$\mathcal I^{a}_{\alpha, d}\f$, the \f$\mathcal I^{b}_{d}\f$ and the I^{c}_{\alpha, d} interlaced discrepancies
+from \cite rGOD13a and \cite rGOD15c. 
+The interlacing factor (<code>--interlacing-factor</code>) must be greater than one to enable these figures of merit.
 They are only available with an \f$\ell_1\f$ norm. This allows a coordinate-uniform evaluation algorithm
 which should always be used when searching for good interlaced digital nets. 
 

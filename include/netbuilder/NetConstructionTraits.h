@@ -59,8 +59,9 @@ namespace NetBuilder {
  *  - <CODE> static \c bool \c checkGenValue(const GenValue& genValue) </CODE>: checks whether a generating value is correct
  *  - <CODE> static \c unsigned int \c nRows(const GenValue& genValue) </CODE>: computes the number of rows associated to the size parameter
  *  - <CODE> static \c unsigned int \c nCols(const GenValue& genValue) </CODE>: computes the number of columns associated to the size parameter
- *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, SizeParameter sizeParameter)</CODE>: 
- * create a generating matrix using the generating value and the size parameter.
+ *  - <CODE>static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParameter, const Dimension& dimension_j, const unsigned int nRows)</CODE>: 
+ * create a generating matrix using the generating value and the size parameter. 
+ * In some cases the generating matrix may also depend on the coordinate and on the number of rows of the generating matrix.
  *  - <CODE>static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter)</CODE>: returns the sequence of all the possible generating values
  *  for coordinate \c coord.
  *  - <CODE> static GenValueSpaceSeq genValueSpace(Dimension dimension , const SizeParameter& sizeParameter) </CODE>: returns the sequence of all the possible combinations
@@ -227,7 +228,6 @@ struct NetConstructionTraits<NetConstruction::POLYNOMIAL>
 
     static unsigned int nCols(const SizeParameter& param);
 
-    // TODO: add comment about the nRows parameter.
     static GeneratingMatrix* createGeneratingMatrix(const GenValue& genValue, const SizeParameter& sizeParam, const Dimension& dimension_j = 1, const unsigned int nRows = 0);
 
     static GenValueSpaceCoordSeq genValueSpaceCoord(Dimension coord, const SizeParameter& sizeParameter);
