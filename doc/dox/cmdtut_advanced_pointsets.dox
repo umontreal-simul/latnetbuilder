@@ -45,30 +45,25 @@ The switch between these two types of lattices can be operated using the option
       to search for polynomial lattice rules.
 
 
-\subsection cmdtut_advanced_pointsets_lat_size Size of lattice rules
+\subsection cmdtut_advanced_pointsets_lat_size Size and modulus of lattice rules
 
-The option <code>--size-parameter</code> can be used to specify the size (number of points) of a lattice rule. 
+The option <code>--size</code> can be used to specify the size (number of points) of a lattice rule. 
 
-Recall that for ordinary lattice rules, the modulus is exactly
-the number of points. In this case, we directly specify the modulus.
-For instance, to specify an ordinary lattice rule with 6977 points, use <code>--size-parameter 6977</code>.
-It is also possible to specify the number of points as a power of a base. For instance <code>--size-parameter 3^10</code> is also a valid expression.
+For instance, to specify an ordinary lattice rule with 6977 points, use <code>--size 6977</code>.
+It is also possible to specify the number of points as a power of a base. For instance <code>--size 3^10</code> is also a valid expression.
+Recall that for ordinary lattice rules, the number of points is the same thing as the modulus.
 
 For polynomial lattice rules, the number of points equals two to the power of the degree of its modulus. 
 The number of points will thus always be a power of two. 
 In the case of unilevel point sets, one can specify the number of points of the polynomial 
-lattice rule to equal \f$2^k\f$ with <code>--size-parameter 2^<var>k</var></code>. In this case, a predefined polynomial with degree 
+lattice rule to equal \f$2^k\f$ with <code>--size 2^<var>k</var></code>. In this case, a predefined polynomial with degree 
 \f$k\f$ will be chosen as modulus for the lattice. All the predefined polynomials are irreducible so that they can be used
 with the fast-CBC exploration method. These polynomials are from <a href="http://www.partow.net/programming/polynomials/index.html"> Arash Partow </a>.
 
-*/
-TODO: correct this to decribe the new encoding of polynomials.
-*/
-Otherwise, one can also specify a custom polynomial modulus. The number of points will be two to the power of its degree.
-Polynomials are specified as a sequence of coefficients (ordered by increasing degree). For instance \f$ 1 + z^2 + z^5 \f$ can be specified by
-<code>101001</code>. 
-Additionally, one can raise the polynomial to an integer power. For instance <code>--size-parameter 01^8</code> tells LatNet Builder that the modulus of the polynomial lattice is
-\f$z^8\f$. Note that it is always necessary to specify a custom modulus (as a power of a base modulus) when one constructs an embedded polynomial lattice rule.
+Otherwise, one can also specify a custom polynomial modulus using the option <code>--modulus</code>. The number of points will be two to the power of its degree.
+Polynomials are encoded as integers, where the formal variable is replaced by 2. For instance \f$ 1 + z^2 + z^5 \f$ is represented by \f$ 1 + 2^2 + 2^5 = 37\f$, so it can be specified by
+<code>--modulus 37</code>. 
+Note that it is always necessary to specify a custom modulus when one constructs an embedded polynomial lattice rule.
 
 \subsection cmdtut_advanced_pointsets_lat_specify How to construct a specific lattice rule
 
@@ -105,10 +100,10 @@ The switch between these three constructions can be operated using the option
 \subsection cmdtut_advanced_pointsets_net_size Size of digital nets
 
 Recall that the number of points of a digital net in base 2 is always a power of two.
-The option <code>--size-parameter</code> can be used to specify the number of points of the digital net.
-For instance, to specify a net with \f$2^8\f$ points, use <code>--size-parameter 2^8</code>.
+The option <code>--size</code> can be used to specify the number of points of the digital net.
+For instance, to specify a net with \f$2^8\f$ points, use <code>--size 2^8</code>.
 For polynomial lattice rules, a default (irreducible) modulus corresponding to this number of points will be chosen;
-to choose a specific modulus, one can use <code>--size-parameter</code> as they would 
+to choose a specific modulus, one can use <code>--modulus</code> as they would 
 \ref cmdtut_advanced_pointsets_lat_size "specify a modulus for a polynomial lattice rule". 
 
 \subsection cmdtut_advanced_pointsets_net_specify How to construct a specific net 

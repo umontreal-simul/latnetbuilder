@@ -14,18 +14,21 @@ def change_lattice_type(change, gui):
         return
     new_choice = change['new']
     gui.lattice_type.type_info.value = type_data[new_choice]
+    gui.properties.polynomial_modulus.value = ''
 
     if new_choice == 'ordinary':
         gui.properties.interlacing.disabled = True
         gui.properties.interlacing.value = 1
-        gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
+        gui.properties.size.placeholder = 'e.g. 2^10 or 1024'
+        gui.properties.polynomial_modulus.layout.display = 'none'
         gui.exploration_method.generating_vector.children[1].placeholder = 'e.g. 2^8 or 256'
         gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('Ralpha', 'Ralpha'), ('Spectral', 'spectral')]
 
     elif new_choice == 'polynomial':
         gui.properties.interlacing.disabled = False
-        gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
-        gui.exploration_method.generating_vector.children[1].placeholder = 'e.g. 2^8 or 256'
+        gui.properties.size.placeholder = 'e.g. 2^10' # 'e.g. 2^1 (using default polynomial) or 1024 (custom polynomial)'
+        gui.properties.polynomial_modulus.layout.display = 'flex'
+        gui.exploration_method.generating_vector.children[1].placeholder = 'e.g. 256'
         if gui.properties.interlacing.value == 1:
             gui.figure_of_merit.figure_type.options = [('Palpha', 'Palpha'), ('R', 'R')]
         else:

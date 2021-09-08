@@ -23,7 +23,8 @@ def parse_input(gui):
         return parse_input_lattice(gui)
 
 def parse_input_common(s, gui):
-    s.modulus = '"' + gui.properties.modulus.value + '"'
+    s.size = '"' + gui.properties.size.value + '"'
+    s.polynomial_modulus = gui.properties.polynomial_modulus.value
 
     s.dimension = gui.properties.dimension.value
     s.interlacing = gui.properties.interlacing.value

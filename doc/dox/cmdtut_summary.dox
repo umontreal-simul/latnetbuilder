@@ -62,20 +62,21 @@ options:
 		Specifies the dimension of the searched point sets.
 		Takes an integer argument.
 	</dd>
-	<dt><code>\--size-parameter</code> / <code>-s</code></dt>
+	<dt><code>\--size</code> / <code>-s</code></dt>
 	<dd><em>Required.</em>
   Specifies the size parameter of the point sets.
   Takes an argument of the form:
 	- For lattices (<code>--set-type lattice</code>):
-		- <code>--size-parameter <var>modulus</var></code>; or
-		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code>; or
-		- <code>--size-parameter 2^<var>k</var></code> (even for polynomial lattice rules).
+		- <code>--size <var>modulus</var></code>; or
+		- <code>--size <var>primeBase</var>^<var>power</var></code>; or
+		- <code>--size 2^<var>k</var></code> (required for polynomial lattice rules).
 	- For digital nets (<code>--set-type net</code>):
-		- <code>--size-parameter 2^<var>k</var></code>; or
-		- <code>--size-parameter <var>modulus</var></code> (only for polynomial lattice rules); or
-		- <code>--size-parameter <var>primeBase</var>^<var>power</var></code> (only for polynomial lattice rules).
-
-	See \ref cmdtut_advanced_pointsets "here" for additional details.
+		- <code>--size 2^<var>k</var></code>;
+	</dd>
+	<dt><code>\--polynomial-modulus</code> / <code>-m</code></dt>
+	<dd><em>Optional.</em>
+  Specifies the polynomial modulus for polynomial point sets. If not set, a default irreducible polynomial is chosen.
+  The modulus is specified as an integer, see \ref cmdtut_advanced_pointsets_lat_size "here" for additional details.
 	</dd>
 	<dt><code>\--exploration-method</code> / <code>-e</code></dt>
 	<dd><em>Required.</em>

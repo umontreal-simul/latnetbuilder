@@ -25,34 +25,6 @@ for line in lines:
 
 style_default = {'description_width': 'initial'}
 
-def parse_polynomial(s):
-    '''Parse a polynomial string (e.g. 1101^7).
-    
-    Returns the corresponding polynomial in a Latex-friendly form.'''
-    poly_str = ''
-    p = s.split('^')
-    if len(p) == 2:
-        base = np.array([int(y) for y in p[0]])
-        power = int(p[1])
-        modulus = np.flip(base, axis=0)
-    else:
-        base = np.array([int(y) for y in s])
-        power = 1
-        modulus = np.flip(base, axis=0)
-    for k in range(len(modulus)):
-        if modulus[k] == 1:
-            if poly_str != '':
-                poly_str += '+'
-            poly_str += ' z^{' + str(len(modulus)-k-1) + '}'
-        elif modulus[k] not in [0, 1]:
-            return ''
-    if poly_str == '':
-        return ''
-    if power != 1:
-        poly_str = '(' + poly_str + ')^{' + str(power) + '}'  
-            
-    return poly_str
-
 class ParsingException(Exception):
     '''Exception raised due to an error in the parsing of the input.'''
     pass

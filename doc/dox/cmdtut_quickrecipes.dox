@@ -29,7 +29,7 @@ Consider the following basic example:
 latnetbuilder \ 
  --set-type lattice \
  --construction ordinary \
- --size-parameter 2053 \
+ --size 2053 \
  --dimension 5 \
  --exploration-method full-CBC  \
  --figure-of-merit CU:P2 \
@@ -45,7 +45,7 @@ Some arguments consists of several tokens, separated by a colon.
 - The argument <code>\--construction ordinary</code> indicates that we seek an ordinary
   (in contrast to polynomial) rank-1 lattice rule.
 
-- The argument <code>\--size-parameter 2053</code> indicates that we seek a lattice rule
+- The argument <code>\--size 2053</code> indicates that we seek a lattice rule
   with modulus 2053.
 
 - The argument <code>\--dimension 5</code> specifies that we seek a lattice point
@@ -169,7 +169,7 @@ and that we want the digital net to have \f$2^{10}\f$ points. We will look at th
 
 Then the following options should be used:
 
-<code>--set-type net --construction explicit --size-parameter 2^10 --random:100</code>.
+<code>--set-type net --construction explicit --size 2^10 --random:100</code>.
 
 We now need a figure of merit to evaluate the net. We can for instance use the maximum of 
 the t-value of the subprojections of order lower than 3:
@@ -190,7 +190,7 @@ But here we will just compare the two following examples:
 latnetbuilder \ 
  --set-type lattice \
  --construction polynomial \
- --size-parameter 2^10 \
+ --size 2^10 \
  --dimension 5 \
  --exploration-method fast-CBC  \
  --figure-of-merit CU:R \
@@ -203,7 +203,7 @@ latnetbuilder \
 latnetbuilder \ 
  --set-type net \
  --construction polynomial \
- --size-parameter 2^10 \
+ --size 2^10 \
  --dimension 5 \
  --exploration-method random-CBC:70  \
  --figure-of-merit CU:R \
@@ -266,7 +266,7 @@ The search will be based on the full-CBC exploration method.
 latnetbuilder \
 --set-type net \
 --construction sobol \
---size-parameter 2^15 \
+--size 2^15 \
 --dimension 7 \
 --exploration-method full-CBC  \
 --figure-of-merit projdep:t-value:starDisc \
@@ -294,7 +294,7 @@ for the embedding levels 10 to 17, and a zero weight for the other embedding lev
 latnetbuilder \
 --set-type lattice \
 --construction ordinary \
---size-parameter 2^17 \
+--size 2^17 \
 --dimension 10 \
 --exploration-method fast-CBC  \
 --figure-of-merit CU:P2 \
@@ -322,7 +322,7 @@ The following command-line will do the job:
 latnetbuilder \
 --set-type lattice \
 --construction ordinary \
---size-parameter 11551 \
+--size 11551 \
 --dimension 10 \
 --exploration-method evaluation:1-5396-2285-484-5355-20-249-4237-4919-3622  \
 --figure-of-merit CU:R1 \
@@ -349,7 +349,7 @@ equal to \f$.9\f$.
 latnetbuilder \
 --set-type lattice \
 --construction polynomial \
---size-parameter 2^15 \
+--size 2^15 \
 --dimension 10 \
 --exploration-method fast-CBC  \
 --figure-of-merit CU:IB \
@@ -378,7 +378,7 @@ dimension 5 with:
 latnetbuilder \
   --set-type lattice \
   --construction ordinary \
-  --size-parameter 2^8 \
+  --size 2^8 \
   --dimension 5 \
   --exploration-method fast-CBC \
   --figure-of-merit CU:P2 \
@@ -395,7 +395,7 @@ This can be done with:
 latnetbuilder \
   --set-type lattice \
   --construction ordinary \
-  --size-parameter 2^9 \
+  --size 2^9 \
   --dimension 5 \
   --exploration-method extend:2^8:1-45-101-41-25 \
   --figure-of-merit CU:P2 \
@@ -404,7 +404,7 @@ latnetbuilder \
 \endverbatim
 Note that only the merit value of the lattice with \f$2^9\f$ points, and not
 that of the embedded lattices, is considered in this type of construction.
-The argument <code>\--size-parameter 2^9</code> specifies the extended number of points
+The argument <code>\--size 2^9</code> specifies the extended number of points
 and the argument <code>\--exploration-method extend:2^8:1-45-101-41-25</code> indicates
 that we want to extend on a lattice with \f$2^8\f$ points and generating vector 
 \f$\boldsymbol a=(1,45,101,41,25)\f$.

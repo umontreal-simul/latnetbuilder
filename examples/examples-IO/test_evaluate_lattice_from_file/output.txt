@@ -1,4 +1,4 @@
-# Input Command Line: --set-type lattice --construction ordinary --size-parameter 2^16 --dimension 100 --exploration-method evaluation:file:test_lat/output.txt --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_evaluate_lattice_from_file --output-style lattice
+# Input Command Line: --set-type lattice --construction ordinary --size 2^16 --dimension 100 --exploration-method evaluation:file:test_lat/output.txt --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_evaluate_lattice_from_file --output-style lattice
 # Merit: 3.43232e+07
 # Parameters for a lattice rule
 100    # 100 dimensions

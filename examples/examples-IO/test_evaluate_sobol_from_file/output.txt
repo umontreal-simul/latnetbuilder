@@ -1,4 +1,4 @@
-# Input Command Line: --set-type net --construction sobol --size-parameter 2^16 --dimension 10 --exploration-method evaluation:file:test_sobol_sob/output.txt --figure-of-merit projdep:t-value --norm-type inf --weights order-dependent:0:0,1,1 --output-folder test_evaluate_sobol_from_file --output-style sobol
+# Input Command Line: --set-type net --construction sobol --size 2^16 --dimension 10 --exploration-method evaluation:file:test_sobol_sob/output.txt --figure-of-merit projdep:t-value --norm-type inf --weights order-dependent:0:0,1,1 --output-folder test_evaluate_sobol_from_file --output-style sobol
 # Merit: 5
 # Parameters m_{j,c} for Sobol points
 10    # 10 dimensions

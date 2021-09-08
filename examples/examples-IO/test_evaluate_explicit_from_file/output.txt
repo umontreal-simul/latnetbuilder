@@ -1,4 +1,4 @@
-# Input Command Line: --set-type net --construction explicit --size-parameter 2^10 --dimension 2 --interlacing 2 --exploration-method evaluation:file:test_explicit/output.txt --output-folder test_evaluate_explicit_from_file --figure-of-merit CU:IA2 --norm-type 1 --weights order-dependent:0:0.8,0.64 --multilevel true --combiner sum --output-style net
+# Input Command Line: --set-type net --construction explicit --size 2^10 --dimension 2 --interlacing 2 --exploration-method evaluation:file:test_explicit/output.txt --output-folder test_evaluate_explicit_from_file --figure-of-merit CU:IA2 --norm-type 1 --weights order-dependent:0:0.8,0.64 --multilevel true --combiner sum --output-style net
 # Merit: 37.2087
 # Parameters for a digital net in base 2
 2    # 2 dimensions

@@ -145,15 +145,15 @@ def exploration_method():
 
     generating_vector_simple = widgets.HBox(
             [widgets.Text(value='1', description='', 
-            layout=widgets.Layout(width='100px'), style=style_default) for k in range(INITIAL_DIM)],
+            layout=widgets.Layout(width='80px'), style=style_default) for k in range(INITIAL_DIM)],
             layout=widgets.Layout(display='none'))
 
     generating_vector = widgets.VBox([
         widgets.HBox(
             [widgets.Text(value='1', description='', 
-            layout=widgets.Layout(width='100px'), style=style_default) for k in range(INITIAL_DIM)]),
+            layout=widgets.Layout(width='80px'), style=style_default) for k in range(INITIAL_DIM)]),
         widgets.Text(placeholder='e.g. 2^8 or 256', description='If you want to extend, please specify the former modulus:',
-                    layout=widgets.Layout(width='600px'), style=style_default)
+                    layout=widgets.Layout(width='500px'), style=style_default)
     ],
         layout=widgets.Layout(display='none'))
 

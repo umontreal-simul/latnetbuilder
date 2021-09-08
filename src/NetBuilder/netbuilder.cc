@@ -61,10 +61,15 @@ makeOptionsDescription()
    "  explicit\n")
     ("dimension,d", po::value<std::string>(),
     "(required) point set dimension\n")
-   ("size-parameter,s", po::value<std::string>(),
-    "(required) modulus of the net; possible values:\n"
-   "  2^<max-level>\n"
-   "  <modulus>: polynomial (list of coefficients: 1011 stands for 1 + X^2 + X^3) (only for polynomial construction)\n"
+   ("size,s", po::value<std::string>(),
+    "(required) number of points; format:\n"
+    "  2^<level>\n"
+   )
+   ("polynomial-modulus,m", po::value<std::string>(),
+    "(optional) polynomial modulus; format:\n"
+    "  <integer>\n"
+    "where <integer> represents the polynomial (13 stands for 1 + X^2 + X^3)\n"
+    "If not set, a default irreducible polynomial is chosen. Required when multilevel=true.\n"
    )
    ("exploration-method,e", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
@@ -154,7 +159,7 @@ parse(int argc, const char* argv[])
 
    if (opt.count("weights") < 1)
       throw std::runtime_error("--weights must be specified (try --help)");
-   for (const auto x : {"size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
+   for (const auto x : {"size", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
@@ -171,7 +176,7 @@ NetBuilder::Parser::CommandLine<NetBuilder::NetConstruction::net_construction, N
 \
 cmd.s_verbose = opt["verbose"].as<std::string>();\
 cmd.s_explorationMethod = opt["exploration-method"].as<std::string>();\
-cmd.s_size = opt["size-parameter"].as<std::string>();\
+cmd.s_size = s_size;\
 cmd.s_dimension = opt["dimension"].as<std::string>();\
 cmd.s_figure = opt["figure-of-merit"].as<std::string>();\
 cmd.s_weights       = opt["weights"].as<std::vector<std::string>>();\
@@ -271,6 +276,18 @@ int main(int argc, const char *argv[])
       
         std::unique_ptr<NetBuilder::Task::Task> task;
         NetBuilder::OutputStyle outputStyle;
+
+        std::string s_size;
+        if (netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && opt.count("polynomial-modulus") == 1){
+          // Internally, size parameter is the same thing as modulus.
+          s_size = opt["polynomial-modulus"].as<std::string>();
+        }
+        else if (netConstruction == NetBuilder::NetConstruction::POLYNOMIAL && opt.count("polynomial-modulus") == 0) {
+          s_size = "default:" + opt["size"].as<std::string>();
+        }
+        else {
+          s_size = opt["size"].as<std::string>();
+        }
 
        if(netConstruction == NetBuilder::NetConstruction::SOBOL && embeddingType == NetBuilder::EmbeddingType::UNILEVEL){
           BUILD_TASK(SOBOL, UNILEVEL)

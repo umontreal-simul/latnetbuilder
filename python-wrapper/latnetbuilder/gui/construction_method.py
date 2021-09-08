@@ -13,6 +13,7 @@ def change_constr_choice(change, gui):
         return
     new_choice = change['new']
     gui.construction_method.constr_info.value = constr_data[new_choice]
+    gui.properties.polynomial_modulus.value = ''
 
     if new_choice == 'explicit':
         gui.exploration_method.is_random.value = True
@@ -20,7 +21,12 @@ def change_constr_choice(change, gui):
     else:
         gui.exploration_method.is_random.disabled = False
 
-    gui.properties.modulus.placeholder = 'e.g. 2^10 (default) or 1024'
+    if new_choice == 'polynomial':
+        gui.properties.polynomial_modulus.layout.display = 'flex'
+    else:
+        gui.properties.polynomial_modulus.layout.display = 'none'
+
+    gui.properties.size.placeholder = 'e.g. 2^10'
 
     gui.exploration_method._callbacks[gui.exploration_method.exploration_choice](
         {'name': 'value', 'new': gui.exploration_method.exploration_choice.value}, gui

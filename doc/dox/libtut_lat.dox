@@ -72,9 +72,17 @@ The first choice corresponds to the LatticeType enumeration and the second to th
 These two enumerations are used across all the library as non-type template parameters to implement different policies
 accordingly with the type of lattices.
 
-Their representation in %LatBuilder differs by the type of their size
-parameter. The SizeParam class accounts for this differences.
-A lattice of either type can be defined by its size parameter(s), together with
+The representations of ordinary and polynomial lattices differ by the type of their size parameter. 
+In %LatBuilder, the size parameter refers to the modulus of the lattice: it is an integer for ordinary lattice rules
+and a polynomial for polynomial lattice rules.
+
+Note that, in the case of polynomial lattice rules, this differs from the command line interface, where there are both a <code>--size-parameter</code>
+and a <code>--modulus</code> option. This distinction does not exist internally inside %LatBuilder. The command line <code>--size-parameter</code> is
+replaced by the modulus (either user-specified or default polynomial) during parsing.
+ 
+ 
+The SizeParam class encodes size parameters (i.e. modulus) for lattice rules.
+Hence a lattice of either type can be defined by its size parameter, together with
 its dimension \f$s\f$ and the components of its generating vector \f$\boldsymbol
 a = (a_1, \dots, a_s)\f$.  The LatDef class can be used for
 this purpose, as in \ref tutorial/LatDef.cc.

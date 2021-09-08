@@ -1,4 +1,4 @@
-Input Command Line: --set-type net --construction lms --size-parameter 10::polynomial::2^10::1-19-907-573-473-105-883-149-27-335 --dimension 10 --exploration-method random-CBC:10 --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_lms_random_style --output-style random
+Input Command Line: --set-type net --construction lms --size 10::polynomial::2^10::1-19-907-573-473-105-883-149-27-335 --dimension 10 --exploration-method random-CBC:10 --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_lms_random_style --output-style random
 
 Task: NetBuilder Search - Net Construction : LMS
 Number of components: 10

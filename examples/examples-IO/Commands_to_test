@@ -18,12 +18,12 @@ latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w or
 
 latnetbuilder -t net -c polynomial -s 2^16 -d 10 -f projdep:t-value -q inf -w order-dependent:0:0,1,1 -e random-CBC:70 -o test_n_polynomial_lat -O lattice
 
-latnetbuilder --set-type net --construction explicit --multilevel true --size-parameter 2^10 --figure-of-merit CU:IA2 --norm-type 1 --exploration-method random-CBC:10 --verbose 2 --dimension 2 --interlacing 2 --output-folder test_explicit --weights order-dependent:0:0.8,0.64 --combiner sum --output-style net
+latnetbuilder --set-type net --construction explicit --multilevel true --size 2^10 --figure-of-merit CU:IA2 --norm-type 1 --exploration-method random-CBC:10 --verbose 2 --dimension 2 --interlacing 2 --output-folder test_explicit --weights order-dependent:0:0.8,0.64 --combiner sum --output-style net
 
 ./latnetbuilder \
   --set-type net \
   --construction lms \
-  --size-parameter 10::polynomial::2^10::1-19-907-573-473-105-883-149-27-335 \
+  --size 10::polynomial::2^10::1-19-907-573-473-105-883-149-27-335 \
   --dimension 10 \
   --exploration-method random-CBC:10 \
   --figure-of-merit CU:P2 \
@@ -35,7 +35,7 @@ latnetbuilder --set-type net --construction explicit --multilevel true --size-pa
 ./latnetbuilder \
   --set-type net \
   --construction lms \
-  --size-parameter 10::polynomial::2^10::1-19-907-573-473-105-883-149-27-335 \
+  --size 10::polynomial::2^10::1-19-907-573-473-105-883-149-27-335 \
   --dimension 10 \
   --exploration-method random-CBC:10 \
   --figure-of-merit CU:P2 \
@@ -47,7 +47,7 @@ latnetbuilder --set-type net --construction explicit --multilevel true --size-pa
 ./latnetbuilder \
   --set-type net \
   --construction explicit \
-  --size-parameter 2^10 \
+  --size 2^10 \
   --dimension 2 \
   --interlacing 2 \
   --exploration-method evaluation:file:test_explicit/output.txt \
@@ -62,7 +62,7 @@ latnetbuilder --set-type net --construction explicit --multilevel true --size-pa
   ./latnetbuilder \
   --set-type net \
   --construction polynomial \
-  --size-parameter 2^10 \
+  --size 2^10 \
   --dimension 10 \
   --exploration-method evaluation:file:test_l_polynomial_lat/output.txt \
   --figure-of-merit CU:P2 \
@@ -74,7 +74,7 @@ latnetbuilder --set-type net --construction explicit --multilevel true --size-pa
 ./latnetbuilder \
   --set-type net \
   --construction polynomial \
-  --size-parameter 2^16 \
+  --size 2^16 \
   --dimension 10 \
   --exploration-method evaluation:file:test_n_polynomial_lat/output.txt \
   --figure-of-merit projdep:t-value \
@@ -86,7 +86,7 @@ latnetbuilder --set-type net --construction explicit --multilevel true --size-pa
   ./latnetbuilder \
   --set-type lattice \
   --construction ordinary \
-  --size-parameter 2^16 \
+  --size 2^16 \
   --dimension 100 \
   --exploration-method evaluation:file:test_lat/output.txt \
   --figure-of-merit CU:P2 \
@@ -98,7 +98,7 @@ latnetbuilder --set-type net --construction explicit --multilevel true --size-pa
   ./latnetbuilder \
   --set-type net \
   --construction sobol \
-  --size-parameter 2^16 \
+  --size 2^16 \
   --dimension 10 \
   --exploration-method evaluation:file:test_sobol_sob/output.txt \
   --figure-of-merit projdep:t-value \

@@ -83,14 +83,17 @@ makeOptionsDescription()
    "  polynomial\n")
    ("dimension,d", po::value<std::string>(),
     "(required) point set dimension\n")
-   ("size-parameter,s", po::value<std::string>(),
-    "(required) modulus of the lattice; possible values:\n"
-   "  <modulus>\n"
-   "  <base>^<max-level>\n"
-   "  input format :\n"
-   "  ordinary lattice rules: integer (decimal representation)\n"
-   "  polynomial lattice rules: polynomial (list of coefficients: 1011 stands for 1 + X^2 + X^3), or\n"
-   "                            2^<max_level> (default irreducible modulus, not available for multilevel)\n"
+   ("size,s", po::value<std::string>(),
+    "(required) number of points; format:\n"
+    "  <size>\n"
+    "  <base>^<level>\n"
+    "For polynomial lattice rules, the format must be 2^<level>.\n"
+   )
+   ("polynomial-modulus,m", po::value<std::string>(),
+    "(optional) polynomial modulus; format:\n"
+    "  <integer>\n"
+    "where <integer> represents the polynomial (13 stands for 1 + X^2 + X^3)\n"
+    "If not set, a default irreducible polynomial is chosen. Required when multilevel=true.\n"
    )
    ("exploration-method,e", po::value<std::string>(),
     "(required) exploration method; possible values:\n"
@@ -187,7 +190,7 @@ parse(int argc, const char* argv[])
       std::exit (0);
    }
 
-   for (const auto x : {"construction", "size-parameter", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
+   for (const auto x : {"construction", "size", "exploration-method", "dimension", "figure-of-merit", "norm-type"}) {
       if (opt.count(x) != 1)
          throw std::runtime_error("--" + std::string(x) + " must be specified exactly once (try --help)");
    }
@@ -441,7 +444,7 @@ int main(int argc, const char *argv[])
             
             cmd.originalCommandLine = boost::algorithm::join(all_args, " ");
             cmd.construction  = opt["exploration-method"].as<std::string>();
-            cmd.size          = opt["size-parameter"].as<std::string>();
+            cmd.size          = opt["size"].as<std::string>();
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();
@@ -499,7 +502,11 @@ int main(int argc, const char *argv[])
             
             cmd.originalCommandLine = boost::algorithm::join(all_args, " ");
             cmd.construction  = opt["exploration-method"].as<std::string>();
-            cmd.size          = opt["size-parameter"].as<std::string>();
+            cmd.size          = "default:" + opt["size"].as<std::string>();
+            if (opt.count("polynomial-modulus") == 1){
+              // Internally, size parameter is the same thing as modulus.
+              cmd.size        = opt["polynomial-modulus"].as<std::string>();
+            }
             cmd.dimension     = opt["dimension"].as<std::string>();
             cmd.normType      = opt["norm-type"].as<std::string>();
             cmd.figure        = opt["figure-of-merit"].as<std::string>();

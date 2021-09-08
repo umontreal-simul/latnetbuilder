@@ -52,26 +52,31 @@ template <>
 LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>
 SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>::parse(const std::string& str)
 {
-   
-   auto n = splitPair<std::string, Level>(str, '^', 0);
+   std::vector<std::string> sizeParamStrings;
+   boost::split(sizeParamStrings, str, boost::is_any_of(":"));
    try {
-      if (n.first == "2")
-      {
-            unsigned int degree = (unsigned int) n.second;
-            std::string polyString = LatBuilder::getDefaultPolynomial(degree);
-            Polynomial defaultPoly = PolynomialFromInt(std::stoi(polyString));
-            return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(defaultPoly);
-      }
-      Polynomial base = PolynomialFromInt(std::stoi(n.first));
-      // try b^p form first
-      
-      if (n.second == 0)
+      if (sizeParamStrings.size() == 1) {
+         // The input is a polynomial in integer representation.
+         auto n = splitPair<uInteger, uInteger>(sizeParamStrings[0], '^', 1);
+         Polynomial base = PolynomialFromInt(intPow(n.first, n.second));
          return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(base);
-      else
-         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(intPow(base, n.second));
+      }
+      else if (sizeParamStrings.size() == 2) {
+         // We should get the default polynomial.
+         auto n = splitPair<unsigned int, unsigned int>(sizeParamStrings[1], '^', 0);
+         if (n.second == 0){
+            throw ParserError("\"" + sizeParamStrings[1] + "\" is not a valid size for polynomial point sets.");
+         }
+         std::string polyString = LatBuilder::getDefaultPolynomial(n.second);
+         Polynomial defaultPoly = PolynomialFromInt(std::stoi(polyString));
+         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(defaultPoly);
+      }
+      else {
+         throw ParserError("cannot interpret \"" + sizeParamStrings[sizeParamStrings.size()-1] + "\" as " + TypeInfo<Polynomial>::name());
+      }
    }
    catch (boost::bad_lexical_cast&) {
-      throw ParserError("cannot interpret \"" + n.first + "\" as " + TypeInfo<Polynomial>::name());
+      throw ParserError("cannot interpret \"" + sizeParamStrings[sizeParamStrings.size()-1] + "\" as " + TypeInfo<Polynomial>::name());
    }
 }
 
@@ -79,19 +84,21 @@ template <>
 LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>
 SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>::parse(const std::string& str)
 {
-   auto n = splitPair<std::string, Level>(str, '^', 0);
-   try{
-
-      Polynomial base = PolynomialFromInt(std::stoi(n.first));
-      // try b^p form first
-      
-      if (n.second == 0)
-         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>(base);
-      else
-         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::MULTILEVEL>(base, n.second);
+   std::vector<std::string> sizeParamStrings;
+   boost::split(sizeParamStrings, str, boost::is_any_of(":"));
+   try {
+      if (sizeParamStrings.size() == 1) {
+         // The input is a polynomial in integer representation.
+         auto n = splitPair<uInteger, uInteger>(sizeParamStrings[0], '^', 1);
+         Polynomial base = PolynomialFromInt(intPow(n.first, n.second));
+         return LatBuilder::SizeParam<LatticeType::POLYNOMIAL, LatBuilder::EmbeddingType::UNILEVEL>(base);
+      }
+      else {
+         throw ParserError("Default polynomials are not possible for multilevel polynomial point sets.");
+      }
    }
    catch (boost::bad_lexical_cast&) {
-      throw ParserError("cannot interpret \"" + n.first + "\" as " + TypeInfo<Polynomial>::name());
+      throw ParserError("cannot interpret \"" + str + "\" as " + TypeInfo<Polynomial>::name());
    }
 }
 

@@ -1,4 +1,4 @@
-# Input Command Line: --set-type net --construction polynomial --size-parameter 2^10 --dimension 10 --exploration-method evaluation:file:test_l_polynomial_lat/output.txt --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_evaluate_poly_from_file --output-style lattice
+# Input Command Line: --set-type net --construction polynomial --size 2^10 --dimension 10 --exploration-method evaluation:file:test_l_polynomial_lat/output.txt --figure-of-merit CU:P2 --norm-type 2 --weights product:0.1 --output-folder test_evaluate_poly_from_file --output-style lattice
 # Merit: 0.000818148
 # Parameters for a polynomial lattice rule in base 2
 10       # 10 dimensions

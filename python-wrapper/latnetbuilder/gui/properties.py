@@ -29,8 +29,8 @@ def change_interlacing(change, gui):
     else:
         gui.figure_of_merit.figure_type.options = [('Balpha,d_1', 'IAalpha'), ('Bd_2', 'IB'), ('Balpha,d_3', 'ICalpha')]    
         gui.figure_of_merit.figure_type.value = 'IAalpha'
-    update(gui.exploration_method.generating_vector.children[0], change['new']*gui.properties.dimension.value, '1', '100px')
-    update(gui.exploration_method.generating_vector_simple, change['new']*gui.properties.dimension.value, '1', '100px')
+    update(gui.exploration_method.generating_vector.children[0], change['new']*gui.properties.dimension.value, '1', '80px')
+    update(gui.exploration_method.generating_vector_simple, change['new']*gui.properties.dimension.value, '1', '80px')
 
 def update(form, dim, defaut_value, width):
     new_children = []
@@ -70,13 +70,15 @@ def change_dimension(change, gui):
     gui.exploration_method.mixed_CBC_level.max = dim
 
     dim = change['new'] * gui.properties.interlacing.value
-    update(gui.exploration_method.generating_vector.children[0], dim, '1', '100px')
-    update(gui.exploration_method.generating_vector_simple, dim, '1', '100px')
+    update(gui.exploration_method.generating_vector.children[0], dim, '1', '80px')
+    update(gui.exploration_method.generating_vector_simple, dim, '1', '80px')
 
 
 def properties():
-    modulus = widgets.Text(placeholder='e.g. 2^10 (default) or 1024', description='Modulus n=', 
-                    style=style_default, layout=widgets.Layout(width='420px'))
+    size = widgets.Text(placeholder='e.g. 2^10 or 1024', description='Size n=', 
+                    style=style_default, layout=widgets.Layout(width='350px')) 
+    polynomial_modulus = widgets.Text(placeholder='e.g. 1033 (int representation)', description='(optional) pol. modulus Q=', 
+        style=style_default, layout=widgets.Layout(width='350px', display='none')) 
 
     is_multilevel = widgets.Checkbox(value=False, description='Multilevel')
 
@@ -87,17 +89,18 @@ def properties():
 
     properties_wrapper = widgets.Accordion(
         [widgets.HBox(
-            [modulus,
+            [widgets.VBox([size, polynomial_modulus], layout=widgets.Layout(width='370px')),
             is_multilevel, 
             widgets.VBox([dimension, interlacing], layout=widgets.Layout(width='180px'))],
-            layout=widgets.Layout(align_items='center')
+            layout=widgets.Layout(align_items='center', justify_content='space-around')
         )])
     properties_wrapper.set_title(0, 'Basic Lattice properties')
-    return BaseGUIElement(modulus=modulus,
+    return BaseGUIElement(size=size,
                           is_multilevel=is_multilevel,
                           dimension=dimension,
                           interlacing=interlacing,
                           main=properties_wrapper,
+                          polynomial_modulus=polynomial_modulus,
                           _callbacks={'dimension': change_dimension,
                                       'interlacing': change_interlacing,
                                       'is_multilevel': change_multilevel})

@@ -18,7 +18,8 @@ DEFAULT_OUTPUT_FOLDER = 'latnetbuilder_results'
 
 class Search():
     def __init__(self):
-        self.modulus = ''
+        self.size = ''
+        self.polynomial_modulus = ''
         self.construction = ''
         self.dimension = 0
         self.interlacing = 1
@@ -45,23 +46,23 @@ class Search():
     "Combiner: %s\n" + \
     "Filters: %s\n" + \
     "Weights: %s\n" + \
-    "Output folder: %s\n") % (self.construction, self.modulus, str(self.multilevel), self.dimension, self.interlacing, self.exploration_method, self.figure_of_merit, self.norm_type, self.combiner, str(self.filters), str(self.weights), self._output_folder)
+    "Output folder: %s\n") % (self.construction, self.size, str(self.multilevel), self.dimension, self.interlacing, self.exploration_method, self.figure_of_merit, self.norm_type, self.combiner, str(self.filters), str(self.weights), self._output_folder)
 
     def construct_command_line(self):
         '''Construct and return the command line to call LatNetBuilder as a list of strings'''
 
-        # default value for modulus
-        if self.modulus == '""':
-            modulus = '"2^10"'
+        # default value for size
+        if self.size == '""':
+            size = '"2^10"'
         else:
-            modulus = self.modulus
+            size = self.size
 
         from . import PATH_TO_LATNETBUILDER
         command = [PATH_TO_LATNETBUILDER,
                    '--set-type', self.set_type_name,
                    '--construction', self.construction,
                    '--multilevel', str(self.multilevel).lower(),
-                   '--size-parameter', modulus,
+                   '--size', size,
                    '--figure-of-merit', self.figure_of_merit,
                    '--norm-type', self.norm_type,
                    '--exploration-method', self.exploration_method,
@@ -71,6 +72,8 @@ class Search():
                    '--output-folder', self._output_folder
                    ]
         command += ['--weights'] + self.weights
+        if self.polynomial_modulus != '':
+            command += ['--polynomial-modulus', self.polynomial_modulus]
         if self.filters != []:
             command += ['--filters'] + self.filters
         if self.combiner != '':

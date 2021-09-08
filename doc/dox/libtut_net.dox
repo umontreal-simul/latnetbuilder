@@ -51,6 +51,10 @@ There are currently 3 construction methods implemented: Sobol, polynomial, and e
     - Polynomial: the size parameter is the Polynomial modulus, and the generating value is the Polynomial used to construct a given coordinate.
     - Explicit: the size parameter is the dimensions of the matrices, and the generating value is the matrix itself.
  
+For polynomial digital nets, the modulus is internally referred to as the size parameter. Note that this differs from the command line interface, where there are both a <code>--size-parameter</code>
+and a <code>--modulus</code> option. This distinction does not exist internally inside %NetBuilder. The command line <code>--size-parameter</code> is
+replaced by the modulus (either user-specified or default polynomial) during parsing.
+
 \section libtut_net_def_sobol Sobol' construction
 In the case of the Sobol' construction, we have the following types:
 
