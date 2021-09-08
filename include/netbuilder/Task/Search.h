@@ -40,7 +40,7 @@ namespace{
     std::string output<NetConstruction::POLYNOMIAL>(typename NetConstructionTraits<NetConstruction::POLYNOMIAL>::SizeParameter sizeParameter)
     {
         std::ostringstream stream;
-        stream << "Modulus: " << LatBuilder::IndexOfPolynomial(sizeParameter) << std::endl;
+        stream << "Modulus: " << sizeParameter << std::endl;
         return stream.str();
     }
 }

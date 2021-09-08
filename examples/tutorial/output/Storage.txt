@@ -19,6 +19,6 @@ storage name: flat storage / none
   virtual size:   4
   actual size:    4
 storage name: multilevel storage, PerLevelOrder : basic / none
-  size parameter: [1 1 1]
+  size parameter: 7
   virtual size:   4
   actual size:    4

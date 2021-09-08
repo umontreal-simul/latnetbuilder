@@ -33,7 +33,7 @@ uInteger LatticeTraits<LatticeType::ORDINARY>::ToKernelIndex(const size_t& index
 
 //=================================================================================================================================================
 
-const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus LatticeTraits<LatticeType::POLYNOMIAL>::TrivialModulus = Polynomial(NTL::INIT_MONO,1);
+const LatticeTraits<LatticeType::POLYNOMIAL>::Modulus LatticeTraits<LatticeType::POLYNOMIAL>::TrivialModulus = (Polynomial) NTL::GF2X(NTL::INIT_MONO,1);
 
 uInteger LatticeTraits<LatticeType::POLYNOMIAL>::ToIndex(const LatticeTraits<LatticeType::POLYNOMIAL>::GenValue& value) {return IndexOfPolynomial(value);}
 

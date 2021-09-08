@@ -87,7 +87,7 @@ SizeParam<LatticeType::POLYNOMIAL,EmbeddingType::MULTILEVEL>::SizeParam(Polynomi
       m_maxLevel = 0;
    }
    else {
-      NTL::vector< NTL::Pair< Polynomial, long > > factors ;
+      NTL::vector< NTL::Pair< NTL::GF2X, long > > factors ;
       CanZass(factors, modulus); // calls "Cantor/Zassenhaus" algorithm from <NTL/GF2XFactoring.h>
       if (factors.size() != 1)
          throw std::runtime_error("not an integer power of a prime base");

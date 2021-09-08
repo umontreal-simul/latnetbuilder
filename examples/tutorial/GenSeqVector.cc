@@ -33,8 +33,8 @@ using TextStream::operator<<;
 template <LatticeType LA>
 void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
    typedef GenSeq::GeneratingValues<LA, Compress::NONE> Seq;
-   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice size
-   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice modulus
+   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice modulus to obtain a single value (1)
    Dimension dim = 3;
    //! [VectorCreator]
    auto vec = GenSeq::VectorCreator<Seq>::create(n, dim);
@@ -42,7 +42,7 @@ void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
    //! [1st]
    vec[0] = GenSeq::Creator<Seq>::create(n0);
    //! [1st]
-   std::cout << "lattice size: " << n << std::endl;
+   std::cout << "lattice modulus: " << n << std::endl;
    std::cout << "    generating value sequences: " << vec << std::endl;
 
 }
@@ -52,13 +52,13 @@ void SeqVector(typename LatticeTraits<LA>::Modulus modulus){
 template <LatticeType LA>
 void RandomSeqVector(typename LatticeTraits<LA>::Modulus modulus){
    typedef GenSeq::GeneratingValues<LA, Compress::NONE, Traversal::Random<LFSR258>> RandomSeq;
-   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice size
-   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice size to obtain a single value (1)
+   SizeParam<LA, EmbeddingType::UNILEVEL> n(modulus);      // lattice modulus
+   SizeParam<LA, EmbeddingType::UNILEVEL> n0(LatticeTraits<LA>::TrivialModulus);   // fake lattice modulus to obtain a single value (1)
    Dimension dim = 3;
   
    auto randVec = GenSeq::VectorCreator<RandomSeq>::create(n, dim, 5);
    randVec[0] = GenSeq::Creator<RandomSeq>::create(n0, 1); // replace 1st with singleton
-   std::cout << "lattice size: " << n << std::endl;
+   std::cout << "lattice modulus: " << n << std::endl;
    std::cout << "    random generating value sequences: " << randVec << std::endl;
 
 }

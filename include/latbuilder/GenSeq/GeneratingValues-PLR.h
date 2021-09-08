@@ -204,7 +204,7 @@ GeneratingValues<LatticeType::POLYNOMIAL, COMPRESS, TRAV>::GeneratingValues(
    m_modulus(modulus),
    m_size(1)
 {
-   NTL::vector< NTL::Pair< Polynomial, long > > factors ;
+   NTL::vector< NTL::Pair< NTL::GF2X, long > > factors ;
    CanZass(factors, m_modulus); // calls "Cantor/Zassenhaus" algorithm from <NTL/GF2XFactoring.h>
    m_basis.resize(factors.size());
 

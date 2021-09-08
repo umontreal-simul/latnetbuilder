@@ -25,7 +25,6 @@
 #include <cstdint>
 #include <boost/numeric/ublas/vector.hpp>
 #include <functional>
-#include <NTL/GF2X.h>
 #include <NTL/ZZX.h>
 #include "latbuilder/Types.h"
 

@@ -59,7 +59,7 @@ In the examples shown here, we construct polynomial from integers using a binary
 \snippet tutorial/Polynomials.cc main
 outputs
 \verbatim
-[1 0 1 1]
+13
 \endverbatim
 */
 
@@ -133,13 +133,13 @@ Ordinary Lattice - Modulus = 2^5 - Generating vector = [1, 7, 9]
 \verbatim
 polynomial - simple lattice:
 dimension:         3
-size parameter:    [1 0 1 1]
-generating vector: [[1], [1 0 1], [1 1]]
+size parameter:    13
+generating vector: [1, 5, 3]
 definition:        
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  1 0 1
-  1 1
+  5
+  3
 \endverbatim
 
 - embedded polynomial lattice:
@@ -155,13 +155,13 @@ Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector =
 \verbatim
 polynomial - embedded lattice:
 dimension:         3
-size parameter:    [0 1]^5
-generating vector: [[1], [0 1 0 1], [1 1]]
+size parameter:    2^5
+generating vector: [1, 10, 3]
 definition:        
-Polynomial Lattice - Modulus = [0 1]^5 - Generating vector = 
+Polynomial Lattice - Modulus = 2^5 - Generating vector = 
   1
-  0 1 0 1
-  1 1
+  10
+  3
 \endverbatim
 
 \sa EmbeddingType LatDef
@@ -212,13 +212,13 @@ These concepts are illustrated in \ref tutorial/GenSeqGeneratingValues.cc :
 
     The ouput of the above code is:
 \verbatim
-lattice size: 7
+lattice modulus: 7
     whole sequence: [1, 2, 3, 4, 5, 6]
      half sequence: [1, 2, 3]
-lattice size: 8
+lattice modulus: 8
     whole sequence: [1, 3, 5, 7]
      half sequence: [1, 3]
-lattice size: 12
+lattice modulus: 12
     whole sequence: [1, 7, 5, 11]
      half sequence: [1, 5]
 \endverbatim
@@ -228,10 +228,10 @@ lattice size: 12
     
     The ouput of the above code is:
 \verbatim
-polynomial lattice size: [0 1 0 1]
-    whole sequence: [[1], [1 1 1]]
-polynomial lattice size: [1 0 1 1]
-    whole sequence: [[1], [0 1], [1 1], [0 0 1], [1 0 1], [0 1 1], [1 1 1]]
+lattice modulus: 10
+    whole sequence: [1, 7]
+lattice modulus: 13
+    whole sequence: [1, 2, 3, 4, 5, 6, 7]
 \endverbatim
 
 
@@ -304,17 +304,17 @@ This is illustrated in \ref tutorial/GenSeqCyclicGroup.cc :
 \snippet tutorial/GenSeqCyclicGroup.cc main
 The output of the above code is:
 \verbatim
-lattice size: 7^1
+lattice modulus: 7^1
     whole sequence: [1, 3, 2, 6, 4, 5]
      half sequence: [1, 3, 2]
-lattice size: 2^3
+lattice modulus: 2^3
     whole sequence: [1, 5, 7, 3]
      half sequence: [1, 3]
-lattice size: 3^2
+lattice modulus: 3^2
     whole sequence: [1, 2, 4, 8, 7, 5]
      half sequence: [1, 2, 4]
-polynomial lattice size: [1 0 1 1]^1
-    whole sequence: [[1], [0 1], [0 0 1], [1 0 1], [1 1 1], [1 1], [0 1 1]]
+polynomial lattice modulus: 13^1
+    whole sequence: [1, 2, 4, 5, 7, 3, 6]
 
 \endverbatim
 For ordinary lattices, and in the symmetric case, each value \f$a\f$ is mapped to \f$\min\{a, n-a\}\f$.
@@ -349,10 +349,10 @@ A full example can be found in \ref tutorial/GenSeqVector.cc :
 \snippet tutorial/GenSeqVector.cc nonrandommain
 The output of the above code is:
 \verbatim
-lattice size: 7
+lattice modulus: 7
     generating value sequences: [[1], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]]
-lattice size: [1 1 1]
-    generating value sequences: [[[1]], [[1], [0 1], [1 1]], [[1], [0 1], [1 1]]]
+lattice modulus: 7
+    generating value sequences: [[1], [1, 2, 3], [1, 2, 3]]
 
 \endverbatim
 
@@ -362,10 +362,10 @@ additional optional argument to GenSeq::VectorCreator::create():
 \snippet tutorial/GenSeqVector.cc randommain
 The output of the above code is:
 \verbatim
-lattice size: 7
+lattice modulus: 7
     random generating value sequences: [[1], [2, 2, 3, 5, 4], [4, 5, 4, 3, 6]]
-lattice size: [1 1 1]
-    random generating value sequences: [[[1]], [[0 1], [0 1], [1 1], [0 1], [1]], [[1], [0 1], [1], [1 1], [1 1]]]
+lattice modulus: 7
+    random generating value sequences: [[1], [2, 2, 3, 2, 1], [1, 2, 1, 3, 3]]
 
 \endverbatim
 Distinct random sequences are automatically created.
@@ -470,42 +470,42 @@ while
 \snippet tutorial/LatSeqExhaustive.cc poutput
 produces:
 \verbatim
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
-  1 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  3,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  0 1
+  2
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  0 1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  0 1
-  1 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2
+  3,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 1
+  3
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  3
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 1
-  1 1]
+  3
+  3]
 \endverbatim
 The complete example can be found in \ref tutorial/LatSeqExhaustive.cc.
 
@@ -531,22 +531,22 @@ and outputs:
  Ordinary Lattice - Modulus = 31 - Generating vector = [1, 14, 17],
  Ordinary Lattice - Modulus = 31 - Generating vector = [1, 21, 22],
  Ordinary Lattice - Modulus = 31 - Generating vector = [1, 23, 27]]
-[Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  1 0 1
-  0 0 1,
- Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  5
+  4,
+ Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  0 1 1 1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  14
+  2,
+ Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  0 1 1
-  1 1 1,
- Polynomial Lattice - Modulus = [1 1 1 1 1] - Generating vector = 
+  6
+  7,
+ Polynomial Lattice - Modulus = 31 - Generating vector = 
   1
-  0 0 0 1
-  0 0 1 1]
+  8
+  12]
 \endverbatim
 
 
@@ -568,18 +568,18 @@ The output of the above code is:
  Ordinary Lattice - Modulus = 7 - Generating vector = [1, 4, 2],
  Ordinary Lattice - Modulus = 7 - Generating vector = [1, 5, 4],
  Ordinary Lattice - Modulus = 7 - Generating vector = [1, 6, 1]]
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  0 1
-  1 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2
+  3,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 1
-  0 1]
+  3
+  2]
 \endverbatim
 
 
@@ -606,18 +606,18 @@ The output of the above code is:
  Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 3],
  Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 5],
  Ordinary Lattice - Modulus = 8 - Generating vector = [1, 5, 7]]
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 0 1
+  5
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 0 1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  5
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 0 1
-  1 1]
+  5
+  3]
 \endverbatim
 
 In a practical situation, we would probably loop over \f$j\f$ to construct the
@@ -666,37 +666,37 @@ Ordinary Lattice - Modulus = 8 - Generating vector = [1, 1, 1, 1]
 
 searching for the best lattice in dimension: 1
 possible choices: 
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
-  1 1]
+  3]
 selected lattice: 
-Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
 
 
 searching for the best lattice in dimension: 2
 possible choices: 
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
-  1 1]
+  3]
 selected lattice: 
-Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
@@ -704,23 +704,23 @@ Polynomial Lattice - Modulus = [1 1 1] - Generating vector =
 
 searching for the best lattice in dimension: 3
 possible choices: 
-[Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+[Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
   1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
-  0 1,
- Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+  2,
+ Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
-  1 1]
+  3]
 selected lattice: 
-Polynomial Lattice - Modulus = [1 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 7 - Generating vector = 
   1
   1
   1
@@ -900,40 +900,40 @@ figure of merit: Projection Dependent Merit: P2_PLR - Accumulator: Sum
 Norm Type: 2
 Weights: ProductWeights([], default=0.7)
 projections: [{0}, {1}, {2}, {0,1}, {0,2}, {1,2}, {0,1,2}]
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
   1
   1
 Merit: 2.18057 <-- best
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  0 1
-  0 0 1
+  2
+  4
 Merit: 1.0617 <-- best
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  1 1
-  1 0 1
+  3
+  5
 Merit: 1.04103 <-- best
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  0 0 1
-  1 1 1
+  4
+  7
 Merit: 1.04103
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  1 0 1
-  0 1 1
+  5
+  6
 Merit: 1.02036 <-- best
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  0 1 1
-  1 1
+  6
+  3
 Merit: 1.0617
-Polynomial Lattice - Modulus = [1 0 1 1] - Generating vector = 
+Polynomial Lattice - Modulus = 13 - Generating vector = 
   1
-  1 1 1
-  0 1
+  7
+  2
 Merit: 1.02036
 \endverbatim
 

@@ -31,14 +31,14 @@ typedef GenSeq::CyclicGroup<LatticeType::POLYNOMIAL, Compress::NONE> WholePolySe
 
 void displayIntSeq(int base, int power)
 {
-   std::cout << "lattice size: " << base << "^" << power << std::endl;
+   std::cout << "lattice modulus: " << base << "^" << power << std::endl;
    std::cout << "    whole sequence: " << WholeIntSeq(base, power) << std::endl;
    std::cout << "     half sequence: " << HalfIntSeq(base, power) << std::endl;
 }
 
 void displayPolySeq(Polynomial base, int power)
 {
-   std::cout << "polynomial lattice size: " << base << "^" << power << std::endl;
+   std::cout << "polynomial lattice modulus: " << base << "^" << power << std::endl;
    std::cout << "    whole sequence: " << WholePolySeq(base, power) << std::endl;
 }
 

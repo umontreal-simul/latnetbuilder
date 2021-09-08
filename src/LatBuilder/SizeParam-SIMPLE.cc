@@ -44,7 +44,7 @@ SizeParam<LatticeType::POLYNOMIAL,EmbeddingType::UNILEVEL>::totient() const
 {
    auto polynomial = modulus();
    auto n = intPow(2,deg(polynomial));
-   NTL::vector< NTL::Pair< Polynomial, long > > factors ;
+   NTL::vector< NTL::Pair< NTL::GF2X, long > > factors ;
    CanZass(factors, polynomial); // calls "Cantor/Zassenhaus" algorithm from <NTL/GF2XFactoring.h>
    for (const auto& p : factors)
       n = n * (intPow(2,deg(p.a)) - 1) / intPow(2,deg(p.a));
@@ -63,19 +63,9 @@ void
 SizeParam<LR,EmbeddingType::UNILEVEL>::normalize(RealVector& merit) const
 { merit /= this->numPoints(); }
 
-template <>
+template <LatticeType LR>
 std::ostream&
-SizeParam<LatticeType::ORDINARY, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
-{ return os << this->modulus(); }
-
-template <>
-std::ostream&
-SizeParam<LatticeType::POLYNOMIAL, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
-{ return os << IndexOfPolynomial(this->modulus()); }
-
-template <>
-std::ostream&
-SizeParam<LatticeType::DIGITAL, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
+SizeParam<LR, EmbeddingType::UNILEVEL>::format(std::ostream& os) const
 { return os << this->modulus(); }
 
 //==================================================================================================

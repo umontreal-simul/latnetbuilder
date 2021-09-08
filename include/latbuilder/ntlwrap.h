@@ -21,6 +21,7 @@
 #include <NTL/vector.h>
 #include <NTL/matrix.h>
 #include <NTL/GF2E.h>
+#include <NTL/GF2X.h>
 
 #include "latticetester/ntlwrap.h"
 
@@ -58,6 +59,21 @@ namespace NTL
          GF2X yy = rep(y);
          return (xx < yy) ;
    }
+
+   class polynomial : public GF2X {
+         // These methods are re-definitions from original NTL methods.
+         public:
+         polynomial() {}
+
+         explicit polynomial(long a) { NTL::GF2X result(a); (*this).xrep = result.xrep; }
+
+         polynomial(const GF2X& a) {(*this).xrep = a.xrep;}
+
+         polynomial& operator=(long a){NTL::GF2X result; result = a; (*this).xrep = result.xrep; return *this;}
+   };
+   
+   // This is the only new method: it outputs a Polynomial with an integer representation. 
+   NTL_SNS ostream& operator<<(NTL_SNS ostream& s, const polynomial& a);
 }
 
 #endif // __NTLWRAP_H__

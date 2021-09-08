@@ -51,8 +51,8 @@ typedef RealVector::size_type Level;
 /// Scalar integer type for dimension.
 typedef size_t Dimension;
 
-/// polynomial over Z/2Z type 
-typedef NTL::GF2X Polynomial;
+/// polynomial over Z/2Z type. This is just a wrapper over NTL::GF2X. See ntlwrap.h.
+typedef NTL::polynomial Polynomial;
 
 /// Lattices supported: ordinary lattice rules amd polynomial lattice rules
 enum class LatticeType { ORDINARY , POLYNOMIAL, DIGITAL };

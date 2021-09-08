@@ -26,8 +26,8 @@ Second generating matrix:
 The shared generating matrix has a unique address.
 
 Constructing polynomial lattice rules...
-Modulus: [1 0 0 1 0 0 0 0 0 0 1]
-First generating value: [1]
+Modulus: 1033
+First generating value: 1
 First generating matrix:
 0 0 0 0 0 0 0 0 0 1
 0 0 0 0 0 0 0 0 1 0
@@ -40,7 +40,7 @@ First generating matrix:
 0 1 0 0 0 0 0 0 1 0
 1 0 0 0 0 0 0 1 0 0
 
-Second generating value: [0 0 0 0 0 0 0 0 0 1]
+Second generating value: 512
 Second generating matrix:
 1 0 0 0 0 0 0 1 0 0
 0 0 0 0 0 0 1 0 0 1

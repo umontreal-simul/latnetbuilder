@@ -104,9 +104,9 @@ namespace NetBuilder {
         std::ostringstream stream;
 
         if (outputStyle == OutputStyle::TERMINAL){
-            stream << "Polynomial Digital Net - Modulus = " << LatBuilder::IndexOfPolynomial(sizeParameter) << " - GeneratingVector =" << std::endl;
+            stream << "Polynomial Digital Net - Modulus = " << sizeParameter << " - GeneratingVector =" << std::endl;
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                stream << "  " << LatBuilder::IndexOfPolynomial(*(genVals[coord])) << std::endl;
+                stream << "  " << *(genVals[coord]) << std::endl;
             }
         }
 
@@ -120,13 +120,14 @@ namespace NetBuilder {
             stream << (int) deg(sizeParameter) << "      # n = 2^";
             stream <<  (int) deg(sizeParameter) << " = " << (int)pow(2,deg(sizeParameter) ) << " points"<< std::endl;
             
-            stream << LatBuilder::IndexOfPolynomial(sizeParameter) << "   # polynomial modulus" << std::endl;
+            stream << sizeParameter << "   # polynomial modulus" << std::endl;
             stream << "# Coordinates of generating vector, starting at j=1" << std::endl;
-            std::string res;
             for (unsigned int coord = 0; coord < genVals.size(); coord++){
-                res += std::to_string(LatBuilder::IndexOfPolynomial(*(genVals[coord]))) + "\n";
+                stream << *genVals[coord];
+                if (coord < genVals.size() - 1){
+                    stream << std::endl;
+                }
             }
-            res.pop_back();
             stream << res;
         }
 

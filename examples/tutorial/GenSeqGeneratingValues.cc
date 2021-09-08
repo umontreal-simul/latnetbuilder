@@ -41,7 +41,7 @@ int main()
 
    //! [main]
    for (uInteger n : {7, 8, 12}) {
-      std::cout << "lattice size: " << n << std::endl;
+      std::cout << "lattice modulus: " << n << std::endl;
       std::cout << "    whole sequence: " << WholeSeqIntegers(n) << std::endl;
       std::cout << "     half sequence: " << HalfSeqIntegers(n) << std::endl;
    }
@@ -49,7 +49,7 @@ int main()
 
    //! [pmain]
    for (Polynomial P : {PolynomialFromInt(10), PolynomialFromInt(13)}) {
-      std::cout << "lattice size: " << P << std::endl;
+      std::cout << "lattice modulus: " << P << std::endl;
       std::cout << "    whole sequence: " << WholeSeqPolynomials(P) << std::endl;
       
    }
