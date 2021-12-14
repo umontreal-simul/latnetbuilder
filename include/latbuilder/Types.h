@@ -28,6 +28,7 @@
 #include "latbuilder/ntlwrap.h"
 #include "netbuilder/GeneratingMatrix.h"
 
+using namespace std::placeholders;
 
 namespace LatBuilder
 {
