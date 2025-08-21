@@ -1,39 +1,40 @@
 /*
-@ @licstart  The following is the entire license notice for the
-JavaScript code in this file.
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
 
-Copyright (C) 1997-2017 by Dimitri van Heesch
+ The MIT License (MIT)
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+ Copyright (C) 1997-2020 by Dimitri van Heesch
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
 
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
 
-@licend  The above is the entire license notice
-for the JavaScript code in this file
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
 */
 var NAVTREE =
 [
   [ "LatNet Builder Manual", "index.html", [
     [ "Overview", "index.html#overview", null ],
     [ "Manual Outline", "index.html#outline", null ],
-    [ "Links", "index.html#links", null ],
+    [ "Links and publications", "index.html#links", null ],
     [ "Main features", "dd/d51/feats.html", "dd/d51/feats" ],
     [ "Command-Line Tutorial", "d5/d56/cmdtut.html", "d5/d56/cmdtut" ],
     [ "LatNet Builder Web Application", "de/dc5/gui.html", null ],
     [ "Library Tutorial", "da/d6f/libtut.html", "da/d6f/libtut" ],
     [ "Detailed guidelines for polynomial lattice rules", "da/d25/feats_poly.html", null ],
     [ "Bibliography", "d0/de3/citelist.html", null ],
-    [ "Modules", "modules.html", "modules" ],
+    [ "Topics", "topics.html", "topics" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -53,7 +54,7 @@ var NAVTREE =
         [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
-        [ "Related Functions", "functions_rela.html", null ]
+        [ "Related Symbols", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -65,18 +66,21 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a4d6c888217b3bf24263ec8ea577f7964",
-"d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html#aca817cacbe879704facbc61e6ad6d4ef",
-"d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html#a185bd13c806599499614055868cf5ceb",
-"d5/dd2/classLatBuilder_1_1MeritSeq_1_1CBC.html#a7a113a6d644a772a6ae504943ecebb72",
-"d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html",
-"d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html#a1815a81b470dd97a89107336579c750f",
-"d9/d82/structLatBuilder_1_1Parser_1_1ProjDepMerit.html#aa3059cbc02aea79ff164d2bbd5027e33",
-"da/ddd/classLatBuilder_1_1BasicSizeParam.html#add160bc18f709393cb1aff82ed3451f8",
-"dc/d9a/classLatticeTester_1_1Random.html",
-"dd/de8/classLatBuilder_1_1Functor_1_1IAAlpha.html#a1d269cdf7a8a51927ddc247ddd85f0de",
-"df/d59/classLatticeTester_1_1LatticeAnalysis.html#a1fc0539cd051f00ce329117b903736f3"
+"annotated.html",
+"d1/d03/classNetBuilder_1_1FigureOfMerit_1_1ResolutionGapProjMerit_3_01EmbeddingType_1_1MULTILEVEL_01_4.html#a70dbf8bd5ba2412754a9595f1ab74e20",
+"d1/daf/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01FastCBCTag_3_01LR_00_01ET_00_01COMPRESS_00_c5519d04151f88a928a6cfe0ee8529df.html",
+"d2/d79/structLatBuilder_1_1Functor_1_1MinElement.html#ac071ddcb67925ad939e8fabdb938df9c",
+"d3/de3/structNetBuilder_1_1Parser_1_1ComputeMaxCardFromWeights.html",
+"d5/d65/structLatBuilder_1_1Kernel_1_1ICAlpha_1_1CorrectionProductWeights.html",
+"d6/da3/classLatBuilder_1_1Norm_1_1NormAlphaBase.html",
+"d7/da8/classLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_00_01ORDER_01_4.html#ad8913e9045c5db3340f835f1b0c90bce",
+"d8/d74/namespaceLatticeTester.html#a94f96ff406f8b56147a2b7fd96209cb2a14b6ff7a5d157ffdfd9ab4d80d7f5ea6",
+"d9/d30/namespaceLatBuilder_1_1IndexedIterator.html",
+"da/d88/classLatBuilder_1_1Interlaced_1_1IPODWeights.html#a1f38c8e94b65309e83f8d13ea232c197",
+"dc/d84/classNetBuilder_1_1FigureOfMerit_1_1CoordUniformFigureOfMerit.html#ad8a1b0f949d93a7863e79340e6143d56",
+"dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html",
+"df/d48/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_0abff38a6389a55c7dd7d2721e43238a8.html",
+"index.html#outline"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
