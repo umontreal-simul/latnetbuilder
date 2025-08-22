@@ -5,15 +5,14 @@
  ```
  ./waf configure --build-docs
  ./waf build
- rm -r doc/html
+ rm -r -f doc/html
  git clone https://github.com/umontreal-simul/latnetbuilder.git doc/html
  cd doc/html
  git checkout -b gh-pages origin/gh-pages
- cd ../..
- mv build/doc/html/* doc/html
- cd doc/html
- git status
- git add .
+ rm -r !('README.md')
+ cp -r ../../build/doc/html/* .
+ git add .   
+ git status   
  git commit -m "update documentation"
  git push
  ```
