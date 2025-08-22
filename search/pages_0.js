@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['advanced_20tutorial',['Advanced Tutorial',['../d7/de4/cmdtut_spec.html',1,'cmdtut']]]
+  ['1_20lattices_0',['Figures of merit for rank-1 lattices',['../d3/dc5/feats_figures_lat.html',1,'feats_figures']]]
 ];

@@ -1,7 +1,7 @@
 var classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133 =
 [
     [ "ConcreteCoordUniformState", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html#a6c8da91dc26ec5ba3ef48d313ff0f613", null ],
-    [ "clone", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html#ab806459f8c21399952e743d0159fd668", null ],
+    [ "clone", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html#a19d09a374ad20b8b301410b82334b676", null ],
     [ "reset", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html#ac71be1974a0b82c20e6acd5c25c1aba6", null ],
     [ "update", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html#a2b94012916d60cbb2925133ed2e26926", null ],
     [ "weightedState", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html#a167b8f2a5c068122d51a36fd79bd5366", null ]

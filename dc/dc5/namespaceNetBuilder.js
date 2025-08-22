@@ -2,26 +2,45 @@ var namespaceNetBuilder =
 [
     [ "FigureOfMerit", "dc/d58/namespaceNetBuilder_1_1FigureOfMerit.html", "dc/d58/namespaceNetBuilder_1_1FigureOfMerit" ],
     [ "JoeKuo", "d6/d61/namespaceNetBuilder_1_1JoeKuo.html", "d6/d61/namespaceNetBuilder_1_1JoeKuo" ],
-    [ "LevelCombiner", null, [
-      [ "LevelCombiner", "d4/d58/structNetBuilder_1_1LevelCombiner_1_1LevelCombiner.html", "d4/d58/structNetBuilder_1_1LevelCombiner_1_1LevelCombiner" ],
-      [ "LevelSelectorCombiner", "d6/d3e/classNetBuilder_1_1LevelCombiner_1_1LevelSelectorCombiner.html", "d6/d3e/classNetBuilder_1_1LevelCombiner_1_1LevelSelectorCombiner" ],
-      [ "MaxCombiner", "d5/d4a/structNetBuilder_1_1LevelCombiner_1_1MaxCombiner.html", "d5/d4a/structNetBuilder_1_1LevelCombiner_1_1MaxCombiner" ],
-      [ "SumCombiner", "d1/d08/structNetBuilder_1_1LevelCombiner_1_1SumCombiner.html", "d1/d08/structNetBuilder_1_1LevelCombiner_1_1SumCombiner" ]
-    ] ],
     [ "Parser", "d2/d52/namespaceNetBuilder_1_1Parser.html", "d2/d52/namespaceNetBuilder_1_1Parser" ],
     [ "Task", "de/dbf/namespaceNetBuilder_1_1Task.html", "de/dbf/namespaceNetBuilder_1_1Task" ],
+    [ "AbstractDigitalNet", "d3/da1/classNetBuilder_1_1AbstractDigitalNet.html", "d3/da1/classNetBuilder_1_1AbstractDigitalNet" ],
     [ "Accumulator", "d6/df9/classNetBuilder_1_1Accumulator.html", "d6/df9/classNetBuilder_1_1Accumulator" ],
-    [ "AddBinaryOperator", "dc/dac/structNetBuilder_1_1AddBinaryOperator.html", "dc/dac/structNetBuilder_1_1AddBinaryOperator" ],
+    [ "AddBinaryOperator", "dc/dac/structNetBuilder_1_1AddBinaryOperator.html", null ],
     [ "CBCCoordinateSet", "d6/d81/classNetBuilder_1_1CBCCoordinateSet.html", "d6/d81/classNetBuilder_1_1CBCCoordinateSet" ],
     [ "DigitalNet", "dd/d67/classNetBuilder_1_1DigitalNet.html", "dd/d67/classNetBuilder_1_1DigitalNet" ],
-    [ "DigitalNetConstruction", "db/d1f/classNetBuilder_1_1DigitalNetConstruction.html", "db/d1f/classNetBuilder_1_1DigitalNetConstruction" ],
     [ "GaussMethod", "d5/d21/structNetBuilder_1_1GaussMethod.html", null ],
     [ "GeneratingMatrix", "d0/def/classNetBuilder_1_1GeneratingMatrix.html", "d0/def/classNetBuilder_1_1GeneratingMatrix" ],
-    [ "MaxBinaryOperator", "de/deb/structNetBuilder_1_1MaxBinaryOperator.html", "de/deb/structNetBuilder_1_1MaxBinaryOperator" ],
+    [ "MaxBinaryOperator", "de/deb/structNetBuilder_1_1MaxBinaryOperator.html", null ],
     [ "NetConstructionTraits", "d2/dec/structNetBuilder_1_1NetConstructionTraits.html", null ],
     [ "NetConstructionTraits< NetConstruction::EXPLICIT >", "d4/d98/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1EXPLICIT_01_4.html", "d4/d98/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1EXPLICIT_01_4" ],
+    [ "NetConstructionTraits< NetConstruction::LMS >", "dc/d6e/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1LMS_01_4.html", "dc/d6e/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1LMS_01_4" ],
     [ "NetConstructionTraits< NetConstruction::POLYNOMIAL >", "d6/df9/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1POLYNOMIAL_01_4.html", "d6/df9/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1POLYNOMIAL_01_4" ],
     [ "NetConstructionTraits< NetConstruction::SOBOL >", "d6/db4/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1SOBOL_01_4.html", "d6/db4/structNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1SOBOL_01_4" ],
-    [ "ProgressiveRowReducer", "d6/dc5/classNetBuilder_1_1ProgressiveRowReducer.html", "d6/dc5/classNetBuilder_1_1ProgressiveRowReducer" ],
-    [ "SchmidMethod", "db/d3a/structNetBuilder_1_1SchmidMethod.html", null ]
+    [ "RankComputer", "d0/db0/classNetBuilder_1_1RankComputer.html", "d0/db0/classNetBuilder_1_1RankComputer" ],
+    [ "SchmidMethod", "db/d3a/structNetBuilder_1_1SchmidMethod.html", null ],
+    [ "EmbeddingType", "dc/dc5/namespaceNetBuilder.html#aca4246649dcad583991e3f8486c63880", null ],
+    [ "IntPolynomial", "dc/dc5/namespaceNetBuilder.html#a308ed4e65ca5a2fd984ba2e4b8788a40", null ],
+    [ "MeritValue", "dc/dc5/namespaceNetBuilder.html#a56a421cb85e2cdb1d52b2297ece838a3", null ],
+    [ "Polynomial", "dc/dc5/namespaceNetBuilder.html#a1b519c2308d8547828f5e61564c9a125", null ],
+    [ "RealVector", "dc/dc5/namespaceNetBuilder.html#ab33b79a13437ea2f377be57bbca4a5e2", null ],
+    [ "NetConstruction", "dc/dc5/namespaceNetBuilder.html#ad8b51f3deb178b50e2d690913714489e", [
+      [ "SOBOL", "dc/dc5/namespaceNetBuilder.html#ad8b51f3deb178b50e2d690913714489eaf0e391f6ab461c41f37b5d8f3d0fd26b", null ],
+      [ "POLYNOMIAL", "dc/dc5/namespaceNetBuilder.html#ad8b51f3deb178b50e2d690913714489eaeee51f5572f36b8a2347f75e541b67fe", null ],
+      [ "EXPLICIT", "dc/dc5/namespaceNetBuilder.html#ad8b51f3deb178b50e2d690913714489ea440806ada035e97a59ec9d2ca6796cb3", null ],
+      [ "LMS", "dc/dc5/namespaceNetBuilder.html#ad8b51f3deb178b50e2d690913714489ea66a8f2813dac128f9d3d9abeaaae607b", null ]
+    ] ],
+    [ "OutputStyle", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907", [
+      [ "TERMINAL", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907a6c7748bd0ad3fbdff996e81581ad64d6", null ],
+      [ "SOBOL", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907af0e391f6ab461c41f37b5d8f3d0fd26b", null ],
+      [ "SOBOLJK", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907aa8d4ba97b44dab36eb3be6b4236dd9b7", null ],
+      [ "LATTICE", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907a9dfea886f653c9c761ab4233ce92e7c4", null ],
+      [ "NET", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907a347aadfc505a4bc6b2f9d81363d2331c", null ],
+      [ "RANDOMIZED_NET", "dc/dc5/namespaceNetBuilder.html#a28f6bb92e6823d4185764c712fb13907af09ba57e1a35737fc5917895f40e0c44", null ]
+    ] ],
+    [ "CHECK_PATH_TO_LATNETBUILDER_DIR", "dc/dc5/namespaceNetBuilder.html#a444c990fdfaa6e546036ef6e0ac3e92e", null ],
+    [ "FIND_PATH_TO_LATNETBUILDER_DIR", "dc/dc5/namespaceNetBuilder.html#ae735532cbcadfd7b9e15c297b5ae5d49", null ],
+    [ "SET_PATH_TO_LATNETBUILDER_DIR", "dc/dc5/namespaceNetBuilder.html#a5cfef8a7c04f85fa0e8680a428e26691", null ],
+    [ "SET_PATH_TO_LATNETBUILDER_DIR_FROM_PROGRAM_NAME", "dc/dc5/namespaceNetBuilder.html#a2986b7712b2d53ac653abb1687e30a6f", null ],
+    [ "PATH_TO_LATNETBUILDER_DIR", "dc/dc5/namespaceNetBuilder.html#ae5e7dc8aa1ed62a8abc0b97f0ef87a2e", null ]
 ];

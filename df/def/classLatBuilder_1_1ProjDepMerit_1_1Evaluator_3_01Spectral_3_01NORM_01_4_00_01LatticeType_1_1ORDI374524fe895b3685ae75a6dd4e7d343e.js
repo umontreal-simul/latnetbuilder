@@ -1,6 +1,4 @@
 var classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e =
 [
-    [ "MeritValue", "df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e.html#a1acb0d0e7cb934aa99ce2c2cea681c8a", null ],
-    [ "Evaluator", "df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e.html#a3efdc1c113a0619ba7ee58ac6812dcda", null ],
     [ "operator()", "df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e.html#af6b534dfde7c0872d0bf251ce8014b21", null ]
 ];

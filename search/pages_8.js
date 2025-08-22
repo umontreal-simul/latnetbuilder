@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['multilevel_20point_20sets',['Multilevel point sets',['../df/df1/cmdtut_advanced_multilevel.html',1,'cmdtut_spec']]],
-  ['main_20features',['Main features',['../dd/d51/feats.html',1,'index']]],
-  ['multilevel_20point_20sets',['Multilevel point sets',['../d6/d6f/feats_multilevel.html',1,'feats']]]
+  ['implementation_20notes_0',['Implementation Notes',['../da/d2e/libtut_impl.html',1,'libtut']]],
+  ['implementation_20of_20polynomials_1',['Implementation of Polynomials',['../d4/d56/libtut_lat_polynomial.html',1,'libtut_lat']]],
+  ['interlaced_20digital_20nets_20and_20polynomial_20lattice_20rules_2',['Interlaced digital nets and polynomial lattice rules',['../d6/d9e/cmdtut_advanced_interlaced.html',1,'cmdtut_spec']]]
 ];

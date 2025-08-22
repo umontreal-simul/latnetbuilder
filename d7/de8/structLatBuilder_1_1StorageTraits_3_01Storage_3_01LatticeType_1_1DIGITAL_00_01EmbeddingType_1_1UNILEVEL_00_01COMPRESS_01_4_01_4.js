@@ -1,10 +1,5 @@
 var structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4 =
 [
-    [ "Stride", "d4/d02/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNc3e10ecc90d7cb0358fffc104b091c9c.html", "d4/d02/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNc3e10ecc90d7cb0358fffc104b091c9c" ],
-    [ "Unpermute", "d1/da3/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UN3ba312cc10c77ed7940f4635c4842659.html", "d1/da3/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UN3ba312cc10c77ed7940f4635c4842659" ],
-    [ "Compress", "d7/de8/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4.html#a3b23fcc254131f6c2c3e45d6c956bda7", null ],
-    [ "MeritValue", "d7/de8/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4.html#a2229a0e40d5b5e2bcf91dc95c67f067f", null ],
-    [ "size_type", "d7/de8/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4.html#ae7affc504084778660684266e66426a9", null ],
-    [ "SizeParam", "d7/de8/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4.html#a773508d00d6678cd12b1c2448b637534", null ],
-    [ "value_type", "d7/de8/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4.html#a63040882eda9ff6bdcc855cc207dec02", null ]
+    [ "Stride", "d4/d02/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UNc3e10ecc90d7cb0358fffc104b091c9c.html", null ],
+    [ "Unpermute", "d1/da3/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1UN3ba312cc10c77ed7940f4635c4842659.html", null ]
 ];

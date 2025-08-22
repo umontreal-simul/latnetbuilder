@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['alpha',['alpha',['../d4/dfd/classLatticeTester_1_1LatticeTesterConfig.html#a21843f4ae3648bfe7b17d61ad05f083b',1,'LatticeTester::LatticeTesterConfig']]]
+  ['basis_0',['basis',['../d8/dcd/classLatticeTester_1_1Config.html#af43dafbfb94351635b488b8c049fa73c',1,'LatticeTester::Config']]]
 ];

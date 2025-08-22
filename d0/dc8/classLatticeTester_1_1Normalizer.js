@@ -3,7 +3,7 @@ var classLatticeTester_1_1Normalizer =
     [ "Normalizer", "d0/dc8/classLatticeTester_1_1Normalizer.html#a644f8cde449fcabe1a5b4425f1920590", null ],
     [ "Normalizer", "d0/dc8/classLatticeTester_1_1Normalizer.html#ab7b99d7fa95559d3e6c7bace1d9cc06e", null ],
     [ "~Normalizer", "d0/dc8/classLatticeTester_1_1Normalizer.html#adbce21ee38d3ac7527531e3a22f51c30", null ],
-    [ "getBound", "d0/dc8/classLatticeTester_1_1Normalizer.html#a5a2cf3ba586fd5b8d99d531668f60898", null ],
+    [ "getBound", "d0/dc8/classLatticeTester_1_1Normalizer.html#aaf1898f4577a31d5d271a02e65c8e1b2", null ],
     [ "getDim", "d0/dc8/classLatticeTester_1_1Normalizer.html#ab43df334efc1688fb9ee0e263bd66c34", null ],
     [ "getGamma", "d0/dc8/classLatticeTester_1_1Normalizer.html#a6e857c49e8bd2d42cfcadb29b4a77ab7", null ],
     [ "getLogDensity", "d0/dc8/classLatticeTester_1_1Normalizer.html#aad02247253e564cad30f0a91deff46b7", null ],

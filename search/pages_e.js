@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['text_20output',['Text Output',['../d6/d44/libtut_lat_textstream.html',1,'libtut_lat']]]
+  ['quick_20recipes_0',['Quick Recipes',['../d0/da5/cmdtut_quickrecipes.html',1,'cmdtut']]]
 ];

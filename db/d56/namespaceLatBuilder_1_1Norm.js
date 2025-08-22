@@ -7,6 +7,6 @@ var namespaceLatBuilder_1_1Norm =
     [ "Normalizer< LR, EmbeddingType::UNILEVEL, NORM >", "d3/dd0/classLatBuilder_1_1Norm_1_1Normalizer_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01NORM_01_4.html", "d3/dd0/classLatBuilder_1_1Norm_1_1Normalizer_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01NORM_01_4" ],
     [ "NormAlphaBase", "d6/da3/classLatBuilder_1_1Norm_1_1NormAlphaBase.html", "d6/da3/classLatBuilder_1_1Norm_1_1NormAlphaBase" ],
     [ "PAlphaDPW08", "d8/d25/classLatBuilder_1_1Norm_1_1PAlphaDPW08.html", "d8/d25/classLatBuilder_1_1Norm_1_1PAlphaDPW08" ],
-    [ "PAlphaPLR", "dd/d93/classLatBuilder_1_1Norm_1_1PAlphaPLR.html", "dd/d93/classLatBuilder_1_1Norm_1_1PAlphaPLR" ],
-    [ "PAlphaSL10", "d8/de6/classLatBuilder_1_1Norm_1_1PAlphaSL10.html", "d8/de6/classLatBuilder_1_1Norm_1_1PAlphaSL10" ]
+    [ "PAlphaSL10", "d8/de6/classLatBuilder_1_1Norm_1_1PAlphaSL10.html", "d8/de6/classLatBuilder_1_1Norm_1_1PAlphaSL10" ],
+    [ "PAlphaTilde", "de/d39/classLatBuilder_1_1Norm_1_1PAlphaTilde.html", "de/d39/classLatBuilder_1_1Norm_1_1PAlphaTilde" ]
 ];

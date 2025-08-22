@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['netbuilder_20type_20definitions',['NetBuilder Type Definitions',['../dd/da8/group__ypedefsNetBuilder.html',1,'']]]
+  ['latbuilder_20type_20definitions_0',['LatBuilder Type Definitions',['../d9/dd8/group__typedefsLatBuilder.html',1,'']]]
 ];

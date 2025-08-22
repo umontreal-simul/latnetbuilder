@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['korobov',['Korobov',['../d6/db5/namespaceLatBuilder_1_1Task.html#a6610136a34501c1dcc6bb5966f55ad33',1,'LatBuilder::Task']]]
+  ['level_0',['Level',['../d1/d74/namespaceLatBuilder.html#ab7f59843e5c6cc95397a4c5a381ae768',1,'LatBuilder']]]
 ];

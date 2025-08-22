@@ -4,7 +4,7 @@ var cmdtut_spec =
       [ "Switching between point set types", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_types", null ],
       [ "Lattice rules", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat", [
         [ "Types of lattice rules", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_construction", null ],
-        [ "Size of lattice rules", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_size", null ],
+        [ "Size and modulus of lattice rules", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_size", null ],
         [ "How to construct a specific lattice rule", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_specify", null ]
       ] ],
       [ "Digital nets", "d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_net", [
@@ -30,5 +30,15 @@ var cmdtut_spec =
     [ "Multilevel point sets", "df/df1/cmdtut_advanced_multilevel.html", null ],
     [ "Interlaced digital nets and polynomial lattice rules", "d6/d9e/cmdtut_advanced_interlaced.html", [
       [ "Constructing interlaced polynomial lattice rules", "d6/d9e/cmdtut_advanced_interlaced.html#cmdtut_advanced_interlaced_poly", null ]
+    ] ],
+    [ "Output styles", "dc/de0/cmdtut_advanced_output_style.html", [
+      [ "Summary of available formats", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_summary", null ],
+      [ "Lattice format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_lattice", null ],
+      [ "Net format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_net", null ],
+      [ "Formats for Sobol digital nets", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol", [
+        [ "Joe & Kuo format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_jk", null ],
+        [ "Simplified Sobol format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_sobol", null ]
+      ] ],
+      [ "Interlaced point sets", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_interlaced", null ]
     ] ]
 ];

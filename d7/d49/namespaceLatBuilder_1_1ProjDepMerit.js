@@ -5,5 +5,6 @@ var namespaceLatBuilder_1_1ProjDepMerit =
     [ "Evaluator", "dd/d2c/classLatBuilder_1_1ProjDepMerit_1_1Evaluator.html", null ],
     [ "Evaluator< CoordUniform< KERNEL >, LR, ET, COMPRESS, PLO >", "d6/deb/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01CoordUniform_3_01KERNEL_01_4_00_01LR_00_01ET_00_01COMPRESS_00_01PLO_01_4.html", "d6/deb/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01CoordUniform_3_01KERNEL_01_4_00_01LR_00_01ET_00_01COMPRESS_00_01PLO_01_4" ],
     [ "Evaluator< Spectral< NORM >, LatticeType::ORDINARY, ET, COMPRESS, PLO >", "df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e.html", "df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e" ],
-    [ "Spectral", "d4/de2/classLatBuilder_1_1ProjDepMerit_1_1Spectral.html", "d4/de2/classLatBuilder_1_1ProjDepMerit_1_1Spectral" ]
+    [ "Spectral", "d4/de2/classLatBuilder_1_1ProjDepMerit_1_1Spectral.html", "d4/de2/classLatBuilder_1_1ProjDepMerit_1_1Spectral" ],
+    [ "operator<<", "d7/d49/namespaceLatBuilder_1_1ProjDepMerit.html#a703638ee9e1e4694d4affb76e4b6c9c7", null ]
 ];

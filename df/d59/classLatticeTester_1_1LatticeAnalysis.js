@@ -1,23 +1,17 @@
 var classLatticeTester_1_1LatticeAnalysis =
 [
     [ "LatticeAnalysis", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#abec5518737b36f9d89274e296927fce7", null ],
-    [ "LatticeAnalysis", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ad54f68534a06f50b8e883dec4d00bafa", null ],
+    [ "LatticeAnalysis", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#aa37a6f5f64bedd942662eed34d58aeb8", null ],
     [ "~LatticeAnalysis", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a2109e3f2cb6ed0a3b4c597ff7d2ffdf1", null ],
-    [ "doTest", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a06e3e98662e5f4365a96f8e383268dd9", null ],
+    [ "doTest", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a7dae9b32ccbaf612bffd0e2a62f612bd", null ],
     [ "doTestFromDirectory", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ae4ea746678d3ddf687edbfa6d67089b2", null ],
     [ "doTestFromInputFile", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a80dc121973168ab4a0640890da993ac7", null ],
-    [ "getDim", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ac877281202947da7fc28324ca4c61448", null ],
-    [ "getMerit", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#aadf9bee9f6ab93d9911e84e20a463366", null ],
-    [ "getNormalizer", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a9eae98f287e6a74e15f5f45aa9a0657a", null ],
-    [ "getReducer", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ae9272bb34d3d5ce694f348b9f50cbb67", null ],
-    [ "initNormalizer", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#af7b71e5b5f2dff7310410f78888804db", null ],
-    [ "printTestResults", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ac245047054519b102a79fdbe73e797d8", null ],
-    [ "setCriterion", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a0debb821e811014de0b189cdc2594548", null ],
-    [ "setDim", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a6eacebf167473976ff5ffd4a8f05c1c9", null ],
-    [ "setMaxNodesBB", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a1fc0539cd051f00ce329117b903736f3", null ],
-    [ "setNorm", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a036ba1f11e6e91de96d9e15e12d9692c", null ],
-    [ "setNormalizer", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ab7fc469559cc21cbc26a900a9710976b", null ],
-    [ "setNormalizerType", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a2239d3bd45728d24b3bfa99d95658323", null ],
-    [ "setPreReduction", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#af963cfecb2766c3df189e567676ab62e", null ],
-    [ "setReducer", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a75af78095e37e6c305911176ecc30caa", null ]
+    [ "performBasis", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ad67b2f08a5e735c44f03536f7ce0d8c2", null ],
+    [ "performDual", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a9ef76f902df3797e69b401530768db27", null ],
+    [ "performMerit", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a72ff43c478feda50b9a75be2601fe7ec", null ],
+    [ "performReduction", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#ad13d50365f074ce51b184397feba3921", null ],
+    [ "performShortest", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a7de69241bca0d7b9ce8dbd8c23cdbecf", null ],
+    [ "printTestResults", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a9a8a86b19a199d88733687994fa596af", null ],
+    [ "m_merit", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#a9ab2c58a0f7a2852fd829e6addee7335", null ],
+    [ "m_shortest", "df/d59/classLatticeTester_1_1LatticeAnalysis.html#aa8a11db41e43d11a71606ea042fa8f7e", null ]
 ];
