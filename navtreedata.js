@@ -68,20 +68,20 @@ var NAVTREEINDEX =
 [
 "annotated.html",
 "d1/d03/classNetBuilder_1_1FigureOfMerit_1_1ResolutionGapProjMerit_3_01EmbeddingType_1_1MULTILEVEL_01_4.html#a70dbf8bd5ba2412754a9595f1ab74e20",
-"d1/daf/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01FastCBCTag_3_01LR_00_01ET_00_01COMPRESS_00_c5519d04151f88a928a6cfe0ee8529df.html",
-"d2/d79/structLatBuilder_1_1Functor_1_1MinElement.html#ac071ddcb67925ad939e8fabdb938df9c",
-"d3/de3/structNetBuilder_1_1Parser_1_1ComputeMaxCardFromWeights.html",
-"d5/d65/structLatBuilder_1_1Kernel_1_1ICAlpha_1_1CorrectionProductWeights.html",
-"d6/da3/classLatBuilder_1_1Norm_1_1NormAlphaBase.html",
-"d7/da8/classLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_00_01ORDER_01_4.html#ad8913e9045c5db3340f835f1b0c90bce",
-"d8/d74/namespaceLatticeTester.html#a94f96ff406f8b56147a2b7fd96209cb2a14b6ff7a5d157ffdfd9ab4d80d7f5ea6",
-"d9/d30/namespaceLatBuilder_1_1IndexedIterator.html",
-"da/d88/classLatBuilder_1_1Interlaced_1_1IPODWeights.html#a1f38c8e94b65309e83f8d13ea232c197",
-"dc/d84/classNetBuilder_1_1FigureOfMerit_1_1CoordUniformFigureOfMerit.html#ad8a1b0f949d93a7863e79340e6143d56",
-"dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html",
-"df/d48/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_0abff38a6389a55c7dd7d2721e43238a8.html",
-"index.html#outline"
+"d1/db4/classLatticeTester_1_1ProjectionDependentWeights.html",
+"d2/da8/structLatBuilder_1_1CompressTraits_3_01Compress_1_1SYMMETRIC_01_4.html#a3058b3b31dd0f76dbd1a9d36d4915312",
+"d3/dfe/namespaceLatticeTester_1_1Random.html#abaa5d3fcfc133e1812c0c9532e4aeccf",
+"d5/d72/classNetBuilder_1_1Task_1_1ExhaustiveSearch.html#a5aeebabf98dd45bb8a63ad16f67f7ca7",
+"d6/da4/structLatBuilder_1_1Parser_1_1CommandLine.html",
+"d8/d0a/tutorial_2FilteredRCBC_8cc-example.html",
+"d8/d92/structLatBuilder_1_1GenSeq_1_1Extend_1_1RebindTraversal.html",
+"d9/dd3/classLatticeTester_1_1Coordinates.html#a016df1881b17c1d0d29f6b3b67662571",
+"db/d33/classLatBuilder_1_1LatSeq_1_1Korobov.html",
+"dd/d0c/structLatBuilder_1_1Task_1_1CBCSelector.html",
+"de/db3/classLatBuilder_1_1BridgeSeq.html",
+"df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';
+var LISTOFALLMEMBERS = 'List of all members';

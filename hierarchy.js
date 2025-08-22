@@ -19,6 +19,10 @@ var hierarchy =
       [ "NetBuilder::NetConstructionTraits< NetConstruction::SOBOL >::GenValueSpaceCoordSeq::const_iterator", "d6/dcb/classNetBuilder_1_1NetConstructionTraits_3_01NetConstruction_1_1SOBOL_01_4_1_1GenValueSpaceCoordSeq_1_1const__iterator.html", null ]
     ] ],
     [ "CBCBasedSearchTraits::Search", null, [
+      [ "LatBuilder::Task::CBCBasedSearch< CBCTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d8/d58/classLatBuilder_1_1Task_1_1CBCBasedSearch.html", null ],
+      [ "LatBuilder::Task::CBCBasedSearch< EvalTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d8/d58/classLatBuilder_1_1Task_1_1CBCBasedSearch.html", null ],
+      [ "LatBuilder::Task::CBCBasedSearch< FastCBCTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d8/d58/classLatBuilder_1_1Task_1_1CBCBasedSearch.html", null ],
+      [ "LatBuilder::Task::CBCBasedSearch< RandomCBCTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d8/d58/classLatBuilder_1_1Task_1_1CBCBasedSearch.html", null ],
       [ "LatBuilder::Task::CBCBasedSearch< TAG >", "d8/d58/classLatBuilder_1_1Task_1_1CBCBasedSearch.html", null ]
     ] ],
     [ "CompositionMaker", "df/dc7/classCompositionMaker.html", null ],
@@ -51,25 +55,24 @@ var hierarchy =
       [ "LatBuilder::MeritFilterListPolicy< LR, EmbeddingType::UNILEVEL >", "dc/d98/classLatBuilder_1_1MeritFilterListPolicy_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html", null ]
     ] ],
     [ "LatBuilder::BasicSizeParam< DERIVED >", "da/ddd/classLatBuilder_1_1BasicSizeParam.html", null ],
-    [ "LatBuilder::BasicSizeParam< SizeParam< LR, EmbeddingType::MULTILEVEL > >", "da/ddd/classLatBuilder_1_1BasicSizeParam.html", [
-      [ "LatBuilder::SizeParam< LR, EmbeddingType::MULTILEVEL >", "d7/d7d/classLatBuilder_1_1SizeParam_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_01_4.html", null ]
-    ] ],
-    [ "LatBuilder::BasicSizeParam< SizeParam< LR, EmbeddingType::UNILEVEL > >", "da/ddd/classLatBuilder_1_1BasicSizeParam.html", [
-      [ "LatBuilder::SizeParam< LR, EmbeddingType::UNILEVEL >", "da/d6a/classLatBuilder_1_1SizeParam_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html", null ]
-    ] ],
+    [ "LatBuilder::BasicSizeParam< SizeParam< LR, EmbeddingType::MULTILEVEL > >", "da/ddd/classLatBuilder_1_1BasicSizeParam.html", null ],
+    [ "LatBuilder::BasicSizeParam< SizeParam< LR, EmbeddingType::UNILEVEL > >", "da/ddd/classLatBuilder_1_1BasicSizeParam.html", null ],
     [ "LatBuilder::BasicStorage< DERIVED >", "d4/dc4/classLatBuilder_1_1BasicStorage.html", null ],
-    [ "LatBuilder::BasicStorage< Storage< LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO > >", "d4/dc4/classLatBuilder_1_1BasicStorage.html", [
-      [ "LatBuilder::Storage< LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO >", "d7/d6d/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4.html", null ]
-    ] ],
-    [ "LatBuilder::BasicStorage< Storage< LR, EmbeddingType::UNILEVEL, COMPRESS, PLO > >", "d4/dc4/classLatBuilder_1_1BasicStorage.html", [
-      [ "LatBuilder::Storage< LR, EmbeddingType::UNILEVEL, COMPRESS, PLO >", "dc/d73/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_00_01PLO_01_4.html", null ]
-    ] ],
+    [ "LatBuilder::BasicStorage< Storage< LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO > >", "d4/dc4/classLatBuilder_1_1BasicStorage.html", null ],
+    [ "LatBuilder::BasicStorage< Storage< LR, EmbeddingType::UNILEVEL, COMPRESS, PLO > >", "d4/dc4/classLatBuilder_1_1BasicStorage.html", null ],
     [ "LatBuilder::BridgeIteratorCached< SEQ >::end_tag", "db/d75/structLatBuilder_1_1BridgeIteratorCached_1_1end__tag.html", null ],
     [ "LatBuilder::BridgeIteratorCachedPtr< SEQ >::end_tag", "d1/d9a/structLatBuilder_1_1BridgeIteratorCachedPtr_1_1end__tag.html", null ],
     [ "LatBuilder::BridgeIteratorDynamic< SEQ >::end_tag", "d6/db2/structLatBuilder_1_1BridgeIteratorDynamic_1_1end__tag.html", null ],
-    [ "LatBuilder::BridgeSeq< DERIVED, BASE, VALUE, ITERATOR >", "de/db3/classLatBuilder_1_1BridgeSeq.html", null ],
+    [ "LatBuilder::BridgeSeq< DERIVED, BASE, VALUE, ITERATOR >", "de/db3/classLatBuilder_1_1BridgeSeq.html", [
+      [ "LatBuilder::GenSeq::PowerSeq< SEQ >", "d3/dca/classLatBuilder_1_1GenSeq_1_1PowerSeq.html", null ],
+      [ "LatBuilder::GenSeq::PowerSeq< typename Base::template RebindTraversal< TRAV2 >::Type >", "d3/dca/classLatBuilder_1_1GenSeq_1_1PowerSeq.html", null ],
+      [ "LatBuilder::LatSeq::Combiner< LR, ET, GenSeqType, CartesianProduct >", "d1/de0/classLatBuilder_1_1LatSeq_1_1Combiner.html", null ],
+      [ "LatBuilder::LatSeq::Combiner< LR, ET, GenSeqType, Zip >", "d1/de0/classLatBuilder_1_1LatSeq_1_1Combiner.html", null ]
+    ] ],
     [ "LatBuilder::BridgeSeq< Combiner< LR, ET, GENSEQ, POLICY >, SeqCombiner< GENSEQ, POLICY >, LatDef< LR, ET >, BridgeIteratorCached >", "de/db3/classLatBuilder_1_1BridgeSeq.html", [
-      [ "LatBuilder::LatSeq::Combiner< LR, ET, GENSEQ, POLICY >", "d1/de0/classLatBuilder_1_1LatSeq_1_1Combiner.html", null ]
+      [ "LatBuilder::LatSeq::Combiner< LR, ET, GENSEQ, POLICY >", "d1/de0/classLatBuilder_1_1LatSeq_1_1Combiner.html", [
+        [ "LatBuilder::LatSeq::Korobov< LR, ET, GenSeqType >", "db/d33/classLatBuilder_1_1LatSeq_1_1Korobov.html", null ]
+      ] ]
     ] ],
     [ "LatBuilder::BridgeSeq< Combiner< LR, ET, GENSEQ, Zip >, SeqCombiner< GENSEQ, Zip >, LatDef< LR, ET >, BridgeIteratorCached >", "de/db3/classLatBuilder_1_1BridgeSeq.html", [
       [ "LatBuilder::LatSeq::Combiner< LR, ET, GenSeq::PowerSeq< GENSEQ >, Zip >", "d1/de0/classLatBuilder_1_1LatSeq_1_1Combiner.html", [
@@ -113,10 +116,8 @@ var hierarchy =
     [ "LatBuilder::Functor::IB", "df/da2/classLatBuilder_1_1Functor_1_1IB.html", null ],
     [ "LatBuilder::Functor::ICAlpha", "d0/de1/classLatBuilder_1_1Functor_1_1ICAlpha.html", null ],
     [ "LatBuilder::Functor::LowPass< T >", "d1/dc9/classLatBuilder_1_1Functor_1_1LowPass.html", null ],
-    [ "LatBuilder::Functor::LowPass< Real >", "d1/dc9/classLatBuilder_1_1Functor_1_1LowPass.html", null ],
     [ "LatBuilder::Functor::Max< T >", "da/db1/structLatBuilder_1_1Functor_1_1Max.html", null ],
     [ "LatBuilder::Functor::MinElement< T >", "d2/d79/structLatBuilder_1_1Functor_1_1MinElement.html", null ],
-    [ "LatBuilder::Functor::MinElement< Real >", "d2/d79/structLatBuilder_1_1Functor_1_1MinElement.html", null ],
     [ "LatBuilder::Functor::PAlpha", "d4/d61/classLatBuilder_1_1Functor_1_1PAlpha.html", null ],
     [ "LatBuilder::Functor::PAlphaTilde", "dd/d8a/classLatBuilder_1_1Functor_1_1PAlphaTilde.html", null ],
     [ "LatBuilder::Functor::Pow", "dd/dbb/structLatBuilder_1_1Functor_1_1Pow.html", null ],
@@ -132,27 +133,23 @@ var hierarchy =
     [ "LatBuilder::GenSeq::CyclicGroupTraits< DERIVED >", "d6/d6b/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits.html", null ],
     [ "LatBuilder::GenSeq::CyclicGroupTraits< CyclicGroup< LatticeType::ORDINARY, COMPRESS, TRAV, ORDER > >", "dc/dd1/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits_3_01CyclicGroup_3_01LatticeType_1_1ORDINARY_00_0f2808ffdfa2a43955f713da4436c5236.html", null ],
     [ "LatBuilder::GenSeq::CyclicGroupTraits< CyclicGroup< LatticeType::POLYNOMIAL, COMPRESS, TRAV, ORDER > >", "dd/d6b/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits_3_01CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00328b8308f0e18a2c1c3878b79cd6991d.html", null ],
-    [ "LatBuilder::GenSeq::CyclicGroupTraits< self_type >", "d6/d6b/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraits.html", null ],
     [ "LatBuilder::GenSeq::CyclicGroupTraversal< LR >", "d5/dc1/classLatBuilder_1_1GenSeq_1_1CyclicGroupTraversal.html", [
       [ "LatBuilder::Traversal::Policy< SEQ, GenSeq::CyclicGroupTraversal< LR > >", "d8/df9/classLatBuilder_1_1Traversal_1_1Policy_3_01SEQ_00_01GenSeq_1_1CyclicGroupTraversal_3_01LR_01_4_01_4.html", null ]
     ] ],
     [ "LatBuilder::GenSeq::CyclicGroupTraversalTraits< DERIVED >", "de/d19/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraversalTraits.html", null ],
     [ "LatBuilder::GenSeq::CyclicGroupTraversalTraits< CyclicGroupTraversal< LatticeType::ORDINARY > >", "de/d84/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraversalTraits_3_01CyclicGroupTraversal_3_01LatticeType_1_1ORDINARY_01_4_01_4.html", null ],
     [ "LatBuilder::GenSeq::CyclicGroupTraversalTraits< CyclicGroupTraversal< LatticeType::POLYNOMIAL > >", "d8/d87/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraversalTraits_3_01CyclicGroupTraversal_3_01LatticeType_1_1POLYNOMIAL_01_4_01_4.html", null ],
-    [ "LatBuilder::GenSeq::CyclicGroupTraversalTraits< self_type >", "de/d19/structLatBuilder_1_1GenSeq_1_1CyclicGroupTraversalTraits.html", null ],
     [ "LatBuilder::GenSeq::detail::CoprimeIntegersBasisElement", "d2/db9/structLatBuilder_1_1GenSeq_1_1detail_1_1CoprimeIntegersBasisElement.html", null ],
     [ "LatBuilder::GenSeq::detail::GeneratingValuesBasisElement< Modulus >", "db/d8f/structLatBuilder_1_1GenSeq_1_1detail_1_1GeneratingValuesBasisElement.html", null ],
     [ "LatBuilder::GenSeq::detail::Traversal< TRAV >", "d5/dd2/classLatBuilder_1_1GenSeq_1_1detail_1_1Traversal.html", null ],
     [ "LatBuilder::GenSeq::detail::Traversal< LatBuilder::Traversal::Random< RAND > >", "d1/d94/classLatBuilder_1_1GenSeq_1_1detail_1_1Traversal_3_01LatBuilder_1_1Traversal_1_1Random_3_01RAND_01_4_01_4.html", null ],
     [ "LatBuilder::GenSeq::Extend< LR, TRAV >::RebindTraversal< TRAV2 >", "d8/d92/structLatBuilder_1_1GenSeq_1_1Extend_1_1RebindTraversal.html", null ],
     [ "LatBuilder::GenSeq::GeneratingValues< LatticeType, Compress, TRAV >", "d8/d36/classLatBuilder_1_1GenSeq_1_1GeneratingValues.html", null ],
-    [ "LatBuilder::GenSeq::GeneratingValues< LatBuilder::LatticeType::POLYNOMIAL, LatBuilder::Compress::NONE >", "d8/d36/classLatBuilder_1_1GenSeq_1_1GeneratingValues.html", null ],
     [ "LatBuilder::GenSeq::GeneratingValues< LatticeType::ORDINARY, COMPRESS, TRAV >::RebindTraversal< TRAV2 >", "da/dfa/structLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1ORDINARY_00_01COMPRESS_00_01TRAV_01_4_1_1RebindTraversal.html", null ],
     [ "LatBuilder::GenSeq::GeneratingValues< LatticeType::POLYNOMIAL, COMPRESS, TRAV >::RebindTraversal< TRAV2 >", "dc/d71/structLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_01_4_1_1RebindTraversal.html", null ],
     [ "LatBuilder::GenSeq::GeneratingValuesTraits< DERIVED >", "d5/dfe/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits.html", null ],
     [ "LatBuilder::GenSeq::GeneratingValuesTraits< GeneratingValues< LatticeType::ORDINARY, COMPRESS, TRAV > >", "d7/d25/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1ORD528f6e4f93ac16e7b6760ea668200303.html", null ],
     [ "LatBuilder::GenSeq::GeneratingValuesTraits< GeneratingValues< LatticeType::POLYNOMIAL, COMPRESS, TRAV > >", "d0/da1/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits_3_01GeneratingValues_3_01LatticeType_1_1POLd4d14189541b1a71d1eb8fc988aecb3a.html", null ],
-    [ "LatBuilder::GenSeq::GeneratingValuesTraits< self_type >", "d5/dfe/structLatBuilder_1_1GenSeq_1_1GeneratingValuesTraits.html", null ],
     [ "LatBuilder::GenSeq::PowerSeq< BASE >::RebindTraversal< TRAV2 >", "d7/d2e/structLatBuilder_1_1GenSeq_1_1PowerSeq_1_1RebindTraversal.html", null ],
     [ "LatBuilder::GenSeq::VectorCreator< SEQ >", "d5/d28/structLatBuilder_1_1GenSeq_1_1VectorCreator.html", null ],
     [ "LatBuilder::IndexedIterator::Random< SEQ, RAND >::end_tag", "de/db9/structLatBuilder_1_1IndexedIterator_1_1Random_1_1end__tag.html", null ],
@@ -209,6 +206,10 @@ var hierarchy =
     [ "LatBuilder::LFSR258", "d6/d6c/classLatBuilder_1_1LFSR258.html", null ],
     [ "LatBuilder::MeritFilterListPolicy< LatticeType, EmbeddingType >", "d1/d5e/classLatBuilder_1_1MeritFilterListPolicy.html", null ],
     [ "LatBuilder::MeritFilterListPolicy< LR, ET >", "d1/d5e/classLatBuilder_1_1MeritFilterListPolicy.html", [
+      [ "LatBuilder::Combiner< LR, MULTILEVEL >", "dd/d23/classLatBuilder_1_1MeritFilterList.html", [
+        [ "LatBuilder::MeritCombiner::Accumulator< LR, ACC >", "df/dcd/classLatBuilder_1_1MeritCombiner_1_1Accumulator.html", null ],
+        [ "LatBuilder::MeritCombiner::SelectLevel< LR >", "db/df5/classLatBuilder_1_1MeritCombiner_1_1SelectLevel.html", null ]
+      ] ],
       [ "LatBuilder::MeritFilterList< LR, ET >", "dd/d23/classLatBuilder_1_1MeritFilterList.html", null ]
     ] ],
     [ "LatBuilder::MeritFilterTraits< EmbeddingType >", "d8/d18/structLatBuilder_1_1MeritFilterTraits.html", null ],
@@ -219,9 +220,15 @@ var hierarchy =
     [ "LatBuilder::MeritSeq::CoordUniformCBC< LR, ET, COMPRESS, PLO, KERNEL, PROD >::Seq< GENSEQ >", "d6/de5/classLatBuilder_1_1MeritSeq_1_1CoordUniformCBC_1_1Seq.html", null ],
     [ "LatBuilder::MeritSeq::CoordUniformCBC< LR, ET, COMPRESS, PLO, KERNEL, PROD >::Seq< GENSEQ >::const_iterator::end", "db/df7/structLatBuilder_1_1MeritSeq_1_1CoordUniformCBC_1_1Seq_1_1const__iterator_1_1end.html", null ],
     [ "LatBuilder::MeritSeq::CoordUniformInnerProd< LR, ET, COMPRESS, PLO >", "df/df8/classLatBuilder_1_1MeritSeq_1_1CoordUniformInnerProd.html", null ],
-    [ "LatBuilder::MeritSeq::CoordUniformInnerProd< LatBuilder::LatticeType::DIGITAL, ET, KERNEL::suggestedCompression(), LatBuilder::PerLevelOrder::BASIC >", "df/df8/classLatBuilder_1_1MeritSeq_1_1CoordUniformInnerProd.html", null ],
     [ "LatBuilder::MeritSeq::CoordUniformInnerProdFast< LR, ET, COMPRESS, PLO >", "d6/d19/classLatBuilder_1_1MeritSeq_1_1CoordUniformInnerProdFast.html", null ],
     [ "LatBuilder::MeritSeq::CoordUniformState< LR, ET, COMPRESS, PLO >", "d0/dce/classLatBuilder_1_1MeritSeq_1_1CoordUniformState.html", [
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights< LatBuilder::Kernel::IAAlpha > >", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html", null ],
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights< LatBuilder::Kernel::IB > >", "d2/d65/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_075f193cf0c89da8f2a5f68a2217cff8a.html", null ],
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights< LatBuilder::Kernel::ICAlpha > >", "df/d48/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_0abff38a6389a55c7dd7d2721e43238a8.html", null ],
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatticeTester::OrderDependentWeights >", "d7/db8/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_0af5386b80f812add75d5cc0da2f5891b.html", null ],
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatticeTester::PODWeights >", "dc/ddc/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00b1338752dcab841ea569f33b7c02ad2.html", null ],
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatticeTester::ProductWeights >", "df/dfe/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_01966d4962050df62739c7b3a939887a5.html", null ],
+      [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatticeTester::ProjectionDependentWeights >", "dc/daa/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_0e9b6b9d8bd52084d55298e2e1cabe09d.html", null ],
       [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, WEIGHTS >", "dc/d0b/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState.html", null ],
       [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights< LatBuilder::Kernel::IAAlpha > >", "d2/d0a/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_092412355e1eafe531d471bb6caaa2133.html", null ],
       [ "LatBuilder::MeritSeq::ConcreteCoordUniformState< LR, ET, COMPRESS, PLO, LatBuilder::Interlaced::IPODWeights< LatBuilder::Kernel::IB > >", "d2/d65/classLatBuilder_1_1MeritSeq_1_1ConcreteCoordUniformState_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_075f193cf0c89da8f2a5f68a2217cff8a.html", null ],
@@ -293,30 +300,15 @@ var hierarchy =
     [ "LatBuilder::ProjDepMerit::Evaluator< Spectral< NORM >, LatticeType::ORDINARY, ET, COMPRESS, PLO >", "df/def/classLatBuilder_1_1ProjDepMerit_1_1Evaluator_3_01Spectral_3_01NORM_01_4_00_01LatticeType_1_1ORDI374524fe895b3685ae75a6dd4e7d343e.html", null ],
     [ "LatBuilder::SeqCombiner< SEQ, INCREMENT >", "d5/d24/classLatBuilder_1_1SeqCombiner.html", null ],
     [ "LatBuilder::SeqCombiner< SEQ, INCREMENT >::const_iterator::end_tag", "d3/d44/structLatBuilder_1_1SeqCombiner_1_1const__iterator_1_1end__tag.html", null ],
-    [ "LatBuilder::SeqCombiner< GENSEQ, POLICY >", "d5/d24/classLatBuilder_1_1SeqCombiner.html", null ],
-    [ "LatBuilder::SeqCombiner< GENSEQ, Zip >", "d5/d24/classLatBuilder_1_1SeqCombiner.html", null ],
-    [ "LatBuilder::SeqCombiner< std::vector< uInteger >, LatBuilder::CartesianProduct >", "d5/d24/classLatBuilder_1_1SeqCombiner.html", null ],
     [ "LatBuilder::SizeParam< LatticeType, EmbeddingType >", "d3/d02/classLatBuilder_1_1SizeParam.html", null ],
-    [ "LatBuilder::SizeParam< LatBuilder::LatticeType::DIGITAL, ET >", "d3/d02/classLatBuilder_1_1SizeParam.html", null ],
-    [ "LatBuilder::SizeParam< LR, ET >", "d3/d02/classLatBuilder_1_1SizeParam.html", null ],
     [ "LatBuilder::SizeParamTraits< DERIVED >", "d5/dcf/structLatBuilder_1_1SizeParamTraits.html", null ],
     [ "LatBuilder::SizeParamTraits< SizeParam< LatticeType::DIGITAL, ET > >", "d1/d48/structLatBuilder_1_1SizeParamTraits_3_01SizeParam_3_01LatticeType_1_1DIGITAL_00_01ET_01_4_01_4.html", null ],
     [ "LatBuilder::SizeParamTraits< SizeParam< LatticeType::ORDINARY, ET > >", "d1/d3d/structLatBuilder_1_1SizeParamTraits_3_01SizeParam_3_01LatticeType_1_1ORDINARY_00_01ET_01_4_01_4.html", null ],
     [ "LatBuilder::SizeParamTraits< SizeParam< LatticeType::POLYNOMIAL, ET > >", "d5/dfc/structLatBuilder_1_1SizeParamTraits_3_01SizeParam_3_01LatticeType_1_1POLYNOMIAL_00_01ET_01_4_01_4.html", null ],
-    [ "LatBuilder::SizeParamTraits< SizeParam< LR, EmbeddingType::MULTILEVEL > >", "d5/dcf/structLatBuilder_1_1SizeParamTraits.html", null ],
-    [ "LatBuilder::SizeParamTraits< SizeParam< LR, EmbeddingType::UNILEVEL > >", "d5/dcf/structLatBuilder_1_1SizeParamTraits.html", null ],
     [ "LatBuilder::Storage< LR, ET, COM, PLO >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
-    [ "LatBuilder::Storage< LatBuilder::LatticeType::DIGITAL, ET, KERNEL::suggestedCompression()>", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
-    [ "LatBuilder::Storage< LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, COMPRESS >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
-    [ "LatBuilder::Storage< LatticeType::DIGITAL, EmbeddingType::UNILEVEL, COMPRESS >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
-    [ "LatBuilder::Storage< LatticeType::ORDINARY, ET, COMPRESS >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
-    [ "LatBuilder::Storage< LR, EmbeddingType::MULTILEVEL, COMPRESS, PerLevelOrder::CYCLIC >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
     [ "LatBuilder::Storage< LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO >::LevelRanges", "d0/d3c/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4_1_1LevelRanges.html", null ],
     [ "LatBuilder::Storage< LR, EmbeddingType::MULTILEVEL, COMPRESS, PLO >::LevelRanges::const_iterator::end_tag", "d3/df5/structLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4_d380314e233a58f20b8270e0e92a328f.html", null ],
-    [ "LatBuilder::Storage< LR, EmbeddingType::UNILEVEL, COMPRESS >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
-    [ "LatBuilder::Storage< LR, ET, COMPRESS, PLO >", "d5/dd3/classLatBuilder_1_1Storage.html", null ],
     [ "LatBuilder::StorageTraits< DERIVED >", "dd/d1d/structLatBuilder_1_1StorageTraits.html", null ],
-    [ "LatBuilder::StorageTraits< self_type >", "dd/d1d/structLatBuilder_1_1StorageTraits.html", null ],
     [ "LatBuilder::StorageTraits< Storage< LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, COMPRESS > >", "d1/dfb/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1Me77e02d6d949dd89d3d7d60e13f463c6.html", null ],
     [ "LatBuilder::StorageTraits< Storage< LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, COMPRESS > >::Stride", "d3/d75/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1MU9014d76eee71a60f9ecfa79799c9f287.html", null ],
     [ "LatBuilder::StorageTraits< Storage< LatticeType::DIGITAL, EmbeddingType::MULTILEVEL, COMPRESS > >::Unpermute", "da/da5/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LatticeType_1_1DIGITAL_00_01EmbeddingType_1_1MU57a1ad219e0f16564fca023a008a5520.html", null ],
@@ -329,14 +321,12 @@ var hierarchy =
     [ "LatBuilder::StorageTraits< Storage< LR, EmbeddingType::UNILEVEL, COMPRESS > >", "da/d40/structLatBuilder_1_1StorageTraits_3_01Storage_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4.html", null ],
     [ "LatBuilder::StorageTraits< Storage< LR, EmbeddingType::UNILEVEL, COMPRESS > >::Stride", "d1/d47/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4_1_1Stride.html", null ],
     [ "LatBuilder::StorageTraits< Storage< LR, EmbeddingType::UNILEVEL, COMPRESS > >::Unpermute", "d1/d67/classLatBuilder_1_1StorageTraits_3_01Storage_3_01LR_00_01EmbeddingType_1_1UNILEVEL_00_01COMPRESS_01_4_01_4_1_1Unpermute.html", null ],
-    [ "LatBuilder::StorageTraits< Storage< LR, EmbeddingType::UNILEVEL, COMPRESS, PLO > >", "dd/d1d/structLatBuilder_1_1StorageTraits.html", null ],
     [ "LatBuilder::Task::CBCBasedSearchTraits< class >", "d7/df1/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits.html", null ],
     [ "LatBuilder::Task::CBCBasedSearchTraits< CBCTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dd/dbd/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01CBCTag_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01FIGURE_01_4_01_4.html", null ],
     [ "LatBuilder::Task::CBCBasedSearchTraits< EvalTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d2/dfc/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01EvalTag_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01FIGURE_01_4_01_4.html", null ],
     [ "LatBuilder::Task::CBCBasedSearchTraits< FastCBCTag< LR, ET, COMPRESS, PLO, CoordUniformFigureOfMerit< KERNEL > > >", "d1/daf/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01FastCBCTag_3_01LR_00_01ET_00_01COMPRESS_00_c5519d04151f88a928a6cfe0ee8529df.html", null ],
     [ "LatBuilder::Task::CBCBasedSearchTraits< FastCBCTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d8/da1/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01FastCBCTag_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01FIGURE_01_4_01_4.html", null ],
     [ "LatBuilder::Task::CBCBasedSearchTraits< RandomCBCTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dc/d4c/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits_3_01RandomCBCTag_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01FIGURE_01_4_01_4.html", null ],
-    [ "LatBuilder::Task::CBCBasedSearchTraits< TAG >", "d7/df1/structLatBuilder_1_1Task_1_1CBCBasedSearchTraits.html", null ],
     [ "LatBuilder::Task::CBCSelector< LR, ET, COMPRESS, PLO, FIGURE >", "dd/d0c/structLatBuilder_1_1Task_1_1CBCSelector.html", null ],
     [ "LatBuilder::Task::CBCSelector< LR, ET, COMPRESS, PLO, CoordUniformFigureOfMerit< KERNEL > >", "d6/d0e/structLatBuilder_1_1Task_1_1CBCSelector_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01CoordUniformF7fac7654a3914552832182ffc4b447b9.html", null ],
     [ "LatBuilder::Task::CBCSelector< LR, ET, COMPRESS, PLO, WeightedFigureOfMerit< PROJDEP, ACC > >", "dd/db4/structLatBuilder_1_1Task_1_1CBCSelector_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01WeightedFigurf052c03beb96272052c1777853868859.html", null ],
@@ -350,7 +340,6 @@ var hierarchy =
     [ "LatBuilder::Task::LatSeqBasedSearchTraits< KorobovTag< LR, ET, COMPRESS, PLO, FIGURE > >", "df/d34/structLatBuilder_1_1Task_1_1LatSeqBasedSearchTraits_3_01KorobovTag_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01FIGURE_01_4_01_4.html", null ],
     [ "LatBuilder::Task::LatSeqBasedSearchTraits< RandomKorobovTag< LR, ET, COMPRESS, PLO, FIGURE > >", "d1/d41/structLatBuilder_1_1Task_1_1LatSeqBasedSearchTraits_3_01RandomKorobovTag_3_01LR_00_01ET_00_01COMf414033aa01f7288329a0a10ab980906.html", null ],
     [ "LatBuilder::Task::LatSeqBasedSearchTraits< RandomTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dd/daf/structLatBuilder_1_1Task_1_1LatSeqBasedSearchTraits_3_01RandomTag_3_01LR_00_01ET_00_01COMPRESS_00_01PLO_00_01FIGURE_01_4_01_4.html", null ],
-    [ "LatBuilder::Task::LatSeqBasedSearchTraits< TAG >", "d1/d3c/structLatBuilder_1_1Task_1_1LatSeqBasedSearchTraits.html", null ],
     [ "LatBuilder::Task::RandomCBCTag< LR, ET, COMPRESS, PLO, FIGURE >", "df/dfc/structLatBuilder_1_1Task_1_1RandomCBCTag.html", null ],
     [ "LatBuilder::Task::RandomKorobovTag< LR, ET, COMPRESS, PLO, FIGURE >", "d1/d25/structLatBuilder_1_1Task_1_1RandomKorobovTag.html", null ],
     [ "LatBuilder::Task::RandomTag< LR, ET, COMPRESS, PLO, FIGURE >", "db/dc8/structLatBuilder_1_1Task_1_1RandomTag.html", null ],
@@ -372,25 +361,22 @@ var hierarchy =
     [ "LatBuilder::Traversal::Forward", "d8/d04/classLatBuilder_1_1Traversal_1_1Forward.html", [
       [ "LatBuilder::Traversal::Policy< SEQ, Forward >", "dd/d9a/classLatBuilder_1_1Traversal_1_1Policy_3_01SEQ_00_01Forward_01_4.html", null ]
     ] ],
-    [ "LatBuilder::Traversal::Policy< SEQ, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", null ],
+    [ "LatBuilder::Traversal::Policy< SEQ, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
+      [ "LatBuilder::GenSeq::CoprimeIntegers< COMPRESS, TRAV >", "d6/d49/classLatBuilder_1_1GenSeq_1_1CoprimeIntegers.html", null ],
+      [ "LatBuilder::GenSeq::CoprimeIntegers< COMPRESS, TRAV2 >", "d6/d49/classLatBuilder_1_1GenSeq_1_1CoprimeIntegers.html", null ],
+      [ "LatBuilder::GenSeq::Extend< LR, TRAV >", "d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html", null ],
+      [ "LatBuilder::GenSeq::Extend< LR, TRAV2 >", "d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html", null ]
+    ] ],
     [ "LatBuilder::Traversal::Policy< CoprimeIntegers< Compress::NONE, Traversal::Forward >, Traversal::Forward >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
       [ "LatBuilder::GenSeq::CoprimeIntegers< COMPRESS, TRAV >", "d6/d49/classLatBuilder_1_1GenSeq_1_1CoprimeIntegers.html", null ]
     ] ],
-    [ "LatBuilder::Traversal::Policy< CyclicGroup< LatticeType::ORDINARY, COMPRESS, TRAV, ORDER >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
-      [ "LatBuilder::GenSeq::CyclicGroup< LatticeType::ORDINARY, COMPRESS, TRAV, ORDER >", "de/d22/classLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1ORDINARY_00_01COMPRESS_00_01TRAV_00_01ORDER_01_4.html", null ]
-    ] ],
-    [ "LatBuilder::Traversal::Policy< CyclicGroup< LatticeType::POLYNOMIAL, COMPRESS, TRAV, ORDER >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
-      [ "LatBuilder::GenSeq::CyclicGroup< LatticeType::POLYNOMIAL, COMPRESS, TRAV, ORDER >", "d7/da8/classLatBuilder_1_1GenSeq_1_1CyclicGroup_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_00_01ORDER_01_4.html", null ]
-    ] ],
+    [ "LatBuilder::Traversal::Policy< CyclicGroup< LatticeType::ORDINARY, COMPRESS, TRAV, ORDER >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", null ],
+    [ "LatBuilder::Traversal::Policy< CyclicGroup< LatticeType::POLYNOMIAL, COMPRESS, TRAV, ORDER >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", null ],
     [ "LatBuilder::Traversal::Policy< Extend< LR, Traversal::Forward >, Traversal::Forward >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
       [ "LatBuilder::GenSeq::Extend< LR, TRAV >", "d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html", null ]
     ] ],
-    [ "LatBuilder::Traversal::Policy< GeneratingValues< LatticeType::ORDINARY, COMPRESS, TRAV >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
-      [ "LatBuilder::GenSeq::GeneratingValues< LatticeType::ORDINARY, COMPRESS, TRAV >", "dd/d90/classLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1ORDINARY_00_01COMPRESS_00_01TRAV_01_4.html", null ]
-    ] ],
-    [ "LatBuilder::Traversal::Policy< GeneratingValues< LatticeType::POLYNOMIAL, COMPRESS, TRAV >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", [
-      [ "LatBuilder::GenSeq::GeneratingValues< LatticeType::POLYNOMIAL, COMPRESS, TRAV >", "d7/d98/classLatBuilder_1_1GenSeq_1_1GeneratingValues_3_01LatticeType_1_1POLYNOMIAL_00_01COMPRESS_00_01TRAV_01_4.html", null ]
-    ] ],
+    [ "LatBuilder::Traversal::Policy< GeneratingValues< LatticeType::ORDINARY, COMPRESS, TRAV >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", null ],
+    [ "LatBuilder::Traversal::Policy< GeneratingValues< LatticeType::POLYNOMIAL, COMPRESS, TRAV >, TRAV >", "d0/d4d/classLatBuilder_1_1Traversal_1_1Policy.html", null ],
     [ "LatBuilder::Traversal::Policy< SEQ, GenSeq::CyclicGroupTraversal< LR > >::const_iterator::end_tag", "d5/de7/structLatBuilder_1_1Traversal_1_1Policy_3_01SEQ_00_01GenSeq_1_1CyclicGroupTraversal_3_01LR_01_4_7dc9d679988db0b93ec53b292bbaba9d.html", null ],
     [ "LatBuilder::Traversal::Random< RAND >", "dc/d4c/classLatBuilder_1_1Traversal_1_1Random.html", [
       [ "LatBuilder::Traversal::Policy< SEQ, Random< RAND > >", "d1/d94/classLatBuilder_1_1Traversal_1_1Policy_3_01SEQ_00_01Random_3_01RAND_01_4_01_4.html", null ]
@@ -399,9 +385,6 @@ var hierarchy =
     [ "LatBuilder::TypeInfo< boost::accumulators::tag::max >", "d0/d15/structLatBuilder_1_1TypeInfo_3_01boost_1_1accumulators_1_1tag_1_1max_01_4.html", null ],
     [ "LatBuilder::TypeInfo< boost::accumulators::tag::sum >", "df/d2f/structLatBuilder_1_1TypeInfo_3_01boost_1_1accumulators_1_1tag_1_1sum_01_4.html", null ],
     [ "LatBuilder::UniformUIntDistribution< UINTTYPE, RAND >", "d3/ddf/classLatBuilder_1_1UniformUIntDistribution.html", null ],
-    [ "LatBuilder::UniformUIntDistribution< size_t, RAND >", "d3/ddf/classLatBuilder_1_1UniformUIntDistribution.html", null ],
-    [ "LatBuilder::UniformUIntDistribution< size_type, RandomGenerator >", "d3/ddf/classLatBuilder_1_1UniformUIntDistribution.html", null ],
-    [ "LatBuilder::UniformUIntDistribution< unsigned long, RAND >", "d3/ddf/classLatBuilder_1_1UniformUIntDistribution.html", null ],
     [ "LatBuilder::Vectorize::BinaryOperator< OP, ISVEC1, ISVEC2 >", "d5/d2f/structLatBuilder_1_1Vectorize_1_1BinaryOperator.html", null ],
     [ "LatBuilder::Vectorize::BinaryOperator< OP, true, false >", "d4/dc0/structLatBuilder_1_1Vectorize_1_1BinaryOperator_3_01OP_00_01true_00_01false_01_4.html", null ],
     [ "LatBuilder::Vectorize::BinaryOperator< OP, true, true >", "d9/d62/structLatBuilder_1_1Vectorize_1_1BinaryOperator_3_01OP_00_01true_00_01true_01_4.html", null ],
@@ -411,6 +394,10 @@ var hierarchy =
     [ "LatBuilder::WeightsDispatcher", "d0/d8f/classLatBuilder_1_1WeightsDispatcher.html", null ],
     [ "LatBuilder::Zip< DERIVED >", "d0/d67/classLatBuilder_1_1Zip.html", null ],
     [ "LatSeqBasedSearchTraits::Search", null, [
+      [ "LatBuilder::Task::LatSeqBasedSearch< ExhaustiveTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html", null ],
+      [ "LatBuilder::Task::LatSeqBasedSearch< KorobovTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html", null ],
+      [ "LatBuilder::Task::LatSeqBasedSearch< RandomTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html", null ],
+      [ "LatBuilder::Task::LatSeqBasedSearch< RandomKorobovTag< LR, ET, COMPRESS, PLO, FIGURE > >", "dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html", null ],
       [ "LatBuilder::Task::LatSeqBasedSearch< TAG >", "dd/dcb/classLatBuilder_1_1Task_1_1LatSeqBasedSearch.html", null ]
     ] ],
     [ "LatticeTester::BasisConstruction< BasInt >", "d0/d18/classLatticeTester_1_1BasisConstruction.html", null ],
@@ -421,10 +408,8 @@ var hierarchy =
     [ "LatticeTester::Config< Int, BasIntMat >::MeritConfig", "d6/d63/classLatticeTester_1_1Config_1_1MeritConfig.html", null ],
     [ "LatticeTester::Config< Int, BasIntMat >::ReductionConfig", "d4/d0d/classLatticeTester_1_1Config_1_1ReductionConfig.html", null ],
     [ "LatticeTester::Config< Int, BasIntMat >::ShortestConfig", "db/d0e/classLatticeTester_1_1Config_1_1ShortestConfig.html", null ],
-    [ "LatticeTester::Config< Int, NTL::matrix< BasInt > >", "d8/dcd/classLatticeTester_1_1Config.html", null ],
     [ "LatticeTester::CoordinateSets::AddCoordinate< BASE >", "d7/d31/classLatticeTester_1_1CoordinateSets_1_1AddCoordinate.html", null ],
     [ "LatticeTester::CoordinateSets::AddCoordinate< BASE >::const_iterator::end_tag", "d7/d27/structLatticeTester_1_1CoordinateSets_1_1AddCoordinate_1_1const__iterator_1_1end__tag.html", null ],
-    [ "LatticeTester::CoordinateSets::AddCoordinate< LatticeTester::CoordinateSets::FromRanges >", "d7/d31/classLatticeTester_1_1CoordinateSets_1_1AddCoordinate.html", null ],
     [ "LatticeTester::CoordinateSets::FromRanges", "d8/d34/classLatticeTester_1_1CoordinateSets_1_1FromRanges.html", null ],
     [ "LatticeTester::CoordinateSets::FromRanges::const_iterator::end_tag", "da/dd0/structLatticeTester_1_1CoordinateSets_1_1FromRanges_1_1const__iterator_1_1end__tag.html", null ],
     [ "LatticeTester::CoordinateSets::Subsets", "d8/d6d/classLatticeTester_1_1CoordinateSets_1_1Subsets.html", null ],
@@ -438,7 +423,6 @@ var hierarchy =
     [ "LatticeTester::Lacunary< BasInt >", "d8/d3b/classLatticeTester_1_1Lacunary.html", null ],
     [ "LatticeTester::LatticeAnalysis< Int, BasInt, Dbl, RedDbl >", "df/d59/classLatticeTester_1_1LatticeAnalysis.html", null ],
     [ "LatticeTester::LLLConstr< BasIntMat >", "d3/d89/structLatticeTester_1_1LLLConstr.html", null ],
-    [ "LatticeTester::LLLConstr< NTL::matrix >", "d3/d89/structLatticeTester_1_1LLLConstr.html", null ],
     [ "LatticeTester::Normalizer< RedDbl >", "d0/dc8/classLatticeTester_1_1Normalizer.html", [
       [ "LatticeTester::NormaBestBound< RedDbl >", "df/de5/classLatticeTester_1_1NormaBestBound.html", null ],
       [ "LatticeTester::NormaBestLat< RedDbl >", "d1/d24/classLatticeTester_1_1NormaBestLat.html", null ],
@@ -471,12 +455,9 @@ var hierarchy =
     ] ],
     [ "Mat", null, [
       [ "NTL::matrix< BasInt >", "d4/d6f/classNTL_1_1matrix.html", null ],
+      [ "NTL::matrix< Int >", "d4/d6f/classNTL_1_1matrix.html", null ],
       [ "NTL::matrix< RedDbl >", "d4/d6f/classNTL_1_1matrix.html", null ],
       [ "NTL::matrix< T >", "d4/d6f/classNTL_1_1matrix.html", null ]
-    ] ],
-    [ "MeritFilterList::Combiner", null, [
-      [ "LatBuilder::MeritCombiner::Accumulator< LR, ACC >", "df/dcd/classLatBuilder_1_1MeritCombiner_1_1Accumulator.html", null ],
-      [ "LatBuilder::MeritCombiner::SelectLevel< LR >", "db/df5/classLatBuilder_1_1MeritCombiner_1_1SelectLevel.html", null ]
     ] ],
     [ "NetBuilder::AbstractDigitalNet", "d3/da1/classNetBuilder_1_1AbstractDigitalNet.html", [
       [ "NetBuilder::DigitalNet< NC >", "dd/d67/classNetBuilder_1_1DigitalNet.html", null ]
@@ -484,6 +465,7 @@ var hierarchy =
     [ "NetBuilder::Accumulator", "d6/df9/classNetBuilder_1_1Accumulator.html", null ],
     [ "NetBuilder::AddBinaryOperator", "dc/dac/structNetBuilder_1_1AddBinaryOperator.html", null ],
     [ "NetBuilder::CBCCoordinateSet", "d6/d81/classNetBuilder_1_1CBCCoordinateSet.html", null ],
+    [ "NetBuilder::FigureOfMerit::AllOf", "d9/d4d/classNetBuilder_1_1FigureOfMerit_1_1AllOf.html", null ],
     [ "NetBuilder::FigureOfMerit::FigureOfMerit", "d9/d97/classNetBuilder_1_1FigureOfMerit_1_1FigureOfMerit.html", [
       [ "NetBuilder::FigureOfMerit::CBCFigureOfMerit", "d3/d36/classNetBuilder_1_1FigureOfMerit_1_1CBCFigureOfMerit.html", [
         [ "NetBuilder::FigureOfMerit::WeightedFigureOfMerit< TValueProjMerit< EmbeddingType::MULTILEVEL, GaussMethod > >", "dd/d55/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit.html", null ],
@@ -511,23 +493,23 @@ var hierarchy =
         [ "NetBuilder::FigureOfMerit::ProjectionDependentEvaluator< TValueTransformedProjMerit< EmbeddingType::MULTILEVEL, SchmidMethod > >", "d9/d26/classNetBuilder_1_1FigureOfMerit_1_1ProjectionDependentEvaluator.html", null ],
         [ "NetBuilder::FigureOfMerit::ProjectionDependentEvaluator< TValueTransformedProjMerit< EmbeddingType::UNILEVEL, GaussMethod > >", "d9/d26/classNetBuilder_1_1FigureOfMerit_1_1ProjectionDependentEvaluator.html", null ],
         [ "NetBuilder::FigureOfMerit::ProjectionDependentEvaluator< TValueTransformedProjMerit< EmbeddingType::UNILEVEL, SchmidMethod > >", "d9/d26/classNetBuilder_1_1FigureOfMerit_1_1ProjectionDependentEvaluator.html", null ],
-        [ "NetBuilder::FigureOfMerit::ProjectionDependentEvaluator< PROJDEP >", "d9/d26/classNetBuilder_1_1FigureOfMerit_1_1ProjectionDependentEvaluator.html", null ]
+        [ "NetBuilder::FigureOfMerit::ProjectionDependentEvaluator< PROJDEP >", "d9/d26/classNetBuilder_1_1FigureOfMerit_1_1ProjectionDependentEvaluator.html", null ],
+        [ "NetBuilder::FigureOfMerit::WeightedFigureOfMerit< PROJDEP >::WeightedFigureOfMeritEvaluator", "d9/d36/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit_1_1WeightedFigureOfMeritEvaluator.html", null ]
       ] ]
     ] ],
     [ "NetBuilder::FigureOfMerit::ResolutionGapProjMerit< ET >", "d9/dd2/classNetBuilder_1_1FigureOfMerit_1_1ResolutionGapProjMerit.html", null ],
     [ "NetBuilder::FigureOfMerit::ResolutionGapProjMerit< EmbeddingType::MULTILEVEL >", "d1/d03/classNetBuilder_1_1FigureOfMerit_1_1ResolutionGapProjMerit_3_01EmbeddingType_1_1MULTILEVEL_01_4.html", null ],
     [ "NetBuilder::FigureOfMerit::ResolutionGapProjMerit< EmbeddingType::UNILEVEL >", "da/d24/classNetBuilder_1_1FigureOfMerit_1_1ResolutionGapProjMerit_3_01EmbeddingType_1_1UNILEVEL_01_4.html", null ],
-    [ "NetBuilder::FigureOfMerit::TValueProjMerit< ET, METHOD >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", null ],
-    [ "NetBuilder::FigureOfMerit::TValueProjMerit< EmbeddingType::MULTILEVEL, GaussMethod >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", null ],
+    [ "NetBuilder::FigureOfMerit::TValueProjMerit< ET, METHOD >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", [
+      [ "NetBuilder::FigureOfMerit::TValueTransformedProjMerit< EmbeddingType::MULTILEVEL, METHOD >", "d3/d7d/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html", null ],
+      [ "NetBuilder::FigureOfMerit::TValueTransformedProjMerit< EmbeddingType::UNILEVEL, METHOD >", "dd/d5e/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1UNILEVEL_00_01METHOD_01_4.html", null ]
+    ] ],
     [ "NetBuilder::FigureOfMerit::TValueProjMerit< EmbeddingType::MULTILEVEL, METHOD >", "d3/d7a/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html", [
       [ "NetBuilder::FigureOfMerit::TValueTransformedProjMerit< EmbeddingType::MULTILEVEL, METHOD >", "d3/d7d/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1MULTILEVEL_00_01METHOD_01_4.html", null ]
     ] ],
-    [ "NetBuilder::FigureOfMerit::TValueProjMerit< EmbeddingType::MULTILEVEL, SchmidMethod >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", null ],
-    [ "NetBuilder::FigureOfMerit::TValueProjMerit< EmbeddingType::UNILEVEL, GaussMethod >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", null ],
     [ "NetBuilder::FigureOfMerit::TValueProjMerit< EmbeddingType::UNILEVEL, METHOD >", "dd/dee/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit_3_01EmbeddingType_1_1UNILEVEL_00_01METHOD_01_4.html", [
       [ "NetBuilder::FigureOfMerit::TValueTransformedProjMerit< EmbeddingType::UNILEVEL, METHOD >", "dd/d5e/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit_3_01EmbeddingType_1_1UNILEVEL_00_01METHOD_01_4.html", null ]
     ] ],
-    [ "NetBuilder::FigureOfMerit::TValueProjMerit< EmbeddingType::UNILEVEL, SchmidMethod >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", null ],
     [ "NetBuilder::FigureOfMerit::TValueProjMerit< ET, GaussMethod >", "d1/d45/classNetBuilder_1_1FigureOfMerit_1_1TValueProjMerit.html", [
       [ "NetBuilder::FigureOfMerit::TValueTransformedProjMerit< EmbeddingType::MULTILEVEL, GaussMethod >", "d5/d33/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit.html", null ],
       [ "NetBuilder::FigureOfMerit::TValueTransformedProjMerit< EmbeddingType::UNILEVEL, GaussMethod >", "d5/d33/classNetBuilder_1_1FigureOfMerit_1_1TValueTransformedProjMerit.html", null ],
@@ -642,13 +624,13 @@ var hierarchy =
       [ "LatBuilder::Digits< INT >", "d4/dad/classLatBuilder_1_1Digits.html", null ]
     ] ],
     [ "Vec", null, [
+      [ "NTL::vector< BasInt >", "d0/d01/classNTL_1_1vector.html", null ],
+      [ "NTL::vector< Dbl >", "d0/d01/classNTL_1_1vector.html", null ],
+      [ "NTL::vector< Int >", "d0/d01/classNTL_1_1vector.html", null ],
+      [ "NTL::vector< RedDbl >", "d0/d01/classNTL_1_1vector.html", null ],
       [ "NTL::vector< M::value_type >", "d0/d01/classNTL_1_1vector.html", [
         [ "NTL::matrix_row< M >", "df/d79/classNTL_1_1matrix__row.html", null ]
       ] ],
-      [ "NTL::vector< Dbl >", "d0/d01/classNTL_1_1vector.html", null ],
-      [ "NTL::vector< BasInt >", "d0/d01/classNTL_1_1vector.html", null ],
-      [ "NTL::vector< Int >", "d0/d01/classNTL_1_1vector.html", null ],
-      [ "NTL::vector< RedDbl >", "d0/d01/classNTL_1_1vector.html", null ],
       [ "NTL::vector< T >", "d0/d01/classNTL_1_1vector.html", null ]
     ] ]
 ];
