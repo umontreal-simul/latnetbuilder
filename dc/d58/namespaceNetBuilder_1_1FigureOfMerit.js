@@ -1,9 +1,11 @@
 var namespaceNetBuilder_1_1FigureOfMerit =
 [
+    [ "AllOf", "d9/d4d/classNetBuilder_1_1FigureOfMerit_1_1AllOf.html", null ],
     [ "BitEquidistribution", "de/dd1/classNetBuilder_1_1FigureOfMerit_1_1BitEquidistribution.html", "de/dd1/classNetBuilder_1_1FigureOfMerit_1_1BitEquidistribution" ],
     [ "CBCFigureOfMerit", "d3/d36/classNetBuilder_1_1FigureOfMerit_1_1CBCFigureOfMerit.html", "d3/d36/classNetBuilder_1_1FigureOfMerit_1_1CBCFigureOfMerit" ],
     [ "CBCFigureOfMeritEvaluator", "de/d90/classNetBuilder_1_1FigureOfMerit_1_1CBCFigureOfMeritEvaluator.html", "de/d90/classNetBuilder_1_1FigureOfMerit_1_1CBCFigureOfMeritEvaluator" ],
     [ "CombinedFigureOfMerit", "d8/d77/classNetBuilder_1_1FigureOfMerit_1_1CombinedFigureOfMerit.html", "d8/d77/classNetBuilder_1_1FigureOfMerit_1_1CombinedFigureOfMerit" ],
+    [ "Coordinates", "d5/df3/classNetBuilder_1_1FigureOfMerit_1_1Coordinates.html", "d5/df3/classNetBuilder_1_1FigureOfMerit_1_1Coordinates" ],
     [ "CoordUniformFigureOfMerit", "dc/d84/classNetBuilder_1_1FigureOfMerit_1_1CoordUniformFigureOfMerit.html", "dc/d84/classNetBuilder_1_1FigureOfMerit_1_1CoordUniformFigureOfMerit" ],
     [ "FigureOfMerit", "d9/d97/classNetBuilder_1_1FigureOfMerit_1_1FigureOfMerit.html", "d9/d97/classNetBuilder_1_1FigureOfMerit_1_1FigureOfMerit" ],
     [ "FigureOfMeritEvaluator", "db/d8d/classNetBuilder_1_1FigureOfMerit_1_1FigureOfMeritEvaluator.html", "db/d8d/classNetBuilder_1_1FigureOfMerit_1_1FigureOfMeritEvaluator" ],

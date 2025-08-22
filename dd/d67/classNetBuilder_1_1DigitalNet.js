@@ -1,7 +1,7 @@
 var classNetBuilder_1_1DigitalNet =
 [
-    [ "GenValue", "dd/d67/classNetBuilder_1_1DigitalNet.html#aea26996d08c52ddf33e43a45e787f549", null ],
-    [ "SizeParameter", "dd/d67/classNetBuilder_1_1DigitalNet.html#aefffe6ac72106894d0b135473646a6f9", null ],
+    [ "GenValue", "dd/d67/classNetBuilder_1_1DigitalNet.html#abefa7403744d6631d4896e7fa97900ac", null ],
+    [ "SizeParameter", "dd/d67/classNetBuilder_1_1DigitalNet.html#a858ce544840943d50a83bd5b5c18d0c9", null ],
     [ "DigitalNet", "dd/d67/classNetBuilder_1_1DigitalNet.html#a80df4f451a79ef2afb0211e7453de06a", null ],
     [ "DigitalNet", "dd/d67/classNetBuilder_1_1DigitalNet.html#a332ca217fc001cd01b84e9fc6a8855d7", null ],
     [ "~DigitalNet", "dd/d67/classNetBuilder_1_1DigitalNet.html#a345f363be62b3c11cd06119c6f9ef7cf", null ],

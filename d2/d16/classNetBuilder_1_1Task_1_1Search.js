@@ -1,8 +1,8 @@
 var classNetBuilder_1_1Task_1_1Search =
 [
-    [ "Observer", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#a6737bc81ca5377c272a9ed3a56b9cb7b", null ],
-    [ "OnFailedSearch", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#adf062a29619fc4e9eaf5763152e3b984", null ],
-    [ "OnNetSelected", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#a0814ae5b2d67ff3b9b8d43a2f446afdb", null ],
+    [ "Observer", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#acabe685766f6756e37b2ae683dfa4142", null ],
+    [ "OnFailedSearch", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#ae3ec287e2ce23881c59731d3d0eae03d", null ],
+    [ "OnNetSelected", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#a0a1ac1958ac957afd34568a1038f8718", null ],
     [ "~Search", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#aaad084351b2669d22879ed593f1b6b47", null ],
     [ "Search", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#a6c1828507b091688bdfac5e9084aab93", null ],
     [ "Search", "d2/d16/classNetBuilder_1_1Task_1_1Search.html#a8b20edd6b43e12c30f8f047163f70931", null ],

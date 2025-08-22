@@ -1,5 +1,0 @@
-var classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4 =
-[
-    [ "LevelRanges", "d0/d3c/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4_1_1LevelRanges.html", "d0/d3c/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4_1_1LevelRanges" ],
-    [ "levelRanges", "d7/d6d/classLatBuilder_1_1Storage_3_01LR_00_01EmbeddingType_1_1MULTILEVEL_00_01COMPRESS_00_01PLO_01_4.html#a769dd9003b0d2b97f064c3ebe703b100", null ]
-];

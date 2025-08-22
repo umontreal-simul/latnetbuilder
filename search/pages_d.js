@@ -1,7 +1,26 @@
 var searchData=
 [
-  ['point_20set_20types_0',['Point set types',['../d2/d6f/cmdtut_advanced_pointsets.html',1,'Point set types'],['../dc/d5a/feats_pointsets.html',1,'Point set types']]],
-  ['point_20sets_1',['point sets',['../df/df1/cmdtut_advanced_multilevel.html',1,'Multilevel point sets'],['../d6/d6f/feats_multilevel.html',1,'Multilevel point sets']]],
-  ['polynomial_20lattice_20rules_2',['polynomial lattice rules',['../da/d25/feats_poly.html',1,'Detailed guidelines for polynomial lattice rules'],['../d6/d9e/cmdtut_advanced_interlaced.html',1,'Interlaced digital nets and polynomial lattice rules']]],
-  ['polynomials_3',['Implementation of Polynomials',['../d4/d56/libtut_lat_polynomial.html',1,'libtut_lat']]]
+  ['latbuilder_0',['Extending LatBuilder',['../d7/de1/libtut_lat_extending.html',1,'libtut_lat']]],
+  ['latbuilder_20and_20netbuilder_1',['Relations between LatBuilder and NetBuilder',['../da/d2e/libtut_impl.html#libtut_impl_spaghetti',1,'']]],
+  ['latbuilder_20tutorial_2',['LatBuilder tutorial',['../da/d10/libtut_lat.html',1,'libtut']]],
+  ['latnet_20builder_20manual_3',['LatNet Builder Manual',['../index.html',1,'']]],
+  ['latnet_20builder_20web_20application_4',['LatNet Builder Web Application',['../de/dc5/gui.html',1,'index']]],
+  ['lattice_20definitions_5',['Sequences of Lattice Definitions',['../d5/d48/libtut_lat_latseq.html',1,'libtut_lat']]],
+  ['lattice_20format_6',['Lattice format',['../dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_lattice',1,'']]],
+  ['lattice_20rule_7',['How to construct a specific lattice rule',['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_specify',1,'']]],
+  ['lattice_20rules_8',['Lattice rules',['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat',1,'']]],
+  ['lattice_20rules_9',['lattice rules',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_interlaced',1,'Constructing interlaced digital nets and polynomial lattice rules'],['../d6/d9e/cmdtut_advanced_interlaced.html#cmdtut_advanced_interlaced_poly',1,'Constructing interlaced polynomial lattice rules'],['../da/d25/feats_poly.html',1,'Detailed guidelines for polynomial lattice rules'],['../d3/dc5/feats_figures_lat.html#feats_figures_lat_interlaced',1,'Figures of merit for interlaced polynomial lattice rules'],['../d3/dc5/feats_figures_lat.html#feats_figures_lat_ord',1,'Figures of merit for ordinary lattice rules'],['../d3/dc5/feats_figures_lat.html#feats_figures_lat_poly',1,'Figures of merit for polynomial lattice rules'],['../d6/d9e/cmdtut_advanced_interlaced.html',1,'Interlaced digital nets and polynomial lattice rules'],['../dc/d5a/feats_pointsets.html#feats_pointsets_interlaced',1,'Interlaced digital nets and polynomial lattice rules'],['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_size',1,'Size and modulus of lattice rules'],['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_construction',1,'Types of lattice rules']]],
+  ['lattice_20rules_20and_20digital_20nets_10',['Constructing polynomial lattice rules and digital nets',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_pointsets',1,'']]],
+  ['lattice_20types_20and_20definitions_11',['Lattice Types and Definitions',['../dc/de9/libtut_lat_latdef.html',1,'libtut_lat']]],
+  ['lattices_12',['lattices',['../d6/d6f/feats_multilevel.html#feats_multilevel_lat',1,'Embedded lattices'],['../d3/dc5/feats_figures_lat.html',1,'Figures of merit for rank-1 lattices'],['../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1_ord',1,'Ordinary lattices'],['../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1',1,'Rank-1 lattices']]],
+  ['lattices_20and_20combiners_13',['Embedded Lattices and Combiners',['../dd/dd9/libtut_lat_filters.html#libtut_lat_filters_cbc_embedded',1,'']]],
+  ['lattices_20in_20base_202_14',['Polynomial lattices in base 2',['../dc/d5a/feats_pointsets.html#feats_pointsets_latrank1_poly',1,'']]],
+  ['latticetester_15',['Usage of LatticeTester',['../da/d2e/libtut_impl.html#libtut_impl_latticetester',1,'']]],
+  ['libraries_16',['Usage of the Boost C++ Libraries',['../da/d2e/libtut_impl.html#libtut_impl_boost',1,'']]],
+  ['library_20tutorial_17',['Library Tutorial',['../da/d6f/libtut.html',1,'index']]],
+  ['line_20options_18',['Summary of Command-Line Options',['../de/db5/cmdtut_summary.html',1,'cmdtut']]],
+  ['line_20tutorial_19',['Command-Line Tutorial',['../d5/d56/cmdtut.html',1,'index']]],
+  ['links_20and_20publications_20',['Links and publications',['../index.html#links',1,'']]],
+  ['list_20of_20normalizations_21',['List of normalizations',['../d9/d80/feats_filters.html#feats_filters_norms',1,'']]],
+  ['low_20pass_22',['Normalization and Low-Pass',['../dd/dd9/libtut_lat_filters.html#libtut_lat_filters_cbc_simple',1,'']]]
 ];

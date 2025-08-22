@@ -12,5 +12,7 @@ var searchData=
   ['exhaustivesearch_9',['ExhaustiveSearch',['../d5/d72/classNetBuilder_1_1Task_1_1ExhaustiveSearch.html',1,'NetBuilder::Task']]],
   ['exhaustivetag_10',['ExhaustiveTag',['../db/dca/structLatBuilder_1_1Task_1_1ExhaustiveTag.html',1,'LatBuilder::Task']]],
   ['explorationmethodparser_11',['ExplorationMethodParser',['../dd/d9c/structNetBuilder_1_1Parser_1_1ExplorationMethodParser.html',1,'NetBuilder::Parser']]],
-  ['extend_12',['Extend',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq::Extend&lt; LR, TRAV &gt;'],['../dc/d54/classLatBuilder_1_1Task_1_1Extend.html',1,'LatBuilder::Task::Extend&lt; LR, ET, COMPRESS, PLO, FIGURE &gt;']]]
+  ['extend_12',['Extend',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq::Extend&lt; LR, TRAV &gt;'],['../dc/d54/classLatBuilder_1_1Task_1_1Extend.html',1,'LatBuilder::Task::Extend&lt; LR, ET, COMPRESS, PLO, FIGURE &gt;']]],
+  ['extend_3c_20lr_2c_20trav_20_3e_13',['Extend&lt; LR, TRAV &gt;',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq']]],
+  ['extend_3c_20lr_2c_20trav2_20_3e_14',['Extend&lt; LR, TRAV2 &gt;',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq']]]
 ];

@@ -1,7 +1,27 @@
 var searchData=
 [
-  ['basic_20tasks_0',['Basic tasks',['../d5/d09/libtut_net_tasks.html',1,'libtut_net']]],
-  ['bibliography_1',['Bibliography',['../d0/de3/citelist.html',1,'']]],
-  ['builder_20manual_2',['LatNet Builder Manual',['../index.html',1,'']]],
-  ['builder_20web_20application_3',['LatNet Builder Web Application',['../de/dc5/gui.html',1,'index']]]
+  ['a_20first_20example_0',['A first example',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_first_example',1,'']]],
+  ['a_20folder_1',['Saving the results in a folder',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_outputfolder',1,'']]],
+  ['a_20improved_20example_20using_20signals_2',['A Improved Example Using Signals',['../df/d4b/libtut_lat_figures.html#libtut_lat_figures_signals',1,'']]],
+  ['a_20note_20on_20basis_20construction_3',['A note on basis construction',['../d0/d18/classLatticeTester_1_1BasisConstruction.html#autotoc_md0',1,'']]],
+  ['a_20simple_20example_4',['A Simple Example',['../df/d4b/libtut_lat_figures.html#libtut_lat_figures_simple',1,'']]],
+  ['a_20simple_20example_20using_20cbc_20construction_5',['A Simple Example Using CBC Construction',['../df/d4b/libtut_lat_figures.html#libtut_lat_figures_cbc_simple',1,'']]],
+  ['a_20specific_20lattice_20rule_6',['How to construct a specific lattice rule',['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_specify',1,'']]],
+  ['a_20specific_20net_7',['How to construct a specific net',['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_net_specify',1,'']]],
+  ['a_20specific_20point_20set_8',['Evaluating figures of merit for a specific point set',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_eval',1,'']]],
+  ['advanced_20tutorial_9',['Advanced Tutorial',['../d7/de4/cmdtut_spec.html',1,'cmdtut']]],
+  ['and_20combiners_10',['and Combiners',['../dd/dd9/libtut_lat_filters.html#libtut_lat_filters_cbc_embedded',1,'Embedded Lattices and Combiners'],['../dd/dd9/libtut_lat_filters.html',1,'Filters and Combiners']]],
+  ['and_20definitions_11',['and Definitions',['../dc/de9/libtut_lat_latdef.html',1,'Lattice Types and Definitions'],['../dc/ded/libtut_net_def.html',1,'Net Construction Types and Definitions']]],
+  ['and_20digital_20nets_12',['Constructing polynomial lattice rules and digital nets',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_pointsets',1,'']]],
+  ['and_20filters_13',['Normalizations and filters',['../d9/d80/feats_filters.html',1,'feats']]],
+  ['and_20filters_20for_20multilevel_20point_20sets_14',['Normalizations and filters for multilevel point sets',['../d9/d80/feats_filters.html#feats_filters_multilevel',1,'']]],
+  ['and_20low_20pass_15',['Normalization and Low-Pass',['../dd/dd9/libtut_lat_filters.html#libtut_lat_filters_cbc_simple',1,'']]],
+  ['and_20modulus_20of_20lattice_20rules_16',['Size and modulus of lattice rules',['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_size',1,'']]],
+  ['and_20netbuilder_17',['Relations between LatBuilder and NetBuilder',['../da/d2e/libtut_impl.html#libtut_impl_spaghetti',1,'']]],
+  ['and_20normalizations_18',['and normalizations',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_filters',1,'Applying filters and normalizations'],['../d2/d15/cmdtut_advanced_filters.html',1,'Filters and normalizations'],['../d2/d15/cmdtut_advanced_filters.html#cmdtut_advanced_filters_multilevel',1,'Using multilevel filters and normalizations']]],
+  ['and_20polynomial_20lattice_20rules_19',['and polynomial lattice rules',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_interlaced',1,'Constructing interlaced digital nets and polynomial lattice rules'],['../d6/d9e/cmdtut_advanced_interlaced.html',1,'Interlaced digital nets and polynomial lattice rules'],['../dc/d5a/feats_pointsets.html#feats_pointsets_interlaced',1,'Interlaced digital nets and polynomial lattice rules']]],
+  ['and_20publications_20',['Links and publications',['../index.html#links',1,'']]],
+  ['application_21',['LatNet Builder Web Application',['../de/dc5/gui.html',1,'index']]],
+  ['applying_20filters_20and_20normalizations_22',['Applying filters and normalizations',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_filters',1,'']]],
+  ['available_20formats_23',['Summary of available formats',['../dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_summary',1,'']]]
 ];

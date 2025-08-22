@@ -164,5 +164,7 @@ var namespaceLatticeTester =
     [ "toString", "d8/d74/namespaceLatticeTester.html#a0a994e5f949c8b1315d0324e7826240d", null ],
     [ "Triangularization", "d8/d74/namespaceLatticeTester.html#aa519a1e0589932719c79b73c76bb1093", null ],
     [ "MAX_LONG_DOUBLE", "d8/d74/namespaceLatticeTester.html#ac9adbd421a1148216c8eac1b7d96a5b8", null ],
+    [ "NormaLaminated< RedDbl >::m_gamma", "d8/d74/namespaceLatticeTester.html#ac564a8d86bd7d71d3b390172f2707536", null ],
+    [ "NormaRogers< RedDbl >::m_gamma0", "d8/d74/namespaceLatticeTester.html#a4e5bd8b4544134c6c59f86602c63c58c", null ],
     [ "TWO_EXP", "d8/d74/namespaceLatticeTester.html#ae5f464bde0cd79b7bbc47ff090e49b31", null ]
 ];

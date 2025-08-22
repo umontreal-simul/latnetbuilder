@@ -7,6 +7,7 @@ var searchData=
   ['korobov_4',['Korobov',['../db/d33/classLatBuilder_1_1LatSeq_1_1Korobov.html',1,'LatBuilder::LatSeq::Korobov&lt; LR, ET, GENSEQ &gt;'],['../db/d33/classLatBuilder_1_1LatSeq_1_1Korobov.html#a2b1cd3302a59897a48ca82cff0eb656e',1,'LatBuilder::LatSeq::Korobov::Korobov()'],['../d6/db5/namespaceLatBuilder_1_1Task.html#a0bc6339ed29f1d06efb1044b65b29426',1,'LatBuilder::Task::Korobov']]],
   ['korobov_5',['korobov',['../d0/d64/namespaceLatBuilder_1_1LatSeq.html#a977b8ae778654cfa312be6f98197564b',1,'LatBuilder::LatSeq::korobov()'],['../d6/db5/namespaceLatBuilder_1_1Task.html#ab4ec28fc5fed6add0bbb575ebca4c7b0',1,'LatBuilder::Task::korobov()']]],
   ['korobov_20sequences_6',['Korobov Sequences',['../d5/d48/libtut_lat_latseq.html#libtut_lat_latseq_korobov',1,'']]],
-  ['korobovtag_7',['KorobovTag',['../d7/d3b/structLatBuilder_1_1Task_1_1KorobovTag.html',1,'LatBuilder::Task']]],
-  ['kuo_20format_8',['Joe &amp; Kuo format',['../dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_jk',1,'']]]
+  ['korobov_3c_20lr_2c_20et_2c_20genseqtype_20_3e_7',['Korobov&lt; LR, ET, GenSeqType &gt;',['../db/d33/classLatBuilder_1_1LatSeq_1_1Korobov.html',1,'LatBuilder::LatSeq']]],
+  ['korobovtag_8',['KorobovTag',['../d7/d3b/structLatBuilder_1_1Task_1_1KorobovTag.html',1,'LatBuilder::Task']]],
+  ['kuo_20format_9',['Joe &amp;amp; Kuo format',['../dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_jk',1,'']]]
 ];

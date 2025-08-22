@@ -1,8 +1,8 @@
 var classNetBuilder_1_1GeneratingMatrix =
 [
-    [ "reference", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a6b47025dfe3fe0a4a9e718bc48b86ecd", null ],
-    [ "Row", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a830d6f1c365c0fd087a4773885639e8a", null ],
-    [ "uInteger", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a54c515a100a51c2f9454b1bc8cd9faed", null ],
+    [ "reference", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a9a64512e2e6be9340bdd5b8045217171", null ],
+    [ "Row", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a2792d543dd633bcdefdbcf058a7f7e31", null ],
+    [ "uInteger", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a13628c5c5758cfb249c11c36a8105405", null ],
     [ "GeneratingMatrix", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a94fa5376651a448d87fa5f20f38b5f8f", null ],
     [ "GeneratingMatrix", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a8f53ddc59560cf189e7dc5e3fed686e1", null ],
     [ "flip", "d0/def/classNetBuilder_1_1GeneratingMatrix.html#a3cd0c74ee075fa6691e9749a21703ab2", null ],

@@ -42,7 +42,9 @@ var searchData=
   ['expnorm_39',['expNorm',['../de/dd1/classNetBuilder_1_1FigureOfMerit_1_1BitEquidistribution.html#af40250799006cf68bd6405ced3fb3fb7',1,'NetBuilder::FigureOfMerit::BitEquidistribution::expNorm()'],['../d8/d77/classNetBuilder_1_1FigureOfMerit_1_1CombinedFigureOfMerit.html#aac232e0934ef72043690a68223059369',1,'NetBuilder::FigureOfMerit::CombinedFigureOfMerit::expNorm()'],['../dd/d55/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit.html#a9ca49548f643304944b8464d9f3f0def',1,'NetBuilder::FigureOfMerit::WeightedFigureOfMerit::expNorm()']]],
   ['extend_40',['Extend',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq::Extend&lt; LR, TRAV &gt;'],['../dc/d54/classLatBuilder_1_1Task_1_1Extend.html',1,'LatBuilder::Task::Extend&lt; LR, ET, COMPRESS, PLO, FIGURE &gt;'],['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html#a1fe4053e13f5d31fe76aedfe7eef9c0e',1,'LatBuilder::GenSeq::Extend::Extend(value_type modulus=value_type(1), value_type grain=value_type(1), value_type low=value_type(0), Traversal trav=Traversal())'],['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html#a17f58e715640de997a7d91dfcc840659',1,'LatBuilder::GenSeq::Extend::Extend(const Extend&lt; LR, TRAV2 &gt; &amp;other, Traversal trav=Traversal())']]],
   ['extend_41',['extend',['../d6/db5/namespaceLatBuilder_1_1Task.html#a85677c358e063fa21ddca0bc0a1395c1',1,'LatBuilder::Task']]],
-  ['extending_20latbuilder_42',['Extending LatBuilder',['../d7/de1/libtut_lat_extending.html',1,'libtut_lat']]],
-  ['extending_20point_20sets_43',['Extending point sets',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_extend',1,'']]],
-  ['extension_20of_20the_20number_20of_20points_44',['Extension of the Number of Points',['../dd/df1/libtut_lat_genseq.html#libtut_lat_genseq_extend',1,'']]]
+  ['extend_3c_20lr_2c_20trav_20_3e_42',['Extend&lt; LR, TRAV &gt;',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq']]],
+  ['extend_3c_20lr_2c_20trav2_20_3e_43',['Extend&lt; LR, TRAV2 &gt;',['../d8/df0/classLatBuilder_1_1GenSeq_1_1Extend.html',1,'LatBuilder::GenSeq']]],
+  ['extending_20latbuilder_44',['Extending LatBuilder',['../d7/de1/libtut_lat_extending.html',1,'libtut_lat']]],
+  ['extending_20point_20sets_45',['Extending point sets',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_extend',1,'']]],
+  ['extension_20of_20the_20number_20of_20points_46',['Extension of the Number of Points',['../dd/df1/libtut_lat_genseq.html#libtut_lat_genseq_extend',1,'']]]
 ];

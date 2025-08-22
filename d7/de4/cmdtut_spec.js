@@ -36,7 +36,7 @@ var cmdtut_spec =
       [ "Lattice format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_lattice", null ],
       [ "Net format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_net", null ],
       [ "Formats for Sobol digital nets", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol", [
-        [ "Joe & Kuo format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_jk", null ],
+        [ "Joe &amp; Kuo format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_jk", null ],
         [ "Simplified Sobol format", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_sobol_sobol", null ]
       ] ],
       [ "Interlaced point sets", "dc/de0/cmdtut_advanced_output_style.html#cmdtut_advanced_output_style_interlaced", null ]

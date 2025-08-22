@@ -1,5 +1,6 @@
 var classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit =
 [
+    [ "WeightedFigureOfMeritEvaluator", "d9/d36/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit_1_1WeightedFigureOfMeritEvaluator.html", "d9/d36/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit_1_1WeightedFigureOfMeritEvaluator" ],
     [ "WeightedFigureOfMerit", "dd/d55/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit.html#a336e551e60db3f7bebb4a914d3a98440", null ],
     [ "accumulator", "dd/d55/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit.html#a86d71a6a81b0ae1de2148b7664cec975", null ],
     [ "evaluator", "dd/d55/classNetBuilder_1_1FigureOfMerit_1_1WeightedFigureOfMerit.html#a81941a5b682b6adc944011d2e1cd1fae", null ],

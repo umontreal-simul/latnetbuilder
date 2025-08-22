@@ -6,7 +6,7 @@ var searchData=
   ['tostringbasis_3',['toStringBasis',['../d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a4a205abb7fcd4af3999472be7deed2a2',1,'LatticeTester::IntLatticeBasis']]],
   ['tostringcoef_4',['toStringCoef',['../de/dfe/classLatticeTester_1_1Rank1Lattice.html#a0d17717d737fb62d56d0e63a287249ef',1,'LatticeTester::Rank1Lattice']]],
   ['tostringdualbasis_5',['toStringDualBasis',['../d1/d89/classLatticeTester_1_1IntLatticeBasis.html#a67d64d63f2b845edcbe3e702014de0e8',1,'LatticeTester::IntLatticeBasis']]],
-  ['totient_6',['totient',['../da/d6a/classLatBuilder_1_1SizeParam_3_01LR_00_01EmbeddingType_1_1UNILEVEL_01_4.html#ac33e6f5468c3329c2d27be736ed8f466',1,'LatBuilder::SizeParam&lt; LR, EmbeddingType::UNILEVEL &gt;::totient()'],['../da/ddd/classLatBuilder_1_1BasicSizeParam.html#add160bc18f709393cb1aff82ed3451f8',1,'LatBuilder::BasicSizeParam::totient()']]],
+  ['totient_6',['totient',['../da/ddd/classLatBuilder_1_1BasicSizeParam.html#add160bc18f709393cb1aff82ed3451f8',1,'LatBuilder::BasicSizeParam']]],
   ['transpose_7',['transpose',['../d2/d5a/namespaceNTL.html#a888d95def613c05a77a555a1890a95cf',1,'NTL::transpose(NTL::Mat&lt; T &gt; &amp;X, const NTL::Mat&lt; T &gt; &amp;A)'],['../d2/d5a/namespaceNTL.html#af281ec28bc1328bc42c6f4374083e897',1,'NTL::transpose(const NTL::Mat&lt; T &gt; &amp;a)']]],
   ['triangularization_8',['Triangularization',['../d8/d74/namespaceLatticeTester.html#aa519a1e0589932719c79b73c76bb1093',1,'LatticeTester']]],
   ['tryaccumulate_9',['tryAccumulate',['../d6/df9/classNetBuilder_1_1Accumulator.html#a23fb919ab1a21a2dc51283e1527755de',1,'NetBuilder::Accumulator']]],

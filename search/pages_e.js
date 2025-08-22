@@ -1,4 +1,26 @@
 var searchData=
 [
-  ['quick_20recipes_0',['Quick Recipes',['../d0/da5/cmdtut_quickrecipes.html',1,'cmdtut']]]
+  ['main_20features_0',['Main features',['../dd/d51/feats.html',1,'index']]],
+  ['management_1',['Memory Management',['../da/d2e/libtut_impl.html#libtut_impl_memory',1,'']]],
+  ['manual_2',['LatNet Builder Manual',['../index.html',1,'']]],
+  ['manual_20outline_3',['Manual Outline',['../index.html#outline',1,'']]],
+  ['memory_20management_4',['Memory Management',['../da/d2e/libtut_impl.html#libtut_impl_memory',1,'']]],
+  ['merit_5',['Merit',['../da/dd0/libtut_lat_meritseq.html#libtut_lat_meritseq_coorduni',1,'CBC Construction for Coordinate-Uniform Figures of Merit'],['../df/d4b/libtut_lat_figures.html',1,'Weighted Figures of Merit']]],
+  ['merit_6',['merit',['../d3/d8e/cmdtut_advanced_figures.html',1,'Figures of merit'],['../d6/d4c/feats_figures.html',1,'Figures of merit'],['../d4/d66/libtut_net_figures.html',1,'Figures of merit'],['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_figures',1,'Using different figures of merit']]],
+  ['merit_20for_20a_20specific_20point_20set_7',['Evaluating figures of merit for a specific point set',['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_eval',1,'']]],
+  ['merit_20for_20digital_20nets_8',['Figures of merit for digital nets',['../d1/d27/feats_figures_net.html',1,'feats_figures']]],
+  ['merit_20for_20interlaced_20digital_20nets_9',['Figures of merit for interlaced digital nets',['../d1/d27/feats_figures_net.html#feats_figures_net_interlaced',1,'']]],
+  ['merit_20for_20interlaced_20polynomial_20lattice_20rules_10',['Figures of merit for interlaced polynomial lattice rules',['../d3/dc5/feats_figures_lat.html#feats_figures_lat_interlaced',1,'']]],
+  ['merit_20for_20ordinary_20lattice_20rules_11',['Figures of merit for ordinary lattice rules',['../d3/dc5/feats_figures_lat.html#feats_figures_lat_ord',1,'']]],
+  ['merit_20for_20polynomial_20lattice_20rules_12',['Figures of merit for polynomial lattice rules',['../d3/dc5/feats_figures_lat.html#feats_figures_lat_poly',1,'']]],
+  ['merit_20for_20rank_201_20lattices_13',['Figures of merit for rank-1 lattices',['../d3/dc5/feats_figures_lat.html',1,'feats_figures']]],
+  ['merit_20values_14',['Merit Values',['../d9/d28/libtut_lat_misc.html#libtut_lat_quantiles',1,'Examining the Distribution of Merit Values'],['../da/dd0/libtut_lat_meritseq.html',1,'Sequences of Merit Values']]],
+  ['methods_15',['Non-CBC Construction Methods',['../da/dd0/libtut_lat_meritseq.html#libtut_lat_meritseq_noncbc',1,'']]],
+  ['methods_16',['methods',['../d3/d28/cmdtut_advanced_exploration.html',1,'Exploration methods'],['../dd/d56/feats_exploration.html',1,'Exploration methods'],['../d0/da5/cmdtut_quickrecipes.html#cmdtut_quickrecipes_explorations',1,'Exploring the search space with other methods']]],
+  ['mixedcbcexplorer_17',['MixedCBCExplorer',['../d5/d09/libtut_net_tasks.html#libtut_net_tasks_search_cbc_mixed',1,'']]],
+  ['modulus_20of_20lattice_20rules_18',['Size and modulus of lattice rules',['../d2/d6f/cmdtut_advanced_pointsets.html#cmdtut_advanced_pointsets_lat_size',1,'']]],
+  ['multilevel_20digital_20nets_19',['Multilevel digital nets',['../d6/d6f/feats_multilevel.html#feats_multilevel_net',1,'']]],
+  ['multilevel_20filters_20and_20normalizations_20',['Using multilevel filters and normalizations',['../d2/d15/cmdtut_advanced_filters.html#cmdtut_advanced_filters_multilevel',1,'']]],
+  ['multilevel_20point_20sets_21',['Multilevel point sets',['../df/df1/cmdtut_advanced_multilevel.html',1,'Multilevel point sets'],['../d6/d6f/feats_multilevel.html',1,'Multilevel point sets']]],
+  ['multilevel_20point_20sets_22',['Normalizations and filters for multilevel point sets',['../d9/d80/feats_filters.html#feats_filters_multilevel',1,'']]]
 ];

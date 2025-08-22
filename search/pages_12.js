@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['values_0',['Values',['../dd/df1/libtut_lat_genseq.html',1,'Sequences of Generator Values'],['../da/dd0/libtut_lat_meritseq.html',1,'Sequences of Merit Values']]]
+  ['quick_20recipes_0',['Quick Recipes',['../d0/da5/cmdtut_quickrecipes.html',1,'cmdtut']]]
 ];

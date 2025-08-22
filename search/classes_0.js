@@ -6,5 +6,6 @@ var searchData=
   ['addcoordinate_3',['AddCoordinate',['../d7/d31/classLatticeTester_1_1CoordinateSets_1_1AddCoordinate.html',1,'LatticeTester::CoordinateSets']]],
   ['addcoordinate_3c_20latticetester_3a_3acoordinatesets_3a_3afromranges_20_3e_4',['AddCoordinate&lt; LatticeTester::CoordinateSets::FromRanges &gt;',['../d7/d31/classLatticeTester_1_1CoordinateSets_1_1AddCoordinate.html',1,'LatticeTester::CoordinateSets']]],
   ['allocator_5',['allocator',['../de/d6e/classfftw_1_1allocator.html',1,'fftw']]],
-  ['allof_6',['AllOf',['../d7/dcf/classLatBuilder_1_1Functor_1_1AllOf.html',1,'LatBuilder::Functor']]]
+  ['allocator_3c_20tp1_20_3e_6',['allocator&lt; Tp1 &gt;',['../de/d6e/classfftw_1_1allocator.html',1,'fftw']]],
+  ['allof_7',['AllOf',['../d7/dcf/classLatBuilder_1_1Functor_1_1AllOf.html',1,'LatBuilder::Functor::AllOf'],['../d9/d4d/classNetBuilder_1_1FigureOfMerit_1_1AllOf.html',1,'NetBuilder::FigureOfMerit::AllOf']]]
 ];
